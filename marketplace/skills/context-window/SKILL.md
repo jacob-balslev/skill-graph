@@ -5,6 +5,7 @@ license: MIT
 compatibility: "Provider-agnostic. The zone model, 80% rule, persistence hierarchy, and token-reduction techniques apply across Anthropic, OpenAI, Google, and open-weight contexts of any size. Specific token figures are illustrative — substitute the figures of the model you actually run."
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"adjacent\":[\"context-graph\"],\"boundary\":[\"context-management\"]}"
   schema_version: "8"
   version: "1.1.0"
   subject: agent-ops
@@ -22,7 +23,6 @@ metadata:
   keywords: "[\"context window management\",\"context budget allocation\",\"80% compaction rule\",\"context health states\",\"pre-compact hook\",\"post-compact recovery\",\"cross-session persistence hierarchy\",\"token consumption per operation\",\"deterministic cli vs mcp tool result tokens\",\"targeted file read offset limit\"]"
   examples: "[\"the agent's tool results are starting to truncate — what state are we in and what should I do next?\",\"I have a 1M-context model — does that mean I can ignore budget management?\",\"the session is at 75% context — should I compact now or finish the current operation first?\",\"I just compacted and lost the decision trail; what should the pre-compact hook have preserved?\",\"the agent reads 5 files looking for a function and burns 100K tokens — what's the right pattern?\",\"I'm running on a 128K-context model — what's the per-task budget I can plan against?\",\"what survives compaction and what doesn't, ranked from most to least durable?\",\"the skill payload is 30K and I haven't even read a file yet — how do I shrink it?\"]"
   anti_examples: "[\"decide what context to load or drop in the working set\",\"design the multi-graph architecture for skills + docs + memory\",\"improve the prompt template the agent uses\",\"curate the durable memory index across sessions\",\"which skill should activate for this query\",\"review this AI-generated PR for correctness\",\"the README has drifted from the actual CLI flags — which wins?\",\"the docs have drifted from the code — which is canonical?\"]"
-  relations: "{\"boundary\":[{\"skill\":\"context-management\",\"reason\":\"context-management decides what to load and drop in the working set; context-window is the budget math underneath that decides how much fits and when to compact\"},{\"skill\":\"context-graph\",\"reason\":\"context-graph maps the static topology of skills / docs / memory; context-window is the runtime budget for the part of that topology that is actually loaded\"}],\"related\":[\"context-management\",\"context-graph\",\"tool-call-strategy\",\"context-engineering\",\"prompt-craft\"],\"verify_with\":[\"context-management\"]}"
   grounding: "{\"subject_matter\":\"Runtime context-window budgeting and compaction discipline for LLM agents\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://platform.claude.com/docs/en/build-with-claude/context-windows\",\"https://ai.google.dev/gemini-api/docs/long-context\",\"https://developers.openai.com/api/docs/models/compare\",\"https://github.com/jacob-balslev/skills/blob/main/skills/context-engineering/SKILL.md\",\"https://github.com/jacob-balslev/skills/blob/main/skills/context-management/SKILL.md\",\"https://github.com/jacob-balslev/skills/blob/main/skills/tool-call-strategy/SKILL.md\"],\"failure_modes\":[\"large_context_treated_as_unlimited\",\"output_headroom_not_reserved\",\"compaction_started_after_overflow\",\"mixed_git_tree_committed_before_compaction\",\"raw_tool_results_preserved_after_distillation\"],\"evidence_priority\":\"equal\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
@@ -307,12 +307,9 @@ A 1M window is not a license to ignore the rules — it just shifts the breaking
 - review this AI-generated PR for correctness
 - the README has drifted from the actual CLI flags — which wins?
 - the docs have drifted from the code — which is canonical?
-- Owned by `context-management`
-- Owned by `context-graph`
 
 **Related skills**
-- Verify with: `context-management`
-- Related: `context-management`, `context-graph`, `tool-call-strategy`, `context-engineering`, `prompt-craft`
+- Related: `context-graph`
 
 **Concept**
 - Mental model: A context window is finite working memory shared by instructions, tools, skills, conversation history, tool results, reasoning/output budget, and files. Budget management is a runtime accounting loop: know the model's actual limit, reserve output and recovery headroom, measure the active working set, compact or checkpoint before overflow, and promote durable state out of live context before it can be lost.

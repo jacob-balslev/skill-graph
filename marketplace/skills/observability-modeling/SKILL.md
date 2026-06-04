@@ -5,6 +5,7 @@ license: MIT
 compatibility: "Portable observability modeling discipline for applications, integrations, jobs, queues, APIs, and agent workflows."
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"performance-engineering\",\"event-contract-design\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: data-engineering
@@ -22,7 +23,6 @@ metadata:
   keywords: "[\"observability modeling\",\"telemetry design\",\"logs metrics traces\",\"SLO\",\"spans\",\"correlation id\",\"diagnostic events\",\"alert design\",\"instrumentation model\"]"
   examples: "[\"design telemetry for this ingestion pipeline so failures can be diagnosed later\",\"which logs, metrics, spans, and correlation IDs should this interface contract require?\",\"model observability for a background job before adding alerts\",\"turn these diagnostic questions into events and metrics\"]"
   anti_examples: "[\"set up Sentry error tracking for this app\",\"profile and optimize a slow endpoint\",\"debug the current production incident\",\"write application tests for this feature\"]"
-  relations: "{\"related\":[\"error-tracking\",\"performance-engineering\",\"system-interface-contracts\",\"event-contract-design\",\"debugging\",\"testing-strategy\"],\"verify_with\":[\"error-tracking\",\"debugging\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -104,10 +104,6 @@ This skill ships a comprehension-eval artifact at [`examples/evals/observability
 - profile and optimize a slow endpoint
 - debug the current production incident
 - write application tests for this feature
-
-**Related skills**
-- Verify with: `error-tracking`, `debugging`
-- Related: `error-tracking`, `performance-engineering`, `system-interface-contracts`, `event-contract-design`, `debugging`, `testing-strategy`
 
 **Keywords**
 - `observability modeling`, `telemetry design`, `logs metrics traces`, `SLO`, `spans`, `correlation id`, `diagnostic events`, `alert design`, `instrumentation model`

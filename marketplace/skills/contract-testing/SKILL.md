@@ -4,6 +4,7 @@ description: "Use when verifying the interface between two services or component
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"adjacent\":[\"e2e-test-design\"],\"boundary\":[\"integration-test-design\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: quality-assurance
@@ -21,7 +22,6 @@ metadata:
   triggers: "[\"should this be a contract test or an integration test\",\"Pact vs OpenAPI\",\"how do we decouple deploys between services\",\"the consumer broke when the provider changed\",\"should we e2e test across services\"]"
   examples: "[\"design a consumer-driven contract test between a frontend and a backend service\",\"decide whether to use Pact or schema-only validation for a new API\",\"diagnose a contract test that passes consumer-side but fails provider-side — implementation drift\",\"explain how the contract broker decouples deploy schedules between consumer and provider teams\"]"
   anti_examples: "[\"test internal seams of a system (use integration-test-design)\",\"validate an HTTP response against an OpenAPI schema (use API-spec tooling)\",\"test a complete user journey through the UI (use e2e-test-design)\"]"
-  relations: "{\"related\":[\"testing-strategy\",\"integration-test-design\",\"e2e-test-design\",\"api-design\",\"event-contract-design\",\"system-interface-contracts\"],\"boundary\":[{\"skill\":\"integration-test-design\",\"reason\":\"integration-test-design owns tests that exercise the real implementation through an interface; this skill owns tests that verify the interface contract independently of the implementation behind it. Contract tests can replace cross-service e2e tests; they cannot replace integration tests that verify behavior through the interface.\"},{\"skill\":\"e2e-test-design\",\"reason\":\"e2e-test-design owns user-journey tests across the whole stack; this skill owns service-boundary contract verification. Cross-service e2e tests are often the wrong tool — they are slow and verify too much; contract tests verify the interface specifically.\"}],\"verify_with\":[\"api-design\",\"integration-test-design\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -169,12 +169,9 @@ After applying this skill, verify:
 - test internal seams of a system (use integration-test-design)
 - validate an HTTP response against an OpenAPI schema (use API-spec tooling)
 - test a complete user journey through the UI (use e2e-test-design)
-- Owned by `integration-test-design`: tests
-- Owned by `e2e-test-design`: user-journey tests across the whole stack
 
 **Related skills**
-- Verify with: `api-design`, `integration-test-design`
-- Related: `testing-strategy`, `integration-test-design`, `e2e-test-design`, `api-design`, `event-contract-design`, `system-interface-contracts`
+- Related: `e2e-test-design`
 
 **Concept**
 - Mental model: |

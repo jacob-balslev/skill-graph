@@ -4,6 +4,7 @@ description: "Use when designing or reviewing Next.js App Router Route Handlers:
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"middleware-patterns\",\"server-actions-design\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: backend-engineering
@@ -21,7 +22,6 @@ metadata:
   triggers: "[\"how do I expose an API endpoint in Next.js App Router\",\"when should I use a Route Handler instead of a Server Action\",\"how do I receive a webhook in Next.js\",\"how do I return a streaming response from an API route\",\"how do I parse a JSON body in route.ts\",\"why is my Route Handler GET cached\",\"how do I set CORS headers on a Next.js API route\",\"Edge runtime vs Node runtime for an API route\"]"
   examples: "[\"design the route.ts that receives a Stripe webhook — verify signature before parsing the body, return 200 immediately, queue the heavy work\",\"decide whether a 'export user data' endpoint should be a Route Handler or a Server Action\",\"add CORS to a Route Handler that mobile clients call from a different origin\",\"opt a GET Route Handler out of the default static cache because it depends on the request user\",\"return a streaming binary response (PDF generation, large CSV export) from a Route Handler\"]"
   anti_examples: "[\"design an internal create-comment form mutation triggered only from this app's UI (use server-actions-design)\",\"define the REST contract and resource model for a v2 public API (use api-design)\",\"explain what an HTTP 422 means vs 400 (use http-semantics)\",\"add an auth check that runs before every protected route (use middleware-patterns)\",\"design the idempotency-key + retry + dead-letter-queue strategy for a webhook (use webhook-integration)\",\"design the resource model, versioning, pagination, or error envelope of an HTTP API (use api-design)\",\"decide what an HTTP method, status code, or header should mean per RFC 9110 (use http-semantics)\",\"design signature verification, idempotency keys, retry semantics, or dead-letter queues for vendor webhooks (use webhook-integration)\",\"design a cross-cutting streaming model with Web Streams, SSE, or backpressure (use streaming-architecture)\"]"
-  relations: "{\"related\":[\"server-actions-design\",\"api-design\",\"http-semantics\",\"middleware-patterns\",\"webhook-integration\",\"streaming-architecture\",\"client-server-boundary\"],\"verify_with\":[\"code-review\",\"api-design\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -403,10 +403,6 @@ After applying this skill, verify:
 - decide what an HTTP method, status code, or header should mean per RFC 9110 (use http-semantics)
 - design signature verification, idempotency keys, retry semantics, or dead-letter queues for vendor webhooks (use webhook-integration)
 - design a cross-cutting streaming model with Web Streams, SSE, or backpressure (use streaming-architecture)
-
-**Related skills**
-- Verify with: `code-review`, `api-design`
-- Related: `server-actions-design`, `api-design`, `http-semantics`, `middleware-patterns`, `webhook-integration`, `streaming-architecture`, `client-server-boundary`
 
 **Concept**
 - Mental model: |

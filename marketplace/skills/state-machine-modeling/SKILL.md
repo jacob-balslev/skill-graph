@@ -5,6 +5,7 @@ license: MIT
 compatibility: "Portable state-machine discipline for product workflows, domain lifecycles, retries, background jobs, and UI flow control."
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"adjacent\":[\"state-management\"],\"boundary\":[\"event-storming\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: software-architecture
@@ -20,7 +21,6 @@ metadata:
   keywords: "[\"state machine\",\"state modeling\",\"lifecycle states\",\"transitions\",\"guards\",\"finite state machine\",\"invalid states\",\"status field\",\"workflow invariants\"]"
   examples: "[\"model the order fulfillment status lifecycle so invalid transitions are impossible\",\"this status field keeps growing flags - should it become a state machine?\",\"define guards and side effects for onboarding steps\",\"find impossible states in this workflow before we implement it\"]"
   anti_examples: "[\"discover the domain events and policies for the whole business process\",\"create database tables and constraints for this lifecycle\",\"instrument metrics and traces for an existing workflow\",\"debug why this job got stuck yesterday\"]"
-  relations: "{\"boundary\":[{\"skill\":\"event-storming\",\"reason\":\"event-storming discovers domain behavior broadly; state-machine-modeling formalizes a specific lifecycle\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling persists state; state-machine-modeling defines legal state behavior\"}],\"related\":[\"event-storming\",\"system-interface-contracts\",\"testing-strategy\",\"api-design\",\"observability-modeling\",\"debugging\"],\"verify_with\":[\"testing-strategy\",\"system-interface-contracts\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -97,12 +97,9 @@ Make illegal states unrepresentable where possible. Where that is not possible, 
 - create database tables and constraints for this lifecycle
 - instrument metrics and traces for an existing workflow
 - debug why this job got stuck yesterday
-- Owned by `event-storming`
-- Owned by `data-modeling`
 
 **Related skills**
-- Verify with: `testing-strategy`, `system-interface-contracts`
-- Related: `event-storming`, `system-interface-contracts`, `testing-strategy`, `api-design`, `observability-modeling`, `debugging`
+- Related: `state-management`
 
 **Keywords**
 - `state machine`, `state modeling`, `lifecycle states`, `transitions`, `guards`, `finite state machine`, `invalid states`, `status field`, `workflow invariants`

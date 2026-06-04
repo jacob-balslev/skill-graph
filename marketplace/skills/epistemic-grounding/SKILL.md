@@ -4,6 +4,7 @@ description: "Use when authoring any artifact that makes claims — skill conten
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"adjacent\":[\"methodical\",\"evaluation\",\"skill-scaffold\",\"skill-infrastructure\"],\"boundary\":[\"methodology\"]}"
   subject: reasoning-strategy
   deployment_target: portable
   scope: "Portable claim-grounding discipline for skill content, documentation, audit findings, architecture proposals, code review comments, and other artifacts that assert facts. Teaches Toulmin claim/data/warrant/backing/qualifier/rebuttal structure, RFC 2119 modality, verified/inferred/asserted labels, source-to-claim warrants, and honest hedging. Excludes execution-level evidence receipts and output completeness (methodology), naming precision (semantics), and grader/rubric design (evaluation or agent-eval-design)."
@@ -13,7 +14,6 @@ metadata:
   triggers: "[\"ground this claim\",\"cite a source\",\"MUST vs SHOULD\",\"is this verified\",\"how do you know that\"]"
   examples: "[\"before stating that this library supports X, confirm against the actual docs\",\"rewrite this finding so each assertion either cites a file or is marked as inference\",\"should this be a MUST or a SHOULD? what's the strength of the claim?\",\"the agent reported 'fix works' but no test was run — flag the gap in grounding\"]"
   anti_examples: "[\"verify every step of an audit task with concrete evidence (use methodology)\",\"decide which lint rule to add for a specific kind of drift (use skill-infrastructure)\",\"evaluate a finished SKILL.md against the comprehension grader (use evaluation)\"]"
-  relations: "{\"related\":[\"methodology\",\"semantics\",\"evaluation\",\"agent-eval-design\",\"best-practice\"],\"verify_with\":[\"methodology\",\"evaluation\",\"best-practice\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -148,8 +148,7 @@ After applying this skill, verify:
 - evaluate a finished SKILL.md against the comprehension grader (use evaluation)
 
 **Related skills**
-- Verify with: `methodology`, `evaluation`, `best-practice`
-- Related: `methodology`, `semantics`, `evaluation`, `agent-eval-design`, `best-practice`
+- Related: `methodical`, `evaluation`, `skill-scaffold`, `skill-infrastructure`
 
 **Concept**
 - Mental model: |

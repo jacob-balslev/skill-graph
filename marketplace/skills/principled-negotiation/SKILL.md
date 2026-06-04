@@ -5,6 +5,7 @@ license: MIT
 compatibility: "Markdown, negotiation briefs, deal memos, conflict-resolution plans, vendor/customer negotiations"
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"microcopy\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: reasoning-strategy
@@ -22,7 +23,6 @@ metadata:
   triggers: "[\"principled-negotiation\",\"batna\",\"getting-to-yes\"]"
   examples: "[\"Prepare a BATNA-based negotiation brief for this vendor renewal.\",\"Turn these fixed demands into interests, options, and objective criteria.\",\"Pressure-test whether we should accept this offer or walk away.\",\"Use principled negotiation to plan this salary discussion.\",\"Find the ZOPA and reservation values in this negotiation scenario.\"]"
   anti_examples: "[\"Write persuasive landing-page copy for this offer.\",\"Analyze rivalry, supplier power, buyer power, entrants, and substitutes.\",\"Choose our winning aspiration, where to play, and how to win.\",\"Rank these initiatives by expected value and downside risk.\",\"Give legal advice on whether this contract clause is enforceable.\"]"
-  relations: "{\"boundary\":[{\"skill\":\"expected-value\",\"reason\":\"principled-negotiation owns counterparties, BATNA, objective criteria, and deal-package design; expected-value owns one-party action choice under quantified uncertainty\"},{\"skill\":\"playing-to-win\",\"reason\":\"principled-negotiation owns deal-table preparation and agreement quality; playing-to-win owns integrated strategy choices before negotiation begins\"},{\"skill\":\"positioning\",\"reason\":\"principled-negotiation owns bargaining process and agreement evaluation; positioning owns buyer-facing market context and differentiated value\"},{\"skill\":\"radical-candor\",\"reason\":\"principled-negotiation owns structured bargaining across interests and alternatives; radical-candor owns management feedback conversations, not deal-table agreement design\"},{\"skill\":\"methodology\",\"reason\":\"principled-negotiation owns one specific negotiation method; methodology owns broad process-design and quality-gate selection\"}],\"related\":[\"expected-value\",\"epistemic-grounding\",\"constraint-awareness\",\"playing-to-win\",\"positioning\",\"methodology\"],\"verify_with\":[\"epistemic-grounding\",\"constraint-awareness\",\"expected-value\"]}"
   grounding: "{\"subject_matter\":\"Principled negotiation, BATNA, and interest-based bargaining from Getting to Yes and Harvard Program on Negotiation materials\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://www.pon.harvard.edu/daily/negotiation-skills-daily/principled-negotiation-focus-interests-create-value/\",\"https://www.pon.harvard.edu/daily/batna/translate-your-batna-to-the-current-deal/\",\"https://www.pon.harvard.edu/daily/batna/best-alternative-to-a-negotiated-agreement-beyond-the-basics/\",\"skills/skills/meta-methods/principled-negotiation/references/principled-negotiation-sources.md\",\"skills/skills/meta-methods/principled-negotiation/references/upstream-displacement-2026-05-31.md\"],\"failure_modes\":[\"positions_treated_as_interests\",\"agreement_pursued_below_batna\",\"relationship_issues_mixed_with_substance\",\"options_generated_after_commitment\",\"objective_criteria_missing_or_self_serving\",\"reservation_value_or_zopa_undefined\",\"fake_win_win_without_walkaway_discipline\",\"legal_or_hr_advice_overclaimed\"],\"evidence_priority\":\"general_knowledge_first\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
@@ -45,8 +45,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/principled-negotiation/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
-  skill_graph_export_description_projection_truncated: "true"
+  skill_graph_export_description_projection: anti_examples
 ---
 
 ## Concept of the skill
@@ -316,15 +315,6 @@ Before finalizing a negotiation answer, check:
 - Choose our winning aspiration, where to play, and how to win.
 - Rank these initiatives by expected value and downside risk.
 - Give legal advice on whether this contract clause is enforceable.
-- Owned by `expected-value`: counterparties, BATNA, objective criteria, and deal-package design
-- Owned by `playing-to-win`: deal-table preparation and agreement quality
-- Owned by `positioning`: bargaining process and agreement evaluation
-- Owned by `radical-candor`: structured bargaining across interests and alternatives
-- Owned by `methodology`: one specific negotiation method
-
-**Related skills**
-- Verify with: `epistemic-grounding`, `constraint-awareness`, `expected-value`
-- Related: `expected-value`, `epistemic-grounding`, `constraint-awareness`, `playing-to-win`, `positioning`, `methodology`
 
 **Concept**
 - Mental model: Principled negotiation treats agreement as joint problem solving under walkaway discipline. The primitives are parties, issues, relationship concerns, positions, underlying interests, options for mutual gain, objective criteria, BATNAs, reservation values, and the zone of possible agreement. The method separates people from substantive problems, expands value before dividing it, and accepts only agreements that beat the relevant BATNA.

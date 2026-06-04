@@ -4,6 +4,7 @@ description: "Use when designing or reviewing Server Actions: the 'use server' d
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"server-components-design\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: frontend-engineering
@@ -21,7 +22,6 @@ metadata:
   triggers: "[\"how do I submit a form to the server\",\"do I need an API route for this mutation\",\"how do I call a server function from a button\",\"why is my Server Action exposed as an endpoint\",\"useActionState vs useFormState\",\"how do I revalidate after mutation\",\"can Server Actions run in event handlers\"]"
   examples: "[\"design a 'create comment' form using Server Actions plus useActionState so it works without JavaScript and reports server-side validation errors\",\"decide whether a delete button should call a Server Action or an API route\",\"audit a Server Action for missing authorization (the function looks like a normal call but is publicly invokable)\",\"design the revalidation strategy for a mutation that affects multiple cached routes\"]"
   anti_examples: "[\"design a Server Component that reads data on render (use server-components-design)\",\"design a public REST API consumed by mobile clients (use api-design)\",\"choose between SSR and SSG (use rendering-models)\",\"design the visual UX of a form's validation states (use form-ux-architecture)\",\"design the visual states and accessibility of a form (use form-ux-architecture)\",\"design a public HTTP contract for mobile, third-party, or server-to-server callers (use api-design)\"]"
-  relations: "{\"related\":[\"server-components-design\",\"client-server-boundary\",\"form-ux-architecture\",\"api-design\",\"hooks-patterns\"],\"boundary\":[{\"skill\":\"server-components-design\",\"reason\":\"server-components-design owns the read path — Server Components fetch data on render; server-actions-design owns the write path — Server Actions execute mutations triggered from the client. They share infrastructure (RSC, 'use server') but solve distinct problems.\"},{\"skill\":\"client-server-boundary\",\"reason\":\"client-server-boundary owns the serialization and directive mechanics of the boundary itself; server-actions-design owns the discipline of using the 'use server' side of that boundary for mutations.\"}],\"verify_with\":[\"code-review\",\"api-design\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -293,12 +293,6 @@ After applying this skill, verify:
 - design the visual UX of a form's validation states (use form-ux-architecture)
 - design the visual states and accessibility of a form (use form-ux-architecture)
 - design a public HTTP contract for mobile, third-party, or server-to-server callers (use api-design)
-- Owned by `server-components-design`: the read path — Server Components fetch data on render
-- Owned by `client-server-boundary`: the serialization and directive mechanics of the boundary itself
-
-**Related skills**
-- Verify with: `code-review`, `api-design`
-- Related: `server-components-design`, `client-server-boundary`, `form-ux-architecture`, `api-design`, `hooks-patterns`
 
 **Concept**
 - Mental model: |

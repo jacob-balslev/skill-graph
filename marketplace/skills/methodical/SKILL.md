@@ -7,7 +7,7 @@ metadata:
   scope: "Portable across any project, repo, or agent runtime. Teaches the execution discipline that counters LLM completeness failures — scope reduction, finding filtering, step skipping, assumed verification, and sycophantic output compression — in any task where completeness and honesty outweigh brevity: audits, reports, converting findings into tracked tasks, and acceptance-criteria verification. Not bound to any codebase; the countermeasures (pre-task declarations, step-level evidence receipts, generation/criticism separation, explicit completeness claims) are universal."
   triggers: "[\"methodical-skill\",\"completeness-skill\"]"
   keywords: "[\"methodical\",\"completeness\",\"no filtering\",\"all findings\",\"step by step\",\"evidence receipt\",\"scope reduction\",\"sycophancy\",\"intellectual honesty\",\"no skipping\"]"
-  relations: "{\"related\":[\"methodology\",\"best-practice\",\"epistemic-grounding\",\"evaluation\",\"prioritization\"],\"boundary\":[{\"skill\":\"task-path-optimization\",\"reason\":\"task-path-optimization owns choosing or shortening the route through a task; methodical owns preserving complete evidence, counts, and verification while executing any route.\"},{\"skill\":\"best-practice\",\"reason\":\"best-practice owns broad artifact-quality standards; methodical owns complete and honest execution mechanics independent of artifact type.\"},{\"skill\":\"summarization\",\"reason\":\"summarization owns compression after the source material is complete; methodical owns preventing premature compression or item loss before summarization.\"},{\"skill\":\"context-management\",\"reason\":\"context-management owns what enters or leaves the working context; methodical owns making sure output and claims do not silently drop in-scope findings.\"},{\"skill\":\"evaluation\",\"reason\":\"evaluation owns scoring and verdict interpretation; methodical owns the evidence discipline that makes a later score defensible.\"}],\"verify_with\":[\"best-practice\",\"epistemic-grounding\",\"evaluation\"]}"
+  relations: "{\"adjacent\":[\"best-practice\",\"evaluation\",\"skill-scaffold\",\"semantics\",\"skill-infrastructure\"],\"boundary\":[\"task-path-optimization\"]}"
   mental_model: "LLMs are naturally sycophantic, lazy, and eager to summarize away complexity due to RLHF training. This skill provides the rigid System 2 scaffolding—checklists, evidence receipts, and separation of generation from critique—to force honest, exhaustive execution."
   purpose: "To prevent agents from silently filtering findings, skipping instructions, or hallucinating verification by enforcing a strict, step-by-step reporting and evidence protocol."
   boundary: "This skill enforces *how* to execute tasks transparently and completely. It does not dictate broad artifact quality (which is `best-practice`), score a result (which is `evaluation`), compress complete output (which is `summarization`), or optimize the route through a task (which is `task-path-optimization`)."
@@ -306,16 +306,8 @@ After applying this skill, verify:
 **When to use**
 - Triggers: `methodical-skill`, `completeness-skill`
 
-**Not for**
-- Owned by `task-path-optimization`: choosing or shortening the route through a task
-- Owned by `best-practice`: broad artifact-quality standards
-- Owned by `summarization`: compression after the source material is complete
-- Owned by `context-management`: what enters or leaves the working context
-- Owned by `evaluation`: scoring and verdict interpretation
-
 **Related skills**
-- Verify with: `best-practice`, `epistemic-grounding`, `evaluation`
-- Related: `methodology`, `best-practice`, `epistemic-grounding`, `evaluation`, `prioritization`
+- Related: `best-practice`, `evaluation`, `skill-scaffold`, `semantics`, `skill-infrastructure`
 
 **Concept**
 - Mental model: LLMs are naturally sycophantic, lazy, and eager to summarize away complexity due to RLHF training. This skill provides the rigid System 2 scaffolding—checklists, evidence receipts, and separation of generation from critique—to force honest, exhaustive execution.

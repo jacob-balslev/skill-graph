@@ -5,6 +5,7 @@ license: MIT
 compatibility: "Markdown, strategy memos, planning workshops, business plans, product strategy, nonprofit and project planning"
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"porters-five-forces\"]}"
   subject: reasoning-strategy
   deployment_target: portable
   scope: "SWOT and TOWS strategy option generation for organizations, products, programs, and projects: separate internal strengths/weaknesses from external opportunities/threats, attach evidence and uncertainty, convert the four-quadrant inventory into SO/WO/ST/WT strategic options, and identify follow-on validation. Excludes Five Forces industry-structure diagnosis, Seven Powers moat-source classification, Blue Ocean value innovation, Playing to Win strategy-cascade design, OKR execution tracking, and quantified expected-value comparison."
@@ -14,7 +15,6 @@ metadata:
   triggers: "[\"swot-tows\",\"SWOT\",\"TOWS\",\"swot-analysis\",\"tows-matrix\"]"
   examples: "[\"Build a SWOT and TOWS matrix for this product strategy.\",\"Turn these strengths, weaknesses, opportunities, and threats into strategic options.\",\"We have a SWOT table but no actions; convert it into SO, WO, ST, and WT options.\",\"Check whether this SWOT analysis confuses internal weaknesses with external threats.\",\"Use TOWS to generate strategy hypotheses from this planning workshop output.\"]"
   anti_examples: "[\"Analyze supplier power, buyer power, entrants, substitutes, and rivalry.\",\"Classify this company's durable moat source.\",\"Create a strategy canvas and ERRC grid for a new market space.\",\"Turn this strategy into winning aspiration, where to play, how to win, capabilities, and systems.\",\"Calculate the expected value of these strategic options.\"]"
-  relations: "{\"boundary\":[{\"skill\":\"porters-five-forces\",\"reason\":\"swot-tows owns internal/external factor inventory and option generation; porters-five-forces owns industry profit-pressure structure, not SWOT/TOWS quadrant crossing\"},{\"skill\":\"seven-powers\",\"reason\":\"swot-tows owns situation inventory and strategy-option generation; seven-powers owns durable firm-level power classification\"},{\"skill\":\"blue-ocean-strategy\",\"reason\":\"swot-tows owns factor crossing into SO/WO/ST/WT options; blue-ocean-strategy owns value-curve reconstruction and new-demand design\"},{\"skill\":\"playing-to-win\",\"reason\":\"swot-tows owns situational option generation before strategy-choice integration; playing-to-win owns the five-choice strategy cascade\"},{\"skill\":\"expected-value\",\"reason\":\"swot-tows owns qualitative option generation from factors; expected-value owns probability-weighted comparison after outcomes, probabilities, and values are modeled\"},{\"skill\":\"okrs\",\"reason\":\"swot-tows owns strategic diagnosis and option generation; okrs owns objective and key-result execution tracking after choices are made\"}],\"related\":[\"porters-five-forces\",\"seven-powers\",\"blue-ocean-strategy\",\"playing-to-win\",\"positioning\",\"okrs\",\"expected-value\",\"epistemic-grounding\",\"methodology\"],\"verify_with\":[\"epistemic-grounding\",\"methodology\",\"expected-value\"]}"
   grounding: "{\"subject_matter\":\"SWOT analysis and the TOWS matrix as portable situational-analysis and strategy-option methods\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://cir.nii.ac.jp/crid/1361137044448123776\",\"https://business.gov.au/planning/business-plans/do-a-swot-analysis\",\"https://hbr.org/2007/03/from-swot-to-tows-answering-a-readers-strategy-question\",\"skills/skills/meta-methods/swot-tows/references/swot-tows-sources.md\",\"skills/skills/meta-methods/swot-tows/references/upstream-displacement-2026-06-02.md\"],\"failure_modes\":[\"laundry_list_without_strategy_options\",\"internal_external_factor_mixup\",\"opportunity_confused_with_strength\",\"threat_confused_with_weakness\",\"generic_actions_not_crossed_from_quadrants\",\"unsupported_assertions_or_missing_evidence\",\"treating_swot_as_final_strategy\",\"quantified_choice_needed_but_not_escalated\"],\"evidence_priority\":\"general_knowledge_first\"}"
   mental_model: "SWOT/TOWS is a two-step strategy method: first inventory internal factors and external conditions, then cross them into options. The primitives are a defined decision context, strengths, weaknesses, opportunities, threats, evidence confidence, factor priority, SO options that use strengths to exploit opportunities, WO options that overcome weaknesses to pursue opportunities, ST options that use strengths to reduce threats, and WT options that reduce weakness-threat exposure. SWOT names the situation; TOWS converts the situation into candidate moves."
   purpose: "This skill prevents agents from producing a four-box SWOT list and stopping there. It forces internal/external classification, evidence tagging, prioritization of the most decision-relevant factors, and TOWS crossing so the output becomes testable strategic options rather than a decorative planning worksheet."
@@ -24,7 +24,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/swot-tows/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
 
@@ -236,16 +236,6 @@ After applying this skill, verify:
 - Create a strategy canvas and ERRC grid for a new market space.
 - Turn this strategy into winning aspiration, where to play, how to win, capabilities, and systems.
 - Calculate the expected value of these strategic options.
-- Owned by `porters-five-forces`: internal/external factor inventory and option generation
-- Owned by `seven-powers`: situation inventory and strategy-option generation
-- Owned by `blue-ocean-strategy`: factor crossing into SO/WO/ST/WT options
-- Owned by `playing-to-win`: situational option generation before strategy-choice integration
-- Owned by `expected-value`: qualitative option generation from factors
-- Owned by `okrs`: strategic diagnosis and option generation
-
-**Related skills**
-- Verify with: `epistemic-grounding`, `methodology`, `expected-value`
-- Related: `porters-five-forces`, `seven-powers`, `blue-ocean-strategy`, `playing-to-win`, `positioning`, `okrs`, `expected-value`, `epistemic-grounding`, `methodology`
 
 **Concept**
 - Mental model: SWOT/TOWS is a two-step strategy method: first inventory internal factors and external conditions, then cross them into options. The primitives are a defined decision context, strengths, weaknesses, opportunities, threats, evidence confidence, factor priority, SO options that use strengths to exploit opportunities, WO options that overcome weaknesses to pursue opportunities, ST options that use strengths to reduce threats, and WT options that reduce weakness-threat exposure. SWOT names the situation; TOWS converts the situation into candidate moves.

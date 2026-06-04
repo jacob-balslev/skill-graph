@@ -5,6 +5,7 @@ license: MIT
 compatibility: Portable keyword research and marketplace keyword-mapping guidance. Platform limits and field names can drift; verify against current marketplace docs before high-stakes listing work.
 allowed-tools: Read Grep Bash
 metadata:
+  relations: "{\"boundary\":[\"seo-strategy\"]}"
   subject: knowledge-organization
   deployment_target: portable
   scope: "Keyword research, search-intent mapping, topical clustering, product/listing target assignment, marketplace field translation, cannibalization detection, and rank-tracking cadence for public ecommerce, marketplace, SaaS, and content surfaces. Portable across projects, but external platform constraints drift and must be verified against current official docs before high-stakes listing or SEO work. Excludes SEO implementation and schema strategy (seo-strategy), final prose writing (writing-humanizer), and navigation/page hierarchy (information-architecture)."
@@ -14,7 +15,6 @@ metadata:
   triggers: "[\"keyword-skill\",\"keyword-research-skill\"]"
   examples: "[\"research keywords for a new product line before writing listings\",\"map these 80 queries into informational, transactional, navigational, and commercial-investigation intent\",\"cluster these search terms into pillar and support pages without cannibalizing the same query\",\"choose Etsy tags for a listing while respecting current tag limits and avoiding padding\",\"convert Amazon keyword research into title-safe terms and backend search terms without repetition\",\"decide whether a Shopify collection page or product page should target this keyword\",\"two pages rank for the same query in Search Console -- is that cannibalization or different intent?\",\"set up a rank tracking cadence after changing marketplace titles and tags\"]"
   anti_examples: "[\"build the SEO landing page, JSON-LD schema, and internal-linking plan from these keywords\",\"rewrite the product description so it sounds more human and on-brand\",\"design the site navigation and decide which categories become top-level menu items\",\"audit Core Web Vitals or crawlability problems\",\"prove that this exact marketplace listing will rank first after the keyword update\"]"
-  relations: "{\"boundary\":[{\"skill\":\"seo-strategy\",\"reason\":\"seo-strategy owns page construction, schema markup, programmatic SEO, internal linking, and implementation strategy after keywords are selected; keywords owns research, clustering, intent mapping, and field translation before construction.\"},{\"skill\":\"writing-humanizer\",\"reason\":\"writing-humanizer owns the finished prose quality and AI-tell removal; keywords can supply target terms and intent but must not stuff or write the final copy.\"},{\"skill\":\"information-architecture\",\"reason\":\"information-architecture owns navigation, sitemap shape, page hierarchy, and content grouping; keywords may reveal demand but does not decide the IA alone.\"}],\"related\":[\"seo-strategy\",\"writing-humanizer\",\"information-architecture\"],\"verify_with\":[\"seo-strategy\",\"writing-humanizer\"]}"
   grounding: "{\"subject_matter\":\"Keyword research, intent mapping, topical clustering, and marketplace/search field translation for public e-commerce, marketplace, SaaS, and content surfaces\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://help.etsy.com/hc/en-us/articles/360000336307-How-to-Use-Tags-to-Get-Found-in-Search\",\"https://help.etsy.com/hc/en-us/articles/115015628707-How-to-Create-a-Listing\",\"https://sellercentral.amazon.com/seller-forums/discussions/t/53388506-a05d-4b8c-9097-cad20f9e1b88\",\"https://sellercentral.amazon.com/seller-forums/discussions/t/62ec93fbb444d7778947b087b3056cc5\",\"https://developers.google.com/search/docs/appearance/title-link\",\"https://developers.google.com/search/docs/appearance/snippet\",\"https://help.shopify.com/en/manual/promoting-marketing/seo/adding-keywords\",\"https://help.shopify.com/en/manual/promoting-marketing/seo/seo-overview\"],\"failure_modes\":[\"keyword_stuffing_mistaken_for_strategy\",\"platform_field_limits_drift_silently\",\"marketplace_tags_padded_with_irrelevant_terms\",\"amazon_search_terms_repeat_title_or_brand_fields\",\"shopify_keyword_guidance_ignores_readability\",\"intent_mapping_skipped_before_page_or_listing_targeting\",\"cannibalization_collapses_distinct_search_intents\",\"rank_tracking_claims_made_without_baseline_or_cadence\",\"keyword_skill_overowns_seo_implementation_finished_prose_or_information_architecture\"],\"evidence_priority\":\"equal\"}"
   mental_model: "Keyword work is demand translation. Raw queries are evidence of language, intent, and platform constraints; the skill turns them into targetable clusters, page/listing assignments, and measurement baselines without pretending that keywords alone create rankings."
   purpose: "This skill prevents agents from jumping straight to generic SEO copy, stuffing repeated terms into marketplace fields, or targeting one query from multiple pages. It gives a repeatable process for finding search language, mapping intent, respecting platform fields, and measuring whether changes moved visibility."
@@ -24,7 +24,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/knowledge-organization/keywords/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
 
@@ -276,13 +276,6 @@ These are grounding points, not permanent invariants. Re-check them when platfor
 - design the site navigation and decide which categories become top-level menu items
 - audit Core Web Vitals or crawlability problems
 - prove that this exact marketplace listing will rank first after the keyword update
-- Owned by `seo-strategy`
-- Owned by `writing-humanizer`: the finished prose quality and AI-tell removal
-- Owned by `information-architecture`: navigation, sitemap shape, page hierarchy, and content grouping
-
-**Related skills**
-- Verify with: `seo-strategy`, `writing-humanizer`
-- Related: `seo-strategy`, `writing-humanizer`, `information-architecture`
 
 **Concept**
 - Mental model: Keyword work is demand translation. Raw queries are evidence of language, intent, and platform constraints; the skill turns them into targetable clusters, page/listing assignments, and measurement baselines without pretending that keywords alone create rankings.

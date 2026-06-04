@@ -4,6 +4,7 @@ description: "Use when a goal, plan, design, strategy, or assumption should be e
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"first-principles-thinking\"]}"
   schema_version: "7"
   version: "1.0.0"
   subject: reasoning-strategy
@@ -21,7 +22,6 @@ metadata:
   triggers: "[\"invert this plan\",\"how could this fail\",\"what would guarantee failure\",\"reason from the opposite\",\"avoid the worst outcome\"]"
   examples: "[\"We want activation to improve. Invert the goal and identify what would make users abandon onboarding.\",\"Before we commit to this launch plan, ask how it could fail and what safeguards follow.\",\"Test the opposite hypothesis: what if the metric increase is actually bad?\",\"What actions would guarantee this project misses the deadline?\"]"
   anti_examples: "[\"Break this pricing model down to irreducible assumptions.\",\"This incident already happened; find the root cause.\",\"Score every webhook failure mode with severity, occurrence, and detectability.\",\"Facilitate a team pre-mortem session with independent written generation.\"]"
-  relations: "{\"related\":[\"first-principles-thinking\",\"epistemic-grounding\",\"pattern-recognition\",\"debugging\"],\"verify_with\":[\"epistemic-grounding\",\"first-principles-thinking\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -229,10 +229,6 @@ After applying this skill, verify:
 - This incident already happened; find the root cause.
 - Score every webhook failure mode with severity, occurrence, and detectability.
 - Facilitate a team pre-mortem session with independent written generation.
-
-**Related skills**
-- Verify with: `epistemic-grounding`, `first-principles-thinking`
-- Related: `first-principles-thinking`, `epistemic-grounding`, `pattern-recognition`, `debugging`
 
 **Concept**
 - Mental model: |

@@ -5,6 +5,7 @@ license: MIT
 compatibility: Runtime-agnostic. The intake-triage / loop / drift / handoff discipline applies to any LLM-coding harness regardless of context window size or compaction implementation.
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"adjacent\":[\"context-graph\"],\"boundary\":[\"context-window\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: agent-ops
@@ -21,7 +22,6 @@ metadata:
   keywords: "[\"context management\",\"working set discipline\",\"intake triage four buckets\",\"context drift recovery\",\"context management loop\",\"compaction-ready handoff\",\"distill raw inputs\",\"one active hypothesis\",\"selective context rebuild\",\"lost-thread recovery\"]"
   examples: "[\"the session feels noisy and I'm re-reading the same files — what discipline pulls it back?\",\"the agent keeps citing assumptions that were already disproven — how do I clear them out?\",\"I'm about to compact — what do I need to preserve so the next session resumes correctly?\",\"the thread is lost; what's the recipe for rebuilding only what's needed instead of warming up everything?\",\"I have a 300-line error log and a 600-line component file in context — how do I distill them?\",\"the active question changed three times this session — how do I prevent the old context from steering the new one?\",\"this conversation has 40K tokens of evidence; what should the working set actually contain?\"]"
   anti_examples: "[\"calculate the per-zone token budget for the 200K context window\",\"improve this prompt template for the grader\",\"curate the persistent memory index file\",\"design the multi-graph architecture for skills + docs + memory\",\"review this AI-generated PR for correctness\",\"why is this skill not routing — fix the keyword config\"]"
-  relations: "{\"boundary\":[{\"skill\":\"context-graph\",\"reason\":\"context-graph maps the static topology — what skills, docs, memory, scripts exist and how they connect; context-management is the live working-set discipline inside one running session\"},{\"skill\":\"context-engineering\",\"reason\":\"context-engineering is the system-level design (injector quality, failure metrics); context-management is the per-session operating discipline within that system\"}],\"related\":[\"context-engineering\",\"context-graph\",\"tool-call-strategy\",\"prompt-craft\"],\"verify_with\":[\"context-engineering\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -223,12 +223,9 @@ Do not "warm up" by re-reading everything. Recovery is a _selective_ rebuild, no
 - design the multi-graph architecture for skills + docs + memory
 - review this AI-generated PR for correctness
 - why is this skill not routing — fix the keyword config
-- Owned by `context-graph`
-- Owned by `context-engineering`
 
 **Related skills**
-- Verify with: `context-engineering`
-- Related: `context-engineering`, `context-graph`, `tool-call-strategy`, `prompt-craft`
+- Related: `context-graph`
 
 **Keywords**
 - `context management`, `working set discipline`, `intake triage four buckets`, `context drift recovery`, `context management loop`, `compaction-ready handoff`, `distill raw inputs`, `one active hypothesis`, `selective context rebuild`, `lost-thread recovery`

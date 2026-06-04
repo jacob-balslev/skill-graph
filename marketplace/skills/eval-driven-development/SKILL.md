@@ -4,6 +4,7 @@ description: "Use when reasoning about building language-model-integrated system
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"testing-strategy\"]}"
   subject: ai-engineering
   deployment_target: portable
   scope: "Building language-model-integrated systems by writing evaluations before and alongside the system — the statistical (not binary) nature of LLM evals, the five primitives (dataset, evaluation function, aggregation, iteration loop, regression budget), the judgment-mechanism taxonomy (programmatic, model-graded, human-graded, preference comparison), system-specific evals vs canonical benchmarks (MMLU, HumanEval, BIG-bench, GAIA), how evals drive prompt/model/scaffolding/tooling changes, Goodhart's Law on eval scores, and the offline-eval-vs-production-telemetry distinction. Portable across any LLM-integrated system; principle-grounded, not repo-bound. Excludes deterministic unit testing and general TDD (testing-strategy), production monitoring (evaluation, error-tracking), and constructing individual eval rubrics and task sets (agent-eval-design owns construction; this skill owns iteration discipline)."
@@ -13,7 +14,6 @@ metadata:
   triggers: "[\"how do we know this prompt change improved things\",\"should this be an eval or a unit test\",\"the model passes the benchmark but fails in production\",\"what should we measure\",\"the LLM-as-judge gives different scores each run\"]"
   examples: "[\"design an offline eval suite for an LLM-integrated summarization feature before writing the prompt\",\"decide between programmatic grading, model-graded judgment, and human review for a freeform-output eval\",\"explain why MMLU score is a poor predictor of a domain-specific assistant's quality\",\"structure an iteration loop where each prompt change is gated by a regression budget\"]"
   anti_examples: "[\"write unit tests for a deterministic data transformation (use testing-strategy)\",\"set up production alerting on API error rates (use error-tracking or observability-modeling)\",\"interpret a specific benchmark's leaderboard without changing a system-specific eval loop (use evaluation)\"]"
-  relations: "{\"related\":[\"agent-eval-design\",\"evaluation\",\"testing-strategy\",\"prompt-injection-defense\",\"tool-call-flow\",\"error-tracking\",\"observability-modeling\",\"type-safety\"],\"boundary\":[{\"skill\":\"agent-eval-design\",\"reason\":\"eval-driven-development owns the change-gating discipline that uses eval suites; agent-eval-design owns construction of task sets, rubrics, graders, hard negatives, and traces\"},{\"skill\":\"evaluation\",\"reason\":\"eval-driven-development owns iterative development loops around LLM eval suites; evaluation owns general scoring frameworks and result interpretation\"},{\"skill\":\"prompt-injection-defense\",\"reason\":\"eval-driven-development owns measuring whether a prompt-injection defense holds; prompt-injection-defense owns the security property and threat model itself\"}],\"verify_with\":[\"agent-eval-design\",\"evaluation\",\"testing-strategy\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -180,13 +180,6 @@ After applying this skill, verify:
 - write unit tests for a deterministic data transformation (use testing-strategy)
 - set up production alerting on API error rates (use error-tracking or observability-modeling)
 - interpret a specific benchmark's leaderboard without changing a system-specific eval loop (use evaluation)
-- Owned by `agent-eval-design`: the change-gating discipline
-- Owned by `evaluation`: iterative development loops around LLM eval suites
-- Owned by `prompt-injection-defense`: measuring whether a prompt-injection defense holds
-
-**Related skills**
-- Verify with: `agent-eval-design`, `evaluation`, `testing-strategy`
-- Related: `agent-eval-design`, `evaluation`, `testing-strategy`, `prompt-injection-defense`, `tool-call-flow`, `error-tracking`, `observability-modeling`, `type-safety`
 
 **Concept**
 - Mental model: |

@@ -7,6 +7,7 @@ allowed-tools: Read Grep
 metadata:
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  relations: "{\"boundary\":[\"playing-to-win\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: reasoning-strategy
@@ -23,7 +24,6 @@ metadata:
   keywords: "[\"bayesian reasoning\",\"bayes theorem\",\"bayesian update\",\"base rate\",\"prior probability\",\"posterior probability\",\"likelihood ratio\",\"evidence strength\",\"confidence calibration\",\"probabilistic reasoning\"]"
   examples: "[\"use Bayesian reasoning to update our confidence after this new evidence\",\"we have a rare bug signal; account for the base rate before concluding the cause\",\"separate prior, likelihood, and posterior for this diagnosis\",\"how should this customer interview change our belief in the product hypothesis?\",\"calibrate my confidence instead of giving a binary yes/no answer\"]"
   anti_examples: "[\"calculate the expected value of these three options\",\"turn this growth plan into a strategy cascade\",\"analyze supplier power and substitutes in this industry\",\"rank these roadmap items by impact and effort\",\"build a statistical model from a dataset\"]"
-  relations: "{\"boundary\":[{\"skill\":\"playing-to-win\",\"reason\":\"playing-to-win owns integrated strategy choices; bayesian-reasoning owns uncertainty updates about assumptions, evidence, and confidence\"},{\"skill\":\"porters-five-forces\",\"reason\":\"porters-five-forces owns industry-structure diagnosis; bayesian-reasoning owns how new evidence changes belief strength\"}],\"related\":[\"mental-models\",\"constraint-awareness\",\"epistemic-grounding\",\"problem-approach-router\",\"prioritization\"],\"verify_with\":[\"epistemic-grounding\",\"methodology\"]}"
   grounding: "{\"subject_matter\":\"Bayesian reasoning for decision-making under uncertainty\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://plato.stanford.edu/entries/bayes-theorem/\",\"https://plato.stanford.edu/entries/epistemology-bayesian/\",\"https://pubmed.ncbi.nlm.nih.gov/17835457/\",\"skills/meta-methods/bayesian-reasoning/references/bayesian-reasoning-sources.md\",\"skills/meta-methods/bayesian-reasoning/references/upstream-displacement-2026-05-26.md\"],\"failure_modes\":[\"base_rate_neglect\",\"likelihood_confused_with_posterior\",\"anecdote_overweighted\",\"correlated_evidence_double_counted\",\"prior_hidden_or_smuggled\",\"false_precision_from_weak_inputs\",\"binary_answer_given_under_uncertainty\"],\"evidence_priority\":\"general_knowledge_first\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
@@ -233,12 +233,6 @@ Before finishing, verify:
 - analyze supplier power and substitutes in this industry
 - rank these roadmap items by impact and effort
 - build a statistical model from a dataset
-- Owned by `playing-to-win`: integrated strategy choices
-- Owned by `porters-five-forces`: industry-structure diagnosis
-
-**Related skills**
-- Verify with: `epistemic-grounding`, `methodology`
-- Related: `mental-models`, `constraint-awareness`, `epistemic-grounding`, `problem-approach-router`, `prioritization`
 
 **Concept**
 - Mental model: Bayesian reasoning treats belief as a state that changes when evidence arrives. The primitives are a hypothesis, prior probability or base rate, evidence, likelihood of seeing that evidence if the hypothesis were true, likelihood of seeing it if the hypothesis were false, posterior belief, residual uncertainty, and update history. The key move is comparing how much better the evidence is explained by one hypothesis than by alternatives, then updating from the prior instead of starting from the vividness of the evidence.

@@ -1,10 +1,11 @@
 ---
 name: event-storming
-description: "Use when discovering a domain through events, commands, actors, policies, aggregates, read models, external systems, and temporal workflows before implementation. Do NOT use for event schema/topic contracts (use `event-contract-design`), webhook handler implementation (use `webhook-integration`), generic state transition modeling (use `state-machine-modeling`), or persistence schema design (use `data-modeling`). Do NOT use for implement Shopify webhook signature verification and idempotent retries. Do NOT use for draw the state machine for this one status field. Do NOT use for create a normalized data model and indexes. Do NOT use for write event-bus infrastructure code. Do NOT use for define the schema, topic, compatibility, and fixtures for a selected event. Do NOT use for publishable event envelopes, schemas, topics, and compatibility (use event-contract-design)."
+description: "Use when discovering a domain through events, commands, actors, policies, aggregates, read models, external systems, and temporal workflows before implementation. Do NOT use for event schema/topic contracts (use `event-contract-design`), webhook handler implementation (use `webhook-integration`), generic state transition modeling (use `state-machine-modeling`), or persistence schema design (use `data-modeling`). Do NOT use for implement Shopify webhook signature verification and idempotent retries. Do NOT use for draw the state machine for this one status field. Do NOT use for create a normalized data model and indexes. Do NOT use for write event-bus infrastructure code. Do NOT use for define the schema, topic, compatibility, and fixtures for a selected event."
 license: MIT
 compatibility: "Portable event-storming discipline for product discovery, domain modeling, event-driven architecture, and workflow analysis."
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"event-contract-design\",\"state-machine-modeling\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: software-architecture
@@ -20,7 +21,6 @@ metadata:
   keywords: "[\"event storming\",\"domain events\",\"commands\",\"aggregates\",\"policies\",\"read models\",\"temporal workflow\",\"event-driven discovery\",\"process modeling\"]"
   examples: "[\"map the order lifecycle as domain events before we design tables or APIs\",\"which commands, policies, and external systems are hidden in this workflow?\",\"use event storming to find aggregate boundaries for fulfillment\",\"turn this incident-prone business process into events and decisions\"]"
   anti_examples: "[\"implement Shopify webhook signature verification and idempotent retries\",\"draw the state machine for this one status field\",\"create a normalized data model and indexes\",\"write event-bus infrastructure code\",\"define the schema, topic, compatibility, and fixtures for a selected event\"]"
-  relations: "{\"boundary\":[{\"skill\":\"event-contract-design\",\"reason\":\"event-contract-design owns publishable event envelopes, schemas, topics, and compatibility; event-storming discovers the domain behavior before contract design\"},{\"skill\":\"state-machine-modeling\",\"reason\":\"state-machine-modeling formalizes states and transitions; event-storming discovers events, commands, policies, and aggregates\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling designs stored data structures after domain events are understood\"}],\"related\":[\"bounded-context-mapping\",\"state-machine-modeling\",\"system-interface-contracts\",\"event-contract-design\",\"conceptual-modeling\",\"webhook-integration\",\"api-design\"],\"verify_with\":[\"conceptual-modeling\",\"bounded-context-mapping\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -32,7 +32,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-architecture/event-storming/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Event Storming
@@ -99,13 +99,6 @@ Do not confuse domain events with technical notifications. "OrderPlaced" is busi
 - create a normalized data model and indexes
 - write event-bus infrastructure code
 - define the schema, topic, compatibility, and fixtures for a selected event
-- Owned by `event-contract-design`: publishable event envelopes, schemas, topics, and compatibility
-- Owned by `state-machine-modeling`
-- Owned by `data-modeling`
-
-**Related skills**
-- Verify with: `conceptual-modeling`, `bounded-context-mapping`
-- Related: `bounded-context-mapping`, `state-machine-modeling`, `system-interface-contracts`, `event-contract-design`, `conceptual-modeling`, `webhook-integration`, `api-design`
 
 **Keywords**
 - `event storming`, `domain events`, `commands`, `aggregates`, `policies`, `read models`, `temporal workflow`, `event-driven discovery`, `process modeling`

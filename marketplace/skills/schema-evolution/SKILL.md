@@ -1,9 +1,10 @@
 ---
 name: schema-evolution
-description: "Use when reasoning about how a database schema changes over time without breaking deployed application code: the expand/contract pattern (Ambler & Sadalage), the zero-downtime change rules, the backwards-and-forwards compatibility envelope (deploy ordering and rollback discipline), the catalog of schema changes (add column, drop column, rename, type change, add constraint, add index) and the safe procedure for each, the dual-write and dual-read transitions that make non-trivial changes safe in production, and the relationship between schema evolution as a design discipline and database-migration mechanics as its tooling. Do NOT use for the mechanical execution of one migration (use database-migration), schema design from scratch (use data-modeling), query tuning (use query-optimization), or distributed-data partitioning (use sharding-strategy). Do NOT use for which indexes the database has (use indexing-strategy)."
+description: "Use when reasoning about how a database schema changes over time without breaking deployed application code: the expand/contract pattern (Ambler & Sadalage), the zero-downtime change rules, the backwards-and-forwards compatibility envelope (deploy ordering and rollback discipline), the catalog of schema changes (add column, drop column, rename, type change, add constraint, add index) and the safe procedure for each, the dual-write and dual-read transitions that make non-trivial changes safe in production, and the relationship between schema evolution as a design discipline and database-migration mechanics as its tooling. Do NOT use for the mechanical execution of one migration (use database-migration), schema design from scratch (use data-modeling), query tuning (use query-optimization), or distributed-data partitioning (use sharding-strategy)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"database-migration\"]}"
   subject: data-engineering
   deployment_target: portable
   scope: "Evolving a database schema over time without breaking deployed application code — the expand/contract pattern, zero-downtime change rules, the backwards/forwards compatibility envelope (deploy ordering and rollback discipline), the per-change-type safe procedure (add/drop/rename column, type change, constraints, indexes), and dual-write/dual-read transitions. Portable across relational databases and deploy pipelines; principle-grounded, not repo-bound. Excludes mechanical execution of one migration (database-migration), schema design from scratch (data-modeling), query tuning (query-optimization), and distributed-data partitioning (sharding-strategy)."
@@ -12,7 +13,6 @@ metadata:
   keywords: "[\"schema evolution\",\"expand contract\",\"parallel change\",\"zero-downtime migration\",\"backwards compatibility\",\"rolling deploy\",\"dual write\",\"dual read\",\"schema versioning\",\"additive change\"]"
   triggers: "[\"how do we rename this column without downtime\",\"expand contract\",\"is this migration safe\",\"schema versioning\",\"backwards compatibility for database\"]"
   examples: "[\"design the expand-contract sequence to rename a column from `name` to `full_name` across a deployed system\",\"decide whether to add a NOT NULL column with a default or with a separate backfill phase\",\"diagnose a deploy that broke because the schema change shipped before the code change\",\"explain why drop-column is the third phase of expand-contract, not the first\"]"
-  relations: "{\"related\":[\"data-modeling\",\"database-migration\",\"indexing-strategy\",\"acid-fundamentals\"],\"boundary\":[{\"skill\":\"database-migration\",\"reason\":\"database-migration owns the mechanics of applying one migration (ALTER TABLE, batched backfill, CONCURRENTLY indexes, unpooled connections); this skill owns the multi-step sequence of migrations and the deploy-coordination discipline that makes the sequence safe.\"},{\"skill\":\"indexing-strategy\",\"reason\":\"indexing-strategy owns which indexes the database has; this skill owns how the index set evolves over time. Adding or removing an index is one type of schema change governed by this skill's discipline.\"}],\"verify_with\":[\"data-modeling\",\"database-migration\"]}"
   grounding: "{\"subject_matter\":\"Portable database schema evolution, expand/contract sequencing, zero-downtime compatibility envelopes, online migrations, and production-safe constraint/index changes\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://martinfowler.com/articles/evodb.html\",\"https://martinfowler.com/bliki/ParallelChange.html\",\"https://www.postgresql.org/docs/current/sql-altertable.html\",\"https://www.postgresql.org/docs/current/sql-createindex.html\",\"https://stripe.com/blog/online-migrations\"],\"failure_modes\":[\"treating_nontrivial_schema_change_as_one_alter_table\",\"dropping_old_shape_before_all_code_and_data_migrate\",\"deploying_code_and_schema_outside_a_backward_forward_compatibility_envelope\",\"tightening_constraints_without_not_valid_validate_or_equivalent_pattern\",\"creating_production_indexes_without_concurrent_or_online_mechanism\",\"running_backfill_as_one_unbounded_nonresumable_update\"],\"evidence_priority\":\"equal\"}"
   anti_examples: "[\"execute one ALTER TABLE migration mechanically (use database-migration)\",\"design a schema from scratch (use data-modeling)\",\"diagnose a slow query (use query-optimization)\"]"
   mental_model: "|"
@@ -23,7 +23,6 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/data-engineering/schema-evolution/SKILL.md
-  skill_graph_export_description_projection: boundary
 ---
 
 # Schema Evolution
@@ -175,12 +174,6 @@ After applying this skill, verify:
 - execute one ALTER TABLE migration mechanically (use database-migration)
 - design a schema from scratch (use data-modeling)
 - diagnose a slow query (use query-optimization)
-- Owned by `database-migration`: the mechanics of applying one migration (ALTER TABLE, batched backfill, CONCURRENTLY indexes, unpooled connections)
-- Owned by `indexing-strategy`: which indexes the database has
-
-**Related skills**
-- Verify with: `data-modeling`, `database-migration`
-- Related: `data-modeling`, `database-migration`, `indexing-strategy`, `acid-fundamentals`
 
 **Concept**
 - Mental model: |

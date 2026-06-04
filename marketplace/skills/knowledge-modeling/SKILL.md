@@ -5,6 +5,7 @@ license: MIT
 compatibility: "Theory-level skill. Applies to any AI-coding workspace that maintains structured knowledge artefacts: skill libraries, reference docs, decision records, runbooks, agent memory systems, RAG/GraphRAG pipelines."
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"adjacent\":[\"ontology-modeling\",\"taxonomy-design\"],\"boundary\":[\"conceptual-modeling\"]}"
   subject: knowledge-organization
   deployment_target: portable
   scope: "Teaches choosing and maintaining the representation paradigm for domain knowledge: graphs, frames, semantic networks, production rules, concept maps, procedural ontologies, GraphRAG, or hybrids. Excludes stakeholder-readable conceptual modeling, database schema design, pure taxonomy hierarchy, formal ontology axioms, exact semantic edge labeling, and live skill-library tooling."
@@ -13,7 +14,6 @@ metadata:
   keywords: "[\"knowledge representation\",\"knowledge graph\",\"frames and slots\",\"production rules\",\"semantic network\",\"concept map\",\"procedural ontology PKO\",\"hybrid knowledge representation\",\"tacit to explicit knowledge\",\"knowledge acquisition pipeline\"]"
   examples: "[\"should this domain knowledge be a graph, a set of rules, a frame structure, or a hybrid?\",\"our skill library keeps adding prose but the agent can't reason over relationships — which representation should change?\",\"the agent retrieves topically similar passages but misses structurally related facts — is GraphRAG the right shift?\",\"how do I capture decision traces and triggers as first-class entities so the agent can replay why it chose Y?\",\"we have facts, exceptions, and procedural decisions for an audit system — what representation keeps both retrieval and reasoning tractable?\",\"should this workflow stay a human concept map or be promoted to machine-usable production rules?\",\"we want to validate the knowledge base against real scenarios — what completeness / consistency / relevance / currency checks should run?\"]"
   anti_examples: "[\"design the database tables and foreign keys for this schema\",\"I just need a clean IS-A category hierarchy with no rules or graph behavior\",\"I need formal OWL axioms with class restrictions and reasoning semantics\",\"I want the exact edge labels (hypernymy / meronymy / synonymy) between concepts\",\"I need to maintain the skill library tooling and overlap detector\",\"abstract the domain into entities and relationships in human-readable terms before any database talk\"]"
-  relations: "{\"boundary\":[{\"skill\":\"taxonomy-design\",\"reason\":\"taxonomy-design owns pure IS-A hierarchy design and browse/category structure; knowledge-modeling owns broader representation choice across graphs, frames, rules, concept maps, and hybrids\"},{\"skill\":\"ontology-modeling\",\"reason\":\"ontology-modeling owns formal axioms, OWL/RDFS-style constraints, and automated reasoning semantics; knowledge-modeling decides whether that level of formality is needed\"},{\"skill\":\"semantic-relations\",\"reason\":\"semantic-relations owns exact edge-label semantics such as hypernymy, meronymy, synonymy, and polysemy; knowledge-modeling chooses the representation paradigm that will contain those edges\"}],\"related\":[\"conceptual-modeling\",\"ontology-modeling\",\"taxonomy-design\",\"semantic-relations\",\"context-graph\",\"context-engineering\",\"skill-infrastructure\",\"data-modeling\"],\"verify_with\":[\"conceptual-modeling\",\"ontology-modeling\"]}"
   grounding: "{\"subject_matter\":\"Knowledge representation paradigm choice and GraphRAG-ready knowledge modeling\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://doi.org/10.1016/0004-3702(82)90012-1\",\"https://books.google.com/books/about/Knowledge_Representation_and_Reasoning.html?id=ln6Ux-EZm6YC\",\"https://courses.media.mit.edu/2004spring/mas966/Minsky%201974%20Framework%20for%20knowledge.pdf\",\"https://www.w3.org/TR/skos-reference/\",\"https://arxiv.org/abs/2404.16130\"],\"failure_modes\":[\"representation_chosen_by_familiarity_not_query_pattern\",\"graph_structure_too_sparse_for_graphrag\",\"formalism_overfit_to_theory_not_maintenance\",\"tacit_knowledge_transcribed_without_validation\",\"taxonomy_used_when_rules_or_frames_are_required\"],\"evidence_priority\":\"equal\"}"
   mental_model: "|"
   purpose: "|"
@@ -23,7 +23,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/knowledge-organization/knowledge-modeling/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
 
@@ -274,13 +274,9 @@ Rules:
 - I want the exact edge labels (hypernymy / meronymy / synonymy) between concepts
 - I need to maintain the skill library tooling and overlap detector
 - abstract the domain into entities and relationships in human-readable terms before any database talk
-- Owned by `taxonomy-design`: pure IS-A hierarchy design and browse/category structure
-- Owned by `ontology-modeling`: formal axioms, OWL/RDFS-style constraints, and automated reasoning semantics
-- Owned by `semantic-relations`: exact edge-label semantics such as hypernymy, meronymy, synonymy, and polysemy
 
 **Related skills**
-- Verify with: `conceptual-modeling`, `ontology-modeling`
-- Related: `conceptual-modeling`, `ontology-modeling`, `taxonomy-design`, `semantic-relations`, `context-graph`, `context-engineering`, `skill-infrastructure`, `data-modeling`
+- Related: `ontology-modeling`, `taxonomy-design`
 
 **Concept**
 - Mental model: |

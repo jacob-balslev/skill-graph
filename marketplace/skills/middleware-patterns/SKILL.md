@@ -4,6 +4,7 @@ description: "Use when designing or reviewing Next.js middleware: the single mid
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"route-handler-design\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: frontend-engineering
@@ -22,7 +23,6 @@ metadata:
   triggers: "[\"how do I redirect unauthenticated users to login in Next.js\",\"how do I run code before every request in Next.js\",\"how do I set security headers globally in Next.js\",\"how do I do locale routing in App Router\",\"how do I do an A/B test with rewrites\",\"why does my middleware run on static assets\",\"can middleware do a database query\",\"how do I generate a CSP nonce per request\"]"
   examples: "[\"design middleware that redirects unauthenticated users to /login while letting public routes through, configured via a matcher\",\"add a middleware that generates a per-request CSP nonce and injects it into both the request and response headers\",\"implement locale routing that detects Accept-Language and rewrites /about to /en/about for new visitors\",\"add bot blocking that returns 403 for known scraper user-agents while letting search-engine bots through\",\"tune a middleware that runs on every request down to 5ms so it stops adding latency to image fetches\"]"
   anti_examples: "[\"implement a /api/posts POST endpoint (use route-handler-design)\",\"implement a delete-comment mutation triggered from a form button (use server-actions-design)\",\"explain what an HTTP 308 means vs 307 (use http-semantics)\",\"design the full CSP policy and the rest of the security-header strategy (use security-fundamentals)\",\"design a long-lived SSE stream from middleware (use streaming-architecture)\",\"design the CSP policy, threat model, or OWASP audit for a system (use security-fundamentals)\",\"decide what an HTTP method, status code, or header should mean per RFC 9110 (use http-semantics)\",\"design signature verification, idempotency, or retry semantics for vendor webhooks (use webhook-integration)\"]"
-  relations: "{\"related\":[\"route-handler-design\",\"server-actions-design\",\"http-semantics\",\"security-fundamentals\",\"server-components-design\",\"client-server-boundary\",\"webhook-integration\"],\"boundary\":[{\"skill\":\"server-actions-design\",\"reason\":\"server-actions-design owns the internal-mutation surface invoked from the app's own UI; middleware is the cross-cutting request preprocessor that runs before any route or action. A Server Action call passes through middleware on its way to the server.\"},{\"skill\":\"server-components-design\",\"reason\":\"server-components-design owns the render path that produces a page; middleware runs upstream of render and can rewrite, redirect, or pass through. Middleware does not replace render; it gates and rewrites it.\"}],\"verify_with\":[\"code-review\",\"security-fundamentals\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -40,7 +40,7 @@ metadata:
   skill_graph_canonical_skill: skills/frontend-engineering/middleware-patterns/SKILL.md
   skill_graph_export_description: shortened for Agent Skills 1024-character description limit; canonical source keeps the full routing contract
   skill_graph_canonical_description_length: "1178"
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
 
@@ -420,12 +420,6 @@ After applying this skill, verify:
 - design the CSP policy, threat model, or OWASP audit for a system (use security-fundamentals)
 - decide what an HTTP method, status code, or header should mean per RFC 9110 (use http-semantics)
 - design signature verification, idempotency, or retry semantics for vendor webhooks (use webhook-integration)
-- Owned by `server-actions-design`: the internal-mutation surface invoked from the app's own UI
-- Owned by `server-components-design`: the render path
-
-**Related skills**
-- Verify with: `code-review`, `security-fundamentals`
-- Related: `route-handler-design`, `server-actions-design`, `http-semantics`, `security-fundamentals`, `server-components-design`, `client-server-boundary`, `webhook-integration`
 
 **Concept**
 - Mental model: |

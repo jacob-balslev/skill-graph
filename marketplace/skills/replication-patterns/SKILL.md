@@ -4,6 +4,7 @@ description: "Use when designing how a database keeps multiple copies of its dat
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"adjacent\":[\"cap-theorem-tradeoffs\"],\"boundary\":[\"sharding-strategy\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: data-engineering
@@ -21,7 +22,6 @@ metadata:
   triggers: "[\"single-leader vs multi-leader\",\"synchronous vs async replication\",\"what happens on failover\",\"split brain\",\"read-after-write consistency\"]"
   examples: "[\"design replication topology for a service with one region writing and three regions reading\",\"decide between synchronous and asynchronous replication given a target RPO\",\"diagnose stale reads after a write — likely replication lag without read-after-write handling\",\"explain the split-brain risk in multi-leader replication\"]"
   anti_examples: "[\"horizontally partition data across nodes (use sharding-strategy)\",\"reason about the CAP theorem abstractly (use cap-theorem-tradeoffs)\",\"explain ACID properties (use acid-fundamentals)\"]"
-  relations: "{\"related\":[\"cap-theorem-tradeoffs\",\"acid-fundamentals\",\"sharding-strategy\",\"transaction-isolation\"],\"boundary\":[{\"skill\":\"cap-theorem-tradeoffs\",\"reason\":\"cap-theorem-tradeoffs owns the theoretical frame for the consistency-availability trade-off; this skill owns the operational topologies and protocols that realize a chosen position on that trade-off. The two compose: CAP names the choice; replication-patterns is one of the realizations.\"},{\"skill\":\"sharding-strategy\",\"reason\":\"sharding-strategy owns horizontal partitioning of data across nodes (different nodes hold different data); this skill owns replication of the same data across nodes (multiple nodes hold the same data). The two often combine in production systems but answer different questions.\"}],\"verify_with\":[\"cap-theorem-tradeoffs\",\"sharding-strategy\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -157,12 +157,9 @@ After applying this skill, verify:
 - horizontally partition data across nodes (use sharding-strategy)
 - reason about the CAP theorem abstractly (use cap-theorem-tradeoffs)
 - explain ACID properties (use acid-fundamentals)
-- Owned by `cap-theorem-tradeoffs`: the theoretical frame for the consistency-availability trade-off
-- Owned by `sharding-strategy`: horizontal partitioning of data across nodes (different nodes hold different data)
 
 **Related skills**
-- Verify with: `cap-theorem-tradeoffs`, `sharding-strategy`
-- Related: `cap-theorem-tradeoffs`, `acid-fundamentals`, `sharding-strategy`, `transaction-isolation`
+- Related: `cap-theorem-tradeoffs`
 
 **Concept**
 - Mental model: |

@@ -1,12 +1,13 @@
 ---
 name: a11y
-description: "Use when building or reviewing interactive UI, forms, navigation, or dynamic content. Covers semantic HTML, keyboard access, focus management, labeling, state-change announcement, and reduced-motion / high-contrast preferences. Do NOT use for color-palette creation, visual branding, feedback-state staging, or prose reading-level accessibility - those belong to `visual-design-foundations`, `interaction-feedback`, and documentation respectively. Do NOT use for rewrite this error message at a 6th-grade reading level. Do NOT use for clean up this accessibility code without changing how it behaves. Do NOT use for generic code-quality cleanup and language/idiom hygiene (use best-practice)."
+description: "Use when building or reviewing interactive UI, forms, navigation, or dynamic content. Covers semantic HTML, keyboard access, focus management, labeling, state-change announcement, and reduced-motion / high-contrast preferences. Do NOT use for color-palette creation, visual branding, feedback-state staging, or prose reading-level accessibility - those belong to `visual-design-foundations`, `interaction-feedback`, and documentation respectively. Do NOT use for rewrite this error message at a 6th-grade reading level. Do NOT use for clean up this accessibility code without changing how it behaves."
 license: MIT
 compatibility: "Markdown, Git, any web stack"
 allowed-tools: Read Grep
 metadata:
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  relations: "{\"verify_with\":[\"interaction-feedback\",\"semantics\",\"task-analysis\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: quality-assurance
@@ -24,7 +25,6 @@ metadata:
   paths: "[\"**/*.{html,tsx,jsx,vue,svelte}\",\"**/*.css\",\"!**/*.test.{ts,tsx,js,jsx}\",\"!**/dist/**\",\"!**/node_modules/**\"]"
   examples: "[\"this modal is keyboard-trapped — users can't Escape to close it\",\"screen reader doesn't announce when the form validation state changes\",\"add proper labels to these form fields so assistive tech can read them\",\"review this dropdown menu for arrow-key navigation and focus return\"]"
   anti_examples: "[\"rewrite this error message at a 6th-grade reading level\",\"clean up this accessibility code without changing how it behaves\"]"
-  relations: "{\"boundary\":[{\"skill\":\"best-practice\",\"reason\":\"best-practice owns generic code-quality cleanup and language/idiom hygiene; a11y owns assistive-tech behavior. Phrases like 'clean up this accessibility code without changing behavior' are best-practice refactor activities, not a11y semantic work — best-practice is named here so the router excludes it from a11y's positive scope.\"}],\"related\":[\"interaction-patterns\",\"form-ux-architecture\",\"interaction-feedback\",\"design-system-architecture\",\"refactor\",\"diagnosis\",\"linguistics\",\"visual-design-foundations\"],\"verify_with\":[\"testing-strategy\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   structural_verdict: PASS
   truth_verdict: PASS
@@ -33,7 +33,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/a11y/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Accessibility
@@ -108,11 +108,9 @@ This skill ships a comprehension-eval artifact at [`examples/evals/a11y.json`](h
 **Not for**
 - rewrite this error message at a 6th-grade reading level
 - clean up this accessibility code without changing how it behaves
-- Owned by `best-practice`: generic code-quality cleanup and language/idiom hygiene
 
 **Related skills**
-- Verify with: `testing-strategy`
-- Related: `interaction-patterns`, `form-ux-architecture`, `interaction-feedback`, `design-system-architecture`, `refactor`, `diagnosis`, `linguistics`, `visual-design-foundations`
+- Verify with: `interaction-feedback`, `semantics`, `task-analysis`
 
 **Keywords**
 - `screen reader`, `announce`, `validation state`, `form labels`, `assistive tech`, `ARIA roles`, `keyboard support`, `arrow key`, `navigation`, `focus return`

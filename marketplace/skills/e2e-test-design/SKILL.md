@@ -4,6 +4,7 @@ description: "Use when designing end-to-end tests that exercise a user-visible p
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"adjacent\":[\"contract-testing\",\"snapshot-testing\"],\"boundary\":[\"integration-test-design\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: quality-assurance
@@ -21,7 +22,6 @@ metadata:
   triggers: "[\"do we need e2e tests\",\"the e2e tests are flaky\",\"Playwright vs Cypress\",\"how many e2e tests is too many\",\"page object pattern\"]"
   examples: "[\"design an e2e test suite for an onboarding journey: signup → email verify → first action\",\"decide which user journeys deserve e2e coverage vs integration-test coverage\",\"diagnose flaky e2e tests — usually wait-strategy or test-data problems\",\"explain why fewer e2e tests with higher load-bearing value beats many e2e tests with low value\"]"
   anti_examples: "[\"test internal seams of the system (use integration-test-design)\",\"test a single component in isolation (use testing-strategy + test-doubles-design)\",\"verify a service's contract against consumers (use contract-testing)\"]"
-  relations: "{\"related\":[\"testing-strategy\",\"integration-test-design\",\"snapshot-testing\",\"test-driven-development\",\"contract-testing\"],\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the strategic ratio of test levels; this skill owns the design of the e2e tier specifically — the smallest tier in the pyramid/trophy, the most expensive per test, the most user-meaningful per test.\"},{\"skill\":\"integration-test-design\",\"reason\":\"integration-test-design owns tests of internal seams between units; this skill owns user-journey tests through the whole stack including UI. The cost difference is an order of magnitude; conflating them either inflates CI cost or misses real e2e coverage.\"},{\"skill\":\"contract-testing\",\"reason\":\"contract-testing verifies the interface between consumer and provider via consumer-driven contracts; this skill verifies the user-journey behavior end-to-end. Contracts replace e2e tests across service boundaries when the journey is service-to-service; e2e is for journeys with humans at one end.\"},{\"skill\":\"snapshot-testing\",\"reason\":\"Visual snapshot tests are a regression net at e2e or component scope; this skill owns the user-journey behavior end-to-end. They compose: visual snapshots within e2e tests catch UI changes the journey assertions don't.\"}],\"verify_with\":[\"testing-strategy\",\"integration-test-design\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -160,14 +160,9 @@ After applying this skill, verify:
 - test internal seams of the system (use integration-test-design)
 - test a single component in isolation (use testing-strategy + test-doubles-design)
 - verify a service's contract against consumers (use contract-testing)
-- Owned by `testing-strategy`: the strategic ratio of test levels
-- Owned by `integration-test-design`: tests of internal seams between units
-- Owned by `contract-testing`
-- Owned by `snapshot-testing`
 
 **Related skills**
-- Verify with: `testing-strategy`, `integration-test-design`
-- Related: `testing-strategy`, `integration-test-design`, `snapshot-testing`, `test-driven-development`, `contract-testing`
+- Related: `contract-testing`, `snapshot-testing`
 
 **Concept**
 - Mental model: |

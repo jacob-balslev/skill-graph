@@ -4,6 +4,7 @@ description: "Use when designing or reviewing React error boundaries: what an er
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"adjacent\":[\"error-tracking\"],\"boundary\":[\"suspense-patterns\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: frontend-engineering
@@ -22,7 +23,6 @@ metadata:
   triggers: "[\"my error boundary isn't catching errors\",\"do I need an error boundary here\",\"why does the whole page crash on one component error\",\"how do I recover from a caught error\",\"error.tsx vs global-error.tsx\",\"why doesn't this catch async errors\"]"
   examples: "[\"design a route-segment error.tsx for a dashboard so one failing widget doesn't blank the whole page\",\"diagnose why a click-handler crash bypasses the error boundary and propagates to window.onerror\",\"pair an error boundary with a Suspense boundary so failed fetches show error UI while successful ones stream in\",\"integrate an error boundary with Sentry so caught errors are reported with the component tree context\"]"
   anti_examples: "[\"design where to place Suspense fallback boundaries (use suspense-patterns)\",\"design the API response contract for a 500 error (use api-design)\",\"set up Sentry SDK initialization (use error-tracking)\",\"handle a Promise rejection in an event handler (use code-review for the local try/catch pattern)\",\"configure the Sentry, Datadog, or other error-tracking SDK and dashboards (use error-tracking)\"]"
-  relations: "{\"related\":[\"suspense-patterns\",\"hooks-patterns\",\"error-tracking\",\"server-components-design\"],\"boundary\":[{\"skill\":\"suspense-patterns\",\"reason\":\"suspense-patterns owns the loading-state boundary mechanism; error-boundary owns the failure-state boundary mechanism. They pair in the canonical ErrorBoundary→Suspense→Component nesting but are distinct primitives that catch different signals (thrown Error vs thrown Promise).\"},{\"skill\":\"hooks-patterns\",\"reason\":\"hooks-patterns covers component-internal logic discipline; error-boundary is a tree-level mechanism that handles failures from anywhere in its descendant subtree. Class-component requirement of error boundaries is the one place hooks discipline does not apply.\"}],\"verify_with\":[\"code-review\",\"error-tracking\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -287,12 +287,9 @@ After applying this skill, verify:
 - set up Sentry SDK initialization (use error-tracking)
 - handle a Promise rejection in an event handler (use code-review for the local try/catch pattern)
 - configure the Sentry, Datadog, or other error-tracking SDK and dashboards (use error-tracking)
-- Owned by `suspense-patterns`: the loading-state boundary mechanism
-- Owned by `hooks-patterns`
 
 **Related skills**
-- Verify with: `code-review`, `error-tracking`
-- Related: `suspense-patterns`, `hooks-patterns`, `error-tracking`, `server-components-design`
+- Related: `error-tracking`
 
 **Concept**
 - Mental model: |

@@ -4,6 +4,7 @@ description: "Use when diagnosing and tuning a specific slow query in a relation
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"adjacent\":[\"transaction-isolation\",\"sharding-strategy\"],\"boundary\":[\"indexing-strategy\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: data-engineering
@@ -21,7 +22,6 @@ metadata:
   triggers: "[\"this query is slow\",\"EXPLAIN ANALYZE output\",\"why isn't the planner using the index\",\"join order optimization\",\"subquery vs join\"]"
   examples: "[\"diagnose a query that takes 8 seconds and identify the plan node responsible\",\"rewrite a slow correlated subquery as a join to enable a faster plan\",\"explain why ANALYZE on a recently-changed table can change the planner's decisions\",\"decide whether to add an index, rewrite the query, or accept the cost\"]"
   anti_examples: "[\"design which indexes to maintain on a new schema (use indexing-strategy)\",\"choose a database schema (use data-modeling)\",\"decide isolation level for a workload (use transaction-isolation)\"]"
-  relations: "{\"related\":[\"indexing-strategy\",\"data-modeling\",\"transaction-isolation\",\"schema-evolution\"],\"boundary\":[{\"skill\":\"indexing-strategy\",\"reason\":\"indexing-strategy owns the design of which indexes the database has; this skill owns the diagnosis and tuning of specific slow queries. The two compose: query-optimization diagnoses; indexing-strategy is one of the response tools.\"}],\"verify_with\":[\"indexing-strategy\",\"data-modeling\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -191,11 +191,9 @@ After applying this skill, verify:
 - design which indexes to maintain on a new schema (use indexing-strategy)
 - choose a database schema (use data-modeling)
 - decide isolation level for a workload (use transaction-isolation)
-- Owned by `indexing-strategy`: the design of which indexes the database has
 
 **Related skills**
-- Verify with: `indexing-strategy`, `data-modeling`
-- Related: `indexing-strategy`, `data-modeling`, `transaction-isolation`, `schema-evolution`
+- Related: `transaction-isolation`, `sharding-strategy`
 
 **Concept**
 - Mental model: |

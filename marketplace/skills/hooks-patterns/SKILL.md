@@ -4,6 +4,7 @@ description: "Use when reasoning about React Hooks as a discipline: when a rende
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"rendering-models\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: frontend-engineering
@@ -22,7 +23,6 @@ metadata:
   triggers: "[\"is this hook safe to call here\",\"why does my useEffect run twice\",\"do I need useMemo here\",\"dependency array warning\",\"should this be state or derived\",\"extract this into a custom hook\"]"
   examples: "[\"review a useEffect whose dependency array is missing a variable and decide whether to add it, hoist the value, or rethink whether an effect is needed at all\",\"decide whether a derived value should live in useState plus useEffect, or simply be computed during render\",\"explain why the Rules of Hooks are a compile-time invariant, not just a convention\",\"audit a component for unnecessary useMemo / useCallback wrappers that don't actually prevent rerenders\"]"
   anti_examples: "[\"choose between Server Components and Client Components for a new page (use client-server-boundary)\",\"decide where the application's order list lives in memory across routes (use state-management)\",\"design the public API of a reusable component library primitive (use component-architecture)\",\"pick between SSR, SSG, and ISR for a route (use rendering-models)\",\"decide how to layer primitives, composites, and product-specific components (use component-architecture)\"]"
-  relations: "{\"related\":[\"rendering-models\",\"client-server-boundary\",\"component-architecture\",\"state-management\"],\"boundary\":[{\"skill\":\"state-management\",\"reason\":\"state-management owns the question of where state lives across the application (server, client, URL, persistent); hooks-patterns owns the in-component discipline of expressing state with the hook primitives.\"},{\"skill\":\"client-server-boundary\",\"reason\":\"client-server-boundary owns the serialization and 'use client' / 'use server' contract; hooks-patterns owns the rules of hook usage on the client side of that boundary.\"}],\"verify_with\":[\"code-review\",\"testing-strategy\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -236,12 +236,6 @@ After applying this skill, verify:
 - design the public API of a reusable component library primitive (use component-architecture)
 - pick between SSR, SSG, and ISR for a route (use rendering-models)
 - decide how to layer primitives, composites, and product-specific components (use component-architecture)
-- Owned by `state-management`: the question of
-- Owned by `client-server-boundary`: the serialization and 'use client' / 'use server' contract
-
-**Related skills**
-- Verify with: `code-review`, `testing-strategy`
-- Related: `rendering-models`, `client-server-boundary`, `component-architecture`, `state-management`
 
 **Concept**
 - Mental model: |

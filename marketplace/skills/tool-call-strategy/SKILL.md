@@ -5,6 +5,7 @@ license: MIT
 compatibility: "Provider-agnostic; abstract tool capabilities map to concrete tools across Claude Code, Cursor, Copilot, OpenCode, Aider, Continue. Specific tool names in this skill (read_file, grep_search, run_in_terminal, apply_patch) are concrete examples — substitute the equivalent in your harness."
 allowed-tools: Read Grep Bash Edit
 metadata:
+  relations: "{\"adjacent\":[\"task-path-optimization\"],\"boundary\":[\"prompt-craft\"]}"
   schema_version: "8"
   version: "1.1.0"
   subject: ai-engineering
@@ -21,7 +22,6 @@ metadata:
   keywords: "[\"tool call optimization\",\"reduce tool calls\",\"too many tool calls\",\"script vs tool call\",\"batching tool calls\",\"parallel tool calls\",\"parallelize calls\",\"independent calls\",\"redundant reads\",\"re-reading file\"]"
   examples: "[\"the agent made 17 read_file calls when 3 greps would have done — what should it have done?\",\"we're renaming a variable across 40 files — script or tool calls?\",\"the agent re-reads the same file three times in one task — fix the policy\",\"should I batch these reads into one message or wait for each result?\",\"design a tool-use protocol for our new agent harness — what rules matter?\",\"the context window is filling with verbose terminal output — how do I cut it?\",\"is it worth delegating this exploratory search to a subagent?\",\"what's a reasonable tool-call budget for a single-file bug fix?\"]"
   anti_examples: "[\"improve this prompt's wording to get better outputs\",\"design what skills get loaded for which prompts\",\"the test suite is failing after my change — find the cause\",\"extract this repeated string-concat into a helper function\",\"scaffold a new SKILL.md for our team's tool-use rules\",\"review this AI-generated PR for correctness\"]"
-  relations: "{\"boundary\":[{\"skill\":\"prompt-craft\",\"reason\":\"prompt-craft writes the wording of one instruction; tool-call-strategy decides which external operations the agent should invoke around that instruction\"}],\"related\":[\"context-engineering\",\"refactor\",\"prompt-craft\",\"debugging\"],\"verify_with\":[\"code-review\"]}"
   grounding: "{\"subject_matter\":\"Efficient tool-call strategy for LLM coding agents\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://developers.openai.com/api/docs/guides/function-calling\",\"https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview\",\"https://platform.claude.com/docs/en/agents-and-tools/tool-use/manage-tool-context\",\"https://github.com/jacob-balslev/skills/blob/main/skills/tool-call-flow/SKILL.md\",\"https://github.com/jacob-balslev/skills/blob/main/skills/context-engineering/SKILL.md\"],\"failure_modes\":[\"tool_call_minimization_without_verification\",\"serial_calls_when_parallel_independent\",\"shell_bulk_work_without_reviewable_diff\",\"verbose_outputs_pollute_context\",\"same_result_refetched_from_conversation\"],\"evidence_priority\":\"equal\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
@@ -364,11 +364,9 @@ After applying this skill, verify:
 - extract this repeated string-concat into a helper function
 - scaffold a new SKILL.md for our team's tool-use rules
 - review this AI-generated PR for correctness
-- Owned by `prompt-craft`
 
 **Related skills**
-- Verify with: `code-review`
-- Related: `context-engineering`, `refactor`, `prompt-craft`, `debugging`
+- Related: `task-path-optimization`
 
 **Concept**
 - Mental model: Tool-call strategy is the query planner for an agent's external actions. Treat every call as an expensive, stateful evidence-acquisition operation with three costs: latency, tokens, and context pollution. The goal is sufficient evidence with minimum noise: pick the narrowest tool that can answer the question, batch independent calls, keep dependent calls sequential, use scripts for deterministic bulk work, preserve reviewability for edits, and stop re-fetching facts already present in the conversation.

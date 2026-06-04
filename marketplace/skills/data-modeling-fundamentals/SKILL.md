@@ -4,6 +4,7 @@ description: "Use when reasoning about the foundational theory beneath data mode
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"data-modeling\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: data-engineering
@@ -22,7 +23,6 @@ metadata:
   triggers: "[\"what normal form is this\",\"should this be normalized or denormalized\",\"explain functional dependencies\",\"relational vs document model\",\"Codd's rules\"]"
   examples: "[\"explain why a table is in 2NF but not 3NF and what change would bring it to 3NF\",\"decide whether a workload's read pattern justifies denormalization against the theoretical baseline\",\"compare the relational, document, and event-sourced models at the conceptual level for a given domain\",\"trace a functional-dependency closure to find a candidate key\"]"
   anti_examples: "[\"design the practical schema for a new persistence layer (use data-modeling)\",\"apply an expand-contract migration to change an existing schema (use schema-evolution)\",\"choose which indexes to maintain (use indexing-strategy)\",\"discover business entities without implementation details (use conceptual-modeling)\"]"
-  relations: "{\"related\":[\"data-modeling\",\"conceptual-modeling\",\"entity-relationship-modeling\",\"schema-evolution\"],\"boundary\":[{\"skill\":\"schema-evolution\",\"reason\":\"schema-evolution owns the migration mechanics — how to change a deployed schema without downtime. This skill owns the static theory of what a good schema is. The decision 'this schema should be in 3NF' is grounded by this skill; the application of that decision to a live database is `schema-evolution`'s domain.\"}],\"verify_with\":[\"data-modeling\",\"entity-relationship-modeling\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -167,11 +167,6 @@ After applying this skill, verify:
 - apply an expand-contract migration to change an existing schema (use schema-evolution)
 - choose which indexes to maintain (use indexing-strategy)
 - discover business entities without implementation details (use conceptual-modeling)
-- Owned by `schema-evolution`: the migration mechanics — how to change a deployed schema without downtime
-
-**Related skills**
-- Verify with: `data-modeling`, `entity-relationship-modeling`
-- Related: `data-modeling`, `conceptual-modeling`, `entity-relationship-modeling`, `schema-evolution`
 
 **Concept**
 - Mental model: |

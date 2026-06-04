@@ -1,6 +1,6 @@
 ---
 name: task-path-optimization
-description: "This skill provides decision frameworks for choosing the optimal execution path before starting work: plan-vs-act gates, agent architecture selection (chaining, routing, parallelization, orchestrator-worker, evaluator-optimizer), scope management heuristics, critical-path analysis across task networks, and context budget awareness. Use when deciding how to approach a task (plan first vs act immediately), decomposing complex work into parallelizable subtasks, choosing between subagent patterns, or when a task has failed twice and needs a fresh approach. Do NOT use for executing the chosen plan (use task-execution), debugging failures (use troubleshooting or diagnosis), or tool-level efficiency (use tool-call-strategy). Do NOT use for reduce the number of tool calls in this read-heavy step. Do NOT use for troubleshoot why the deployment keeps timing out. Do NOT use for execute the implementation plan we already agreed on. Do NOT use for systematic root-cause investigation of a concrete failure (use diagnosis)."
+description: "This skill provides decision frameworks for choosing the optimal execution path before starting work: plan-vs-act gates, agent architecture selection (chaining, routing, parallelization, orchestrator-worker, evaluator-optimizer), scope management heuristics, critical-path analysis across task networks, and context budget awareness. Use when deciding how to approach a task (plan first vs act immediately), decomposing complex work into parallelizable subtasks, choosing between subagent patterns, or when a task has failed twice and needs a fresh approach. Do NOT use for executing the chosen plan (use task-execution), debugging failures (use troubleshooting or diagnosis), or tool-level efficiency (use tool-call-strategy). Do NOT use for reduce the number of tool calls in this read-heavy step. Do NOT use for troubleshoot why the deployment keeps timing out. Do NOT use for execute the implementation plan we already agreed on."
 metadata:
   schema_version: "8"
   version: "1.1.0"
@@ -25,7 +25,7 @@ metadata:
   misconception: "The common mistake is treating more process as safer. The safest path is the smallest path that still handles ambiguity, dependency, risk, and verification."
   last_audited: "2026-05-28"
   lint_verdict: PASS
-  relations: "{\"related\":[\"task-lifecycle\",\"agents\",\"task-sizing\",\"sequential-thinking\",\"codebase-search\",\"task-execution\"],\"boundary\":[{\"skill\":\"tool-call-strategy\",\"reason\":\"tool-call-strategy owns tool-level efficiency such as reducing or batching individual tool calls; task-path-optimization owns the higher-level choice of execution approach\"},{\"skill\":\"diagnosis\",\"reason\":\"diagnosis owns systematic root-cause investigation of a concrete failure; task-path-optimization owns choosing the approach before work begins, not debugging a failure\"},{\"skill\":\"troubleshooting\",\"reason\":\"troubleshooting owns resolving a specific broken behavior; task-path-optimization owns selecting the execution path, not fixing a live fault\"},{\"skill\":\"spec-driven-development\",\"reason\":\"spec-driven-development owns writing and executing against a spec or plan; task-path-optimization owns the upstream plan-vs-act decision and approach selection, not executing the chosen plan\"},{\"skill\":\"test-driven-development\",\"reason\":\"test-driven-development owns the test-first methodology of writing test cases ahead of implementation; task-path-optimization owns the higher-level choice of execution approach (plan-vs-act, agent architecture, decomposition) — not authoring tests or running them\"}],\"verify_with\":[\"task-evaluation\",\"code-review\"]}"
+  relations: "{\"adjacent\":[\"prioritization\",\"spec-driven-development\",\"context-engineering\",\"tool-call-strategy\"]}"
   structural_verdict: PASS
   truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
@@ -33,8 +33,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-engineering-method/task-path-optimization/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
-  skill_graph_export_description_projection_truncated: "true"
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Task Path Optimization
@@ -345,15 +344,9 @@ After applying this skill, verify:
 - reduce the number of tool calls in this read-heavy step
 - troubleshoot why the deployment keeps timing out
 - execute the implementation plan we already agreed on
-- Owned by `tool-call-strategy`: tool-level efficiency such as reducing or batching individual tool calls
-- Owned by `diagnosis`: systematic root-cause investigation of a concrete failure
-- Owned by `troubleshooting`: resolving a specific broken behavior
-- Owned by `spec-driven-development`: writing and executing against a spec or plan
-- Owned by `test-driven-development`: the test-first methodology of writing test cases ahead of implementation
 
 **Related skills**
-- Verify with: `task-evaluation`, `code-review`
-- Related: `task-lifecycle`, `agents`, `task-sizing`, `sequential-thinking`, `codebase-search`, `task-execution`
+- Related: `prioritization`, `spec-driven-development`, `context-engineering`, `tool-call-strategy`
 
 **Concept**
 - Mental model: Task path optimization is route planning before execution: classify the task shape, choose the lightest sufficient approach, sequence dependencies, isolate exploration when context would get polluted, and switch strategy after repeated failure instead of pushing harder on a bad path.

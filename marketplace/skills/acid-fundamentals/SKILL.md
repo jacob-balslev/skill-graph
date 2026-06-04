@@ -4,6 +4,7 @@ description: "Use when reasoning about the four ACID properties of database tran
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"transaction-isolation\",\"cap-theorem-tradeoffs\"]}"
   schema_version: "7"
   version: "1.1.0"
   subject: backend-engineering
@@ -21,7 +22,6 @@ metadata:
   triggers: "[\"is this database ACID\",\"what does consistency mean\",\"ACID vs BASE\",\"is my transaction atomic\",\"what's the durability guarantee\"]"
   examples: "[\"explain what ACID guarantees a database does and does not provide to the application\",\"decide whether ACID or BASE is the right model for a new system\",\"diagnose a data-loss incident — likely a durability or atomicity failure\",\"explain why the 'C' in ACID is not the same as application consistency\"]"
   anti_examples: "[\"choose an isolation level for a workload (use transaction-isolation)\",\"reason about availability vs consistency in a distributed system (use cap-theorem-tradeoffs)\",\"design a database schema (use data-modeling)\"]"
-  relations: "{\"related\":[\"transaction-isolation\",\"cap-theorem-tradeoffs\",\"data-modeling\",\"replication-patterns\"],\"boundary\":[{\"skill\":\"transaction-isolation\",\"reason\":\"transaction-isolation owns the choice and semantics of isolation levels (read uncommitted, read committed, repeatable read, serializable, snapshot) — the 'I' of ACID specifically as a tunable. This skill owns ACID as the four-property foundational frame; transaction-isolation owns one of the four in operational depth.\"}],\"verify_with\":[\"transaction-isolation\",\"cap-theorem-tradeoffs\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -154,11 +154,6 @@ After applying this skill, verify:
 - choose an isolation level for a workload (use transaction-isolation)
 - reason about availability vs consistency in a distributed system (use cap-theorem-tradeoffs)
 - design a database schema (use data-modeling)
-- Owned by `transaction-isolation`
-
-**Related skills**
-- Verify with: `transaction-isolation`, `cap-theorem-tradeoffs`
-- Related: `transaction-isolation`, `cap-theorem-tradeoffs`, `data-modeling`, `replication-patterns`
 
 **Concept**
 - Mental model: |

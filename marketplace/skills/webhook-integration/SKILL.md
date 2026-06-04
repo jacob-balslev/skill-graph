@@ -5,6 +5,7 @@ license: MIT
 compatibility: "Provider-agnostic. Examples reference HMAC-SHA256 (the dominant scheme), SDK-style verification helpers (Stripe-style, where the provider ships a library that takes raw body + header + secret), and round-trip verification APIs (PayPal-style, where the receiver POSTs the event back to the provider for validation). Substitute each provider's specific header names, hashing algorithm, and retry-status-code contract from their docs."
 allowed-tools: Read Grep Bash Edit
 metadata:
+  relations: "{\"adjacent\":[\"printify\",\"shopify\"],\"boundary\":[\"event-contract-design\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: backend-engineering
@@ -21,7 +22,6 @@ metadata:
   keywords: "[\"webhook handler\",\"webhook signature\",\"webhook signature verification\",\"HMAC webhook\",\"timing-safe comparison\",\"duplicate webhook delivery\",\"webhook idempotency\",\"idempotency key\",\"webhook retry\",\"retry contract\"]"
   examples: "[\"implement signature verification for a new third-party webhook handler\",\"the same webhook event is being processed twice — fix the idempotency\",\"should I return 200 or 500 when a webhook handler hits a database error?\",\"the provider keeps retrying a webhook we already accepted — what's wrong with our 200 path?\",\"design a quarantine path for webhooks that fail signature verification\",\"extract a stable idempotency key from this provider's webhook payload\",\"reject all webhook deliveries with an invalid HMAC, log them for audit\",\"the provider deletes customer data 30 days after order — how do I capture PII safely on first delivery?\"]"
   anti_examples: "[\"design our outbound webhook product (we want to deliver events to customers)\",\"the production webhook is failing — find the root cause\",\"explain our webhook patterns in the contributor docs\",\"review this AI-generated webhook handler for correctness\",\"refactor the webhook handler helpers for clarity\",\"decide whether this webhook needs an integration test\",\"design the secret-rotation policy for our integration credentials\"]"
-  relations: "{\"related\":[\"testing-strategy\",\"debugging\",\"owasp-security\",\"code-review\",\"event-contract-design\",\"refactor\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -384,8 +384,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/webhook-integ
 - design the secret-rotation policy for our integration credentials
 
 **Related skills**
-- Verify with: `testing-strategy`, `code-review`
-- Related: `testing-strategy`, `debugging`, `owasp-security`, `code-review`, `event-contract-design`, `refactor`
+- Related: `printify`, `shopify`
 
 **Keywords**
 - `webhook handler`, `webhook signature`, `webhook signature verification`, `HMAC webhook`, `timing-safe comparison`, `duplicate webhook delivery`, `webhook idempotency`, `idempotency key`, `webhook retry`, `retry contract`

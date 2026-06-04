@@ -5,6 +5,7 @@ license: MIT
 compatibility: "Portable browser freshness guidance for web applications. Transport limits vary by hosting platform, proxy, browser, and runtime; verify those limits before production rollout."
 allowed-tools: Read Grep Bash
 metadata:
+  relations: "{\"adjacent\":[\"background-jobs\"],\"boundary\":[\"streaming-architecture\"]}"
   schema_version: "7"
   version: "1.1.0"
   subject: backend-engineering
@@ -21,7 +22,6 @@ metadata:
   triggers: "[\"real-time-updates-skill\",\"live-data-skill\",\"browser-freshness-skill\",\"dashboard-refresh-skill\",\"stale-data-skill\"]"
   examples: "[\"choose between polling, SSE, and WebSocket for a dashboard\",\"show when data is stale without disrupting the user\",\"design reconnect and catch-up behavior after an EventSource disconnect\",\"add optimistic UI with rollback for a reversible action\",\"avoid multiple components polling the same resource\"]"
   anti_examples: "[\"design the backpressure protocol for an HTTP stream\",\"choose the cron expression for a daily refresh\",\"move a slow export into a queue and define retry policy\",\"debug a deployed stream outage\",\"design an outbound event schema and topic naming standard\"]"
-  relations: "{\"related\":[\"streaming-architecture\",\"background-jobs\",\"cron-scheduling\",\"interaction-feedback\"],\"boundary\":[{\"skill\":\"streaming-architecture\",\"reason\":\"streaming-architecture owns producer, stream, consumer, backpressure, termination, and low-level protocol semantics; real-time-updates owns browser freshness UX and transport selection.\"},{\"skill\":\"background-jobs\",\"reason\":\"background-jobs owns durable worker execution and progress state; real-time-updates owns how browser views learn about that state.\"},{\"skill\":\"cron-scheduling\",\"reason\":\"cron-scheduling owns recurring trigger timing; real-time-updates owns user-visible freshness after data exists.\"}],\"verify_with\":[\"interaction-feedback\",\"streaming-architecture\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
   comprehension_state: present
@@ -39,8 +39,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/real-time-updates/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
-  skill_graph_export_description_projection_truncated: "true"
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Real-Time Updates
@@ -329,13 +328,9 @@ After applying this skill, verify:
 - move a slow export into a queue and define retry policy
 - debug a deployed stream outage
 - design an outbound event schema and topic naming standard
-- Owned by `streaming-architecture`: producer, stream, consumer, backpressure, termination, and low-level protocol semantics
-- Owned by `background-jobs`: durable worker execution and progress state
-- Owned by `cron-scheduling`: recurring trigger timing
 
 **Related skills**
-- Verify with: `interaction-feedback`, `streaming-architecture`
-- Related: `streaming-architecture`, `background-jobs`, `cron-scheduling`, `interaction-feedback`
+- Related: `background-jobs`
 
 **Concept**
 - Mental model: Browser freshness has four primitives: a source of change, a delivery channel, a browser cache or view state, and a freshness contract shown to the user. The delivery channel can be polling, Server-Sent Events, or a bidirectional socket, but the user contract is the same: communicate what changed, how fresh the view is, whether the connection is healthy, and how missed changes are recovered.

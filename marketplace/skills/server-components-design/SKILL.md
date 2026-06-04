@@ -4,6 +4,7 @@ description: "Use when designing or reviewing React Server Components: what an R
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"server-actions-design\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: frontend-engineering
@@ -21,7 +22,6 @@ metadata:
   triggers: "[\"should this be a Server Component or a Client Component\",\"can I fetch data here\",\"why can't I use useState in this file\",\"how does data move from server to client\",\"do I need an API route\",\"why is the bundle so large\"]"
   examples: "[\"decide whether a dashboard widget should be a Server Component (fetches and renders) or a Client Component (interactive)\",\"explain why a Server Component cannot pass a function as a prop to a Client Component\",\"design a page where the layout fetches user data once and child widgets fetch their own data, with Suspense streaming each in\",\"audit a component tree for unnecessary 'use client' boundaries that pull static rendering into the bundle\"]"
   anti_examples: "[\"add a click handler to an existing component (use hooks-patterns and client-server-boundary)\",\"choose between SSR and SSG for a marketing page (use rendering-models)\",\"build the form-submission mutation flow (use server-actions-design when authored)\",\"design the public API for a third-party integration (use api-design)\"]"
-  relations: "{\"related\":[\"client-server-boundary\",\"rendering-models\",\"hooks-patterns\",\"streaming-architecture\",\"suspense-patterns\"],\"boundary\":[{\"skill\":\"client-server-boundary\",\"reason\":\"client-server-boundary owns the serialization-and-directive mechanics of the boundary itself ('use client', what can cross, RSC payload format); server-components-design owns the discipline of which work belongs on the server side of that boundary.\"},{\"skill\":\"rendering-models\",\"reason\":\"rendering-models owns the strategic decision among SSR, SSG, ISR, and CSR; server-components-design operates within the App Router / RSC paradigm and is one rendering mode among several.\"},{\"skill\":\"hooks-patterns\",\"reason\":\"hooks-patterns covers state and effect discipline on Client Components; Server Components cannot use those primitives at all, so the two skills cover disjoint surfaces.\"}],\"verify_with\":[\"code-review\",\"rendering-models\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -239,13 +239,6 @@ After applying this skill, verify:
 - choose between SSR and SSG for a marketing page (use rendering-models)
 - build the form-submission mutation flow (use server-actions-design when authored)
 - design the public API for a third-party integration (use api-design)
-- Owned by `client-server-boundary`: the serialization-and-directive mechanics of the boundary itself ('use client', what can cross, RSC payload format)
-- Owned by `rendering-models`: the strategic decision among SSR, SSG, ISR, and CSR
-- Owned by `hooks-patterns`
-
-**Related skills**
-- Verify with: `code-review`, `rendering-models`
-- Related: `client-server-boundary`, `rendering-models`, `hooks-patterns`, `streaming-architecture`, `suspense-patterns`
 
 **Concept**
 - Mental model: |

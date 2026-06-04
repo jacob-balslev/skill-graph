@@ -5,6 +5,7 @@ license: MIT
 compatibility: "Stack-agnostic sign-system analysis. The Peirce / Saussure / Barthes models, color-as-sign rules, iconography principles, and affordance taxonomy apply to any UI; example surfaces use generic e-commerce framings — substitute the equivalents from your domain."
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"visual-design-foundations\",\"microcopy\"],\"verify_with\":[\"a11y\"]}"
   subject: design
   deployment_target: portable
   scope: "Designing and auditing icon systems, colors/badges/shapes, visual metaphors, interface signs, and naming-plus-visual surfaces that users misread — semiotic reasoning across icon/index/symbol, signifier/signified, denotation/connotation/myth, color/shape/position/iconography, affordances, code/API signifiers, and semiotic-coherence audits. Portable across any sign-bearing interface; principle-grounded, not repo-bound. Excludes actual UI wording (microcopy), palette/typography craft (visual-design-foundations), accessibility/contrast compliance (a11y), formal class hierarchies, and word morphology rules."
@@ -13,7 +14,6 @@ metadata:
   keywords: "[\"sign-system analysis\",\"icon polysemy\",\"signifier signified mapping\",\"denotation versus connotation\",\"affordance signifier match\",\"icon-index-symbol trichotomy\",\"visual metaphor clarity\",\"color connotation audit\",\"cross-surface sign drift\",\"semiotic coherence audit\"]"
   examples: "[\"our dashboard uses green for both revenue increase and cost increase, so users read both as good — what semiotic failure is that and how should we correct it?\",\"we use a gear icon for settings on one page and preferences on another — is this just a naming issue, or an interface sign conflict?\",\"a disabled button still looks clickable because only the color changed — which signifier or affordance rule is failing?\",\"we need an icon for reconciliation in a financial workflow — which metaphors are available, and when must text stay paired with the icon?\",\"an API function is named processData() — from a sign-system perspective, what is wrong with that name?\",\"audit this status-badge color system for denotation vs connotation conflicts\",\"explain why users keep clicking a non-interactive label that looks like a link\"]"
   anti_examples: "[\"I need formal class hierarchies, axioms, and what-exists rules for our knowledge base\",\"I need physical database schema design and relationship constraints\",\"I need the relation type between two concepts — synonymy, polysemy, or meronymy\",\"draft the exact wording for a button label or tooltip after the sign system is chosen\",\"give me the live color-token values, APCA contrast math, and palette enforcement\",\"explain the morphology rule behind verb-first function names\"]"
-  relations: "{\"boundary\":[{\"skill\":\"microcopy\",\"reason\":\"microcopy owns the actual UI wording (button labels, empty states, tooltips, dialogs); semiotics owns the sign-system reasoning that determines what the words and accompanying visual signs should communicate — the same 'fix this UI element' prompt routes by whether the trigger is the wording itself or the sign system the wording sits inside\"},{\"skill\":\"visual-design-foundations\",\"reason\":\"visual-design-foundations owns visual craft decisions such as palette, type, spacing, and hierarchy; semiotics owns what those signs communicate\"}],\"related\":[\"linguistics\",\"a11y\",\"intent-recognition\",\"visual-design-foundations\",\"semantics\",\"semantic-relations\"],\"verify_with\":[\"a11y\",\"code-review\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -23,7 +23,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/semiotics/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
 
@@ -270,12 +270,9 @@ After applying this skill, verify:
 - draft the exact wording for a button label or tooltip after the sign system is chosen
 - give me the live color-token values, APCA contrast math, and palette enforcement
 - explain the morphology rule behind verb-first function names
-- Owned by `microcopy`: the actual UI wording (button labels, empty states, tooltips, dialogs)
-- Owned by `visual-design-foundations`: visual craft decisions such as palette, type, spacing, and hierarchy
 
 **Related skills**
-- Verify with: `a11y`, `code-review`
-- Related: `linguistics`, `a11y`, `intent-recognition`, `visual-design-foundations`, `semantics`, `semantic-relations`
+- Verify with: `a11y`
 
 **Concept**
 - Mental model: |

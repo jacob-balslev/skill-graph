@@ -4,6 +4,7 @@ description: "Use when measuring a system's non-functional properties — latenc
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"adjacent\":[\"performance-budgets\"],\"boundary\":[\"performance-engineering\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: quality-assurance
@@ -21,7 +22,6 @@ metadata:
   triggers: "[\"what should our load test do\",\"p95 vs average latency\",\"k6 vs JMeter vs Locust\",\"is the system fast enough\",\"stress test or load test\"]"
   examples: "[\"design a load test for an API endpoint that verifies the p95 SLO at expected production traffic\",\"decide between load, stress, and soak tests for a new service before launch\",\"diagnose a soak test failure that only appears after 4 hours — likely a leak\",\"explain why average latency is the wrong metric for user experience\"]"
   anti_examples: "[\"measure production traffic latency in real time (use observability)\",\"benchmark a single function in isolation (use language benchmark tools)\",\"inject failures into a production system (use chaos-engineering)\"]"
-  relations: "{\"related\":[\"testing-strategy\",\"integration-test-design\",\"e2e-test-design\",\"performance-engineering\",\"performance-budgets\"],\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the strategic question of what to test; this skill owns one tactical technique (controlled-load measurement of non-functional properties) within that strategy.\"},{\"skill\":\"integration-test-design\",\"reason\":\"integration-test-design owns tests of correctness across internal seams; this skill owns tests of non-functional properties (latency, throughput) under controlled load. Both can use the same environment; they answer different questions.\"},{\"skill\":\"e2e-test-design\",\"reason\":\"e2e-test-design owns user-journey correctness tests; this skill owns load-driven measurement of those same journeys. A 'performance e2e test' is the composition of both disciplines.\"},{\"skill\":\"performance-engineering\",\"reason\":\"performance-engineering owns the activity of profiling and optimizing a specific slow path once it has been identified; this skill owns the discipline of exercising the system under controlled load to discover and quantify performance behavior. Performance-engineering acts on bottlenecks; performance-testing produces the measurements that locate them and verifies the optimizations afterward.\"},{\"skill\":\"performance-budgets\",\"reason\":\"performance-budgets owns the declaration of the threshold-and-consequence contract (metric, threshold, percentile, consequence) as a quality property; this skill owns the test mechanism that exercises the system under load and verifies whether the declared budgets hold. The two compose: budgets declare what 'fast enough' means; performance tests verify the system meets the declaration. Without a budget, a performance test produces measurements without a verdict; without performance tests, a budget is an aspirational threshold without empirical evidence.\"}],\"verify_with\":[\"testing-strategy\",\"integration-test-design\",\"performance-budgets\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -172,15 +172,9 @@ After applying this skill, verify:
 - measure production traffic latency in real time (use observability)
 - benchmark a single function in isolation (use language benchmark tools)
 - inject failures into a production system (use chaos-engineering)
-- Owned by `testing-strategy`: the strategic question of what to test
-- Owned by `integration-test-design`: tests of correctness across internal seams
-- Owned by `e2e-test-design`: user-journey correctness tests
-- Owned by `performance-engineering`: the activity of profiling and optimizing a specific slow path once it has been identified
-- Owned by `performance-budgets`
 
 **Related skills**
-- Verify with: `testing-strategy`, `integration-test-design`, `performance-budgets`
-- Related: `testing-strategy`, `integration-test-design`, `e2e-test-design`, `performance-engineering`, `performance-budgets`
+- Related: `performance-budgets`
 
 **Concept**
 - Mental model: |

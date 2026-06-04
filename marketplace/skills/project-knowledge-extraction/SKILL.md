@@ -5,6 +5,7 @@ license: MIT
 compatibility: Portable extraction workflow for turning project evidence into durable agent context without hallucinated project claims.
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"skill-scaffold\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: ai-engineering
@@ -21,7 +22,6 @@ metadata:
   keywords: "[\"project knowledge extraction\",\"context extraction\",\"durable knowledge\",\"knowledge capture\",\"code archaeology\",\"docs mining\",\"issue mining\",\"tacit knowledge\",\"context doc\",\"agent memory\"]"
   examples: "[\"read this repo and extract the durable domain knowledge an agent should know next time\",\"turn these incident notes into reusable context without copying noise\",\"mine the code and docs for the true source-of-truth files and project vocabulary\",\"convert repeated discoveries from recent tasks into skills, ADRs, or context docs\"]"
   anti_examples: "[\"create a new SKILL.md from the Skill Metadata Protocol template\",\"run the skill library health tooling and overlap detector\",\"rewrite this README to sound better\",\"decide which skill should route for this exact prompt\"]"
-  relations: "{\"related\":[\"knowledge-modeling\",\"context-graph\",\"architecture-decision-records\",\"skill-scaffold\",\"skill-infrastructure\",\"skill-router\"],\"verify_with\":[\"knowledge-modeling\"]}"
   grounding: "{\"subject_matter\":\"Extracting durable project knowledge into Skill Graph context artifacts\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"docs/PRIMER.md\",\"docs/ADOPTION.md\",\"docs/recommended-skills.md\",\"skills/skill-scaffold/SKILL.md\",\"skills/context-graph/SKILL.md\"],\"failure_modes\":[\"session_noise_promoted_to_durable_context\",\"project_claims_without_truth_sources\",\"artifact_type_chosen_before_evidence_is_classified\",\"extracted_knowledge_not_linked_into_graph\"],\"evidence_priority\":\"repo_code_first\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
@@ -99,10 +99,6 @@ Durable knowledge must be evidence-backed. If it cannot be tied to code, docs, d
 - run the skill library health tooling and overlap detector
 - rewrite this README to sound better
 - decide which skill should route for this exact prompt
-
-**Related skills**
-- Verify with: `knowledge-modeling`
-- Related: `knowledge-modeling`, `context-graph`, `architecture-decision-records`, `skill-scaffold`, `skill-infrastructure`, `skill-router`
 
 **Grounding**
 - Mode: `hybrid`

@@ -4,6 +4,7 @@ description: "Use when reasoning about the I in ACID — the isolation level a d
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"adjacent\":[\"cap-theorem-tradeoffs\",\"query-optimization\"],\"boundary\":[\"acid-fundamentals\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: backend-engineering
@@ -21,7 +22,6 @@ metadata:
   triggers: "[\"what isolation level do we need\",\"is read committed enough\",\"what's write skew\",\"MVCC vs locking\",\"Postgres serializable vs MySQL serializable\"]"
   examples: "[\"choose an isolation level for a workload that has concurrent balance-decrement operations\",\"diagnose a data-correctness bug caused by an anomaly the chosen isolation level permits\",\"explain the difference between snapshot isolation and full serializability\",\"decide whether to use SELECT FOR UPDATE or upgrade isolation level\"]"
   anti_examples: "[\"explain the four ACID properties (use acid-fundamentals)\",\"reason about distributed-replica consistency under partition (use cap-theorem-tradeoffs)\",\"tune a slow query (use query-optimization)\"]"
-  relations: "{\"related\":[\"acid-fundamentals\",\"cap-theorem-tradeoffs\",\"data-modeling\",\"query-optimization\"],\"boundary\":[{\"skill\":\"acid-fundamentals\",\"reason\":\"acid-fundamentals owns the four-property ACID frame as a whole; this skill owns the I axis specifically — the choice and semantics of isolation levels as a tunable. The two compose: acid-fundamentals names isolation as one of four guarantees; this skill makes the I axis operational.\"}],\"verify_with\":[\"acid-fundamentals\",\"query-optimization\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -145,11 +145,9 @@ After applying this skill, verify:
 - explain the four ACID properties (use acid-fundamentals)
 - reason about distributed-replica consistency under partition (use cap-theorem-tradeoffs)
 - tune a slow query (use query-optimization)
-- Owned by `acid-fundamentals`: the four-property ACID frame as a whole
 
 **Related skills**
-- Verify with: `acid-fundamentals`, `query-optimization`
-- Related: `acid-fundamentals`, `cap-theorem-tradeoffs`, `data-modeling`, `query-optimization`
+- Related: `cap-theorem-tradeoffs`, `query-optimization`
 
 **Concept**
 - Mental model: |

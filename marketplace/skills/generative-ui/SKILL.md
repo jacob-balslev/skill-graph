@@ -4,6 +4,7 @@ description: "Use when reasoning about the pattern where a language model emits,
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"rendering-models\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: frontend-engineering
@@ -23,7 +24,6 @@ metadata:
   triggers: "[\"the assistant should show a chart not a paragraph\",\"how does the model render a card\",\"structured output for UI\",\"is it safe to render what the model returned\",\"should this be a tool call or a UI emission\"]"
   examples: "[\"design the component schema for an assistant that can render a date picker, a chart, or a confirmation card depending on the question\",\"decide whether the model should emit a UI spec or call a tool that returns prerendered HTML\",\"explain why the model's output must be schema-validated before rendering\",\"design the interaction loop so a user clicking a button in a model-rendered card produces a follow-up turn the model can reason about\"]"
   anti_examples: "[\"design the JSON shape of an HTTP API endpoint (use api-design)\",\"decide the page-level rendering model (CSR vs SSR vs RSC) (use rendering-models)\",\"design the design-system component library itself (use design-system-architecture)\"]"
-  relations: "{\"related\":[\"tool-call-flow\",\"rendering-models\",\"client-server-boundary\",\"prompt-injection-defense\",\"api-design\",\"type-safety\"],\"boundary\":[{\"skill\":\"rendering-models\",\"reason\":\"rendering-models owns the page-level rendering taxonomy (CSR/SSR/SSG/RSC/streaming); this skill owns the model→spec→component pipeline that operates inside any of those rendering models. They compose.\"},{\"skill\":\"design-system-architecture\",\"reason\":\"design-system-architecture owns the component library and its tokens; this skill consumes a design system as the component palette the model can draw from.\"}],\"verify_with\":[\"api-design\",\"type-safety\",\"prompt-injection-defense\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -168,12 +168,6 @@ After applying this skill, verify:
 - design the JSON shape of an HTTP API endpoint (use api-design)
 - decide the page-level rendering model (CSR vs SSR vs RSC) (use rendering-models)
 - design the design-system component library itself (use design-system-architecture)
-- Owned by `rendering-models`: the page-level rendering taxonomy (CSR/SSR/SSG/RSC/streaming)
-- Owned by `design-system-architecture`: the component library and its tokens
-
-**Related skills**
-- Verify with: `api-design`, `type-safety`, `prompt-injection-defense`
-- Related: `tool-call-flow`, `rendering-models`, `client-server-boundary`, `prompt-injection-defense`, `api-design`, `type-safety`
 
 **Concept**
 - Mental model: |

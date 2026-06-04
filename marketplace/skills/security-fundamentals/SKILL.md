@@ -4,6 +4,7 @@ description: "Use when reasoning about the security properties any application m
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"prompt-injection-defense\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: quality-assurance
@@ -21,7 +22,6 @@ metadata:
   triggers: "[\"is this secure\",\"where should validation happen\",\"authentication vs authorization\",\"what could go wrong here\",\"threat model\",\"OWASP\",\"do I need to check permissions here\"]"
   examples: "[\"audit a route handler for authn, authz, and input validation\",\"decide where to validate inbound data when the same shape comes in through multiple endpoints\",\"decide whether a piece of data is a secret, a credential, or non-sensitive — and what handling each requires\",\"produce a threat model for a new feature before any code is written\"]"
   anti_examples: "[\"implement HMAC verification for a Shopify webhook (use webhook-integration)\",\"configure a SAST scanner for the CI pipeline (use security-scanning)\",\"store an OAuth refresh token in an encrypted column (use credential-encryption)\",\"respond to a GDPR data-subject-access request (use gdpr-compliance)\",\"defend an LLM agent against prompt injection (use prompt-injection-defense)\"]"
-  relations: "{\"related\":[\"type-safety\",\"api-design\",\"http-semantics\",\"prompt-injection-defense\"],\"boundary\":[{\"skill\":\"type-safety\",\"reason\":\"type-safety provides compile-time guarantees about the SHAPE of data inside the program; security-fundamentals provides the runtime discipline that decides what to trust and what to validate at the system's TRUST BOUNDARIES. The two compose: validate at the boundary, then trust the type inside.\"}],\"verify_with\":[\"type-safety\",\"api-design\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -189,11 +189,6 @@ After applying this skill, verify:
 - store an OAuth refresh token in an encrypted column (use credential-encryption)
 - respond to a GDPR data-subject-access request (use gdpr-compliance)
 - defend an LLM agent against prompt injection (use prompt-injection-defense)
-- Owned by `type-safety`
-
-**Related skills**
-- Verify with: `type-safety`, `api-design`
-- Related: `type-safety`, `api-design`, `http-semantics`, `prompt-injection-defense`
 
 **Concept**
 - Mental model: |

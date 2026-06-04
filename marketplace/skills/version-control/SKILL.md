@@ -5,6 +5,7 @@ license: MIT
 compatibility: "Git-centric. Patterns translate to other DAG-based version-control systems (Mercurial, Jujutsu) with tool-specific syntax substitutions. Centralized systems (SVN, CVS) lack cheap branching and most of this skill's discipline does not apply."
 allowed-tools: Read Grep Bash Edit
 metadata:
+  relations: "{\"boundary\":[\"naming-conventions\",\"debugging\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: software-engineering-method
@@ -20,7 +21,6 @@ metadata:
   keywords: "[\"version control\",\"git workflow\",\"branching strategy\",\"trunk-based development\",\"git flow\",\"short-lived branch\",\"feature branch\",\"merge vs rebase\",\"linear history\",\"atomic commit\"]"
   examples: "[\"set up trunk-based development for a four-person team\",\"the main branch has 50 merge commits before release — clean up the history\",\"two agents are working in the same repo and clobbering each other's uncommitted changes — set up worktrees\",\"tag the v1.2.0 release with provenance back to the closing tracker milestone\",\"the feature branch is two weeks old and three weeks behind main — rebase or recreate?\",\"design the hotfix workflow for an urgent production patch off a release tag\",\"every commit must link back to a tracker ticket — what's the right enforcement layer?\",\"should we squash, rebase, or merge when integrating a feature branch?\"]"
   anti_examples: "[\"draft a Conventional Commits message for this change\",\"the release pipeline failed at the tag-creation step — find out why\",\"review this PR before we merge it\",\"explain our git policy to new contributors in the docs\",\"decide if this branching-rule change needs a regression test\",\"refactor the git helper scripts in our tooling repo\"]"
-  relations: "{\"boundary\":[{\"skill\":\"refactor\",\"reason\":\"refactor reorganizes code without changing external behavior; version-control reorganizes history without changing the code's content (rebase, squash, cherry-pick)\"},{\"skill\":\"naming-conventions\",\"reason\":\"naming-conventions owns commit-message wording (Conventional Commits prefix, scope, subject); version-control owns commit *boundaries* (what counts as one commit) and history *shape*\"}],\"related\":[\"code-review\",\"refactor\",\"naming-conventions\",\"debugging\"],\"verify_with\":[\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -32,7 +32,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-engineering-method/version-control/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
 
@@ -292,12 +292,6 @@ A rebase that requires resolving the same conflict in five replayed commits is a
 - explain our git policy to new contributors in the docs
 - decide if this branching-rule change needs a regression test
 - refactor the git helper scripts in our tooling repo
-- Owned by `refactor`
-- Owned by `naming-conventions`: commit-message wording (Conventional Commits prefix, scope, subject)
-
-**Related skills**
-- Verify with: `code-review`
-- Related: `code-review`, `refactor`, `naming-conventions`, `debugging`
 
 **Keywords**
 - `version control`, `git workflow`, `branching strategy`, `trunk-based development`, `git flow`, `short-lived branch`, `feature branch`, `merge vs rebase`, `linear history`, `atomic commit`

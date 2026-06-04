@@ -1,10 +1,11 @@
 ---
 name: interaction-feedback
-description: "Use when designing UI feedback around user actions and system state: loading, skeletons, optimistic updates, progress, success, errors, empty states, retries, disabled/pending states, autosave, undo, and perceived latency. Do NOT use for the words inside feedback (use `microcopy`), accessibility announcement mechanics (use `a11y`), business lifecycle modeling (use `state-machine-modeling`), or performance optimization (use `performance-engineering`). Do NOT use for rewrite the toast and validation text. Do NOT use for make sure the status update is announced to screen readers. Do NOT use for model the order lifecycle and legal transitions. Do NOT use for profile the endpoint that makes this action slow. Do NOT use for the words inside feedback states (use microcopy)."
+description: "Use when designing UI feedback around user actions and system state: loading, skeletons, optimistic updates, progress, success, errors, empty states, retries, disabled/pending states, autosave, undo, and perceived latency. Do NOT use for the words inside feedback (use `microcopy`), accessibility announcement mechanics (use `a11y`), business lifecycle modeling (use `state-machine-modeling`), or performance optimization (use `performance-engineering`). Do NOT use for rewrite the toast and validation text. Do NOT use for make sure the status update is announced to screen readers. Do NOT use for model the order lifecycle and legal transitions. Do NOT use for profile the endpoint that makes this action slow."
 license: MIT
 compatibility: Portable feedback-state design for web and app UI. Applies before framework-specific implementation and after task or interaction pattern selection.
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"adjacent\":[\"semantics\",\"information-architecture\",\"interaction-patterns\",\"task-analysis\"],\"boundary\":[\"microcopy\"],\"verify_with\":[\"a11y\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: design
@@ -21,7 +22,6 @@ metadata:
   keywords: "[\"interaction-feedback\",\"feedback-state staging\",\"optimistic ui\",\"pending state\",\"retry feedback\",\"undo feedback\",\"perceived latency\",\"long-running action feedback\",\"skeleton loading\"]"
   examples: "[\"design loading, success, error, and retry feedback for this async action\",\"should this save be optimistic, pending, blocked, or undoable?\",\"the sync takes 30 seconds - what should users see at each stage?\",\"add feedback states so the UI does not feel frozen after clicking Export\"]"
   anti_examples: "[\"rewrite the toast and validation text\",\"make sure the status update is announced to screen readers\",\"model the order lifecycle and legal transitions\",\"profile the endpoint that makes this action slow\"]"
-  relations: "{\"boundary\":[{\"skill\":\"microcopy\",\"reason\":\"microcopy owns the words inside feedback states; interaction-feedback owns timing, placement, persistence, and recovery behavior\"}],\"related\":[\"interaction-patterns\",\"microcopy\",\"task-analysis\",\"a11y\",\"performance-engineering\",\"state-machine-modeling\"],\"verify_with\":[\"a11y\",\"microcopy\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -33,7 +33,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/interaction-feedback/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Interaction Feedback
@@ -103,11 +103,10 @@ This skill ships a comprehension-eval artifact at [`examples/evals/interaction-f
 - make sure the status update is announced to screen readers
 - model the order lifecycle and legal transitions
 - profile the endpoint that makes this action slow
-- Owned by `microcopy`: the words inside feedback states
 
 **Related skills**
-- Verify with: `a11y`, `microcopy`
-- Related: `interaction-patterns`, `microcopy`, `task-analysis`, `a11y`, `performance-engineering`, `state-machine-modeling`
+- Verify with: `a11y`
+- Related: `semantics`, `information-architecture`, `interaction-patterns`, `task-analysis`
 
 **Keywords**
 - `interaction-feedback`, `feedback-state staging`, `optimistic ui`, `pending state`, `retry feedback`, `undo feedback`, `perceived latency`, `long-running action feedback`, `skeleton loading`

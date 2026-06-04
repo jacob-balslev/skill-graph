@@ -6,6 +6,7 @@ compatibility: "Library- and harness-agnostic. Patterns apply to any skill-style
 allowed-tools: Read Grep Bash Edit Write
 metadata:
   grounding: "{\"subject_matter\":\"Deterministic health tooling for Skill Graph libraries\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"package.json\",\"bin/skill-graph.js\",\"scripts/skill-lint.js\",\"scripts/lib/roots.js\",\"scripts/check-protocol-consistency.js\",\"scripts/generate-manifest.js\",\"scripts/skill-graph-drift.js\",\"scripts/skill-overlap.js\",\"scripts/skill-graph-routing-eval.js\",\"docs/manifest-field-mapping.md\"],\"failure_modes\":[\"health_tooling_categories_missing_from_ci\",\"protocol_mapping_drift\",\"eval_thresholds_become_self_attested\",\"overlap_or_drift_checks_not_run_after_batch_changes\"],\"evidence_priority\":\"repo_code_first\"}"
+  relations: "{\"adjacent\":[\"best-practice\",\"methodical\",\"no-cutting-corners\",\"semantics\",\"evaluation\"],\"boundary\":[\"skill-scaffold\"]}"
   subject: agent-ops
   deployment_target: portable
   scope: "Designing deterministic health tooling for skill libraries, including inventory, protocol consistency, conflict detection, routing health, drift sentinels, eval-threshold checks, and maintenance workflows after batch skill changes. Portable across Skill Graph, Claude skills, Cursor rules, and custom in-house skill systems. Excludes authoring a single SKILL.md (skill-scaffold), running this repo's conformance audit (graph-audit), and selecting general codebase lint rules (lint-overlay)."
@@ -14,7 +15,6 @@ metadata:
   keywords: "[\"skill library health\",\"skill system tooling\",\"skill library decay\",\"skill inventory\",\"frontmatter validation\",\"imperative conflict\",\"skill overlap detection\",\"routing health\",\"eval threshold\",\"drift sentinel\"]"
   examples: "[\"our skill library is growing and we're getting silent decay — eval counts dropping, conflicts emerging — what tooling should we add?\",\"two of our skills give opposite instructions for the same function — how do we detect this automatically?\",\"we keep getting skill-router misses on real user queries — how do we surface and close routing gaps?\",\"design a health-check pipeline for a 200-skill library that runs in CI\",\"what's a reasonable minimum eval count per skill, and how do we enforce it?\",\"our skill mirror in `.claude/skills` keeps drifting from the source — what's the parity check?\",\"we want to add a contradiction-check eval pattern — what does it look like and when do we use it?\",\"skill-overlap-detector flagged 12 imperative conflicts — how do we triage which to fix vs suppress?\",\"audit my skills for schema conformance\",\"check that my skill frontmatter conforms to the schema\"]"
   anti_examples: "[\"scaffold a new SKILL.md for our team's deploy procedure\",\"audit this Skill Graph repo for schema conformance and dangling relation targets\",\"the manifest sample drifted from the generator — find the mismatch\",\"improve this prompt's wording to get better outputs\",\"review this AI-generated PR for correctness\",\"set up ESLint for our TypeScript repo\",\"draft an architecture note explaining why we chose Postgres\"]"
-  relations: "{\"boundary\":[{\"skill\":\"skill-scaffold\",\"reason\":\"skill-scaffold owns authoring methodology for one new SKILL.md; skill-infrastructure owns the deterministic health-tooling layer that watches the entire library after authoring\"}],\"related\":[\"skill-scaffold\",\"graph-audit\",\"testing-strategy\",\"lint-overlay\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/skill-infrastructure/SKILL.md
@@ -362,11 +362,9 @@ Before any batch skill commit, verify:
 - review this AI-generated PR for correctness
 - set up ESLint for our TypeScript repo
 - draft an architecture note explaining why we chose Postgres
-- Owned by `skill-scaffold`: authoring methodology for one new SKILL
 
 **Related skills**
-- Verify with: `testing-strategy`, `code-review`
-- Related: `skill-scaffold`, `graph-audit`, `testing-strategy`, `lint-overlay`
+- Related: `best-practice`, `methodical`, `no-cutting-corners`, `semantics`, `evaluation`
 
 **Grounding**
 - Mode: `hybrid`

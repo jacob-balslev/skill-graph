@@ -1,10 +1,11 @@
 ---
 name: taxonomy-design
-description: "Use when designing a controlled classification system: category trees, facets, browse taxonomies, SKOS broader/narrower relationships, tagging rules, and duplicate-category cleanup. Do NOT use for formal ontology axioms with reasoning constraints (use `ontology-modeling`), broad knowledge-representation choice (use `knowledge-modeling`), or one-off edge typing (use `semantic-relations`). Do NOT use for define OWL class restrictions and property domains for this knowledge base. Do NOT use for decide whether this knowledge should be represented as a graph, frame, rules, or hybrid. Do NOT use for type this single relation as meronymy, causality, synonymy, or thematic role. Do NOT use for write user-facing labels for this navigation item. Do NOT use for formal axioms and reasoning semantics (use ontology-modeling)."
+description: "Use when designing a controlled classification system: category trees, facets, browse taxonomies, SKOS broader/narrower relationships, tagging rules, and duplicate-category cleanup. Do NOT use for formal ontology axioms with reasoning constraints (use `ontology-modeling`), broad knowledge-representation choice (use `knowledge-modeling`), or one-off edge typing (use `semantic-relations`). Do NOT use for define OWL class restrictions and property domains for this knowledge base. Do NOT use for decide whether this knowledge should be represented as a graph, frame, rules, or hybrid. Do NOT use for type this single relation as meronymy, causality, synonymy, or thematic role. Do NOT use for write user-facing labels for this navigation item."
 license: MIT
 compatibility: "Portable taxonomy design discipline for skill libraries, product information architecture, documentation trees, and knowledge graphs."
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"adjacent\":[\"knowledge-modeling\"],\"boundary\":[\"ontology-modeling\"]}"
   subject: knowledge-organization
   deployment_target: portable
   scope: "Teaches controlled classification systems for categories, facets, browse taxonomies, SKOS broader/narrower links, assignment rules, synonym control, and duplicate-category cleanup. Excludes formal ontology axioms, representation-paradigm choice, single-edge relation typing, and UI-copy/navigation-label writing."
@@ -13,7 +14,6 @@ metadata:
   keywords: "[\"taxonomy design\",\"controlled vocabulary\",\"browse taxonomy\",\"category hierarchy\",\"facets\",\"tagging rules\",\"broader narrower\",\"SKOS hierarchy\",\"classification cleanup\",\"duplicate categories\"]"
   examples: "[\"our skill categories are drifting: some are by domain, some by activity, and some by tool - how should the taxonomy be redesigned?\",\"should these be tags, facets, or child categories?\",\"build a clean category tree for these concepts without making every related term a parent-child relation\",\"we have analytics, observability, telemetry, and monitoring as categories - which should merge and which should stay separate?\"]"
   anti_examples: "[\"define OWL class restrictions and property domains for this knowledge base\",\"decide whether this knowledge should be represented as a graph, frame, rules, or hybrid\",\"type this single relation as meronymy, causality, synonymy, or thematic role\",\"write user-facing labels for this navigation item\"]"
-  relations: "{\"boundary\":[{\"skill\":\"ontology-modeling\",\"reason\":\"ontology-modeling owns formal axioms and reasoning semantics; taxonomy-design owns human-governed classification\"},{\"skill\":\"knowledge-modeling\",\"reason\":\"knowledge-modeling chooses the representation paradigm; taxonomy-design works inside the classification paradigm once chosen\"},{\"skill\":\"semantic-relations\",\"reason\":\"semantic-relations types individual concept edges; taxonomy-design governs the category system and assignment rules\"}],\"related\":[\"information-architecture\",\"skill-infrastructure\",\"context-graph\"],\"depends_on\":[\"semantic-relations\"],\"verify_with\":[\"semantic-relations\",\"context-graph\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -22,7 +22,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/knowledge-organization/taxonomy-design/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Taxonomy Design
@@ -99,14 +99,9 @@ Prefer shallow, stable, mutually understandable structure. Add facets when one t
 - decide whether this knowledge should be represented as a graph, frame, rules, or hybrid
 - type this single relation as meronymy, causality, synonymy, or thematic role
 - write user-facing labels for this navigation item
-- Owned by `ontology-modeling`: formal axioms and reasoning semantics
-- Owned by `knowledge-modeling`
-- Owned by `semantic-relations`
 
 **Related skills**
-- Depends on: `semantic-relations`
-- Verify with: `semantic-relations`, `context-graph`
-- Related: `information-architecture`, `skill-infrastructure`, `context-graph`
+- Related: `knowledge-modeling`
 
 **Concept**
 - Mental model: |

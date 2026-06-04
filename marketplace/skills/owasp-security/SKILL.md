@@ -5,6 +5,7 @@ license: MIT
 compatibility: Language-agnostic; OWASP Top 10 2021 reference
 allowed-tools: Read Grep Bash
 metadata:
+  relations: "{\"boundary\":[\"code-review\",\"debugging\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: quality-assurance
@@ -20,7 +21,6 @@ metadata:
   keywords: "[\"security\",\"owasp\",\"owasp top 10\",\"vulnerability\",\"sql injection\",\"xss\",\"cross site scripting\",\"csrf\",\"authentication\",\"authorization\"]"
   examples: "[\"audit this endpoint for SQL injection and XSS specifically\",\"this PR adds user input — what security checks should I run?\",\"threat-model this new file-upload feature\",\"review this auth flow against OWASP — is there a bypass?\",\"I'm building a search box — how do I prevent injection?\",\"the dependency scanner flagged 12 vulnerabilities — which ones matter?\",\"is this code path vulnerable to SSRF?\",\"review this access-control logic — can a non-admin escalate?\"]"
   anti_examples: "[\"review this PR holistically\",\"production users are reporting an error — debug it\",\"write our company security policy doc\",\"scaffold a new skill teaching security review\",\"rename this auth function for clarity\"]"
-  relations: "{\"boundary\":[{\"skill\":\"code-review\",\"reason\":\"code-review is the holistic per-PR pass that includes security as one of many concerns; owasp-security is the security-specific deep audit\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy decides what to test broadly; owasp-security defines security-specific test cases (auth bypass tests, injection tests, etc.) as a sub-concern\"}],\"related\":[\"code-review\",\"testing-strategy\",\"debugging\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -200,12 +200,6 @@ The four questions are due *before* implementation, not during review. A feature
 - write our company security policy doc
 - scaffold a new skill teaching security review
 - rename this auth function for clarity
-- Owned by `code-review`
-- Owned by `testing-strategy`
-
-**Related skills**
-- Verify with: `testing-strategy`, `code-review`
-- Related: `code-review`, `testing-strategy`, `debugging`
 
 **Keywords**
 - `security`, `owasp`, `owasp top 10`, `vulnerability`, `sql injection`, `xss`, `cross site scripting`, `csrf`, `authentication`, `authorization`

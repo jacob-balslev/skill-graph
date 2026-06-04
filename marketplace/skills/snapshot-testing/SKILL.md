@@ -4,6 +4,7 @@ description: "Use when reasoning about snapshot testing as a tactical technique:
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"adjacent\":[\"e2e-test-design\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: quality-assurance
@@ -21,7 +22,6 @@ metadata:
   triggers: "[\"should this be a snapshot test\",\"the snapshot keeps changing\",\"is visual regression testing the same thing\",\"should we auto-update snapshots\",\"snapshot file is too big\"]"
   examples: "[\"decide whether a rendered component is a candidate for a snapshot test or for behavioral tests\",\"diagnose a test suite where every PR updates snapshot files — likely snapshot churn from non-stable inputs\",\"explain why auto-updating snapshots without review removes the testing value\",\"design an approval cycle for a visual regression suite (Chromatic / Percy)\"]"
   anti_examples: "[\"specify the exact return value of a calculation (use example tests under testing-strategy)\",\"verify a universal property like sort correctness (use property-based-testing)\",\"design end-to-end user journey tests (use e2e-test-design)\"]"
-  relations: "{\"related\":[\"testing-strategy\",\"property-based-testing\",\"test-driven-development\",\"code-review\"],\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the strategic question of what to test at which level; this skill owns one tactical technique (capture-and-compare) within that strategy.\"},{\"skill\":\"property-based-testing\",\"reason\":\"property-based-testing asserts universal claims about output structure; snapshot testing captures a specific output and asserts equality to a baseline. The two complement: PBT for universal contracts, snapshots for complex structural outputs that are easier to capture than specify.\"},{\"skill\":\"test-driven-development\",\"reason\":\"TDD prescribes writing the test before the code; snapshot testing requires the code to exist before the snapshot can be captured. Snapshot testing fits poorly with strict TDD on greenfield code and well with characterization of existing code.\"},{\"skill\":\"code-review\",\"reason\":\"Snapshot diffs surface change evidence that code review must read and approve; the approval cycle of snapshot testing is operationally part of the review process the code-review discipline owns.\"}],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -167,14 +167,9 @@ After applying this skill, verify:
 - specify the exact return value of a calculation (use example tests under testing-strategy)
 - verify a universal property like sort correctness (use property-based-testing)
 - design end-to-end user journey tests (use e2e-test-design)
-- Owned by `testing-strategy`: the strategic question of what to test at which level
-- Owned by `property-based-testing`
-- Owned by `test-driven-development`
-- Owned by `code-review`
 
 **Related skills**
-- Verify with: `testing-strategy`, `code-review`
-- Related: `testing-strategy`, `property-based-testing`, `test-driven-development`, `code-review`
+- Related: `e2e-test-design`
 
 **Concept**
 - Mental model: |

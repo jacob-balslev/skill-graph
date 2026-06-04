@@ -4,6 +4,7 @@ description: "Use when designing or reviewing HTTP-based systems where method se
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"adjacent\":[\"streaming-architecture\"],\"boundary\":[\"api-design\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: backend-engineering
@@ -21,7 +22,6 @@ metadata:
   triggers: "[\"what status code should this return\",\"is this method idempotent\",\"RFC 9110\",\"conditional request\",\"cache control header\"]"
   examples: "[\"decide whether bulk-update should be PUT or PATCH\",\"explain why this endpoint should return 409 instead of 400\",\"review whether this DELETE handler is truly idempotent\",\"design the Vary header for this endpoint that varies on Accept-Language\"]"
   anti_examples: "[\"design the JSON shape of the request and response bodies (use api-design)\",\"verify a Stripe webhook signature (use webhook-integration)\",\"decide between WebSocket and SSE for live updates (use streaming-architecture)\"]"
-  relations: "{\"related\":[\"api-design\",\"webhook-integration\",\"system-interface-contracts\"],\"boundary\":[{\"skill\":\"api-design\",\"reason\":\"api-design owns the surface shape (routes, request/response schemas, pagination); http-semantics owns the protocol-level method/status/header contract that any HTTP API builds on.\"},{\"skill\":\"webhook-integration\",\"reason\":\"webhook-integration owns inbound provider mechanics (signing, retry, vendor-specific topics); http-semantics owns vendor-neutral HTTP method and status semantics.\"}],\"verify_with\":[\"api-design\",\"code-review\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -184,12 +184,9 @@ After applying this skill, verify:
 - design the JSON shape of the request and response bodies (use api-design)
 - verify a Stripe webhook signature (use webhook-integration)
 - decide between WebSocket and SSE for live updates (use streaming-architecture)
-- Owned by `api-design`: the surface shape (routes, request/response schemas, pagination)
-- Owned by `webhook-integration`: inbound provider mechanics (signing, retry, vendor-specific topics)
 
 **Related skills**
-- Verify with: `api-design`, `code-review`
-- Related: `api-design`, `webhook-integration`, `system-interface-contracts`
+- Related: `streaming-architecture`
 
 **Concept**
 - Mental model: |

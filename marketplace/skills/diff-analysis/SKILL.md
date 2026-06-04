@@ -5,6 +5,7 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
+  relations: "{\"boundary\":[\"code-review\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: quality-assurance
@@ -19,7 +20,6 @@ metadata:
   stability: experimental
   keywords: "[\"git diff\",\"unified diff\",\"patch analysis\",\"changeset review\",\"diff analysis\",\"read a diff\"]"
   triggers: "[\"diff-skill\"]"
-  relations: "{\"related\":[\"semantics\",\"version-control\"],\"boundary\":[\"code-review\"],\"verify_with\":[\"refactor\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -219,10 +219,6 @@ After applying this skill, verify:
 
 **When to use**
 - Triggers: `diff-skill`
-
-**Related skills**
-- Verify with: `refactor`
-- Related: `semantics`, `version-control`
 
 **Keywords**
 - `git diff`, `unified diff`, `patch analysis`, `changeset review`, `diff analysis`, `read a diff`

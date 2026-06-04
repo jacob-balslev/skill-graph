@@ -5,6 +5,7 @@ license: MIT
 compatibility: "Stack-agnostic. The actor / scenario / top-task model, the five friction dimensions, the breakpoint taxonomy, and the primary / secondary / supporting hierarchy apply to any UI under review; persona / journey YAML files are illustrative — substitute the equivalents (Notion, Confluence, in-repo Markdown, Figma annotations) of your team."
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"adjacent\":[\"interaction-feedback\",\"information-architecture\"],\"boundary\":[\"layout-composition\",\"interaction-patterns\"],\"verify_with\":[\"a11y\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: reasoning-strategy
@@ -20,7 +21,6 @@ metadata:
   keywords: "[\"top task analysis\",\"goal-driven UX review\",\"route audit workflow\",\"onboarding flow analysis\",\"task friction scoring\",\"five friction dimensions\",\"dead-end detection\",\"hidden next-step diagnosis\",\"hierarchy contract first viewport\",\"actor and scenario identification\"]"
   examples: "[\"this onboarding flow feels confusing — analyze the task structure\",\"audit this dashboard route for whether it supports the user's top task\",\"what should be above the fold on this page?\",\"users keep abandoning this wizard at step 3 — find the breakpoint\",\"decide what belongs in the first viewport for this analytics page\",\"diagnose why this multi-step setup has too many decisions\",\"the team disagrees on what the top task is for this route — settle it\"]"
   anti_examples: "[\"review this PR for code quality\",\"audit this UI for WCAG 2.2 violations\",\"decide the CSS grid layout for this hero section\",\"pick the right colors for this status badge\",\"build the navigation taxonomy for the whole product\",\"should we use a dropdown or a stepper here\"]"
-  relations: "{\"related\":[\"diagnosis\",\"pattern-recognition\",\"information-architecture\",\"layout-composition\",\"interaction-patterns\",\"interaction-feedback\",\"code-review\",\"a11y\",\"visual-design-foundations\"],\"verify_with\":[\"a11y\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -251,7 +251,7 @@ After applying task analysis, verify:
 
 **Related skills**
 - Verify with: `a11y`
-- Related: `diagnosis`, `pattern-recognition`, `information-architecture`, `layout-composition`, `interaction-patterns`, `interaction-feedback`, `code-review`, `a11y`, `visual-design-foundations`
+- Related: `interaction-feedback`, `information-architecture`
 
 **Keywords**
 - `top task analysis`, `goal-driven UX review`, `route audit workflow`, `onboarding flow analysis`, `task friction scoring`, `five friction dimensions`, `dead-end detection`, `hidden next-step diagnosis`, `hierarchy contract first viewport`, `actor and scenario identification`

@@ -5,6 +5,7 @@ license: MIT
 compatibility: "Provider- and runtime-agnostic. The autonomy-slider levels and quality-gate sequence apply to any LLM-coding harness (Claude Code, OpenCode, Cursor, Aider, Copilot Workspace, Continue) that supports a deterministic verify step between agent output and merge."
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"agent-engineering\"]}"
   schema_version: "8"
   version: "1.1.0"
   subject: agent-ops
@@ -21,7 +22,6 @@ metadata:
   keywords: "[\"software 3.0 concepts\",\"vibe coding\",\"agentic engineering doctrine\",\"autonomy slider\",\"prompt as code\",\"karpathy three eras\",\"autoresearch loop\",\"ai-generated code quality\",\"vibe hangover\",\"llm-native development\"]"
   examples: "[\"we keep accepting agent-generated code on first try and shipping bugs — what discipline replaces this?\",\"what autonomy level should I run for a security-sensitive change?\",\"does measuring lines-of-code per session make sense when an agent generates the code?\",\"the team is treating prompts and skill files like throwaway notes — what's the alternative framing?\",\"we want an auto-improve loop for our skill content — how do we constrain it so it doesn't regress?\",\"what's the conceptual difference between a vibe coding session and an agentic engineering session?\",\"AI-generated code is shipping with vulnerabilities — what gates should sit between agent output and production?\",\"how do I match autonomy level to the risk profile of the task?\"]"
   anti_examples: "[\"improve this specific prompt for the grader\",\"review this AI-generated PR for correctness\",\"design the checkpoint state machine for our loop\",\"scaffold a new skill that codifies our coding doctrine\",\"the autonomous loop is stalling — debug it\"]"
-  relations: "{\"related\":[\"prompt-craft\",\"agent-engineering\",\"code-review\",\"skill-router\",\"tool-call-strategy\"],\"verify_with\":[\"code-review\",\"testing-strategy\"]}"
   grounding: "{\"subject_matter\":\"AI-native software development discipline for prompt-as-code workflows, agent autonomy calibration, metric-gated auto-improvement loops, and quality gates for AI-generated code\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://www.youtube.com/watch?v=LCEmiRjPEtQ\",\"https://github.com/karpathy/autoresearch\",\"https://arxiv.org/abs/2211.03622\",\"https://arxiv.org/abs/2504.20814\",\"https://snyk.io/lp/secure-adoption-in-the-genai-era/\",\"https://owasp.org/www-project-top-10-for-large-language-model-applications/\"],\"failure_modes\":[\"unintentional_high_autonomy_for_high_risk_work\",\"accepting_ai_generated_code_without_review_or_tests\",\"treating_prompts_and_skills_as_throwaway_notes\",\"optimizing_agent_loops_against_multiple_moving_metrics\",\"citing_stale_ai_code_security_statistics_as_fixed_truth\",\"shipping_agentic_systems_without_prompt_injection_or_excessive_agency_controls\"],\"evidence_priority\":\"equal\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
@@ -347,10 +347,6 @@ Moving down the slider is also legitimate: high-stakes work (production deployme
 - design the checkpoint state machine for our loop
 - scaffold a new skill that codifies our coding doctrine
 - the autonomous loop is stalling — debug it
-
-**Related skills**
-- Verify with: `code-review`, `testing-strategy`
-- Related: `prompt-craft`, `agent-engineering`, `code-review`, `skill-router`, `tool-call-strategy`
 
 **Grounding**
 - Mode: `hybrid`

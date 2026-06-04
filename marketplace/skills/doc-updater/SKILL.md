@@ -1,13 +1,13 @@
 ---
 name: doc-updater
-description: "Enforces the documentation-sync discipline: every code or behavior change ships its documentation in the SAME commit, never after. Provides the five-step workflow — diff the change, route each changed file to the doc that OWNS that behavior (document by ownership, not convenience), update each owning doc, verify the update actually landed, and report what was changed — plus the doc-type-purity and stale-reference gates that keep a docs corpus from drifting as code moves. Use at the pre-commit step of any task that changes code, when a change touches several docs, when renaming or deleting something that is referenced elsewhere, or whenever you are unsure which doc owns a change. Do NOT use for how to WRITE good documentation prose or pick a doc's Diátaxis type (that is a documentation-authoring skill), for choosing clear names (use `naming-conventions`), or for the broad cross-domain quality catalog (use `best-practice`). Do NOT use for choosing clear, correct, self-documenting names (use naming-conventions)."
+description: "Enforces the documentation-sync discipline: every code or behavior change ships its documentation in the SAME commit, never after. Provides the five-step workflow — diff the change, route each changed file to the doc that OWNS that behavior (document by ownership, not convenience), update each owning doc, verify the update actually landed, and report what was changed — plus the doc-type-purity and stale-reference gates that keep a docs corpus from drifting as code moves. Use at the pre-commit step of any task that changes code, when a change touches several docs, when renaming or deleting something that is referenced elsewhere, or whenever you are unsure which doc owns a change. Do NOT use for how to WRITE good documentation prose or pick a doc's Diátaxis type (that is a documentation-authoring skill), for choosing clear names (use `naming-conventions`), or for the broad cross-domain quality catalog (use `best-practice`)."
 metadata:
   subject: software-engineering-method
   deployment_target: portable
   scope: "Portable across any project, repo, or agent runtime that keeps documentation alongside code. Teaches the discipline of keeping docs synchronized with the code they describe: documentation is part of the change, not optional cleanup afterward, so doc edits ship in the same commit as the code that changed the documented behavior. The five-step workflow (diff → route-by-ownership → update → verify → report), the doc-type-purity gate, and the rename/delete stale-reference sweep are codebase-agnostic; a project supplies only its own routing table of which doc owns which behavior."
   triggers: "[\"doc-updater-skill\",\"doc-sync\"]"
   keywords: "[\"documentation sync\",\"docs in same commit\",\"which doc to update\",\"doc routing\",\"stale references\",\"update docs\",\"documentation drift\",\"doc ownership\",\"rename references\",\"pre-commit docs\"]"
-  relations: "{\"related\":[\"best-practice\",\"semantics\",\"methodical\"],\"boundary\":[{\"skill\":\"naming-conventions\",\"reason\":\"naming-conventions owns choosing clear, correct, self-documenting names; doc-updater owns propagating a rename or deletion across every documentation reference in the same change so no stale pointer survives.\"}],\"verify_with\":[\"methodical\",\"best-practice\"]}"
+  relations: "{\"boundary\":[\"naming-conventions\"],\"verify_with\":[\"writing-humanizer\",\"best-practice\"]}"
   mental_model: "Documentation and the code it describes are two halves of one artifact, joined at the commit. When code changes but its docs do not, the working tree carries a silent contradiction: the next reader (human or agent) trusts the doc, acts on stale truth, and propagates the error. The fix is mechanical, not heroic — treat every changed file as a question 'which doc owns this behavior?', answer it from a routing table of ownership, and edit that doc inside the same commit so the contradiction never exists on disk."
   purpose: "To prevent documentation drift — the gap that opens between what the code does and what the docs claim — by binding the doc update to the code change in time (same commit) and in ownership (the doc that owns the behavior, not whichever doc is convenient). Drift is invisible at write time and expensive at read time; this discipline closes the window where it can form."
   boundary: "This skill governs WHEN and WHERE a doc change happens (same commit as the code; the doc that owns the behavior) and that renames propagate everywhere. It does not govern HOW to write the prose well or which Diátaxis type a doc should be (a documentation-authoring concern), how to choose the names themselves (that is `naming-conventions`), or the broad cross-domain quality-standards catalog (that is `best-practice`)."
@@ -16,7 +16,6 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-engineering-method/doc-updater/SKILL.md
-  skill_graph_export_description_projection: boundary
 ---
 
 ## Concept Card
@@ -204,12 +203,8 @@ After applying this skill, verify:
 **When to use**
 - Triggers: `doc-updater-skill`, `doc-sync`
 
-**Not for**
-- Owned by `naming-conventions`: choosing clear, correct, self-documenting names
-
 **Related skills**
-- Verify with: `methodical`, `best-practice`
-- Related: `best-practice`, `semantics`, `methodical`
+- Verify with: `writing-humanizer`, `best-practice`
 
 **Concept**
 - Mental model: Documentation and the code it describes are two halves of one artifact, joined at the commit. When code changes but its docs do not, the working tree carries a silent contradiction: the next reader (human or agent) trusts the doc, acts on stale truth, and propagates the error. The fix is mechanical, not heroic — treat every changed file as a question 'which doc owns this behavior?', answer it from a routing table of ownership, and edit that doc inside the same commit so the contradiction never exists on disk.

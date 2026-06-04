@@ -1,10 +1,11 @@
 ---
 name: system-interface-contracts
-description: "Use when defining or reviewing contracts between systems, modules, services, agents, jobs, events, APIs, or teams: ownership, inputs, outputs, invariants, compatibility, errors, idempotency, and versioning. Do NOT use for REST resource design alone (use `api-design`), async event contract detail (use `event-contract-design`), database schemas (use `data-modeling`), or post-failure debugging (use `debugging`). Do NOT use for design the REST endpoints, status codes, and pagination. Do NOT use for create database tables and constraints. Do NOT use for investigate why this existing integration is failing in production. Do NOT use for write an ADR after the interface decision has already been accepted. Do NOT use for asynchronous event envelopes, schemas, topics, and compatibility (use event-contract-design). Do NOT use for stored data structure (use data-modeling)."
+description: "Use when defining or reviewing contracts between systems, modules, services, agents, jobs, events, APIs, or teams: ownership, inputs, outputs, invariants, compatibility, errors, idempotency, and versioning. Do NOT use for REST resource design alone (use `api-design`), async event contract detail (use `event-contract-design`), database schemas (use `data-modeling`), or post-failure debugging (use `debugging`). Do NOT use for design the REST endpoints, status codes, and pagination. Do NOT use for create database tables and constraints. Do NOT use for investigate why this existing integration is failing in production. Do NOT use for write an ADR after the interface decision has already been accepted."
 license: MIT
 compatibility: "Portable contract-design discipline across code modules, services, queues, APIs, webhooks, jobs, and agent interfaces."
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"adjacent\":[\"event-contract-design\"],\"boundary\":[\"api-design\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: software-architecture
@@ -20,7 +21,6 @@ metadata:
   keywords: "[\"interface contract\",\"system boundary\",\"contract design\",\"compatibility contract\",\"input output invariant\",\"event schema\",\"module boundary\",\"idempotency contract\",\"versioning contract\",\"error contract\"]"
   examples: "[\"define the contract between the ingestion job and the dashboard view layer\",\"what invariants must this event producer and consumer share?\",\"review this module boundary for missing ownership and compatibility rules\",\"we need an interface contract before several agents implement opposite sides of the boundary\"]"
   anti_examples: "[\"design the REST endpoints, status codes, and pagination\",\"create database tables and constraints\",\"investigate why this existing integration is failing in production\",\"write an ADR after the interface decision has already been accepted\"]"
-  relations: "{\"boundary\":[{\"skill\":\"event-contract-design\",\"reason\":\"event-contract-design owns asynchronous event envelopes, schemas, topics, and compatibility; system-interface-contracts owns the broader boundary discipline\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling owns stored data structure; system-interface-contracts owns producer/consumer expectations and compatibility\"},{\"skill\":\"architecture-decision-records\",\"reason\":\"architecture-decision-records records the adopted contract decision; this skill designs the contract\"}],\"related\":[\"bounded-context-mapping\",\"api-design\",\"event-storming\",\"event-contract-design\",\"state-machine-modeling\",\"debugging\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -32,7 +32,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-architecture/system-interface-contracts/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # System Interface Contracts
@@ -101,13 +101,9 @@ This skill ships a comprehension-eval artifact at [`examples/evals/system-interf
 - create database tables and constraints
 - investigate why this existing integration is failing in production
 - write an ADR after the interface decision has already been accepted
-- Owned by `event-contract-design`: asynchronous event envelopes, schemas, topics, and compatibility
-- Owned by `data-modeling`: stored data structure
-- Owned by `architecture-decision-records`
 
 **Related skills**
-- Verify with: `testing-strategy`, `code-review`
-- Related: `bounded-context-mapping`, `api-design`, `event-storming`, `event-contract-design`, `state-machine-modeling`, `debugging`
+- Related: `event-contract-design`
 
 **Keywords**
 - `interface contract`, `system boundary`, `contract design`, `compatibility contract`, `input output invariant`, `event schema`, `module boundary`, `idempotency contract`, `versioning contract`, `error contract`

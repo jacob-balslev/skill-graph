@@ -4,6 +4,7 @@ description: "Use when designing or reviewing React Suspense usage: where to pla
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"rendering-models\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: frontend-engineering
@@ -21,7 +22,6 @@ metadata:
   triggers: "[\"where should I put the Suspense boundary\",\"why is my page waiting for the slowest query\",\"how do I show partial loading states\",\"Suspense vs loading.tsx\",\"do I need useTransition here\",\"error boundary not catching\",\"data is waterfalling instead of parallel\"]"
   examples: "[\"design a dashboard that streams three independent widgets in as their data resolves, with skeleton fallbacks for each\",\"decide whether a tab switch should use useTransition or a top-level Suspense fallback\",\"diagnose why a Suspense boundary is showing its fallback on every prop change\",\"pair a Suspense boundary with an ErrorBoundary so failed fetches show an error UI while successful ones stream in\"]"
   anti_examples: "[\"choose between Server Components and Client Components (use server-components-design)\",\"design the dependency array for a useEffect that fetches data (use hooks-patterns)\",\"pick the streaming protocol for an LLM response (use streaming-architecture)\",\"decide between SSR and SSG for a marketing page (use rendering-models)\",\"design the streaming protocol itself — SSE, HTTP/2, chunked transfer-encoding (use streaming-architecture)\"]"
-  relations: "{\"related\":[\"server-components-design\",\"hooks-patterns\",\"streaming-architecture\",\"rendering-models\"],\"boundary\":[{\"skill\":\"server-components-design\",\"reason\":\"server-components-design owns the discipline of which work runs on the server side of the RSC boundary; suspense-patterns owns the orthogonal discipline of where to place Suspense boundaries within a tree (RSC or Client).\"},{\"skill\":\"hooks-patterns\",\"reason\":\"hooks-patterns covers state, effects, and the closure model on Client Components; suspense-patterns covers the boundary-level loading-state model that operates on whole subtrees.\"}],\"verify_with\":[\"code-review\",\"rendering-models\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -314,12 +314,6 @@ After applying this skill, verify:
 - pick the streaming protocol for an LLM response (use streaming-architecture)
 - decide between SSR and SSG for a marketing page (use rendering-models)
 - design the streaming protocol itself — SSE, HTTP/2, chunked transfer-encoding (use streaming-architecture)
-- Owned by `server-components-design`: the discipline of which work runs on the server side of the RSC boundary
-- Owned by `hooks-patterns`
-
-**Related skills**
-- Verify with: `code-review`, `rendering-models`
-- Related: `server-components-design`, `hooks-patterns`, `streaming-architecture`, `rendering-models`
 
 **Concept**
 - Mental model: |

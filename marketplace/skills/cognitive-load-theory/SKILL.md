@@ -5,6 +5,7 @@ license: MIT
 compatibility: "Markdown, Git, any agent-skill runtime"
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"context-management\"]}"
   subject: quality-assurance
   deployment_target: portable
   scope: "Portable cognitive-load review for skill bodies, prompts, documentation, dashboards, and agent outputs. Teaches Sweller's intrinsic/extraneous/germane load taxonomy (including the modern post-2010 reframing of germane load as resource allocation / productive processing), element interactivity, working-memory chunk and duration limits, the named CLT instructional effects, segmentation, chunking, worked examples, expertise reversal, structure-over-prose checks, and upstream-displacement checks for modern LLM/tooling features. Excludes retrieval/session working-set design (context-management), token budget math and compaction timing (context-window), provider-specific prompt tactic authoring (prompt-craft), token-efficient representation mechanics (compression), and broad instructional design beyond the CLT mechanisms grounded here."
@@ -12,7 +13,6 @@ metadata:
   stability: experimental
   keywords: "[\"cognitive load theory\",\"working memory\",\"intrinsic load\",\"extraneous load\",\"germane load\",\"chunking\",\"segmentation\",\"element interactivity\",\"expertise reversal\",\"prompt design\"]"
   triggers: "[\"cognitive-load-skill\",\"working-memory-skill\",\"clt-skill\"]"
-  relations: "{\"related\":[\"context-management\",\"context-window\",\"compression\",\"prompt-craft\",\"information-architecture\",\"layout-composition\",\"visual-hierarchy\",\"microcopy\",\"writing-humanizer\",\"summarization\",\"best-practice\",\"guardrails\"],\"verify_with\":[\"best-practice\",\"information-architecture\",\"prompt-craft\"]}"
   mental_model: "Working memory is a small workspace with roughly four independent chunks available at once, and expertise changes what counts as one chunk. Cognitive Load Theory asks whether the material's element interactivity is intrinsic to the task, imposed by presentation (extraneous), or productive schema-building work (germane). Good design sequences unavoidable intrinsic load, eliminates extraneous load, and frees capacity so the learner can devote germane processing to schema construction through examples, self-explanation, contrast, and practice."
   purpose: "This skill prevents agents from treating 'simplify' as 'make shorter.' It gives a precise review lens for skill bodies, prompts, docs, dashboards, and agent outputs: identify which kind of load each section creates, remove only unnecessary presentation burden, keep worked examples and structure that build schemas, and verify that newer model/tool features did not merely hide the load in a different layer."
   boundary: "This skill diagnoses cognitive load in authored or presented material. It is not source selection, session-state pruning, token-budget accounting, compaction timing, prompt phrasing craft, plain-language editing, token compression, or general pedagogy beyond the cognitive-load mechanisms named here."
@@ -536,10 +536,6 @@ The canonical sibling `references/sweller-1988.md` remains the local source trai
 
 **When to use**
 - Triggers: `cognitive-load-skill`, `working-memory-skill`, `clt-skill`
-
-**Related skills**
-- Verify with: `best-practice`, `information-architecture`, `prompt-craft`
-- Related: `context-management`, `context-window`, `compression`, `prompt-craft`, `information-architecture`, `layout-composition`, `visual-hierarchy`, `microcopy`, `writing-humanizer`, `summarization`, `best-practice`, `guardrails`
 
 **Concept**
 - Mental model: Working memory is a small workspace with roughly four independent chunks available at once, and expertise changes what counts as one chunk. Cognitive Load Theory asks whether the material's element interactivity is intrinsic to the task, imposed by presentation (extraneous), or productive schema-building work (germane). Good design sequences unavoidable intrinsic load, eliminates extraneous load, and frees capacity so the learner can devote germane processing to schema construction through examples, self-explanation, contrast, and practice.

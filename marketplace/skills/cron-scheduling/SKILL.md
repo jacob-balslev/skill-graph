@@ -1,39 +1,50 @@
 ---
 name: cron-scheduling
-description: "This skill provides cron job architecture patterns for web applications: Inngest schedule integration, Vercel Cron configuration, retry logic, monitoring and alerting for failed crons, and idempotency requirements. Load when designing scheduled tasks, configuring cron triggers, debugging missed or duplicate executions, or implementing monitoring for recurring jobs."
+description: "Use when designing time-based scheduled work in web applications: Vercel Cron routes, Inngest cron-triggered functions, recurring-job idempotency, overlap prevention, retry/failure handling, UTC/timezone decisions, and monitoring for missed or failed schedules. Covers cron expressions, scheduler selection, authorization of cron endpoints, dispatch-to-worker patterns, execution-window idempotency, concurrency locks, and heartbeat/alert design. Do NOT use for general background job queue architecture (use background-jobs), event-driven orchestration without a time trigger, browser freshness transports, or one-off task debugging unrelated to recurring schedules. Do NOT use for move a slow export out of an API handler but it is user-triggered, not scheduled. Do NOT use for design a generic queue contract with retries and progress. Do NOT use for choose Server-Sent Events versus WebSockets for live progress. Do NOT use for define an event payload schema for an async integration."
 license: MIT
-compatibility: "Markdown, Git, agent-skill runtimes"
+compatibility: "Portable web-application scheduling guidance. Verify provider limits, retry semantics, auth headers, and timezone support against the target platform before production rollout."
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"boundary\":[\"background-jobs\"]}"
   subject: backend-engineering
   deployment_target: portable
   scope: "Cron-job architecture for web applications — Inngest schedule integration, Vercel Cron configuration, retry logic, monitoring and alerting for failed crons, and idempotency requirements — for designing scheduled tasks, configuring triggers, and debugging missed or duplicate executions. Portable across web-application stacks; principle-grounded, not repo-bound. Excludes general background-job queue design and one-off task debugging unrelated to scheduling."
   taxonomy_domain: engineering/scheduling
-  owner: skill-graph-maintainer
-  freshness: "2026-03-29"
-  drift_check: "{\"last_verified\":\"2026-03-29\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
-  keywords: "[\"cron-scheduling\",\"cron\",\"scheduling\"]"
+  keywords: "[\"cron scheduling\",\"cron job\",\"scheduled task\",\"Vercel Cron\",\"Inngest cron\",\"recurring job\",\"idempotent cron\",\"missed cron\",\"cron monitoring\",\"timezone cron\"]"
   triggers: "[\"cron-scheduling-skill\",\"cron-job-skill\",\"scheduled-task-skill\",\"vercel-cron-skill\",\"recurring-job-skill\"]"
-  relations: "{\"related\":[\"background-jobs\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
+  examples: "[\"design a daily cron that triggers a report job without timing out\",\"secure this Vercel Cron route and make sure duplicate invocations are safe\",\"decide whether this recurring workflow belongs in Vercel Cron, Inngest cron, or an external scheduler\",\"debug why this scheduled sync missed a run or ran twice\",\"add monitoring and alerts for a weekly scheduled cleanup job\"]"
+  anti_examples: "[\"move a slow export out of an API handler but it is user-triggered, not scheduled\",\"design a generic queue contract with retries and progress\",\"choose Server-Sent Events versus WebSockets for live progress\",\"define an event payload schema for an async integration\",\"debug a one-off failed worker run with no recurring schedule\"]"
+  grounding: "{\"subject_matter\":\"Cron scheduling patterns for web applications across Vercel Cron and Inngest scheduled functions\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://vercel.com/docs/cron-jobs\",\"https://vercel.com/docs/cron-jobs/manage-cron-jobs\",\"https://www.inngest.com/docs/learn/inngest-functions\",\"https://www.inngest.com/docs/reference/typescript/functions/triggers\",\"https://www.inngest.com/docs/functions/concurrency\",\"https://www.inngest.com/docs/reference/typescript/functions/handling-failures\",\"https://www.inngest.com/docs/platform/monitor/observability-metrics\"],\"failure_modes\":[\"cron_endpoint_unauthorized\",\"cron_route_runs_long_work_inline\",\"duplicate_schedule_invocation_not_idempotent\",\"missed_or_failed_cron_has_no_alert\",\"cron_runs_overlap_and_corrupt_state\",\"timezone_assumption_drifts_from_user_expectation\"],\"evidence_priority\":\"equal\"}"
+  mental_model: "Cron scheduling has six primitives: a schedule expression, a trigger surface, an authenticated entrypoint, a durable execution target, an idempotency key for the execution window, and observability that proves starts, completions, misses, and failures. The scheduler decides when work starts; a background job or workflow usually does the work; locks and idempotency make duplicate or overlapping starts safe."
+  purpose: "Cron work fails in ways that ordinary request handlers hide: the provider can deliver a scheduled request more than once, skip retries after a failed invocation, overlap long runs, run in UTC when the user expects local time, or keep invoking a nonexistent route. This skill makes those recurring-job risks explicit before code is shipped."
+  boundary: "This skill owns time-based triggers and schedule-specific reliability. It does not own generic queue architecture, event-contract design, webhook ingestion, browser push transports, or one-off worker debugging. It should compose with background-jobs once a cron trigger hands off durable work."
+  analogy: "A cron schedule is an alarm clock wired to a factory: the alarm can ring on time, twice, or not at all, so the factory still needs a front desk, work order number, lock, status board, and missed-alarm monitor."
+  misconception: "The common mistake is treating cron as just a five-field string. The string is only the trigger; production cron design also needs auth, UTC/local-time intent, idempotency, overlap prevention, failure handling, and monitoring."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/cron-scheduling/SKILL.md
+  skill_graph_export_description_projection: anti_examples
+  skill_graph_export_description_projection_truncated: "true"
 ---
-# Cron Scheduling Skill
+
+## Concept of the skill
+
+**What it is:** Cron scheduling is the backend discipline of starting recurring work on a time-based schedule while making the resulting execution safe, observable, and recoverable.
+
+**Mental model:** A schedule expression only creates an alarm. Production scheduling also needs an authenticated entrypoint, a durable worker or workflow target, an idempotency key for the scheduled window, overlap prevention, and monitoring that detects missed starts, failed completions, and duplicate invocations.
+
+**Why it exists:** Time-based jobs fail outside the normal request path. They can run twice, not retry, overlap with themselves, execute in UTC instead of the expected local time, or disappear into logs without alerting. The skill turns those hidden failure modes into explicit design checks.
+
+**What it is NOT:** It is not general background-job queue design, event-schema design, webhook ingestion, browser live-update transport, or debugging an isolated worker failure. It owns the schedule-trigger boundary and composes with those skills after work is triggered.
+
+**Adjacent concepts:** Background jobs, durable workflows, observability, webhook integration, distributed locks, idempotency, and retry classification.
+
+**One-line analogy:** Cron scheduling is an alarm clock wired to a factory: the alarm rings, but the factory still needs a work order, lock, status board, and missed-alarm monitor.
+
+**Common misconception:** The common mistake is believing the cron expression is the design. The expression is only the trigger; the production design is the reliability envelope around the trigger.
+
+# Cron Scheduling
 
 ## Domain Context
 
@@ -44,7 +55,7 @@ metadata:
 
 This skill covers cron expression syntax and scheduling precision, Vercel Cron configuration (`vercel.json` cron routes), Inngest scheduled function patterns (cron triggers vs event-driven), idempotency guarantees for scheduled jobs, retry and failure handling for cron-triggered work, monitoring and alerting for missed or failed cron executions, timezone handling in cron schedules, and the decision framework for choosing between Vercel Cron, Inngest schedules, and external cron services.
 
-## Philosophy
+## Philosophy of the skill
 
 Cron jobs are the most deceptively simple infrastructure in web applications. The expression `0 9 * * *` looks trivial, but the implementation must handle: what happens when the job runs twice (deploy overlap), what happens when the job fails silently (no monitoring), what happens when the job takes longer than the interval (overlap), and what happens at DST transitions (timezone drift). Every anti-pattern in this skill was observed in production. The skill exists because agents routinely create cron schedules without idempotency, without monitoring, and without considering the failure modes that only surface under real-world conditions.
 
@@ -54,7 +65,7 @@ Cron jobs are the most deceptively simple infrastructure in web applications. Th
 
 | Platform | Max Duration | Cold Start | Retry Built-in | Monitoring | Best For |
 |----------|-------------|------------|-----------------|------------|----------|
-| **Vercel Cron** | 60s (Hobby) / 300s (Pro) | Yes | No | Basic (logs) | Lightweight triggers that dispatch to background jobs |
+| **Vercel Cron** | Same as the invoked Vercel Function's `maxDuration` | Yes | No | Basic logs | Lightweight triggers that dispatch to background jobs |
 | **Inngest Cron** | Configurable (step functions) | No (warm) | Yes (built-in) | Dashboard + webhooks | Complex scheduled workflows with retry and state |
 | **External (e.g., cron-job.org)** | N/A (HTTP trigger) | Depends on target | No | External | When the app has no built-in cron capability |
 
@@ -78,15 +89,15 @@ Cron jobs are the most deceptively simple infrastructure in web applications. Th
 }
 ```
 
-**Security:** Vercel Cron requests include a `CRON_SECRET` header. Always verify this header in the route handler to prevent unauthorized execution:
+**Security:** When the project defines `CRON_SECRET`, Vercel sends it as an `Authorization` header with a `Bearer` prefix. Always verify that header in the route handler to prevent unauthorized execution:
 
 ```typescript
 // api/cron/daily-digest/route.ts
-import { verifyCronSecret } from "@/lib/auth/verify-cron-secret";
-
 export async function GET(request: Request) {
-  const authError = verifyCronSecret(request);
-  if (authError) return authError;
+  const authHeader = request.headers.get('authorization');
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return new Response('Unauthorized', { status: 401 });
+  }
   // Dispatch work, do not perform work here
   await inngest.send({ name: 'cron/daily-digest.triggered' });
   return new Response('OK', { status: 200 });
@@ -97,13 +108,15 @@ export async function GET(request: Request) {
 
 ```typescript
 // Inngest cron function — preferred for complex scheduled work
+import { cron } from "inngest";
+
 export const dailyDigest = inngest.createFunction(
   {
     id: 'daily-digest',
     retries: 3,
-    concurrency: { limit: 1 },  // Prevent overlap
+    concurrency: { limit: 1 }, // Prevent overlap
+    triggers: [cron('TZ=UTC 0 9 * * *')],
   },
-  { cron: '0 9 * * *' },       // Inngest-native cron trigger
   async ({ step }) => {
     const orgs = await step.run('fetch-orgs', async () => {
       return db.query('SELECT id FROM organizations WHERE digest_enabled = true');
@@ -157,7 +170,7 @@ await db.query(
 | `0 9 * * 1` | Monday at 09:00 UTC | Weekly summary |
 | `0 0 1 * *` | First day of month, midnight | Monthly rollup |
 
-**Timezone rule:** All cron expressions in Vercel and Inngest execute in UTC. If the user expects "9am Eastern", compute the UTC offset and account for DST transitions. Document the intended local time as a comment next to every cron expression.
+**Timezone rule:** Vercel Cron schedules are UTC. Inngest cron triggers support an optional `TZ=<zone>` prefix. If the user expects "9am Eastern", either use a scheduler that supports the intended timezone or compute the UTC offset and account for DST transitions. Document the intended local time next to every cron expression.
 
 ### 3. Monitoring and Alerting
 
@@ -255,12 +268,32 @@ After applying this skill, verify:
 - Scope: Cron-job architecture for web applications — Inngest schedule integration, Vercel Cron configuration, retry logic, monitoring and alerting for failed crons, and idempotency requirements — for designing scheduled tasks, configuring triggers, and debugging missed or duplicate executions. Portable across web-application stacks; principle-grounded, not repo-bound. Excludes general background-job queue design and one-off task debugging unrelated to scheduling.
 
 **When to use**
+- design a daily cron that triggers a report job without timing out
+- secure this Vercel Cron route and make sure duplicate invocations are safe
+- decide whether this recurring workflow belongs in Vercel Cron, Inngest cron, or an external scheduler
+- debug why this scheduled sync missed a run or ran twice
+- add monitoring and alerts for a weekly scheduled cleanup job
 - Triggers: `cron-scheduling-skill`, `cron-job-skill`, `scheduled-task-skill`, `vercel-cron-skill`, `recurring-job-skill`
 
-**Related skills**
-- Related: `background-jobs`
+**Not for**
+- move a slow export out of an API handler but it is user-triggered, not scheduled
+- design a generic queue contract with retries and progress
+- choose Server-Sent Events versus WebSockets for live progress
+- define an event payload schema for an async integration
+- debug a one-off failed worker run with no recurring schedule
+
+**Concept**
+- Mental model: Cron scheduling has six primitives: a schedule expression, a trigger surface, an authenticated entrypoint, a durable execution target, an idempotency key for the execution window, and observability that proves starts, completions, misses, and failures. The scheduler decides when work starts; a background job or workflow usually does the work; locks and idempotency make duplicate or overlapping starts safe.
+- Purpose: Cron work fails in ways that ordinary request handlers hide: the provider can deliver a scheduled request more than once, skip retries after a failed invocation, overlap long runs, run in UTC when the user expects local time, or keep invoking a nonexistent route. This skill makes those recurring-job risks explicit before code is shipped.
+- Boundary: This skill owns time-based triggers and schedule-specific reliability. It does not own generic queue architecture, event-contract design, webhook ingestion, browser push transports, or one-off worker debugging. It should compose with background-jobs once a cron trigger hands off durable work.
+- Analogy: A cron schedule is an alarm clock wired to a factory: the alarm can ring on time, twice, or not at all, so the factory still needs a front desk, work order number, lock, status board, and missed-alarm monitor.
+- Common misconception: The common mistake is treating cron as just a five-field string. The string is only the trigger; production cron design also needs auth, UTC/local-time intent, idempotency, overlap prevention, failure handling, and monitoring.
+
+**Grounding**
+- Mode: `hybrid`
+- Truth sources: `https://vercel.com/docs/cron-jobs`, `https://vercel.com/docs/cron-jobs/manage-cron-jobs`, `https://www.inngest.com/docs/learn/inngest-functions`, `https://www.inngest.com/docs/reference/typescript/functions/triggers`, `https://www.inngest.com/docs/functions/concurrency`, `https://www.inngest.com/docs/reference/typescript/functions/handling-failures`, `https://www.inngest.com/docs/platform/monitor/observability-metrics`
 
 **Keywords**
-- `cron-scheduling`, `cron`, `scheduling`
+- `cron scheduling`, `cron job`, `scheduled task`, `Vercel Cron`, `Inngest cron`, `recurring job`, `idempotent cron`, `missed cron`, `cron monitoring`, `timezone cron`
 
 <!-- skill-graph-context:end -->

@@ -1,10 +1,11 @@
 ---
 name: api-design
-description: "Use when designing or reviewing API surfaces: resources/actions, request and response schemas, status codes, pagination, filtering, idempotency, versioning, auth boundaries, and error envelopes. Do NOT use for non-HTTP system contracts (use `system-interface-contracts`), async event contracts (use `event-contract-design`), database design (use `data-modeling`), or inbound provider webhook mechanics (use `webhook-integration`). Do NOT use for define the broader contract between a job, service, and dashboard. Do NOT use for design database tables, foreign keys, and views. Do NOT use for implement provider webhook signature verification and retry behavior. Do NOT use for debug why this endpoint is returning 500. Do NOT use for inbound provider webhooks (use webhook-integration)."
+description: "Use when designing or reviewing API surfaces: resources/actions, request and response schemas, status codes, pagination, filtering, idempotency, versioning, auth boundaries, and error envelopes. Do NOT use for non-HTTP system contracts (use `system-interface-contracts`), async event contracts (use `event-contract-design`), database design (use `data-modeling`), or inbound provider webhook mechanics (use `webhook-integration`). Do NOT use for define the broader contract between a job, service, and dashboard. Do NOT use for design database tables, foreign keys, and views. Do NOT use for implement provider webhook signature verification and retry behavior. Do NOT use for debug why this endpoint is returning 500."
 license: MIT
 compatibility: "Portable API design guidance for REST-like HTTP APIs, route handlers, internal APIs, and documented JSON contracts."
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"adjacent\":[\"event-contract-design\"],\"boundary\":[\"system-interface-contracts\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: backend-engineering
@@ -20,7 +21,6 @@ metadata:
   keywords: "[\"API design\",\"REST API\",\"endpoint design\",\"request response schema\",\"status codes\",\"pagination\",\"filtering\",\"idempotency\",\"API versioning\",\"error envelope\"]"
   examples: "[\"design the API for listing orders with filters, pagination, and stable errors\",\"review this route contract before frontend and backend implement it separately\",\"should this operation be a resource update, an action endpoint, or an async job?\",\"define API versioning and idempotency for this create endpoint\"]"
   anti_examples: "[\"define the broader contract between a job, service, and dashboard\",\"design database tables, foreign keys, and views\",\"implement provider webhook signature verification and retry behavior\",\"debug why this endpoint is returning 500\"]"
-  relations: "{\"boundary\":[{\"skill\":\"webhook-integration\",\"reason\":\"webhook-integration owns inbound provider webhooks; api-design owns APIs the system exposes or calls by contract\"}],\"related\":[\"system-interface-contracts\",\"data-modeling\",\"testing-strategy\",\"webhook-integration\",\"event-contract-design\",\"debugging\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -32,7 +32,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/api-design/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # API Design
@@ -102,11 +102,9 @@ This skill ships a comprehension-eval artifact at [`examples/evals/api-design.js
 - design database tables, foreign keys, and views
 - implement provider webhook signature verification and retry behavior
 - debug why this endpoint is returning 500
-- Owned by `webhook-integration`: inbound provider webhooks
 
 **Related skills**
-- Verify with: `testing-strategy`, `code-review`
-- Related: `system-interface-contracts`, `data-modeling`, `testing-strategy`, `webhook-integration`, `event-contract-design`, `debugging`
+- Related: `event-contract-design`
 
 **Keywords**
 - `API design`, `REST API`, `endpoint design`, `request response schema`, `status codes`, `pagination`, `filtering`, `idempotency`, `API versioning`, `error envelope`

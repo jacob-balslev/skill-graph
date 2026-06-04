@@ -4,6 +4,7 @@ description: "Use when reasoning about Test-Driven Development as a design disci
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"adjacent\":[\"test-doubles-design\"],\"boundary\":[\"testing-strategy\"]}"
   schema_version: "8"
   version: "1.2.0"
   subject: quality-assurance
@@ -21,7 +22,6 @@ metadata:
   triggers: "[\"should we write tests first\",\"are mocks ruining the design\",\"is TDD worth it\",\"London school vs Detroit school\",\"the tests changed every refactor\"]"
   examples: "[\"explain why writing the test first changes the design of the code under test\",\"decide between London-school (mocks-as-design) and Detroit-school (state-verification) TDD for a new module\",\"diagnose why the test suite is fragile under refactor — likely over-mocked interaction tests\",\"explain why high test coverage with TDD is a side effect, not the goal\"]"
   anti_examples: "[\"construct a mock, stub, or spy (use test-doubles-design)\",\"decide what test levels (unit/integration/e2e) to invest in (use testing-strategy)\",\"iterate on LLM behavior using an eval suite (use eval-driven-development)\"]"
-  relations: "{\"related\":[\"testing-strategy\",\"test-doubles-design\",\"eval-driven-development\",\"refactor\",\"type-safety\"],\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the question 'what should we test, at which level, with what evidence' for a given change; this skill owns the design discipline of writing the test before the code that satisfies it. The two compose — testing-strategy decides the surface; TDD prescribes the rhythm — but they answer different questions.\"},{\"skill\":\"test-doubles-design\",\"reason\":\"test-doubles-design owns mocks/stubs/fakes/spies as a construct; this skill owns the discipline that places them (London-school heavily, Detroit-school lightly). The schools differ on how much test-doubles design matters to the practice.\"}],\"verify_with\":[\"testing-strategy\",\"refactor\"]}"
   grounding: "{\"subject_matter\":\"Reference-grounded Test-Driven Development concept, school taxonomy, design-discipline mechanics, and empirical evidence boundaries\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://martinfowler.com/bliki/TestDrivenDevelopment.html\",\"https://martinfowler.com/articles/mocksArentStubs.html\",\"https://link.springer.com/article/10.1007/s10664-008-9062-z\",\"https://ieeexplore.ieee.org/document/1423994\",\"https://ieeexplore.ieee.org/document/4493089\",\"https://doi.org/10.1016/j.infsof.2016.02.004\",\"https://dannorth.net/introducing-bdd/\"],\"failure_modes\":[\"treating_test_first_order_as_tdd_without_refactor_design_pressure\",\"over_specifying_interactions_so_tests_mirror_implementation\",\"choosing_london_or_detroit_school_accidentally\",\"using_tdd_as_a_substitute_for_testing_strategy\",\"treating_empirical_defect_reduction_numbers_as_guaranteed_outcomes\",\"claiming_eval_or_routing_verification_without_a_run\"],\"evidence_priority\":\"equal\"}"
   mental_model: "|"
   purpose: "|"
@@ -174,12 +174,9 @@ After applying this skill, verify:
 - construct a mock, stub, or spy (use test-doubles-design)
 - decide what test levels (unit/integration/e2e) to invest in (use testing-strategy)
 - iterate on LLM behavior using an eval suite (use eval-driven-development)
-- Owned by `testing-strategy`: the question 'what should we test, at which level, with what evidence' for a given change
-- Owned by `test-doubles-design`: mocks/stubs/fakes/spies as a construct
 
 **Related skills**
-- Verify with: `testing-strategy`, `refactor`
-- Related: `testing-strategy`, `test-doubles-design`, `eval-driven-development`, `refactor`, `type-safety`
+- Related: `test-doubles-design`
 
 **Concept**
 - Mental model: |

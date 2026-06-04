@@ -4,6 +4,7 @@ description: "Use when reasoning about systems that emit a sequence of values ov
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"adjacent\":[\"http-semantics\"],\"boundary\":[\"tool-call-flow\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: backend-engineering
@@ -21,7 +22,6 @@ metadata:
   triggers: "[\"how should this endpoint stream\",\"should this be SSE or WebSocket\",\"is the consumer slow\",\"what's the backpressure story\",\"partial result delivery\"]"
   examples: "[\"design the response shape for an endpoint that returns 50,000 rows incrementally\",\"decide between SSE and WebSocket for a live progress feed\",\"diagnose why a fast producer is exhausting memory when the consumer falls behind\",\"explain why an RSC-streamed page renders out of order and how the boundary resolves\"]"
   anti_examples: "[\"design the JSON shape of a single response payload (use api-design)\",\"implement the model→tool message-history protocol (use tool-call-flow)\",\"design pub-sub topic structure (use event-driven-architecture)\"]"
-  relations: "{\"related\":[\"tool-call-flow\",\"client-server-boundary\",\"rendering-models\",\"performance-budgets\",\"api-design\"],\"boundary\":[{\"skill\":\"api-design\",\"reason\":\"api-design owns the request/response surface for one round-trip; streaming-architecture owns the multi-value-over-time surface where one logical response is delivered as N chunks.\"}],\"verify_with\":[\"api-design\",\"performance-budgets\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -242,11 +242,9 @@ After applying this skill, verify:
 - design the JSON shape of a single response payload (use api-design)
 - implement the model→tool message-history protocol (use tool-call-flow)
 - design pub-sub topic structure (use event-driven-architecture)
-- Owned by `api-design`: the request/response surface for one round-trip
 
 **Related skills**
-- Verify with: `api-design`, `performance-budgets`
-- Related: `tool-call-flow`, `client-server-boundary`, `rendering-models`, `performance-budgets`, `api-design`
+- Related: `http-semantics`
 
 **Concept**
 - Mental model: |

@@ -5,6 +5,7 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
+  relations: "{\"adjacent\":[\"prioritization\",\"context-engineering\",\"task-path-optimization\"],\"boundary\":[\"code-review\"]}"
   schema_version: "8"
   version: "1.1.0"
   subject: software-engineering-method
@@ -19,7 +20,6 @@ metadata:
   stability: experimental
   keywords: "[\"spec driven development\",\"SDD\",\"specification first\",\"technical plan\",\"task decomposition\",\"spec.md\",\"plan.md\",\"tasks.md\",\"requirements before code\",\"phase gates\"]"
   triggers: "[\"sdd-skill\",\"planning-mode\",\"spec-driven-development\"]"
-  relations: "{\"related\":[\"testing-strategy\",\"evaluation\",\"code-review\"],\"verify_with\":[\"code-review\",\"testing-strategy\"]}"
   grounding: "{\"subject_matter\":\"Spec-driven development workflow for AI-assisted engineering using specification, plan, task, implementation, and verification artifacts\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://github.github.com/spec-kit/index.html\",\"https://github.github.com/spec-kit/reference/workflows.html\",\"https://github.com/github/spec-kit\",\"https://standards.ieee.org/ieee/29148/6937/\"],\"failure_modes\":[\"code_started_before_spec_or_plan\",\"implementation_plan_missing_architecture_contracts_or_tests\",\"tasks_not_traceable_to_plan_or_success_criteria\",\"verification_not_mapped_to_spec_requirements\",\"workflow_requires_vendor_specific_commands_when_plain_markdown_would_work\"],\"evidence_priority\":\"equal\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
@@ -181,8 +181,7 @@ After applying this skill, verify:
 - Triggers: `sdd-skill`, `planning-mode`, `spec-driven-development`
 
 **Related skills**
-- Verify with: `code-review`, `testing-strategy`
-- Related: `testing-strategy`, `evaluation`, `code-review`
+- Related: `prioritization`, `context-engineering`, `task-path-optimization`
 
 **Grounding**
 - Mode: `hybrid`

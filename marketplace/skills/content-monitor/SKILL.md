@@ -5,6 +5,7 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
+  relations: "{\"boundary\":[\"keywords\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: agent-ops
@@ -20,7 +21,6 @@ metadata:
   stability: experimental
   keywords: "[\"content monitor\",\"github trending\",\"blog monitor\",\"intelligence brief\",\"youtube monitor\",\"awesome list\",\"trend tracking\",\"content pipeline\",\"content-monitor\",\"rss feed\"]"
   triggers: "[\"content-monitor-skill\",\"research-mode\"]"
-  relations: "{\"verify_with\":[\"evaluation\"],\"related\":[\"keywords\",\"seo-strategy\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -242,10 +242,6 @@ After modifying the content monitor pipeline, verify:
 
 **When to use**
 - Triggers: `content-monitor-skill`, `research-mode`
-
-**Related skills**
-- Verify with: `evaluation`
-- Related: `keywords`, `seo-strategy`
 
 **Keywords**
 - `content monitor`, `github trending`, `blog monitor`, `intelligence brief`, `youtube monitor`, `awesome list`, `trend tracking`, `content pipeline`, `content-monitor`, `rss feed`

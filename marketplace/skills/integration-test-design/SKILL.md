@@ -4,6 +4,7 @@ description: "Use when designing tests that verify the interaction between two o
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"contract-testing\",\"e2e-test-design\",\"testing-strategy\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: quality-assurance
@@ -21,7 +22,6 @@ metadata:
   triggers: "[\"should this be a unit or integration test\",\"the integration test is flaky\",\"test pyramid vs test trophy\",\"real database in tests\",\"test data setup is taking over\"]"
   examples: "[\"design an integration test for the order service that exercises real database and real message bus\",\"decide which dependencies to fake and which to use real in an integration test\",\"diagnose a flaky integration test — likely shared mutable state across tests\",\"explain why the test pyramid and test trophy disagree on integration test count\"]"
   anti_examples: "[\"test a single function in isolation (use testing-strategy + test-doubles-design)\",\"test a full user journey through the UI (use e2e-test-design)\",\"verify a consumer-driven contract against a provider (use contract-testing)\"]"
-  relations: "{\"related\":[\"testing-strategy\",\"test-doubles-design\",\"test-driven-development\",\"e2e-test-design\",\"contract-testing\"],\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the strategic question of how much of each test level to invest in; this skill owns the design of integration-level tests specifically.\"},{\"skill\":\"test-doubles-design\",\"reason\":\"test-doubles-design owns the construction of mocks/stubs/fakes; this skill owns the per-dependency real-vs-faked decision in integration scope. Integration tests use real collaborators where practical and fakes only at true external boundaries.\"},{\"skill\":\"e2e-test-design\",\"reason\":\"e2e-test-design owns user-journey-scope tests that exercise the full stack including UI; this skill owns scope below that — interaction of units inside the system, often without UI.\"},{\"skill\":\"contract-testing\",\"reason\":\"contract-testing owns consumer-driven contract verification between services; this skill owns the in-system interaction of modules. Contract tests verify the *interface*; integration tests verify the *implementation through* the interface.\"}],\"verify_with\":[\"testing-strategy\",\"e2e-test-design\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -158,14 +158,6 @@ After applying this skill, verify:
 - test a single function in isolation (use testing-strategy + test-doubles-design)
 - test a full user journey through the UI (use e2e-test-design)
 - verify a consumer-driven contract against a provider (use contract-testing)
-- Owned by `testing-strategy`: the strategic question of how much of each test level to invest in
-- Owned by `test-doubles-design`: the construction of mocks/stubs/fakes
-- Owned by `e2e-test-design`: user-journey-scope tests
-- Owned by `contract-testing`: consumer-driven contract verification between services
-
-**Related skills**
-- Verify with: `testing-strategy`, `e2e-test-design`
-- Related: `testing-strategy`, `test-doubles-design`, `test-driven-development`, `e2e-test-design`, `contract-testing`
 
 **Concept**
 - Mental model: |

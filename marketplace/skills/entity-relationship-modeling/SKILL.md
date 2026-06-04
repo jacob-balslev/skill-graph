@@ -5,6 +5,7 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
+  relations: "{\"boundary\":[\"conceptual-modeling\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: software-architecture
@@ -19,7 +20,6 @@ metadata:
   stability: experimental
   keywords: "[\"entity relationship\",\"ER diagram\",\"ER model\",\"database design\",\"schema design\",\"normalization\",\"foreign key\",\"primary key\",\"junction table\",\"database modeling\"]"
   triggers: "[\"er-modeling-skill\",\"database-design-skill\"]"
-  relations: "{\"related\":[\"database-migration\",\"data-modeling\"],\"boundary\":[\"conceptual-modeling\"],\"verify_with\":[\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -249,10 +249,6 @@ After applying this skill, verify:
 
 **When to use**
 - Triggers: `er-modeling-skill`, `database-design-skill`
-
-**Related skills**
-- Verify with: `code-review`
-- Related: `database-migration`, `data-modeling`
 
 **Keywords**
 - `entity relationship`, `ER diagram`, `ER model`, `database design`, `schema design`, `normalization`, `foreign key`, `primary key`, `junction table`, `database modeling`

@@ -4,6 +4,7 @@ description: "Use when reasoning about mutation testing as a behavioral signal o
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"test-coverage-strategy\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: quality-assurance
@@ -21,7 +22,6 @@ metadata:
   triggers: "[\"how do we know the tests actually verify anything\",\"high coverage but bugs still slip through\",\"what is mutation testing\",\"is the test suite good or just thorough\",\"PIT vs Stryker\"]"
   examples: "[\"explain why a 90% coverage codebase might have a 40% mutation score and what that means\",\"decide whether to run mutation testing on a critical financial module\",\"diagnose surviving mutants in a calculation function and identify the missing assertion\",\"design a CI pipeline that runs incremental mutation testing only on changed code\"]"
   anti_examples: "[\"measure how much code the test suite executes (use test-coverage-strategy)\",\"design test doubles for an integration test (use test-doubles-design)\",\"inject failures into a running distributed system (use chaos-engineering)\"]"
-  relations: "{\"related\":[\"test-coverage-strategy\",\"test-driven-development\",\"testing-strategy\",\"eval-driven-development\"],\"boundary\":[{\"skill\":\"test-coverage-strategy\",\"reason\":\"test-coverage-strategy owns the structural signal of which code the test suite reaches; mutation-testing owns the behavioral signal of whether the test suite would catch a defect at that code location. The two compose: coverage is a necessary precondition for mutation testing to apply (an uncovered mutant trivially survives); mutation is the next layer of test-quality signal.\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the strategic question of what to test at which level; this skill owns one measurement of how good the tests at any level actually are.\"},{\"skill\":\"test-driven-development\",\"reason\":\"TDD produces tests with high behavioral specificity as a side effect; mutation testing is one way to measure whether that specificity is in fact present in a given test suite.\"}],\"verify_with\":[\"test-coverage-strategy\",\"testing-strategy\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -159,13 +159,6 @@ After applying this skill, verify:
 - measure how much code the test suite executes (use test-coverage-strategy)
 - design test doubles for an integration test (use test-doubles-design)
 - inject failures into a running distributed system (use chaos-engineering)
-- Owned by `test-coverage-strategy`: the structural signal of which code the test suite reaches
-- Owned by `testing-strategy`: the strategic question of what to test at which level
-- Owned by `test-driven-development`
-
-**Related skills**
-- Verify with: `test-coverage-strategy`, `testing-strategy`
-- Related: `test-coverage-strategy`, `test-driven-development`, `testing-strategy`, `eval-driven-development`
 
 **Concept**
 - Mental model: |

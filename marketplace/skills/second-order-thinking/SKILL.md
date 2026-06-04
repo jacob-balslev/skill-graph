@@ -4,6 +4,7 @@ description: "Use when a decision, intervention, policy, product change, metric 
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"inversion\"]}"
   schema_version: "7"
   version: "1.0.0"
   subject: reasoning-strategy
@@ -21,7 +22,6 @@ metadata:
   triggers: "[\"and then what\",\"what are the second-order effects\",\"what happens next\",\"think through downstream consequences\",\"what incentives does this change\"]"
   examples: "[\"If we add a usage cap, what happens next for users, support, and revenue?\",\"This metric target looks good immediately. What second-order effects could make it harmful?\",\"Before changing the review process, think through how agents and reviewers will respond.\",\"What delayed effects will this cost-cutting decision create?\"]"
   anti_examples: "[\"Invert this plan and list how to make it fail.\",\"Break this strategy into irreducible premises.\",\"The same issue appears in many files; cluster the pattern.\",\"Find the highest leverage point in this system.\"]"
-  relations: "{\"related\":[\"inversion\",\"first-principles-thinking\",\"mental-models\",\"constraint-awareness\",\"pattern-recognition\"],\"verify_with\":[\"epistemic-grounding\",\"mental-models\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -260,10 +260,6 @@ After applying this skill, verify:
 - Break this strategy into irreducible premises.
 - The same issue appears in many files; cluster the pattern.
 - Find the highest leverage point in this system.
-
-**Related skills**
-- Verify with: `epistemic-grounding`, `mental-models`
-- Related: `inversion`, `first-principles-thinking`, `mental-models`, `constraint-awareness`, `pattern-recognition`
 
 **Concept**
 - Mental model: |

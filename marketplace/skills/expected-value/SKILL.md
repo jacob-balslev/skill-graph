@@ -5,6 +5,7 @@ license: MIT
 compatibility: "Markdown, decision memos, strategy analysis, product bets, risk tradeoffs"
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"bayesian-reasoning\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: reasoning-strategy
@@ -22,7 +23,6 @@ metadata:
   triggers: "[\"expected-value\",\"probability-weighted-decision\",\"ev-decision\"]"
   examples: "[\"Calculate the expected value of these three options and recommend one.\",\"This experiment has outcome probabilities and payoffs; calculate expected value and decide whether to run it.\",\"Find the break-even probability for this product bet.\",\"The expected value is positive but the downside is severe; how should we decide?\"]"
   anti_examples: "[\"Update these probabilities after new customer evidence.\",\"Prioritize this backlog with RICE using reach, impact, confidence, and effort.\",\"Trace the second- and third-order consequences before we model outcomes.\"]"
-  relations: "{\"boundary\":[{\"skill\":\"bayesian-reasoning\",\"reason\":\"expected-value owns action comparison after probabilities are accepted; bayesian-reasoning owns updating those probabilities from evidence\"},{\"skill\":\"prioritization\",\"reason\":\"expected-value owns quantified probability-weighted payoff; prioritization owns broad mixed-criteria ranking when values or probabilities are not modeled\"},{\"skill\":\"second-order-thinking\",\"reason\":\"expected-value owns weighing modeled outcomes; second-order-thinking owns expanding consequence chains before outcome probabilities exist\"}],\"related\":[\"bayesian-reasoning\",\"second-order-thinking\",\"prioritization\",\"constraint-awareness\",\"evaluation\"],\"verify_with\":[\"methodical\",\"epistemic-grounding\",\"constraint-awareness\"]}"
   grounding: "{\"subject_matter\":\"Expected value as a portable probability-weighted decision method\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://plato.stanford.edu/entries/rationality-normative-utility/\",\"https://plato.stanford.edu/entries/decision-theory/\",\"skills/skills/meta-methods/expected-value/references/expected-value-sources.md\",\"skills/skills/meta-methods/expected-value/references/upstream-displacement-2026-05-27.md\"],\"failure_modes\":[\"probability_sum_error\",\"mixing_units_across_outcomes\",\"payoff_without_cost\",\"average_case_hides_ruin\",\"fake_precision\",\"ignoring_sensitivity\",\"treating_expected_value_as_probability_update\"],\"evidence_priority\":\"general_knowledge_first\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
@@ -334,13 +334,6 @@ After applying this skill, verify:
 - Update these probabilities after new customer evidence.
 - Prioritize this backlog with RICE using reach, impact, confidence, and effort.
 - Trace the second- and third-order consequences before we model outcomes.
-- Owned by `bayesian-reasoning`: action comparison after probabilities are accepted
-- Owned by `prioritization`: quantified probability-weighted payoff
-- Owned by `second-order-thinking`: weighing modeled outcomes
-
-**Related skills**
-- Verify with: `methodical`, `epistemic-grounding`, `constraint-awareness`
-- Related: `bayesian-reasoning`, `second-order-thinking`, `prioritization`, `constraint-awareness`, `evaluation`
 
 **Concept**
 - Mental model: Expected value is a weighted average over possible futures. The primitives are actions, mutually exclusive outcomes, probabilities conditional on each action, values or utilities in one shared unit, costs, constraints, and sensitivity ranges. For each action, multiply each outcome value by its probability, sum the products, subtract costs, and compare the resulting expectation against alternatives inside the feasible set.

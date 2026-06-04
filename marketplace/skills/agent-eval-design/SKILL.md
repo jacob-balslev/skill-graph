@@ -5,6 +5,7 @@ license: MIT
 compatibility: "Portable eval-design discipline for agent workflows, skill routers, prompt systems, and tool-use policies."
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"boundary\":[\"testing-strategy\"]}"
   subject: ai-engineering
   deployment_target: portable
   scope: "Designing behavioral evaluations for AI agents, skills, routers, prompts, tool-use policies, and multi-step workflows: task sets, rubrics, graders, hard negatives, regression cases, traces, and acceptance thresholds. Portable across agentic systems and skill libraries. Excludes application-code test planning, skill-library health tooling, live failure debugging, and code-diff review."
@@ -13,7 +14,6 @@ metadata:
   keywords: "[\"agent eval\",\"AI eval design\",\"skill routing eval\",\"eval rubric\",\"hard negatives\",\"grader design\",\"regression eval\",\"trace evaluation\",\"acceptance threshold\",\"prompt eval\"]"
   examples: "[\"design an eval set for whether this skill routes correctly against near-miss prompts\",\"create a rubric for judging agent outputs on grounded project knowledge extraction\",\"what hard negatives should test this router before we mark routing_eval present?\",\"turn these agent failure traces into regression eval cases\"]"
   anti_examples: "[\"plan unit, integration, and e2e tests for this product feature\",\"run the skill graph lint and overlap tooling\",\"debug why yesterday's agent run failed\",\"write production code to fix this failing test\"]"
-  relations: "{\"related\":[\"skill-router\",\"context-engineering\",\"testing-strategy\",\"skill-infrastructure\",\"debugging\",\"code-review\"],\"verify_with\":[\"testing-strategy\",\"skill-infrastructure\"]}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/ai-engineering/agent-eval-design/SKILL.md
@@ -99,10 +99,6 @@ The highest-value cases are hard negatives and prior failures. A routing eval wi
 - run the skill graph lint and overlap tooling
 - debug why yesterday's agent run failed
 - write production code to fix this failing test
-
-**Related skills**
-- Verify with: `testing-strategy`, `skill-infrastructure`
-- Related: `skill-router`, `context-engineering`, `testing-strategy`, `skill-infrastructure`, `debugging`, `code-review`
 
 **Keywords**
 - `agent eval`, `AI eval design`, `skill routing eval`, `eval rubric`, `hard negatives`, `grader design`, `regression eval`, `trace evaluation`, `acceptance threshold`, `prompt eval`

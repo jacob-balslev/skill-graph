@@ -5,6 +5,7 @@ license: MIT
 compatibility: "Markdown, strategy memos, market-entry analysis, business plans, product strategy, nonprofit planning, policy-aware planning"
 allowed-tools: Read Grep WebSearch WebFetch
 metadata:
+  relations: "{\"boundary\":[\"swot-tows\"]}"
   subject: reasoning-strategy
   deployment_target: portable
   scope: "PESTEL/PESTLE macro-environment scanning for organizations, products, programs, markets, and strategic decisions: define scope and horizon, gather external evidence across political, economic, social, technological, environmental, and legal forces, rate impact/probability/uncertainty, convert signals into opportunities, threats, assumptions, and monitoring triggers, and route the resulting fact base into downstream strategy work. Excludes internal capability analysis, industry profit-pool structure, value-innovation design, integrated strategy-choice formulation, execution goal-setting, and quantified expected-value comparison."
@@ -14,7 +15,6 @@ metadata:
   triggers: "[\"pestel\",\"pestle\",\"pest-analysis\",\"macro-environment-scan\"]"
   examples: "[\"Run a PESTEL analysis for entering this market.\",\"Scan the macro-environmental risks and opportunities before we choose a strategy.\",\"Build a PESTLE table for this product launch and separate evidence from assumptions.\",\"Which political, economic, social, technological, environmental, and legal forces could affect this plan?\",\"Review this PESTEL analysis and tell me where it jumps from trends to conclusions.\"]"
   anti_examples: "[\"Turn strengths, weaknesses, opportunities, and threats into SO, WO, ST, and WT options.\",\"Analyze supplier power, buyer power, entrants, substitutes, and rivalry.\",\"Turn this strategy into winning aspiration, where to play, how to win, capabilities, and systems.\"]"
-  relations: "{\"boundary\":[{\"skill\":\"swot-tows\",\"reason\":\"pestel owns external macro-environment scanning; swot-tows owns internal/external factor inventory and option generation after factors are identified\"},{\"skill\":\"porters-five-forces\",\"reason\":\"pestel owns broad uncontrollable macro forces; porters-five-forces owns industry profit-pressure structure among buyers, suppliers, entrants, substitutes, and rivals\"},{\"skill\":\"blue-ocean-strategy\",\"reason\":\"pestel owns macro-context evidence; blue-ocean-strategy owns value-curve reconstruction and demand creation\"},{\"skill\":\"playing-to-win\",\"reason\":\"pestel owns external context scanning before strategy choice; playing-to-win owns the integrated five-choice strategy cascade\"},{\"skill\":\"expected-value\",\"reason\":\"pestel owns qualitative signal scanning and implication framing; expected-value owns probability-weighted option comparison after outcomes and values are modeled\"}],\"related\":[\"swot-tows\",\"porters-five-forces\",\"blue-ocean-strategy\",\"playing-to-win\",\"positioning\",\"expected-value\",\"epistemic-grounding\",\"research-synthesis\",\"methodology\"],\"verify_with\":[\"epistemic-grounding\",\"research-synthesis\",\"methodology\"]}"
   grounding: "{\"subject_matter\":\"PESTEL/PESTLE analysis as a portable external macro-environment scanning method\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://www.cipd.org/uk/knowledge/factsheets/pestle-analysis-factsheet/\",\"https://open.oregonstate.education/strategicmanagement/chapter/3-the-general-environment-pestel/\",\"https://open.oregonstate.education/strategicmanagement2e/chapter/8-strategy-analysis-framework-saf/\",\"https://openlibrary.org/books/OL5535031M\",\"skills/skills/meta-methods/pestel/references/pestel-sources.md\",\"skills/skills/meta-methods/pestel/references/upstream-displacement-2026-06-03.md\"],\"failure_modes\":[\"internal_factor_misclassified_as_macro_force\",\"competitor_rivalry_confused_with_macro_environment\",\"trend_list_without_strategy_implications\",\"stale_or_unsourced_macro_claims\",\"future_claims_presented_as_certainties\",\"factor_categories_used_as_final_recommendations\",\"overcollecting_data_without_prioritization\",\"one_country_or_segment_scope_left_implicit\"],\"evidence_priority\":\"general_knowledge_first\"}"
   mental_model: "PESTEL is an external-environment scan. The primitives are a scoped decision context, a time horizon, a geography or market boundary, six uncontrollable macro-force categories, evidence sources, signals, impact, probability, uncertainty, opportunity/threat implications, assumptions, and monitoring triggers. The method turns broad external change into a prioritized context map that can feed SWOT/TOWS, Five Forces, scenario planning, market-entry decisions, or strategy formulation."
   purpose: "This skill prevents agents from choosing a strategy while ignoring the broader context that can make the choice invalid: regulation, economic conditions, social shifts, technology change, climate or resource constraints, and legal requirements. It also prevents shallow PESTEL tables by forcing scope, evidence, impact, uncertainty, implications, and monitoring."
@@ -24,8 +24,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/pestel/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
-  skill_graph_export_description_projection_truncated: "true"
+  skill_graph_export_description_projection: anti_examples
 ---
 
 ## Concept of the skill
@@ -262,15 +261,6 @@ Before returning a PESTEL output, verify:
 - Turn strengths, weaknesses, opportunities, and threats into SO, WO, ST, and WT options.
 - Analyze supplier power, buyer power, entrants, substitutes, and rivalry.
 - Turn this strategy into winning aspiration, where to play, how to win, capabilities, and systems.
-- Owned by `swot-tows`: external macro-environment scanning
-- Owned by `porters-five-forces`: broad uncontrollable macro forces
-- Owned by `blue-ocean-strategy`: macro-context evidence
-- Owned by `playing-to-win`: external context scanning before strategy choice
-- Owned by `expected-value`: qualitative signal scanning and implication framing
-
-**Related skills**
-- Verify with: `epistemic-grounding`, `research-synthesis`, `methodology`
-- Related: `swot-tows`, `porters-five-forces`, `blue-ocean-strategy`, `playing-to-win`, `positioning`, `expected-value`, `epistemic-grounding`, `research-synthesis`, `methodology`
 
 **Concept**
 - Mental model: PESTEL is an external-environment scan. The primitives are a scoped decision context, a time horizon, a geography or market boundary, six uncontrollable macro-force categories, evidence sources, signals, impact, probability, uncertainty, opportunity/threat implications, assumptions, and monitoring triggers. The method turns broad external change into a prioritized context map that can feed SWOT/TOWS, Five Forces, scenario planning, market-entry decisions, or strategy formulation.

@@ -5,6 +5,7 @@ license: MIT
 compatibility: "PostgreSQL 12+ (covers concurrent index, NOT VALID foreign keys, generated columns). Connection examples target raw `psql` and the unpooled side of any PgBouncer-style pooler. Branching examples reference `neonctl` as one provider — substitute the equivalent CLI for Supabase, Xata, or self-hosted clones if your platform supports branched databases."
 allowed-tools: Read Grep Bash Edit
 metadata:
+  relations: "{\"boundary\":[\"debugging\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: data-engineering
@@ -20,7 +21,6 @@ metadata:
   keywords: "[\"database migration\",\"schema migration\",\"zero-downtime migration\",\"DDL migration\",\"raw SQL migration\",\"Postgres DDL\",\"alter table production\",\"expand contract migration\",\"concurrent index creation\",\"migration rollback\"]"
   examples: "[\"add a nullable column to a 50M-row orders table without taking downtime\",\"rename the `display_name` column to `username` while the app is live\",\"create a btree index on a 100M-row table without locking writes\",\"the migration takes ACCESS EXCLUSIVE — how do I avoid the lock?\",\"add a foreign key to a 10M-row table without blocking writes\",\"should I use ADD COLUMN ... NOT NULL DEFAULT 0 in this migration?\",\"write a rollback strategy for this schema change in case production breaks\",\"split the migration into expand and contract phases across two deploys\"]"
   anti_examples: "[\"design the row-level-security model for our new tenant table\",\"the migration crashed in production — find the root cause\",\"explain our migration conventions in the contributor docs\",\"refactor the migration runner helper for clarity\",\"decide whether this column rename needs an automated regression test\",\"review this AI-generated DDL diff for correctness\"]"
-  relations: "{\"related\":[\"testing-strategy\",\"debugging\",\"owasp-security\",\"refactor\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -478,10 +478,6 @@ This skill ships a comprehension-eval artifact at [`examples/evals/database-migr
 - refactor the migration runner helper for clarity
 - decide whether this column rename needs an automated regression test
 - review this AI-generated DDL diff for correctness
-
-**Related skills**
-- Verify with: `testing-strategy`, `code-review`
-- Related: `testing-strategy`, `debugging`, `owasp-security`, `refactor`
 
 **Keywords**
 - `database migration`, `schema migration`, `zero-downtime migration`, `DDL migration`, `raw SQL migration`, `Postgres DDL`, `alter table production`, `expand contract migration`, `concurrent index creation`, `migration rollback`
