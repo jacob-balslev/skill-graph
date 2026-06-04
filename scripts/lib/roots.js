@@ -156,11 +156,43 @@ function resolveTruthSourcePath(relPath, repoRoot, skillRoots) {
   return path.resolve(repoRoot, relPath);
 }
 
+/**
+ * Detect whether a truth_source path has a redundant `skills/skills/` segment
+ * that causes a spurious "file not found" result from resolveTruthSourcePath.
+ *
+ * The resolution rule for skill-library-aware paths is:
+ *   `skills/<rest>` → `<library-parent>/skills/<rest>`
+ * When the path was authored with the library root included redundantly, it
+ * becomes `skills/skills/<rest>` → `<library-parent>/skills/skills/<rest>`
+ * (triple-skills) → not found.  The path is structurally malformed; the file
+ * is likely at `skills/<rest>` (single prefix).
+ *
+ * This function is a DIAGNOSTIC ONLY — it does not auto-correct the path.
+ * Callers should emit a BROKEN (malformed path: ...) message and direct the
+ * skill author to fix the `grounding.truth_sources` value in the SKILL.md.
+ *
+ * @param {string} relPath — workspace-relative path from a truth_source
+ * @returns {{ malformed: boolean, suggestedPath: string|null }}
+ *   malformed   — true when a redundant `skills/skills/` prefix is detected
+ *   suggestedPath — the de-duplicated path (exists check is left to the caller)
+ */
+function detectMalformedTruthSourcePath(relPath) {
+  if (typeof relPath !== 'string') return { malformed: false, suggestedPath: null };
+  // Detect the canonical failure mode: path starts with `skills/skills/`
+  // (the library root basename repeated as a leading path segment).
+  if (relPath.startsWith('skills/skills/')) {
+    const suggestedPath = relPath.replace(/^skills\/skills\//, 'skills/');
+    return { malformed: true, suggestedPath };
+  }
+  return { malformed: false, suggestedPath: null };
+}
+
 module.exports = {
   packageRoot,
   workspaceRoot,
   collectSkillFiles,
   collectSkillFilesFromRoots,
+  detectMalformedTruthSourcePath,
   loadRootsConfig,
   loadWorkspaceConfig, // back-compat alias for v8 callers; new code uses loadRootsConfig
   resolvePackagedOrWorkspacePath,

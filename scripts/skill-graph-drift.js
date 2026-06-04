@@ -38,7 +38,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const { parseFrontmatter, normalizeFrontmatter } = require('./lib/parse-frontmatter');
-const { collectSkillFilesFromRoots, workspaceRoot, resolveTruthSourcePath } = require('./lib/roots');
+const { collectSkillFilesFromRoots, workspaceRoot, resolveTruthSourcePath, detectMalformedTruthSourcePath } = require('./lib/roots');
 // ADR-0019: drift_check (hashes) + drift_status + lifecycle live in the
 // audit-state.json sidecar; grounding.truth_sources stays in frontmatter.
 const { readSidecar, writeSidecarFields, joinSidecar } = require('./lib/audit-state-sidecar');
@@ -167,6 +167,25 @@ function sha256TruthSource(src, skillRoots = []) {
 
   const absPath = resolveTruthSourcePath(normalized.path, REPO_ROOT, skillRoots);
   if (!fs.existsSync(absPath)) {
+    // Before reporting a bare "file not found", check whether the path has a
+    // structural defect — specifically the redundant `skills/skills/` prefix
+    // that arises when the skill author included the library root basename in
+    // the truth_source path.  resolveTruthSourcePath already strips one level
+    // of `skills/`, so the path arrives here as a triple-skills resolved path.
+    // Emit a diagnostic hint to guide the author to the fix; do NOT silently
+    // auto-correct the path.
+    const malformCheck = detectMalformedTruthSourcePath(normalized.path);
+    if (malformCheck.malformed) {
+      const suggestion = malformCheck.suggestedPath
+        ? ` — did you mean '${malformCheck.suggestedPath}'?`
+        : '';
+      return {
+        normalized,
+        hash: null,
+        error: `malformed path: redundant 'skills/skills/' prefix${suggestion}`,
+        malformedPath: true,
+      };
+    }
     return { normalized, hash: null, error: 'file not found' };
   }
 
@@ -248,6 +267,7 @@ function checkSkill(skillMdPath, skillRoots = []) {
       live_hash: liveHash,
       recorded_hash: recorded || null,
       error: hashed.error,
+      malformed_path: hashed.malformedPath || false,
       status: entryStatus,
     });
   }
@@ -483,7 +503,11 @@ function main() {
       console.log(`${r.status.padEnd(13)} ${r.skill}${staleInfo}`);
       for (const ts of r.truth_sources) {
         if (ts.status !== 'OK') {
-          console.log(`  ${ts.status.padEnd(13)} ${ts.source}`);
+          // For BROKEN entries with a malformed-path diagnosis, append the hint
+          // so authors can immediately see why the path does not resolve rather
+          // than having to investigate a bare "file not found".
+          const hint = ts.malformed_path && ts.error ? ` (${ts.error})` : '';
+          console.log(`  ${ts.status.padEnd(13)} ${ts.source}${hint}`);
         }
       }
     }
