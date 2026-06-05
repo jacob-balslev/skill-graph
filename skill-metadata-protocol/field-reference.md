@@ -1229,6 +1229,50 @@ paths:
 
 ---
 
+## Claude Code runtime fields: `context` and `disallowed-tools`
+
+These are **Claude Code native frontmatter fields**, not Skill Graph protocol fields. They are not defined in the Skill Metadata Protocol schema and carry no Skill Graph routing or audit semantics. However, they are valid to author in a `SKILL.md` for skills that run inside Claude Code — particularly **autonomous audit-runner skills** that must suppress interactive tool calls when operating in a non-interactive context.
+
+### `context: fork`
+
+**Purpose.** Instructs Claude Code to run this skill in an isolated subagent context (a forked process) rather than inline in the current session. The forked context cannot call back into the parent session and cannot use interactive tools such as `AskUserQuestion`.
+
+**When to use.** Author `context: fork` on any skill that is designed to be invoked as an autonomous runner — for example, a skill that orchestrates the Skill Audit Loop in batch mode, where user interaction is explicitly undesirable. It prevents the runner from blocking on `AskUserQuestion` prompts that would never be answered in a headless or scripted context.
+
+**Rules.**
+- This is a Claude Code runtime control, not a Skill Graph routing or classification field. Routers, manifest generators, and lint scripts ignore it.
+- Only author on skills with `deployment_target: project` where the project's runner infrastructure explicitly invokes the skill in an autonomous (non-interactive) mode.
+- Do not author on portable skills or skills invoked interactively.
+
+**Example.**
+```yaml
+name: skill-audit-runner
+description: Autonomous audit-loop runner for the Skill Audit Loop batch pipeline.
+subject: agent-ops
+deployment_target: project
+scope: Orchestrates per-skill audit passes in autonomous batch mode without user interaction.
+context: fork
+disallowed-tools: AskUserQuestion
+```
+
+### `disallowed-tools`
+
+**Purpose.** Space-separated list of tool names that Claude Code must not invoke when running this skill. The value is honoured by Claude Code's tool-gating layer.
+
+**When to use.** Pair with `context: fork` on autonomous runner skills to explicitly block `AskUserQuestion`. The Skill Audit Loop already passes `--disallowed-tools` at the CLI level when running eval sub-calls (see `lib/audit/evaluate-skill.js` — the `runPromptWithCli` helper adds `--disallowed-tools Read,Edit,Write,Bash,…` when `allowTools` is false), so `disallowed-tools` in a skill's frontmatter is the declarative, skill-level equivalent of that runtime flag.
+
+**Rules.**
+- Space-separated tool names (matches the Claude Code CLI `--disallowed-tools` flag format, not comma-separated).
+- `AskUserQuestion` is the canonical value for autonomous-runner skills.
+- You may list multiple tools: `disallowed-tools: AskUserQuestion Edit Write`.
+- This field is distinct from `allowed-tools` (which is a Skill Graph protocol field that also surfaces as a top-level SKILL.md field). `disallowed-tools` is a denylist; `allowed-tools` is an allowlist. Do not confuse them.
+
+**Real usage in this codebase.** `lib/audit/evaluate-skill.js::runPromptWithCli` (line 652) applies `--disallowed-tools Read,Edit,Write,Bash,Glob,Grep,Agent,WebSearch,WebFetch,NotebookEdit` for the eval sub-calls. `lib/audit/eval-execution-profile.js` (line 108) carries the same list. These are the runtime references; `disallowed-tools` in a skill's frontmatter is the static declaration of the same intent at authoring time.
+
+**When NOT to use.** Do not author on interactively-used skills. Any skill where the user may need to answer a clarifying question should not suppress `AskUserQuestion`.
+
+---
+
 ## `routing_bundles`
 
 **Purpose.** Named routing group membership for batch activation and browse classification. Allows a router to load all skills in a group with a single label.

@@ -4,6 +4,12 @@ description: "Use when building or reviewing interactive UI, forms, navigation, 
 license: MIT
 compatibility: "Markdown, Git, any web stack"
 allowed-tools: Read Grep
+paths:
+  - "**/*.{html,tsx,jsx,vue,svelte}"
+  - "**/*.css"
+  - "!**/*.test.{ts,tsx,js,jsx}"
+  - "!**/dist/**"
+  - "!**/node_modules/**"
 metadata:
   last_audited: "2026-05-28"
   lint_verdict: PASS
@@ -22,7 +28,6 @@ metadata:
   stability: experimental
   keywords: "[\"screen reader\",\"announce\",\"validation state\",\"form labels\",\"assistive tech\",\"ARIA roles\",\"keyboard support\",\"arrow key\",\"navigation\",\"focus return\"]"
   triggers: "[\"a11y-skill\"]"
-  paths: "[\"**/*.{html,tsx,jsx,vue,svelte}\",\"**/*.css\",\"!**/*.test.{ts,tsx,js,jsx}\",\"!**/dist/**\",\"!**/node_modules/**\"]"
   examples: "[\"this modal is keyboard-trapped — users can't Escape to close it\",\"screen reader doesn't announce when the form validation state changes\",\"add proper labels to these form fields so assistive tech can read them\",\"review this dropdown menu for arrow-key navigation and focus return\"]"
   anti_examples: "[\"rewrite this error message at a 6th-grade reading level\",\"clean up this accessibility code without changing how it behaves\"]"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"

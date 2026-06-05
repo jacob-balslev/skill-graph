@@ -6,8 +6,12 @@
  * the plain `metadata:` key, and writes a SKILL.md-format export to the skill
  * directory (or to --output <path>).
  *
- * The resulting file has at most 6 top-level fields:
- *   name, description, license, compatibility, allowed-tools, metadata
+ * The resulting file has at most 7 top-level fields:
+ *   name, description, license, compatibility, allowed-tools, paths, metadata
+ *
+ * `paths` is a Claude Code native field for file-surface activation. It must
+ * appear at the top level of SKILL.md (not under metadata:) so Claude Code's
+ * native activation logic can honour it. Only emitted when present.
  *
  * Plain SKILL.md metadata is a string-to-string map. Structured Skill Graph
  * extension values are therefore JSON-encoded as strings under metadata.
@@ -34,7 +38,9 @@ const { normalizeFrontmatter, parseFrontmatter } = require('./lib/parse-frontmat
 
 // Plain SKILL.md fields that stay at the top level of the output.
 // Order matters for the generated YAML - base fields appear first.
-const SKILL_MD_BASE_FIELDS = ['name', 'description', 'license', 'compatibility', 'allowed-tools'];
+// `paths` is a Claude Code native field consumed at the top level of SKILL.md
+// for file-surface activation; it must not be buried under metadata:.
+const SKILL_MD_BASE_FIELDS = ['name', 'description', 'license', 'compatibility', 'allowed-tools', 'paths'];
 
 // Skill Graph extension fields that move under metadata:.
 // Every known Skill Graph extension field is listed here so the set is
@@ -78,7 +84,6 @@ const SKILL_GRAPH_EXTENSION_FIELDS = new Set([
   'portability',
   'triggers',
   'keywords',
-  'paths',
   'project',
   'repo',
   'routing_bundles',

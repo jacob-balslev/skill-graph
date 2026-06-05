@@ -28,7 +28,11 @@ const WORKSPACE_CONFIG = loadWorkspaceConfig(REPO_ROOT, msg => process.stderr.wr
 const SKILL_ROOTS = resolveSkillRoots(REPO_ROOT, WORKSPACE_CONFIG);
 // Primary skill root — first configured root, or local skills/ as fallback.
 const DEFAULT_SKILLS_DIR = SKILL_ROOTS[0].absPath;
-const TOP_LEVEL_FIELDS = new Set(['name', 'description', 'license', 'compatibility', 'metadata', 'allowed-tools']);
+// `paths` is a Claude Code native field for file-surface activation. It is
+// emitted at the top level by export-skill.js (not under metadata:) so that
+// Claude Code's skill-loading logic can honour it. Other runtimes that do not
+// recognise `paths` will ignore the extra key without breaking.
+const TOP_LEVEL_FIELDS = new Set(['name', 'description', 'license', 'compatibility', 'metadata', 'allowed-tools', 'paths']);
 
 function repoRelative(filePath) {
   return path.relative(REPO_ROOT, filePath).split(path.sep).join('/');
@@ -91,6 +95,12 @@ function validateExportedFrontmatter(fm) {
 
   if (fm['allowed-tools'] !== undefined && typeof fm['allowed-tools'] !== 'string') {
     errors.push('allowed-tools must be a space-separated string when present');
+  }
+
+  if (fm.paths !== undefined) {
+    if (!Array.isArray(fm.paths) || fm.paths.some(p => typeof p !== 'string' || p.length === 0)) {
+      errors.push('paths must be an array of non-empty strings when present');
+    }
   }
 
   if (fm.metadata !== undefined) {
