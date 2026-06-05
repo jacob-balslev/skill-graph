@@ -7,7 +7,35 @@ Routing quality is an information-retrieval problem. A clean skill graph is not
 proved by "the router felt right"; it is proved by held-out prompts, hard
 negatives, confusion pairs, and repeatable metrics.
 
-## Baseline Results (Updated 2026-05-24)
+## Semantic Embedding Index — Body Text Baseline (SKI-53, 2026-06-05)
+
+**Change:** `scripts/skill/skill-embedder.js` now indexes skill body text (markdown
+content after the closing `---` frontmatter delimiter) in addition to
+`name + description + keywords`. This feeds `scripts/discovery/skill-embeddings.json`,
+which powers the TF-IDF cosine-similarity path in `scripts/skill/skill-router.js`
+(`includeSemantic: true`, the default).
+
+| Metric | Before (name+desc+kw only) | After (+ body text) | Delta |
+|---|---|---|---|
+| Total indexed terms | 3,955 | 16,163 | **+4.09×** |
+| Skills indexed | 166 | 167 | +1 (new skill added) |
+| Sample query — "tests pass locally but fail in CI" | *(no semantic match above threshold)* | `integration-test-design` @1, `e2e-test-design` @2 | FIXED |
+| Sample query — "accessibility keyboard navigation" | `a11y` @1 | `a11y` @1 | unchanged |
+| Sample query — "SSE or WebSocket" | *(no semantic match above threshold)* | `streaming-architecture` @1 | FIXED |
+
+The 4× term-vocabulary expansion means the semantic router can now find skills
+based on the procedural guidance in their body (e.g. "CI/CD" in
+`integration-test-design`, "WebSocket" in `streaming-architecture`) rather than
+only on the hand-authored frontmatter metadata.
+
+**Router used:** `scripts/skill/skill-router.js` (semantic/TF-IDF cosine path).
+This is the workspace skill resolver used by the Claude injector, manage solver,
+OpenCode lanes, and design audit workers. It is a separate router from the
+`skill-graph-route.js` manifest router below.
+
+---
+
+## Manifest-Based Router Baseline (skill-graph-route.js, 2026-06-05)
 
 **Baseline:** `evals/retrieval-baseline-v2.json` — 64 stratified queries across 5 categories
 (agent: 11, engineering: 26, quality: 12, design: 11, foundations: 4).
@@ -15,34 +43,43 @@ negatives, confusion pairs, and repeatable metrics.
 | Metric | Value | Evidence |
 |---|---|---|
 | Queries evaluated | 64 | `node scripts/skill-graph-routing-eval.js --baseline evals/retrieval-baseline-v2.json --only-asserted` |
-| Recall@1 | **96.9%** (62/64) | 2 misses: `sharding-strategy`, `visual-design-foundations` |
-| Recall@3 | **100.0%** (64/64) | All queries hit within top-3 |
-| Coverage: `routing_eval: present` | 9/147 skills | 9 asserted; all 9 PASS in per-skill activation eval |
+| Recall@1 | **71.9%** (46/64) | 10 misses not in top-3, 8 hits at @3 only |
+| Recall@3 | **84.4%** (54/64) | 10 total misses (not in top-3) |
+| Coverage: `routing_eval: present` | 15/167 skills | 15 asserted; 1 PASS, 14 FAIL |
 
-**Per-skill activation eval (asserted skills only):**
+This router uses activation `keywords`, `triggers`, and `paths` from the compiled
+manifest — NOT the embeddings file. Its Recall@1 decline from the prior
+2026-05-24 baseline (96.9% / 62/64) is due to corpus expansion (147→167 skills) and
+new skills whose `keywords`/`boundary` declarations need tuning. The body-text
+embedding change (SKI-53) does not affect this router.
+
+**Per-skill activation eval (asserted skills only, 2026-06-05):**
 
 ```
 node scripts/skill-graph-routing-eval.js --only-asserted --confusion-matrix
 ```
 
-Result: 9/9 PASS, 0 FAIL — all positive cases route to the declared skill;
-all 27 negative cases route to a named boundary target (0 self-hits, 0 off-boundary hits).
+Result: 1/15 PASS, 14 FAIL — boundary and positive-case coverage gaps requiring
+per-skill `keywords`/`relations.boundary` updates (separate CONTENT-mode work).
 
-**Misses at Recall@1 (hit at Recall@3 only):**
+**Archived: 2026-05-24 Manifest Router Baseline**
 
-| Query ID | Expected skill | Actual top-1 |
-|---|---|---|
-| engineering-024 | `sharding-strategy` | `agent-engineering` |
-| design-008 | `visual-design-foundations` | `frontend-architecture` |
+This prior baseline used an older corpus (147 skills, 9 with `routing_eval: present`):
 
-These two skills are not eligible for `routing_eval: present` until the miss is resolved.
-All other 62 baseline queries hit at Recall@1. Eight baseline skills are already marked
-`routing_eval: present`; `skill-router` is also marked `present` through the asserted
-activation suite, but it is not part of this retrieval baseline.
+| Metric | Value |
+|---|---|
+| Recall@1 | 96.9% (62/64) |
+| Recall@3 | 100.0% (64/64) |
+| Coverage | 9/147 skills |
 
-**Baseline-covered skills eligible for `routing_eval: present`:**
+Misses were: `sharding-strategy` (top-1: agent-engineering) and `visual-design-foundations`
+(top-1: frontend-architecture).
 
-54 unique baseline skills hit at Recall@1 in this baseline but are not yet marked `routing_eval: present`.
+---
+
+## Baseline-covered skills eligible for `routing_eval: present`
+
+54 unique baseline skills hit at Recall@1 in the 2026-05-24 baseline but are not yet marked `routing_eval: present`.
 Their canonical `SKILL.md` files live in the sibling `skills` repo
 (`~/Development/skills/skills/`). Flipping the label requires a commit in that repo;
 this metric doc records the eligibility so the flip can be done in a follow-on task.
