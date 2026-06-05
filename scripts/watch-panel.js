@@ -78,8 +78,10 @@ function main(argv) {
 
   if (once) { paint(); process.exit(0); }
 
+  // NOTE: do NOT unref() this interval — it is the only handle keeping the viewer alive;
+  // unref'ing it makes node exit immediately after the first paint. The viewer runs until
+  // COMPLETE (paint() returns true) or the harness/Monitor times out.
   const timer = setInterval(() => { if (paint()) { clearInterval(timer); process.exit(0); } }, pollMs);
-  if (timer.unref) timer.unref();
   paint();
 }
 
