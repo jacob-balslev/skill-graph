@@ -598,6 +598,9 @@ relations:
   depends_on:     # skills this skill requires operationally or conceptually.
   broader:        # this skill is a specialisation of the target skill (skos:broader).
   narrower:       # this skill is a generalisation of the target (skos:narrower).
+  io_contract:    # OPTIONAL composition contract — abstract artifact TYPES consumed/produced.
+    inputs:       #   kebab-case type tokens this skill consumes (NOT file paths).
+    outputs:      #   kebab-case type tokens this skill produces.
 ```
 
 **`related`** (preferred) / `adjacent` (deprecated alias)
@@ -647,6 +650,13 @@ Authors who introduce a cross-domain `boundary[]` entry must move it to `anti_ex
 
 **`broader` / `narrower`**
 - Cross-skill generalisation/specialisation edges (SKOS). Use `broader` when this skill is a specialisation of another skill that is not its overlay parent. `narrower` is the inverse; tooling can infer it from other skills' `broader` edges.
+
+**`io_contract`** (optional, non-edge — deterministic composition; SKI-52)
+- Not an edge to a named skill. It declares the abstract artifact **types** this skill consumes (`inputs`) and produces (`outputs`), so the tooling can *derive* `depends_on` edges from output→input compatibility without an LLM — the machine-checkable composition pattern of Graph of Skills (arXiv 2604.05333) and SkillNet (arXiv 2603.04448).
+- `inputs[]` and `outputs[]` are **kebab-case abstract artifact-type tokens** (`skill-md`, `audit-findings`, `manifest`, `routing-config`, …), never concrete file paths. Composition holds when one skill's output token equals another's input token.
+- The builder (`scripts/skill/skill-graph-builder.js`) emits a derived edge **consumer→producer** when `producer.outputs ∩ consumer.inputs ≠ ∅`; the result lands under `io_composition` in `scripts/discovery/skill-graph.json`.
+- `node scripts/skill/check-io-composition.js` (`npm run check:io-composition`) gates two failures: **broken chains** — an authored `depends_on` target whose outputs satisfy none of the dependent's declared `inputs` — and **cycles** (Tarjan SCC on the depends_on subgraph). Exit 1 on either.
+- Fully optional and forces no corpus migration: a skill without `io_contract` contributes no derived edges and is never flagged.
 
 ### Grounding
 

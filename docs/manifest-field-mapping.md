@@ -71,7 +71,7 @@ Every top-level authored field in `schemas/SKILL_METADATA_PROTOCOL_schema.json` 
 | 34a | `project` | copied through unchanged | Belonging-entity references for project-anchored skills. Array of `{handle, role}`. Replaces `workspace_tags`. |
 | 34b | `repo` | copied through unchanged | Repo-level belonging-entity references. Array of `{handle, url}`. |
 | 35 | `routing_bundles` | copied through unchanged | Activation-bundle tags. v4 rename of v3 `routing_groups`. |
-| 36 | `relations` | copied through unchanged | `relations`. |
+| 36 | `relations` | copied through unchanged | `relations`. Includes the seven edge keys AND the optional non-edge `relations.io_contract` (`{inputs, outputs}` of abstract artifact-type tokens — SKI-52). The manifest copies `io_contract` through verbatim; the derived `depends_on` edges and broken-chain/cycle findings are NOT projected into the manifest — they are computed at graph-build time and surfaced under `io_composition` in `scripts/discovery/skill-graph.json` (the consumer-side graph), not in `skills.manifest.json`. |
 | 37 | `grounding` | copied through unchanged | `grounding`. |
 | 38 | `portability` | copied through unchanged | `portability`. |
 | 39 | `lifecycle` | grouped under parent | `health.lifecycle`. |
@@ -298,6 +298,7 @@ The bare-string form remains valid (`- fulfillment`). The object form is opt-in 
 | `compatibility: "<text>"` | `compatibility: { notes: "<text>" }` | scalar → object |
 | `relations.boundary: [str]` | `relations.boundary: [str | {skill, reason}]` | extended (back-compat) |
 | `relations.depends_on: [str]` | `relations.depends_on: [str | {skill, min_version}]` | extended (back-compat) |
+| *(none)* | `relations.io_contract: {inputs:[token], outputs:[token]}` | new optional field (SKI-52) — opt-in, no migration |
 
 **Consumer impact.** The manifest projection shape changed in lockstep. `health.drift_check` is now always an object; `compatibility` is always an object; `browse_category` replaces `family` at every reference (including `summary.by_browse_category` vs v2's `summary.by_family`). Consumers pinned to v2 must regenerate against v3 or continue using `schemas/manifest.v2.schema.json`.
 

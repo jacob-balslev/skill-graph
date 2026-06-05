@@ -135,6 +135,17 @@ relations:
   #   - skill-infrastructure
   boundary: []
   verify_with: []
+  # OPTIONAL — io_contract (SKI-52): a deterministic, LLM-free composition
+  # contract. Declares the abstract artifact TYPES this skill consumes (`inputs`)
+  # and produces (`outputs`) as kebab-case tokens (NOT file paths). The builder
+  # derives `depends_on` edges from output→input compatibility; broken chains and
+  # cycles are flagged by `npm run check:io-composition`. Omit entirely when the
+  # skill has no machine-checkable I/O contract — it forces no migration.
+  # io_contract:
+  #   inputs:
+  #     - skill-md
+  #   outputs:
+  #     - audit-findings
 # grounding: required when `deployment_target: project`. Declares the truth
 # sources the skill anchors to (files, schemas, vendor docs) and the failure
 # modes those sources prevent. Omit this entire block when the skill is

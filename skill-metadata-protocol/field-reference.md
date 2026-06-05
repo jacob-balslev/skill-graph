@@ -1263,8 +1263,8 @@ routing_bundles:
 **Purpose.** Graph semantics between skills. Each key in the `relations` object describes a different type of relationship. Together they form the edges of the skill graph.
 
 **Rules.**
-- Object with up to seven optional keys: `related` (preferred) / `adjacent` (deprecated alias), `broader`, `narrower`, `boundary`, `disjoint_with`, `verify_with`, `depends_on`.
-- Every target must be the `name` of an existing skill. Use graph/manifest review and routing audits to catch dangling targets across all seven keys; `scripts/skill-lint.js` validates schema shape, not graph existence.
+- Object with up to seven optional edge keys: `related` (preferred) / `adjacent` (deprecated alias), `broader`, `narrower`, `boundary`, `disjoint_with`, `verify_with`, `depends_on` — plus one optional non-edge composition key, `io_contract` (see below).
+- Every edge target must be the `name` of an existing skill. Use graph/manifest review and routing audits to catch dangling targets across all seven edge keys; `scripts/skill-lint.js` validates schema shape, not graph existence.
 - Relations are directional from the skill that declares them (A `depends_on` B means A depends on B, not the reverse). `related` is symmetric by SKOS convention; `boundary` is asymmetric (A `boundary: B` does not imply B `boundary: A`).
 
 **Allowed keys.**
@@ -1279,6 +1279,14 @@ routing_bundles:
 | `disjoint_with` *(v3.1, separate orthogonal relation per ADR 0006)* | Optional formal OWL class-disjointness assertion. Use only when authors genuinely want to claim that no entity can simultaneously be an instance of both classes. Rare; most authors only need `boundary`. | string OR `{skill, reason}` | `owl:disjointWith` |
 | `verify_with` | Skills that should be co-loaded for verification or that provide cross-checks | string | `prov:wasInformedBy` |
 | `depends_on` | Explicit dependency — this skill requires the target conceptually or operationally | string OR `{skill, min_version}` | `dcterms:requires` |
+| `io_contract` *(optional, non-edge)* | Machine-checkable composition contract — abstract artifact TYPES this skill consumes/produces. The builder derives `depends_on` edges from output→input compatibility (no LLM). | `{inputs: [token], outputs: [token]}` | — |
+
+**`io_contract` — deterministic composition (SKI-52).** `io_contract` is not an edge to another skill; it is a typed I/O declaration the tooling uses to *derive* `depends_on` edges and validate composition without an LLM, the way Graph of Skills (arXiv 2604.05333) and SkillNet (arXiv 2603.04448) build dependency graphs.
+
+- `inputs[]` / `outputs[]` are **kebab-case abstract artifact-type tokens** (e.g. `skill-md`, `audit-findings`, `manifest`, `routing-config`), NOT file paths. A token names a *kind* of artifact, so two skills compose iff one's output token matches the other's input token.
+- The builder (`scripts/skill/skill-graph-builder.js`) emits a derived edge consumer→producer when `producer.outputs ∩ consumer.inputs ≠ ∅`, surfaced under `io_composition` in `scripts/discovery/skill-graph.json`.
+- `node scripts/skill/check-io-composition.js` (`npm run check:io-composition`) flags two failures: **broken chains** (an authored `depends_on` target whose outputs satisfy none of the dependent's inputs) and **cycles** (Tarjan SCC on the depends_on subgraph). Exit 1 on either.
+- The field is fully optional and forces no corpus migration: a skill without `io_contract` contributes no derived edges and is never flagged.
 
 **Boundary vs disjoint_with — the ADR 0006 split.** ADR 0001 originally proposed renaming `boundary` to `disjoint_with` and treating them as aliases. ADR 0006 reverses that: the two predicates operate at different semantic layers and the schema keeps them distinct.
 
@@ -1315,6 +1323,11 @@ relations:
     - skill: api-key-management
       min_version: "1.2.0"
     - testing-strategy
+  io_contract:
+    inputs:
+      - api-credentials
+    outputs:
+      - webhook-subscription
 ```
 
 **Example (back-compat — `adjacent` still validates with a deprecation warning).**

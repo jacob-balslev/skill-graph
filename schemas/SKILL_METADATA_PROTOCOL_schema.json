@@ -341,6 +341,29 @@
               }
             ]
           }
+        },
+        "io_contract": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "OPTIONAL machine-checkable composition contract. Declares the abstract artifact TYPES this skill consumes (`inputs`) and produces (`outputs`) as a deterministic, LLM-free composition signal. Type tokens are kebab-case abstract nouns naming a kind of artifact (e.g. `skill-md`, `audit-findings`, `manifest`, `routing-config`), NOT concrete file paths. The builder derives `depends_on` edges from output→input compatibility (skill B depends_on skill A when A's outputs intersect B's inputs) — the same machine-checkable composition pattern as Graph of Skills (arXiv 2604.05333) and SkillNet (arXiv 2603.04448). When absent, the skill simply contributes no I/O-derived edges; this field is opt-in and forces no corpus migration. Composition validity (broken chains: an authored `depends_on` target whose outputs do not satisfy this skill's inputs) and cycles on the `depends_on` subgraph are checked by `scripts/skill/check-io-composition.js`. Distinct from `depends_on` (which names specific sibling skills) — `io_contract` names artifact TYPES and lets the tooling discover the skills.",
+          "properties": {
+            "inputs": {
+              "type": "array",
+              "description": "Abstract artifact types this skill consumes to do its job. kebab-case type tokens, not file paths. A skill that consumes audit findings and a manifest declares `inputs: [audit-findings, manifest]`.",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              }
+            },
+            "outputs": {
+              "type": "array",
+              "description": "Abstract artifact types this skill produces. kebab-case type tokens, not file paths. A skill that produces audit findings declares `outputs: [audit-findings]`; another skill listing `audit-findings` in its `inputs` is then derivable as depending on this one.",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              }
+            }
+          }
         }
       }
     },

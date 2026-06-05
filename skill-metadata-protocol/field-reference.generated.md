@@ -290,6 +290,7 @@ Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W
 - `narrower` *optional* — Cross-skill specialisation (skos:narrower).
 - `verify_with` *optional* — Skills to co-load for verification.
 - `depends_on` *optional* — Skills this skill requires conceptually or operationally.
+- `io_contract` *optional* — OPTIONAL machine-checkable composition contract.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#relations`](field-reference.md#relations)
 
