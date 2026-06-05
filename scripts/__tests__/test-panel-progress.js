@@ -114,7 +114,7 @@ ok('TTY → writes ANSI scroll-region + header escapes', () => {
   r.onProgress({ kind: 'agent', model: 'opus', tier: 'mandatory', phase: 'propose', state: 'start' });
   const text = out.text();
   assert.ok(text.includes('\x1b['), 'emits ANSI escapes on a TTY');
-  assert.ok(text.includes('opus'), 'renders the agent row');
+  assert.ok(text.includes('Opus 4.8'), 'renders the agent row by display name (Model Identity Discipline)');
   assert.ok(text.includes('MANDATORY'), 'renders the tier tag');
   r.teardown();
   assert.ok(out.text().includes('\x1b[r'), 'teardown resets the scroll region');
@@ -136,9 +136,9 @@ ok('renders a summary header + one tree row per agent', () => {
   assert.strictEqual(lines.length, 5, '2 summary lines + 3 agent rows');
   assert.ok(lines[0].includes('schema-evolution') && lines[0].includes('1/3 done') && lines[0].includes('cross-review r1/2'));
   assert.ok(lines[1].includes('2 MANDATORY') && lines[1].includes('1 advisory'));
-  assert.ok(lines[2].includes('opus') && lines[2].includes('MANDATORY') && lines[2].includes('reviewing'));
+  assert.ok(lines[2].includes('Opus 4.8') && lines[2].includes('MANDATORY') && lines[2].includes('reviewing'));
   assert.ok(lines[2].startsWith('├') && lines[4].startsWith('└'), 'tree branches');
-  assert.ok(lines[4].includes('minimax') && lines[4].includes('advisory'));
+  assert.ok(lines[4].includes('MiniMax M3') && lines[4].includes('advisory'));
 });
 ok('marks DONE in the header when complete', () => {
   const lines = renderCollected({ skill: 's', phase: 'apply (keep)', done: 2, total: 2, complete: true, agents: [] });
