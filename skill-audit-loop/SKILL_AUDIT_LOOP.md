@@ -115,7 +115,12 @@ This replaces the previous 13-command surface with **4 canonical operations + 2 
 
 > **On the "5-command" framing.** Earlier prose called this a "5-command surface" — counting `audit / improve / evaluate / evolve / discover`. The actual file count under `.claude/commands/audit/` is **6** because `merge.md` was added later. The honest framing: **4 canonical operations (audit/improve/evaluate/evolve) + 2 utilities (discover/merge)**. Use that phrasing in new docs.
 
-### Two-frontier ENRICH + EVAL-guardrail (the primary curation path)
+### Two-frontier ENRICH + EVAL-guardrail (the lighter subset of the panel loop)
+
+> **This 2-frontier path is the cheaper SUBSET of the official multi-agent PANEL loop
+> documented in the next subsection.** It is the panel loop with no advisory tier and a
+> single proposal round (no cross-review). Use it for fast/cheap runs; use the PANEL loop
+> when you want the fullest curated knowledge (the user's official-loop spec, 2026-06-05).
 
 The `merge` utility's union-curate flow plus the eval are wired into one
 orchestrated cycle by the **two-frontier bidirectional** modules (2026-06-02). This
@@ -141,6 +146,37 @@ read it before changing how the loop builds or scores skills.
 - **Private-content boundary (HARD).** Research scope is the public skill-graph repo + skills tree + the open web — never private workspace data.
 
 The receipt records both directions' resolved models, the execution profile + `parity_ok`, `agreement`, `reconciliation: conservative`, `registry_version`, and a `merge_ledger_ref` linking enrichment provenance to eval provenance (schema: `eval_last_run.bidirectional` in `schemas/skill-audit-state.schema.json`).
+
+### Multi-agent PANEL ENRICH — THE OFFICIAL LOOP (Opus+GPT mandatory · free advisory · cross-review to convergence)
+
+> **This is the official Skill Audit Loop** as of 2026-06-05 (user-specified). It generalizes
+> the 2-frontier path above into an N-agent panel. WHY each choice (enrich-not-strip, frontier
+> grader, advisory-widens/frontier-decides) lives in
+> [`docs/audit-loop-enrich-philosophy.md`](../docs/audit-loop-enrich-philosophy.md).
+
+Per skill, the panel runs five phases:
+
+1. **Independent research + proposal (PARALLEL).** Opus 4.8 + GPT-5.5 (**MANDATORY**) AND every free agent (**ADVISORY** — `ADVISORY_MODELS`: gemini, minimax, nemotron, big-pickle, deepseek-flash, mimo, gemini-flash) each does its OWN research (repo + web) and produces its OWN enrichment proposal. Width comes from many independent searches.
+2. **Cross-review, ITERATE TO CONVERGENCE.** Every agent reviews every other agent's proposal and emits keep/wrong/missing feedback; each agent then revises its proposal in light of the feedback addressed to it; repeat until proposals stabilize (**hash-authoritative** — a revision "changed" iff its content hash differs, regardless of self-report) or the round budget (`maxRounds`, default 3) is hit.
+3. **Synthesis (frontier curator).** A frontier model (rotated to differ from the convener) union-merges the two MANDATORY proposals under **STRICT anti-loss** (`validateAntiLoss`) + **mandatory-coverage** (`validateMandatoryCoverage` — every mandatory proposal must appear in the ledger, kept or dropped-with-reason), and MAY fold in advisory content + cross-review feedback **where it adds value** — a frontier model makes every keep/drop call (advisory never auto-merges; `no-lesser-models-for-quality`).
+4. **Bidirectional eval guardrail + keep-or-revert** (Opus⇄GPT, reused unchanged). Advisory NEVER sets the verdict.
+5. **Apply-on-keep**; the caller commits per skill (CONTENT, path-limited).
+
+**Asymmetry (binding):** a MANDATORY frontier failure **ABORTS** the run; an ADVISORY failure is **recorded and skipped, never blocks** (quorum guard requires ≥2 alive mandatory proposals to continue).
+
+**Proposal delivery contract (the robustness rule).** EVERY tier — mandatory AND advisory — delivers its proposal the SAME way: the model **WRITES the proposal file to a verified path** (existence + non-empty check), exactly the frontier contract. There is **NO stdout-extraction of skill content** — an agent that does not write the file is a recorded failure, never a silent empty/malformed skill. (Cross-review *feedback* is ephemeral signal and IS stdout-JSON-parsed; a malformed block just drops that reviewer's feedback for the round.)
+
+**Self-contained in skill-graph (canonical-location rule).** The panel loop has **no workspace `dispatch-solver` dependency**. Advisory models are dispatched via their OWN CLIs from skill-graph's live deps: `gemini --yolo` (gemini/gemini-flash) and `opencode run` (the opencode free models) via `spawnSync` with stdin ignored + an empty `--dir` outside the repo (the documented opencode hang gotcha). Frontier dispatch reuses the proven claude/codex path. Per the project rule, **all Skill Graph scripts/commands live in `skill-graph/`, not in workspace `.claude/` or `.opencode/`.**
+
+| Module | Role |
+|---|---|
+| `lib/audit/run-panel-enrich.js` | PRIMARY orchestrator (pure, DI). Exports `runPanelEnrich`, `runConvergence`, `validateMandatoryCoverage`, `DEFAULT_CONVERGENCE`. Reuses `validateAntiLoss` / `decideKeepOrRevert` / `qualityRank` from `run-bidirectional-enrich.js` and `runBidirectionalEval`. CLI: `node lib/audit/run-panel-enrich.js --skill <slug> --skill-dir <dir> --cwd <skill-graph> [--no-advisory] [--max-rounds N] [--dry-run] [--no-eval]`. |
+| `lib/audit/panel-enrich-live-deps.js` | Self-contained live deps: composes `createLiveEnrichDeps` for the mandatory claim/propose/curate/eval/apply path; adds `hashProposal`, `claimAdvisorySlot`, `researchAndProposeAdvisory`, `crossReview`, `reviseProposal` (advisory via gemini/opencode CLIs). `--dry-run` exercises the whole panel offline. |
+| `prompts/skill-audit-loop-cross-review-pass.md` | Phase-2 per-model cross-review contract (keep/wrong/missing JSON + prose). |
+| `prompts/skill-audit-loop-revise-pass.md` | Phase-2 per-model revise contract (write-to-path; report `changed`; enrich-not-strip). |
+| `lib/audit/enrich-live-deps.js` | Adds `buildGeminiEnrichArgs` + `buildOpencodeEnrichArgs` (write-capable advisory arg builders) alongside the claude/codex ones. |
+
+**Status (2026-06-05):** built + unit-tested (`scripts/__tests__/test-panel-enrich.js` 17 cases, `test-panel-enrich-live-deps.js` 7 cases, both in `test:unit`) + dry-run E2E green (2 mandatory + 7 advisory, converged round 1, anti-loss + coverage pass). Live multi-model verification of the advisory write-to-path delivery is the remaining gate before the first production panel run.
 
 ## The Audit Status — state lives in `audit-state.json`
 
