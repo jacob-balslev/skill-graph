@@ -163,6 +163,26 @@ check('eval guardrail skipped when no direction runner injected (enrich-only) =>
   assert.strictEqual(r.applied, true); // keep => apply, even when the eval was deferred
 });
 
+check('eval artifact MISSING (deps.evalArtifactExists=false) => guardrail skipped => keep + apply, eval null', () => {
+  // Pilot best-practice 2026-06-05: 31/33 skills have no evals/application.json. The
+  // guardrail must SKIP (absence of an eval is not a regression) instead of crashing
+  // deep in runApplicationEval. A runner is injected, but the artifact predicate is false.
+  const deps = makeDeps({ evalArtifactExists: () => false });
+  const r = enrich.runBidirectionalEnrich({ skill: 's', skillDir: '/x/s', cwd: '/x', deps });
+  assert.strictEqual(r.eval, null, 'eval skipped when artifact absent');
+  assert.strictEqual(deps._calls.evalDirs.length, 0, 'the direction runner was never invoked');
+  assert.strictEqual(r.keep_or_revert.action, 'keep');
+  assert.match(r.keep_or_revert.reason, /no evals\/application\.json/);
+  assert.strictEqual(r.applied, true, 'keep => apply even when the eval was skipped for a missing artifact');
+});
+
+check('eval artifact PRESENT (deps.evalArtifactExists=true) => guardrail runs as before', () => {
+  const deps = makeDeps({ evalArtifactExists: () => true });
+  const r = enrich.runBidirectionalEnrich({ skill: 's', skillDir: '/x/s', cwd: '/x', deps });
+  assert.strictEqual(r.eval.synthesized_verdict, 'APPLICABLE');
+  assert.strictEqual(deps._calls.evalDirs.length, 2, 'both directions ran');
+});
+
 check('requires skill, skillDir, cwd, and the injected deps', () => {
   assert.throws(() => enrich.runBidirectionalEnrich({ deps: {} }), /skill, skillDir, and cwd are required/);
   assert.throws(() => enrich.runBidirectionalEnrich({ skill: 's', skillDir: '/x', cwd: '/x', deps: {} }), /must be a function/);
