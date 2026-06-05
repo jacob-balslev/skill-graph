@@ -190,7 +190,8 @@ This is the contract each agent runs against. For the per-model prose contracts 
 |---|---|
 | `lib/audit/run-panel-enrich.js` | PRIMARY orchestrator (pure, DI). Exports `runPanelEnrich`, `runConvergence`, `validateMandatoryCoverage`, `DEFAULT_CONVERGENCE`. Reuses `validateAntiLoss` / `decideKeepOrRevert` / `qualityRank` from `run-bidirectional-enrich.js` and `runBidirectionalEval`. Emits progress through an injected `onProgress` hook (default no-op — keeps the orchestrator pure + the unit contract synchronous). CLI: `node lib/audit/run-panel-enrich.js --skill <slug> --skill-dir <dir> --cwd <skill-graph> [--no-advisory] [--max-rounds N] [--dry-run] [--no-eval] [--status-file <path>] [--no-tui] [--quiet]`. |
 | `lib/audit/panel-enrich-live-deps.js` | Self-contained live deps: composes `createLiveEnrichDeps` for the mandatory claim/propose/curate/eval/apply path; adds `hashProposal`, `claimAdvisorySlot`, `researchAndProposeAdvisory`, `crossReview`, `reviseProposal` (advisory via gemini/opencode CLIs). `--dry-run` exercises the whole panel offline. |
-| `lib/audit/panel-progress.js` | VISIBILITY layer (the `onProgress` sink `main()` injects). Writes the heartbeat `status.json` (the `scripts/watch-audit-batch.sh` contract: `{ts,pid,skill,phase,total,done,failed,running[],complete,agents[]}`) and, on a real TTY, renders the pinned-header TUI (one row per agent, Opus/GPT MANDATORY + free advisory) via the `manage-cycle.sh` scroll-region pattern. No-op header when not a TTY (heartbeat + stderr only). Unit-tested: `scripts/__tests__/test-panel-progress.js`. |
+| `lib/audit/panel-progress.js` | VISIBILITY layer (the `onProgress` sink `main()` injects). Exports `renderCollected(status)` — THE canonical collected-view renderer (summary header + one tree row per agent: Opus/GPT MANDATORY + free advisory, with phase/state/elapsed), pure (no I/O, no ANSI) so the TTY header, the piped block, and the viewer all paint identically. Writes the heartbeat `status.json` (the `scripts/watch-audit-batch.sh` contract: `{ts,pid,skill,phase,elapsed_s,total,done,failed,running[],complete,agents[]}`) and, on a real TTY, paints `renderCollected()` as a pinned header via the `manage-cycle.sh` scroll-region pattern (no-op when not a TTY → heartbeat only). Unit-tested: `scripts/__tests__/test-panel-progress.js`. |
+| `scripts/watch-panel.js` | Canonical collected-TUI **viewer** (observer only — never claims/dispatches/mutates). Reads the heartbeat `status.json` and renders `renderCollected()`: full-screen live refresh on a TTY, a collected block per change when piped (so the collected view is watchable in-session, e.g. as a background task / Monitor, with no ANSI cursor magic). Exits on `COMPLETE`; emits `STALE` past `--stale`. `node scripts/watch-panel.js <status-file> [--poll S] [--stale S] [--once]`. |
 | `prompts/skill-audit-loop-cross-review-pass.md` | Phase-2 per-model cross-review contract (keep/wrong/missing JSON + prose). |
 | `prompts/skill-audit-loop-revise-pass.md` | Phase-2 per-model revise contract (write-to-path; report `changed`; enrich-not-strip). |
 | `lib/audit/enrich-live-deps.js` | Adds `buildGeminiEnrichArgs` + `buildOpencodeEnrichArgs` (write-capable advisory arg builders) alongside the claude/codex ones. |
@@ -379,21 +380,23 @@ Reference producer of the heartbeat contract: the A/B experiment driver (`dist/a
 
 ### Canonical way to run the PANEL loop VISIBLY (never a blind background task)
 
-The panel loop is designed to run **in a real terminal** with a pinned-header TUI, not as a fire-and-forget background shell command. Two surfaces, one heartbeat:
+The runner writes a heartbeat `status.json`; the **COLLECTED multi-agent view is rendered from it by canonical skill-graph code** (`renderCollected` in `lib/audit/panel-progress.js`) — so the same collected view (every agent: Opus/GPT MANDATORY + free advisory, with live phase/state) appears identically wherever you watch it. No harness improvisation, no separate-tab requirement.
 
-1. **TUI (the human watches).** On a real TTY, `run-panel-enrich.js` pins a header showing every panel agent — Opus + GPT **MANDATORY**, the free models **advisory** — with its live phase/state, while the `[+Ns]` phase log scrolls below (the `scripts/loop/manage-cycle.sh` scroll-region pattern). Spawn it in a visible Ghostty tab so it gets a TTY:
+1. **Start the loop, heartbeat on:**
    ```bash
-   bash ~/Development/scripts/agent/spawn-ghostty-tab.sh --project . --model shell \
-     --purpose "cd ~/Development/skill-graph && node lib/audit/run-panel-enrich.js \
-       --skill <slug> --skill-dir ../skills/skills/<subject>/<slug> --cwd . \
-       --status-file /tmp/panel-<slug>.json"
+   node lib/audit/run-panel-enrich.js --skill <slug> \
+     --skill-dir ../skills/skills/<subject>/<slug> --cwd . \
+     --status-file /tmp/panel-<slug>.json
    ```
-2. **Heartbeat + Monitor (the operator/agent watches).** Arm the watcher on the same status file through the Claude Code `Monitor` tool so a hang/crash surfaces as `HANG`/`STALE` and completion as `COMPLETE` — it can never read as "still running":
+   On a real TTY the runner ALSO pins the collected view as a header itself; piped/background it writes only the heartbeat.
+2. **Watch the collected view (the canonical viewer):**
    ```bash
-   bash scripts/watch-audit-batch.sh /tmp/panel-<slug>.json \
-     --proc run-panel-enrich --cell-stall 480 --hb-stale 600 --poll 20
+   node scripts/watch-panel.js /tmp/panel-<slug>.json
    ```
-   Do NOT poll `ps`/the log by hand and do NOT launch the runner as a blind harness background task; the heartbeat + Monitor pair is the supported visibility path.
+   In a terminal it live-refreshes the collected TUI; piped (or as an in-session background task / Monitor) it prints a collected block per change — so it's watchable **in-session**, not only in a separate terminal. Exits on `COMPLETE`, emits `STALE` if the heartbeat stops changing.
+3. **(optional) Event signals** — for explicit `HANG`/`STALE`/`COMPLETE` lines via the Claude Code `Monitor` tool: `bash scripts/watch-audit-batch.sh /tmp/panel-<slug>.json --proc run-panel-enrich --hb-stale 600 --poll 20`.
+
+Do NOT poll `ps`/the log by hand, and do NOT launch the runner as a blind background task with no viewer attached.
 
 ## Cadence
 

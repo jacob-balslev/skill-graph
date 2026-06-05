@@ -8,7 +8,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-const { createProgressReporter, fmtElapsed } = require('../../lib/audit/panel-progress');
+const { createProgressReporter, renderCollected, fmtElapsed } = require('../../lib/audit/panel-progress');
 
 let passed = 0;
 let failed = 0;
@@ -118,6 +118,35 @@ ok('TTY → writes ANSI scroll-region + header escapes', () => {
   assert.ok(text.includes('MANDATORY'), 'renders the tier tag');
   r.teardown();
   assert.ok(out.text().includes('\x1b[r'), 'teardown resets the scroll region');
+});
+
+// ── 3b. renderCollected — the canonical collected view ──
+console.log('3b. renderCollected (canonical collected view)');
+ok('renders a summary header + one tree row per agent', () => {
+  const status = {
+    skill: 'schema-evolution', phase: 'cross-review r1/2', elapsed_s: 125,
+    done: 1, total: 3, failed: 0,
+    agents: [
+      { model: 'opus', tier: 'mandatory', phase: 'review', state: 'reviewing', elapsed_s: 40 },
+      { model: 'codex-current', tier: 'mandatory', phase: 'propose', state: 'proposed', elapsed_s: 0 },
+      { model: 'minimax', tier: 'advisory', phase: 'propose', state: 'queued', elapsed_s: 0 },
+    ],
+  };
+  const lines = renderCollected(status);
+  assert.strictEqual(lines.length, 5, '2 summary lines + 3 agent rows');
+  assert.ok(lines[0].includes('schema-evolution') && lines[0].includes('1/3 done') && lines[0].includes('cross-review r1/2'));
+  assert.ok(lines[1].includes('2 MANDATORY') && lines[1].includes('1 advisory'));
+  assert.ok(lines[2].includes('opus') && lines[2].includes('MANDATORY') && lines[2].includes('reviewing'));
+  assert.ok(lines[2].startsWith('├') && lines[4].startsWith('└'), 'tree branches');
+  assert.ok(lines[4].includes('minimax') && lines[4].includes('advisory'));
+});
+ok('marks DONE in the header when complete', () => {
+  const lines = renderCollected({ skill: 's', phase: 'apply (keep)', done: 2, total: 2, complete: true, agents: [] });
+  assert.ok(lines[0].includes('DONE'));
+});
+ok('tolerates a missing/empty status object', () => {
+  const lines = renderCollected(null);
+  assert.ok(Array.isArray(lines) && lines.length === 2, 'header lines even with no agents');
 });
 
 // ── 4. helper ──
