@@ -72,6 +72,15 @@ This is **enforced in the runner, not just documented** (SH-6624). The runner st
 
 The optional `criteria[]` (boolean per-criterion checklist: `{id, polarity: positive|negative|guard, statement}`) and `artifact` fields are the **comparative / checklist** contract under evaluation by the SH-6624 grader-design pilot. Research (CheckEval, FLASK) shows binary per-criterion rubrics have higher judge agreement and lower variance than graded scales. These fields are a **superset extension** so that, if the pilot promotes the checklist format, adoption is additive and non-breaking. **Do not rely on them** until the pilot resolves the grader-design fork and the fields are promoted from optional to part of the contract. The deployed pointwise runner ignores them.
 
+## Structural conformance gate
+
+`scripts/check-application-evals.js` (SKI-51) is the standalone validator that checks every `evals/application.json` (plus the worked specimen) against the schema-mirrored structural contract: required top-level fields, the `mode: "application"` discriminator, the ≥5-case floor, the per-case required-field set, unique case ids, the `criticality` enum, and the red-herring recommendation. It is a Node-built-in structural check (no ajv — repo policy), mirroring how the comprehension shape is covered by `lib/audit/eval-linter.js`.
+
+It exists because the schema was previously enforced "by construction + the audit loop" only — the runner deliberately does NOT enforce the case floor at runtime (a partial `--case` filter must run), and `check-audit-manifest.js` only checks that the artifact *exists* when a graded verdict is claimed, never its shape. This gate makes the schema mechanically checkable.
+
+- `npm run application-evals:check` — report-only (exit 0 unless a hard structural break is present). Wired into both `npm run verify` and `npm run verify:system`. Below-floor and missing-red-herring findings are CONTENT-migration debt (drain via `/audit:*`) and are reported but do NOT fail report mode, so a SYSTEM gate never goes red purely because the corpus has not yet migrated to the floor.
+- `npm run application-evals:check:strict` (`--check`) — the opt-in HARD gate (exit 1 on ANY finding) for use once the corpus has migrated, or in a CONTENT pre-commit that just authored an application.json. `--strict-floor` gates on the floor in report mode; `--json` emits a machine-readable report; `--skill <name>` checks one skill.
+
 ## Worked specimen
 
-`examples/evals/application.sample.json` (database-migration, 5 cases: 4 real + 1 red-herring) is the canonical illustrative specimen and validates against the schema.
+`examples/evals/application.sample.json` (database-migration, 5 cases: 4 real + 1 red-herring) is the canonical illustrative specimen and validates against the schema and the conformance gate above.

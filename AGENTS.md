@@ -671,6 +671,7 @@ node scripts/verify-skill-md-export.js
 node scripts/export-marketplace-skills.js --check
 node scripts/build-status-doc.js --check
 node scripts/skill-conformance-ledger.js          # per-shelf lint-conformance ledger (X/165 clean) — report-only, NOT in verify; the incremental signal the binary gate can't give. --check N for a threshold gate, --json for machine output. Writes docs/conformance.generated.md.
+node scripts/check-application-evals.js            # structural conformance of every evals/application.json against schemas/application.schema.json (report-only — below-floor findings are CONTENT-migration debt; --check hard-gates, --strict-floor gates the ≥5-case floor, --json machine output, --skill <name> for one). In verify + verify:system.
 node lib/audit/eval-staleness-checker.js
 node scripts/skill-overlap.js
 node scripts/skill-graph-drift.js
