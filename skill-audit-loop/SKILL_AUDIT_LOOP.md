@@ -168,15 +168,34 @@ Per skill, the panel runs five phases:
 
 **Self-contained in skill-graph (canonical-location rule).** The panel loop has **no workspace `dispatch-solver` dependency**. Advisory models are dispatched via their OWN CLIs from skill-graph's live deps: `gemini --yolo` (gemini/gemini-flash) and `opencode run` (the opencode free models) via `spawnSync` with stdin ignored + an empty `--dir` outside the repo (the documented opencode hang gotcha). Frontier dispatch reuses the proven claude/codex path. Per the project rule, **all Skill Graph scripts/commands live in `skill-graph/`, not in workspace `.claude/` or `.opencode/`.**
 
+#### Per-step semantics — what each phase means, who acts, expected outcome
+
+This is the contract each agent runs against. For the per-model prose contracts see the propose/cross-review/revise prompt files (`prompts/skill-audit-loop-{enrich,cross-review,revise}-pass.md`); the WHY is [`docs/audit-loop-enrich-philosophy.md`](../docs/audit-loop-enrich-philosophy.md).
+
+| Phase | What the agent does | Who participates | Expected outcome (success) | Abort / keep rule |
+|---|---|---|---|---|
+| **0 · brief** | Build a deterministic research brief from the skill name/description/body. | orchestrator (no model) | A brief string handed identically to every agent. | n/a (infrastructure). |
+| **1a · propose (mandatory)** | Independently research (repo + web, tools ON, privacy-scoped) and **write** an enriched `SKILL.md` proposal + novelty memo to a verified path. | Opus 4.8 **and** GPT‑5.5 | Each writes a non-empty proposal file (existence + size verified — **never** stdout-extracted). | A mandatory write failure **ABORTS** the whole run. |
+| **1b · propose (advisory)** | Same independent research + write, best-effort. | every free model (`ADVISORY_MODELS`) | Each surviving advisory writes a proposal; failures recorded in `advisory_failures`. | An advisory failure is **recorded and skipped, never aborts**. |
+| **2 · cross-review → converge** | Every alive agent reviews every other proposal (keep/wrong/missing JSON) and then **revises its own** proposal in light of feedback addressed to it; repeat. | all alive agents | Proposals stabilize (**hash-authoritative** — changed iff content hash differs) or the round budget (`maxRounds`, default 3) is hit. | Quorum guard: drop below **2 alive mandatory** ⇒ `quorum-collapsed` **ABORT**. |
+| **3 · curate (synthesis)** | A frontier curator union-merges the two MANDATORY proposals under STRICT anti-loss + mandatory-coverage, folding in advisory/cross-review where it adds value. | one frontier curator (rotated) | A merged enriched `SKILL.md` + a merge-ledger where every mandatory contribution is kept, or dropped **with a recorded non-"unscored" reason**. | Anti-loss or coverage violation **throws** (the curator silently lost a frontier contribution). |
+| **4 · eval guardrail** | Bidirectional eval (Opus⇄GPT) grades the **enriched** skill (a temp copy), not the original. | the two frontier models (advisory NEVER sets the verdict) | A reconciled keep/revert verdict; **absence of an eval artifact = keep** (absence ≠ regression). | **Revert ONLY** a genuine regression (HARMFUL / measurably worse). "Didn't move the score" is never grounds to strip knowledge. |
+| **5 · apply-on-keep** | On KEEP, write the merged enriched `SKILL.md` to the canonical working tree. | orchestrator (no model) | Canonical `SKILL.md` updated; the caller commits per skill (CONTENT, path-limited). On REVERT nothing is written. | Mutation happens **only** on KEEP; there is no `git revert HEAD`. |
+
+#### Visibility (this loop runs VISIBLY, never as a blind background task)
+
+`run-panel-enrich.js` emits per-agent + per-phase progress through an injected `onProgress` hook (`lib/audit/panel-progress.js`): a **heartbeat `status.json`** (the `scripts/watch-audit-batch.sh` contract) plus, on a real TTY, a **pinned-header TUI** with one row per agent (Opus/GPT MANDATORY, free advisory) showing its live phase/state. See § "Canonical way to run the PANEL loop VISIBLY" below for the spawn-in-Ghostty + Monitor invocation. Run it that way — do not poll `ps` or launch it as a fire-and-forget background command.
+
 | Module | Role |
 |---|---|
-| `lib/audit/run-panel-enrich.js` | PRIMARY orchestrator (pure, DI). Exports `runPanelEnrich`, `runConvergence`, `validateMandatoryCoverage`, `DEFAULT_CONVERGENCE`. Reuses `validateAntiLoss` / `decideKeepOrRevert` / `qualityRank` from `run-bidirectional-enrich.js` and `runBidirectionalEval`. CLI: `node lib/audit/run-panel-enrich.js --skill <slug> --skill-dir <dir> --cwd <skill-graph> [--no-advisory] [--max-rounds N] [--dry-run] [--no-eval]`. |
+| `lib/audit/run-panel-enrich.js` | PRIMARY orchestrator (pure, DI). Exports `runPanelEnrich`, `runConvergence`, `validateMandatoryCoverage`, `DEFAULT_CONVERGENCE`. Reuses `validateAntiLoss` / `decideKeepOrRevert` / `qualityRank` from `run-bidirectional-enrich.js` and `runBidirectionalEval`. Emits progress through an injected `onProgress` hook (default no-op — keeps the orchestrator pure + the unit contract synchronous). CLI: `node lib/audit/run-panel-enrich.js --skill <slug> --skill-dir <dir> --cwd <skill-graph> [--no-advisory] [--max-rounds N] [--dry-run] [--no-eval] [--status-file <path>] [--no-tui] [--quiet]`. |
 | `lib/audit/panel-enrich-live-deps.js` | Self-contained live deps: composes `createLiveEnrichDeps` for the mandatory claim/propose/curate/eval/apply path; adds `hashProposal`, `claimAdvisorySlot`, `researchAndProposeAdvisory`, `crossReview`, `reviseProposal` (advisory via gemini/opencode CLIs). `--dry-run` exercises the whole panel offline. |
+| `lib/audit/panel-progress.js` | VISIBILITY layer (the `onProgress` sink `main()` injects). Writes the heartbeat `status.json` (the `scripts/watch-audit-batch.sh` contract: `{ts,pid,skill,phase,total,done,failed,running[],complete,agents[]}`) and, on a real TTY, renders the pinned-header TUI (one row per agent, Opus/GPT MANDATORY + free advisory) via the `manage-cycle.sh` scroll-region pattern. No-op header when not a TTY (heartbeat + stderr only). Unit-tested: `scripts/__tests__/test-panel-progress.js`. |
 | `prompts/skill-audit-loop-cross-review-pass.md` | Phase-2 per-model cross-review contract (keep/wrong/missing JSON + prose). |
 | `prompts/skill-audit-loop-revise-pass.md` | Phase-2 per-model revise contract (write-to-path; report `changed`; enrich-not-strip). |
 | `lib/audit/enrich-live-deps.js` | Adds `buildGeminiEnrichArgs` + `buildOpencodeEnrichArgs` (write-capable advisory arg builders) alongside the claude/codex ones. |
 
-**Status (2026-06-05):** built + unit-tested (`scripts/__tests__/test-panel-enrich.js` 17 cases, `test-panel-enrich-live-deps.js` 7 cases, both in `test:unit`) + dry-run E2E green (2 mandatory + 7 advisory, converged round 1, anti-loss + coverage pass). Live multi-model verification of the advisory write-to-path delivery is the remaining gate before the first production panel run.
+**Status (2026-06-05T13:20Z):** built + unit-tested (`test-panel-enrich.js` 17, `test-panel-enrich-live-deps.js` 7, `test-panel-progress.js` 7 — all in `test:unit`, 0 failures) + dry-run E2E green (2 mandatory + 7 advisory, converged, anti-loss + coverage pass, heartbeat `status.json` written + consumed by `watch-audit-batch.sh` → `PROGRESS`/`COMPLETE`). The **visibility layer is complete**: heartbeat + per-agent `onProgress` + TTY pinned-header TUI; runs visibly via spawn-in-Ghostty + Monitor (above), never as a blind background task. **Deferred (tracked follow-up):** true in-process *parallel* dispatch (the orchestrator is still synchronous, so agents run one-at-a-time and the heartbeat ticks at phase boundaries, not mid-dispatch — `--proc` liveness covers the gap); making it async breaks the `assert.throws` unit contract + touches the shared `enrich-live-deps.js` path, so it lands as its own test-migrated change. Live multi-model verification of the advisory write-to-path delivery remains the gate before the first production panel run.
 
 ## The Audit Status — state lives in `audit-state.json`
 
@@ -356,7 +375,25 @@ A graded `evaluate`, an `audit --graded`, or an `evolve --top N` over many skill
 
 **Monitor-filter doctrine (load-bearing):** the watcher's emitted lines must include the failure/stall signatures, not only the success marker — per the `Monitor` tool's own rule, *silence is not success*. `watch-audit-batch.sh` already does this; if you write a bespoke filter, widen it to cover crash/hang, never narrow it to the happy path.
 
-Reference producer of the heartbeat contract: the A/B experiment driver (`dist/ab/comprehension-ab-driver.js` `writeStatus()`). Existing canonical runners (`evaluate`, `evolve`, `batch-eval`) do not yet emit the heartbeat — adopting it is tracked as a follow-up; until then, point `--proc` at the runner process so the listener still detects death and stall by liveness + result-count.
+Reference producer of the heartbeat contract: the A/B experiment driver (`dist/ab/comprehension-ab-driver.js` `writeStatus()`). The **official PANEL ENRICH runner now emits the heartbeat** (`lib/audit/run-panel-enrich.js` via `lib/audit/panel-progress.js`, 2026-06-05T13:20Z) — `--status-file <path>` (default under the per-skill run-dir tree) writes a superset of the contract `{ ts, pid, skill, phase, total, done, failed, running[], complete, agents[] }`, where `agents[]` adds per-model tier/state for the TUI. The other canonical runners (`evaluate`, `evolve`, `batch-eval`) do not yet emit it — adopting it is tracked as a follow-up; until then, point `--proc` at the runner process so the listener still detects death and stall by liveness + result-count. NOTE: a runner that dispatches a model **synchronously** (the panel runner does) cannot tick the heartbeat *during* a multi-minute blocking call — the `--proc` liveness check is exactly what covers that gap, so set `--hb-stale` above the longest single dispatch (curate can run several minutes) to avoid a false `STALE`.
+
+### Canonical way to run the PANEL loop VISIBLY (never a blind background task)
+
+The panel loop is designed to run **in a real terminal** with a pinned-header TUI, not as a fire-and-forget background shell command. Two surfaces, one heartbeat:
+
+1. **TUI (the human watches).** On a real TTY, `run-panel-enrich.js` pins a header showing every panel agent — Opus + GPT **MANDATORY**, the free models **advisory** — with its live phase/state, while the `[+Ns]` phase log scrolls below (the `scripts/loop/manage-cycle.sh` scroll-region pattern). Spawn it in a visible Ghostty tab so it gets a TTY:
+   ```bash
+   bash ~/Development/scripts/agent/spawn-ghostty-tab.sh --project . --model shell \
+     --purpose "cd ~/Development/skill-graph && node lib/audit/run-panel-enrich.js \
+       --skill <slug> --skill-dir ../skills/skills/<subject>/<slug> --cwd . \
+       --status-file /tmp/panel-<slug>.json"
+   ```
+2. **Heartbeat + Monitor (the operator/agent watches).** Arm the watcher on the same status file through the Claude Code `Monitor` tool so a hang/crash surfaces as `HANG`/`STALE` and completion as `COMPLETE` — it can never read as "still running":
+   ```bash
+   bash scripts/watch-audit-batch.sh /tmp/panel-<slug>.json \
+     --proc run-panel-enrich --cell-stall 480 --hb-stale 600 --poll 20
+   ```
+   Do NOT poll `ps`/the log by hand and do NOT launch the runner as a blind harness background task; the heartbeat + Monitor pair is the supported visibility path.
 
 ## Cadence
 
