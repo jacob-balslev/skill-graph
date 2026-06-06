@@ -76,7 +76,7 @@ ok('no panel errors with injected runner', !panel.some((e) => e.error));
 // 5. Advisory NEVER changes the certifying verdict (the whole point).
 const withAdvisory = runBidirectionalEval({ mode: 'application', skill: 'demo', cwd: '.', advisory: true, deps: { runDirection: fakeRunDirection } });
 const withoutAdvisory = runBidirectionalEval({ mode: 'application', skill: 'demo', cwd: '.', advisory: false, deps: { runDirection: fakeRunDirection } });
-ok('advisory_panel attached when opted in', Array.isArray(withAdvisory.advisory_panel) && withAdvisory.advisory_panel.length === 7);
+ok('advisory_panel attached when opted in', Array.isArray(withAdvisory.advisory_panel) && withAdvisory.advisory_panel.length === ADVISORY_MODELS.length);
 ok('advisory_panel null when not opted in', withoutAdvisory.advisory_panel === null);
 ok('synthesized_verdict identical with/without advisory', withAdvisory.synthesized_verdict === withoutAdvisory.synthesized_verdict);
 ok('verdict comes from the core (APPLICABLE), not advisory dissent', withAdvisory.synthesized_verdict === 'APPLICABLE');
