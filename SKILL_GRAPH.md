@@ -166,11 +166,10 @@ Public docs that define or explain the protocol in prose. If a Tier 2 file disag
 | `skill-metadata-protocol/field-decision-guide.md` | Decision tables for the hard choices: `deployment_target`, `relations.*`, Evaluation Status, `portability`, `project[]` / `repo[]`, and the "taxonomy_domain vs. subject vs. routing_bundles" question. |
 | `docs/manifest-field-mapping.md` | The authored → generated bridge: rename map, loss policy, per-version migration notes, worked example. |
 
-Three rules govern this tier:
+Two rules govern this tier:
 
 1. **Section headers in `SKILL_METADATA_PROTOCOL_field-reference.md` must exactly match the top-level properties of `SKILL_METADATA_PROTOCOL_schema.json`.** Enforced by C1. A missing section or an orphan one is a CI failure.
 2. **Every authored field must be covered in `manifest-field-mapping.md`** (either in the rename map or the dropped-field list). Enforced by C2.
-3. **The v2→v3 migration note in `manifest-field-mapping.md`** must be accurate enough that an author running `migrate-skill-v2-to-v3.js` gets the same result the doc describes. Checked at release time via the worked example.
 
 ---
 
@@ -198,7 +197,6 @@ Scripts that police Tier 1 (lint, consistency) or compile Tier 1's output (manif
 |---|---|
 | `scripts/generate-manifest.js` | Authored -> compiled manifest compiler. Multi-root workspace aware via `.skill-graph/config.json`. Computes SHA-256 on normalized truth-source keys for drift detection. |
 | `scripts/export-skill.js` | Plain `SKILL.md` export transform. Flattens the v3 `compatibility` object to a single string for the portable export shape. |
-| `scripts/migrate-skill-v2-to-v3.js` | v2 → v3 codemod. Line-based — preserves author YAML style (comments, quoting, indentation). |
 
 #### Pipeline — how a SKILL.md becomes a manifest entry
 

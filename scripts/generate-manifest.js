@@ -804,10 +804,10 @@ function main() {
       process.stderr.write(`WARN ${relPath}: "route_groups" is deprecated — rename to "routing_bundles"\n`);
     }
     if (typeof fm.drift_check === 'string') {
-      process.stderr.write(`WARN ${relPath}: scalar "drift_check" is deprecated in v3 — use an object with "last_verified" (run scripts/migrate-skill-v2-to-v3.js)\n`);
+      process.stderr.write(`WARN ${relPath}: scalar "drift_check" is deprecated in v3 — migrate to an object with "last_verified"\n`);
     }
     if (typeof fm.compatibility === 'string' && !usesAgentSkillsEncoding) {
-      process.stderr.write(`WARN ${relPath}: scalar "compatibility" is deprecated in v3 — use an object with "runtimes"/"node"/"notes" (run scripts/migrate-skill-v2-to-v3.js)\n`);
+      process.stderr.write(`WARN ${relPath}: scalar "compatibility" is deprecated in v3 — migrate to an object with "runtimes"/"node"/"notes"\n`);
     }
 
     // Join the audit-state sidecar (ADR-0019) UNDER the frontmatter so the
