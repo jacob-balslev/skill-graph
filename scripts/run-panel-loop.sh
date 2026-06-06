@@ -1,30 +1,36 @@
 #!/usr/bin/env bash
-# run-panel-loop.sh — bridge-wired BATCH driver for the multi-agent panel enrich loop.
+# run-panel-loop.sh — supervised BATCH/DRAIN driver for the multi-agent panel enrich loop.
 #
-# Walks a list of skill slugs and, for each, runs the official panel enrich loop
-# (lib/audit/run-panel-enrich.js — Opus 4.8 + GPT-5.5 MANDATORY + free advisory by default),
-# then commits each KEPT SKILL.md path-limited (CONTENT, AUDIT_LOOP=1) in ~/Development/skills.
-# A per-skill statusline bridge paints the multi-agent panel ABOVE the session statusline so the
-# batch is never a blind background task. Resumable via an append-only ledger.
+# Per skill: runs the official panel enrich loop (lib/audit/run-panel-enrich.js — Opus 4.8 +
+# GPT-5.5 MANDATORY + free advisory by default), and commits each KEPT SKILL.md path-limited
+# (CONTENT, AUDIT_LOOP=1) in ~/Development/skills. A per-skill statusline bridge paints the
+# multi-agent panel ABOVE the session statusline so the run is never a blind background task.
+#
+# Two source modes:
+#   --worklist        Drain EVERY eligible skill via the shared claim/ledger system
+#                     (scripts/skill/skill-audit-claim.js `next`→`claim`→`release`): ranked,
+#                     public-safe, atomically claimed (cannot double-process with the OpenCode
+#                     skill-audit loop), and ledger-completed skills are auto-skipped. Resumable
+#                     corpus-wide. This is the unattended default for "look through every skill".
+#   --skills-file P   Walk a newline-delimited slug file (curated sets); resume via the local ledger.
+#
+# Resilience: a per-skill WATCHDOG (--timeout, default 5400s/90m) kills a hung enrich (whole
+# process tree) and the loop continues. Best-effort budget gate (exhausted-lock fast path),
+# loop-checkpoint writes (so loop-supervisor.js can monitor), and loop-steering honoring
+# (pause_after_current) when those helpers are present.
 #
 # This script is SYSTEM infrastructure (canonical-location rule: Skill-Graph code lives in
 # skill-graph/). It NEVER mixes its own (SYSTEM) commit with the CONTENT commits it makes for
 # enriched skills — those land in the separate ~/Development/skills repo under AUDIT_LOOP=1.
 #
 # Usage:
-#   run-panel-loop.sh --skills-file <path> [--max-rounds N] [--no-advisory]
-#                     [--work-root <dir>] [--max-rounds N]
-#
-#   --skills-file  Newline-delimited skill slugs (blank lines and #comments ignored). REQUIRED.
-#   --no-advisory  Run the certifying floor only (Opus 4.8 + GPT-5.5); skip the free advisory tier.
-#                  Default: full panel (advisory ON).
-#   --max-rounds N Cross-review convergence budget per skill (default 2).
-#   --work-root D  Scratch dir for per-skill status/result/log files (default /tmp/enrich-loop).
+#   run-panel-loop.sh (--worklist [--lane <name>] | --skills-file <path>)
+#                     [--max-rounds N] [--no-advisory] [--timeout S] [--work-root D] [--dry-run]
 #
 # Exit-code contract of run-panel-enrich.js (consumed below):
-#   0 = enrichment KEPT/applied  ->  commit SKILL.md (+ audit-state.json) path-limited
-#   2 = eval guardrail REVERTED  ->  nothing committed (enrichment discarded)
-#   1 = crash                    ->  logged, batch continues to next skill
+#   0 = enrichment KEPT/applied  ->  commit SKILL.md (+ audit-state.json); release status=completed
+#   2 = eval guardrail REVERTED  ->  nothing committed;                    release status=reverted
+#   1 = crash / 143|137 = watchdog-killed -> logged, continue;             release status=aborted
 set -uo pipefail
 
 DEV=/Users/jacobbalslev/Development
@@ -32,134 +38,233 @@ SG="$DEV/skill-graph"
 SKILLS_REPO="$DEV/skills"
 ENRICH="$SG/lib/audit/run-panel-enrich.js"
 BRIDGE="$DEV/scripts/agent/panel-heartbeat-to-agent-state.js"
+CLAIM="$DEV/scripts/skill/skill-audit-claim.js"
+BUDGET="$DEV/scripts/model/budget-monitor.js"
+CHECKPOINT="$DEV/scripts/loop/loop-checkpoint.js"
+STEERING="$DEV/scripts/loop/loop-steering.js"
+LOOP_ID="skill-panel-enrich"          # distinct from the OpenCode "skill-audit" loop checkpoint
 
 SKILLS_FILE=""
+WORKLIST=0
+LANE=""
 MAX_ROUNDS=2
-ADV_FLAG=""                       # empty => full advisory panel (the chosen default)
+ADV_FLAG=""                            # empty => full advisory panel (the chosen default)
+DRY_FLAG=""                            # --dry-run: pass through to enrich AND skip the CONTENT commit
+TIMEOUT=5400                           # per-skill watchdog ceiling (s); ~90m, generous over ~68m observed
 WORK_ROOT="${WORK_ROOT:-/tmp/enrich-loop}"
-DRY_FLAG=""                       # --dry-run: pass through to enrich AND skip the CONTENT commit
 
 while [ $# -gt 0 ]; do
   case "$1" in
+    --worklist)    WORKLIST=1; shift ;;
+    --lane)        LANE="$2"; shift 2 ;;
     --skills-file) SKILLS_FILE="$2"; shift 2 ;;
     --max-rounds)  MAX_ROUNDS="$2";  shift 2 ;;
     --no-advisory) ADV_FLAG="--no-advisory"; shift ;;
+    --timeout)     TIMEOUT="$2"; shift 2 ;;
     --dry-run)     DRY_FLAG="--dry-run"; shift ;;
     --work-root)   WORK_ROOT="$2";   shift 2 ;;
+    --supervised)  shift ;;            # accepted for launcher symmetry; checkpoint writes are always on
     *) echo "run-panel-loop: unknown arg '$1'" >&2; exit 64 ;;
   esac
 done
 
-[ -n "$SKILLS_FILE" ] || { echo "run-panel-loop: --skills-file is required" >&2; exit 64; }
-[ -f "$SKILLS_FILE" ] || { echo "run-panel-loop: skills file not found: $SKILLS_FILE" >&2; exit 66; }
-[ -f "$ENRICH" ]      || { echo "run-panel-loop: enrich runner not found: $ENRICH" >&2; exit 69; }
+if [ "$WORKLIST" -eq 0 ] && [ -z "$SKILLS_FILE" ]; then
+  echo "run-panel-loop: one of --worklist or --skills-file <path> is required" >&2; exit 64
+fi
+[ "$WORKLIST" -eq 1 ] || [ -f "$SKILLS_FILE" ] || { echo "run-panel-loop: skills file not found: $SKILLS_FILE" >&2; exit 66; }
+[ -f "$ENRICH" ] || { echo "run-panel-loop: enrich runner not found: $ENRICH" >&2; exit 69; }
+[ "$WORKLIST" -eq 0 ] || [ -f "$CLAIM" ] || { echo "run-panel-loop: claim system not found: $CLAIM" >&2; exit 69; }
+
+# Session-stable identity so claim + release pair correctly (memory: claim lock is pid-bound;
+# both subprocesses must see the same AGENT_ID). One id per drain process.
+export AGENT_ID="${AGENT_ID:-panel-drain-$(date -u +%Y%m%dT%H%M%SZ)-$$}"
 
 mkdir -p "$WORK_ROOT"
 LEDGER="$WORK_ROOT/batch-ledger.jsonl"
 touch "$LEDGER"
 
-# ISO-8601 UTC with time-of-day (version-controlled timestamps carry time, per skill-graph AGENTS.md).
 now() { date -u "+%Y-%m-%dT%H:%M:%SZ"; }
-ledger() { # slug status [detail]
-  printf '{"ts":"%s","skill":"%s","status":"%s","detail":"%s"}\n' \
-    "$(now)" "$1" "$2" "${3:-}" >> "$LEDGER"
+ledger() { # slug status [detail] — local mirror (the canonical ledger is written by claim/release)
+  printf '{"ts":"%s","skill":"%s","status":"%s","detail":"%s"}\n' "$(now)" "$1" "$2" "${3:-}" >> "$LEDGER"
 }
-done_already() { # slug -> 0 if a terminal-success line already exists (resume support)
+done_already() { # slug -> 0 if a terminal line already exists in the LOCAL ledger (skills-file resume)
   grep -q "\"skill\":\"$1\",\"status\":\"\(applied\|reverted\|missing\|noop\)\"" "$LEDGER"
 }
 
-mapfile -t SLUGS < <(grep -vE '^\s*(#|$)' "$SKILLS_FILE" | sed 's/[[:space:]]//g')
-TOTAL=${#SLUGS[@]}
-echo "run-panel-loop: $TOTAL skill(s) · advisory=$([ -z "$ADV_FLAG" ] && echo full-panel || echo floor-only) · max-rounds=$MAX_ROUNDS · work=$WORK_ROOT" >&2
-echo "run-panel-loop: ledger=$LEDGER" >&2
+# Recursively kill a PID and all its descendants (enumerating children of a KNOWN pid is a
+# kill-target list, not a name-scan liveness inference — see no-ps-for-liveness).
+kill_tree() {
+  local p="$1" c
+  for c in $(pgrep -P "$p" 2>/dev/null); do kill_tree "$c"; done
+  kill "$p" 2>/dev/null || true
+}
 
-i=0; applied=0; reverted=0; failed=0; missing=0; skipped=0
-for slug in "${SLUGS[@]}"; do
-  i=$((i+1))
-  if done_already "$slug"; then
-    echo "[$i/$TOTAL] $slug — already done this batch, skipping" >&2
-    skipped=$((skipped+1)); continue
-  fi
+# Per-skill watchdog: hard-kill the enrich tree if it outruns $TIMEOUT. Liveness via OWNED pid.
+WATCHDOG_PID=""
+start_watchdog() {
+  local pid="$1" timeout="$2"
+  (
+    local elapsed=0
+    while [ "$elapsed" -lt "$timeout" ]; do
+      sleep 10; elapsed=$((elapsed + 10))
+      kill -0 "$pid" 2>/dev/null || exit 0   # enrich exited on its own — nothing to kill
+    done
+    if kill -0 "$pid" 2>/dev/null; then kill_tree "$pid"; sleep 5; kill -9 "$pid" 2>/dev/null || true; fi
+  ) &
+  WATCHDOG_PID=$!
+}
 
-  dir="$(find "$SKILLS_REPO/skills" -type d -name "$slug" -not -path '*/node_modules/*' 2>/dev/null | head -1)"
-  if [ -z "$dir" ] || [ ! -f "$dir/SKILL.md" ]; then
-    echo "[$i/$TOTAL] $slug — NOT FOUND (no dir or no SKILL.md), skipping" >&2
-    ledger "$slug" missing "no SKILL.md under $SKILLS_REPO/skills"; missing=$((missing+1)); continue
-  fi
+# Best-effort budget gate: only the exhausted-lock fast path for the mandatory frontier (opus).
+# Avoids false pauses (Opus on MAX has high limits); a real daily-exhaustion lock pauses the drain.
+budget_blocked() {
+  local lock="$HOME/.claude/agents/exhausted-opus.lock"
+  [ -f "$lock" ] || return 1
+  local d; d=$(node -e 'try{process.stdout.write((require(process.argv[1]).date)||"")}catch(e){}' "$lock" 2>/dev/null)
+  [ "$d" = "$(date -u +%Y-%m-%d)" ]
+}
 
-  STATUS="$WORK_ROOT/$slug.status.json"
-  RESULT="$WORK_ROOT/$slug.result.json"
-  LOG="$WORK_ROOT/$slug.log"
+# Best-effort steering: pause_after_current / stop honored when loop-steering is present.
+steering_says_stop() {
+  [ -f "$STEERING" ] || return 1
+  local out; out=$(node "$STEERING" read --json 2>/dev/null) || return 1
+  printf '%s' "$out" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{const j=JSON.parse(s);process.exit((j.pause_after_current||j.stop||j.pause)?0:1)}catch(e){process.exit(1)}})' 2>/dev/null
+}
+
+checkpoint() { node "$CHECKPOINT" "$@" >/dev/null 2>&1 || true; }   # best-effort
+
+# counters (globals, mutated inside enrich_one_skill)
+applied=0; reverted=0; failed=0; missing=0; skipped=0
+CODE=0; REL_STATUS="aborted"
+
+# Run ONE skill through the panel enrich loop. Sets globals CODE + REL_STATUS; commits on keep.
+enrich_one_skill() { # $1=slug $2=dir
+  local slug="$1" dir="$2"
+  local STATUS="$WORK_ROOT/$slug.status.json" RESULT="$WORK_ROOT/$slug.result.json" LOG="$WORK_ROOT/$slug.log"
   rm -f "$STATUS"
-  echo "[$i/$TOTAL] $slug — enriching (panel) -> ${dir#$SKILLS_REPO/}" >&2
 
-  # Launch the enrich runner (full result JSON -> RESULT on stdout; live log -> LOG on stderr).
   AUDIT_LOOP=1 node "$ENRICH" \
     --skill "$slug" --skill-dir "$dir" --cwd "$SG" \
     --max-rounds "$MAX_ROUNDS" $ADV_FLAG $DRY_FLAG \
     --status-file "$STATUS" --no-tui \
     >"$RESULT" 2>"$LOG" &
-  ENRICH_PID=$!
+  local ENRICH_PID=$!
+  start_watchdog "$ENRICH_PID" "$TIMEOUT"; local WD="$WATCHDOG_PID"
 
-  # Per-skill statusline bridge = the attached viewer. It paints the panel above the statusline
-  # and self-exits when THIS skill's heartbeat reports complete; we relaunch it for the next skill.
-  BRIDGE_PID=""
+  local BRIDGE_PID=""
   if [ -f "$BRIDGE" ]; then
-    # give the runner a moment to write the first heartbeat
     for _ in 1 2 3 4 5 6 7 8; do [ -f "$STATUS" ] && break; sleep 1; done
-    node "$BRIDGE" "$STATUS" --poll 4 --stale 2700 >"$WORK_ROOT/$slug.bridge.log" 2>&1 &
-    BRIDGE_PID=$!
+    node "$BRIDGE" "$STATUS" --poll 4 --stale 2700 >"$WORK_ROOT/$slug.bridge.log" 2>&1 & BRIDGE_PID=$!
   fi
 
   wait "$ENRICH_PID"; CODE=$?
-  # Liveness by OWNED pid (never ps/pgrep): stop the bridge if it hasn't already self-exited.
-  if [ -n "$BRIDGE_PID" ] && kill -0 "$BRIDGE_PID" 2>/dev/null; then
-    kill "$BRIDGE_PID" 2>/dev/null; wait "$BRIDGE_PID" 2>/dev/null
-  fi
+  [ -n "$WD" ] && kill -0 "$WD" 2>/dev/null && { kill "$WD" 2>/dev/null; wait "$WD" 2>/dev/null; }
+  [ -n "$BRIDGE_PID" ] && kill -0 "$BRIDGE_PID" 2>/dev/null && { kill "$BRIDGE_PID" 2>/dev/null; wait "$BRIDGE_PID" 2>/dev/null; }
 
   case "$CODE" in
     0)
-      # KEPT — Phase 5 already wrote the canonical SKILL.md. Commit path-limited (CONTENT).
-      kept="$(node -e 'try{console.log(require(process.argv[1]).applied?1:0)}catch(e){console.log(0)}' "$RESULT" 2>/dev/null || echo 0)"
+      local kept; kept=$(node -e 'try{console.log(require(process.argv[1]).applied?1:0)}catch(e){console.log(0)}' "$RESULT" 2>/dev/null || echo 0)
       if [ "$kept" != "1" ]; then
-        echo "[$i/$TOTAL] $slug — exit 0 but applied=false (no change), no commit" >&2
-        ledger "$slug" noop "exit 0, applied=false"; applied=$((applied+0)); continue
+        echo "    $slug — exit 0 but applied=false (no change)" >&2
+        ledger "$slug" noop "applied=false"; REL_STATUS="aborted"; return
       fi
       if [ -n "$DRY_FLAG" ]; then
-        echo "[$i/$TOTAL] $slug — DRY-RUN: would commit (applied=1), no write" >&2
-        ledger "$slug" applied "dry-run"; applied=$((applied+1)); continue
+        echo "    $slug — DRY-RUN: would commit (applied=1)" >&2
+        ledger "$slug" applied "dry-run"; applied=$((applied+1)); REL_STATUS="completed"; return
       fi
-      paths=()
-      [ -f "$dir/SKILL.md" ]        && paths+=("$dir/SKILL.md")
+      local paths=()
+      [ -f "$dir/SKILL.md" ]         && paths+=("$dir/SKILL.md")
       [ -f "$dir/audit-state.json" ] && paths+=("$dir/audit-state.json")
-      MSG="$WORK_ROOT/$slug.commit-msg.txt"
-      adv_alive="$(node -e 'try{console.log((require(process.argv[1]).advisory_models_alive||[]).join(", ")||"none")}catch(e){console.log("n/a")}' "$RESULT" 2>/dev/null || echo n/a)"
+      local MSG="$WORK_ROOT/$slug.commit-msg.txt"
+      local adv_alive; adv_alive=$(node -e 'try{console.log((require(process.argv[1]).advisory_models_alive||[]).join(", ")||"none")}catch(e){console.log("n/a")}' "$RESULT" 2>/dev/null || echo n/a)
       {
         printf 'content(%s): panel-enrich — Opus 4.8 + GPT-5.5 + advisory (eval-guarded keep)\n\n' "$slug"
-        printf 'Enriched via the multi-agent panel loop (/skill-audit-loop batch).\n'
+        printf 'Enriched via the multi-agent panel loop (run-panel-loop drain).\n'
         printf 'Eval guardrail verdict: KEEP. Advisory alive: %s.\n\n' "$adv_alive"
         printf 'Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>\n'
       } > "$MSG"
       git -C "$SKILLS_REPO" add -- "${paths[@]}" 2>/dev/null
       if AUDIT_LOOP=1 git -C "$SKILLS_REPO" commit --only -F "$MSG" -- "${paths[@]}" >>"$LOG" 2>&1; then
-        sha="$(git -C "$SKILLS_REPO" rev-parse --short HEAD)"
-        echo "[$i/$TOTAL] $slug — KEPT + committed ($sha)" >&2
-        ledger "$slug" applied "$sha"; applied=$((applied+1))
+        local sha; sha=$(git -C "$SKILLS_REPO" rev-parse --short HEAD)
+        echo "    $slug — KEPT + committed ($sha)" >&2
+        ledger "$slug" applied "$sha"; applied=$((applied+1)); REL_STATUS="completed"
       else
-        echo "[$i/$TOTAL] $slug — KEPT but commit was a no-op/failed (see $LOG)" >&2
-        ledger "$slug" noop "commit no-op"
+        echo "    $slug — KEPT but commit was a no-op/failed (see $LOG)" >&2
+        ledger "$slug" noop "commit no-op"; REL_STATUS="aborted"
       fi
       ;;
     2)
-      echo "[$i/$TOTAL] $slug — REVERTED by eval guardrail (not committed)" >&2
-      ledger "$slug" reverted "eval guardrail"; reverted=$((reverted+1))
+      echo "    $slug — REVERTED by eval guardrail (not committed)" >&2
+      ledger "$slug" reverted "eval guardrail"; reverted=$((reverted+1)); REL_STATUS="reverted"
+      ;;
+    143|137)
+      echo "    $slug — KILLED by watchdog (>${TIMEOUT}s)" >&2
+      ledger "$slug" failed "watchdog timeout ${TIMEOUT}s"; failed=$((failed+1)); REL_STATUS="aborted"
       ;;
     *)
-      echo "[$i/$TOTAL] $slug — FAILED (exit $CODE, see $LOG)" >&2
-      ledger "$slug" failed "exit $CODE"; failed=$((failed+1))
+      echo "    $slug — FAILED (exit $CODE, see $LOG)" >&2
+      ledger "$slug" failed "exit $CODE"; failed=$((failed+1)); REL_STATUS="aborted"
       ;;
   esac
-done
+}
 
-echo "run-panel-loop DONE: applied=$applied reverted=$reverted failed=$failed missing=$missing skipped=$skipped / total=$TOTAL" >&2
-echo "run-panel-loop: per-skill results in $WORK_ROOT/<slug>.result.json · ledger $LEDGER" >&2
+resolve_dir() { find "$SKILLS_REPO/skills" -type d -name "$1" -not -path '*/node_modules/*' 2>/dev/null | head -1; }
+
+# ── DRAIN MODE — claim/ledger-coordinated walk over EVERY eligible skill ──────────
+drain_worklist() {
+  echo "run-panel-loop: WORKLIST drain · advisory=$([ -z "$ADV_FLAG" ] && echo full-panel || echo floor-only) · lane=${LANE:-all} · timeout=${TIMEOUT}s · agent=$AGENT_ID" >&2
+  local processed=0
+  while true; do
+    if steering_says_stop; then echo "run-panel-loop: steering pause/stop — exiting" >&2; break; fi
+    if budget_blocked; then echo "run-panel-loop: opus daily budget exhausted — sleeping 300s" >&2; sleep 300; continue; fi
+
+    local nextjson slug
+    nextjson=$(node "$CLAIM" next --model panel-enrich ${LANE:+--lane "$LANE"} --json 2>/dev/null)
+    slug=$(printf '%s' "$nextjson" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{process.stdout.write(JSON.parse(s).skill||"")}catch(e){}})' 2>/dev/null)
+    if [ -z "$slug" ]; then echo "run-panel-loop: worklist drained — no eligible skill" >&2; break; fi
+
+    local dir; dir=$(resolve_dir "$slug")
+    if [ -z "$dir" ] || [ ! -f "$dir/SKILL.md" ]; then
+      echo "  $slug — NOT FOUND, skipping" >&2; ledger "$slug" missing "no SKILL.md"; missing=$((missing+1)); continue
+    fi
+    # DRY preview: next picks the top eligible skill; do ONE dry pass and stop. No claim/release
+    # (they write the canonical ledger), and without a claim `next` would re-pick the same skill
+    # forever — so dry mode is a finite, side-effect-free single-skill preview.
+    if [ -n "$DRY_FLAG" ]; then
+      echo "[drain dry-preview] $slug — would claim+enrich -> ${dir#$SKILLS_REPO/}" >&2
+      enrich_one_skill "$slug" "$dir"
+      echo "run-panel-loop: DRY preview complete (1 skill; no claim/release/commit written)" >&2
+      return
+    fi
+    if ! node "$CLAIM" claim "$slug" --model panel-enrich --op audit >/dev/null 2>&1; then
+      echo "  $slug — claim race (held by another agent), skipping" >&2; continue
+    fi
+    processed=$((processed+1))
+    echo "[drain #$processed] $slug — enriching -> ${dir#$SKILLS_REPO/}" >&2
+    checkpoint update --loop "$LOOP_ID" --item "$slug" --phase processing
+    enrich_one_skill "$slug" "$dir"
+    node "$CLAIM" release "$slug" --model panel-enrich --status "$REL_STATUS" >/dev/null 2>&1 || true
+    checkpoint update --loop "$LOOP_ID" --phase done
+  done
+  echo "run-panel-loop DRAIN DONE: processed=$processed applied=$applied reverted=$reverted failed=$failed missing=$missing" >&2
+}
+
+# ── FILE MODE — curated slug list (local-ledger resume; no shared claim) ──────────
+drain_file() {
+  mapfile -t SLUGS < <(grep -vE '^\s*(#|$)' "$SKILLS_FILE" | sed 's/[[:space:]]//g')
+  local TOTAL=${#SLUGS[@]} i=0
+  echo "run-panel-loop: FILE mode · $TOTAL skill(s) · advisory=$([ -z "$ADV_FLAG" ] && echo full-panel || echo floor-only) · timeout=${TIMEOUT}s · work=$WORK_ROOT" >&2
+  for slug in "${SLUGS[@]}"; do
+    i=$((i+1))
+    if done_already "$slug"; then echo "[$i/$TOTAL] $slug — already done (local ledger), skipping" >&2; skipped=$((skipped+1)); continue; fi
+    local dir; dir=$(resolve_dir "$slug")
+    if [ -z "$dir" ] || [ ! -f "$dir/SKILL.md" ]; then
+      echo "[$i/$TOTAL] $slug — NOT FOUND, skipping" >&2; ledger "$slug" missing "no SKILL.md"; missing=$((missing+1)); continue
+    fi
+    echo "[$i/$TOTAL] $slug — enriching -> ${dir#$SKILLS_REPO/}" >&2
+    enrich_one_skill "$slug" "$dir"
+  done
+  echo "run-panel-loop FILE DONE: applied=$applied reverted=$reverted failed=$failed missing=$missing skipped=$skipped / total=$TOTAL" >&2
+}
+
+if [ "$WORKLIST" -eq 1 ]; then drain_worklist; else drain_file; fi
+echo "run-panel-loop: per-skill results in $WORK_ROOT/<slug>.result.json · local ledger $LEDGER" >&2
