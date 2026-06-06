@@ -50,29 +50,34 @@ Run the readiness preflight so the skill has what the loop needs:
 cd ~/Development/skill-graph && node scripts/skill-audit-preflight.js <skill> --for all
 ```
 
-### A2. Launch the panel enrich loop — FOREGROUND via `!`
+### A2. Run the loop AND attach the `Monitor` viewer (the viewer is what makes it VISIBLE)
 
-The runner takes ~15–25 min/skill (full panel). It MUST run in the user's terminal via `!` (uncapped, streams the pinned-header TUI + `[+Ns]` logs into the conversation). Do **not** run it as a backgrounded harness `Bash` and poll it — that is the exact anti-pattern this loop removed (memory `panel-loop-runs-in-foreground-not-background`; `.claude/rules/no-ps-for-liveness.md`). The harness `Bash` 10-min cap is below a single skill's runtime, so a harness call would be killed mid-run and misread as a stall.
+**The command RUNS the loop. Never hand the user a `!` command to paste** — the user invoked `/skill-audit-loop`; making them paste a runner command after that is the UX failure this command exists to remove (corrected 2026-06-06 per user feedback; supersedes the earlier "user runs via `!`" note).
 
-Hand the user this exact command (full panel = advisory ON; add `--no-advisory` for the Opus+GPT certifying floor only):
+**Step 1 — launch the runner** with the `Bash` tool (full panel = advisory ON; `--no-advisory` = Opus+GPT certifying floor only). A full skill takes ~15–25 min; the harness runs a long command as a managed task and notifies you when it exits. The runner writes a heartbeat `status.json`:
 
 ```
-! cd ~/Development/skill-graph && AUDIT_LOOP=1 node lib/audit/run-panel-enrich.js \
+AUDIT_LOOP=1 node /Users/jacobbalslev/Development/skill-graph/lib/audit/run-panel-enrich.js \
   --skill <skill> \
-  --skill-dir ~/Development/skills/skills/<subject>/<skill> \
-  --cwd . --max-rounds 2 \
+  --skill-dir /Users/jacobbalslev/Development/skills/skills/<subject>/<skill> \
+  --cwd /Users/jacobbalslev/Development/skill-graph --max-rounds 2 \
   --status-file /tmp/enrich-loop/<skill>.status.json
 ```
 
-What it does (`run-panel-enrich.js`, the OFFICIAL loop): Phase 1 parallel propose (Opus 4.8 + GPT-5.5 MANDATORY + free advisory, each its own research) → Phase 2 cross-review to convergence → Phase 3 frontier-curated anti-loss union-merge → Phase 4 bidirectional eval guardrail + keep/revert → Phase 5 apply-on-keep. A mandatory-frontier failure ABORTS; an advisory failure is recorded + skipped.
-
-### A3. Stream the collected TUI in-session (optional second view)
-
-The `!` run already streams its own pinned-header TUI. If a separate **collected** multi-agent view is wanted (every agent's phase/state together), run the canonical viewer against the same status file — it is an observer with terminal states (COMPLETE / STALE), safe to run as a background Monitor:
+**Step 2 — immediately attach the collected-view viewer via the `Monitor` tool** so every agent's phase/state streams into the chat live (persistent — `watch-panel.js` self-exits on COMPLETE, emits STALE if the heartbeat stops):
 
 ```
-! node ~/Development/skill-graph/scripts/watch-panel.js /tmp/enrich-loop/<skill>.status.json --poll 3
+Monitor (persistent): node /Users/jacobbalslev/Development/skill-graph/scripts/watch-panel.js \
+  /tmp/enrich-loop/<skill>.status.json --poll 10 --stale 1800
 ```
+
+**The viewer is what makes the run VISIBLE** — the documented requirement (`skill-audit-loop/SKILL_AUDIT_LOOP.md` § "Canonical way to run the PANEL loop VISIBLY": *"do NOT launch the runner as a blind background task with no viewer attached"*). The failure to avoid is a **blind** run (no viewer), NOT the managed task itself. Per `.claude/rules/no-ps-for-liveness.md`: never `ps`/`pgrep` the run, never tail the `.output` JSONL to guess progress — the **viewer streams state** and the **harness completion notification is the authoritative done-signal**. A STALE event during slow advisory dispatch is "quiet ≠ dead" — confirm with ONE heartbeat read, never conclude death.
+
+`run-panel-enrich.js`, the OFFICIAL loop: Phase 1 parallel propose (Opus 4.8 + GPT-5.5 MANDATORY + free advisory, each its own research) → Phase 2 cross-review to convergence → Phase 3 frontier-curated anti-loss union-merge → Phase 4 bidirectional eval guardrail + keep/revert → Phase 5 apply-on-keep. A mandatory-frontier failure ABORTS; an advisory failure is recorded + skipped (`state: skipped`, never blocks).
+
+### A3. On the completion notification, continue to A4 — do not poll
+
+When the harness reports the runner exited, read its result JSON and proceed to A4. Until then, keep working on other steps; the `Monitor` viewer is the live window and the completion notification is the trigger. (The same `watch-panel.js` collected renderer is the canonical multi-agent TUI shared with `/boardmeeting` — see `docs/plans/unify-multiagent-tui-2026-06-06.md`.)
 
 ### A4. Review + commit (CONTENT)
 
