@@ -148,6 +148,29 @@ ok('tolerates a missing/empty status object', () => {
   const lines = renderCollected(null);
   assert.ok(Array.isArray(lines) && lines.length === 2, 'header lines even with no agents');
 });
+ok('renders the QUALITY tier (boardmeeting panel) distinctly from advisory', () => {
+  const lines = renderCollected({
+    skill: 'board', phase: 'review', done: 1, total: 3, failed: 1,
+    agents: [
+      { model: 'opus', tier: 'quality', phase: 'review', state: 'reviewing' },
+      { model: 'codex-current', tier: 'quality', phase: 'review', state: 'running' },
+      { model: 'minimax', tier: 'advisory', phase: 'review', state: 'done' },
+    ],
+  });
+  assert.ok(lines[1].includes('2 QUALITY') && lines[1].includes('1 advisory'), 'quality counted as core, not advisory');
+  assert.ok(lines[2].includes('[QUALITY]'), 'quality-tier row labeled QUALITY');
+  assert.ok(!lines[2].includes('[advisory]'), 'quality row not mislabeled advisory');
+});
+ok('mandatory panel (skill-audit-loop) keeps its exact header', () => {
+  const lines = renderCollected({
+    skill: 'methodical', phase: 'propose', done: 1, total: 2,
+    agents: [
+      { model: 'opus', tier: 'mandatory', phase: 'propose', state: 'proposed' },
+      { model: 'minimax', tier: 'advisory', phase: null, state: 'queued' },
+    ],
+  });
+  assert.ok(lines[1].includes('1 MANDATORY (Opus + GPT)'), 'mandatory header unchanged');
+});
 
 // ── 4. helper ──
 console.log('4. helpers');
