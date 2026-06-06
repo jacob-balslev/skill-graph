@@ -50,7 +50,7 @@ Run the readiness preflight so the skill has what the loop needs:
 cd ~/Development/skill-graph && node scripts/skill-audit-preflight.js <skill> --for all
 ```
 
-### A2. Run the loop AND attach the `Monitor` viewer (the viewer is what makes it VISIBLE)
+### A2. Run the loop AND show the multi-agent panel ABOVE the statusline
 
 **The command RUNS the loop. Never hand the user a `!` command to paste** — the user invoked `/skill-audit-loop`; making them paste a runner command after that is the UX failure this command exists to remove (corrected 2026-06-06 per user feedback; supersedes the earlier "user runs via `!`" note).
 
@@ -64,14 +64,18 @@ AUDIT_LOOP=1 node /Users/jacobbalslev/Development/skill-graph/lib/audit/run-pane
   --status-file /tmp/enrich-loop/<skill>.status.json
 ```
 
-**Step 2 — immediately attach the collected-view viewer via the `Monitor` tool** so every agent's phase/state streams into the chat live (persistent — `watch-panel.js` self-exits on COMPLETE, emits STALE if the heartbeat stops):
+**Step 2 — start the statusline bridge so the multi-agent panel renders RIGHT ABOVE the bottom statusline** — the bottom-of-chat panel the user expects, NOT scrolling Monitor notifications. Run it with the Bash tool in the background (it is lightweight infra feeding the visible panel, not a hidden run):
 
 ```
-Monitor (persistent): node /Users/jacobbalslev/Development/skill-graph/scripts/watch-panel.js \
-  /tmp/enrich-loop/<skill>.status.json --poll 10 --stale 1800
+node /Users/jacobbalslev/Development/scripts/agent/panel-heartbeat-to-agent-state.js \
+  /tmp/enrich-loop/<skill>.status.json --poll 4 --stale 1800
 ```
 
-**The viewer is what makes the run VISIBLE** — the documented requirement (`skill-audit-loop/SKILL_AUDIT_LOOP.md` § "Canonical way to run the PANEL loop VISIBLY": *"do NOT launch the runner as a blind background task with no viewer attached"*). The failure to avoid is a **blind** run (no viewer), NOT the managed task itself. Per `.claude/rules/no-ps-for-liveness.md`: never `ps`/`pgrep` the run, never tail the `.output` JSONL to guess progress — the **viewer streams state** and the **harness completion notification is the authoritative done-signal**. A STALE event during slow advisory dispatch is "quiet ≠ dead" — confirm with ONE heartbeat read, never conclude death.
+It reads the heartbeat and writes `.claude/agent-memory/agent-state/*.json`, which `.claude/statusline.py` renders as one live line per agent **above** the bottom session line (Opus/GPT `[MANDATORY]` + advisory, each with its own phase·state); it clears the panel when the run completes. This is the documented "run the loop VISIBLY" requirement (`skill-audit-loop/SKILL_AUDIT_LOOP.md` — *"do NOT launch the runner as a blind background task with no viewer attached"*): the bridge IS the attached viewer.
+
+*(Optional alternative — a scrolling collected block in the chat instead of the above-statusline panel: arm the `Monitor` tool on `skill-graph/scripts/watch-panel.js <status-file>`. The above-statusline panel is the default; only use the Monitor block if the user asks for the scrolling view.)*
+
+Per `.claude/rules/no-ps-for-liveness.md`: never `ps`/`pgrep` the run, never tail the `.output` JSONL to guess progress — the **harness completion notification is the authoritative done-signal**. A STALE during slow advisory dispatch is "quiet ≠ dead" — confirm with ONE heartbeat read, never conclude death.
 
 `run-panel-enrich.js`, the OFFICIAL loop: Phase 1 parallel propose (Opus 4.8 + GPT-5.5 MANDATORY + free advisory, each its own research) → Phase 2 cross-review to convergence → Phase 3 frontier-curated anti-loss union-merge → Phase 4 bidirectional eval guardrail + keep/revert → Phase 5 apply-on-keep. A mandatory-frontier failure ABORTS; an advisory failure is recorded + skipped (`state: skipped`, never blocks).
 
