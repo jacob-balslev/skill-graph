@@ -37,6 +37,15 @@ check('emits (allow default), a workspace deny, and an allow-back per public roo
     assert.ok(allowIdx > denyIdx, `allow-back ${root} comes after the deny`);
   }
 });
+check('allows file-read-metadata on the workspace-root LITERAL (CLI startup lstat) after the deny', () => {
+  const profile = ic.buildSeatbeltProfile({ workspaceRoot: '/ws', publicRoots: ['/ws/skill-graph'] });
+  const lines = profile.split('\n');
+  const denyIdx = lines.findIndex((l) => l === '(deny file-read* file-write* (subpath "/ws"))');
+  const metaIdx = lines.findIndex((l) => l === '(allow file-read-metadata (literal "/ws"))');
+  assert.ok(metaIdx > denyIdx, 'metadata-allow on the root literal comes after the deny (last-match wins for the node)');
+  // It must be the LITERAL root only — never a subpath allow that would re-expose private children.
+  assert.ok(!lines.some((l) => l === '(allow file-read-metadata (subpath "/ws"))'), 'NOT a subpath metadata allow');
+});
 check('refuses a public root that is the workspace root or an ancestor (fence-defeating)', () => {
   assert.throws(() => ic.buildSeatbeltProfile({ workspaceRoot: '/ws', publicRoots: ['/ws'] }),
     /defeat the fence/);
@@ -166,6 +175,21 @@ check('a node child under the generated profile reads public + is kernel-denied 
       + `catch(e){process.stdout.write('DENIED:'+(e.code||e.message))}`,
     );
     assert.ok(/^DENIED:/.test(privWrite) && !/WROTE/.test(privWrite), `private write denied (got: ${privWrite})`);
+
+    // lstat of the workspace-root NODE must SUCCEED (CLIs that probe their ancestor chain at
+    // startup, e.g. the Gemini CLI, lstat /ws) — while reading its private children stays denied.
+    const wsCanon = ic.canonicalPath(ws);
+    const lstatOut = runFenced(
+      `try{const s=require('fs').lstatSync(${JSON.stringify(wsCanon)});process.stdout.write('STAT:'+s.isDirectory())}`
+      + `catch(e){process.stdout.write('DENIED:'+(e.code||e.message))}`,
+    );
+    assert.strictEqual(lstatOut, 'STAT:true', `workspace-root lstat allowed (got: ${lstatOut})`);
+    // But listing the root's entries (readdir = file-read-data) must stay DENIED — no enumeration.
+    const readdirOut = runFenced(
+      `try{require('fs').readdirSync(${JSON.stringify(wsCanon)});process.stdout.write('LISTED')}`
+      + `catch(e){process.stdout.write('DENIED:'+(e.code||e.message))}`,
+    );
+    assert.ok(/^DENIED:/.test(readdirOut) && !/LISTED/.test(readdirOut), `root readdir denied (got: ${readdirOut})`);
 
     f.cleanup();
     assert.ok(!fs.existsSync(profilePath), 'cleanup removes the profile temp dir');
