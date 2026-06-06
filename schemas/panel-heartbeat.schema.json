@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skills.sh/schemas/panel-heartbeat.schema.json",
+  "title": "Panel heartbeat status.json",
+  "description": "The shared contract for the collected multi-agent TUI heartbeat file. Both producers conform to it: the Skill Audit Loop panel-enrich runner (lib/audit/panel-progress.js, via createProgressReporter().heartbeat()) and the workspace /boardmeeting Phase 2 writer (scripts/agent/boardmeeting-heartbeat.js). The viewer scripts/watch-panel.js reads this file and paints renderCollected(); keeping both producers on one schema means /boardmeeting and /skill-audit-loop render the SAME collected view. A producer MAY emit additional fields the viewer ignores; this schema names the required core plus the optional fields the renderer reads.",
+  "type": "object",
+  "required": ["ts", "skill", "phase", "total", "done", "failed", "complete", "agents"],
+  "additionalProperties": true,
+  "properties": {
+    "ts": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp of this heartbeat write (e.g. new Date().toISOString())."
+    },
+    "pid": {
+      "type": "integer",
+      "description": "Process id of the producer, for liveness checks by the watch wrappers."
+    },
+    "skill": {
+      "type": "string",
+      "description": "The label rendered in the collected-view header. For the panel-enrich loop this is the skill name; for /boardmeeting it is the meeting label (e.g. 'Sales Hub board (dev)'). The renderer reads `skill` for both producers, so the field name is shared even though the meaning is the producer's subject."
+    },
+    "phase": {
+      "type": "string",
+      "description": "Current phase label of the whole run (e.g. 'dispatch', 'propose (advisory)', 'review', 'complete')."
+    },
+    "elapsed_s": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Whole-run elapsed seconds since the producer started. Optional; the renderer shows it in the header when present."
+    },
+    "total": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total number of agents in the panel."
+    },
+    "done": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Count of agents in a terminal-success state."
+    },
+    "failed": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Count of agents in a terminal-failure state (failed or timeout)."
+    },
+    "running": {
+      "type": "array",
+      "description": "In-flight cells (one per actively-running agent unit). Optional; the watch wrappers use it for stall detection.",
+      "items": {
+        "type": "object",
+        "required": ["cell", "elapsed_s"],
+        "additionalProperties": true,
+        "properties": {
+          "cell": {
+            "type": "string",
+            "description": "Identifier for the running unit (e.g. 'minimax:propose' or a model alias)."
+          },
+          "elapsed_s": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Seconds this cell has been running."
+          }
+        }
+      }
+    },
+    "complete": {
+      "type": "boolean",
+      "description": "True once every agent has reached a terminal state. The viewer treats this as the COMPLETE terminal signal."
+    },
+    "agents": {
+      "type": "array",
+      "description": "One entry per panel agent (mandatory + advisory), in display order. This is what renderCollected() paints as the agent tree.",
+      "items": {
+        "type": "object",
+        "required": ["model", "tier", "phase", "state", "elapsed_s"],
+        "additionalProperties": true,
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Model alias/role (e.g. 'opus', 'codex-current', 'minimax'). The renderer resolves it to a full display name."
+          },
+          "tier": {
+            "type": "string",
+            "enum": ["mandatory", "quality", "advisory"],
+            "description": "Panel tier. 'mandatory' and 'quality' are the certifying/quality tiers; 'advisory' is breadth-only. The renderer groups 'mandatory'/'quality' against 'advisory' in the summary line."
+          },
+          "phase": {
+            "type": ["string", "null"],
+            "description": "The agent's current phase (e.g. 'propose', 'review', 'revise'), or null before it starts."
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "proposing",
+              "proposed",
+              "reviewing",
+              "revising",
+              "running",
+              "done",
+              "failed",
+              "skipped",
+              "timeout",
+              "complete"
+            ],
+            "description": "The agent's lifecycle state. Drives the row glyph in the collected view."
+          },
+          "elapsed_s": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Seconds this agent has been in its current active state (0 when not actively running)."
+          }
+        }
+      }
+    }
+  }
+}
