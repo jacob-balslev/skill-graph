@@ -56,6 +56,8 @@ The loop exists to answer one question about each skill: **does it still teach a
 
 The audit is **not a lint-test factory.** We do not invent arbitrary internal structural checks to manufacture findings, and an empty findings report on a genuinely good skill is a **PASS** — not a failure to find work. `lint_verdict` / `structural_verdict` cover form, schema validity, and external marketplace mandates only — a **floor the skill must clear**, never the target it aims at. Passing lint says the skill is well-formed; it says nothing about whether the skill teaches well.
 
+**Breadth is not a finding.** A skill that deliberately covers a wide, cross-cutting topic is not defective for being broad: declared breadth (a wide `scope` / `description`, or many `relations.boundary` edges) is intent fidelity, not drift, and topic overlap between related skills is recall, not a defect to drive to zero. Never open a finding whose substance is "too broad" / "overlaps too many skills" / "too many boundary edges"; judge each *addition* on correctness, placement, non-contradiction, and organization, never on scope-narrowness. A breadth-related finding is legitimate only when the breadth yields a concrete defect (a wrong claim, a misplaced section, a real routing ambiguity with no disambiguating edge, or self-contradiction). Full statement: [`docs/reference/skill-audit-pipeline.md` § "Breadth is not a finding"](../../docs/reference/skill-audit-pipeline.md) and [`docs/quality-doctrine.md` § "Reading skill-overlap.js output"](../docs/quality-doctrine.md).
+
 ### Two Gates, One Quality Claim
 
 The loop has two gates. They must not be blended into one PASS/FAIL label:
