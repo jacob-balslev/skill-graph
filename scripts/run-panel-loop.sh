@@ -220,6 +220,14 @@ resolve_dir() { find "$SKILLS_REPO/skills" -type d -name "$1" -not -path '*/node
 # refresh the worklist after each skill so a restart's snapshot excludes what just completed.
 drain_worklist() {
   echo "run-panel-loop: WORKLIST drain · advisory=$([ -z "$ADV_FLAG" ] && echo full-panel || echo floor-only) · timeout=${TIMEOUT}s · agent=$AGENT_ID" >&2
+  # Self-heal: clear panel per-model SLOT locks orphaned by a previously KILLED run. The panel
+  # enrich claims fixed per-model agent ids (enrich-opus, …) under a "one skill per agent" guard;
+  # a killed run leaves a slot held, which then refuses EVERY future skill's claim (verified
+  # 2026-06-06: an orphaned api-design--opus slot failed all 99 skills at phase 1a). The drain is
+  # the sole panel runner, so at startup no panel slot is legitimately held — clear them.
+  for _m in opus codex-current gemini gemini-flash minimax big-pickle deepseek-flash mimo nemotron panel-enrich; do
+    rm -f "$DEV"/.claude/agent-memory/skill-audit-*--"$_m" 2>/dev/null || true
+  done
   node "$BUILD_LIST" --write >/dev/null 2>&1 || true
   local LIST="$DEV/.opencode/progress/SKILL_LIST.json"
   mapfile -t SLUGS < <(node -e 'try{const j=require(process.argv[1]);for(const e of (j.worklist||j.skills||[])){if(e.repoScope&&e.repoScope!=="shared")continue;const st=e.status||"pending";if(st==="completed"||st==="done")continue;process.stdout.write(e.skill+"\n")}}catch(e){}' "$LIST" 2>/dev/null)
