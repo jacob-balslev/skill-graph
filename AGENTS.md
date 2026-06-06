@@ -667,9 +667,12 @@ Use the full repo verification before handing off substantive changes:
 ```bash
 npm run verify          # full gate — includes corpus lint + manifest validation (CONTENT-inclusive)
 npm run verify:system   # SYSTEM-only gate — schema constants, protocol, docs, fixtures, marketplace, unit tests
+npm run release:check    # release-readiness gate — the corpus gates verify:system OMITS (manifest:validate, routing-eval, export:verify-skill-md, marketplace:verify)
 ```
 
 **Which to run depends on your work mode.** `npm run verify:system` is the gate for **SYSTEM work** (schema, scripts, protocol docs, fixtures): it excludes the corpus gates (`lint`, `manifest:validate`, `routing-eval`, `export:verify-skill-md`) that go red purely because individual `skills/skills/**/SKILL.md` files have not yet been migrated to the current contract. A SYSTEM change is shippable when `verify:system` is green. `npm run verify` (the full gate) only goes green once the corpus has been migrated through the audit loop (CONTENT work) — do **not** relax the schema or skip a gate to force the full `verify` green while CONTENT migration is paused.
+
+> **`verify:system` green does NOT mean publishable.** It deliberately omits the release-critical corpus gates, so a green `verify:system` can coexist with a red `manifest:validate` / `routing-eval` (e.g. skills missing the required `scope` field). Before claiming the library is publishable, run **`npm run release:check`** — it runs exactly the omitted corpus gates and surfaces that red distinctly, so SYSTEM-green can never be mistaken for release-green. (Added 2026-06-06 — board-meeting finding SKI-222.)
 
 ### Audit-evidence consistency gate (now in `npm run verify`)
 
