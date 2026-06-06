@@ -125,6 +125,25 @@ check('advisory death is best-effort: does not collapse quorum, run continues', 
   assert.strictEqual(proposals.find((p) => p.model === 'minimax').alive, false);
 });
 
+check('SKI-211: advisory churn does NOT block convergence — stability is mandatory-only', () => {
+  // 2 mandatory stable after round 1; 1 advisory re-emits a different hash every round
+  // (the text-capture churn). Convergence must key off the mandatory tier and converge.
+  const proposals = mkProps([{ model: 'opus', tier: 'mandatory', hash: 'a' }, { model: 'codex-current', tier: 'mandatory', hash: 'b' }, { model: 'minimax', tier: 'advisory', hash: 'c0' }]);
+  let n = 0;
+  const deps = {
+    crossReview: () => ({ ok: true, structured: { items: [] } }),
+    reviseProposal: ({ reviserModel }) => {
+      if (reviserModel === 'minimax') { n += 1; return { ok: true, proposalPath: 'p-minimax.md', contentHash: `c-${n}`, changed: true }; }
+      return { ok: true, proposalPath: `p-${reviserModel}.md`, contentHash: reviserModel === 'opus' ? 'a' : 'b', changed: false };
+    },
+    hashProposal: (p) => p,
+  };
+  const r = panel.runConvergence({ skill: 's', skillDir: '/x', proposals, deps, policy: { maxRounds: 3, minRounds: 1, stabilityThreshold: 1.0, quorum: 2 } });
+  assert.strictEqual(r.converged, true, 'converges despite advisory churning every round');
+  assert.strictEqual(r.reason, 'stable');
+  assert.strictEqual(r.rounds, 1, 'converges at round 1 — mandatory stable immediately');
+});
+
 // ── 3. runPanelEnrich — DI sequencing ──
 console.log('3. runPanelEnrich — DI sequencing');
 
