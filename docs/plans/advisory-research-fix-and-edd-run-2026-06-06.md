@@ -35,6 +35,16 @@ The Skill Audit Loop is driven **in-session through the Agent tool** so every mo
 2. **Prompt delivery:** "Research (read + web) freely; DELIVER by emitting the complete enriched SKILL.md as your final text answer — do NOT write or edit any file." (Capture from stdout via `extractEnrichedDoc`.)
 3. Re-test DeepSeek (research + clean text delivery, no source write), run unit tests, then commit SYSTEM (path-limited, skill-graph).
 
+### STATUS — SYSTEM fix LANDED 2026-06-06T (commit `b680f11`)
+
+- Step 2 (propose text-delivery) was already committed in `bb8d953` (before this plan's resume note had been acted on).
+- Step 1 (per-root read-only Seatbelt) landed in **`b680f11`**: `buildSeatbeltProfile` gained an optional `readOnlyRoots` set (emitted `(allow file-read* …)` before the read-write roots so a nested run-dir RW root wins by SBPL last-match; `readOnlyRoots` absent ⇒ byte-identical to the prior all-RW profile, frontier path unchanged). `panel-enrich-live-deps.js` advisory fence now gives skill-graph repo + skills tree READ-ONLY and only `<ws>/.opencode/progress/skill-audits` + `<skill-graph>/.opencode/progress` read-write.
+- Step 3 verified: isolated-checkout **15/15** (+4: 3 pure + 1 macOS-live proving source-read-OK / source-write-DENIED / nested run-dir-write-ALLOWED), panel-enrich-live-deps 7/7, panel-enrich 17/17, advisory-panel 24/24, lib-audit-smoke 14/14. LIVE (Agent-tool dispatch, panel row "DeepSeek V4 Flash"): researched (24 events, 0 EPERM), delivered 56 kB via stdout-capture, source hash `6669e62…` UNCHANGED (zero source-dir writes).
+
+### KNOWN LIMITATION exposed by the read-only fence — advisory `reviseProposal` delivery
+
+`reviseProposal` still uses `mode:'write'` (the model writes its own proposal file). For **sandboxed opencode advisory models** this never lands a real change under the read-only fence: the delivery instructs a relative/CWD write, but opencode's write scope is `--dir` (now read-only skills) and CWD is the read-only skill-graph root, so the write EPERMs (opencode still exits 0 → primitive reports `changed:false`, not an error). This is **not a convergence regression** — it was a silent misdelivery (wrong-location write, `ownProposalPath` untouched) under the old all-RW fence too; the fix just makes the no-op explicit. **gemini + frontier (Opus/codex) revise are unaffected** (they write the run dir directly, which is RW). The clean completion is to mirror propose's stdout text-capture into advisory/sandboxed `reviseProposal` — same delivery decision the user approved for propose. DECISION PENDING (see resume report): convert advisory revise to text-capture before round 2, or proceed (opencode advisory revisers as no-ops; gemini+frontier drive convergence) and file the text-capture revise as a follow-up.
+
 ## After the fix lands → resume Round 2 of the eval-driven-development run (above).
 
 ## Canonical-location reminder
