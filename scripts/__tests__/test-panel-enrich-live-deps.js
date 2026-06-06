@@ -62,4 +62,54 @@ check('exposes the full panel deps interface', () => {
   }
 });
 
+console.log('4. text-capture revise (sandboxed advisory) — capture stdout, write proposal, hash-changed');
+check('sandboxed reviser captures the emitted document (preamble stripped) and reports changed', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'panel-revise-'));
+  fs.mkdirSync(path.join(root, 'prompts'), { recursive: true });
+  fs.writeFileSync(path.join(root, 'prompts', 'skill-audit-loop-revise-pass.md'), '# revise template stub\n');
+  const skillDir = path.join(root, 'skills', 's');
+  fs.mkdirSync(skillDir, { recursive: true });
+  fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: s\n---\n# s\nbody\n');
+  const runDir = path.join(root, '.opencode', 'progress', 'agenttool', 's', 'minimax');
+  fs.mkdirSync(runDir, { recursive: true });
+  const ownProposalPath = path.join(runDir, 's.minimax.proposed-SKILL.md');
+  fs.writeFileSync(ownProposalPath, '---\nname: s\n---\n# s\nOLD proposal\n');
+  const revisedDoc = `---\nname: s\nschema_version: 8\n---\n# s — revised\n\n${'## Section\n\nEnriched content here. '.repeat(40)}`;
+  let dispatchedMode = null;
+  const deps = live.createPanelEnrichDeps({
+    skillGraphRoot: root,
+    advisoryDispatch: ({ mode }) => { dispatchedMode = mode; return { ok: true, stdout: `Here is the revised skill:\n\n${revisedDoc}`, stderr: '' }; },
+  });
+  const before = deps.hashProposal(ownProposalPath);
+  const rv = deps.reviseProposal({ skill: 's', skillDir, reviserModel: 'minimax', reviserTier: 'advisory', ownProposalPath, feedbackForMe: [{ items: [{ kind: 'missing', note: 'x' }] }], round: 2, artifactsDir: runDir });
+  assert.strictEqual(rv.ok, true);
+  assert.strictEqual(dispatchedMode, 'text', 'sandboxed revise dispatched in TEXT mode (not write)');
+  assert.strictEqual(rv.changed, true, 'reports changed via hash');
+  const written = fs.readFileSync(ownProposalPath, 'utf8');
+  assert.ok(written.startsWith('---\nname: s'), 'captured document written with preamble stripped');
+  assert.ok(!/Here is the revised skill/.test(written), 'the "Here is…" preamble is NOT in the proposal');
+  assert.notStrictEqual(deps.hashProposal(ownProposalPath), before, 'hash moved');
+  fs.rmSync(root, { recursive: true, force: true });
+});
+check('sandboxed reviser that emits no usable document leaves the proposal byte-identical', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'panel-revise-'));
+  fs.mkdirSync(path.join(root, 'prompts'), { recursive: true });
+  fs.writeFileSync(path.join(root, 'prompts', 'skill-audit-loop-revise-pass.md'), '# revise template stub\n');
+  const skillDir = path.join(root, 'skills', 's');
+  fs.mkdirSync(skillDir, { recursive: true });
+  const runDir = path.join(root, '.opencode', 'progress', 'agenttool', 's', 'minimax');
+  fs.mkdirSync(runDir, { recursive: true });
+  const ownProposalPath = path.join(runDir, 's.minimax.proposed-SKILL.md');
+  fs.writeFileSync(ownProposalPath, '---\nname: s\n---\n# s\nKEPT\n');
+  const before = fs.readFileSync(ownProposalPath, 'utf8');
+  const deps = live.createPanelEnrichDeps({
+    skillGraphRoot: root,
+    advisoryDispatch: () => ({ ok: true, stdout: 'I think this looks good, no changes needed.', stderr: '' }),
+  });
+  const rv = deps.reviseProposal({ skill: 's', skillDir, reviserModel: 'minimax', reviserTier: 'advisory', ownProposalPath, feedbackForMe: [{ items: [{ kind: 'keep' }] }], round: 2, artifactsDir: runDir });
+  assert.strictEqual(rv.changed, false, 'no usable document => unchanged');
+  assert.strictEqual(fs.readFileSync(ownProposalPath, 'utf8'), before, 'proposal byte-identical');
+  fs.rmSync(root, { recursive: true, force: true });
+});
+
 console.log(`\nResults: ${passed} passed, 0 failed`);
