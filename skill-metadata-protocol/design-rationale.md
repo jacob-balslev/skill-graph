@@ -232,7 +232,7 @@ The YAML frontmatter uses the current v8 schema, including the flat Understandin
 | | [`version`](field-reference.md#version) | always | semver string |
 | | [`owner`](field-reference.md#owner) | always | string |
 | **Classification** | [`schema_version`](field-reference.md#schema_version) | always | integer `8` |
-| | [`subject`](field-reference.md#subject) | always | closed 9-value enum — primary classification |
+| | [`subject`](field-reference.md#subject) | always | closed 12-value enum — primary classification |
 | | [`subjects`](field-reference.md#subjects) | | ordered polyhierarchy array; first item matches `subject` (max 2) |
 | | [`deployment_target`](field-reference.md#deployment_target) | always | `portable` \| `project` |
 | | [`scope`](field-reference.md#scope) | always | free-text PRD-style statement |

@@ -38,7 +38,7 @@ Required in `SKILL.md`:
 |---|---|---|---|
 | 1 | `name` | string | Lowercase alphanumerics, hyphens, slashes, colons. Must match parent directory name. Used as routing target by other skills. |
 | 2 | `description` | string | Short description of what the skill is about. Activation signals belong to `keywords`/`triggers`/`examples`/`anti_examples`; boundary semantics belong to `relations.boundary`. |
-| 3 | `subject` | enum | One of the closed 9-value enum: `code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`. Primary classification — what the skill teaches. |
+| 3 | `subject` | enum | One of the closed 12-value enum (3 bands, ADR-0020): `backend-engineering`, `frontend-engineering`, `software-architecture`, `data-engineering`, `agent-ops`, `ai-engineering`, `quality-assurance`, `design`, `reasoning-strategy`, `software-engineering-method`, `knowledge-organization`, `product-domain`. Primary classification — what the skill teaches. |
 | 4 | `deployment_target` | enum | One of: `portable` (any project) or `project` (one specific project; requires `grounding`). |
 | 5 | `scope` | string | Required free-text PRD-style description of the deployment context. Not an enum. |
 

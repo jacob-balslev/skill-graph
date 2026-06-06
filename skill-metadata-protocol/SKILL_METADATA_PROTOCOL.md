@@ -26,7 +26,7 @@
 >
 > | Step | Field group | Write |
 > |---|---|---|
-> | 1 | Required classification | `subject` (9-value enum), `deployment_target` (`portable` / `project`), and free-text `scope` |
+> | 1 | Required classification | `subject` (12-value enum), `deployment_target` (`portable` / `project`), and free-text `scope` |
 > | 2 | Optional polyhierarchy | `subjects[]` when a skill genuinely spans two browse shelves, primary first, max 2 |
 > | 3 | Activation | `keywords`, `triggers`, `examples`, and `anti_examples` |
 > | 4 | Routing graph | `relations.related`, `boundary`, `verify_with`, `depends_on`, `broader`, `narrower`, and `disjoint_with` |
@@ -48,7 +48,7 @@ This document is the top-level public contract for the two-file Skill Metadata P
 ### Rules
 
 1. **The schema is the binding machine contract.** If this prose and `schemas/SKILL_METADATA_PROTOCOL_schema.json` disagree, the schema wins and the prose is corrected — never the reverse.
-2. **Every authored skill declares the two required classification axes:** `subject` (closed 9-value enum) and `deployment_target` (closed 2-value enum: `portable` / `project`).
+2. **Every authored skill declares the two required classification axes:** `subject` (closed 12-value enum) and `deployment_target` (closed 2-value enum: `portable` / `project`).
 3. **`scope` is a required free-text statement** of what the skill teaches and what it does not. It is not an enum and never carries deployment-targeting values — that role belongs to `deployment_target`.
 4. **A `deployment_target: project` skill must declare a `grounding` block**, and that block names what it is grounded in via `grounding.subject_matter`.
 5. **Subdivide and affiliate with the current fields:** `taxonomy_domain` (slash-delimited) subdivides a crowded `subject`; `project[]` / `repo[]` carry belonging-entity references.

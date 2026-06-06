@@ -550,7 +550,7 @@ Required dimension rows:
 - [ ] `description` exists and is specific enough to route from
 - [ ] `version` exists
 - [ ] **v8 classification axes are present and valid:**
-   - `subject` is one of the 9-value enum — `code-engineering` / `quality-assurance` / `frontend-ui` / `design-craft` / `agent-ops` / `product-domain` / `knowledge-organization` / `meta-methods` / `data-analytics`.
+   - `subject` is one of the 12-value enum (3 bands, ADR-0020) — `backend-engineering` / `frontend-engineering` / `software-architecture` / `data-engineering` / `agent-ops` / `ai-engineering` / `quality-assurance` / `design` / `reasoning-strategy` / `software-engineering-method` / `knowledge-organization` / `product-domain`.
    - `deployment_target` is one of the 2-value enum — `portable` (any project) or `project` (one specific project; requires `grounding.subject_matter` and a `project[]` belonging-entity reference).
    - `scope` is present and free-text (PRD-style label — NOT an enum).
    - `subjects[]` (optional, max 2, primary first) is used only when the skill genuinely spans two browse shelves.

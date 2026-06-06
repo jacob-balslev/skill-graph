@@ -150,7 +150,7 @@ version: 1.0.0
 
 ## `subject`
 
-**Purpose.** Primary classification — what the skill teaches. Closed 9-value enum. The v8 classification's main axis; routers and browse UIs key off it first.
+**Purpose.** Primary classification — what the skill teaches. Closed 12-value enum. The v8 classification's main axis; routers and browse UIs key off it first.
 
 **Rules.**
 - **Required.** Every skill must declare a `subject`.

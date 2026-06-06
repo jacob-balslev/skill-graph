@@ -49,7 +49,7 @@ The kind of skill and where it lives in the library.
 
 | Field | Cardinality | Role | Required? |
 |---|---|---|---|
-| `subject` | one enum | Primary browse shelf — one of nine closed values (`code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`) | always |
+| `subject` | one enum | Primary browse shelf — one of twelve closed values (`backend-engineering`, `frontend-engineering`, `software-architecture`, `data-engineering`, `agent-ops`, `ai-engineering`, `quality-assurance`, `design`, `reasoning-strategy`, `software-engineering-method`, `knowledge-organization`, `product-domain`) | always |
 | `deployment_target` | one enum | Where the skill deploys — `portable` or `project` | always |
 | `scope` | one string | Free-text PRD-style statement of what the skill teaches and what it does not | always |
 | `subjects` | up to 2 | Polyhierarchy when a skill genuinely spans two shelves (primary first, must equal `subject`) | optional |

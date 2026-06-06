@@ -221,7 +221,7 @@ Skill Metadata Protocol uses several independent axes. They should not be collap
 
 | Axis | Field | Cardinality | Use |
 |---|---|---:|---|
-| **Subject** | `subject` | one | Primary classification — what the skill teaches. Closed 9-value enum. |
+| **Subject** | `subject` | one | Primary classification — what the skill teaches. Closed 12-value enum. |
 | **Polyhierarchy** | `subjects[]` | zero, one, or two | Optional secondary subject when a skill genuinely spans two browse shelves. `subjects[0]` matches `subject`. |
 | **Deployment target** | `deployment_target` | one | Where it deploys: `portable` (any project) or `project` (one specific project; requires `grounding`). |
 | **Scope** | `scope` | one | Free-text PRD-style description of the deployment context. Not an enum. |
