@@ -52,6 +52,37 @@ check('escapes quotes/backslashes in a path for the SBPL string literal', () => 
   assert.ok(profile.includes('(allow file-read* file-write* (subpath "/w s/a\\"b"))'));
 });
 
+console.log('1b. buildSeatbeltProfile — per-root read-only grade (source RO, run dir RW)');
+check('read-only roots emit file-read* only, BEFORE the read-write roots (nested RW wins)', () => {
+  const profile = ic.buildSeatbeltProfile({
+    workspaceRoot: '/ws',
+    readOnlyRoots: ['/ws/skill-graph', '/ws/skills'],
+    publicRoots: ['/ws/.opencode/progress/skill-audits', '/ws/skill-graph/.opencode/progress'],
+  });
+  const lines = profile.split('\n');
+  const denyIdx = lines.findIndex((l) => l === '(deny file-read* file-write* (subpath "/ws"))');
+  assert.ok(denyIdx >= 0, 'denies the workspace root');
+  // Read-only roots: file-read* with NO file-write*.
+  for (const r of ['/ws/skill-graph', '/ws/skills']) {
+    assert.ok(lines.includes(`(allow file-read* (subpath "${r}"))`), `${r} is read-only`);
+    assert.ok(!lines.includes(`(allow file-read* file-write* (subpath "${r}"))`), `${r} is NOT read-write`);
+  }
+  const roIdx = lines.findIndex((l) => l === '(allow file-read* (subpath "/ws/skill-graph"))');
+  // The nested run-dir RW root must come AFTER its read-only parent so last-match grants write.
+  const nestedRwIdx = lines.findIndex((l) => l === '(allow file-read* file-write* (subpath "/ws/skill-graph/.opencode/progress"))');
+  assert.ok(roIdx > denyIdx, 'read-only root comes after the deny');
+  assert.ok(nestedRwIdx > roIdx, 'nested read-write run dir comes AFTER its read-only parent (last-match wins)');
+});
+check('read-only-only profile is valid (no read-write roots required)', () => {
+  const profile = ic.buildSeatbeltProfile({ workspaceRoot: '/ws', readOnlyRoots: ['/ws/skills'] });
+  assert.ok(profile.includes('(allow file-read* (subpath "/ws/skills"))'));
+  assert.ok(!profile.includes('file-write* (subpath "/ws/skills")'));
+});
+check('a read-only root that is the workspace root or an ancestor is refused too', () => {
+  assert.throws(() => ic.buildSeatbeltProfile({ workspaceRoot: '/ws', readOnlyRoots: ['/ws'] }), /defeat the fence/);
+  assert.throws(() => ic.buildSeatbeltProfile({ workspaceRoot: '/ws/sub', readOnlyRoots: ['/ws'] }), /defeat the fence/);
+});
+
 console.log('2. wrapWithSeatbelt — sandbox-exec -f <profile> <cli> <args>');
 check('wraps a CLI invocation', () => {
   const w = ic.wrapWithSeatbelt('/tmp/fence.sb', 'claude', ['-p', 'hi', '--model', 'opus']);
@@ -139,6 +170,57 @@ check('a node child under the generated profile reads public + is kernel-denied 
     f.cleanup();
     assert.ok(!fs.existsSync(profilePath), 'cleanup removes the profile temp dir');
     f.cleanup(); // idempotent — must not throw
+  } finally {
+    fs.rmSync(ws, { recursive: true, force: true });
+  }
+});
+
+console.log('5b. LIVE per-root grade (macOS only) — source READ-ONLY, nested run dir READ-WRITE');
+check('source SKILL.md read OK but write DENIED; run dir nested inside it is writable', () => {
+  if (!ic.isOsFenceSupported()) { console.log('    (skipped — sandbox-exec not available on this host)'); return; }
+  const ws = fs.mkdtempSync(path.join(os.tmpdir(), 'osfence-rograde-'));
+  try {
+    const sg = path.join(ws, 'skill-graph');
+    const skills = path.join(ws, 'skills');
+    const runDir = path.join(sg, '.opencode', 'progress'); // nested INSIDE the read-only sg
+    fs.mkdirSync(skills, { recursive: true });
+    fs.mkdirSync(runDir, { recursive: true });
+    const sourceSkill = path.join(skills, 'SKILL.md');
+    fs.writeFileSync(sourceSkill, 'CANONICAL SOURCE');
+
+    const f = ic.prepareOsFence({
+      workspaceRoot: ws,
+      readOnlyRoots: [sg, skills],
+      publicRoots: [runDir],
+      enabled: true,
+    });
+    assert.strictEqual(f.active, true, 'fence active on a supported host');
+    const w = f.wrap('node', ['-e', 'process.exit(0)']);
+    assert.strictEqual(w.cli, ic.SANDBOX_EXEC);
+    const profilePath = f.profilePath();
+    const node = process.execPath;
+    const runFenced = (script) => execFileSync(ic.SANDBOX_EXEC, ['-f', profilePath, node, '-e', script], { encoding: 'utf8' }).trim();
+
+    // Source read must succeed (research).
+    const readOut = runFenced(`process.stdout.write(require('fs').readFileSync(${JSON.stringify(sourceSkill)}, 'utf8'))`);
+    assert.strictEqual(readOut, 'CANONICAL SOURCE', 'source SKILL.md is readable (research allowed)');
+
+    // Source WRITE must be kernel-denied (the incident this fixes).
+    const srcWrite = runFenced(
+      `try{require('fs').writeFileSync(${JSON.stringify(sourceSkill)}, 'MUTATED');process.stdout.write('WROTE')}`
+      + `catch(e){process.stdout.write('DENIED:'+(e.code||e.message))}`,
+    );
+    assert.ok(/^DENIED:/.test(srcWrite) && !/WROTE/.test(srcWrite), `source write denied (got: ${srcWrite})`);
+    assert.strictEqual(fs.readFileSync(sourceSkill, 'utf8'), 'CANONICAL SOURCE', 'source content unchanged on disk');
+
+    // Run dir nested inside the read-only source root must be WRITABLE (last-match wins).
+    const runWrite = runFenced(
+      `try{require('fs').writeFileSync(${JSON.stringify(path.join(runDir, 'proposal.md'))}, 'OK');process.stdout.write('WROTE')}`
+      + `catch(e){process.stdout.write('DENIED:'+(e.code||e.message))}`,
+    );
+    assert.strictEqual(runWrite, 'WROTE', `run dir nested in read-only source is writable (got: ${runWrite})`);
+
+    f.cleanup();
   } finally {
     fs.rmSync(ws, { recursive: true, force: true });
   }
