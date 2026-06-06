@@ -39,6 +39,7 @@ SKILLS_REPO="$DEV/skills"
 ENRICH="$SG/lib/audit/run-panel-enrich.js"
 BRIDGE="$DEV/scripts/agent/panel-heartbeat-to-agent-state.js"
 CLAIM="$DEV/scripts/skill/skill-audit-claim.js"
+BUILD_LIST="$DEV/scripts/skill/build-skill-list.js"
 BUDGET="$DEV/scripts/model/budget-monitor.js"
 CHECKPOINT="$DEV/scripts/loop/loop-checkpoint.js"
 STEERING="$DEV/scripts/loop/loop-steering.js"
@@ -209,43 +210,51 @@ enrich_one_skill() { # $1=slug $2=dir
 
 resolve_dir() { find "$SKILLS_REPO/skills" -type d -name "$1" -not -path '*/node_modules/*' 2>/dev/null | head -1; }
 
-# ── DRAIN MODE — claim/ledger-coordinated walk over EVERY eligible skill ──────────
+# ── DRAIN MODE — ranked-ARRAY walk over EVERY eligible skill (refresh-after-each) ──
+# WHY array, not a `next`-loop: `next` filters on the worklist's STATIC `status`, which a
+# ledger completion does NOT refresh — so looping on `next` re-returns the just-completed
+# top skill forever and NEVER advances (verified bug 2026-06-06: api-design re-enriched on
+# loop). We snapshot the ranked, public-safe, not-yet-completed slugs ONCE, iterate each
+# exactly once (so a revert/fail moves on instead of looping), skip any already carrying a
+# `content(<slug>): panel-enrich` commit (resume-safe), claim for cross-process dedup, and
+# refresh the worklist after each skill so a restart's snapshot excludes what just completed.
 drain_worklist() {
-  echo "run-panel-loop: WORKLIST drain · advisory=$([ -z "$ADV_FLAG" ] && echo full-panel || echo floor-only) · lane=${LANE:-all} · timeout=${TIMEOUT}s · agent=$AGENT_ID" >&2
-  local processed=0
-  while true; do
+  echo "run-panel-loop: WORKLIST drain · advisory=$([ -z "$ADV_FLAG" ] && echo full-panel || echo floor-only) · timeout=${TIMEOUT}s · agent=$AGENT_ID" >&2
+  node "$BUILD_LIST" --write >/dev/null 2>&1 || true
+  local LIST="$DEV/.opencode/progress/SKILL_LIST.json"
+  mapfile -t SLUGS < <(node -e 'try{const j=require(process.argv[1]);for(const e of (j.worklist||j.skills||[])){if(e.repoScope&&e.repoScope!=="shared")continue;const st=e.status||"pending";if(st==="completed"||st==="done")continue;process.stdout.write(e.skill+"\n")}}catch(e){}' "$LIST" 2>/dev/null)
+  local TOTAL=${#SLUGS[@]} nn=0 processed=0
+  echo "run-panel-loop: $TOTAL eligible skill(s) in ranked order" >&2
+  for slug in "${SLUGS[@]}"; do
+    nn=$((nn+1))
     if steering_says_stop; then echo "run-panel-loop: steering pause/stop — exiting" >&2; break; fi
-    if budget_blocked; then echo "run-panel-loop: opus daily budget exhausted — sleeping 300s" >&2; sleep 300; continue; fi
+    while budget_blocked; do echo "run-panel-loop: opus daily budget exhausted — sleeping 300s" >&2; sleep 300; done
 
-    local nextjson slug
-    nextjson=$(node "$CLAIM" next --model panel-enrich ${LANE:+--lane "$LANE"} --json 2>/dev/null)
-    slug=$(printf '%s' "$nextjson" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{process.stdout.write(JSON.parse(s).skill||"")}catch(e){}})' 2>/dev/null)
-    if [ -z "$slug" ]; then echo "run-panel-loop: worklist drained — no eligible skill" >&2; break; fi
-
+    if git -C "$SKILLS_REPO" log -1 --grep="content(${slug}): panel-enrich" --format=%h 2>/dev/null | grep -q .; then
+      echo "[$nn/$TOTAL] $slug — already panel-enriched (git), skipping" >&2; skipped=$((skipped+1)); continue
+    fi
     local dir; dir=$(resolve_dir "$slug")
     if [ -z "$dir" ] || [ ! -f "$dir/SKILL.md" ]; then
-      echo "  $slug — NOT FOUND, skipping" >&2; ledger "$slug" missing "no SKILL.md"; missing=$((missing+1)); continue
+      echo "[$nn/$TOTAL] $slug — NOT FOUND, skipping" >&2; ledger "$slug" missing "no SKILL.md"; missing=$((missing+1)); continue
     fi
-    # DRY preview: next picks the top eligible skill; do ONE dry pass and stop. No claim/release
-    # (they write the canonical ledger), and without a claim `next` would re-pick the same skill
-    # forever — so dry mode is a finite, side-effect-free single-skill preview.
     if [ -n "$DRY_FLAG" ]; then
-      echo "[drain dry-preview] $slug — would claim+enrich -> ${dir#$SKILLS_REPO/}" >&2
+      echo "[$nn/$TOTAL] $slug — DRY preview (offline enrich; no claim/release/commit)" >&2
       enrich_one_skill "$slug" "$dir"
-      echo "run-panel-loop: DRY preview complete (1 skill; no claim/release/commit written)" >&2
-      return
+      echo "run-panel-loop: DRY preview complete (1 skill)" >&2; return
     fi
     if ! node "$CLAIM" claim "$slug" --model panel-enrich --op audit >/dev/null 2>&1; then
-      echo "  $slug — claim race (held by another agent), skipping" >&2; continue
+      echo "[$nn/$TOTAL] $slug — claim race (held by another agent), skipping" >&2; continue
     fi
     processed=$((processed+1))
-    echo "[drain #$processed] $slug — enriching -> ${dir#$SKILLS_REPO/}" >&2
+    echo "[$nn/$TOTAL] $slug — enriching -> ${dir#$SKILLS_REPO/}" >&2
     checkpoint update --loop "$LOOP_ID" --item "$slug" --phase processing
     enrich_one_skill "$slug" "$dir"
     node "$CLAIM" release "$slug" --model panel-enrich --status "$REL_STATUS" >/dev/null 2>&1 || true
+    node "$BUILD_LIST" --write >/dev/null 2>&1 || true
     checkpoint update --loop "$LOOP_ID" --phase done
+    echo "[$nn/$TOTAL] $slug — $REL_STATUS" >&2
   done
-  echo "run-panel-loop DRAIN DONE: processed=$processed applied=$applied reverted=$reverted failed=$failed missing=$missing" >&2
+  echo "run-panel-loop DRAIN DONE: processed=$processed applied=$applied reverted=$reverted failed=$failed missing=$missing skipped=$skipped / eligible=$TOTAL" >&2
 }
 
 # ── FILE MODE — curated slug list (local-ledger resume; no shared claim) ──────────
