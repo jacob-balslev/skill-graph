@@ -47,7 +47,9 @@ The Skill Audit Loop is driven **in-session through the Agent tool** so every mo
 
 ### RESUME — Round 2 of the eval-driven-development panel run (SYSTEM fix fully landed; both commits in)
 
-**SYSTEM done:** `b680f11` (source read-only Seatbelt) + `ecd7df6` (advisory revise text-capture). Now CONTENT mode (`AUDIT_LOOP=1`, commit to `~/Development/skills` path-limited).
+**SYSTEM done:** `b680f11` (source read-only Seatbelt) + `ecd7df6` (advisory revise text-capture) + `431a34f` (allow `file-read-metadata` on the workspace-root literal so the Gemini CLI's startup `isWorkspaceHomeDir` lstat doesn't EPERM under the fence — both Round-2 Gemini cross-reviews failed this way first; readdir + private read/write stay denied; live-verified the Gemini CLI now runs, PROBE_OK). Now CONTENT mode (`AUDIT_LOOP=1`, commit to `~/Development/skills` path-limited).
+
+**Round 2 cross-review progress (2026-06-06):** Opus 4.8 (15k), GPT-5.5 (35 items, 15k), Big Pickle (25k), MiMo V2.5 (70 items, 42k) all ok. Gemini 3.1 Pro + Gemini 3 Flash failed first (fence lstat) → re-dispatched after `431a34f`. MiniMax M3 + Nemotron 3 Ultra in flight. Each writes `<skill>.<model>.review-r2.md` + `result.review-r2.json` in its run dir.
 
 **Alive panel (8):** opus + codex-current (mandatory); gemini, gemini-flash, big-pickle, mimo, minimax, nemotron (advisory). DeepSeek failed Phase 1 — not in panel.json. Roster + current (round-1-revised) proposal paths: `skill-graph/.opencode/progress/agenttool/eval-driven-development/panel.json`.
 
