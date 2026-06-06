@@ -1,6 +1,13 @@
 # Resume State — Advisory-Research Fix + eval-driven-development Panel Run (2026-06-06)
 
-> Type: Plan (active). SYSTEM fix in progress + CONTENT run mid-flight. Written pre-/compact for cross-session resume.
+> Type: Plan (**COMPLETE 2026-06-06**). SYSTEM fix (4 commits) + CONTENT run (3 rounds → curate → apply → commit) both landed. Retained for the receipts + the SYSTEM-fix series narrative.
+
+## OUTCOME (2026-06-06)
+
+- **SYSTEM (skill-graph):** `b680f11` source read-only Seatbelt · `ecd7df6` advisory revise text-capture · `431a34f` workspace-root lstat allow (Gemini CLI) · `7c6becf` codex OS-fence wiring (no nested sandbox). All tested + live-verified.
+- **CONTENT (skills):** `87f4a7f` — eval-driven-development enriched 248→528 lines (31→88KB), Opus-curated from the 8-model panel, anti-loss + mandatory-coverage clean, lint clean, `subject: ai-engineering` kept. Eval guardrail → KEEP (comprehension-only; no application.json).
+- **Run shape proven end-to-end:** 8 propose (round 1) → 3× (cross-review ×8 + aggregate + revise ×8) → Opus curate → eval guardrail → apply → commit. Every model dispatched through the Agent tool as a native subagent-panel row. Nemotron flaky (advisory, non-blocking); both mandatory frontiers converged by round 2.
+- **REMAINING (step 3, SYSTEM):** document the in-session Agent-tool → native-panel contract in `SKILL_AUDIT_LOOP.md` + `AGENTS.md`; legacy/bloat cleanup (delete confirmed-dead artifacts, CHANGELOG note per deletion).
 
 ## The in-session loop architecture (how this run is driven)
 
