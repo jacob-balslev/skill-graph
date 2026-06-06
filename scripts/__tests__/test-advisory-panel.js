@@ -49,9 +49,12 @@ console.log('test-advisory-panel:');
 ok('FRONTIER_PAIR is the 2 frontier core', Array.isArray(FRONTIER_PAIR) && FRONTIER_PAIR.length === 2);
 
 // 2. Advisory roster = everything else (Gemini Pro + Zen free + Gemini Flash); no core overlap.
-ok('ADVISORY_MODELS has 7 entries', ADVISORY_MODELS.length === 7);
+// nemotron was dropped from auto-dispatch (SKI-210, unreliable free-tier dispatch) — its
+// descriptor stays in the registry but it is no longer in ADVISORY_MODELS.
+ok('ADVISORY_MODELS has 6 entries', ADVISORY_MODELS.length === 6);
 ok('advisory excludes the core frontier pair', !ADVISORY_MODELS.some((m) => FRONTIER_PAIR.includes(m)));
-for (const m of ['gemini', 'minimax', 'nemotron', 'big-pickle', 'deepseek-flash', 'mimo', 'gemini-flash']) {
+ok('advisory no longer auto-dispatches nemotron (SKI-210)', !ADVISORY_MODELS.includes('nemotron'));
+for (const m of ['gemini', 'minimax', 'big-pickle', 'deepseek-flash', 'mimo', 'gemini-flash']) {
   ok(`advisory includes ${m}`, ADVISORY_MODELS.includes(m));
 }
 
