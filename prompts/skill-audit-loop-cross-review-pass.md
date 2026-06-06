@@ -1,7 +1,8 @@
 # Skill Audit Loop — Per-Model CROSS-REVIEW Pass
 
 > Phase 2 of the multi-agent panel enrich loop (`lib/audit/run-panel-enrich.js`).
-> After every panel agent (mandatory Opus 4.8 + GPT-5.5; advisory free models) has
+> After every panel agent (the mandatory frontier pair — `strongest-reasoning-grader` +
+> `codex-current`; advisory free models) has
 > produced its OWN proposal, EACH agent reviews every OTHER agent's proposal and gives
 > structured feedback. The orchestrator routes feedback to each target, the target
 > revises (revise-pass), and the loop repeats until proposals converge.
