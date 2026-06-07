@@ -140,7 +140,7 @@ check('dry-run runs claim → propose(both) → curate → anti-loss → keep', 
   // No eval runner injected in dry-run ⇒ keep, eval deferred.
   assert.strictEqual(result.eval, null);
   assert.strictEqual(result.keep_or_revert.keep, true);
-  assert.strictEqual(result.objective, 'enrich');
+  assert.strictEqual(result.objective, 'skill-audit-loop');
   // SH-6686: a dry-run NEVER mutates the canonical SKILL.md — applyMerge no-ops, so the
   // file is byte-identical and `applied` is false even though the decision was KEEP.
   assert.strictEqual(result.applied, false);
@@ -200,10 +200,10 @@ check('claimSlot claims --op audit per model; curate claims --op merge with a di
   assert.deepStrictEqual(proposeClaims.map((c) => c.model).sort(), ['codex-current', 'opus']);
   assert.strictEqual(mergeClaims.length, 1, 'one curator merge claim');
   // The curator merge lock has a DISTINCT owner from the per-model slots.
-  assert.strictEqual(mergeClaims[0].agentId, 'enrich-curator');
-  assert.ok(!proposeClaims.some((c) => c.agentId === 'enrich-curator'), 'propose slots are not the curator owner');
+  assert.strictEqual(mergeClaims[0].agentId, 'skill-audit-loop-curator');
+  assert.ok(!proposeClaims.some((c) => c.agentId === 'skill-audit-loop-curator'), 'propose slots are not the curator owner');
   // The curator lock was released (finally block).
-  assert.ok(releases.some((r) => r.agentId === 'enrich-curator'), 'curator lock released');
+  assert.ok(releases.some((r) => r.agentId === 'skill-audit-loop-curator'), 'curator lock released');
   assert.ok(fs.existsSync(merge.mergeLedgerPath));
 
   fs.rmSync(tmp, { recursive: true, force: true });
