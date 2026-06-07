@@ -52,13 +52,21 @@ cd ~/Development/skill-graph && node scripts/skill-audit-preflight.js <skill> --
 
 ### A2. Run the loop AND show the multi-agent panel IN THE MAIN CONVERSATION AREA
 
-**The panel belongs in the MAIN conversation area — the native Claude Code subagent panel (the `↑/↓ · Enter to view` list, exactly like `/manage`) — NEVER the statusline.** The statusline is a bottom-line tab-title complement at most; it is never the panel surface. This is the user's repeated, standing requirement; surface the multi-agent panel in the main area or you have regressed this command.
+**The panel belongs in the MAIN conversation area — the native Task panel = the harness `TaskCreate` / `TaskUpdate` tools (the PINNED, interactive checklist at the BOTTOM of the main conversation) — NEVER the statusline.** The statusline is a bottom-line tab-title complement at most; it is never the panel surface. This is the user's repeated, standing requirement (confirmed 2026-06-07); surface the multi-agent panel as a live Task panel in the main area or you have regressed this command.
 
 **The command RUNS the loop. Never hand the user a `!` command to paste** — the user invoked `/skill-audit-loop`; making them paste a runner command after that is the UX failure this command exists to remove (corrected 2026-06-06 per user feedback; supersedes the earlier "user runs via `!`" note).
 
-Three ways to surface the panel, in strict priority order:
+Two ways to surface the panel, in strict priority order:
 
-**PRIMARY (default — native main-area subagent panel, like `/manage`).** A standalone Node CLI cannot call the Claude Code `Agent` tool, so to render in the native subagent panel the SESSION drives the phases and dispatches each model's per-phase work through the **`Agent` tool** — one subagent per model per phase, so every agent (Opus + GPT MANDATORY; advisory free) shows as its own native panel row. Each phase has a per-model primitive that reuses the same `deps`, writes an authoritative `result.json`, and bounds its dispatch below the 10-min subagent Bash cap:
+**PRIMARY (default — native Task panel via `TaskCreate` / `TaskUpdate`).** The pinned, interactive checklist the harness paints at the bottom of the main conversation IS the panel. The orchestrator session drives it directly with the Task tools, so it works regardless of how the per-model work runs underneath (Agent-tool subagents or the monolithic runner). Paint the panel as:
+
+- ONE in_progress **header / summary** task whose `subject` + `activeForm` encode the live rollup — e.g. `⟳ Skill Audit Loop · <skill> · <phase> · N/M done · 2 QUALITY/4 advisory`. The harness renders the in_progress task's `activeForm` as the pinned header, so this line is the always-visible status banner.
+- One task **per phase** (`propose` / `cross-review` / `revise` / `curate`) whose `subject` encodes the participating models + their per-model state, e.g. `cross-review · ✓Opus[Q] ⟳GPT-5.5[Q] ✓MiniMax ·Nemotron ✓BigPickle ·Gemini` (`✓` done, `⟳` running, `·` pending; `[Q]` = QUALITY/mandatory).
+- `TaskUpdate` flips each phase + per-model state live as the loop runs (pending → in_progress → completed) and rewrites the header task's `activeForm` rollup on each transition.
+
+Honest constraint: true parent/child UI nesting is NOT a Task-tool primitive, so the per-model hierarchy is **encoded in the task subjects** (the strings above), not in real nested rows — do not claim nested rows the harness does not render.
+
+Underneath the panel, dispatch each model's per-phase work however the run is structured — typically as Agent-tool subagents (one subagent per model per phase via the per-model primitives, each writing an authoritative `result.json`):
 
 | Phase | Per-model primitive | Dispatch |
 |---|---|---|
@@ -67,9 +75,9 @@ Three ways to surface the panel, in strict priority order:
 | 3 · curate (synthesis) | `lib/audit/curate-one.js` | one frontier curator subagent |
 | 4 · eval + 5 · apply | (orchestrator) | the SESSION reads each on-disk `result.json` (never the wrapper subagent's free-text report, which is unreliable) and runs the eval guardrail + apply-on-keep |
 
-The orchestrator reads each `result.json` between phases. Because each model's work is a subagent, the whole panel renders natively in the main area with the `↑/↓ · Enter to view` list — no heartbeat viewer, no statusline. (Contract: `skill-audit-loop/SKILL_AUDIT_LOOP.md` § "In-session Agent-tool dispatch — the native Claude Code subagent panel".)
+The orchestrator reads each `result.json` between phases and reflects every phase/model transition into the Task panel with `TaskUpdate`. The Agent-tool subagents are the execution layer underneath; the pinned Task panel — not the subagent `↑/↓ · Enter to view` list — is the panel the user watches. (Dispatch contract: `skill-audit-loop/SKILL_AUDIT_LOOP.md` § "In-session Agent-tool dispatch".)
 
-**FALLBACK (non-native / monolithic runner — in-chat collected block).** When you instead run the single-process runner (`run-skill-audit-loop.js`, e.g. for a batch/unattended drain that cannot orchestrate per-model subagents), it writes a heartbeat `status.json`; surface that in the chat with the canonical collected-TUI viewer via the **`Monitor` tool**, the SAME viewer `/boardmeeting` uses:
+**FALLBACK (scrolling collected block — NOT pinned, NOT interactive).** When you cannot drive the Task panel (e.g. the single-process runner `run-skill-audit-loop.js` on a batch/unattended drain that cannot orchestrate per-model subagents), it writes a heartbeat `status.json`; surface that in the chat with the collected-TUI viewer via the **`Monitor` tool**, the SAME viewer `/boardmeeting` uses:
 
 ```
 # Step 1 — launch the runner with the Bash tool (full panel = advisory ON; --no-advisory = Opus+GPT floor).
@@ -88,7 +96,7 @@ Monitor (persistent):
     /tmp/skill-audit-loop/<skill>.status.json --poll 5 --stale 1800
 ```
 
-This streams every agent's phase/state into the chat as a collected block — visible in the main area (just not the native `↑/↓` list). This is the documented "run the loop VISIBLY" requirement (`skill-audit-loop/SKILL_AUDIT_LOOP.md` § "Canonical way to run the PANEL loop VISIBLY" — *"do NOT launch the runner as a blind background task with no viewer attached"*): the Monitor viewer IS the attached viewer.
+This streams every agent's phase/state into the chat as a **scrolling collected block — a new message per change, NOT the pinned/interactive Task panel.** It is a degraded fallback for the unattended-runner case only; the PRIMARY Task panel is the panel whenever the orchestrator can drive `TaskCreate`/`TaskUpdate`. It still satisfies the "run the loop VISIBLY" requirement (`skill-audit-loop/SKILL_AUDIT_LOOP.md` § "Canonical way to run the PANEL loop VISIBLY" — *"do NOT launch the runner as a blind background task with no viewer attached"*): the Monitor viewer IS the attached viewer.
 
 **SECONDARY (statusline bridge — a cheap complement ONLY, NEVER the panel surface).** The `panel-heartbeat-to-agent-state.js` bridge (which paints one line per agent above the bottom statusline) MAY run alongside either surface above as a cheap tab-title-style complement, but it is NEVER the way you surface the panel. **DO NOT surface the panel via the statusline; the panel belongs in the main conversation area.** If the only visible output is the statusline, you have regressed this command — fix it by using the PRIMARY (or FALLBACK) main-area surface above.
 
@@ -98,7 +106,7 @@ Per `.claude/rules/no-ps-for-liveness.md`: never `ps`/`pgrep` the run, never tai
 
 ### A3. On the completion notification, continue to A4 — do not poll
 
-Under the PRIMARY path the orchestrator drives each phase and reads each `result.json` between phases; under the FALLBACK path you wait for the harness to report the runner exited, then read its result JSON. Either way, proceed to A4 on completion. Until then, keep working on other steps; the native subagent panel (PRIMARY) or the `Monitor` viewer (FALLBACK) is the live window in the main area, and the completion notification is the trigger — do NOT poll, and do NOT fall back to the statusline as the live view. (The same `watch-panel.js` collected renderer is the canonical multi-agent TUI shared with `/boardmeeting` — see `docs/plans/unify-multiagent-tui-2026-06-06.md`.)
+Under the PRIMARY path the orchestrator drives each phase and reads each `result.json` between phases; under the FALLBACK path you wait for the harness to report the runner exited, then read its result JSON. Either way, proceed to A4 on completion. Until then, keep working on other steps; the pinned Task panel (PRIMARY, driven by `TaskUpdate`) or the `Monitor` scrolling block (FALLBACK) is the live window in the main area, and the completion notification is the trigger — do NOT poll, and do NOT fall back to the statusline as the live view. (The same `watch-panel.js` collected renderer is the canonical multi-agent TUI shared with `/boardmeeting` — see `docs/plans/unify-multiagent-tui-2026-06-06.md`.)
 
 ### A4. Review + commit (CONTENT)
 
