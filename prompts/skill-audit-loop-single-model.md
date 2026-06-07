@@ -6,7 +6,8 @@
 > separately-orchestrated process (`.opencode/commands/skill-audit-merge-v1.md`) — do not use
 > this prompt to drive it.
 >
-> Last updated: 2026-05-22 (v3). v3 fixes a PREFLIGHT lint gate that hard-stopped automation runs
+> Last updated: 2026-06-07T20:21Z (SKI-204): release-before-commit ordering aligned with SKILL_AUDIT_LOOP.md Part 3 — commit moved to after release in step 9.
+> Previously: 2026-05-22 (v3). v3 fixes a PREFLIGHT lint gate that hard-stopped automation runs
 > in a sparse/sandboxed worktree (env false-positive lint errors); the gate is now per-skill, not
 > a clean-corpus precondition. v3 also makes Step 8 (self-assessment) auto-solve small/low-risk findings
 > in-session and file only the larger ones to Linear as Audit Reports. RULE 0 added after a
@@ -150,7 +151,7 @@ AUDIT + UPGRADE (run the full v2.2 contract, as YOU, one model)
       A patch bump (e.g. 1.1.1 -> 1.1.2) for content fixes is fine; advancing schema_version
       requires that version's content to actually be present, or the gate fails the commit.
 
-VERIFY + COMMIT
+VERIFY
 7. Run the verify gates and confirm NO eval-score regression:
      node scripts/skill/skill-lint.js --skill <slug>                   # YOUR skill: 0 errors / 0 warnings
             # The GATE is per-skill, plus "did not increase the baseline." Do NOT require the
@@ -168,21 +169,8 @@ VERIFY + COMMIT
    (.opencode/progress/skill-audits/<slug>/runs/<run-dir>/merge-ledger.md): every finding →
    kept / fixed / rejected(reason) + firsthand evidence. Your ledger Contributor is YOUR
    model only.
-   COMMIT PATH-LIMITED in the repo that OWNS the files (verify ownership with
-   `git -C <repo> ls-files --error-unmatch <path>` — skills/ files are usually owned by the
-   Development root; agent-orchestration/ has its OWN .git):
-     git commit --only -F /tmp/msg -- skills/<slug>/SKILL.md \
-        skills/<slug>/evals/comprehension.json \
-        .opencode/progress/skill-audits/<slug>/...        # flags BEFORE --, paths AFTER
-   The git index is SHARED across parallel sessions — `--only` is mandatory. EXCLUDE the
-   regenerated aggregates (skills.manifest.json, skills/_meta/REGISTRY.md, SKILL-INDEX.md,
-   the worklist json/md, package-lock.json) when their diff is dominated by OTHER skills'
-   uncommitted edits — never sweep thousands of lines of unrelated worklist churn into your
-   commit. If you used a SCRIPT to rewrite a large JSON, first confirm the diff is LOCALIZED
-   (`git diff` shows a few hunks, not a whole-file reformat) before staging.
-   After committing, `git show --stat HEAD` and confirm the file list is EXACTLY yours.
-   Operational (scope:operational) skills stay out of the public marketplace clone
-   (skills/.git) — never `git add -f` them there.
+   (Do not commit yet — commit happens after the release in step 9, so the terminal ledger line
+   and updated `latest` symlink are captured in the same path-limited commit.)
 
 self-assessment + DOCUMENT
 8. Apply the skill you just upgraded against the skill-graph repo as a real consumer would, to
@@ -213,7 +201,8 @@ self-assessment + DOCUMENT
    No severity filter, no truncation, no silently dropping the small ones into Linear to avoid the
    work: examined N findings, account for all N. Each finding ends tagged either
    FIXED-IN-SESSION (commit hash) or FILED → SH-XXXX. List both sets in the Step 10 report.
-9. Release YOUR claim and re-rank, then commit doc updates (same --only discipline):
+9. Release YOUR claim first (so the terminal ledger line and updated `latest` symlink are written
+   before the commit), rebuild worklist, then commit the skill changes and run-dir artifacts together:
      node scripts/skill/skill-audit-claim.js release <slug> --status completed \
         --structural PASS --truth PASS --comprehension PROVISIONAL --application PROVISIONAL
    (PROVISIONAL = your single-model assessment from Step 6d + the Step 8 self-assessment; use
@@ -224,6 +213,22 @@ self-assessment + DOCUMENT
    (If `release` reports "no lock by pid-..." it is because the lock is bound to the claiming
    process's pid. In a single long-running loop process this won't happen; if it does, the
    completed claim is cleared by `skill-audit-claim.js reap --ttl-min 0`.)
+   COMMIT PATH-LIMITED in the repo that OWNS the files (verify ownership with
+   `git -C <repo> ls-files --error-unmatch <path>` — skills/ files are usually owned by the
+   Development root; agent-orchestration/ has its OWN .git):
+     git commit --only -F /tmp/msg -- skills/<slug>/SKILL.md \
+        skills/<slug>/evals/comprehension.json \
+        .opencode/progress/skill-audits/<slug>/     # run dir + history.jsonl + latest (written by release)
+        .opencode/progress/skill-audits/_ledger.jsonl  # terminal line appended by release
+   The git index is SHARED across parallel sessions — `--only` is mandatory. EXCLUDE the
+   regenerated aggregates (skills.manifest.json, skills/_meta/REGISTRY.md, SKILL-INDEX.md,
+   the worklist json/md, package-lock.json) when their diff is dominated by OTHER skills'
+   uncommitted edits — never sweep thousands of lines of unrelated worklist churn into your
+   commit. If you used a SCRIPT to rewrite a large JSON, first confirm the diff is LOCALIZED
+   (`git diff` shows a few hunks, not a whole-file reformat) before staging.
+   After committing, `git show --stat HEAD` and confirm the file list is EXACTLY yours.
+   Operational (scope:operational) skills stay out of the public marketplace clone
+   (skills/.git) — never `git add -f` them there.
 10. Repeat from step 5. Stop after 4–5 skills per session, when context exceeds ~80%, or on a
     real blocker — report the skill, the exact blocker, and why. "Couldn't grade comprehension"
     is NOT a blocker (it's expected — leave UNVERIFIED and continue).

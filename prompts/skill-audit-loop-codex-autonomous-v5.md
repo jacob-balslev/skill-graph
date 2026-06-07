@@ -4,7 +4,8 @@
 > Created: 2026-05-25
 > Supersedes for Codex automation: `skill-audit-loop-batch-worker-v4.md`
 > Inner contract: `skill-graph/prompts/skill-audit-loop-single-model.md` (v3) plus `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`
-> Shape: scheduler-started batch worker + per-skill evidence artifacts + commit-before-release + automation memory
+> Shape: scheduler-started batch worker + per-skill evidence artifacts + release-before-commit + automation memory
+> Updated: 2026-06-07T20:21Z (SKI-204): release-before-commit ordering aligned with SKILL_AUDIT_LOOP.md Part 3
 
 ## When to use this prompt
 
@@ -256,16 +257,32 @@ Rules:
 - If verification cannot be made clean safely, write the blocker into artifacts and memory,
   release with `--status aborted`, and stop the wake.
 
-COMMIT BEFORE RELEASE
-Commit one skill at a time, from the owning repo:
+RELEASE BEFORE COMMIT
+Release the claim first so the terminal ledger line and updated `latest` symlink (both written by
+the release step) are captured in the durable commit that follows:
+
+  node scripts/skill/skill-audit-claim.js release <slug> --model "$MODEL" --status completed \
+    --structural <STRUCTURAL_VERDICT> --truth <TRUTH_VERDICT> \
+    --comprehension <COMPREHENSION_VERDICT> --application <APPLICATION_VERDICT>
+  node scripts/skill/build-skill-list.js --write
+
+If release fails, do not commit or claim another skill. Write memory with the failure evidence and stop.
+
+COMMIT
+After a successful release, commit the skill changes together with the run-dir artifacts written by
+the release step:
 
   git status --short
   git add -- <exact new intended paths>             # only for new files that must be tracked
-  git commit --only -m "docs(<slug>): audit skill for Codex loop" -- <exact changed paths>
+  git commit --only -m "docs(<slug>): audit skill for Codex loop" -- <exact changed paths> \
+    .opencode/progress/skill-audits/<slug>/ \
+    .opencode/progress/skill-audits/_ledger.jsonl
   git show --stat HEAD
 
 Rules:
-- Commit before releasing the claim so the ledger never says complete without durable changes.
+- Release before committing so the commit captures the terminal ledger line (appended by release
+  to `_ledger.jsonl`) and the updated `latest` symlink — aligns with SKILL_AUDIT_LOOP.md Part 3
+  Step 10→11 ordering.
 - If only tracked files changed, prefer `git commit --only` without staging.
 - If new artifacts are required, stage only those exact new files.
 - Do not stage or commit unrelated generated churn.
@@ -273,15 +290,8 @@ Rules:
   the current skill audit directly requires them and the diff is scoped.
 - Do not push.
 
-RELEASE AND ADVANCE
-After a successful commit:
-
-  node scripts/skill/skill-audit-claim.js release <slug> --model "$MODEL" --status completed \
-    --structural <STRUCTURAL_VERDICT> --truth <TRUTH_VERDICT> \
-    --comprehension <COMPREHENSION_VERDICT> --application <APPLICATION_VERDICT>
-  node scripts/skill/build-skill-list.js --write
-
-Then append to `$AUDIT_MEMORY`:
+ADVANCE
+After a successful commit, append to `$AUDIT_MEMORY`:
 - timestamp
 - skill slug
 - run directory
@@ -291,8 +301,6 @@ Then append to `$AUDIT_MEMORY`:
 - commit hash
 - any excluded/generated dirty files and why they were not committed
 - next planned action
-
-If release fails, do not claim another skill. Write memory with the failure evidence and stop.
 
 BATCH-LEVEL NOVELTY FLUSH
 Before final exit, if you observed a cross-skill pattern that is not captured in any per-skill
@@ -324,7 +332,7 @@ data. Do not say the next loop has started; say the scheduler can start it on th
 | Continuation | Batch worker exits after final response | Scheduler owns the next wake; model never respawns itself |
 | Default batch size | 5 skills | 3 skills default, 5 hard cap |
 | Memory | Writes summary at exit | Reads and appends automation memory before/after work |
-| Claim lifecycle | Release order was easy to misread | Commit before release is explicit |
+| Claim lifecycle | Release order was easy to misread | Release before commit (aligns with SKILL_AUDIT_LOOP.md Part 3 Step 10→11; commit includes terminal ledger line) |
 | Control signals | General abort/control signal | Concrete `$CODEX_HOME/automations/<id>/STOP` and `control.json` checks |
 | Codex setup | Generic project reads | Adds `CODEX.md`, Codex home fallback, and Codex-specific no-spawn rules |
 | Final response | Inbox-item oriented | Codex wake summary, no inbox directive |
