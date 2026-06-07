@@ -4,21 +4,21 @@
 > "clean" = lints with 0 errors (warnings do not count). This is the incremental
 > signal the binary `verify` gate cannot give while the audit loop drains the corpus.
 
-**Corpus conformance: 35/165 skills lint clean (21%).**
+**Corpus conformance: 56/170 skills lint clean (33%).**
 
 | Shelf (`subject`) | Clean | Total | Clean % | With errors | With warnings |
 |---|---|---|---|---|---|
-| `agent-ops` | 5 | 10 | 50% | 5 | 9 |
-| `ai-engineering` | 5 | 11 | 45% | 6 | 7 |
-| `backend-engineering` | 0 | 12 | 0% | 12 | 12 |
-| `data-engineering` | 1 | 9 | 11% | 8 | 8 |
-| `design` | 2 | 22 | 9% | 20 | 20 |
-| `frontend-engineering` | 1 | 16 | 6% | 15 | 14 |
-| `knowledge-organization` | 7 | 9 | 78% | 2 | 9 |
+| `agent-ops` | 5 | 10 | 50% | 5 | 7 |
+| `ai-engineering` | 6 | 11 | 55% | 5 | 6 |
+| `backend-engineering` | 4 | 12 | 33% | 8 | 8 |
+| `data-engineering` | 3 | 9 | 33% | 6 | 6 |
+| `design` | 3 | 22 | 14% | 19 | 19 |
+| `frontend-engineering` | 4 | 16 | 25% | 12 | 11 |
+| `knowledge-organization` | 7 | 9 | 78% | 2 | 8 |
 | `product-domain` | 0 | 3 | 0% | 3 | 3 |
-| `quality-assurance` | 3 | 25 | 12% | 22 | 22 |
-| `reasoning-strategy` | 5 | 21 | 24% | 16 | 16 |
+| `quality-assurance` | 6 | 25 | 24% | 19 | 18 |
+| `reasoning-strategy` | 11 | 25 | 44% | 14 | 15 |
 | `software-architecture` | 1 | 12 | 8% | 11 | 11 |
-| `software-engineering-method` | 5 | 15 | 33% | 10 | 12 |
+| `software-engineering-method` | 6 | 16 | 38% | 10 | 12 |
 
-_Total: 35/165 clean (21%)._
+_Total: 56/170 clean (33%)._
