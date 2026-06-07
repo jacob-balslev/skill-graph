@@ -1,6 +1,6 @@
 {
   "skill_name": "skill-router",
-  "subject": "Skill-dispatch mechanics for multi-skill agent runtimes: trigger-label matching, file-path matching, keyword matching, scope/type tiebreakers, and coverage-gap detection",
+  "subject": "Skill-dispatch mechanics for multi-skill agent runtimes: trigger-label matching, file-path matching, keyword matching, deployment_target tiebreakers, legacy type fallback, and coverage-gap detection",
   "adjacent_concepts": [
     "documentation",
     "graph-audit"
@@ -48,7 +48,7 @@
     },
     {
       "id": 4,
-      "prompt": "Two skills tie on keyword score: one is `scope: codebase` (repo-specific), the other is `scope: portable`. According to the skill-router's Scope tiebreaker, which wins and why does repo-specificity outrank portability when the match is otherwise equal?",
+      "prompt": "Two skills tie on keyword score: one is `deployment_target: project` and applies to the current Skill Graph repo, the other is `deployment_target: portable`. According to the skill-router's deployment_target tiebreaker, which wins and why does project-specificity outrank portability when the match is otherwise equal?",
       "dimension": "application",
       "substance": "domain",
       "calibration": "process",
@@ -61,7 +61,7 @@
     },
     {
       "id": 5,
-      "prompt": "The skill-router notes that the v1 enum values `operational` and `generic` were renamed to `codebase` and `portable` in schema_version 2, and that the current schema rejects v1 names as hard errors. Why does the router specifically flag this rename rather than silently accepting both sets of names?",
+      "prompt": "The skill-router now reads the v8 `deployment_target` field instead of treating `scope` as a machine enum. Why should a router reject or flag stale enum-style `scope` claims instead of silently accepting both the old and current metadata shapes?",
       "dimension": "purpose",
       "substance": "domain",
       "calibration": "semantic",
@@ -100,7 +100,7 @@
     },
     {
       "id": 8,
-      "prompt": "Two candidate skills tie on keyword score AND tie on scope (both `portable`). One is `type: workflow` (a procedural debugging skill), the other is `type: capability` (a reference skill on the same topic). According to the Type tiebreaker, which wins and why does the router prefer the procedural skill when the query is otherwise ambiguous?",
+      "prompt": "Two legacy candidate records tie on keyword score and `deployment_target: portable`. One still carries `type: workflow` (a procedural debugging skill), the other still carries `type: capability` (a reference skill on the same topic). According to the legacy type fallback, which wins, why is the fallback deterministic, and why should current v8 skill metadata avoid authoring new `type` claims?",
       "dimension": "application",
       "substance": "domain",
       "calibration": "process",

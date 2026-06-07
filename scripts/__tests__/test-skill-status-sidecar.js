@@ -13,7 +13,7 @@
 
 'use strict';
 
-const { extractHealthBlock } = require('../../lib/audit/skill-status');
+const { extractHealthBlock, classifyAuditState } = require('../../lib/audit/skill-status');
 
 let failures = 0;
 function assert(condition, msg) {
@@ -58,6 +58,15 @@ function assert(condition, msg) {
   let threw = false;
   try { extractHealthBlock({ structural_verdict: 'PASS' }); } catch (_) { threw = true; }
   assert(!threw, 'extractHealthBlock tolerates a missing sidecar argument (back-compat)');
+}
+
+// 4. v8 deployment_target informs conceptScope instead of falling back to unknown.
+{
+  const health = { structural_verdict: 'PASS', truth_verdict: 'PASS', application_verdict: 'UNVERIFIED' };
+  assert(classifyAuditState(health, { deployment_target: 'portable' }).conceptScope === 'portable',
+    'conceptScope: portable deployment target is reported as portable');
+  assert(classifyAuditState(health, { deployment_target: 'project' }).conceptScope === 'project',
+    'conceptScope: project deployment target is reported as project');
 }
 
 if (failures > 0) {

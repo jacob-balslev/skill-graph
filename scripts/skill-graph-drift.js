@@ -25,9 +25,12 @@
  *   node scripts/skill-graph-drift.js --json                 # JSON output
  *   node scripts/skill-graph-drift.js --record skills/shopify          # preview YAML
  *   node scripts/skill-graph-drift.js --record --apply skills/shopify  # write in place
+ *   node scripts/skill-graph-drift.js --fetch-external skills/evaluation # opt-in URL hashing
  *   node scripts/skill-graph-drift.js --write-verdict        # stamp drift_status on every checked skill
  *
- * Self-contained. Only uses Node built-ins — no external dependencies.
+ * Default mode is self-contained and only uses Node built-ins. The opt-in
+ * `--fetch-external` mode shells to `curl` so URL truth sources can be hashed
+ * when external access is approved for the run.
  * Exit 0 when no DRIFT or BROKEN; 1 otherwise. STALE, NO_BASELINE, and
  * EXTERNAL_UNHASHED are informational and do not fail.
  */
@@ -37,6 +40,7 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { execFileSync } = require('child_process');
 const { parseFrontmatter, normalizeFrontmatter } = require('./lib/parse-frontmatter');
 const { collectSkillFilesFromRoots, workspaceRoot, resolveTruthSourcePath, detectMalformedTruthSourcePath } = require('./lib/roots');
 // ADR-0019: drift_check (hashes) + drift_status + lifecycle live in the
@@ -46,6 +50,22 @@ const { readSidecar, writeSidecarFields, joinSidecar } = require('./lib/audit-st
 const REPO_ROOT = workspaceRoot();
 const DEFAULT_SKILLS_DIR = path.join(REPO_ROOT, 'skills');
 const CONFIG_PATH = path.join(REPO_ROOT, '.skill-graph', 'config.json');
+
+function printHelp() {
+  process.stdout.write(`Usage:
+  node scripts/skill-graph-drift.js                        # check all skills
+  node scripts/skill-graph-drift.js skills/shopify         # check one skill
+  node scripts/skill-graph-drift.js --json                 # JSON output
+  node scripts/skill-graph-drift.js --record skills/shopify          # preview YAML
+  node scripts/skill-graph-drift.js --record --apply skills/shopify  # write in place
+  node scripts/skill-graph-drift.js --fetch-external skills/evaluation # opt-in URL hashing
+  node scripts/skill-graph-drift.js --write-verdict        # stamp drift_status on every checked skill
+
+Default mode only hashes local truth sources. Use --fetch-external only when URL
+fetching is approved for the run; it shells to curl and hashes the downloaded
+URL content.
+`);
+}
 
 // ---------------------------------------------------------------------------
 // Workspace config (shared with generate-manifest.js)
@@ -150,13 +170,35 @@ function sectionForHeadingAnchor(text, anchor) {
   return lines.slice(start, end).join('\n');
 }
 
-function sha256TruthSource(src, skillRoots = []) {
+function fetchExternalTruthSource(url, timeoutSeconds = 15) {
+  const maxBuffer = 5 * 1024 * 1024;
+  return execFileSync('curl', ['-LfsS', '--max-time', String(timeoutSeconds), url], {
+    encoding: 'buffer',
+    maxBuffer,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+}
+
+function sha256TruthSource(src, skillRoots = [], options = {}) {
   const normalized = normalizeTruthSource(src);
   if (normalized.malformed || !normalized.path) {
     return { normalized, hash: null, error: 'malformed truth source' };
   }
 
   if (isRemoteTruthSourcePath(normalized.path)) {
+    if (options.fetchExternal) {
+      try {
+        const content = fetchExternalTruthSource(normalized.path, options.externalTimeoutSeconds);
+        return { normalized, hash: hashContent(content), error: null, external: true, fetched: true };
+      } catch (err) {
+        return {
+          normalized,
+          hash: null,
+          error: `external URL fetch failed: ${err.message}`,
+          external: true,
+        };
+      }
+    }
     return {
       normalized,
       hash: null,
@@ -218,7 +260,7 @@ function sha256TruthSource(src, skillRoots = []) {
 // Drift check per skill
 // ---------------------------------------------------------------------------
 
-function checkSkill(skillMdPath, skillRoots = []) {
+function checkSkill(skillMdPath, skillRoots = [], options = {}) {
   const rel = path.relative(REPO_ROOT, skillMdPath);
   const text = fs.readFileSync(skillMdPath, 'utf8');
   const fm = normalizeFrontmatter(parseFrontmatter(text));
@@ -247,7 +289,7 @@ function checkSkill(skillMdPath, skillRoots = []) {
   let anyExternal = false;
 
   for (const src of grounding.truth_sources) {
-    const hashed = sha256TruthSource(src, skillRoots);
+    const hashed = sha256TruthSource(src, skillRoots, options);
     const liveHash = hashed.hash;
     const sourceKey = hashed.normalized.key;
     const recorded = recordedHashes[sourceKey];
@@ -268,6 +310,7 @@ function checkSkill(skillMdPath, skillRoots = []) {
       recorded_hash: recorded || null,
       error: hashed.error,
       malformed_path: hashed.malformedPath || false,
+      fetched_external: hashed.fetched || false,
       status: entryStatus,
     });
   }
@@ -415,10 +458,15 @@ function writeDriftStatus(skillMdPath, driftStatus) {
 
 function main() {
   const args = process.argv.slice(2);
+  if (args.includes('--help') || args.includes('-h')) {
+    printHelp();
+    return;
+  }
   const outputJson = args.includes('--json');
   const record = args.includes('--record');
   const apply = args.includes('--apply');
   const writeVerdict = args.includes('--write-verdict');
+  const fetchExternal = args.includes('--fetch-external');
 
   const workspace = loadWorkspaceConfig();
   const roots = resolveSkillRoots(workspace);
@@ -429,7 +477,7 @@ function main() {
     process.exit(1);
   }
 
-  const reports = files.map(f => checkSkill(f, roots));
+  const reports = files.map(f => checkSkill(f, roots, { fetchExternal }));
 
   // -------------------------------------------------------------------------
   // Write-verdict mode: stamp drift_status onto each skill's SKILL.md

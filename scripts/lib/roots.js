@@ -120,6 +120,122 @@ function collectSkillFiles(root = workspaceRoot(), config = loadRootsConfig(root
   return collectSkillFilesFromRoots(resolveSkillRoots(root, config), options);
 }
 
+function normalizeSkillSpecifier(input) {
+  return String(input || '')
+    .replace(/\\/g, '/')
+    .replace(/\/SKILL\.md$/i, '')
+    .replace(/^\.?\//, '')
+    .replace(/\/+$/, '');
+}
+
+function skillFileCandidate(candidate) {
+  if (!candidate) return null;
+  try {
+    const abs = path.resolve(candidate);
+    if (fs.existsSync(abs) && fs.statSync(abs).isFile() && path.basename(abs) === 'SKILL.md') {
+      return abs;
+    }
+    const skillFile = path.join(abs, 'SKILL.md');
+    if (fs.existsSync(skillFile) && fs.statSync(skillFile).isFile()) {
+      return skillFile;
+    }
+  } catch {
+    // Ignore unreadable candidates and keep searching.
+  }
+  return null;
+}
+
+function buildSkillResolution(skillFile, input, rootEntry) {
+  const filePath = path.resolve(skillFile);
+  const rootPath = rootEntry && rootEntry.absPath ? path.resolve(rootEntry.absPath) : null;
+  return {
+    input,
+    skillFile: filePath,
+    skillDir: path.dirname(filePath),
+    skillName: path.basename(path.dirname(filePath)),
+    root: rootPath,
+    project: rootEntry && rootEntry.project ? rootEntry.project : null,
+    relativePath: rootPath ? path.relative(rootPath, filePath).replace(/\\/g, '/') : null,
+  };
+}
+
+/**
+ * Resolve a skill specifier to a concrete SKILL.md file.
+ *
+ * Supports:
+ *   - absolute or workspace-relative SKILL.md file paths
+ *   - absolute or workspace-relative skill directories
+ *   - category-qualified slugs such as `data-engineering/replication-patterns`
+ *   - bare nested v8 slugs such as `replication-patterns`
+ *
+ * The lookup is rooted in the same configured skill roots used by manifest,
+ * lint, route, and drift so queue/support scripts do not each carry their own
+ * flat-layout assumptions.
+ */
+function resolveSkillFileSpecifier(input, root = workspaceRoot(), config = loadRootsConfig(root), options = {}) {
+  if (!input) return null;
+  const normalized = normalizeSkillSpecifier(input);
+  const roots = options.roots || resolveSkillRoots(root, config);
+  const directCandidates = [
+    input,
+    path.resolve(root, normalized),
+  ];
+
+  for (const rootEntry of roots) {
+    const rootAbs = path.resolve(rootEntry.absPath);
+    directCandidates.push(path.join(rootAbs, normalized));
+    if (normalized.startsWith('skills/')) {
+      directCandidates.push(path.resolve(path.dirname(rootAbs), normalized));
+    }
+  }
+
+  for (const candidate of directCandidates) {
+    const skillFile = skillFileCandidate(candidate);
+    if (!skillFile) continue;
+    const owningRoot = roots.find(entry => {
+      const rootAbs = path.resolve(entry.absPath);
+      return skillFile === rootAbs || skillFile.startsWith(`${rootAbs}${path.sep}`);
+    }) || null;
+    return buildSkillResolution(skillFile, input, owningRoot);
+  }
+
+  const normalizedParts = normalized.split('/').filter(Boolean);
+  const bareSlug = normalizedParts[normalizedParts.length - 1] || normalized;
+  const suffix = `${normalized}/SKILL.md`;
+  const matches = [];
+
+  for (const entry of collectSkillFilesFromRoots(roots, options)) {
+    const relFromRoot = path.relative(entry.root, entry.filePath).replace(/\\/g, '/');
+    const parent = path.basename(path.dirname(entry.filePath));
+    if (
+      parent === bareSlug ||
+      relFromRoot === suffix ||
+      relFromRoot.endsWith(`/${suffix}`)
+    ) {
+      matches.push(entry);
+    }
+  }
+
+  if (matches.length === 0) return null;
+  matches.sort((a, b) => {
+    const aParent = path.basename(path.dirname(a.filePath));
+    const bParent = path.basename(path.dirname(b.filePath));
+    const aExact = aParent === normalized ? 0 : 1;
+    const bExact = bParent === normalized ? 0 : 1;
+    return aExact - bExact || a.filePath.localeCompare(b.filePath);
+  });
+
+  return buildSkillResolution(matches[0].filePath, input, {
+    absPath: matches[0].root,
+    project: matches[0].project,
+  });
+}
+
+function resolveSkillDirSpecifier(input, root = workspaceRoot(), config = loadRootsConfig(root), options = {}) {
+  const resolved = resolveSkillFileSpecifier(input, root, config, options);
+  return resolved ? { ...resolved, skillDir: path.dirname(resolved.skillFile) } : null;
+}
+
 /**
  * Resolve a truth_source-style workspace-relative path against the configured
  * skill library, falling back to the repo root for back-compat.
@@ -197,6 +313,8 @@ module.exports = {
   loadWorkspaceConfig, // back-compat alias for v8 callers; new code uses loadRootsConfig
   resolvePackagedOrWorkspacePath,
   resolveSchemaPath,
+  resolveSkillDirSpecifier,
+  resolveSkillFileSpecifier,
   resolveSkillRoots,
   resolveTruthSourcePath,
   walkSkillFiles,

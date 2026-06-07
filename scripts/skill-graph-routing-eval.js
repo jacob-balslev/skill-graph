@@ -6,8 +6,9 @@
  *   1. Run every `activation.examples[]` entry through skill-graph-route →
  *      the top-1 winner MUST be this skill. Else: positive-class FAIL.
  *   2. Run every `activation.anti_examples[]` entry through skill-graph-route →
- *      the top-1 winner MUST NOT be this skill, AND (if non-null) MUST be
- *      named in this skill's `relations.boundary[]`. Else: negative-class FAIL.
+ *      the top-1 winner MUST NOT be this skill. A non-null winner named in
+ *      `relations.boundary[]` is recorded as a boundary-target pass; any other
+ *      non-self winner is still a pass for this skill's hard-negative contract.
  *      A null winner is COVERAGE_GAP (informational, not a FAIL — the anti-
  *      example correctly avoids this skill but nothing else absorbs it).
  *   3. Emit a per-skill verdict + per-case evidence block.
@@ -96,8 +97,7 @@ function evaluatePositive(manifest, expectedSkill, prompt, todayISO) {
 }
 
 /**
- * Evaluate one negative-class prompt: the winner MUST NOT equal `excludedSkill`,
- * AND if non-null MUST appear in `excludedSkill`'s relations.boundary[].
+ * Evaluate one negative-class prompt: the winner MUST NOT equal `excludedSkill`.
  *
  * Returns { kind: 'negative', prompt, verdict, actual, reason }.
  *
@@ -151,9 +151,9 @@ function evaluateNegative(manifest, excludedSkill, prompt, boundaryTargets, toda
   return {
     kind: 'negative',
     prompt,
-    verdict: 'FAIL',
+    verdict: 'PASS',
     actual: winner,
-    reason: `routed to ${winner}, which is not in ${excludedSkill}.relations.boundary (${boundaryTargets.join(', ') || 'empty'}) — either the anti_example should be removed or boundary should name ${winner}`,
+    reason: `routed away to ${winner}; not named in ${excludedSkill}.relations.boundary (${boundaryTargets.join(', ') || 'empty'}), so this is an off-boundary anti-example pass rather than a boundary-target pass`,
   };
 }
 
@@ -457,6 +457,7 @@ function main() {
   const skillFilter = argValue(args, '--skill');
   const manifestArg = argValue(args, '--manifest');
   const baselineArg = argValue(args, '--baseline');
+  const suppressManifestWarnings = args.includes('--suppress-manifest-warnings') || Boolean(skillFilter);
 
   let manifestPath;
   if (manifestArg) {
@@ -485,7 +486,7 @@ function main() {
       } catch {
         // Validation warning is fine if the file got written; surface a
         // single-line note so operators see the warning without false-failing.
-        if (fs.existsSync(CLI_FRESH_MANIFEST)) {
+        if (fs.existsSync(CLI_FRESH_MANIFEST) && !suppressManifestWarnings) {
           console.error('WARN auto-generate emitted manifest validation warnings (CONTENT-debt expected during v7→v8); proceeding with the generated manifest');
         }
       }

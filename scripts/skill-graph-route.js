@@ -57,6 +57,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { execFileSync } = require('child_process');
 const { packageRoot, workspaceRoot } = require('./lib/roots');
 
 const REPO_ROOT = workspaceRoot();
@@ -64,6 +65,7 @@ const PACKAGE_ROOT = packageRoot();
 const DEFAULT_MANIFEST = path.join(REPO_ROOT, 'skills.manifest.json');
 const SAMPLE_MANIFEST = path.join(REPO_ROOT, 'examples', 'skills.manifest.sample.json');
 const PACKAGE_SAMPLE_MANIFEST = path.join(PACKAGE_ROOT, 'examples', 'skills.manifest.sample.json');
+const CLI_FRESH_MANIFEST = path.join(REPO_ROOT, '.skill-graph', '_route-cli.manifest.json');
 
 // ---------------------------------------------------------------------------
 // Tokenization & scoring
@@ -865,6 +867,27 @@ function argValue(args, flag) {
   return i !== -1 && args[i + 1] ? args[i + 1] : null;
 }
 
+function resolveManifestPath(manifestArg) {
+  if (manifestArg) return path.resolve(manifestArg);
+
+  const generator = path.join(REPO_ROOT, 'scripts', 'generate-manifest.js');
+  if (fs.existsSync(generator)) {
+    fs.mkdirSync(path.dirname(CLI_FRESH_MANIFEST), { recursive: true });
+    try {
+      execFileSync(process.execPath, [generator, '--output', CLI_FRESH_MANIFEST], { stdio: 'pipe' });
+    } catch {
+      if (fs.existsSync(CLI_FRESH_MANIFEST)) {
+        console.error('WARN auto-generate emitted manifest validation errors; proceeding with the freshly written manifest');
+      }
+    }
+    if (fs.existsSync(CLI_FRESH_MANIFEST)) return CLI_FRESH_MANIFEST;
+  }
+
+  return fs.existsSync(DEFAULT_MANIFEST)
+    ? DEFAULT_MANIFEST
+    : (fs.existsSync(SAMPLE_MANIFEST) ? SAMPLE_MANIFEST : PACKAGE_SAMPLE_MANIFEST);
+}
+
 function main() {
   const args = process.argv.slice(2);
   const outputJson = args.includes('--json');
@@ -891,15 +914,11 @@ function main() {
     process.exit(1);
   }
 
-  const manifestPath = manifestArg
-    ? path.resolve(manifestArg)
-    : (fs.existsSync(DEFAULT_MANIFEST)
-        ? DEFAULT_MANIFEST
-        : (fs.existsSync(SAMPLE_MANIFEST) ? SAMPLE_MANIFEST : PACKAGE_SAMPLE_MANIFEST));
+  const manifestPath = resolveManifestPath(manifestArg);
 
   if (!fs.existsSync(manifestPath)) {
     console.error(`ERROR manifest not found: ${manifestPath}`);
-    console.error('Run `node scripts/generate-manifest.js --output skills.manifest.json` first, or pass --manifest <path>.');
+    console.error('Pass --manifest <path> or run from a Skill Graph checkout with scripts/generate-manifest.js.');
     process.exit(1);
   }
 
