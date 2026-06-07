@@ -20,6 +20,7 @@
 const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
+const { collectSkillFiles } = require('./lib/roots');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const OUTPUT_PATH = path.join(REPO_ROOT, 'docs', 'status.generated.md');
@@ -124,6 +125,47 @@ function readMirrorStatus() {
   return 'docs-only mirrors per ADR 0009 (2026-05-18)';
 }
 
+// Upstream-displacement coverage (SKI-292). The per-skill upstream-displacement
+// check is MANDATORY for every skill per skill-audit-loop/SKILL_AUDIT_LOOP.md
+// § "6-displacement" (lines 817-823): for each skill, ask whether a recent
+// first-party / platform / OSS release now delivers the capability natively, and
+// record the result. `research-to-skill-references.md` mandates saving the
+// finding to `skills/<slug>/references/upstream-<topic>.md`, so the presence of
+// such a reference file is the canonical "this skill has been displacement-
+// checked" signal. The status surface was previously silent on this axis; this
+// reports its coverage so a reader can see how much of the corpus has actually
+// been checked vs. how much is unverified against the moving upstream scene.
+//
+// Returns { checked, total } or null when the skill corpus is not reachable
+// (standalone clone without the sibling skills repo) — callers tolerate null.
+function readDisplacementCoverage() {
+  let skillFiles;
+  try {
+    skillFiles = collectSkillFiles();
+  } catch {
+    return null;
+  }
+  if (!Array.isArray(skillFiles) || skillFiles.length === 0) return null;
+
+  let checked = 0;
+  for (const entry of skillFiles) {
+    const skillMd = entry.filePath || entry;
+    const referencesDir = path.join(path.dirname(skillMd), 'references');
+    let hit = false;
+    try {
+      for (const name of fs.readdirSync(referencesDir)) {
+        // Match the mandated artifact name: upstream-<topic>.md (also tolerate
+        // the longer `upstream-displacement-*.md` form some skills use).
+        if (/^upstream-.*\.md$/i.test(name)) { hit = true; break; }
+      }
+    } catch {
+      // No references/ dir — skill has not recorded a displacement check.
+    }
+    if (hit) checked += 1;
+  }
+  return { checked, total: skillFiles.length };
+}
+
 // Render the Audit Health section from the manifest summary's verdict facets.
 // Per ADR-0011 § Addendum 2026-05-27, the doctrine is eligibility ≠ assessment ≠
 // certification. The three sub-tables below render exactly that split so a
@@ -218,7 +260,10 @@ Comprehension carve-out (per ADR-0011 § Addendum 2026-05-20):
 }
 
 function renderMarkdown(state) {
-  const { pkg, schema_version, skill_count, checks, generated_at, mirror_status, summary } = state;
+  const { pkg, schema_version, skill_count, checks, generated_at, mirror_status, summary, displacement } = state;
+  const displacementValue = displacement
+    ? `\`${displacement.checked}\` / \`${displacement.total}\` (${displacement.total ? Math.round((displacement.checked / displacement.total) * 100) : 0}%)`
+    : '`—` _(corpus not reachable)_';
   const checkRow = c => {
     const badge = c.status === 'PASS' ? '✅ PASS' : c.status === 'SKIP' ? '⏭️  SKIP' : '❌ ' + c.status;
     const detail = c.detail ? c.detail.replace(/\|/g, '\\|') : '';
@@ -244,6 +289,7 @@ function renderMarkdown(state) {
 | Node engine | \`${pkg.engines?.node ?? '—'}\` | \`package.json\` |
 | Active schema version | \`${formatSchemaVersion(schema_version)}\` | \`schemas/skill-audit-state.schema.json\` (moved from frontmatter schema per ADR-0019) |
 | Skill count (manifest) | \`${skill_count ?? '—'}\` | \`skills.manifest.json\` |
+| Upstream-displacement coverage | ${displacementValue} | skills with a \`references/upstream-*.md\` artifact (per \`skill-audit-loop/SKILL_AUDIT_LOOP.md\` § 6-displacement) |
 | Mirror status | ${mirror_status} | \`docs/adr/0009-sibling-repo-deprecation.md\` |
 
 ## Checks
@@ -294,6 +340,7 @@ function main() {
   const skill_count = readSkillCount();
   const summary = readManifestSummary();
   const mirror_status = readMirrorStatus();
+  const displacement = readDisplacementCoverage();
   const generated_at = new Date().toISOString();
 
   const checks = opts.skipChecks ? [] : [
@@ -309,7 +356,7 @@ function main() {
     // committed for the 15 graded-comprehension claims.
   ];
 
-  const state = { pkg, schema_version, skill_count, summary, mirror_status, generated_at, checks };
+  const state = { pkg, schema_version, skill_count, summary, mirror_status, displacement, generated_at, checks };
   const markdown = renderMarkdown(state);
 
   if (opts.stdout) {
