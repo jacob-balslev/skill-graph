@@ -39,7 +39,9 @@ function mkWorkspace({ withApplicationJson, skillMdApplicationVerdict }) {
   const ws = fs.mkdtempSync(path.join(os.tmpdir(), 'cam-app-'));
   const skill = 'fixture-skill';
   const runId = '20260531-000000';
-  const runDir = path.join(ws, '.opencode', 'progress', 'skill-audits', skill, 'runs', runId);
+  // Run-root relocated 2026-06-07T to skill-graph/skill-audit-loop/progress/skill-audits per
+  // ADR-0016 surface #3 supersession — the fixture builds the run dir at the new root the gate reads.
+  const runDir = path.join(ws, 'skill-graph', 'skill-audit-loop', 'progress', 'skill-audits', skill, 'runs', runId);
   fs.mkdirSync(runDir, { recursive: true });
   // verdict.md claims a high-stakes graded application verdict; comprehension is
   // UNVERIFIED so this test isolates the application gate.

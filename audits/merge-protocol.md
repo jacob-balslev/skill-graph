@@ -30,12 +30,12 @@ node scripts/skill/skill-audit-claim.js claim <slug> --merge           # MERGE: 
 ## AUDIT mode (any model) — produce a PROPOSAL, do not commit canonical files
 Run the full **v2.2 per-skill contract** (steps 1–8: deep catalog, test runner, read, audit-as-contract, Concept Card check, comprehension-evals check, fix-drift reasoning, external research, dual-run comprehension grader). Then write per-model artifacts — **NOT** edits to the canonical `skills/<slug>/SKILL.md`:
 ```
-.opencode/progress/skill-audits/<slug>.$MODEL.catalog.json
-.opencode/progress/skill-audits/<slug>.$MODEL.research.md
-.opencode/progress/skill-audits/<slug>.$MODEL.findings.md
-.opencode/progress/skill-audits/<slug>.$MODEL.proposed-SKILL.md   # OR <slug>.$MODEL.changeset.md (see below)
-.opencode/progress/skill-audits/<slug>.$MODEL.proposed-comprehension.json
-.opencode/progress/skill-audits/<slug>.$MODEL.scorecard.md
+skill-graph/skill-audit-loop/progress/skill-audits/<slug>.$MODEL.catalog.json
+skill-graph/skill-audit-loop/progress/skill-audits/<slug>.$MODEL.research.md
+skill-graph/skill-audit-loop/progress/skill-audits/<slug>.$MODEL.findings.md
+skill-graph/skill-audit-loop/progress/skill-audits/<slug>.$MODEL.proposed-SKILL.md   # OR <slug>.$MODEL.changeset.md (see below)
+skill-graph/skill-audit-loop/progress/skill-audits/<slug>.$MODEL.proposed-comprehension.json
+skill-graph/skill-audit-loop/progress/skill-audits/<slug>.$MODEL.scorecard.md
 ```
 **Proposal form — pick by drift size (SH-6345):**
 - **Change-set (preferred for small drift — a handful of localized fixes):** write `<slug>.$MODEL.changeset.md` as an ordered list of edits, each an `old:` block and a `new:` block plus a one-line rationale + evidence. Anchored, easy to union, and avoids near-identical full-file copies of a large skill. Use this when your fixes touch < ~20% of the skill and don't restructure it.
@@ -49,7 +49,7 @@ Pick exactly one form per model. Commit only these proposal artifacts (one commi
 3. **Read the CURRENT `skills/<slug>/SKILL.md` + evals first** — this is the merge baseline. Existing valuable content stays unless a proposal disproves it with repo evidence.
 4. Read every `<slug>.<model>.*` proposal — both forms: apply each `<slug>.<model>.changeset.md` against the current baseline (anchored old→new blocks) and read each `<slug>.<model>.proposed-SKILL.md` full rewrite. A skill may receive a mix of change-sets and full rewrites across models; union them the same way.
 5. **Union-merge** into the canonical `SKILL.md` + evals: fold in every valuable contribution from every model (fixed claims, sharper boundaries, better examples, missing edge cases, stronger evals). Resolve conflicts by strongest repo/vendor evidence.
-6. **Reject nothing valuable silently.** Write `.opencode/progress/skill-audits/<slug>.merge-ledger.md` listing each contribution → kept / merged / rejected(reason) → evidence. Every drop has a recorded reason.
+6. **Reject nothing valuable silently.** Write `skill-graph/skill-audit-loop/progress/skill-audits/<slug>.merge-ledger.md` listing each contribution → kept / merged / rejected(reason) → evidence. Every drop has a recorded reason.
 7. **Verify + keep-or-revert**: run the v2.2 verify checklist (`skill-census --write-manifest --write-docs`, `skill-lint`, test-runner) and the dual-run grader on the merged result. The merged skill must not regress `eval_score` vs the current skill. If it does, revert the regressing change and re-merge.
 8. **Commit** (one skill, path-limited `git commit --only`): canonical `SKILL.md` + evals + `<slug>.merge-ledger.md` + retained `<slug>.<model>.*` proposals + regenerated `skills/_meta/REGISTRY.*` + grader log.
 9. Update the worklist; `release <slug>` and `release <slug> --merge`.

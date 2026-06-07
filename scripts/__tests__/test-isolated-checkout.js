@@ -25,14 +25,14 @@ console.log('1. buildSeatbeltProfile — deny workspace, allow back the public r
 check('emits (allow default), a workspace deny, and an allow-back per public root in order', () => {
   const profile = ic.buildSeatbeltProfile({
     workspaceRoot: '/ws',
-    publicRoots: ['/ws/skill-graph', '/ws/skills', '/ws/.opencode/progress/skill-audits'],
+    publicRoots: ['/ws/skill-graph', '/ws/skills', '/ws/skill-graph/skill-audit-loop/progress/skill-audits'],
   });
   const lines = profile.split('\n');
   assert.ok(lines.includes('(allow default)'), 'has allow default');
   const denyIdx = lines.findIndex((l) => l === '(deny file-read* file-write* (subpath "/ws"))');
   assert.ok(denyIdx >= 0, 'denies the workspace root');
   // Last-match-wins: every allow-back must come AFTER the workspace deny.
-  for (const root of ['/ws/skill-graph', '/ws/skills', '/ws/.opencode/progress/skill-audits']) {
+  for (const root of ['/ws/skill-graph', '/ws/skills', '/ws/skill-graph/skill-audit-loop/progress/skill-audits']) {
     const allowIdx = lines.findIndex((l) => l === `(allow file-read* file-write* (subpath "${root}"))`);
     assert.ok(allowIdx > denyIdx, `allow-back ${root} comes after the deny`);
   }
@@ -66,7 +66,7 @@ check('read-only roots emit file-read* only, BEFORE the read-write roots (nested
   const profile = ic.buildSeatbeltProfile({
     workspaceRoot: '/ws',
     readOnlyRoots: ['/ws/skill-graph', '/ws/skills'],
-    publicRoots: ['/ws/.opencode/progress/skill-audits', '/ws/skill-graph/.opencode/progress'],
+    publicRoots: ['/ws/skill-graph/skill-audit-loop/progress/skill-audits', '/ws/skill-graph/.opencode/progress'],
   });
   const lines = profile.split('\n');
   const denyIdx = lines.findIndex((l) => l === '(deny file-read* file-write* (subpath "/ws"))');

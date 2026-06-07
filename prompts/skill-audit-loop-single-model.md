@@ -90,7 +90,7 @@ CLAIM (one skill at a time)
      node scripts/skill/skill-audit-claim.js claim <slug> --model "$MODEL"
    (Do NOT pass --merge — that is curator/multi-model mode, not yours.)
    The claim lock is PID-bound and written to .claude/agent-memory/skill-audit-<slug>;
-   it also opens a run dir under .opencode/progress/skill-audits/<slug>/runs/<run-dir>/.
+   it also opens a run dir under skill-graph/skill-audit-loop/progress/skill-audits/<slug>/runs/<run-dir>/.
    If `claim` fails, another agent holds it — pick the next. Never hand-pick a Sales-Hub
    or personal/customer-data skill even if it ranks high; trust `next`.
 
@@ -166,7 +166,7 @@ VERIFY
    Compare eval_score before/after — the merged skill must not regress it. If it does, revert
    the regressing change and re-verify.
    Write a single-model audit ledger under the run dir
-   (.opencode/progress/skill-audits/<slug>/runs/<run-dir>/merge-ledger.md): every finding →
+   (skill-graph/skill-audit-loop/progress/skill-audits/<slug>/runs/<run-dir>/merge-ledger.md): every finding →
    kept / fixed / rejected(reason) + firsthand evidence. Your ledger Contributor is YOUR
    model only.
    (Do not commit yet — commit happens after the release in step 9, so the terminal ledger line
@@ -218,8 +218,8 @@ self-assessment + DOCUMENT
    Development root; agent-orchestration/ has its OWN .git):
      git commit --only -F /tmp/msg -- skills/<slug>/SKILL.md \
         skills/<slug>/evals/comprehension.json \
-        .opencode/progress/skill-audits/<slug>/     # run dir + history.jsonl + latest (written by release)
-        .opencode/progress/skill-audits/_ledger.jsonl  # terminal line appended by release
+        skill-graph/skill-audit-loop/progress/skill-audits/<slug>/     # run dir + history.jsonl + latest (written by release)
+        skill-graph/skill-audit-loop/progress/skill-audits/_ledger.jsonl  # terminal line appended by release
    The git index is SHARED across parallel sessions — `--only` is mandatory. EXCLUDE the
    regenerated aggregates (skills.manifest.json, skills/_meta/REGISTRY.md, SKILL-INDEX.md,
    the worklist json/md, package-lock.json) when their diff is dominated by OTHER skills'

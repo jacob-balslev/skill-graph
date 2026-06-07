@@ -76,7 +76,7 @@ node scripts/skill/skill-audit-claim.js release <skill> --status completed --str
 ```
 
 ```
-.opencode/progress/skill-audits/<skill>/
+skill-graph/skill-audit-loop/progress/skill-audits/<skill>/
     runs/<YYYY-MM-DD>T<HHMM>--<op>--<model>--<run-id>/
         catalog.json findings.md verdict.md scorecard.md research.md
     history.jsonl     ← one line per run (run_id, op, model, agent_id, verdicts, …)

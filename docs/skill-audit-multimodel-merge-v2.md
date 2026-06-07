@@ -94,11 +94,11 @@ Plus the attribution fields from §7:
 Each auditor emits:
 
 ```
-.opencode/progress/skill-audits/<slug>.<model>.proposed-SKILL.md         # structured (as v1)
-.opencode/progress/skill-audits/<slug>.<model>.proposed-comprehension.json
-.opencode/progress/skill-audits/<slug>.<model>.scorecard.md
-.opencode/progress/skill-audits/<slug>.<model>.novelty-memo.md           # NEW in v2
-.opencode/progress/skill-audits/<slug>.<model>.trajectory.jsonl          # NEW in v2, optional
+skill-graph/skill-audit-loop/progress/skill-audits/<slug>.<model>.proposed-SKILL.md         # structured (as v1)
+skill-graph/skill-audit-loop/progress/skill-audits/<slug>.<model>.proposed-comprehension.json
+skill-graph/skill-audit-loop/progress/skill-audits/<slug>.<model>.scorecard.md
+skill-graph/skill-audit-loop/progress/skill-audits/<slug>.<model>.novelty-memo.md           # NEW in v2
+skill-graph/skill-audit-loop/progress/skill-audits/<slug>.<model>.trajectory.jsonl          # NEW in v2, optional
 ```
 
 **Novelty memo template** (markdown):

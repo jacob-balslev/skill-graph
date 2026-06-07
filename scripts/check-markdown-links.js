@@ -22,8 +22,30 @@ const { workspaceRoot } = require('./lib/roots');
 const REPO_ROOT = workspaceRoot();
 const IGNORED_DIRS = new Set(['.git', 'node_modules', '.artifacts', '.roundtable']);
 
+// Gitignored, TRANSIENT run-scratch roots (skill-audit run dirs: proposals, review passes,
+// per-skill _orphaned/READMEs). They contain machine-emitted markdown with absolute-path /
+// line-anchor citations and depth-relative links that are NOT authored docs and must NOT be
+// link-validated. Identified by their repo-relative prefix so the move of the run-root
+// (2026-06-07T: .opencode/progress/skill-audits → skill-graph/skill-audit-loop/progress/
+// skill-audits per ADR-0016 surface #3) is covered for BOTH the new and the frozen-old location.
+// `workspaceRoot()` resolves to the Development workspace when run from there, but to the
+// skill-graph repo root when `npm run docs:links` runs from `skill-graph/` cwd — so the run-root's
+// repo-relative form is EITHER `skill-graph/skill-audit-loop/progress` (workspace REPO_ROOT) or
+// `skill-audit-loop/progress` (skill-graph REPO_ROOT). List both so the skip works from either cwd.
+const IGNORED_PATH_PREFIXES = [
+  'skill-graph/skill-audit-loop/progress', // relocated run-root, workspace-relative
+  'skill-audit-loop/progress',             // relocated run-root, skill-graph-repo-relative
+  'skill-graph/.opencode/progress',        // skill-graph-nested progress scratch, workspace-relative
+  '.opencode/progress',                    // historical run-root + progress scratch (either cwd)
+];
+
 function repoRelative(filePath) {
   return path.relative(REPO_ROOT, filePath).split(path.sep).join('/');
+}
+
+function isIgnoredScratchDir(absDir) {
+  const rel = repoRelative(absDir);
+  return IGNORED_PATH_PREFIXES.some((p) => rel === p || rel.startsWith(`${p}/`));
 }
 
 function collectMarkdownFiles(dir, out = []) {
@@ -32,7 +54,8 @@ function collectMarkdownFiles(dir, out = []) {
     if (entry.name.startsWith('.') && IGNORED_DIRS.has(entry.name)) continue;
     const abs = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      if (!IGNORED_DIRS.has(entry.name)) collectMarkdownFiles(abs, out);
+      // Skip gitignored transient run-scratch trees (audit run dirs); not authored docs.
+      if (!IGNORED_DIRS.has(entry.name) && !isIgnoredScratchDir(abs)) collectMarkdownFiles(abs, out);
       continue;
     }
     if (entry.isFile() && entry.name.toLowerCase().endsWith('.md')) out.push(abs);

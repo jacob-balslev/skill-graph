@@ -39,12 +39,12 @@ claim → [per-model audit ×N → proposal] → union-curate merge → verify (
 Run the full **v2.2 contract** (deep catalog, test runner, read, audit-as-contract, concept card, comprehension evals, fix-drift reasoning, external research). The only change: **write a proposal, do not commit the canonical files.** Emit per-model artifacts:
 
 ```
-.opencode/progress/skill-audits/<slug>.<model>.catalog.json
-.opencode/progress/skill-audits/<slug>.<model>.research.md
-.opencode/progress/skill-audits/<slug>.<model>.findings.md
-.opencode/progress/skill-audits/<slug>.<model>.proposed-SKILL.md         # full proposed SKILL.md
-.opencode/progress/skill-audits/<slug>.<model>.proposed-comprehension.json
-.opencode/progress/skill-audits/<slug>.<model>.scorecard.md
+skill-graph/skill-audit-loop/progress/skill-audits/<slug>.<model>.catalog.json
+skill-graph/skill-audit-loop/progress/skill-audits/<slug>.<model>.research.md
+skill-graph/skill-audit-loop/progress/skill-audits/<slug>.<model>.findings.md
+skill-graph/skill-audit-loop/progress/skill-audits/<slug>.<model>.proposed-SKILL.md         # full proposed SKILL.md
+skill-graph/skill-audit-loop/progress/skill-audits/<slug>.<model>.proposed-comprehension.json
+skill-graph/skill-audit-loop/progress/skill-audits/<slug>.<model>.scorecard.md
 ```
 
 `<model>` is the model slug (`opus`, `gpt-5.5`, `gemini-3.1-pro`, `sonnet`, …). Proposals are **never deleted** — they are the durable record of each model's research.
@@ -60,7 +60,7 @@ Merge rule (the anti-loss guarantee):
 
 Write the merge ledger:
 ```
-.opencode/progress/skill-audits/<slug>.merge-ledger.md
+skill-graph/skill-audit-loop/progress/skill-audits/<slug>.merge-ledger.md
 ```
 listing, per contribution: source model → kept / merged-into-existing / rejected(reason) → evidence.
 

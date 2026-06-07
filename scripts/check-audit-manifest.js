@@ -14,7 +14,8 @@
 //   for the application-layer counterpart). The earlier mixed set leaked application
 //   enums into the comprehension check — fixed 2026-05-25.
 //
-// Walks: .opencode/progress/skill-audits/<skill>/runs/<run-id>/verdict.md
+// Walks: skill-graph/skill-audit-loop/progress/skill-audits/<skill>/runs/<run-id>/verdict.md
+//        (run-root relocated 2026-06-07T from .opencode/progress/skill-audits per ADR-0016 #3)
 // Reads: skill-graph/audits/manifest.json
 // Resolves canonical skill source via:
 //   - skills/<skill>/evals/comprehension.json (workspace canonical)
@@ -218,7 +219,10 @@ function resolveApplicationPath(workspace, skill) {
 function main() {
   const args = parseArgs(process.argv.slice(2));
   const manifest = loadManifest();
-  const progressDir = path.join(args.workspace, '.opencode', 'progress', 'skill-audits');
+  // Run-root relocated 2026-06-07T from <ws>/.opencode/progress/skill-audits to
+  // <ws>/skill-graph/skill-audit-loop/progress/skill-audits per the ADR-0016 surface #3
+  // supersession. The run-layout substructure (<skill>/runs/<run-id>/...) underneath is unchanged.
+  const progressDir = path.join(args.workspace, 'skill-graph', 'skill-audit-loop', 'progress', 'skill-audits');
   const failures = [];
   const checks = [];
 

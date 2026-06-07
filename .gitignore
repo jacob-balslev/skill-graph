@@ -20,6 +20,14 @@ audits/sweep-ledger.jsonl
 # value of a v7→v8 upgrade is data, not a stale doc reference). SH-6638 class.
 .opencode/
 
+# Skill-audit run-root — TRANSIENT run scratch (per-skill run dirs, _ledger.jsonl,
+# history.jsonl, latest symlinks). RELOCATED here 2026-06-07T from the workspace
+# .opencode/progress/skill-audits per the ADR-0016 surface #3 supersession. It is a
+# "run result", not source — same class as audits/_state/ and .opencode/ above — and
+# carries filesystem paths + session telemetry that must NEVER ship in this public
+# tooling repo. Ignored so a `git add` / commit-all snapshot can't introduce it.
+skill-audit-loop/progress/
+
 # Personal AI usage tracker — belongs only in the Development root, never in
 # this public tooling repo. It carries subscription cost / quota / billing data.
 # Ignored here so a `git add .` / commit-all snapshot can't re-introduce it

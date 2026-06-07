@@ -727,7 +727,7 @@ Diagnostic audits may score 4 while leaving fixes for later, but only when the r
 > | `scripts/skill/build-skill-list.js --write` (Step 9) | **Skip.** The worklist is the drain queue; a solo consumer audits the skill they chose. | Worklist ranking is drain orchestration. |
 > | `scripts/skill/evaluate-skill.js` (Step 7) | `skill-graph evaluate --mode comprehension <skill>/evals/comprehension.json` · `skill-graph evaluate --mode application --application <skill-dir> <skill>/evals/application.json` | Wraps the canonical `lib/audit/evaluate-skill.js`; stamps `comprehension_verdict` / `application_verdict`. |
 > | `scripts/loop/loop-checkpoint.js advance\|update` (Steps 9, 11) | **Skip.** Loop checkpoint/steering is batch-runner telemetry. | No loop to checkpoint in a single-skill run. |
-> | `.opencode/progress/skill-audits/**` paths (Steps 10–11) | Use local `audits/<skill>/` for artifacts; there is no shared `_ledger.jsonl` / `latest` symlink to write. | Those paths are the workspace drain's shared state. |
+> | `skill-graph/skill-audit-loop/progress/skill-audits/**` run-root paths (Steps 10–11; relocated 2026-06-07T from `.opencode/progress/skill-audits` per ADR-0016 surface #3) | Use local `audits/<skill>/` for artifacts; there is no shared `_ledger.jsonl` / `latest` symlink to write. | Those paths are the workspace drain's shared state. |
 >
 > #### Minimal end-to-end npm-consumer path (runnable from this doc alone)
 >
@@ -980,8 +980,8 @@ Diagnostic audits may score 4 while leaving fixes for later, but only when the r
     skills/<skill-slug>/evals/comprehension.json              (if authored, edited, or audited)
     skills/<skill-slug>/evals/application.json                (if authored, edited, or audited)
     agent-orchestration/logs/comprehension-history.jsonl      (always — grader output)
-    .opencode/progress/skill-audits/<skill-slug>/             (the run dir + history.jsonl + latest, written by release)
-    .opencode/progress/skill-audits/_ledger.jsonl             (the run ledger — terminal line appended by release in Step 10)
+    skill-graph/skill-audit-loop/progress/skill-audits/<skill-slug>/   (run dir + history.jsonl + latest, written by release; gitignored — relocated 2026-06-07T from .opencode/progress/skill-audits per ADR-0016 #3)
+    skill-graph/skill-audit-loop/progress/skill-audits/_ledger.jsonl  (the run ledger — terminal line appended by release in Step 10; gitignored scratch)
     skills/_meta/REGISTRY.md                                  (census regenerated)
     skills/_meta/REGISTRY.json                                (census regenerated)
     ```

@@ -275,8 +275,8 @@ the release step:
   git status --short
   git add -- <exact new intended paths>             # only for new files that must be tracked
   git commit --only -m "docs(<slug>): audit skill for Codex loop" -- <exact changed paths> \
-    .opencode/progress/skill-audits/<slug>/ \
-    .opencode/progress/skill-audits/_ledger.jsonl
+    skill-graph/skill-audit-loop/progress/skill-audits/<slug>/ \
+    skill-graph/skill-audit-loop/progress/skill-audits/_ledger.jsonl
   git show --stat HEAD
 
 Rules:

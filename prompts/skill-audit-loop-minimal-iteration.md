@@ -120,7 +120,7 @@ any other model. The multi-model merge flow is separate and not for this prompt.
 11. Commit path-limited in the repo that owns the files (skill-graph/ has its own .git):
     git commit --only -F /tmp/msg -- skills/<slug>/SKILL.md \
       skills/<slug>/evals/comprehension.json \
-      .opencode/progress/skill-audits/<slug>/...
+      skill-graph/skill-audit-loop/progress/skill-audits/<slug>/...
     Do NOT use `git add -A`. Do NOT sweep aggregate regenerations dominated by other sessions.
 
 12. Release claim and rebuild worklist:

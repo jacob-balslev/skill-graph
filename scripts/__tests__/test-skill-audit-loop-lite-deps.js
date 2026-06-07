@@ -41,8 +41,8 @@ check('buildReleaseArgs defaults to completed', () => {
   assert.deepStrictEqual(d.buildReleaseArgs({ skill: 'x', model: 'opus' }), ['release', 'x', '--status', 'completed', '--model', 'opus']);
 });
 check('parseClaimOutput extracts run_id + audit_run_dir', () => {
-  const out = '{"claimed":"k","by":"agent","op":"merge","run_id":"r1","model":"opus","audit_run_dir":".opencode/progress/skill-audits/x/runs/r1"}';
-  assert.deepStrictEqual(d.parseClaimOutput(out), { run_id: 'r1', artifactsDir: '.opencode/progress/skill-audits/x/runs/r1' });
+  const out = '{"claimed":"k","by":"agent","op":"merge","run_id":"r1","model":"opus","audit_run_dir":"skill-graph/skill-audit-loop/progress/skill-audits/x/runs/r1"}';
+  assert.deepStrictEqual(d.parseClaimOutput(out), { run_id: 'r1', artifactsDir: 'skill-graph/skill-audit-loop/progress/skill-audits/x/runs/r1' });
 });
 check('parseClaimOutput throws on a refused claim', () => {
   assert.throws(() => d.parseClaimOutput('{"claimed":false,"reason":"lane full"}'), /claim refused/);
@@ -81,10 +81,10 @@ check('codex enrich args use workspace-write sandbox + narrow extra writable roo
   // No writableRoots => no -c flag.
   assert.ok(!a.includes('-c'));
   // With a writable root => an explicit sandbox_workspace_write config naming ONLY it.
-  const b = d.buildCodexEnrichArgs('PROMPT', { writableRoots: ['/ws/.opencode/progress/skill-audits/s/runs/r1'] });
+  const b = d.buildCodexEnrichArgs('PROMPT', { writableRoots: ['/ws/skill-graph/skill-audit-loop/progress/skill-audits/s/runs/r1'] });
   const ci = b.indexOf('-c');
   assert.ok(ci !== -1);
-  assert.match(b[ci + 1], /sandbox_workspace_write=\{writable_roots=\["\/ws\/\.opencode\/progress\/skill-audits\/s\/runs\/r1"\]\}/);
+  assert.match(b[ci + 1], /sandbox_workspace_write=\{writable_roots=\["\/ws\/skill-graph\/skill-audit-loop\/progress\/skill-audits\/s\/runs\/r1"\]\}/);
 });
 check('buildEnrichPrompt names the exact output paths + private-content scope via template', () => {
   const p = d.buildEnrichPrompt({ template: 'TEMPLATE', skill: 's', skillDir: '/s', model: 'opus', brief: 'B', proposalPath: '/r/p.md', noveltyMemoPath: '/r/m.md' });
@@ -169,7 +169,7 @@ check('claimSlot claims --op audit per model; curate claims --op merge with a di
     if (isClaimScript && args.includes('claim')) {
       const op = args[args.indexOf('--op') + 1];
       claims.push({ op, agentId: env.AGENT_ID, model: env.MODEL });
-      const runDir = path.join('.opencode', 'progress', 'skill-audits', skill, 'runs', `${op}-${env.MODEL || 'x'}`);
+      const runDir = path.join('skill-graph', 'skill-audit-loop', 'progress', 'skill-audits', skill, 'runs', `${op}-${env.MODEL || 'x'}`);
       fs.mkdirSync(path.join(tmp, runDir), { recursive: true });
       return JSON.stringify({ claimed: 'k', run_id: `r-${op}`, audit_run_dir: runDir });
     }
