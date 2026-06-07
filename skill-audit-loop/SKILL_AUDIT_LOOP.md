@@ -701,7 +701,43 @@ Diagnostic audits may score 4 while leaving fixes for later, but only when the r
 > - Use the canonical CLI entrypoints: `skill-graph audit`, `skill-graph improve`, `skill-graph evaluate`, `skill-graph evolve` (defined in `bin/skill-graph.js`) — these wrap `lib/audit/*` and `scripts/skill-*.js` directly.
 > - `scripts/skill/skill-lint.js` → canonical is `scripts/skill-lint.js` (note the path: no `skill/` subdirectory).
 > - `scripts/skill/evaluate-skill.js` → canonical TARGET is `lib/audit/evaluate-skill.js`, but the workspace script is currently a **divergent fork, NOT yet a thin delegator** (verified 2026-05-28 — the divergence is bidirectional; both copies carry unique behavior). Collapse to a delegating shim is tracked by **SH-6603** (per ADR-0016). Until it lands, the two copies are not interchangeable.
-> - The workspace-only tools (`skill-audit-claim`, `source-truth-catalog`, `skill-census`, `build-skill-list`, `skill-test-runner`) currently have no canonical equivalents; they are part of the workspace orchestration surface tracked in ADR 0016 (Accepted 2026-05-27). The runbook below assumes you have them; if you don't, you can still run a substantially complete audit via `skill-graph audit <skill> --graded` and `skill-graph evaluate --mode comprehension`.
+> - The workspace-only tools (`skill-audit-claim`, `source-truth-catalog`, `skill-census`, `build-skill-list`, `skill-test-runner`, `loop-checkpoint`) are the **multi-agent drain orchestration** layer (atomic lane claim, ledger, worklist, deep code probe, key-file test runner, loop telemetry). They have no npm-bundled equivalent because a single npm consumer auditing one skill does not need drain coordination — they are skippable, not blocking. See the complete mapping + minimal path below.
+>
+> #### Complete workspace-script → npm-consumer mapping
+>
+> Every workspace-only command the runbook below uses, and what a standalone `@skill-graph/cli` consumer runs instead. "Skip" means the step is multi-agent drain orchestration with no single-skill analogue — omit it and the audit is still complete.
+>
+> | Runbook command (workspace) | npm-consumer equivalent | Why |
+> |---|---|---|
+> | `scripts/skill/skill-audit-claim.js lanes\|next\|claim\|rundir\|release` (Setup 2–5, Steps 10–11) | **Skip the claim/ledger.** Pick the skill yourself; use a local run dir `audits/<skill>/` for the `findings.md` / `verdict.md` / `scorecard.md` artifacts; there is no lane to claim and no ledger to release. | Atomic lane claim + ledger exist only to stop two agents double-processing in a drain. A solo consumer has no contention. |
+> | `scripts/skill/skill-lint.js <skill>` (Steps 2, 8, 11) | `skill-graph lint <skill>` (or `node scripts/skill-lint.js <skill>` — canonical, note **no** `skill/` subdir) | Same lint gate, bundled path. |
+> | `scripts/skill/source-truth-catalog.js --deep` (Step 2/3) | `skill-graph drift` for truth-source staleness; read `grounding.truth_sources` and the cited files directly for the deep code probe. | The deep code-body catalog is workspace-only; `drift` covers the staleness signal an npm consumer needs. |
+> | `scripts/skill/skill-test-runner.js --skill <skill>` (Steps 3, 8) | Run the skill's cited key-file tests directly (the test commands named in the skill body / `grounding`). | The runner is a workspace convenience wrapper; the underlying tests are in the consumer's own repo. |
+> | `scripts/skill/skill-census.js --json [--write-manifest --write-docs]` (Steps 8–9) | `skill-graph status <skill>` (per-skill Audit Status) · `node scripts/generate-manifest.js` (manifest) · `node scripts/build-status-doc.js` (corpus status). Concept-card presence is enforced by `skill-graph audit` / `skill-graph lint`. | Census is a corpus-wide roll-up; the bundled CLIs cover the per-skill + manifest + status pieces a consumer needs. |
+> | `scripts/skill/build-skill-list.js --write` (Step 9) | **Skip.** The worklist is the drain queue; a solo consumer audits the skill they chose. | Worklist ranking is drain orchestration. |
+> | `scripts/skill/evaluate-skill.js` (Step 7) | `skill-graph evaluate --mode comprehension <skill>/evals/comprehension.json` · `skill-graph evaluate --mode application --application <skill-dir> <skill>/evals/application.json` | Wraps the canonical `lib/audit/evaluate-skill.js`; stamps `comprehension_verdict` / `application_verdict`. |
+> | `scripts/loop/loop-checkpoint.js advance\|update` (Steps 9, 11) | **Skip.** Loop checkpoint/steering is batch-runner telemetry. | No loop to checkpoint in a single-skill run. |
+> | `.opencode/progress/skill-audits/**` paths (Steps 10–11) | Use local `audits/<skill>/` for artifacts; there is no shared `_ledger.jsonl` / `latest` symlink to write. | Those paths are the workspace drain's shared state. |
+>
+> #### Minimal end-to-end npm-consumer path (runnable from this doc alone)
+>
+> This ordered sequence reproduces the per-skill loop for one skill using ONLY bundled `@skill-graph/cli` entrypoints — no workspace orchestration:
+>
+> ```bash
+> # 0. Point the CLI at your skill library if it isn't the cwd (standalone clones):
+> #    export SKILL_GRAPH_WORKSPACE=/path/to/your/skills   (or pass --workspace-root where supported)
+> skill-graph lint <skill>                                   # 1. schema conformance (Integrity floor)
+> skill-graph audit <skill> --graded --grader-cli "<cmd>"   # 2. Integrity Gate -> stamps structural_verdict + truth_verdict (+ graded verdicts)
+> skill-graph evaluate --mode comprehension <skill>/evals/comprehension.json          # 3. comprehension_verdict
+> skill-graph evaluate --mode application --application <skill-dir> <skill>/evals/application.json  # 4. application_verdict (the primary quality signal)
+> skill-graph improve --skill <skill>                       # 5. Karpathy keep-or-revert fix (only if a verdict is below bar)
+> skill-graph drift                                          # 6. truth-source staleness
+> skill-graph manifest --validate-only                      # 7. manifest parity (no source<->manifest drift)
+> skill-graph status <skill>                                 # 8. read back the four-verdict Audit Status
+> # 9. commit the skill + its audit-state.json + audits/<skill>/ path-limited (git commit --only)
+> ```
+>
+> `skill-graph doctor` runs the fast deterministic smoke subset (links, protocol, drift, schema constants, lint, manifest) in one pass if you want a single pre-commit gate. The numbered Setup/Steps below are the **drain-orchestrated** form of this same loop; map each workspace command through the table above, or skip the drain-only steps, and you get this minimal path.
 
 > **Instruction and data boundary.** The audit runbook intentionally reads untrusted or stale
 > skill bodies, eval prompts, audit artifacts, repo files, tool output, pasted examples, and
