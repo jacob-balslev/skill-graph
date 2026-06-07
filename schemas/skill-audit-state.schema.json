@@ -260,7 +260,7 @@
         "bidirectional": {
           "type": "object",
           "additionalProperties": false,
-          "description": "Two-frontier bidirectional eval provenance (Opus 4.8 / GPT-5.5), present when the receipt comes from lib/audit/run-bidirectional-eval.js. Records BOTH directions' resolved models, the tools-ON execution profile + parity result, the conservative reconciliation, and a link to the enrichment merge-ledger so enrichment and eval provenance are one record (SH-6663). A graded verdict (PASS/APPLICABLE) is honest only when `parity_ok` AND `certifying_clean` are both true; otherwise the verdict was capped to PROVISIONAL. See docs/audit-loop-enrich-philosophy.md and lib/audit/eval-execution-profile.js.",
+          "description": "Two-frontier bidirectional eval provenance (Opus 4.8 / GPT-5.5), present when the receipt comes from lib/audit/run-bidirectional-eval.js. Records BOTH directions' resolved models, the tools-ON execution profile + parity result, the conservative reconciliation, and a link to the enrichment merge-ledger so enrichment and eval provenance are one record (SH-6663). A graded verdict (PASS/APPLICABLE) is honest only when `parity_ok` AND `certifying_clean` are both true; otherwise the verdict was capped to PROVISIONAL. See docs/skill-audit-loop-philosophy.md and lib/audit/eval-execution-profile.js.",
           "properties": {
             "frontier_pair": {
               "type": "array",

@@ -55,7 +55,7 @@ This skill does not pick the route through a task (use `task-path-optimization`)
 | Source | Why it matters |
 |---|---|
 | `skill-graph/AGENTS.md` | Repository-level rules for findings completeness, verdict honesty, and skill-audit evidence. |
-| `skill-graph/docs/audit-loop-enrich-philosophy.md` | Enrich-never-strip doctrine, private-content boundary, and tool-enabled research expectations. |
+| `skill-graph/docs/skill-audit-loop-philosophy.md` | Enrich-never-strip doctrine, private-content boundary, and tool-enabled research expectations. |
 | `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md` | Audit-loop runbook, upstream-displacement check, behavior vs integrity gates. |
 | `skills/software-engineering-method/no-cutting-corners/SKILL.md` | Adjacent five-pillar enforcement gate and newer completeness/verification patterns. |
 | `skills/reasoning-strategy/epistemic-grounding/SKILL.md` | Claim grounding, provenance, and warrant discipline. |
