@@ -266,7 +266,7 @@ When `evals/comprehension.json` exists, the comprehension grader (`evaluate-skil
 1. **One field, one commit.** The operator (or the loop) chooses one stale or failing field. `improve --field mental_model <skill>` edits exactly that field.
 2. **Time-boxed.** Default 20 minutes per field. Beyond that, abort and re-queue.
 3. **Auto-test after.** `improve` immediately calls `evaluate` and checks the metric for the targeted field.
-4. **Keep or revert.** If `eval_score` did not improve (or regressed below an allowed threshold), the commit is reverted automatically. The loop records the failed attempt and moves to the next field.
+4. **Keep or revert (anti-loss).** The eval is a non-regression GUARDRAIL, not the optimizer — so the keep/revert decision turns on regression, never on whether the score went up. **Revert ONLY when the change made the skill *harmful* or *measurably worse* than its prior graded verdict.** A non-improving result — `eval_score` flat, UNVERIFIED, or "the narrow eval didn't credit the change" — is **kept**, because the eval is too narrow to see all of a curation's value and absence of measured lift is not evidence of absence of value. "Didn't move the score, so I reverted/pruned it" is the banned delta-stripper pattern. When a revert IS warranted, the loop records the regression reason and moves to the next field. (Canonical rationale: [`docs/skill-audit-loop-philosophy.md` § WHY curate, never strip to a delta](../docs/skill-audit-loop-philosophy.md).)
 5. **Stamp** — writes `last_changed` to today's ISO date.
 
 `improve` has three modes:
