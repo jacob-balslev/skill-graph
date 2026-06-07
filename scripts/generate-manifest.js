@@ -331,9 +331,9 @@ function buildSkillEntry(fm, filePath, skillId, _projectFromRoot) {
   if (fm.allowed_tools !== undefined && fm.allowed_tools !== null) {
     entry.allowed_tools = fm.allowed_tools;
   }
-  if (fm.routing_bundles !== undefined && fm.routing_bundles !== null) {
-    entry.routing_bundles = fm.routing_bundles;
-  }
+  // routing_bundles removed (SKI-286): authored-but-inert per-skill field with 0
+  // acting consumer. Library-level activation bundles live in the skill-injector
+  // routing config (`bundles` / `bundleTypes`), not in per-skill frontmatter.
   // workspace_tags removed. Use `project[]` for project-affiliation routing.
 
   // --- Grouped: activation (triggers + keywords + paths + examples + anti_examples) ---
@@ -367,8 +367,9 @@ function buildSkillEntry(fm, filePath, skillId, _projectFromRoot) {
     for (const kind of [
       // v3.1 SKOS additions (preferred names; ADR 0001 Decisions #1 + #3)
       'related', 'broader', 'narrower',
-      // v3.0 stable + canonical (ADR 0006: boundary stays canonical)
-      'adjacent', 'boundary', 'verify_with', 'depends_on',
+      // v3.0 stable + canonical. `suppresses` is the canonical routing-exclusion
+      // edge (ADR-0018); `boundary` is its retained deprecated alias.
+      'adjacent', 'suppresses', 'boundary', 'verify_with', 'depends_on',
       // v3.1 separate orthogonal relation per ADR 0006 Option B
       'disjoint_with',
     ]) {
@@ -799,9 +800,6 @@ function main() {
     }
     if (fm.eval_status) {
       process.stderr.write(`WARN ${relPath}: "eval_status" is deprecated — split into "eval_artifacts", "eval_state", and "routing_eval"\n`);
-    }
-    if (fm.route_groups) {
-      process.stderr.write(`WARN ${relPath}: "route_groups" is deprecated — rename to "routing_bundles"\n`);
     }
     if (typeof fm.drift_check === 'string') {
       process.stderr.write(`WARN ${relPath}: scalar "drift_check" is deprecated in v3 — migrate to an object with "last_verified"\n`);

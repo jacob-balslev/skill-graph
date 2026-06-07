@@ -215,17 +215,10 @@
         "minLength": 1
       }
     },
-    "routing_bundles": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "Tags that group skills into activation bundles (e.g., `frontend`, `data-pipeline`). Routers use these for batch retrieval: when a query matches a routing bundle, all skills tagged with that bundle become candidates. Distinct from `category` (single-value human shelf) and `domain` (hierarchical taxonomy path)."
-    },
     "relations": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W3C-vocabulary mapping is provided via schemas/skill.context.jsonld (JSON-LD @context). `boundary` is a routing-layer asymmetric exclusion edge; `disjoint_with` is the optional OWL class-disjointness predicate — they are distinct, not aliases.",
+      "description": "Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W3C-vocabulary mapping is provided via schemas/skill.context.jsonld (JSON-LD @context). `suppresses` is the routing-layer asymmetric exclusion edge (renamed from the deprecated `boundary` alias per ADR-0018); `disjoint_with` is the optional OWL class-disjointness predicate — they are distinct, not aliases.",
       "properties": {
         "adjacent": {
           "type": "array",
@@ -241,9 +234,35 @@
             "type": "string"
           }
         },
+        "suppresses": {
+          "type": "array",
+          "description": "Score-aware routing exclusion edge — directional. Skills this skill excludes from co-routing when this skill wins or ties; this is NOT a defer-to-target pointer (\"skill-A suppresses skill-B\" reads as \"when skill-A wins, skill-B is suppressed from the result set\", which IS the runtime mechanic). Canonical name as of ADR-0018, which renamed the routing field from `boundary` so the name matches the mechanic. Items may be bare skill names or `{skill, reason}` objects; reasons should use ownership wording. Maps to sg:disjointOwnership — a Skill-Graph-specific routing-layer predicate, intentionally weaker than OWL class-disjointness. For formal class-disjointness, use `disjoint_with`.",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "skill"
+                ],
+                "properties": {
+                  "skill": {
+                    "type": "string"
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          }
+        },
         "boundary": {
           "type": "array",
-          "description": "Score-aware routing exclusion edge — directional. Skills this skill excludes from co-routing when this skill wins or ties; this is not a defer-to-target pointer. Items may be bare skill names or `{skill, reason}` objects; reasons should use ownership wording. Maps to sg:disjointOwnership — a Skill-Graph-specific routing-layer predicate, intentionally weaker than OWL class-disjointness. For formal class-disjointness, use `disjoint_with`.",
+          "description": "DEPRECATED alias of `suppresses` (renamed per ADR-0018 — the name `boundary` read as deference but the mechanic is exclusion). Retained ONLY for skills not yet migrated to the canonical `suppresses` name; new skills MUST author `suppresses`. Per AGENTS.md § Major Version Is a Clean Cut, structural removal of this alias is CONTENT-mode work the audit loop drains per-skill. Same mechanic, same item shape as `suppresses`; the router reads `suppresses` first and falls back to `boundary`.",
           "items": {
             "oneOf": [
               {

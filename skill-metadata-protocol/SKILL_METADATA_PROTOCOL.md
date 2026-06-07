@@ -590,7 +590,8 @@ The `relations` block contains typed edges to sibling skills. Schema validation 
 ```yaml
 relations:
   related:        # symmetric co-read relation (skos:related). v3.1 preferred name.
-  boundary:       # routing-layer score-aware exclusion guard (sg:disjointOwnership). See warning below — does NOT defer to target.
+  suppresses:     # routing-layer score-aware exclusion guard (sg:disjointOwnership). Canonical name (ADR-0018) — excludes the listed skills when this skill wins; does NOT defer to them.
+  boundary:       # DEPRECATED alias of `suppresses` (ADR-0018). Router reads `suppresses` first, falls back to `boundary`. Retained for unmigrated skills.
   disjoint_with:  # formal class-disjointness assertion (owl:disjointWith).
   verify_with:    # skills to co-load for verification (prov:wasInformedBy).
   depends_on:     # skills this skill requires operationally or conceptually.
@@ -606,20 +607,18 @@ relations:
 - Maximum 5 entries recommended to avoid hub-and-spoke clutter.
 - `adjacent` is a deprecated alias from v3.0. Use `related` in all new skills. Tooling still accepts `adjacent` for back-compat, but new authoring should not introduce it.
 
-**`boundary`** (the routing-layer field — distinct from the top-level Understanding `boundary` field)
+**`suppresses`** (preferred) / `boundary` (deprecated alias) — the routing-layer field, distinct from the top-level Understanding `boundary` field
 
-> **WARNING — the field name inverts the runtime mechanic.** This will be resolved in v8.1 by renaming the field to `relations.suppresses` (matching mechanic) and renaming the Understanding-`boundary` field to `concept_boundary` (resolving the name collision). See [ADR-0018](../docs/adr/0018-relations-boundary-semantic-inversion.md) for the migration plan.
+> **The verb matches the mechanic.** Per [ADR-0018](../docs/adr/0018-relations-boundary-semantic-inversion.md), the routing-exclusion edge was renamed `boundary` → `suppresses` because the old name read as deference while the runtime mechanic is exclusion. **The SYSTEM half landed** (2026-06-07): the schema accepts `relations.suppresses`, the router/manifest/exporter/lint read `suppresses` first and fall back to the deprecated `boundary` alias, and the JSON-LD context maps both to `sg:disjointOwnership`. The CONTENT half — renaming the alias in the ~113 corpus skills still carrying `boundary` — drains through the audit loop per-skill (a CONTENT-mode task tracks it). The companion Understanding-`boundary` → `concept_boundary` rename is NOT yet landed and remains future work in ADR-0018.
 >
-> Until v8.1 lands:
+> New skills MUST author `relations.suppresses`. `suppresses: [skill-B]` means "**exclude skill-B from co-routing results when this skill wins.**" Always write `reason` text that reflects ownership ("I own this exclusively over skill-B"), never deference ("use skill-B instead"), because the latter will mislead the next author — skill-B is suppressed by this entry, not promoted.
 >
-> `boundary: [skill-B]` does **NOT** mean "defer to skill-B." It means "**exclude skill-B from co-routing results when this skill wins.**" The name suggests deference; the mechanic is exclusion. Always write `reason` text that reflects ownership ("I own this exclusively over skill-B"), never deference ("use skill-B instead"), because the latter will mislead the next author — skill-B is suppressed by this entry, not promoted.
->
-> **Runtime semantic:** the router applies `relations.boundary[]` as `if (target.score >= declarer.score) skip target`. This means:
+> **Runtime semantic:** the router applies the edge (`relations.suppresses[]`, or `relations.boundary[]` for unmigrated skills) as `if (target.score >= declarer.score) skip target`. This means:
 > - The declarer can only exclude the target when the declarer is *currently outscoring* it on the query.
-> - Score ties also trigger exclusion, so authored boundaries break ties deterministically.
+> - Score ties also trigger exclusion, so authored exclusions break ties deterministically.
 > - A weaker-scoring skill cannot veto a stronger-scoring one.
 >
-> `boundary` entries protect the declarer's routing wins, not the target's. (Source: `skill-graph/scripts/skill-graph-route.js` Stage 5.)
+> These entries protect the declarer's routing wins, not the target's. (Source: `skill-graph/scripts/skill-graph-route.js` Stage 3.)
 
 - Routing-layer exclusion guard. Use to assert that this skill owns a use-case exclusively and the listed skills should not co-route when this skill wins the query.
 - Items may be bare skill names or `{ skill, reason }` objects. Reasons are strongly recommended and must use ownership framing ("I own this exclusively over [skill]"), not deference framing ("use [skill] instead").

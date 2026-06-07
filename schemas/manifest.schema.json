@@ -336,6 +336,31 @@
                   "type": "string"
                 }
               },
+              "suppresses": {
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "skill"
+                      ],
+                      "properties": {
+                        "skill": {
+                          "type": "string"
+                        },
+                        "reason": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
               "boundary": {
                 "type": "array",
                 "items": {
@@ -513,12 +538,6 @@
                   "equal"
                 ]
               }
-            }
-          },
-          "routing_bundles": {
-            "type": "array",
-            "items": {
-              "type": "string"
             }
           },
           "license": {

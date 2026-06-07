@@ -37,6 +37,7 @@ node_modules/
 .idea/
 .skill-graph/_routing-eval.manifest.json
 .skill-graph/_routing-eval-cli.manifest.json
+.skill-graph/_route-cli.manifest.json
 skills.manifest.json
 
 # `skill-graph render` default output — compiled consumable skills, regenerated

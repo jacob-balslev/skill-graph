@@ -95,7 +95,6 @@ How the skill surfaces to a router. The three trigger fields (`triggers`, `keywo
 | `anti_examples` | many | Negative-class prompts (hard negatives for boundary discrimination) |
 | `paths` | many glob patterns | File-surface activation |
 | `project[]` | many | Project belonging references (handle + role) for `deployment_target: project` skills |
-| `routing_bundles` | many | Query-time overlapping bundles (`quality`, `integrations`) |
 
 ### Relations (one object, up to 8 predicate keys, each optional)
 
@@ -142,7 +141,7 @@ Artifact-level metadata.
 
 ## Classification And Routing Dimensions
 
-Skill Graph separates strict classification from routing group membership. The first four rows below are classification or belonging dimensions; `routing_bundles` is query-time grouping and is often coupled to taxonomy.
+Skill Graph keeps these classification and belonging dimensions distinct. Each row answers a different question; they do not overlap.
 
 | Axis | Field | Orthogonality | Question |
 |---|---|---|---|
@@ -150,9 +149,8 @@ Skill Graph separates strict classification from routing group membership. The f
 | Scope | `scope` | Free-text, not an enum | PRD-style description of deployment context |
 | Taxonomy | `subject` + `taxonomy_domain` | Strict — one shelf, one optional tree path | What kind of concern is this? |
 | Project belonging | `project[]` | Strict — explicit belonging references, no hierarchy | Which specific project is this anchored to? |
-| Routing bundle | `routing_bundles` | **Not strict classification** — `quality`, `integrations`, etc. are often functions of *what the skill is*, not only *when it fires* | Which query-time bundle does this join? |
 
-The taxonomy-vs-routing-group coupling is intentional for ergonomics (a router can say "load all `quality` skills") but means routing bundles are not strict Ranganathan facets. Keep the distinction in mind when adding routing groups: if the group is redundant with the skill's `subject` and `taxonomy_domain`, use those fields alone.
+> The per-skill `routing_bundles` field was removed (SKI-286, 2026-06-07): it had no acting consumer. Library-level activation bundles (the "load all `quality` skills" ergonomic) live in the skill-injector routing config (`bundles` / `bundleTypes`), not in per-skill frontmatter. A second browse path for a skill is expressed with `subjects[]` (max 2) or `relations.related`.
 
 ## Body structure
 

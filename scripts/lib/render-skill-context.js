@@ -145,8 +145,12 @@ function renderSkillGraphContext(fm) {
       const t = oneLine(typeof a === 'string' ? a : a && (a.prompt || a.query));
       if (t) lines.push(`- ${t}`);
     }
-    const boundary = Array.isArray(rel.boundary) ? rel.boundary : [];
-    for (const entry of boundary) {
+    // `suppresses` is the canonical routing-exclusion edge (ADR-0018); fall back
+    // to the deprecated `boundary` alias for unmigrated skills.
+    const suppressEdges = Array.isArray(rel.suppresses)
+      ? rel.suppresses
+      : (Array.isArray(rel.boundary) ? rel.boundary : []);
+    for (const entry of suppressEdges) {
       if (!entry || typeof entry !== 'object') continue;
       if (!entry.skill) continue;
       const owns = extractBoundaryOwnsClause(entry.reason);

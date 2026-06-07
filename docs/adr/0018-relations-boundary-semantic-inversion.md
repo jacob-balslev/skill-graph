@@ -1,9 +1,20 @@
 # ADR-0018: Resolve `relations.boundary` Semantic Inversion + Name Collision
 
-> Status: Accepted (2026-05-25)
+> Status: **Partially landed (2026-06-07)** — the `relations.boundary` → `relations.suppresses` SYSTEM half is implemented; the Understanding-`boundary` → `concept_boundary` rename and the corpus migration remain open. (Original: Accepted 2026-05-25.)
 > Companion: [ADR 0017](0017-five-axis-classification-model.md) (Skill Metadata Protocol v8)
-> Target version: **v8.1** (breaking — rename, scheduled independently)
 > Source finding: 2026-05-25 multi-model restructure-review F8
+>
+> ### Update — 2026-06-07: routing-field rename SYSTEM half LANDED (SKI-285)
+>
+> The `relations.boundary` → `relations.suppresses` rename's **SYSTEM half is implemented** as a deprecated-alias migration (mirroring the existing `relations.adjacent` → `relations.related` pattern), NOT the "v8.1 breaking deprecation-pair within a sunset window" originally drafted below — per `AGENTS.md § Major Version Is a Clean Cut`, intra-version relation renames drain through the audit loop per-skill rather than via a coordinated breaking PR. Landed in this commit:
+>
+> - **Schema** (`schemas/SKILL_METADATA_PROTOCOL_schema.json`, `schemas/manifest.schema.json`): `relations.suppresses` is the canonical routing-exclusion edge (same item shape as `boundary`); `relations.boundary` is retained as a DEPRECATED alias.
+> - **Router** (`scripts/skill-graph-route.js` Stage 3): reads `relations.suppresses` first, falls back to `relations.boundary`.
+> - **Manifest / exporter / lint** (`generate-manifest.js`, `lib/render-skill-context.js`, `skill-lint.js`): all read `suppresses` with `boundary` fallback.
+> - **JSON-LD context** (`schemas/skill.context.jsonld`): both `suppresses` and `boundary` map to `sg:disjointOwnership` (property-scoped under `relations`).
+> - **Docs**: `AGENTS.md § What the Skill Graph Is`, `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Relations`, and the generated field-reference updated to make `suppresses` canonical.
+>
+> **Still open:** (1) the ~113-skill corpus rename `relations.boundary` → `relations.suppresses` (CONTENT-mode work, drained per-skill through `/audit:*` — tracked as a CONTENT drain task); (2) the Understanding-field `boundary` → `concept_boundary` rename (a separate name-collision fix, not started). Once the corpus drains, a follow-up SYSTEM commit removes the `boundary` alias from schema/router/exporter/lint per § Phase 4.
 >
 > ### Update — 2026-05-27: temporal framing corrected
 >

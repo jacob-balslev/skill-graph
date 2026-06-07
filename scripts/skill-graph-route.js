@@ -588,8 +588,14 @@ function routeSkills(manifest, options) {
   for (const declaring of topMatches) {
     const skill = declaring.skill;
     if (!selectedNames.has(skill.name)) continue;
-    if (!skill.relations || !Array.isArray(skill.relations.boundary)) continue;
-    for (const b of skill.relations.boundary) {
+    // `suppresses` is the canonical routing-exclusion edge (ADR-0018); fall back
+    // to the deprecated `boundary` alias for skills not yet migrated.
+    if (!skill.relations) continue;
+    const suppressEdges = Array.isArray(skill.relations.suppresses)
+      ? skill.relations.suppresses
+      : (Array.isArray(skill.relations.boundary) ? skill.relations.boundary : null);
+    if (!suppressEdges) continue;
+    for (const b of suppressEdges) {
       const bName = relItemName(b);
       const reason = boundaryReason(b);
       if (!bName) continue;

@@ -268,13 +268,14 @@ Glob patterns that identify code surfaces this skill governs. Patterns prefixed 
 
 **Type:** object
 
-Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W3C-vocabulary mapping is provided via schemas/skill.context.jsonld (JSON-LD @context). `boundary` is a routing-layer asymmetric exclusion edge; `disjoint_with` is the optional OWL class-disjointness predicate — they are distinct, not aliases.
+Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W3C-vocabulary mapping is provided via schemas/skill.context.jsonld (JSON-LD @context). `suppresses` is the routing-layer asymmetric exclusion edge (renamed from the deprecated `boundary` alias per ADR-0018); `disjoint_with` is the optional OWL class-disjointness predicate — they are distinct, not aliases.
 
 **Sub-fields:**
 
 - `adjacent` *optional* — Legacy alias of `related` (skos:related).
 - `related` *optional* — Symmetric associative relation (skos:related).
-- `boundary` *optional* — Score-aware routing exclusion edge — directional.
+- `suppresses` *optional* — Score-aware routing exclusion edge — directional.
+- `boundary` *optional* — DEPRECATED alias of `suppresses` (renamed per ADR-0018 — the name `boundary` read as deference but the mechanic is exclusion).
 - `disjoint_with` *optional* — Optional OWL class-disjointness assertion.
 - `broader` *optional* — Cross-skill generalisation (skos:broader).
 - `narrower` *optional* — Cross-skill specialisation (skos:narrower).

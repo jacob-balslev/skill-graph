@@ -215,7 +215,7 @@ subjects: [backend-engineering, product-domain]
 - Lowercase alphanumeric segments separated by `/` (for example, `ecommerce/integrations/shopify`).
 - Must match pattern `^[a-z0-9][a-z0-9-]*(/[a-z0-9][a-z0-9-]*)*$`.
 - Do not use absolute paths, leading `/`, trailing `/`, `.`, or `..`.
-- One skill, one path. Use `routing_bundles` for secondary flat grouping.
+- One skill, one path. Use `subjects[]` (max 2) or `relations.related` for a secondary access path.
 
 **Example.**
 ```yaml
@@ -224,7 +224,7 @@ taxonomy_domain: ecommerce/integrations/shopify
 
 **When to use.** When a `subject` holds many skills (>25 per the balance rule) and a slash-delimited subdivision helps readers find related skills.
 
-**When NOT to use.** Small subjects where the flat shelf is sufficient. Skills where categorization is genuinely ambiguous should use `routing_bundles` to attach flat semantic tags instead.
+**When NOT to use.** Small subjects where the flat shelf is sufficient. Skills where categorization is genuinely ambiguous should use `subjects[]` (a second browse shelf, max 2) or `relations.related` instead.
 
 ---
 
@@ -1270,35 +1270,6 @@ disallowed-tools: AskUserQuestion
 **Real usage in this codebase.** `lib/audit/evaluate-skill.js::runPromptWithCli` (line 652) applies `--disallowed-tools Read,Edit,Write,Bash,Glob,Grep,Agent,WebSearch,WebFetch,NotebookEdit` for the eval sub-calls. `lib/audit/eval-execution-profile.js` (line 108) carries the same list. These are the runtime references; `disallowed-tools` in a skill's frontmatter is the static declaration of the same intent at authoring time.
 
 **When NOT to use.** Do not author on interactively-used skills. Any skill where the user may need to answer a clarifying question should not suppress `AskUserQuestion`.
-
----
-
-## `routing_bundles`
-
-**Purpose.** Named routing group membership for batch activation and browse classification. Allows a router to load all skills in a group with a single label.
-
-**Taxonomy note.** A routing group is a *classification tag* a router can consult to select a family of skills (e.g., `quality`, `security`, `integrations`). It is not a URL route, not an execution graph, and not a permission scope. The field was renamed from `route_bundles` in schema_version 2 (SH-5784) because the old name invited confusion with URL routing; the semantics did not change.
-
-**Rules.**
-- Array of strings.
-- Group names are library-defined — establish a consistent vocabulary and document it in the library's README.
-- A skill can belong to multiple routing groups.
-- Use established groups before inventing new ones. Today's canonical group in this repo is `quality` (used by `testing-strategy`). Propose new groups in a PR before adopting them.
-
-**Example.**
-```yaml
-routing_bundles:
-  - integrations
-  - quality
-```
-
-**When to use.** When the skill belongs to a logical activation group (e.g., all `integrations` skills load together during an integration task, all `quality` skills load together during an audit).
-
-**When NOT to use.** Skills that should only activate individually. Do not add routing groups speculatively — add them when a real routing pattern requires them.
-
-**Migration from v1.** The v1 field name `route_bundles` is a hard error under the v2 schema. Rename the field to `routing_bundles`; values are unchanged.
-
-**Verification.** Keep `routing_bundles` and `keywords` coherent through manifest review and routing evals. The former `check-routing-quality.js` lint module is no longer part of the canonical-source linter.
 
 ---
 

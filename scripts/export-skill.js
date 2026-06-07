@@ -49,9 +49,11 @@ const SKILL_MD_BASE_FIELDS = ['name', 'description', 'license', 'compatibility',
 //
 // Current v8 authored fields include: `subject` (primary browse shelf),
 // `deployment_target` (portable | project), `taxonomy_domain` (hierarchical
-// sub-path within subject), `project[]`/`repo[]` (belonging-entity references),
-// and `routing_bundles` (activation-bundle field). Pre-v8 fields `category`,
-// `domain`, and `family` remain in the set so the exporter can still read older
+// sub-path within subject), and `project[]`/`repo[]` (belonging-entity
+// references). The inert per-skill
+// `routing_bundles` field was removed (SKI-286 — 0 acting consumer; activation
+// bundles live in the library-level skill-injector routing config). Pre-v8 fields
+// `category`, `domain`, and `family` remain in the set so the exporter can still read older
 // skills in the corpus without data loss. The removed `workspace_tags` is
 // intentionally NOT in the set — an older skill still carrying it falls through
 // to `metadata:` via the fail-safe described above.
@@ -86,7 +88,6 @@ const SKILL_GRAPH_EXTENSION_FIELDS = new Set([
   'keywords',
   'project',
   'repo',
-  'routing_bundles',
   'lifecycle',
   'runtime_telemetry',
   'marketplace_tier',

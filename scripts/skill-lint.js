@@ -431,7 +431,11 @@ function checkSubjectsPrimaryMatchesSubject(fm) {
 function checkBoundaryReasonText(fm) {
   const warnings = [];
   if (!fm || typeof fm !== 'object' || !fm.relations) return warnings;
-  const boundary = fm.relations.boundary;
+  // `suppresses` is the canonical routing-exclusion edge (ADR-0018); fall back
+  // to the deprecated `boundary` alias for unmigrated skills.
+  const boundary = Array.isArray(fm.relations.suppresses)
+    ? fm.relations.suppresses
+    : fm.relations.boundary;
   if (!Array.isArray(boundary)) return warnings;
 
   // Deference phrases that imply "use that-skill for X" semantics. The
@@ -480,7 +484,11 @@ function checkCrossDomainBoundary(fm, subjectRegistry) {
   const warnings = [];
   if (!fm || typeof fm !== 'object' || !fm.relations) return warnings;
   if (!subjectRegistry || typeof subjectRegistry.get !== 'function') return warnings;
-  const boundary = fm.relations.boundary;
+  // `suppresses` is the canonical routing-exclusion edge (ADR-0018); fall back
+  // to the deprecated `boundary` alias for unmigrated skills.
+  const boundary = Array.isArray(fm.relations.suppresses)
+    ? fm.relations.suppresses
+    : fm.relations.boundary;
   if (!Array.isArray(boundary)) return warnings;
   const sourceSubject = typeof fm.subject === 'string' ? fm.subject : null;
   if (!sourceSubject) return warnings;

@@ -92,11 +92,16 @@
     "relations": {
       "@id": "sg:relations",
       "@context": {
-        "_note": "Property-scoped context (JSON-LD 1.1). Within `relations`, the token `boundary` is the routing-layer anti-ownership predicate, NOT the Understanding-field string. See _term_collisions.boundary.",
+        "_note": "Property-scoped context (JSON-LD 1.1). Within `relations`, the tokens `suppresses` and its deprecated alias `boundary` are the routing-layer anti-ownership predicate, NOT the Understanding-field string. See _term_collisions.boundary.",
+        "suppresses": {
+          "@id": "sg:disjointOwnership",
+          "@container": "@set",
+          "_note": "Routing-layer asymmetric exclusion edge — directional. Canonical name as of ADR-0018 (renamed from `boundary` so the name matches the mechanic). Maps to sg:disjointOwnership, a Skill-Graph-specific predicate intentionally weaker than OWL class-disjointness — it makes a routing claim, not a formal ontological one. See ADR 0018."
+        },
         "boundary": {
           "@id": "sg:disjointOwnership",
           "@container": "@set",
-          "_note": "Routing-layer asymmetric exclusion edge — directional. Canonical v8.0 name for wrong-skill routing protection. Maps to sg:disjointOwnership, a Skill-Graph-specific predicate intentionally weaker than OWL class-disjointness — it makes a routing claim, not a formal ontological one. See ADR 0006 and ADR 0018."
+          "_note": "DEPRECATED alias of `suppresses` (ADR-0018). Same sg:disjointOwnership predicate; retained for unmigrated skills. The router reads `suppresses` first and falls back to `boundary`. See ADR 0006 and ADR 0018."
         }
       }
     },

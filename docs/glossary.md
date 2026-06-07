@@ -156,7 +156,7 @@ Name of the skill that replaces this one. Mandatory when `stability: deprecated`
 
 Each term below names the FAIR dimension(s) the Skill Graph field covers (Wilkinson et al. 2016):
 
-- **Findable:** `name`, `urn`, `description`, `keywords`, `triggers`, `examples`, `subject`, `subjects[]`, `taxonomy_domain`, `project[]`, `routing_bundles`
+- **Findable:** `name`, `urn`, `description`, `keywords`, `triggers`, `examples`, `subject`, `subjects[]`, `taxonomy_domain`, `project[]`
 - **Accessible:** `paths`, `allowed-tools`, `compatibility`, `portability`
 - **Interoperable:** `schema_version`, the JSON-LD `@context`, SPDX in `license`, all typed predicates
 - **Reusable:** `license`, `compatibility`, `portability.targets`, `grounding.truth_sources`, `freshness`, `drift_check`, `lifecycle`, `grounding.evidence_priority`

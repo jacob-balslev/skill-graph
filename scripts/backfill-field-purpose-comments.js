@@ -174,10 +174,6 @@ const FIELD_COMMENTS = {
     '# anti_examples: near-miss prompts that should route ELSEWHERE.',
     '# Pair with relations.boundary to indicate the confusable territory\'s owner.',
   ],
-  routing_bundles: [
-    '# routing_bundles: batch-activation group memberships. Router fires the whole bundle',
-    '# when the bundle label matches. Distinct from project[] (the per-project belonging filter).',
-  ],
   relations: [
     '# relations: typed graph edges to sibling skills. Current fields:',
     '# related (adjacency for browse / co-routing expansion) /',
