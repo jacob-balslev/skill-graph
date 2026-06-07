@@ -14966,9 +14966,6 @@
           "debugging"
         ]
       },
-      "routing_bundles": [
-        "quality"
-      ],
       "schema_version": 8,
       "stability": "experimental",
       "subject": "quality-assurance",

@@ -168,10 +168,6 @@
       "@id": "skos:broader",
       "_note": "Hierarchical slash-delimited taxonomy path projects to a chain of skos:broader edges in RDF output. Renamed from the original v8 `domain`."
     },
-    "routing_bundles": {
-      "@id": "sg:routingBundle",
-      "@container": "@set"
-    },
     "mental_model": {
       "@id": "sg:mentalModel",
       "_note": "Concept block — primitives and their relationships; flat-promoted from concept.mental_model in v6"

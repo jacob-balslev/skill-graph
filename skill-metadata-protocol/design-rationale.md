@@ -271,7 +271,7 @@ The YAML frontmatter uses the current v8 schema, including the flat Understandin
 | | [`examples`](field-reference.md#examples) | | string[] (positive prompts) |
 | | [`anti_examples`](field-reference.md#anti_examples) | | string[] (negative prompts) |
 | | [`project`](field-reference.md#project) | | { handle, role }[] (replaces `workspace_tags`) |
-| | [`routing_bundles`](field-reference.md#routing_bundles) | | string[] |
+| | `routing_bundles` _(retired SKI-286 — 0 acting consumer; see manifest-field-mapping.md)_ | | string[] |
 | **Relations** | [`relations`](field-reference.md#relations) | | `{ adjacent, related, broader, narrower, boundary, disjoint_with, verify_with, depends_on }` |
 | **Grounding** | [`grounding`](field-reference.md#grounding) | if `deployment_target: project` | `{ subject_matter, grounding_mode, truth_sources, failure_modes, evidence_priority }` |
 | **Portability & Standards** | [`portability`](field-reference.md#portability) | | `{ readiness, targets }` |

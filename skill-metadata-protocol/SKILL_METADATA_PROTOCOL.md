@@ -262,7 +262,6 @@ examples        # string[] — positive activation prompts
 anti_examples   # string[] — negative activation prompts (wrong-skill training)
 project         # { handle, role }[] — projects this skill belongs to (replaces the removed `workspace_tags`)
 repo            # { handle, url }[] — repos this skill is anchored to
-routing_bundles  # string[] — routing group memberships
 portability     # { readiness, targets }
 lifecycle       # { stale_after_days, review_cadence }
 runtime_telemetry  # { feedback_source, metrics }
@@ -582,8 +581,7 @@ Seven flat top-level fields that record a skill's audit fingerprint in its sibli
 - Absent means the skill is ambient (applies across all projects).
 - A workspace config at `.skill-graph/config.json` can map literal project handles to semantic tag sets.
 
-**`routing_bundles`**
-- String array of routing group memberships. Used by routers that dispatch to groups of skills rather than individual skills.
+> **Retired:** the per-skill `routing_bundles` field was removed in SKI-286 (2026-06-07) — it accumulated zero acting consumer (the router scores on `keywords`/`triggers`/`relations`; the manifest only copied it through). Library-level activation bundles are served by the skill-injector routing config (`bundles` / `bundleTypes`), not per-skill frontmatter. The prior contract is recoverable from git history.
 
 ### Relations
 
@@ -723,7 +721,7 @@ grounding:
 name, description, subject, subjects, deployment_target, scope,
 taxonomy_domain, project, repo, stability, superseded_by, license,
 compatibility, allowed-tools, triggers, keywords, examples,
-anti_examples, paths, routing_bundles, relations, grounding,
+anti_examples, paths, relations, grounding,
 # Understanding fields — author these when comprehension_state: present
 mental_model, purpose, boundary, analogy, misconception
 ```

@@ -7,13 +7,13 @@
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld) (frontmatter fields only — the sidecar is not exported/RDF'd).
 > **Two-file split:** per [ADR-0019](../docs/adr/0019-audit-state-sidecar-separation.md), agent-facing fields live in `SKILL.md` frontmatter; audit/eval/provenance fields live in the `audit-state.json` sidecar.
 
-Schema version: **8** · Total fields: **54**
+Schema version: **8** · Total fields: **53**
 
 ---
 
 ## Frontmatter fields (`SKILL.md`)
 
-> Source schema: `schemas/SKILL_METADATA_PROTOCOL_schema.json`. Field count: **26** · Required: **5**.
+> Source schema: `schemas/SKILL_METADATA_PROTOCOL_schema.json`. Field count: **25** · Required: **5**.
 
 ---
 
@@ -261,16 +261,6 @@ Negative-class activation examples — realistic user prompts that look topicall
 Glob patterns that identify code surfaces this skill governs. Patterns prefixed with `!` are negations (gitignore-style). Negations only subtract from prior includes; a pattern list consisting only of negations matches nothing and is rejected by lint.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#paths`](field-reference.md#paths)
-
----
-
-### `routing_bundles` *(optional)*
-
-**Type:** array of string
-
-Tags that group skills into activation bundles (e.g., `frontend`, `data-pipeline`). Routers use these for batch retrieval: when a query matches a routing bundle, all skills tagged with that bundle become candidates. Distinct from `category` (single-value human shelf) and `domain` (hierarchical taxonomy path).
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#routing_bundles`](field-reference.md#routing_bundles)
 
 ---
 
