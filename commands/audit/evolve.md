@@ -11,13 +11,15 @@ last_changed: 2026-05-23
 
 # /evolve — Walk the corpus, one skill at a time
 
-Run the corpus walker over the Skill Audit Loop. For each skill, in priority order: `/audit`, then `/improve` if a field is stale or failing, then `/evaluate`. Health Block fields are written back per skill. The walker advances when each per-skill cycle completes.
+Run the corpus walker over the Skill Audit Loop. For each skill, in priority order: `/audit`, then `/improve` if a field is stale or failing, then `/evaluate`. Audit/eval/provenance fields are written back to the skill's sibling `audit-state.json` sidecar. The walker advances when each per-skill cycle completes.
+
+> **Preview maturity.** `evolve` is still a preview corpus walker. Use it with an explicit small scope first (`--top N` or `--pilot <skill>`) and verify each per-skill result before widening the run.
 
 > **Audit Doctrine — link only.** The canonical doctrine is `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md` § Audit Doctrine. It evaluates each skill on three axes (intent fidelity, teaching efficacy, upstream currency) and `application_verdict` is the real quality signal. Lint is a floor, never the goal. Do not restate the doctrine here — link to it.
 
 ## Priority order
 
-Walker priority is owned by `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md § Loop Principles` (`application_verdict` first, then `last_audited` ascending for ties; failing verdicts jump to top). Do not restate the ordering here — read it from the canonical so a single change in the canonical updates every runtime resolver. No telemetry crawl: the Health Block is the priority signal.
+Walker priority is owned by `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md § Loop Principles` (`application_verdict` first, then `last_audited` ascending for ties; failing verdicts jump to top). Do not restate the ordering here — read it from the canonical so a single change in the canonical updates every runtime resolver. No telemetry crawl: the `audit-state.json` Audit Status is the priority signal.
 
 ## Usage
 

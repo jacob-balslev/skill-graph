@@ -5,7 +5,6 @@ license: MIT
 compatibility: "Runtime-agnostic. The four-tier classification, target-content rule, and Identify/Confirm/Verify sequence apply to any agent harness with tool execution — Claude Code, OpenCode, Cursor, Aider, Copilot Workspace, custom MCP-based agents, or any LLM with shell access."
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"adjacent\":[\"guardrails\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: ai-engineering
@@ -22,6 +21,7 @@ metadata:
   keywords: "[\"intent recognition\",\"pre-execution risk classification\",\"four tier action taxonomy\",\"passive read reconnaissance modification destructive\",\"identify confirm verify sequence\",\"destructive operation classification\",\"credential read is reconnaissance\",\"git reset hard is destructive\",\"force push is destructive\",\"lockfile install is high impact\"]"
   examples: "[\"the agent is about to run `git reset --hard` — what tier is this and what's the safer alternative?\",\"is reading the `.env` file a Passive operation since nothing mutates?\",\"I'm about to install a new package — what tier does that fit and why?\",\"force-push to main looks like 'just a push' — should I classify it as Modification?\",\"before running `DELETE FROM orders WHERE …`, what's the verification sequence?\",\"the agent classified everything as Modification because there's no exception for credentials\",\"what trigger phrases should activate this skill in our harness?\"]"
   anti_examples: "[\"design the deterministic safety hook that blocks destructive commands\",\"decide whether to use a switch or a chain of ifs\",\"actually execute the migration after we've classified the risk\",\"scan this repo for OWASP top 10 vulnerabilities\",\"review this AI-generated PR for correctness\",\"the loop is stalling — what's the steering signal\"]"
+  relations: "{\"related\":[\"owasp-security\",\"version-control\",\"debugging\",\"code-review\",\"testing-strategy\"],\"verify_with\":[\"owasp-security\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -187,7 +187,8 @@ These triggers are deliberately broad. False positives (classifying a Passive ac
 - the loop is stalling — what's the steering signal
 
 **Related skills**
-- Related: `guardrails`
+- Verify with: `owasp-security`
+- Related: `owasp-security`, `version-control`, `debugging`, `code-review`, `testing-strategy`
 
 **Keywords**
 - `intent recognition`, `pre-execution risk classification`, `four tier action taxonomy`, `passive read reconnaissance modification destructive`, `identify confirm verify sequence`, `destructive operation classification`, `credential read is reconnaissance`, `git reset hard is destructive`, `force push is destructive`, `lockfile install is high impact`

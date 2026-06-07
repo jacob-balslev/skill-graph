@@ -4,7 +4,6 @@ description: "Use when reasoning about code coverage as a strategic measurement 
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"adjacent\":[\"test-doubles-design\"],\"boundary\":[\"mutation-testing\",\"testing-strategy\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: quality-assurance
@@ -22,6 +21,7 @@ metadata:
   triggers: "[\"what coverage target should we set\",\"is 100% coverage the goal\",\"is this line covered or tested\",\"should we add tests for these uncovered lines\",\"branch vs line coverage\"]"
   examples: "[\"set a coverage policy for a service that distinguishes 'covered' from 'tested'\",\"explain why a 100% line coverage gate may be worse than an 80% branch coverage gate\",\"diagnose a high-coverage test suite that still misses bugs — likely a granularity mismatch\",\"decide when to upgrade from branch coverage to MC/DC for safety-critical code\"]"
   anti_examples: "[\"choose test levels (unit/integration/e2e) for a project (use testing-strategy)\",\"use mutation testing to evaluate test-suite quality (use mutation-testing)\",\"configure Istanbul, Jest coverage, or JaCoCo (tool documentation)\"]"
+  relations: "{\"related\":[\"testing-strategy\",\"mutation-testing\",\"test-driven-development\",\"eval-driven-development\"],\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the question of what to test at which level; this skill owns the measurement of how much of the code those tests actually exercise and at what granularity.\"},{\"skill\":\"mutation-testing\",\"reason\":\"mutation-testing owns the stronger signal of whether tests would *catch* a defect; this skill owns the structural signal of whether tests *reach* the code at all. Coverage is a necessary-not-sufficient precondition for mutation tests to even apply.\"},{\"skill\":\"test-driven-development\",\"reason\":\"TDD produces high coverage as a side effect; this skill explains why that coverage is a side effect rather than a target, and why pursuing the metric directly produces worse tests.\"}],\"verify_with\":[\"testing-strategy\",\"mutation-testing\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -155,9 +155,13 @@ After applying this skill, verify:
 - choose test levels (unit/integration/e2e) for a project (use testing-strategy)
 - use mutation testing to evaluate test-suite quality (use mutation-testing)
 - configure Istanbul, Jest coverage, or JaCoCo (tool documentation)
+- Owned by `testing-strategy`: the question of what to test at which level
+- Owned by `mutation-testing`: the stronger signal of whether tests would *catch* a defect
+- Owned by `test-driven-development`
 
 **Related skills**
-- Related: `test-doubles-design`
+- Verify with: `testing-strategy`, `mutation-testing`
+- Related: `testing-strategy`, `mutation-testing`, `test-driven-development`, `eval-driven-development`
 
 **Concept**
 - Mental model: |

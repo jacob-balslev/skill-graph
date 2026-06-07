@@ -8,7 +8,6 @@
  * `v4 top-level fields`, and similar patterns that would teach old contracts.
  *
  * Allowlist:
- *   - Files under any `_archived/` segment (historical snapshots)
  *   - Files under `docs/migrations/` (intentionally cite multiple versions)
  *   - Files matching `CHANGELOG.md` at any depth (release notes cite versions)
  *   - Files under `examples/` (test fixtures and sample skills intentionally
@@ -70,7 +69,7 @@ function readActiveSchemaVersion() {
   // versions in the enum are accepted by the schema as deprecated back-compat
   // reads, NOT as a current authoring path — references to them in current-
   // state docs are drift. Legitimate historical context (migrations, CHANGELOG,
-  // _archived/, examples, ADRs that describe the migration itself) is
+  // examples, ADRs that describe the migration itself) is
   // allowlisted in isAllowlisted() below.
   if (typeof sv.const === 'number') return sv.const;
   if (Array.isArray(sv.oneOf)) {
@@ -90,7 +89,6 @@ function readActiveSchemaVersion() {
 
 function isAllowlisted(absPath) {
   const rel = path.relative(REPO_ROOT, absPath).split(path.sep);
-  if (rel.some(seg => seg === '_archived')) return true;
   if (rel.some(seg => seg === '_drafts')) return true;
   if (rel[0] === 'audits') return true;
   if (rel[0] === 'docs' && rel[1] === 'migrations') return true;
@@ -300,7 +298,7 @@ function main() {
   }
 
   if (errorHits.length > 0) {
-    process.stderr.write(`FAIL doc drift: ${errorHits.length} stale schema-version reference(s) in active docs (active v${activeVersion}). Allowlisted: _archived/, _drafts/, audits/, docs/{migrations,adr,research,plans}/, examples/, CHANGELOG.md.\n`);
+    process.stderr.write(`FAIL doc drift: ${errorHits.length} stale schema-version reference(s) in active docs (active v${activeVersion}). Allowlisted: _drafts/, audits/, docs/{migrations,adr,research,plans}/, examples/, CHANGELOG.md.\n`);
     process.exit(1);
   }
 

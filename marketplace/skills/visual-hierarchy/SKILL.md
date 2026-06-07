@@ -3,7 +3,6 @@ name: visual-hierarchy
 description: "Use when establishing visual hierarchy — type scale ratios, spacing rhythm, contrast as ordering signal, weight and size as importance, and the layered relationship between primary, secondary, and tertiary information. Do NOT use for content writing, information architecture, or specific color palette construction. Do NOT use for Write the H1 copy that should appear at the top of the landing page. Do NOT use for Choose between sans-serif and serif typefaces for the brand. Do NOT use for Pick the brand's primary color."
 license: CC-BY-4.0
 metadata:
-  relations: "{\"adjacent\":[\"visual-design-foundations\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: design
@@ -20,6 +19,7 @@ metadata:
   triggers: "[\"visual hierarchy\",\"type as hierarchy\",\"what should the eye go to first\",\"establishing focus\",\"page hierarchy\"]"
   examples: "[\"Decide the H1/H2/H3 size ratios and weight contrast for a long-form article layout\",\"Reduce visual noise on a dashboard where every element competes for attention\",\"Establish a clear primary call-to-action on a page with multiple secondary actions\"]"
   anti_examples: "[\"Write the H1 copy that should appear at the top of the landing page\",\"Choose between sans-serif and serif typefaces for the brand\",\"Pick the brand's primary color\"]"
+  relations: "{\"related\":[\"typography-system\",\"color-system-design\",\"layout-composition\",\"visual-design-foundations\"],\"boundary\":[{\"skill\":\"typography-system\",\"reason\":\"typography-system defines the scale and the typefaces; this skill decides how to deploy them as hierarchy signals on a given surface.\"},{\"skill\":\"layout-composition\",\"reason\":\"layout-composition handles grid, alignment, and spatial structure; this skill handles the prioritization within a layout.\"}]}"
   structural_verdict: PASS
   truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
@@ -83,9 +83,11 @@ Reading order is a property of the page, not just the markup. CSS source order, 
 - Write the H1 copy that should appear at the top of the landing page
 - Choose between sans-serif and serif typefaces for the brand
 - Pick the brand's primary color
+- Owned by `typography-system`
+- Owned by `layout-composition`
 
 **Related skills**
-- Related: `visual-design-foundations`
+- Related: `typography-system`, `color-system-design`, `layout-composition`, `visual-design-foundations`
 
 **Keywords**
 - `visual hierarchy`, `hierarchical type sizing`, `proximity hierarchy`, `contrast hierarchy`, `importance ordering`, `reading order`, `focal point`, `figure ground`, `gestalt principles`, `hierarchy through weight`

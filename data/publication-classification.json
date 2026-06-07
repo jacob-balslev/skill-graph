@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0.0",
   "last_updated": "2026-06-03",
-  "source_of_classifications": "skill-graph/docs/_archived/marketplace-publication-priority-2026-05-18.md",
-  "description": "Per-skill publication classification + market-state attributes for the OSS marketplace surface. Seeded once from the 2026-05-18 priority doc; hand-edited going forward. Consumed by scripts/skill/build-skill-list.js to build the publicationQueue rendered to docs/marketplace-publication-queue.generated.md.",
+  "source_of_classifications": "Seeded from the 2026-05-18 marketplace-publication-priority plan, removed from the live tree on 2026-06-07; recover through git history.",
+  "description": "Per-skill publication classification + market-state attributes for the OSS marketplace surface. Seeded once from the 2026-05-18 priority plan; hand-edited going forward. Consumed by scripts/skill/build-skill-list.js to build the publicationQueue rendered to docs/marketplace-publication-queue.generated.md.",
   "classifications": {
     "publishable": "Generic / portable; recommended for jacob-balslev/skills publication.",
     "sales-hub-bound": "References internal schemas, Printify shop IDs, order_events, customer data, etc. Not publishable.",
@@ -152,7 +152,7 @@
       "system-watchdog"
     ],
     "kept_sales_hub_bound": 51,
-    "generator_note": "The queue generator is scripts/skill/build-skill-list.js (workspace orchestration surface per ADR 0016). It reads this ledger plus the skill-audit run ledger and renders docs/marketplace-publication-queue.generated.md. Regenerate with `node scripts/skill/build-skill-list.js --write` after editing this ledger. (The prior dangling shim into the archived skill-audit-loop mirror was superseded by this generator; see ADR 0009.)",
+    "generator_note": "The queue generator is scripts/skill/build-skill-list.js (workspace orchestration surface per ADR 0016). It reads this ledger plus the skill-audit run ledger and renders docs/marketplace-publication-queue.generated.md. Regenerate with `node scripts/skill/build-skill-list.js --write` after editing this ledger. (The prior dangling shim into the retired skill-audit-loop mirror was superseded by this generator; see ADR 0009.)",
     "future_work": "~20-25 of the kept-excluded skills appear generic with only incidental Sales Hub examples (candidates for a deliberate port+sanitize -> publishable pass). This split was NOT automated here: a heuristic misclassified clear Sales Hub skills (receipts, kpi-cards, page-cro, gdpr-compliance), so each candidate needs a per-skill content review + actual sanitization before any reclassification to publishable. No skill was flipped toward publishable in this pass (privacy-safe direction)."
   }
 }

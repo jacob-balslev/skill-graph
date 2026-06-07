@@ -4,7 +4,6 @@ description: "Use when reasoning about the protocol-level cycle by which a langu
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"boundary\":[\"tool-call-strategy\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: ai-engineering
@@ -23,6 +22,7 @@ metadata:
   triggers: "[\"how does tool calling actually work\",\"what's the message shape for a tool result\",\"MCP vs function calling vs Anthropic tools\",\"can the model call tools in parallel\",\"where do tool errors live in the message history\"]"
   examples: "[\"design the message-shape contract between a model and a tool runtime\",\"explain why a tool result must be appended to the message history before the next assistant turn\",\"decide whether to expose a capability as a tool, an MCP server, or an inline API\",\"diagnose why a model keeps re-calling the same tool with the same arguments\"]"
   anti_examples: "[\"decide whether to call a tool or write a script (use tool-call-strategy)\",\"choose a multi-agent coordination pattern (use agent-engineering)\",\"design an eval suite that tests tool-call correctness (use agent-eval-design)\"]"
+  relations: "{\"related\":[\"tool-call-strategy\",\"agent-engineering\",\"api-design\",\"type-safety\",\"client-server-boundary\"],\"boundary\":[{\"skill\":\"tool-call-strategy\",\"reason\":\"tool-call-strategy owns the decision of when, how many, and which tools to call (token cost, redundancy, parallelization, decision gate). tool-call-flow owns the protocol-level cycle that makes any call possible. The two compose: strategy decides what to do; flow describes the mechanism that carries it out.\"}],\"verify_with\":[\"tool-call-strategy\",\"agent-eval-design\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -278,6 +278,11 @@ After applying this skill, verify:
 - decide whether to call a tool or write a script (use tool-call-strategy)
 - choose a multi-agent coordination pattern (use agent-engineering)
 - design an eval suite that tests tool-call correctness (use agent-eval-design)
+- Owned by `tool-call-strategy`: the decision of when, how many, and which tools to call (token cost, redundancy, parallelization, decision gate)
+
+**Related skills**
+- Verify with: `tool-call-strategy`, `agent-eval-design`
+- Related: `tool-call-strategy`, `agent-engineering`, `api-design`, `type-safety`, `client-server-boundary`
 
 **Concept**
 - Mental model: |

@@ -5,7 +5,6 @@ license: MIT
 compatibility: "Portable dependency architecture guidance for monorepos, package.json ecosystems, service boundaries, SDKs, and internal libraries."
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"boundary\":[\"framework-fit-analysis\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: software-architecture
@@ -21,6 +20,7 @@ metadata:
   keywords: "[\"dependency architecture\",\"dependency graph\",\"package boundaries\",\"runtime dependency\",\"build dependency\",\"duplicate libraries\",\"supply chain risk\",\"adapter layer\",\"lock-in\",\"upgrade policy\"]"
   examples: "[\"audit whether this repo has duplicate-purpose dependencies and unsafe package boundaries\",\"should this SDK be wrapped behind an adapter or imported everywhere?\",\"design dependency rules for packages in this monorepo\",\"evaluate dependency lock-in and upgrade risk before adding this library\"]"
   anti_examples: "[\"choose between Next.js, Remix, and Astro for a new app\",\"scan dependencies only for known vulnerabilities\",\"refactor this module without changing dependency boundaries\",\"write an ADR after the dependency decision is accepted\"]"
+  relations: "{\"boundary\":[{\"skill\":\"framework-fit-analysis\",\"reason\":\"framework-fit-analysis evaluates major technology choices; dependency-architecture governs dependency graph structure and package boundaries\"},{\"skill\":\"architecture-decision-records\",\"reason\":\"architecture-decision-records records accepted dependency decisions; dependency-architecture analyzes the dependency design\"}],\"related\":[\"framework-fit-analysis\",\"system-interface-contracts\",\"version-control\",\"owasp-security\",\"refactor\"],\"verify_with\":[\"owasp-security\",\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -100,6 +100,12 @@ This skill ships a comprehension-eval artifact at [`examples/evals/dependency-ar
 - scan dependencies only for known vulnerabilities
 - refactor this module without changing dependency boundaries
 - write an ADR after the dependency decision is accepted
+- Owned by `framework-fit-analysis`
+- Owned by `architecture-decision-records`
+
+**Related skills**
+- Verify with: `owasp-security`, `code-review`
+- Related: `framework-fit-analysis`, `system-interface-contracts`, `version-control`, `owasp-security`, `refactor`
 
 **Keywords**
 - `dependency architecture`, `dependency graph`, `package boundaries`, `runtime dependency`, `build dependency`, `duplicate libraries`, `supply chain risk`, `adapter layer`, `lock-in`, `upgrade policy`

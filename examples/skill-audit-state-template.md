@@ -38,9 +38,10 @@ author a new skill. Two distinct comment conventions live in this template
 above each field, naming what the field is, its allowed values, and
 when-to-use. Example:
 # subject: primary browse shelf — what the skill teaches.
-# One of twelve closed values: code-engineering / quality-assurance /
-# frontend-ui / design-craft / agent-ops / product-domain /
-# knowledge-organization / meta-methods / data-analytics.
+# One of twelve closed values: backend-engineering / frontend-engineering /
+# software-architecture / data-engineering / agent-ops / ai-engineering /
+# quality-assurance / design / reasoning-strategy /
+# software-engineering-method / knowledge-organization / product-domain.
 subject: agent-ops
 → **STAY in the derived skill.** These are the design intent at the
 point of authoring. Cold-start agents and human authors read them

@@ -1,10 +1,9 @@
 ---
 name: type-safety
-description: "Use when reasoning about types as a quality property of code: what guarantees the type system actually provides, the difference between sound and unsound systems, structural vs nominal typing, type narrowing and exhaustiveness, the runtime/compile-time boundary, and where validation must happen because the type system cannot. Covers TypeScript, Flow, Hindley-Milner languages, and gradual typing in general. Do NOT use for runtime input validation library choice (use api-design for API surface validation; use individual library docs for library mechanics), for SQL type mapping (use data-modeling), or for type system implementation (compilers — out of scope). Do NOT use for implement HMAC verification for an inbound webhook (use webhook-integration). Do NOT use for design the JSON shape of an API endpoint (use api-design)."
+description: "Use when reasoning about types as a quality property of code: what guarantees the type system actually provides, the difference between sound and unsound systems, structural vs nominal typing, type narrowing and exhaustiveness, the runtime/compile-time boundary, and where validation must happen because the type system cannot. Covers TypeScript, Flow, Hindley-Milner languages, and gradual typing in general. Do NOT use for runtime input validation library choice (use api-design for API surface validation; use individual library docs for library mechanics), for SQL type mapping (use data-modeling), or for type system implementation (compilers — out of scope). Do NOT use for implement HMAC verification for an inbound webhook (use webhook-integration). Do NOT use for design the JSON shape of an API endpoint (use api-design). Do NOT use for the runtime verification of behavior (use testing-strategy)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"boundary\":[\"api-design\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: quality-assurance
@@ -22,6 +21,7 @@ metadata:
   triggers: "[\"is this type-safe\",\"should this be `any` or `unknown`\",\"exhaustiveness check\",\"narrowing\",\"where does validation belong\"]"
   examples: "[\"review whether this discriminated union has an exhaustiveness check at the switch\",\"decide whether to use `any` or `unknown` for this third-party JSON payload\",\"explain why TypeScript's `as` cast doesn't actually validate at runtime\",\"design where Zod (or any validator) parses at the application boundary\"]"
   anti_examples: "[\"implement HMAC verification for an inbound webhook (use webhook-integration)\",\"design the JSON shape of an API endpoint (use api-design)\",\"choose between Postgres column types (use data-modeling)\"]"
+  relations: "{\"related\":[\"api-design\",\"testing-strategy\",\"code-review\",\"data-modeling\"],\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the runtime verification of behavior; type-safety owns the compile-time verification of structure. They cover different failure modes.\"}],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -37,7 +37,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/type-safety/SKILL.md
-  skill_graph_export_description_projection: anti_examples
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Type Safety
@@ -225,6 +225,11 @@ After applying this skill, verify:
 - implement HMAC verification for an inbound webhook (use webhook-integration)
 - design the JSON shape of an API endpoint (use api-design)
 - choose between Postgres column types (use data-modeling)
+- Owned by `testing-strategy`: the runtime verification of behavior
+
+**Related skills**
+- Verify with: `testing-strategy`, `code-review`
+- Related: `api-design`, `testing-strategy`, `code-review`, `data-modeling`
 
 **Concept**
 - Mental model: |

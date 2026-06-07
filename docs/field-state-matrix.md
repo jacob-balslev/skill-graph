@@ -23,7 +23,7 @@
 |---|---|---|---|
 | `SKILL.md` | `name` | string | human-authored | n/a |
 | `SKILL.md` | `description` | string >= 20 | human-authored | n/a |
-| `SKILL.md` | `subject` | closed 9-enum | human-authored | n/a |
+| `SKILL.md` | `subject` | closed 12-enum | human-authored | n/a |
 | `SKILL.md` | `deployment_target` | closed 2-enum | human-authored | n/a |
 | `SKILL.md` | `scope` | string | human-authored | n/a |
 | `audit-state.json` | `schema_version` | int/string enum `8` | human-authored in sidecar; loop-maintained | n/a (canonical value is `8`) |
@@ -79,7 +79,7 @@ All **human-authored** unless tagged otherwise.
 
 | Field | Type | State | Notes |
 |---|---|---|---|
-| `subjects` | enum[] | human-authored | Polyhierarchy for skills that genuinely span two browse shelves. Max 2, primary first; the primary entry MUST equal `subject`. Same closed 9-enum as `subject`. |
+| `subjects` | enum[] | human-authored | Polyhierarchy for skills that genuinely span two browse shelves. Max 2, primary first; the primary entry MUST equal `subject`. Same closed 12-enum as `subject`. |
 
 ### Understanding fields (v6+, flat)
 

@@ -1,10 +1,9 @@
 ---
 name: performance-budgets
-description: "Use when declaring, measuring, or enforcing performance thresholds as a quality contract rather than as an aspirational target. Covers the three budget axes (time, size, count), the four governing properties of a real budget (metric, threshold, percentile, consequence), the Core Web Vitals set (LCP, INP, CLS), the RAIL model, Lighthouse budgets.json, lab vs field measurement, and the discipline of treating budget breach as a build or deploy failure rather than a tracked metric. Do NOT use for the activity of profiling and optimizing a specific slow path (use performance-engineering), the choice of rendering model that bounds achievable budgets (use rendering-models), or the design of observability and telemetry signals (use observability-modeling)."
+description: "Use when declaring, measuring, or enforcing performance thresholds as a quality contract rather than as an aspirational target. Covers the three budget axes (time, size, count), the four governing properties of a real budget (metric, threshold, percentile, consequence), the Core Web Vitals set (LCP, INP, CLS), the RAIL model, Lighthouse budgets.json, lab vs field measurement, and the discipline of treating budget breach as a build or deploy failure rather than a tracked metric. Do NOT use for the activity of profiling and optimizing a specific slow path (use performance-engineering), the choice of rendering model that bounds achievable budgets (use rendering-models), or the design of observability and telemetry signals (use observability-modeling). Do NOT use for runtime-correctness verification (use testing-strategy)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"adjacent\":[\"performance-testing\"],\"boundary\":[\"performance-engineering\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: quality-assurance
@@ -23,6 +22,7 @@ metadata:
   triggers: "[\"how fast does this page need to be\",\"what's a good LCP target\",\"should this fail the build\",\"why is the Lighthouse score different from real users\",\"we need a performance budget\"]"
   examples: "[\"set a Core Web Vitals budget for a marketing landing page and enforce it in CI\",\"explain why a green Lighthouse score still produced bad real-user performance\",\"decide between INP and FID as the interaction-responsiveness metric\",\"design a per-route budget table that distinguishes static pages from logged-in dashboards\"]"
   anti_examples: "[\"profile a specific slow query and decide what to fix (use performance-engineering)\",\"choose between SSG and SSR for a route (use rendering-models)\",\"design telemetry spans and traces (use observability-modeling)\"]"
+  relations: "{\"related\":[\"performance-engineering\",\"rendering-models\",\"observability-modeling\",\"testing-strategy\",\"http-semantics\"],\"boundary\":[{\"skill\":\"performance-engineering\",\"reason\":\"performance-engineering owns the activity of measuring, profiling, and improving performance. performance-budgets owns the threshold-and-consequence contract. The two compose: budgets define the failure conditions; engineering produces the improvements that prevent breach.\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns runtime-correctness verification. performance-budgets is an analogous discipline for non-functional properties — a budget breach is the same kind of CI failure as a failing test.\"}],\"verify_with\":[\"performance-engineering\",\"observability-modeling\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -38,6 +38,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/performance-budgets/SKILL.md
+  skill_graph_export_description_projection: boundary
 ---
 
 # Performance Budgets
@@ -234,9 +235,12 @@ After applying this skill, verify:
 - profile a specific slow query and decide what to fix (use performance-engineering)
 - choose between SSG and SSR for a route (use rendering-models)
 - design telemetry spans and traces (use observability-modeling)
+- Owned by `performance-engineering`: the activity of measuring, profiling, and improving performance
+- Owned by `testing-strategy`: runtime-correctness verification
 
 **Related skills**
-- Related: `performance-testing`
+- Verify with: `performance-engineering`, `observability-modeling`
+- Related: `performance-engineering`, `rendering-models`, `observability-modeling`, `testing-strategy`, `http-semantics`
 
 **Concept**
 - Mental model: |

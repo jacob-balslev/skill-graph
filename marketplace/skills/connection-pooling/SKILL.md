@@ -1,46 +1,50 @@
 ---
 name: connection-pooling
-description: "Use when reasoning about how an application manages its database connections: why every connection has a server-side cost, the difference between application-level pools (HikariCP, pgx pool, node-postgres Pool) and proxy-level pools (PgBouncer, Pgpool, ProxySQL), the three PgBouncer modes (session, transaction, statement) and their feature compatibility, the canonical pool-sizing math (Little's Law applied to database concurrency; Wooldridge's analyses), the failure modes (connection exhaustion, hot-loop reconnects, prepared-statement breakage under transaction pooling, idle-in-transaction leaks), and the diagnostic procedure when a workload is contending on connections instead of query work. Do NOT use for query-level performance (use query-optimization), for index design (use indexing-strategy), for read/write replica routing (use replication-patterns), or for cross-shard query coordination (use sharding-strategy)."
+description: "Use when reasoning about how an application manages its database connections: why every connection has a server-side cost, the difference between application-level pools (HikariCP, pgx pool, node-postgres Pool) and proxy-level pools (PgBouncer, Pgpool, ProxySQL), the three PgBouncer modes (session, transaction, statement) and their feature compatibility, the canonical pool-sizing math (Little's Law applied to database concurrency; Wooldridge's analyses), the failure modes (connection exhaustion, hot-loop reconnects, prepared-statement breakage under transaction pooling, idle-in-transaction leaks), and the diagnostic procedure when a workload is contending on connections instead of query work. Do NOT use for query-level performance (use query-optimization), for index design (use indexing-strategy), for read/write replica routing (use replication-patterns), or for cross-shard query coordination (use sharding-strategy). Do NOT use for choose the transaction isolation level for concurrent account transfers."
 license: MIT
+compatibility: "Portable database connection-pooling guidance. Pool limits, driver defaults, and proxy features vary by database, driver, cloud provider, and PgBouncer/proxy version; verify production behavior against the target stack."
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"boundary\":[\"query-optimization\"]}"
-  schema_version: "8"
-  version: "1.0.0"
   subject: backend-engineering
   deployment_target: portable
   scope: "How an application manages its database connections — the server-side cost of a connection, application-level pools (HikariCP, pgx, node-postgres) vs proxy-level pools (PgBouncer, Pgpool, ProxySQL), the three PgBouncer modes (session/transaction/statement) and their feature compatibility, the pool-sizing math (Little's Law applied to database concurrency), the failure modes (connection exhaustion, hot-loop reconnects, prepared-statement breakage under transaction pooling, idle-in-transaction leaks), and the diagnostic procedure for connection contention. Portable across any DB-backed application; principle-grounded, not repo-bound. Excludes query-level performance (query-optimization), index design (indexing-strategy), read/write replica routing (replication-patterns), and cross-shard coordination (sharding-strategy)."
   taxonomy_domain: engineering/data
-  owner: skill-graph-maintainer
-  freshness: "2026-05-16"
-  drift_check: "{\"last_verified\":\"2026-05-16\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
+  grounding: "{\"subject_matter\":\"Portable database connection-pooling: application pools, proxy pools, PgBouncer pool modes, server-side connection costs, pool sizing, wait-time diagnostics, transaction/session feature compatibility, idle-in-transaction leaks, and reconnect storms\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing\",\"https://github.com/brettwooldridge/HikariCP/wiki/Down-the-Rabbit-Hole\",\"https://www.pgbouncer.org/usage.html\",\"https://www.pgbouncer.org/faq.html\",\"https://www.postgresql.org/docs/current/runtime-config-connection.html\",\"https://www.postgresql.org/docs/current/runtime-config-client.html\",\"https://www.jstor.org/stable/167570\",\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy.html\",\"https://github.com/supabase/supavisor\"],\"failure_modes\":[\"Sizing pools from request rate or app-instance count instead of measured concurrency\",\"Treating max_connections as a target rather than a ceiling\",\"Assuming transaction pooling preserves all session-level database features\",\"Diagnosing pool wait time as slow query time\",\"Ignoring idle-in-transaction leaks that hold pool slots and open transactions\",\"Letting autoscaled or serverless clients multiply direct database connections without a proxy cap\"],\"evidence_priority\":\"equal\"}"
   stability: experimental
   keywords: "[\"connection pooling\",\"PgBouncer\",\"HikariCP\",\"pool sizing\",\"session pooling\",\"transaction pooling\",\"statement pooling\",\"prepared statements\",\"idle in transaction\",\"Little's Law\"]"
-  triggers: "[\"what should max pool size be\",\"PgBouncer transaction mode\",\"too many connections error\",\"connection exhaustion\",\"prepared statements not working with PgBouncer\"]"
-  examples: "[\"size a connection pool for a workload with N application servers and M cores per database\",\"diagnose why a workload is bottlenecked on connections rather than query performance\",\"decide between PgBouncer session mode and transaction mode for an application\",\"explain why HikariCP recommends small pools instead of large ones\"]"
-  anti_examples: "[\"tune a slow query (use query-optimization)\",\"design indexes (use indexing-strategy)\",\"route reads to a replica (use replication-patterns)\",\"design partitioning across shards (use sharding-strategy)\"]"
+  triggers: "[\"connection-pooling\",\"what should max pool size be\",\"PgBouncer transaction mode\",\"too many connections error\",\"connection exhaustion\",\"prepared statements not working with PgBouncer\"]"
+  examples: "[\"size a connection-pooling pool using Little's Law, database cores, query time, and app instance count\",\"diagnose connection-pooling exhaustion where pool.acquire_time_p99 is high but query latency is normal\",\"decide between PgBouncer session mode, transaction mode, and statement mode for prepared statements and SET LOCAL\",\"explain why HikariCP recommends small connection pools instead of large ones\"]"
+  anti_examples: "[\"choose the transaction isolation level for concurrent account transfers\",\"move a slow export into a background job queue with retry policy\",\"model a producer, stream, consumer, backpressure, and termination contract for an SSE progress stream\"]"
+  relations: "{\"related\":[\"query-optimization\",\"indexing-strategy\",\"replication-patterns\",\"sharding-strategy\",\"transaction-isolation\",\"acid-fundamentals\",\"background-jobs\",\"streaming-architecture\",\"performance-engineering\"],\"boundary\":[{\"skill\":\"transaction-isolation\",\"reason\":\"transaction-isolation owns the per-transaction concurrency-correctness contract; connection-pooling owns the connection-level mechanics that determine whether a transaction's connection is held, released, or shared.\"},{\"skill\":\"acid-fundamentals\",\"reason\":\"acid-fundamentals owns ACID properties and transaction correctness concepts; connection-pooling owns database connection lifecycle, pooling modes, and wait queues.\"},{\"skill\":\"background-jobs\",\"reason\":\"background-jobs owns durable worker execution and retry policy; connection-pooling owns database connection contention and pool sizing for whatever workers or web requests use the database.\"},{\"skill\":\"streaming-architecture\",\"reason\":\"streaming-architecture owns producer/consumer backpressure for value streams; connection-pooling owns database connection wait queues and pool contention.\"}],\"verify_with\":[\"query-optimization\",\"replication-patterns\",\"transaction-isolation\",\"performance-engineering\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
   analogy: "A connection pool is to a database what a taxi rank is to an airport — every taxi has a standing cost (driver salary, fuel, parking space); a rank with too few taxis leaves passengers queuing on the curb; a rank with too many burns money on idle taxis and clogs the access road. The right number is the smallest that doesn't queue under peak arrival rate, sized by how long each taxi trip actually takes — and adding more taxis doesn't make the trips faster, it just lets more start at once."
   misconception: "|"
-  concept: "{\"definition\":\"Connection pooling is the discipline of managing a finite set of database connections shared across many application threads, requests, or processes, because opening a database connection is expensive (network round-trips, authentication, session setup) and every open connection consumes server resources (a process or thread, memory for buffers and catalog state, locks on shared structures). The pool's job is to keep a small, sized-for-workload number of connections open, hand them out to application units of work for the brief time they need them, and return them to the pool. Pooling can happen at the application layer (in-process pool like HikariCP, pgx pool, node-postgres Pool) or at the proxy layer (an external service like PgBouncer or ProxySQL that multiplexes many client connections onto a smaller set of upstream database connections). The pooling mode (session, transaction, statement) determines what feature compatibility the pool preserves and what failure modes the application must handle. The pool size is a *throughput cap*, not a resource budget; sizing it correctly per Little's Law (concurrency = throughput × latency) is the central operational decision.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/connection-pooling/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Connection Pooling
+
+## Concept of the skill
+
+**What it is:** `connection-pooling` is the discipline for keeping a bounded set of database connections open, handing them to units of work briefly, and returning them without letting application concurrency overwhelm database-side connection capacity.
+
+**Mental model:** A pool is a wait queue plus a small number of expensive database sessions. Size it from peak concurrent database work, measure wait time separately from query time, and choose proxy modes by the database features the application needs.
+
+**Why it exists:** Opening a connection per request is expensive, and every open connection has a standing cost. The pool protects the database from client fan-out while keeping application work from waiting unnecessarily.
+
+**What it is NOT:** It is not query-plan tuning, index design, replica routing, shard coordination, durable job retry design, stream backpressure, or transaction isolation semantics.
+
+**Adjacent concepts:** `query-optimization` owns slow query work; `indexing-strategy` owns access paths; `replication-patterns` owns read/write replica routing; `sharding-strategy` owns data partitioning; `transaction-isolation` owns concurrency correctness; `background-jobs` owns durable worker retries; `streaming-architecture` owns value-stream backpressure.
+
+**One-line analogy:** A connection pool is a taxi rank for database sessions: too few taxis leaves work waiting, too many taxis clog the road, and adding taxis does not make trips faster.
+
+**Common misconception:** Bigger pools are not automatically more capacity; beyond the database's useful concurrency, larger pools move the bottleneck from pool wait time to CPU, locks, cache churn, and connection exhaustion.
 
 ## Coverage
 
@@ -144,17 +148,24 @@ After applying this skill, verify:
 - Scope: How an application manages its database connections — the server-side cost of a connection, application-level pools (HikariCP, pgx, node-postgres) vs proxy-level pools (PgBouncer, Pgpool, ProxySQL), the three PgBouncer modes (session/transaction/statement) and their feature compatibility, the pool-sizing math (Little's Law applied to database concurrency), the failure modes (connection exhaustion, hot-loop reconnects, prepared-statement breakage under transaction pooling, idle-in-transaction leaks), and the diagnostic procedure for connection contention. Portable across any DB-backed application; principle-grounded, not repo-bound. Excludes query-level performance (query-optimization), index design (indexing-strategy), read/write replica routing (replication-patterns), and cross-shard coordination (sharding-strategy).
 
 **When to use**
-- size a connection pool for a workload with N application servers and M cores per database
-- diagnose why a workload is bottlenecked on connections rather than query performance
-- decide between PgBouncer session mode and transaction mode for an application
-- explain why HikariCP recommends small pools instead of large ones
-- Triggers: `what should max pool size be`, `PgBouncer transaction mode`, `too many connections error`, `connection exhaustion`, `prepared statements not working with PgBouncer`
+- size a connection-pooling pool using Little's Law, database cores, query time, and app instance count
+- diagnose connection-pooling exhaustion where pool.acquire_time_p99 is high but query latency is normal
+- decide between PgBouncer session mode, transaction mode, and statement mode for prepared statements and SET LOCAL
+- explain why HikariCP recommends small connection pools instead of large ones
+- Triggers: `connection-pooling`, `what should max pool size be`, `PgBouncer transaction mode`, `too many connections error`, `connection exhaustion`, `prepared statements not working with PgBouncer`
 
 **Not for**
-- tune a slow query (use query-optimization)
-- design indexes (use indexing-strategy)
-- route reads to a replica (use replication-patterns)
-- design partitioning across shards (use sharding-strategy)
+- choose the transaction isolation level for concurrent account transfers
+- move a slow export into a background job queue with retry policy
+- model a producer, stream, consumer, backpressure, and termination contract for an SSE progress stream
+- Owned by `transaction-isolation`: the per-transaction concurrency-correctness contract
+- Owned by `acid-fundamentals`: ACID properties and transaction correctness concepts
+- Owned by `background-jobs`: durable worker execution and retry policy
+- Owned by `streaming-architecture`: producer/consumer backpressure for value streams
+
+**Related skills**
+- Verify with: `query-optimization`, `replication-patterns`, `transaction-isolation`, `performance-engineering`
+- Related: `query-optimization`, `indexing-strategy`, `replication-patterns`, `sharding-strategy`, `transaction-isolation`, `acid-fundamentals`, `background-jobs`, `streaming-architecture`, `performance-engineering`
 
 **Concept**
 - Mental model: |
@@ -162,6 +173,10 @@ After applying this skill, verify:
 - Boundary: |
 - Analogy: A connection pool is to a database what a taxi rank is to an airport — every taxi has a standing cost (driver salary, fuel, parking space); a rank with too few taxis leaves passengers queuing on the curb; a rank with too many burns money on idle taxis and clogs the access road. The right number is the smallest that doesn't queue under peak arrival rate, sized by how long each taxi trip actually takes — and adding more taxis doesn't make the trips faster, it just lets more start at once.
 - Common misconception: |
+
+**Grounding**
+- Mode: `universal`
+- Truth sources: `https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing`, `https://github.com/brettwooldridge/HikariCP/wiki/Down-the-Rabbit-Hole`, `https://www.pgbouncer.org/usage.html`, `https://www.pgbouncer.org/faq.html`, `https://www.postgresql.org/docs/current/runtime-config-connection.html`, `https://www.postgresql.org/docs/current/runtime-config-client.html`, `https://www.jstor.org/stable/167570`, `https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy.html`, `https://github.com/supabase/supavisor`
 
 **Keywords**
 - `connection pooling`, `PgBouncer`, `HikariCP`, `pool sizing`, `session pooling`, `transaction pooling`, `statement pooling`, `prepared statements`, `idle in transaction`, `Little's Law`

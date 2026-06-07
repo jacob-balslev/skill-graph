@@ -5,7 +5,6 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  relations: "{\"boundary\":[\"summarization\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: backend-engineering
@@ -21,6 +20,7 @@ metadata:
   stability: experimental
   keywords: "[\"compression\",\"Zstd\",\"Brotli\",\"Gzip\",\"context window\",\"token efficiency\",\"semantic summarization\",\"payload reduction\",\"DB TOAST\"]"
   triggers: "[\"compression-skill\",\"context-compression\",\"payload-optimization\"]"
+  relations: "{\"related\":[\"context-window\",\"context-management\",\"summarization\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -145,6 +145,9 @@ After applying this skill, verify:
 
 **When to use**
 - Triggers: `compression-skill`, `context-compression`, `payload-optimization`
+
+**Related skills**
+- Related: `context-window`, `context-management`, `summarization`
 
 **Keywords**
 - `compression`, `Zstd`, `Brotli`, `Gzip`, `context window`, `token efficiency`, `semantic summarization`, `payload reduction`, `DB TOAST`

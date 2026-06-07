@@ -392,13 +392,13 @@ Concrete artifacts that show adopters what "good" looks like. Every specimen is 
 
 > **The question this diagram answers:** "How do `relations.*` edges resolve, and why does a dangling target fail confidently?"
 
-The relations graph cuts across all five tiers — declared in Tier 5 SKILL.md frontmatter, validated by Tier 3 lint, and consumed by Tier 4 routing. Its worst failure mode is silent drift: the router fails *confidently* because a dangling target looks like a valid one. The in-repo `examples/fixture-skills/` set is a **closed reference graph** — `with-relations` exercises four representative relation edge types (`depends_on`, `verify_with`, `related`, and `boundary`) against the other three fixtures, so lint resolves every target from this directory alone, with no dependency on the sibling `../skills/skills/` canonical library. The full schema also supports `broader`, `narrower`, and `disjoint_with`; tooling accepts `adjacent` only as the deprecated alias of `related`. The diagram reads the authoritative edges from each fixture's frontmatter; it does not duplicate them.
+The relations graph cuts across all five tiers — declared in Tier 5 SKILL.md frontmatter, checked by Tier 3 tooling, and consumed by Tier 4 routing. Its worst failure mode is silent drift: the router fails *confidently* because a dangling target looks like a valid one. The in-repo `examples/fixture-skills/` set is a **closed reference graph** — `with-relations` exercises four representative relation edge types (`depends_on`, `verify_with`, `related`, and `boundary`) against the other three fixtures, so the fixture checks resolve every target from this directory alone, with no dependency on the sibling `../skills/skills/` canonical library. The full schema also supports `broader`, `narrower`, and `disjoint_with`; tooling accepts `adjacent` only as the deprecated alias of `related`. The diagram reads the authoritative edges from each fixture's frontmatter; it does not duplicate them.
 
-> These four are **v6-pinned hermetic test fixtures** (see `examples/fixture-skills/README.md`), not v7 style exemplars — their job is to exercise the schema's conditional-requiredness rules and the `{skill, reason}` relation shape, not to model a realistic skill domain. The full, realistic relations graph lives in the sibling canonical library (`~/Development/skills/`) and is what `scripts/skill-graph-route.js` traverses at request time.
+> These four are **v8 hermetic test fixtures** (see `examples/fixture-skills/README.md`), not production exemplars — their job is to exercise the schema's conditional-requiredness rules and the `{skill, reason}` relation shape, not to model a realistic skill domain. The full, realistic relations graph lives in the sibling canonical library (`~/Development/skills/`) and is what `scripts/skill-graph-route.js` traverses at request time.
 
 ```mermaid
 flowchart LR
-  MIN["minimal-capability<br/><i>code-engineering · portable</i>"]
+  MIN["minimal-capability<br/><i>backend-engineering · portable</i>"]
   GR["with-grounding<br/><i>knowledge-organization · project</i>"]
   REL["with-relations<br/><i>knowledge-organization · portable</i>"]
   COMP["comprehension-full<br/><i>knowledge-organization · portable</i>"]
@@ -447,11 +447,11 @@ Every edge is verifiable. `node bin/skill-graph.js lint examples/fixture-skills/
 
 Because the tiers are ordered, a tiny set of invariants holds the whole repo together:
 
-- **Tier 1 → Tier 2:** Every top-level property in `SKILL_METADATA_PROTOCOL_schema.json` has a matching section in `SKILL_METADATA_PROTOCOL_field-reference.md`. (`check-protocol-consistency.js` C1.)
+- **Tier 1 → Tier 2:** Every top-level property in `SKILL_METADATA_PROTOCOL_schema.json` has a matching section in `skill-metadata-protocol/field-reference.md`. (`check-protocol-consistency.js` C1.)
 - **Tier 1 canonical-only:** Per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md), `schemas/SKILL_METADATA_PROTOCOL_schema.json` and `schemas/manifest.schema.json` are the only schema files on disk; prior contract versions live in git history. The C6 "Versioned schema parity" invariant is retired (there is no second pinned file to drift against).
 - **Tier 1 → Tier 3 (generator):** Every authored field has a documented projection into the manifest — copied, grouped, or dropped. No silent drops. (C2.)
 - **Tier 1 ↔ Tier 5 (sample manifest):** The committed sample manifest matches live generator output. Enforced by `npm run manifest:validate`, not by `skill-lint.js`. (2026-05-27 H12 — the prior "skill-lint.js check 8" claim referred to a check removed in the 2026-05-19 lint reduction.)
-- **Tier 5 → Tier 1:** Every starter skill validates against the schema; every relation target exists; every eval_artifact declaration is backed by a real file. `skill-lint.js` enforces schema, name, description, parent-dir, and subjects-primary (checks 1–5 per its in-file inventory) plus the new advisory field-purpose-comment check (check 6); relation-target existence is enforced by the manifest compiler; eval_artifact backing is enforced by `eval-staleness-checker.js`.
+- **Tier 5 → Tier 1:** Every fixture skill validates against the schema through the canonical linter. `skill-lint.js` enforces valid frontmatter, schema validation, identifier shape, non-empty description, parent-directory/name alignment, and `subjects[0]` matching `subject`. Relation quality, eval-artifact coherence, routing behavior, drift, export, and generated-manifest integrity are checked by their dedicated tools rather than folded into lint.
 
 Break any one of these invariants and CI fails. That's why the tiering works: the enforcement tier (Tier 3) is literally the set of scripts that prove the upper and lower tiers agree.
 

@@ -33,8 +33,9 @@ Release principles:
    or base Agent Skills limits. Do not weaken canonical Skill Metadata Protocol
    descriptions.
 5. Add factual Skill Graph provenance metadata to exported skills:
-   skill_graph_source_repo, skill_graph_protocol, skill_graph_project, and
-   skill_graph_canonical_skill.
+   skill_graph_source_repo, skill_graph_project, and
+   skill_graph_canonical_skill. Do not emit skill_graph_protocol; that
+   content-conformance label is retired from marketplace exports.
 6. Keep readable names and explicit metadata keys. Do not abbreviate names or
    fields to save space.
 7. Do not publish private project skills, customer workflows, local runtime

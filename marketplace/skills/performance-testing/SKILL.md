@@ -1,42 +1,30 @@
 ---
 name: performance-testing
-description: "Use when measuring a system's non-functional properties — latency, throughput, error rate, resource utilization — by running it under controlled load and verifying against explicit SLO thresholds. Covers the five primitives (load profile, workload, latency metric, throughput metric, SLO target), the load-shape taxonomy (smoke, load, stress, spike, soak, breakpoint), the latency-percentile vocabulary (p50, p95, p99, p99.9) and why average latency misleads, the tool ecosystem (k6, JMeter, Locust, Gatling, Vegeta), and the offline-vs-observability distinction. Do NOT use for the optimization activity itself (use `performance-engineering`), declaring the threshold contract (use `performance-budgets`), runtime measurement of deployed systems (use `observability` or `error-tracking`), microbenchmarks of single functions (language benchmark tools), chaos engineering (use `chaos-engineering`), or test-suite quality measurement (use `mutation-testing`)."
+description: "Use when measuring a system's non-functional properties — latency, throughput, error rate, resource utilization, saturation — by running it under controlled load and verifying against explicit SLO thresholds. Covers the five primitives (load profile, workload, latency metric, throughput metric, SLO target), load-shape taxonomy (smoke, load, stress, spike, soak, breakpoint), latency-percentile vocabulary (p50, p95, p99, p99.9), why average latency and coordinated omission mislead, tool selection (k6, JMeter, Locust, Gatling, Vegeta), and offline controlled measurement versus production observability. Do NOT use for optimization itself (use `performance-engineering`), threshold contracts (use `performance-budgets`), production runtime measurement (use `observability-modeling` or `error-tracking`), single-function microbenchmarks, fault injection, or test-suite quality measurement (use `mutation-testing`). Do NOT use for decide which modules need more unit tests and what test coverage target to enforce."
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"adjacent\":[\"performance-budgets\"],\"boundary\":[\"performance-engineering\"]}"
-  schema_version: "8"
-  version: "1.0.0"
   subject: quality-assurance
   deployment_target: portable
+  scope: "Designing and interpreting controlled-load tests for non-functional system properties: latency distributions, throughput, error rate, resource use, saturation, load profile, workload mix, percentiles, SLO thresholds, and load shapes such as smoke, load, stress, spike, soak, and breakpoint. Portable across web, API, service, and distributed-system test surfaces. Excludes optimization/profiling itself (performance-engineering), declaring budget contracts (performance-budgets), production observability/error monitoring, single-function microbenchmarks, fault injection, and test-suite quality measurement."
   taxonomy_domain: quality/testing
-  owner: skill-graph-maintainer
-  freshness: "2026-05-16"
-  drift_check: "{\"last_verified\":\"2026-05-16\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
-  keywords: "[\"performance testing\",\"load testing\",\"stress testing\",\"soak testing\",\"spike testing\",\"breakpoint test\",\"k6\",\"JMeter\",\"Locust\",\"Gatling\"]"
-  triggers: "[\"what should our load test do\",\"p95 vs average latency\",\"k6 vs JMeter vs Locust\",\"is the system fast enough\",\"stress test or load test\"]"
-  examples: "[\"design a load test for an API endpoint that verifies the p95 SLO at expected production traffic\",\"decide between load, stress, and soak tests for a new service before launch\",\"diagnose a soak test failure that only appears after 4 hours — likely a leak\",\"explain why average latency is the wrong metric for user experience\"]"
-  anti_examples: "[\"measure production traffic latency in real time (use observability)\",\"benchmark a single function in isolation (use language benchmark tools)\",\"inject failures into a production system (use chaos-engineering)\"]"
+  keywords: "[\"performance testing\",\"load testing\",\"stress testing\",\"soak testing\",\"spike testing\",\"breakpoint test\",\"latency percentile\",\"SLO threshold\",\"k6 thresholds\",\"coordinated omission\"]"
+  triggers: "[\"performance test\",\"load test\",\"stress test or load test\",\"p95 vs average latency\",\"k6 threshold\",\"is the system fast enough under load\"]"
+  examples: "[\"design a performance test for an API endpoint that verifies the p95 SLO at expected production traffic\",\"decide whether a new service needs load, stress, spike, soak, or breakpoint tests before launch\",\"diagnose a soak test failure where p99 latency and memory growth only degrade after 4 hours\",\"explain why average latency and coordinated omission are the wrong acceptance basis for user experience\"]"
+  anti_examples: "[\"decide which modules need more unit tests and what test coverage target to enforce\",\"declare the p95 latency budget, threshold, and build-fail consequence for checkout\",\"choose the test strategy ratio between unit, integration, e2e, and performance suites\",\"measure whether mutation score shows the tests catch code defects\"]"
+  relations: "{\"related\":[\"testing-strategy\",\"integration-test-design\",\"e2e-test-design\",\"performance-engineering\",\"performance-budgets\",\"observability-modeling\",\"error-tracking\",\"mutation-testing\",\"test-coverage-strategy\"],\"boundary\":[{\"skill\":\"performance-engineering\",\"reason\":\"performance-engineering owns profiling and optimizing a specific slow path; performance-testing owns controlled-load measurement that finds or verifies bottlenecks.\"},{\"skill\":\"performance-budgets\",\"reason\":\"performance-budgets owns the threshold-and-consequence contract; performance-testing owns the load mechanism that verifies the contract.\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns what mix of test levels to run; performance-testing owns the controlled-load technique inside that strategy.\"},{\"skill\":\"test-coverage-strategy\",\"reason\":\"test-coverage-strategy owns code coverage targets and where tests are missing; performance-testing owns non-functional behavior under controlled load.\"},{\"skill\":\"mutation-testing\",\"reason\":\"mutation-testing owns test-suite defect-detection quality; performance-testing owns system behavior under load.\"},{\"skill\":\"integration-test-design\",\"reason\":\"integration-test-design owns correctness across seams; performance-testing owns non-functional behavior of those seams under load.\"},{\"skill\":\"e2e-test-design\",\"reason\":\"e2e-test-design owns user-journey correctness; performance-testing owns load-driven measurement of journeys.\"}],\"verify_with\":[\"testing-strategy\",\"integration-test-design\",\"performance-budgets\",\"observability-modeling\"]}"
+  grounding: "{\"subject_matter\":\"Portable controlled-load performance testing for APIs, services, and user journeys\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://grafana.com/docs/k6/latest/using-k6/thresholds/\",\"https://grafana.com/docs/k6/latest/testing-guides/automated-performance-testing/\",\"https://grafana.com/docs/k6/latest/\",\"https://jmeter.apache.org/usermanual/\",\"https://docs.locust.io/\",\"https://docs.gatling.io/\",\"https://www.infoq.com/presentations/latency-pitfalls/\",\"../skills/skills/quality-assurance/performance-testing/references/performance-testing-2026-06-07.md\"],\"failure_modes\":[\"performance_test_without_slo_verdict\",\"acceptance_criteria_use_average_latency\",\"coordinated_omission_hidden_by_load_generator\",\"load_shape_mismatch_to_failure_mode\",\"non_production_like_environment_over_certified\",\"workload_mix_unlike_real_traffic\",\"tool_generator_becomes_bottleneck\"],\"evidence_priority\":\"equal\"}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
   analogy: "Performance testing is to a software system what a load-bearing inspection is to a bridge — you do not certify a bridge by walking across it (functional test) and concluding it works; you drive trucks of known weight across at increasing volumes, with strain gauges on every beam, and verify the deflection stays within spec under expected traffic, that the failure mode is graceful when overloaded (cracks before collapse), that nothing creeps over a long soak. A bridge whose 'average' load it can carry is 50 tonnes but whose p99 stressor reveals harmonic resonance at 80 tonnes is the bridge that fails on a windy day."
   misconception: "|"
-  concept: "{\"definition\":\"Performance testing is the discipline of measuring a system's non-functional properties — latency, throughput, resource utilization, error rate under load — by running the system under controlled load conditions and observing the resulting metrics. Where functional tests answer 'does the system produce the right output?', performance tests answer 'does the system produce the right output *quickly enough* and at *sufficient scale*, while staying within resource budgets and error tolerances?'. The unit of judgment is whether the measured metrics meet defined acceptance thresholds (typically Service-Level Objectives expressed as percentiles, e.g., 'p95 latency below 200ms at 1,000 requests per second sustained for 30 minutes'). Performance testing is *controlled* and *offline*; observability is its production-runtime counterpart that measures the live system without imposed load.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/performance-testing/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Performance Testing
@@ -131,9 +119,9 @@ After applying this skill, verify:
 |---|---|---|
 | Profiling and optimizing a specific slow path once located | `performance-engineering` | performance-engineering is the optimization activity itself; this skill is the load-driven measurement that locates and quantifies what to optimize |
 | Declaring the threshold-and-consequence contract (metric, threshold, percentile, consequence) | `performance-budgets` | performance-budgets owns the contract; this skill verifies the contract holds under load |
-| Measuring real production traffic in real time | `observability` or `error-tracking` | observability owns runtime measurement; this skill owns offline controlled measurement |
+| Measuring real production traffic in real time | `observability-modeling` or `error-tracking` | observability owns runtime measurement; this skill owns offline controlled measurement |
 | Benchmarking a single function or implementation | language-level benchmark tools | benchmarks isolate; this skill measures the assembled system |
-| Injecting failures into a running system | `chaos-engineering` (when it exists) | chaos is fault injection; this skill is load measurement |
+| Injecting failures into a running system | dedicated fault-injection / resilience-testing guidance | fault injection is not load measurement; this skill is controlled performance measurement |
 | Testing the test suite's quality | `mutation-testing` | mutation measures test-suite effectiveness; this skill measures system performance |
 | Choosing the test-level ratio | `testing-strategy` | strategy owns ratios; this skill is one technique within them |
 | Testing internal seams between modules | `integration-test-design` | integration owns correctness across seams; this skill owns load behavior |
@@ -141,7 +129,9 @@ After applying this skill, verify:
 
 ## Key Sources
 
-- Grafana Labs / k6 Team. ["k6 Documentation"](https://k6.io/docs/). Canonical reference for the modern JavaScript-scriptable load testing tool; covers the six load shapes and the SLO-as-test-target discipline.
+- Grafana Labs / k6 Team. ["k6 Documentation"](https://grafana.com/docs/k6/latest/). Canonical reference for the modern JavaScript-scriptable load testing tool; covers thresholds, metrics, scenarios, and common load shapes.
+- Grafana Labs / k6 Team. ["Thresholds"](https://grafana.com/docs/k6/latest/using-k6/thresholds/). Current reference for pass/fail criteria in k6 load tests.
+- Grafana Labs / k6 Team. ["Automated performance testing"](https://grafana.com/docs/k6/latest/testing-guides/automated-performance-testing/). Current reference for smoke, average/load, stress, spike, and soak automation guidance.
 - Apache Software Foundation. ["Apache JMeter — User Manual"](https://jmeter.apache.org/usermanual/). Canonical reference for the most-established cross-protocol performance testing tool.
 - Locust Team. ["Locust Documentation"](https://docs.locust.io/). Reference for the Python-scriptable distributed load testing tool.
 - Gatling Team. ["Gatling Documentation"](https://gatling.io/docs/). Reference for the high-performance Scala-based load testing tool.
@@ -160,21 +150,31 @@ After applying this skill, verify:
 - Subject: `quality-assurance`
 - Deployment: `portable`
 - Domain: `quality/testing`
+- Scope: Designing and interpreting controlled-load tests for non-functional system properties: latency distributions, throughput, error rate, resource use, saturation, load profile, workload mix, percentiles, SLO thresholds, and load shapes such as smoke, load, stress, spike, soak, and breakpoint. Portable across web, API, service, and distributed-system test surfaces. Excludes optimization/profiling itself (performance-engineering), declaring budget contracts (performance-budgets), production observability/error monitoring, single-function microbenchmarks, fault injection, and test-suite quality measurement.
 
 **When to use**
-- design a load test for an API endpoint that verifies the p95 SLO at expected production traffic
-- decide between load, stress, and soak tests for a new service before launch
-- diagnose a soak test failure that only appears after 4 hours — likely a leak
-- explain why average latency is the wrong metric for user experience
-- Triggers: `what should our load test do`, `p95 vs average latency`, `k6 vs JMeter vs Locust`, `is the system fast enough`, `stress test or load test`
+- design a performance test for an API endpoint that verifies the p95 SLO at expected production traffic
+- decide whether a new service needs load, stress, spike, soak, or breakpoint tests before launch
+- diagnose a soak test failure where p99 latency and memory growth only degrade after 4 hours
+- explain why average latency and coordinated omission are the wrong acceptance basis for user experience
+- Triggers: `performance test`, `load test`, `stress test or load test`, `p95 vs average latency`, `k6 threshold`, `is the system fast enough under load`
 
 **Not for**
-- measure production traffic latency in real time (use observability)
-- benchmark a single function in isolation (use language benchmark tools)
-- inject failures into a production system (use chaos-engineering)
+- decide which modules need more unit tests and what test coverage target to enforce
+- declare the p95 latency budget, threshold, and build-fail consequence for checkout
+- choose the test strategy ratio between unit, integration, e2e, and performance suites
+- measure whether mutation score shows the tests catch code defects
+- Owned by `performance-engineering`: profiling and optimizing a specific slow path
+- Owned by `performance-budgets`: the threshold-and-consequence contract
+- Owned by `testing-strategy`: what mix of test levels to run
+- Owned by `test-coverage-strategy`: code coverage targets and
+- Owned by `mutation-testing`: test-suite defect-detection quality
+- Owned by `integration-test-design`: correctness across seams
+- Owned by `e2e-test-design`: user-journey correctness
 
 **Related skills**
-- Related: `performance-budgets`
+- Verify with: `testing-strategy`, `integration-test-design`, `performance-budgets`, `observability-modeling`
+- Related: `testing-strategy`, `integration-test-design`, `e2e-test-design`, `performance-engineering`, `performance-budgets`, `observability-modeling`, `error-tracking`, `mutation-testing`, `test-coverage-strategy`
 
 **Concept**
 - Mental model: |
@@ -183,7 +183,11 @@ After applying this skill, verify:
 - Analogy: Performance testing is to a software system what a load-bearing inspection is to a bridge — you do not certify a bridge by walking across it (functional test) and concluding it works; you drive trucks of known weight across at increasing volumes, with strain gauges on every beam, and verify the deflection stays within spec under expected traffic, that the failure mode is graceful when overloaded (cracks before collapse), that nothing creeps over a long soak. A bridge whose 'average' load it can carry is 50 tonnes but whose p99 stressor reveals harmonic resonance at 80 tonnes is the bridge that fails on a windy day.
 - Common misconception: |
 
+**Grounding**
+- Mode: `universal`
+- Truth sources: `https://grafana.com/docs/k6/latest/using-k6/thresholds/`, `https://grafana.com/docs/k6/latest/testing-guides/automated-performance-testing/`, `https://grafana.com/docs/k6/latest/`, `https://jmeter.apache.org/usermanual/`, `https://docs.locust.io/`, `https://docs.gatling.io/`, `https://www.infoq.com/presentations/latency-pitfalls/`, `../skills/skills/quality-assurance/performance-testing/references/performance-testing-2026-06-07.md`
+
 **Keywords**
-- `performance testing`, `load testing`, `stress testing`, `soak testing`, `spike testing`, `breakpoint test`, `k6`, `JMeter`, `Locust`, `Gatling`
+- `performance testing`, `load testing`, `stress testing`, `soak testing`, `spike testing`, `breakpoint test`, `latency percentile`, `SLO threshold`, `k6 thresholds`, `coordinated omission`
 
 <!-- skill-graph-context:end -->

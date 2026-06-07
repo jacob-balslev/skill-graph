@@ -5,7 +5,6 @@ license: MIT
 compatibility: "Markdown, positioning memos, product strategy, B2B SaaS go-to-market, sales narrative"
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"adjacent\":[\"porters-five-forces\",\"seven-powers\"],\"boundary\":[\"playing-to-win\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: reasoning-strategy
@@ -22,6 +21,7 @@ metadata:
   keywords: "[\"positioning\",\"product positioning\",\"April Dunford\",\"Obviously Awesome\",\"competitive alternatives\",\"market category\",\"value themes\",\"best-fit customers\",\"positioning canvas\",\"sales narrative\"]"
   examples: "[\"Apply April Dunford's positioning method to this product.\",\"Our buyers keep comparing us to spreadsheets; rebuild our positioning around real alternatives.\",\"Choose a market category that makes our differentiated value obvious.\",\"Turn these features into value themes and identify who cares most.\",\"Pressure-test this positioning statement before we update the sales deck.\"]"
   anti_examples: "[\"Turn this whole company plan into winning aspiration, where to play, how to win, capabilities, and systems.\",\"Create a blue ocean strategy canvas and ERRC grid for this market.\",\"Analyze rivalry, buyer power, supplier power, entrants, and substitutes.\",\"Classify whether this company has network effects, scale economies, or counter-positioning.\",\"Write final website hero copy and button microcopy from an approved position.\"]"
+  relations: "{\"boundary\":[{\"skill\":\"playing-to-win\",\"reason\":\"positioning owns the product-market frame that makes differentiated value obvious; playing-to-win owns integrated company or product strategy choices across aspiration, arena, advantage, capabilities, and systems\"},{\"skill\":\"blue-ocean-strategy\",\"reason\":\"positioning owns context-setting for an existing product's value; blue-ocean-strategy owns market-boundary reconstruction and value innovation when the task is to create new demand\"},{\"skill\":\"porters-five-forces\",\"reason\":\"positioning owns buyer-facing market context and alternatives; porters-five-forces owns industry-structure and profit-pressure diagnosis\"},{\"skill\":\"seven-powers\",\"reason\":\"positioning owns differentiated value communication and category framing; seven-powers owns durable firm-level power and moat-source classification\"},{\"skill\":\"microcopy\",\"reason\":\"positioning owns the strategic source of truth before copy is written; microcopy owns finished interface and message wording after the position is chosen\"}],\"related\":[\"framework-fit-analysis\",\"user-research\",\"journey-mapping\",\"content-monitor\",\"constraint-awareness\"],\"verify_with\":[\"epistemic-grounding\",\"user-research\",\"methodology\"]}"
   grounding: "{\"subject_matter\":\"April Dunford product positioning and the Obviously Awesome positioning process\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://www.aprildunford.com/post/a-quickstart-guide-to-positioning\",\"https://www.aprildunford.com/books\",\"https://public.summaries.com/files/1-page-summary/obviously-awesome.pdf\",\"skills/skills/meta-methods/positioning/references/positioning-sources.md\",\"skills/skills/meta-methods/positioning/references/upstream-displacement-2026-05-29.md\"],\"failure_modes\":[\"internal_competitor_list_not_customer_alternatives\",\"differentiation_without_customer_value\",\"broad_category_hides_advantage\",\"new_category_theater_without_buyer_context\",\"target_segment_selected_before_value_fit\",\"trend_layer_used_as_hype\",\"positioning_statement_without_operational_capture\"],\"evidence_priority\":\"general_knowledge_first\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
@@ -42,7 +42,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/positioning/SKILL.md
-  skill_graph_export_description_projection: anti_examples
+  skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
 
@@ -311,9 +311,15 @@ For [customers] who [current alternative/problem], [product] is a [category] tha
 - Analyze rivalry, buyer power, supplier power, entrants, and substitutes.
 - Classify whether this company has network effects, scale economies, or counter-positioning.
 - Write final website hero copy and button microcopy from an approved position.
+- Owned by `playing-to-win`: the product-market frame
+- Owned by `blue-ocean-strategy`: context-setting for an existing product's value
+- Owned by `porters-five-forces`: buyer-facing market context and alternatives
+- Owned by `seven-powers`: differentiated value communication and category framing
+- Owned by `microcopy`: the strategic source of truth before copy is written
 
 **Related skills**
-- Related: `porters-five-forces`, `seven-powers`
+- Verify with: `epistemic-grounding`, `user-research`, `methodology`
+- Related: `framework-fit-analysis`, `user-research`, `journey-mapping`, `content-monitor`, `constraint-awareness`
 
 **Concept**
 - Mental model: Product positioning is market-context design. The primitives are the customer's real competitive alternatives, the product's unique attributes, the value those attributes enable, the customer segments that care intensely about that value, the market category that makes the value obvious, optional trends that explain why now, and the captured position that aligns go-to-market teams. The method works in sequence because each later choice depends on the customer-relative evidence created by the earlier one.

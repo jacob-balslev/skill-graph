@@ -1,6 +1,6 @@
 ---
 name: prompt-injection-defense
-description: "Use when reasoning about systems that pass untrusted content to a language model: the data-vs-instruction collapse that makes this attack class a structural property of LLMs rather than a fixable bug, the direct/indirect/exfiltration/action-trigger taxonomy, the role of every untrusted surface (RAG retrievals, tool results, attachments, web content, document parsing, user-provided text), why content filters and improved system prompts do not solve it, and the defense-in-depth measures that do (capability constraint, content origin tracking, separate planning and execution stages, human-in-the-loop gates, principle-of-least-authority for tools). Do NOT use for jailbreaking and policy circumvention (use model-safety), for general API security (use api-security), for runtime input validation patterns (use type-safety + api-design), or for the protocol cycle of tool calls (use tool-call-flow)."
+description: "Use when reasoning about systems that pass untrusted content to a language model: the data-vs-instruction collapse that makes this attack class a structural property of LLMs rather than a fixable bug, the direct/indirect/exfiltration/action-trigger taxonomy, the role of every untrusted surface (RAG retrievals, tool results, attachments, web content, document parsing, user-provided text), why content filters and improved system prompts do not solve it, and the defense-in-depth measures that do (capability constraint, content origin tracking, separate planning and execution stages, human-in-the-loop gates, principle-of-least-authority for tools). Do NOT use for model refusal policy or jailbreak evals (use `guardrails` or `agent-eval-design`), for general application security (use `owasp-security` or `security-fundamentals`), for runtime input validation patterns (use `type-safety` + `api-design`), or for the protocol cycle of tool calls (use `tool-call-flow`)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
@@ -9,12 +9,12 @@ metadata:
   scope: "Reasoning about prompt-injection defense for systems that pass untrusted content to language models: data-vs-instruction collapse, direct and indirect injection, exfiltration, action-trigger attacks, untrusted content surfaces, and defense-in-depth through capability constraint, origin tracking, separated planning/execution, human approval, and least authority. Portable across LLM-integrated products and agent architectures. Excludes model jailbreaking/policy bypass, general API security, non-LLM input validation, and ordinary tool-call protocol design."
   taxonomy_domain: quality/security
   stability: experimental
-  keywords: "[\"prompt injection\",\"indirect prompt injection\",\"LLM01\",\"OWASP LLM\",\"data exfiltration\",\"tool abuse\",\"untrusted content\",\"RAG injection\",\"markdown image exfiltration\",\"jailbreak\"]"
-  triggers: "[\"is this an injection vector\",\"how do we stop the model from following commands in user input\",\"the model is treating retrieved content as commands\",\"is RAG safe\",\"can the model exfiltrate data via a tool call\"]"
-  examples: "[\"review whether retrieved documents in a RAG pipeline can override the system prompt\",\"design the boundary between a planning agent and an execution agent so injected commands cannot trigger destructive tool calls\",\"explain why a content filter that blocks one canonical attack phrase does not stop the broader class\",\"decide what tools an agent reading email attachments may invoke without human confirmation\"]"
-  anti_examples: "[\"design the JSON shape of a tool's parameters (use tool-call-flow)\",\"harden an HTTP API against SQL injection or XSS (use api-security)\",\"audit a model's refusal behavior on disallowed content (use model-safety)\"]"
-  relations: "{\"related\":[\"tool-call-flow\",\"http-semantics\",\"type-safety\",\"api-design\"],\"boundary\":[{\"skill\":\"tool-call-flow\",\"reason\":\"tool-call-flow owns the protocol cycle by which a model invokes a tool; this skill owns the security property the cycle must preserve when any message carries untrusted content.\"}],\"verify_with\":[\"api-design\",\"tool-call-flow\"]}"
-  grounding: "{\"subject_matter\":\"Portable prompt-injection threat modeling and defense-in-depth for LLM-integrated systems and agents\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://genai.owasp.org/llmrisk/llm01-prompt-injection/\",\"https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html\",\"https://www.anthropic.com/research/prompt-injection-defenses\",\"https://csrc.nist.gov/pubs/ai/100/2/e2025/final\",\"https://arxiv.org/abs/2302.12173\"],\"failure_modes\":[\"treating_prompt_injection_as_a_model_bug_fixed_by_prompt_wording\",\"confusing_jailbreak_policy_bypass_with_agent_action_exfiltration_risk\",\"trusting_rag_tool_results_attachments_or_subagent_output_as_instructions\",\"allowing_untrusted_content_and_high_impact_tools_in_the_same_turn\",\"relying_on_content_filters_without_capability_constraint_or_human_approval\",\"rendering_model_output_with_unrestricted_external_image_or_link_targets\"],\"evidence_priority\":\"equal\"}"
+  keywords: "[\"prompt injection defense\",\"indirect prompt injection\",\"LLM01\",\"untrusted content\",\"RAG injection\",\"tool authority\",\"data exfiltration\",\"content origin\",\"human approval\",\"least privilege\"]"
+  triggers: "[\"prompt injection risk\",\"indirect prompt injection\",\"untrusted content in model context\",\"model followed instructions from retrieved content\",\"can the model exfiltrate data via a tool call\"]"
+  examples: "[\"review a RAG pipeline for indirect prompt injection where retrieved documents can override developer instructions\",\"design a prompt-injection-defense boundary between a planning agent and an execution agent so untrusted content cannot trigger destructive tool calls\",\"explain why prompt-injection content filters that block one attack phrase do not stop indirect injection\",\"decide prompt-injection-safe tool authority for an agent reading untrusted email attachments before human confirmation\"]"
+  anti_examples: "[\"design the JSON shape of a tool call parameter schema for an assistant\",\"write a reusable prompt template to make a model follow developer instructions\",\"design an eval suite to measure jailbreak refusal behavior\"]"
+  relations: "{\"related\":[\"tool-call-flow\",\"http-semantics\",\"type-safety\",\"api-design\",\"owasp-security\",\"security-fundamentals\",\"guardrails\",\"agent-eval-design\",\"prompt-craft\"],\"boundary\":[{\"skill\":\"tool-call-flow\",\"reason\":\"tool-call-flow owns the protocol cycle by which a model invokes a tool; this skill owns the security property the cycle must preserve when any message carries untrusted content.\"},{\"skill\":\"prompt-craft\",\"reason\":\"prompt-craft owns authoring reusable prompts and instruction examples; this skill owns the system security boundary when untrusted content can influence a model.\"},{\"skill\":\"agent-eval-design\",\"reason\":\"agent-eval-design owns eval rubrics and grader cases; this skill owns the defense design being evaluated.\"}],\"verify_with\":[\"api-design\",\"tool-call-flow\",\"guardrails\",\"owasp-security\"]}"
+  grounding: "{\"subject_matter\":\"Portable prompt-injection threat modeling and defense-in-depth for LLM-integrated systems and agents\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://genai.owasp.org/llmrisk/llm01-prompt-injection/\",\"https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html\",\"https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks\",\"https://csrc.nist.gov/pubs/ai/100/2/e2025/final\",\"https://www.ncsc.gov.uk/blog-post/prompt-injection-is-not-sql-injection\",\"https://arxiv.org/abs/2302.12173\",\"../skills/skills/ai-engineering/prompt-injection-defense/references/prompt-injection-defense-2026-06-07.md\"],\"failure_modes\":[\"treating_prompt_injection_as_a_model_bug_fixed_by_prompt_wording\",\"confusing_jailbreak_policy_bypass_with_agent_action_exfiltration_risk\",\"trusting_rag_tool_results_attachments_or_subagent_output_as_instructions\",\"allowing_untrusted_content_and_high_impact_tools_in_the_same_turn\",\"relying_on_content_filters_without_capability_constraint_or_human_approval\",\"rendering_model_output_with_unrestricted_external_image_or_link_targets\",\"letting_human_approval_dialog_text_be_derived_from_untrusted_model_output\"],\"evidence_priority\":\"equal\"}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -128,11 +128,11 @@ After applying this skill, verify:
 
 | Instead of this skill | Use | Why |
 |---|---|---|
-| Hardening a model against producing disallowed content (jailbreaking) | `model-safety` | jailbreaking targets the model's policy boundary on behalf of one user; this attack class targets the application's correct behavior on behalf of a victim user |
+| Hardening a model against producing disallowed content or evaluating jailbreak refusals | `guardrails` + `agent-eval-design` | refusal behavior targets the model's policy boundary; this attack class targets the application's correct behavior when untrusted content can influence tools, private context, or rendered output |
 | Designing the JSON shape or parameter schema of a tool | `tool-call-flow` + `api-design` | tool-call-flow owns the model-runtime cycle; api-design owns parameter shape; this skill owns the security property they must preserve |
-| Defending an HTTP API against SQL injection or XSS | `api-security` | those have hard data-vs-directive boundaries that can be fixed at the encoding layer; this skill is for the boundary-less LLM case |
+| Defending an HTTP API against SQL injection or XSS | `owasp-security` | those have hard data-vs-directive boundaries that can be fixed at the encoding layer; this skill is for the boundary-less LLM case |
 | Auditing the model's accuracy or hallucination behavior | `eval-driven-development` | eval owns measurement; this skill owns the security property |
-| General authn/authz for API endpoints | `api-security` | authz governs what callers may do; this skill governs what an authenticated agent may be tricked into doing |
+| General authn/authz for API endpoints | `security-fundamentals` | authz governs what callers may do; this skill governs what an authenticated agent may be tricked into doing |
 
 ## Key Sources
 
@@ -140,8 +140,9 @@ After applying this skill, verify:
 - Greshake, K., Abdelnabi, S., Mishra, S., Endres, C., Holz, T., & Fritz, M. (2023). ["Not what you've signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection"](https://arxiv.org/abs/2302.12173). The foundational academic paper on the indirect case; defines the threat model.
 - Perez, F., & Ribeiro, I. (2022). ["Ignore Previous Prompt: Attack Techniques For Language Models"](https://arxiv.org/abs/2211.09527). Early systematic study of direct attack techniques.
 - Willison, S. [Prompt injection: What's the worst that can happen?](https://simonwillison.net/2023/Apr/14/worst-that-can-happen/) and [The Dual LLM pattern for building AI assistants that can resist prompt injection](https://simonwillison.net/2023/Apr/25/dual-llm-pattern/). Canonical practitioner taxonomy and the dual-LLM architectural pattern.
-- NIST. [AI Risk Management Framework (AI RMF 1.0)](https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.100-1.pdf). Section on adversarial input and the broader AI risk taxonomy; useful framing for what this attack class sits inside.
-- Anthropic. [Mitigating jailbreaks and prompt injections](https://docs.anthropic.com/en/docs/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks). Vendor-side guidance on defense in depth for Anthropic-hosted models — useful as one practitioner perspective, not as a complete defense.
+- NIST. [Adversarial Machine Learning: A Taxonomy and Terminology of Attacks and Mitigations (NIST AI 100-2e2025)](https://csrc.nist.gov/pubs/ai/100/2/e2025/final). Current NIST taxonomy for direct prompting attacks, indirect prompt injection through resource control, integrity attacks, privacy compromise, and mitigations.
+- NCSC. [Prompt injection is not SQL injection (it may be worse)](https://www.ncsc.gov.uk/blog-post/prompt-injection-is-not-sql-injection). Current government guidance framing LLMs as inherently confusable deputies and emphasizing deterministic safeguards over silver-bullet filters.
+- Anthropic. [Mitigating jailbreaks and prompt injections](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks). Vendor-side guidance on defense in depth for Anthropic-hosted models — useful as one practitioner perspective, not as a complete defense.
 - OWASP. [LLM02: Sensitive Information Disclosure](https://genai.owasp.org/llmrisk/llm02-sensitive-information-disclosure/) and [LLM06: Excessive Agency](https://genai.owasp.org/llmrisk/llm06-excessive-agency/). Adjacent OWASP categories that compose with this one — exfiltration consequences and over-broad tool authority are the consequence side of the threat.
 - Schulhoff, S., Pinto, J., Khan, A., et al. (2024). ["The Prompt Report: A Systematic Survey of Prompting Techniques"](https://arxiv.org/abs/2406.06608). Cross-references defensive prompting techniques within the broader prompting literature.
 
@@ -156,21 +157,23 @@ After applying this skill, verify:
 - Scope: Reasoning about prompt-injection defense for systems that pass untrusted content to language models: data-vs-instruction collapse, direct and indirect injection, exfiltration, action-trigger attacks, untrusted content surfaces, and defense-in-depth through capability constraint, origin tracking, separated planning/execution, human approval, and least authority. Portable across LLM-integrated products and agent architectures. Excludes model jailbreaking/policy bypass, general API security, non-LLM input validation, and ordinary tool-call protocol design.
 
 **When to use**
-- review whether retrieved documents in a RAG pipeline can override the system prompt
-- design the boundary between a planning agent and an execution agent so injected commands cannot trigger destructive tool calls
-- explain why a content filter that blocks one canonical attack phrase does not stop the broader class
-- decide what tools an agent reading email attachments may invoke without human confirmation
-- Triggers: `is this an injection vector`, `how do we stop the model from following commands in user input`, `the model is treating retrieved content as commands`, `is RAG safe`, `can the model exfiltrate data via a tool call`
+- review a RAG pipeline for indirect prompt injection where retrieved documents can override developer instructions
+- design a prompt-injection-defense boundary between a planning agent and an execution agent so untrusted content cannot trigger destructive tool calls
+- explain why prompt-injection content filters that block one attack phrase do not stop indirect injection
+- decide prompt-injection-safe tool authority for an agent reading untrusted email attachments before human confirmation
+- Triggers: `prompt injection risk`, `indirect prompt injection`, `untrusted content in model context`, `model followed instructions from retrieved content`, `can the model exfiltrate data via a tool call`
 
 **Not for**
-- design the JSON shape of a tool's parameters (use tool-call-flow)
-- harden an HTTP API against SQL injection or XSS (use api-security)
-- audit a model's refusal behavior on disallowed content (use model-safety)
+- design the JSON shape of a tool call parameter schema for an assistant
+- write a reusable prompt template to make a model follow developer instructions
+- design an eval suite to measure jailbreak refusal behavior
 - Owned by `tool-call-flow`: the protocol cycle by which a model invokes a tool
+- Owned by `prompt-craft`: authoring reusable prompts and instruction examples
+- Owned by `agent-eval-design`: eval rubrics and grader cases
 
 **Related skills**
-- Verify with: `api-design`, `tool-call-flow`
-- Related: `tool-call-flow`, `http-semantics`, `type-safety`, `api-design`
+- Verify with: `api-design`, `tool-call-flow`, `guardrails`, `owasp-security`
+- Related: `tool-call-flow`, `http-semantics`, `type-safety`, `api-design`, `owasp-security`, `security-fundamentals`, `guardrails`, `agent-eval-design`, `prompt-craft`
 
 **Concept**
 - Mental model: |
@@ -181,9 +184,9 @@ After applying this skill, verify:
 
 **Grounding**
 - Mode: `universal`
-- Truth sources: `https://genai.owasp.org/llmrisk/llm01-prompt-injection/`, `https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html`, `https://www.anthropic.com/research/prompt-injection-defenses`, `https://csrc.nist.gov/pubs/ai/100/2/e2025/final`, `https://arxiv.org/abs/2302.12173`
+- Truth sources: `https://genai.owasp.org/llmrisk/llm01-prompt-injection/`, `https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html`, `https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks`, `https://csrc.nist.gov/pubs/ai/100/2/e2025/final`, `https://www.ncsc.gov.uk/blog-post/prompt-injection-is-not-sql-injection`, `https://arxiv.org/abs/2302.12173`, `../skills/skills/ai-engineering/prompt-injection-defense/references/prompt-injection-defense-2026-06-07.md`
 
 **Keywords**
-- `prompt injection`, `indirect prompt injection`, `LLM01`, `OWASP LLM`, `data exfiltration`, `tool abuse`, `untrusted content`, `RAG injection`, `markdown image exfiltration`, `jailbreak`
+- `prompt injection defense`, `indirect prompt injection`, `LLM01`, `untrusted content`, `RAG injection`, `tool authority`, `data exfiltration`, `content origin`, `human approval`, `least privilege`
 
 <!-- skill-graph-context:end -->

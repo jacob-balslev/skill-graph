@@ -1,40 +1,48 @@
 ---
 name: database-migration
-description: "Use when planning or applying a raw-SQL database migration to a live PostgreSQL database — adding columns, renaming columns or tables, changing types, creating indexes, adding foreign keys, or running data backfills. Covers zero-downtime patterns (expand / contract, batched backfill, NOT VALID foreign keys, CONCURRENTLY indexes), the unpooled-connection requirement for DDL, branched-database workflows, and rollback strategy. Do NOT use for ORM-managed migrations driven by Prisma/Drizzle/TypeORM CLI scaffolding (the generation rules are tool-specific), for chasing a migration that has already failed in production (use `debugging`), or for designing the row-level-security model itself (use `owasp-security`). Do NOT use for design the row-level-security model for our new tenant table. Do NOT use for the migration crashed in production — find the root cause. Do NOT use for explain our migration conventions in the contributor docs. Do NOT use for refactor the migration runner helper for clarity."
+description: "Use when planning or applying a raw-SQL database migration to a live PostgreSQL database — adding columns, renaming columns or tables, changing types, creating indexes, adding foreign keys, or running data backfills. Covers zero-downtime patterns (expand / contract, batched backfill, NOT VALID foreign keys, CONCURRENTLY indexes), the direct/unpooled connection requirement for migration tooling, branched-database workflows, and rollback strategy. Do NOT use for ORM-managed migrations driven by Prisma/Drizzle/TypeORM CLI scaffolding, for chasing a migration that has already failed in production (use debugging), for multi-release schema lifecycle planning outside one migration (use schema-evolution), or for designing the row-level-security model itself (use owasp-security). Do NOT use for design the row-level-security model for our new tenant table. Do NOT use for the migration crashed in production — find the root cause. Do NOT use for plan the full multi-release schema evolution for this domain."
 license: MIT
-compatibility: "PostgreSQL 12+ (covers concurrent index, NOT VALID foreign keys, generated columns). Connection examples target raw `psql` and the unpooled side of any PgBouncer-style pooler. Branching examples reference `neonctl` as one provider — substitute the equivalent CLI for Supabase, Xata, or self-hosted clones if your platform supports branched databases."
-allowed-tools: Read Grep Bash Edit
+compatibility: "Portable PostgreSQL 12+ migration guidance. Verify provider-specific CLI syntax, pooler behavior, migration-runner transaction handling, and rollback features against the target platform before production rollout."
+allowed-tools: Read Grep Bash
 metadata:
-  relations: "{\"boundary\":[\"debugging\"]}"
-  schema_version: "8"
-  version: "1.0.0"
   subject: data-engineering
   deployment_target: portable
+  scope: "Raw-SQL PostgreSQL migration safety for live systems — migration file shape, direct/unpooled migration connections, branching or snapshot rehearsal, low-lock DDL patterns, batched backfills, deploy compatibility, verification, and rollback planning. Portable across PostgreSQL application stacks; principle-grounded and provider-aware, not repo-bound. Excludes ORM-specific migration generation, already-failed migration debugging, broad schema lifecycle roadmapping, and row-level-security model design."
   taxonomy_domain: data/migrations
-  owner: skill-graph-maintainer
-  freshness: "2026-05-06"
-  drift_check: "{\"last_verified\":\"2026-05-06\"}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"database migration\",\"schema migration\",\"zero-downtime migration\",\"DDL migration\",\"raw SQL migration\",\"Postgres DDL\",\"alter table production\",\"expand contract migration\",\"concurrent index creation\",\"migration rollback\"]"
-  examples: "[\"add a nullable column to a 50M-row orders table without taking downtime\",\"rename the `display_name` column to `username` while the app is live\",\"create a btree index on a 100M-row table without locking writes\",\"the migration takes ACCESS EXCLUSIVE — how do I avoid the lock?\",\"add a foreign key to a 10M-row table without blocking writes\",\"should I use ADD COLUMN ... NOT NULL DEFAULT 0 in this migration?\",\"write a rollback strategy for this schema change in case production breaks\",\"split the migration into expand and contract phases across two deploys\"]"
-  anti_examples: "[\"design the row-level-security model for our new tenant table\",\"the migration crashed in production — find the root cause\",\"explain our migration conventions in the contributor docs\",\"refactor the migration runner helper for clarity\",\"decide whether this column rename needs an automated regression test\",\"review this AI-generated DDL diff for correctness\"]"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
+  triggers: "[\"database-migration-skill\",\"postgres-migration-skill\",\"ddl-migration-skill\",\"zero-downtime-migration-skill\",\"raw-sql-migration-skill\"]"
+  examples: "[\"add a nullable column to a 50M-row orders table without taking downtime\",\"rename the display_name column to username while the app is live\",\"create a btree index on a 100M-row table without blocking writes\",\"add a foreign key to a 10M-row table without blocking writes\",\"should I use ADD COLUMN NOT NULL DEFAULT gen_random_uuid() in this migration?\",\"write a rollback strategy for this schema change in case production breaks\",\"split this column type change into safe migration steps\"]"
+  anti_examples: "[\"design the row-level-security model for our new tenant table\",\"the migration crashed in production — find the root cause\",\"plan the full multi-release schema evolution for this domain\",\"explain our migration conventions in the contributor docs\",\"refactor the migration runner helper for clarity\",\"decide whether this column rename needs an automated regression test\",\"review this AI-generated DDL diff for correctness\"]"
+  relations: "{\"related\":[\"schema-evolution\",\"indexing-strategy\",\"transaction-isolation\",\"debugging\",\"owasp-security\",\"testing-strategy\",\"code-review\"],\"boundary\":[{\"skill\":\"schema-evolution\",\"reason\":\"database-migration owns the mechanics and verification of one concrete migration; schema-evolution owns the higher-level lifecycle plan across multiple releases or contracts.\"}],\"verify_with\":[\"schema-evolution\",\"indexing-strategy\",\"testing-strategy\",\"code-review\"]}"
+  grounding: "{\"subject_matter\":\"PostgreSQL raw-SQL migration safety for live application databases\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://www.postgresql.org/docs/current/ddl-alter.html\",\"https://www.postgresql.org/docs/current/sql-altertable.html\",\"https://www.postgresql.org/docs/current/sql-createindex.html\",\"https://www.postgresql.org/docs/current/functions-admin.html\",\"https://neon.com/docs/introduction/branching\",\"https://neon.com/docs/connect/connection-pooling\",\"https://www.pgbouncer.org/features.html\"],\"failure_modes\":[\"volatile_default_rewrites_large_table\",\"plain_index_build_blocks_writes\",\"concurrent_index_inside_transaction\",\"foreign_key_added_with_immediate_full_validation\",\"migration_runner_uses_transaction_pooler\",\"long_backfill_runs_as_one_transaction\",\"type_change_rewrites_table_without_shadow_column\",\"rollback_path_missing\"],\"evidence_priority\":\"equal\"}"
+  mental_model: "A database migration is one schema or data-shape change applied to a live persistence layer. Its primitives are the migration file, a direct migration connection, the lock profile of each statement, the deploy-compatibility window, any batched backfill, verification queries, and a rollback or restore path. The safe version splits one risky-looking change into ordered steps that preserve application reads and writes while the database changes underneath them."
+  purpose: "Raw DDL can be syntactically correct and still take production down by blocking writes, rewriting a large table, breaking old application code, or leaving no practical rollback. This skill exists to make those production-specific failure modes visible before the migration ships."
+  boundary: "This skill owns the mechanics of one raw-SQL PostgreSQL migration and its immediate verification. It does not own ORM migration generation, post-incident debugging, broad schema lifecycle planning across releases, row-level-security policy design, or generic code-review scoring."
+  analogy: "A live database migration is changing a bridge while traffic keeps moving: temporary lanes, flaggers, inspection points, and a detour plan matter as much as the final bridge shape."
+  misconception: "The common mistake is treating a migration as a single SQL statement that passed on a small dev database. Production safety comes from lock analysis, deploy compatibility, batching, direct connection choice, verification, and rollback planning."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/data-engineering/database-migration/SKILL.md
   skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
+
+## Concept of the skill
+
+**What it is:** Database migration is the discipline of changing a live PostgreSQL schema or data shape through ordered raw-SQL steps that preserve application availability.
+
+**Mental model:** A migration is not just a statement. It is a file, connection choice, lock profile, deploy-compatibility window, backfill plan, verification surface, and rollback or restore path. Safe migrations break one risky change into steps the running application can survive.
+
+**Why it exists:** Live databases fail differently from local databases. Correct SQL can block writes, rewrite millions of rows, break old code during a deploy, or remove data with no practical rollback. This skill makes those risks explicit before the change ships.
+
+**What it is NOT:** It is not ORM-specific migration generation, post-incident debugging for a failed migration, broad schema lifecycle planning across several releases, row-level-security model design, or general code review.
+
+**Adjacent concepts:** Schema evolution, indexing strategy, transaction isolation, connection pooling, background backfills, testing strategy, code review, and security review for row-level security.
+
+**One-line analogy:** A live database migration is changing a bridge while traffic keeps moving: temporary lanes, flaggers, inspection points, and a detour plan matter as much as the final bridge shape.
+
+**Common misconception:** The common mistake is believing a migration is safe because the SQL worked on a small dev database. Production safety depends on locks, batching, deploy compatibility, connection routing, verification, and rollback.
 
 # Database Migration
 
@@ -43,19 +51,19 @@ metadata:
 - Migration file conventions: chronological filenames, headers documenting purpose and rollback, `BEGIN/COMMIT` framing, when DDL must escape the transaction
 - Connection requirements: why DDL needs an unpooled connection (PgBouncer transaction-mode rejects DDL session state), and the two-URL pattern for live applications
 - Branched-database workflow: create a branch, apply migration, schema-diff against parent, apply to main, prune the branch — with a vendor-capability matrix
-- Common DDL patterns: nullable column, column with constant default, column with non-constant default on a large table (batched backfill), zero-downtime rename via expand / contract, type change via shadow column, concurrent index creation, low-lock foreign key (NOT VALID + VALIDATE)
+- Common DDL patterns: nullable column, column with constant or non-volatile default, column with volatile default or row-specific value on a large table (batched backfill), zero-downtime rename via expand / contract, type change via shadow column, concurrent index creation, low-lock foreign key (NOT VALID + VALIDATE)
 - Tenant-scoped schema additions: how to keep multi-tenant isolation safe across migrations (RLS-policy-in-migration discipline), without owning the policy design itself
 - Zero-downtime table rename: compatibility view pattern that lets old code keep reading while the new name takes over
 - Rollback strategy: transactional rollback for structural changes, `DOWN` paths for non-transactional ones, point-in-time restore as the last resort
 - Pre-production checklist: schema diff, branch test run, NOT VALID gating, CONCURRENTLY gating, RLS gating, rollback documented in header
 
-## Philosophy
+## Philosophy of the skill
 
 A migration is the only operation in the application stack that is *both* shipped as code *and* irreversible by default. Application code can be reverted by re-deploying yesterday's commit; a `DROP COLUMN` cannot. Treat every migration as a one-way door unless you have explicitly designed the reverse door alongside it.
 
-The dominant failure mode is the *plausible-looking single-statement migration*: `ALTER TABLE orders ADD COLUMN sync_version INTEGER NOT NULL DEFAULT 0;` looks fine on a small dev database and locks the table for minutes on a 50M-row production table. Zero-downtime migration is a discipline of *splitting* the apparent single change into a sequence of low-lock steps that each remain compatible with the running application. The split is not theoretical — it is the difference between a deploy and an outage.
+The dominant failure mode is the *plausible-looking single-statement migration*: `ALTER TABLE orders ADD COLUMN request_id UUID NOT NULL DEFAULT gen_random_uuid();` looks fine on a small dev database and can rewrite millions of rows on a production table because each existing row needs a distinct value. Zero-downtime migration is a discipline of *splitting* the apparent single change into a sequence of low-lock steps that each remain compatible with the running application. The split is not theoretical — it is the difference between a deploy and an outage.
 
-The second failure mode is connection routing. Most production Postgres deployments place a transaction-mode pooler in front of the database for application traffic; that pooler does not support most DDL because DDL needs session-level state the pooler discards between transactions. A migration script that runs fine on a developer laptop and fails silently in production is almost always pointed at the pooled URL. The fix is a non-negotiable two-URL convention: pooled for application reads and writes, unpooled for migrations.
+The second failure mode is connection routing. Many production Postgres deployments place a transaction-mode pooler in front of the database for application traffic; that mode breaks session-based features and some migration tools rely on session state, `SET` behavior, or persistent connections. A migration script that runs fine on a developer laptop and fails oddly in production is often pointed at the pooled URL. The fix is a two-URL convention: pooled for application reads and writes, direct or unpooled for migrations and administrative work unless the migration runner and provider explicitly document otherwise.
 
 The third failure mode is *invisible* — running a migration without a rollback path documented next to it. Six months later, someone has to undo the change under incident pressure, with no record of what the reverse looks like. The discipline is to write the `DOWN` while the `UP` is still fresh, and to test it on a branched database before merging.
 
@@ -91,22 +99,24 @@ COMMIT;
 
 The `Rollback:` line is mandatory. If the rollback is "rebuild from a point-in-time snapshot," say so explicitly — the absence of a row-level rollback is a deliberate design choice that the next reader needs to know.
 
-## Connection: Unpooled for DDL
+## Connection: Direct or Unpooled for Migrations
 
-DDL statements (`ALTER TABLE`, `CREATE INDEX`, `CREATE TABLE`, `DROP TABLE`, `CREATE OR REPLACE FUNCTION`) need session-level state that PgBouncer's transaction mode does not preserve. The standard pattern is two connection URLs sourced from environment variables:
+Migration tools should run through a direct database connection unless the provider and runner explicitly document that pooled mode is supported for that operation. PgBouncer transaction pooling assigns a server connection only for the duration of a transaction and breaks several session-based PostgreSQL features; Neon documents schema migrations, `pg_dump` / `pg_restore`, long-running analytics, logical replication, and admin tasks as direct-connection use cases.
+
+The standard pattern is two connection URLs sourced from environment variables:
 
 ```
 DATABASE_URL          — pooled, for application reads and writes
 DATABASE_URL_UNPOOLED — direct, for migrations and operations that need session GUCs
 ```
 
-The pooled URL typically points at the pooler host on its dedicated port (commonly `6543`) with a `pgbouncer=true` query parameter; the unpooled URL points at the database host directly (commonly `5432`). Migration runners always use the unpooled URL:
+The pooled URL points at the pooler host or pooler endpoint; the direct URL points at the database host without the pooler. Migration runners use the direct URL by default:
 
 ```bash
 psql "$DATABASE_URL_UNPOOLED" -f db/migrations/2026_05_06_add_subscription_plan.sql
 ```
 
-A migration that runs cleanly on a developer database (which is direct, no pooler) and fails or behaves oddly in CI or production is almost always pointed at the pooled URL by default. Audit the runner before assuming the SQL is wrong.
+A migration that runs cleanly on a developer database (which is often direct, with no pooler) and fails or behaves oddly in CI or production is often pointed at the pooled URL by default. Audit the runner before assuming the SQL is wrong.
 
 ## Branched-Database Workflow
 
@@ -119,14 +129,14 @@ If your Postgres provider supports branching (Neon, Supabase clones, Xata, or se
 | Point-in-time restore on the parent | Last-resort rollback if the migration shipped and corrupted data |
 | Per-branch connection string | Lets the agent run the migration against the branch with a single env var swap |
 
-Example workflow with one provider's CLI (substitute the equivalent for your platform):
+Example workflow with one provider's CLI shape (substitute the exact current command and flags for your platform):
 
 ```bash
 # 1. Create a migration branch from main
-neonctl branches create --name "migration/add-subscription-plan" --parent main
+neonctl branches create --name "migration/add-subscription-plan" --parent main --output json
 
-# 2. Get the unpooled connection string for the branch
-BRANCH_URL=$(neonctl cs migration/add-subscription-plan --pooled false)
+# 2. Get the direct connection string for the branch from the provider CLI or console
+BRANCH_URL="<direct branch connection string>"
 
 # 3. Apply the migration on the branch
 psql "$BRANCH_URL" -f db/migrations/2026_05_06_add_subscription_plan.sql
@@ -144,67 +154,57 @@ psql "$DATABASE_URL_UNPOOLED" -f db/migrations/2026_05_06_add_subscription_plan.
 neonctl branches delete migration/add-subscription-plan
 ```
 
+Provider CLIs change faster than the migration principles. Treat the branch commands as a workflow skeleton; verify the exact CLI syntax against current provider docs before automating it.
+
 If your provider does not support branching, the substitute is a fresh database restored from a recent production snapshot; the workflow is the same in shape but slower in cycle time.
 
 ## Common DDL Patterns
 
 ### Add a Column
 
-Adding a nullable column or a column with a *constant* default is metadata-only on PostgreSQL 11+ — no table rewrite, no exclusive lock:
+Adding a nullable column or a column with a constant or otherwise non-volatile default is metadata-only on modern PostgreSQL — no table rewrite:
 
 ```sql
 -- Nullable: instant, safe
 ALTER TABLE orders
   ADD COLUMN IF NOT EXISTS fulfilled_at TIMESTAMPTZ;
 
--- Constant default: instant, safe (PostgreSQL 11+)
+-- Constant default: metadata-only on PostgreSQL 11+
 ALTER TABLE orders
   ADD COLUMN IF NOT EXISTS sync_version INTEGER NOT NULL DEFAULT 0;
 ```
 
-### Add a Column with a Non-Constant Default (Large Tables)
+### Add a Column with a Volatile Default or Row-Specific Value (Large Tables)
 
-A *non-constant* default (`DEFAULT now()`, `DEFAULT gen_random_uuid()`, `DEFAULT some_function(other_column)`) forces a full table rewrite. On a 50M-row table that means a multi-minute exclusive lock. The split is:
+A volatile default such as `DEFAULT gen_random_uuid()` or `DEFAULT clock_timestamp()` needs a distinct value per existing row and can force a long update or rewrite. A stable default like `DEFAULT now()` is not the same risk class, and PostgreSQL defaults cannot reference another column directly in the `DEFAULT` expression. If existing rows need row-specific values, split the change:
 
 ```sql
 -- Step 1: add the column nullable (instant, no lock)
 ALTER TABLE order_items
-  ADD COLUMN IF NOT EXISTS unit_weight_grams NUMERIC(10,2);
+  ADD COLUMN IF NOT EXISTS public_id UUID;
 
--- Step 2: backfill in batches (avoids long lock and long transaction)
-DO $$
-DECLARE
-  batch_size INT := 1000;
-  last_id UUID := '00000000-0000-0000-0000-000000000000';
-  max_id UUID;
-BEGIN
-  LOOP
-    SELECT MAX(id) INTO max_id
-    FROM (
-      SELECT id FROM order_items
-      WHERE id > last_id
-      ORDER BY id
-      LIMIT batch_size
-    ) sub;
+-- Step 2: run this bounded update repeatedly from the migration runner,
+-- a maintenance job, or an operator loop until it affects 0 rows.
+WITH batch AS (
+  SELECT id
+  FROM order_items
+  WHERE public_id IS NULL
+  ORDER BY id
+  LIMIT 1000
+)
+UPDATE order_items
+SET public_id = gen_random_uuid()
+WHERE id IN (SELECT id FROM batch);
 
-    EXIT WHEN max_id IS NULL;
-
-    UPDATE order_items
-    SET unit_weight_grams = 250
-    WHERE id > last_id AND id <= max_id;
-
-    last_id := max_id;
-    COMMIT;
-  END LOOP;
-END;
-$$;
-
--- Step 3: enforce NOT NULL after backfill is complete
+-- Step 3: set the future default and enforce NOT NULL after backfill is complete
 ALTER TABLE order_items
-  ALTER COLUMN unit_weight_grams SET NOT NULL;
+  ALTER COLUMN public_id SET DEFAULT gen_random_uuid();
+
+ALTER TABLE order_items
+  ALTER COLUMN public_id SET NOT NULL;
 ```
 
-The batch size is workload-dependent. 1000 rows per batch is a reasonable default for narrow rows; tune down if the table has wide rows or many indexes.
+The batch size is workload-dependent. 1000 rows per batch is a reasonable default for narrow rows; tune down if the table has wide rows or many indexes. Do not hide the whole backfill inside one long transaction; each batch should commit separately so locks, WAL pressure, and retry scope stay bounded.
 
 ### Rename a Column (Zero-Downtime — Expand / Contract)
 
@@ -244,14 +244,14 @@ The two phases ship in *separate migrations and separate deploys*. Bundling them
 
 ### Change a Column Type
 
-Compatible types (e.g. `INT` → `BIGINT`, `TEXT` → `VARCHAR(n)` where `n` is large enough) are direct and safe:
+Some type changes are metadata-only because PostgreSQL can preserve the stored representation, such as widening an unconstrained `VARCHAR` limit or moving between compatible text representations. Many other type changes require a table rewrite or expensive expression evaluation, even when the cast is implicit. Treat direct `ALTER COLUMN ... TYPE` as safe only after checking the specific source type, target type, constraints, indexes, and lock profile:
 
 ```sql
 ALTER TABLE orders
-  ALTER COLUMN external_shop_id TYPE BIGINT;
+  ALTER COLUMN external_shop_id TYPE TEXT;
 ```
 
-Incompatible types (e.g. `NUMERIC(10,2)` → `BIGINT` cents, `TEXT` → `INTEGER`) need the shadow-column pattern:
+Rewrite-prone or semantically changing types (for example, `INTEGER` to `BIGINT` on a large table, `NUMERIC(10,2)` to `BIGINT` cents, or `TEXT` to `INTEGER`) need the shadow-column pattern:
 
 ```sql
 -- Step 1: add shadow column with the new type
@@ -270,7 +270,7 @@ ALTER TABLE orders RENAME COLUMN amount_cents TO amount;
 
 ### Create an Index Concurrently
 
-`CREATE INDEX` takes an `ACCESS EXCLUSIVE` lock by default — readers are unaffected but writers block for the duration. On a large table that is unacceptable. `CONCURRENTLY` builds the index without holding the heavy lock:
+Plain `CREATE INDEX` locks out writes while the build runs, although readers can continue. On a large table that write block is often unacceptable. `CONCURRENTLY` builds the index without taking locks that prevent concurrent inserts, updates, or deletes:
 
 ```sql
 CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_orders_org_created
@@ -424,7 +424,7 @@ If your provider lacks point-in-time restore, the substitute is a backup-and-res
 
 ## Evals
 
-This skill ships a comprehension-eval artifact at [`examples/evals/database-migration.json`](https://github.com/jacob-balslev/skill-graph/blob/main/examples/evals/database-migration.json). The checklist below is the authoring gate for migration rollout decisions; the eval file is the grader surface.
+This skill ships a local comprehension-eval artifact at `skills/skills/data-engineering/database-migration/evals/comprehension.json`. The previous marketplace example artifact remains at `skill-graph/examples/evals/database-migration.json`, but the current audit loop reads the local eval file next to the skill.
 
 ## Verification
 
@@ -432,9 +432,9 @@ This skill ships a comprehension-eval artifact at [`examples/evals/database-migr
 - [ ] File header documents purpose, safety classification, and rollback path
 - [ ] DDL targets the unpooled connection URL, not the pooled one
 - [ ] If your platform supports branched databases, the migration ran on a branch and the schema diff against main shows only intended changes
-- [ ] Nullable columns added with `IF NOT EXISTS`; non-constant defaults split into add-nullable + batched-backfill + set-NOT-NULL
+- [ ] Nullable columns added with `IF NOT EXISTS`; volatile defaults or row-specific values split into add-nullable + batched-backfill + default/constraint enforcement
 - [ ] Column renames use expand / contract across two deploys, not direct `RENAME COLUMN`
-- [ ] Type changes incompatible with `ALTER COLUMN ... TYPE` use the shadow-column pattern
+- [ ] Type changes that rewrite large tables or change semantics use the shadow-column pattern
 - [ ] Indexes on large tables created with `CONCURRENTLY`, outside any `BEGIN/COMMIT` block
 - [ ] Foreign keys on large tables added as `NOT VALID`, then validated separately
 - [ ] If the application uses RLS for tenancy, the policy is created in the same migration as the new table — never deferred to a follow-up
@@ -460,24 +460,42 @@ This skill ships a comprehension-eval artifact at [`examples/evals/database-migr
 - Subject: `data-engineering`
 - Deployment: `portable`
 - Domain: `data/migrations`
+- Scope: Raw-SQL PostgreSQL migration safety for live systems — migration file shape, direct/unpooled migration connections, branching or snapshot rehearsal, low-lock DDL patterns, batched backfills, deploy compatibility, verification, and rollback planning. Portable across PostgreSQL application stacks; principle-grounded and provider-aware, not repo-bound. Excludes ORM-specific migration generation, already-failed migration debugging, broad schema lifecycle roadmapping, and row-level-security model design.
 
 **When to use**
 - add a nullable column to a 50M-row orders table without taking downtime
-- rename the `display_name` column to `username` while the app is live
-- create a btree index on a 100M-row table without locking writes
-- the migration takes ACCESS EXCLUSIVE — how do I avoid the lock?
+- rename the display_name column to username while the app is live
+- create a btree index on a 100M-row table without blocking writes
 - add a foreign key to a 10M-row table without blocking writes
-- should I use ADD COLUMN ... NOT NULL DEFAULT 0 in this migration?
+- should I use ADD COLUMN NOT NULL DEFAULT gen_random_uuid() in this migration?
 - write a rollback strategy for this schema change in case production breaks
-- split the migration into expand and contract phases across two deploys
+- split this column type change into safe migration steps
+- Triggers: `database-migration-skill`, `postgres-migration-skill`, `ddl-migration-skill`, `zero-downtime-migration-skill`, `raw-sql-migration-skill`
 
 **Not for**
 - design the row-level-security model for our new tenant table
 - the migration crashed in production — find the root cause
+- plan the full multi-release schema evolution for this domain
 - explain our migration conventions in the contributor docs
 - refactor the migration runner helper for clarity
 - decide whether this column rename needs an automated regression test
 - review this AI-generated DDL diff for correctness
+- Owned by `schema-evolution`: the mechanics and verification of one concrete migration
+
+**Related skills**
+- Verify with: `schema-evolution`, `indexing-strategy`, `testing-strategy`, `code-review`
+- Related: `schema-evolution`, `indexing-strategy`, `transaction-isolation`, `debugging`, `owasp-security`, `testing-strategy`, `code-review`
+
+**Concept**
+- Mental model: A database migration is one schema or data-shape change applied to a live persistence layer. Its primitives are the migration file, a direct migration connection, the lock profile of each statement, the deploy-compatibility window, any batched backfill, verification queries, and a rollback or restore path. The safe version splits one risky-looking change into ordered steps that preserve application reads and writes while the database changes underneath them.
+- Purpose: Raw DDL can be syntactically correct and still take production down by blocking writes, rewriting a large table, breaking old application code, or leaving no practical rollback. This skill exists to make those production-specific failure modes visible before the migration ships.
+- Boundary: This skill owns the mechanics of one raw-SQL PostgreSQL migration and its immediate verification. It does not own ORM migration generation, post-incident debugging, broad schema lifecycle planning across releases, row-level-security policy design, or generic code-review scoring.
+- Analogy: A live database migration is changing a bridge while traffic keeps moving: temporary lanes, flaggers, inspection points, and a detour plan matter as much as the final bridge shape.
+- Common misconception: The common mistake is treating a migration as a single SQL statement that passed on a small dev database. Production safety comes from lock analysis, deploy compatibility, batching, direct connection choice, verification, and rollback planning.
+
+**Grounding**
+- Mode: `hybrid`
+- Truth sources: `https://www.postgresql.org/docs/current/ddl-alter.html`, `https://www.postgresql.org/docs/current/sql-altertable.html`, `https://www.postgresql.org/docs/current/sql-createindex.html`, `https://www.postgresql.org/docs/current/functions-admin.html`, `https://neon.com/docs/introduction/branching`, `https://neon.com/docs/connect/connection-pooling`, `https://www.pgbouncer.org/features.html`
 
 **Keywords**
 - `database migration`, `schema migration`, `zero-downtime migration`, `DDL migration`, `raw SQL migration`, `Postgres DDL`, `alter table production`, `expand contract migration`, `concurrent index creation`, `migration rollback`

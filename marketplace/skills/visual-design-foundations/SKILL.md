@@ -1,11 +1,10 @@
 ---
 name: visual-design-foundations
-description: "Use when designing or auditing visual craft: color palette, typography, spacing, elevation, rhythm, density, visual hierarchy, brand fit, contrast intent, and motion feel. Do NOT use for sign-system meaning (use `semiotics`), token/component architecture (use `design-system-architecture`), responsive structure (use `layout-composition`), or accessibility compliance (use `a11y`). Do NOT use for what does this icon or badge color communicate to users? Do NOT use for define semantic tokens and component variants. Do NOT use for decide the responsive section order and breakpoint behavior. Do NOT use for verify WCAG contrast, focus order, and screen-reader behavior."
+description: "Use when designing or auditing visual craft: color palette, typography, spacing, elevation, rhythm, density, visual hierarchy, brand fit, contrast intent, and motion feel. Do NOT use for sign-system meaning (use `semiotics`), token/component architecture (use `design-system-architecture`), responsive structure (use `layout-composition`), or accessibility compliance (use `a11y`). Do NOT use for what does this icon or badge color communicate to users? Do NOT use for define semantic tokens and component variants. Do NOT use for decide the responsive section order and breakpoint behavior. Do NOT use for verify WCAG contrast, focus order, and screen-reader behavior. Do NOT use for what visual signs mean (use semiotics). Do NOT use for responsive structure (use layout-composition)."
 license: MIT
 compatibility: "Portable visual-design guidance for product UI, dashboards, docs, marketing-adjacent product surfaces, and design-system consumers. Does not replace brand-specific guidelines."
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"adjacent\":[\"visual-hierarchy\",\"component-architecture\",\"layout-composition\",\"design-system-architecture\"],\"boundary\":[\"semiotics\"],\"verify_with\":[\"a11y\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: design
@@ -21,6 +20,7 @@ metadata:
   keywords: "[\"visual-design\",\"visual craft\",\"palette direction\",\"typography direction\",\"spatial rhythm\",\"density rules\",\"elevation treatment\",\"motion feel\",\"brand fit\"]"
   examples: "[\"pick a visual direction for this dashboard without changing the task structure\",\"audit color, typography, spacing, and hierarchy for this product page\",\"this UI feels flat and hard to scan - improve the visual hierarchy\",\"choose a restrained palette and type scale for an internal admin tool\"]"
   anti_examples: "[\"what does this icon or badge color communicate to users?\",\"define semantic tokens and component variants\",\"decide the responsive section order and breakpoint behavior\",\"verify WCAG contrast, focus order, and screen-reader behavior\"]"
+  relations: "{\"boundary\":[{\"skill\":\"semiotics\",\"reason\":\"semiotics owns what visual signs mean; visual-design-foundations owns the craft choices that shape the surface\"},{\"skill\":\"layout-composition\",\"reason\":\"layout-composition owns responsive structure; visual-design-foundations owns palette, typography, rhythm, density, and polish\"}],\"related\":[\"semiotics\",\"design-system-architecture\",\"layout-composition\",\"microcopy\",\"a11y\"],\"verify_with\":[\"a11y\",\"semiotics\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -32,7 +32,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/visual-design-foundations/SKILL.md
-  skill_graph_export_description_projection: anti_examples
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Visual Design Foundations
@@ -101,10 +101,12 @@ This skill ships a comprehension-eval artifact at [`examples/evals/visual-design
 - define semantic tokens and component variants
 - decide the responsive section order and breakpoint behavior
 - verify WCAG contrast, focus order, and screen-reader behavior
+- Owned by `semiotics`: what visual signs mean
+- Owned by `layout-composition`: responsive structure
 
 **Related skills**
-- Verify with: `a11y`
-- Related: `visual-hierarchy`, `component-architecture`, `layout-composition`, `design-system-architecture`
+- Verify with: `a11y`, `semiotics`
+- Related: `semiotics`, `design-system-architecture`, `layout-composition`, `microcopy`, `a11y`
 
 **Keywords**
 - `visual-design`, `visual craft`, `palette direction`, `typography direction`, `spatial rhythm`, `density rules`, `elevation treatment`, `motion feel`, `brand fit`

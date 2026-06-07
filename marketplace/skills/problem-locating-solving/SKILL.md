@@ -5,7 +5,6 @@ license: MIT
 compatibility: "Language- and stack-agnostic. The locate-to-solve loop, boundary-localization techniques, and verification rules apply to any software bug investigation; specific tool names (binary search, git bisect, MRE) are illustrative — substitute the equivalents of your stack."
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"adjacent\":[\"diagnosis\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: software-engineering-method
@@ -21,6 +20,7 @@ metadata:
   keywords: "[\"locate a defect in unfamiliar codebase\",\"failing-boundary identification\",\"first failing boundary\",\"find where defect originates\",\"trace symptom backward to source\",\"search-space reduction by symptom type\",\"boundary-based fault localization\",\"locate-to-solve workflow\",\"search-space bounding rules\",\"entry-point tracing technique\"]"
   examples: "[\"this route returns 500 but I have no idea where the failure starts — walk me through finding the boundary\",\"I have a wrong-total bug — show me how to locate the divergence point\",\"the build broke after a merge but the error trace is a cascade — which file should I open first?\",\"I see the symptom but I am still in discovery — bound the search space for me\",\"two candidate fixes for this null-pointer crash — compare blast radius between them\",\"I have an unfamiliar codebase and need to find where this report is computed wrong\",\"what step in the locate-to-fix workflow did I skip — the bug came back under different inputs\"]"
   anti_examples: "[\"plan the next 6 weeks of work for the team\",\"review this PR for code quality\",\"this endpoint is slow under load — find the bottleneck\",\"scan this repo for OWASP top 10 vulnerabilities\",\"run scientific-method debugging on this stack trace\",\"I see the symptom but cannot find the root cause of this nil panic\",\"classify this failure into a problem class before debugging\",\"pin this regression so the same bug can't slip through again\",\"decide what test pyramid this feature needs\"]"
+  relations: "{\"boundary\":[{\"skill\":\"debugging\",\"reason\":\"debugging is the *execution* of one chosen technique against an already-localized bug; problem-locating-solving is the workflow that produces the localization — same 'I have a bug, what do I do?' prompt routes to debugging when the class is known and to problem-locating-solving when localization is needed first\"},{\"skill\":\"refactor\",\"reason\":\"refactor restructures non-broken code for clarity or maintainability; problem-locating-solving finds and fixes broken code — same 'this code needs change' prompt routes by whether the trigger is a failure (locate) or a quality concern (refactor)\"}],\"related\":[\"pattern-recognition\",\"diagnosis\",\"lint-overlay\",\"testing-strategy\",\"code-review\"],\"verify_with\":[\"tool-call-strategy\",\"context-graph\",\"skill-infrastructure\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -254,9 +254,12 @@ If the same class of bug could reasonably recur, promote the learning into a pre
 - classify this failure into a problem class before debugging
 - pin this regression so the same bug can't slip through again
 - decide what test pyramid this feature needs
+- Owned by `debugging`
+- Owned by `refactor`
 
 **Related skills**
-- Related: `diagnosis`
+- Verify with: `tool-call-strategy`, `context-graph`, `skill-infrastructure`
+- Related: `pattern-recognition`, `diagnosis`, `lint-overlay`, `testing-strategy`, `code-review`
 
 **Keywords**
 - `locate a defect in unfamiliar codebase`, `failing-boundary identification`, `first failing boundary`, `find where defect originates`, `trace symptom backward to source`, `search-space reduction by symptom type`, `boundary-based fault localization`, `locate-to-solve workflow`, `search-space bounding rules`, `entry-point tracing technique`

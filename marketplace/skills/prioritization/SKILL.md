@@ -5,7 +5,6 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  relations: "{\"adjacent\":[\"spec-driven-development\",\"context-engineering\",\"task-path-optimization\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: software-engineering-method
@@ -20,6 +19,7 @@ metadata:
   stability: experimental
   keywords: "[\"prioritization\",\"RICE\",\"ICE\",\"MoSCoW\",\"RICE-A\",\"AI ambiguity\",\"feature ranking\",\"research prioritization\",\"backlog management\",\"MVP scope\"]"
   triggers: "[\"prioritization-skill\",\"roadmap-skill\",\"priority-planning-mode\"]"
+  relations: "{\"related\":[\"constraint-awareness\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -151,7 +151,7 @@ PRIORITIZATION CHECK
 - Triggers: `prioritization-skill`, `roadmap-skill`, `priority-planning-mode`
 
 **Related skills**
-- Related: `spec-driven-development`, `context-engineering`, `task-path-optimization`
+- Related: `constraint-awareness`
 
 **Keywords**
 - `prioritization`, `RICE`, `ICE`, `MoSCoW`, `RICE-A`, `AI ambiguity`, `feature ranking`, `research prioritization`, `backlog management`, `MVP scope`

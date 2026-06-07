@@ -179,7 +179,7 @@ subject: backend-engineering
 - `knowledge-organization` — structuring meaning: taxonomy, ontology, semantics, classification, linguistics, knowledge/concept modeling.
 - `product-domain` — genuine external product/market verticals: ecommerce platforms, marketplaces, fulfillment, vendor playbooks.
 
-See `docs/adr/0020-twelve-shelf-competency-reaxis.md` for rationale (supersedes the 9-value enum in `docs/adr/0017-five-axis-classification-model.md`).
+See `docs/adr/0020-twelve-shelf-competency-reaxis.md` for the current shelf rationale.
 
 ---
 
@@ -394,7 +394,7 @@ reviewed_at: "2026-05-12"
 
 **Purpose.** Records when the skill was last verified against its truth sources (code, docs, external specs) AND stores content hashes of those truth sources at the time of verification. The stored hashes turn `drift_check` from a self-asserted date into evidence the drift sentinel can verify. Distinct from `freshness` — a skill can be editorially fresh but technically drifted.
 
-**Shape change in v3.** The v2 field was a date string. The v3 field is an object with a required `last_verified` date and an optional `truth_source_hashes` map. The v2 scalar form is rejected as a type error under v3; run `node scripts/migrate-skill-v2-to-v3.js` for an automatic upgrade.
+**Shape change in v3.** The v2 field was a date string. The v3 field is an object with a required `last_verified` date and an optional `truth_source_hashes` map. The v2 scalar form is rejected as a type error under the current schema. Historical codemods were retired by ADR 0014; recover them from git history only when investigating old data.
 
 **Rules.**
 - Object with one required sub-field and one optional sub-field.
@@ -1124,7 +1124,7 @@ compatibility:
 
 **When NOT to use.** Generic skills with no runtime dependencies — omit the field rather than setting it to an empty object.
 
-**Migration from v2.** In protocol-native source, the codemod (`scripts/migrate-skill-v2-to-v3.js`) transforms `compatibility: "<text>"` to `compatibility:\n  notes: "<text>"`. In Agent-Skills-compatible source, the scalar top-level base field is valid physical encoding; do not warn on it solely because the logical protocol-native shape is object-based.
+**Migration from v2.** In protocol-native source, the v2 scalar `compatibility: "<text>"` becomes `compatibility:\n  notes: "<text>"`. The historical codemod that performed this conversion was retired by ADR 0014 and is recoverable from git history. In Agent-Skills-compatible source, the scalar top-level base field is valid physical encoding; do not warn on it solely because the logical protocol-native shape is object-based.
 
 ---
 

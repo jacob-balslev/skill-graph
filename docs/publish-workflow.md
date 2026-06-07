@@ -53,7 +53,7 @@ The `--check` flag runs without writing files. It must exit 0 before proceeding.
 
 - Every exported description is ≤ 1024 characters (Agent Skills marketplace limit).
 - No privacy violations (`sales-hub/` paths, personal names, tokens, internal DB surface names).
-- All exported skills carry `skill_graph_protocol: Skill Metadata Protocol v7`.
+- All exported skills carry factual Skill Graph provenance (`skill_graph_source_repo`, `skill_graph_project`, `skill_graph_canonical_skill`) and do **not** emit `skill_graph_protocol`; that label was retired because version labels must describe content conformance, not exporter version.
 - Structural-verdict FAIL skills are blocked from export (gate added in commit `8925a56`).
 
 If `--check` fails on a description-length violation, add an override in `EXPORT_DESCRIPTION_OVERRIDES` in `scripts/export-marketplace-skills.js`. Never shorten the canonical description to fit the limit.
@@ -164,9 +164,9 @@ git ls-tree --name-only HEAD | grep -v "^\.git"
 The release repo has a flat structure under `skills/`:
 
 ```
-skills/
+  skills/
   <skill-name>/
-    SKILL.md       ← plain Agent Skills shape, six fields only
+    SKILL.md       ← plain Agent Skills-compatible shape
 ```
 
 Each `SKILL.md` must carry:
@@ -176,12 +176,14 @@ Each `SKILL.md` must carry:
 - `license` — `MIT`.
 - `compatibility` — human-readable runtime compatibility note.
 - `allowed-tools` — space-separated tool list (e.g. `Read Grep Bash`).
-- `metadata.schema_version` — `"7"`.
-- `metadata.skill_graph_protocol` — `Skill Metadata Protocol v7`.
+- Optional plain Agent Skills activation fields such as `paths`, `triggers`, `examples`, and `anti_examples` when present in the source.
+- Protocol metadata fields are projected as strings under `metadata` when they are present in the canonical `SKILL.md` source.
 - `metadata.skill_graph_source_repo` — `https://github.com/jacob-balslev/skill-graph`.
+- `metadata.skill_graph_project` — `Skill Graph`.
 - `metadata.skill_graph_canonical_skill` — path in the skill-graph repo.
+- `metadata.skill_graph_export_description_projection*` — optional export bookkeeping when the marketplace description includes projected anti-example or boundary text.
 
-Internal fields (`grounding`, `relations`, `mental_model`, `purpose`, `boundary`, `analogy`, `misconception`, `structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`, `eval_state`, `routing_eval`, etc.) must NOT appear in the exported surface. The exporter strips them.
+Protocol extension fields must not appear as extra top-level fields in the plain Agent Skills surface. When preserved for traceability, they appear under `metadata` as string values; generated body text must not surface audit/eval maintenance state as user-facing guidance.
 
 ---
 

@@ -32,7 +32,7 @@ Every top-level authored field in `schemas/SKILL_METADATA_PROTOCOL_schema.json` 
 | **dropped intentionally** | The field does not appear in the manifest. Loss policy explains why. |
 | **generated only** | The manifest key is produced by the generator, not copied from authored frontmatter. |
 
-### Top-level authored fields (v4 canonical fields plus compatibility aliases)
+### Authored and sidecar fields
 
 | # | Authored field | Fate | Manifest projection |
 |---|---|---|---|
@@ -43,7 +43,7 @@ Every top-level authored field in `schemas/SKILL_METADATA_PROTOCOL_schema.json` 
 | 5 | `version` | copied through unchanged | `version`. |
 | 6 | `subject` | copied through unchanged | v8 primary classification — closed 12-value enum. See `schemas/SKILL_METADATA_PROTOCOL_schema.json § subject`. |
 | 7 | `subjects` | copied through unchanged | Optional polyhierarchy — ordered array (max 2), `subjects[0]` matches `subject`. |
-| 8 | `taxonomy_domain` | copied through unchanged | Optional slash-delimited sub-path within a `subject` (e.g. `code-engineering/integrations/shopify`). Renamed from `domain`. |
+| 8 | `taxonomy_domain` | copied through unchanged | Optional slash-delimited sub-path within a `subject` (e.g. `backend-engineering/integrations/shopify`). Renamed from `domain`. |
 | 9 | `deployment_target` | copied through unchanged | Closed 2-enum: `portable` \| `project`. Drives project-fit filtering. |
 | 10 | `scope` | copied through unchanged | Required free-text PRD-style statement in `SKILL.md`. Not an enum. |
 | 11 | `owner` | copied through unchanged | `owner`. |

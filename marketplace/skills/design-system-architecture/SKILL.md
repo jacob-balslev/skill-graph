@@ -5,7 +5,6 @@ license: MIT
 compatibility: "Portable design-system architecture guidance for web and app component systems, token systems, and multi-theme UI libraries."
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"adjacent\":[\"layout-composition\",\"visual-design-foundations\"],\"boundary\":[\"information-architecture\"],\"verify_with\":[\"a11y\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: frontend-engineering
@@ -22,6 +21,7 @@ metadata:
   keywords: "[\"design tokens\",\"semantic tokens\",\"component API\",\"theming\",\"component library\",\"token taxonomy\",\"design system migration\",\"design system audit\",\"component library audit\",\"token drift\"]"
   examples: "[\"define semantic tokens so charts, status colors, and surfaces do not hardcode raw colors\",\"audit this component library for API consistency and token drift\",\"design the theming architecture before adding dark mode\",\"how should we migrate old CSS variables to canonical design-system tokens?\"]"
   anti_examples: "[\"organize pages, nav, sitemap, and wayfinding\",\"rewrite the empty-state text and tooltip labels\",\"add aria-labels and keyboard behavior to this component\",\"draft an architecture note explaining why we chose Postgres over DynamoDB\"]"
+  relations: "{\"related\":[\"a11y\",\"microcopy\",\"information-architecture\",\"semantics\",\"layout-composition\",\"visual-design-foundations\",\"interaction-patterns\",\"refactor\"],\"verify_with\":[\"a11y\",\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -107,8 +107,8 @@ This skill ships a comprehension-eval artifact at [`examples/evals/design-system
 - draft an architecture note explaining why we chose Postgres over DynamoDB
 
 **Related skills**
-- Verify with: `a11y`
-- Related: `layout-composition`, `visual-design-foundations`
+- Verify with: `a11y`, `code-review`
+- Related: `a11y`, `microcopy`, `information-architecture`, `semantics`, `layout-composition`, `visual-design-foundations`, `interaction-patterns`, `refactor`
 
 **Keywords**
 - `design tokens`, `semantic tokens`, `component API`, `theming`, `component library`, `token taxonomy`, `design system migration`, `design system audit`, `component library audit`, `token drift`

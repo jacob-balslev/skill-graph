@@ -6,11 +6,11 @@
 
 ### `adjacent` *(deprecated alias of `related`)*
 
-The v3.0 name for the symmetric associative relation. Still valid in v3.x; lint emits a soft warning pointing at `related`. Removal target: v4 (ADR 0001).
+Legacy name for the symmetric associative relation. Tooling accepts it as an alias for existing skills; new skills author `relations.related`.
 
 ### `related`
 
-*v3.1 preferred name; W3C mapping: `skos:related`*
+*W3C mapping: `skos:related`*
 
 Symmetric co-read relation. Use for skills that teach the same surface from different angles — reading one prompts a reader to want the other. Relation is symmetric in intent but the schema does not enforce reciprocity; lint-level reciprocity checking is a future feature. Max 5 entries recommended per skill to avoid hub-and-spoke clutter.
 
@@ -20,13 +20,13 @@ Routing-layer anti-ownership edge. Use for skills this skill explicitly suppress
 
 ### `disjoint_with`
 
-*v3.1 addition; W3C mapping: `owl:disjointWith`*
+*W3C mapping: `owl:disjointWith`*
 
 Formal class-disjointness assertion. Use only when the two skill concepts are genuinely disjoint in the ontology sense. This is rare in day-to-day routing; most wrong-skill prevention belongs in `boundary`. `disjoint_with` is symmetric in meaning even though the schema does not enforce reciprocal authoring.
 
 ### `broader`
 
-*v3.1 addition; W3C mapping: `skos:broader`*
+*W3C mapping: `skos:broader`*
 
 Cross-skill generalisation. Use when this skill is a *specialisation* of another, more general skill. Closes the gap where the flat `subject` / `taxonomy_domain` taxonomy cannot express skill-to-skill generalisation across branches.
 
@@ -34,7 +34,7 @@ Example: `react-best-practices` has `broader: [frontend]`.
 
 ### `narrower`
 
-*v3.1 addition; W3C mapping: `skos:narrower`*
+*W3C mapping: `skos:narrower`*
 
 Cross-skill specialisation. The inverse of `broader` — this skill is more general than the targets. Tooling can infer `narrower` from other skills' `broader` edges, so explicit authoring is optional.
 
@@ -112,9 +112,31 @@ Is routing explicitly evaluated? Values: `absent`, `present`. `present` requires
 
 ### `urn`
 
-*v3.1 addition, optional; target-required in v4. W3C mapping: `@id`.*
+*Optional persistent identifier. W3C mapping: `@id`.*
 
 Globally-unique persistent identifier in the `urn:skill:<repo>:<skill-name>` form (RFC 8141). Unlocks FAIR Findability across repos. Consumers treat the URN as stable identity; `name` is display-layer.
+
+## Classification terms
+
+### `subject`
+
+The primary browse shelf: one of the twelve values enforced by `schemas/SKILL_METADATA_PROTOCOL_schema.json`. It names the competency the skill teaches, not the project where it happens.
+
+### `subjects[]`
+
+Optional secondary browse shelves for skills that genuinely span more than one competency. Keep `subjects[0]` equal to `subject`; use at most two values.
+
+### `deployment_target`
+
+Where the skill is meant to run. `portable` skills can move across projects. `project` skills are tied to a specific project and require grounding.
+
+### `scope`
+
+Required free-text statement of what the skill applies to and what it excludes. This is not an enum.
+
+### `taxonomy_domain`
+
+Optional slash-delimited sub-path within `subject`. Use it to subdivide crowded shelves; do not use it as a second global taxonomy.
 
 ## Contract-version terms
 
@@ -134,7 +156,7 @@ Name of the skill that replaces this one. Mandatory when `stability: deprecated`
 
 Each term below names the FAIR dimension(s) the Skill Graph field covers (Wilkinson et al. 2016):
 
-- **Findable:** `name`, `urn`, `description`, `keywords`, `triggers`, `examples`, `category`, `domain`, `routing_bundles`
+- **Findable:** `name`, `urn`, `description`, `keywords`, `triggers`, `examples`, `subject`, `subjects[]`, `taxonomy_domain`, `project[]`, `routing_bundles`
 - **Accessible:** `paths`, `allowed-tools`, `compatibility`, `portability`
 - **Interoperable:** `schema_version`, the JSON-LD `@context`, SPDX in `license`, all typed predicates
 - **Reusable:** `license`, `compatibility`, `portability.targets`, `grounding.truth_sources`, `freshness`, `drift_check`, `lifecycle`, `grounding.evidence_priority`

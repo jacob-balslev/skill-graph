@@ -1,19 +1,10 @@
 ---
-schema_version: 8
 name: migrate-posts-to-v2-frontmatter
 description: "Use when migrating every existing post in `content/posts/**/*.md` to the v2 frontmatter schema — adding the new required `summary` field, normalizing `tags` to the controlled vocabulary, converting bare-date `date` strings to ISO 8601 with timezone, and re-validating every post against the v2 schema before the next build runs. Activate this skill whenever the task references migration `0007-frontmatter-v2`, the v2 frontmatter rollout, or asks how to safely change a required-field set across a populated content tree without breaking the build. Do NOT use for unrelated migrations (use a generic content-migration skill or write a fresh one) or for general schema-design questions (use a schema-design skill)."
-version: 0.1.0
-subject: code-engineering
+subject: backend-engineering
 deployment_target: project
 taxonomy_domain: content/migrations
 scope: "Four-phase frontmatter migration workflow for the markdown-static-site example project — add nullable field, backfill, human review, flip validator."
-owner: markdown-static-site-maintainer
-freshness: "2026-05-06"
-drift_check:
-  last_verified: "2026-05-06"
-eval_artifacts: none
-eval_state: unverified
-routing_eval: absent
 stability: experimental
 license: MIT
 compatibility:
@@ -74,16 +65,9 @@ grounding:
     - migration_runs_outside_dry_run_gate_first
     - rollback_step_overwrites_authored_summary_field
   evidence_priority: repo_code_first
-portability:
-  readiness: scripted
-  targets:
-    - skill-md
 project:
   - handle: markdown-static-site
     role: primary
-lifecycle:
-  stale_after_days: 30
-  review_cadence: quarterly
 ---
 
 # Migrate Posts to v2 Frontmatter

@@ -4,7 +4,6 @@ description: "Use when designing or reviewing React ref usage: refs as mutable h
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"boundary\":[\"hooks-patterns\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: frontend-engineering
@@ -23,6 +22,7 @@ metadata:
   triggers: "[\"how do I focus an input on mount\",\"how do I pass a ref through a wrapper component\",\"do I still need forwardRef in React 19\",\"when should I use a ref instead of state\",\"how do I expose a method like open or close to the parent\",\"how do I measure a DOM element\",\"why is my ref.current null on first render\",\"how do I integrate a non-React DOM library\"]"
   examples: "[\"design a Modal component that exposes open() and close() to the parent via useImperativeHandle so the parent can trigger it imperatively without lifting full state\",\"forward a ref through a styled Button wrapper to the underlying <button> element using React 19 ref-as-prop (or forwardRef on React 18 and earlier)\",\"integrate a third-party chart library that needs a DOM container by handing it a ref callback that initializes on mount and tears down on unmount\",\"replace a useState that nobody reads in render with a useRef because the value drives an imperative side effect (interval id, latest-args closure) not the render output\",\"audit a component that uses a ref to read 'current form values' instead of reading from controlled state — usually a sign the wrong primitive was chosen\"]"
   anti_examples: "[\"design the Rules of Hooks and dependency-array discipline for useEffect (use hooks-patterns)\",\"decide whether the form state lives in URL, server, client, or persistent storage (use state-management)\",\"design the headless-vs-styled layering of a component library (use component-architecture)\",\"explain how 'use client' marks a component boundary (use client-server-boundary)\",\"design the validation-state UX of an input (use form-ux-architecture)\",\"design the layering and API surface of a cross-product component library (use component-architecture)\",\"design the validation states, layout, and microcopy of a form (use form-ux-architecture)\"]"
+  relations: "{\"related\":[\"hooks-patterns\",\"component-architecture\",\"state-management\",\"client-server-boundary\",\"form-ux-architecture\"],\"boundary\":[{\"skill\":\"hooks-patterns\",\"reason\":\"hooks-patterns owns the broader hook discipline — Rules of Hooks, dependency arrays, custom hooks, the You Might Not Need an Effect rule, the render/effect/cleanup mental model. ref-patterns covers the ref family specifically (useRef, forwardRef, useImperativeHandle, ref callbacks) and the design rule for when a ref is the right primitive vs when state is. They cross-reference but solve different problems.\"},{\"skill\":\"state-management\",\"reason\":\"state-management owns the location and ownership decisions for the four kinds of state (server / client UI / URL / persistent). ref-patterns is about the mutable-handle primitive that is NOT state — using a ref when a useState was needed (or vice versa) is the most common ref misuse. ref-patterns covers the boundary; state-management owns state itself.\"},{\"skill\":\"client-server-boundary\",\"reason\":\"client-server-boundary owns the serialization and directive mechanics. Refs only work in Client Components — a ref cannot be passed through a Server Component or serialized across the 'use client' boundary. ref-patterns notes this constraint; client-server-boundary owns the broader boundary semantics that explain why.\"}],\"verify_with\":[\"code-review\",\"hooks-patterns\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -339,6 +339,13 @@ After applying this skill, verify:
 - design the validation-state UX of an input (use form-ux-architecture)
 - design the layering and API surface of a cross-product component library (use component-architecture)
 - design the validation states, layout, and microcopy of a form (use form-ux-architecture)
+- Owned by `hooks-patterns`
+- Owned by `state-management`: the location and ownership decisions for the four kinds of state (server / client UI / URL / persistent)
+- Owned by `client-server-boundary`: the serialization and directive mechanics
+
+**Related skills**
+- Verify with: `code-review`, `hooks-patterns`
+- Related: `hooks-patterns`, `component-architecture`, `state-management`, `client-server-boundary`, `form-ux-architecture`
 
 **Concept**
 - Mental model: |

@@ -5,7 +5,6 @@ license: MIT
 compatibility: "Stack-agnostic prose-humanization rules. The AI-tell catalog, voice-conversion decision tree, readability formulas, sentence-rhythm patterns, tone-mapping table, and responsible prose-fingerprint guidance apply to any human-readable text in any product domain — substitute the equivalents from your own audience and brand voice."
 allowed-tools: Read Grep Edit
 metadata:
-  relations: "{\"verify_with\":[\"doc-updater\"]}"
   schema_version: "8"
   version: "1.1.0"
   subject: design
@@ -23,6 +22,7 @@ metadata:
   keywords: "[\"AI-tell detection\",\"AI-tell removal\",\"prose humanization\",\"passive-to-active voice\",\"hedging-pattern removal\",\"readability scoring diagnosis\",\"sentence-rhythm pattern\",\"3-beat sentence variety\",\"hook-body-landing paragraph\",\"tone mapping framework\"]"
   examples: "[\"this PR description sounds AI-generated — strip the tells and rewrite it concisely\",\"rewrite this onboarding paragraph in the active voice with shorter average sentence length\",\"audit this release-notes draft for Tier 1 AI tells (delve, leverage, comprehensive, testament)\",\"this paragraph starts every sentence with The dashboard — rotate the openers and vary the rhythm\",\"humanize this error-message body so it stops sounding like a corporate FAQ\",\"drop the hollow intensifiers and over-qualification from this tooltip\",\"the docs team flagged this prose as robotic — apply the 5-step humanization workflow\"]"
   anti_examples: "[\"decide kebab-case vs camelCase for this new database column\",\"draft the marketing headline for the pricing page with strong persuasion\",\"restructure this doc into a tutorial format with progressive disclosure\",\"rewrite this UI button label so it names the actual action instead of saying Submit\",\"rename this React component across all call-sites in the repo\",\"audit this WCAG 2.2 contrast violation on the dashboard\"]"
+  relations: "{\"boundary\":[{\"skill\":\"microcopy\",\"reason\":\"microcopy owns the specific in-product UX-text patterns (button labels, empty-state structure, tooltip rules, dialog rules, toast rules); writing-humanizer owns AI-tell removal and prose-rhythm rules across any human-readable text including but not limited to UI — the same 'rewrite this for humans' prompt routes by whether the surface is a specific UI pattern or any other prose\"}],\"related\":[\"linguistics\",\"microcopy\",\"semantics\"],\"verify_with\":[\"linguistics\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   mental_model: "Writing humanization is prose-quality repair, not authorship laundering. The useful primitives are AI tells (predictable filler, hedging, passive voice, hollow intensifiers), readability signals (sentence length, paragraph density, jargon load), rhythm signals (opening-word variety, sentence-length variance, paragraph cadence), audience register, and evidence specificity. The workflow moves through those primitives in order: remove tells, clarify actors, improve readability, vary rhythm, then calibrate tone to the surface. Detector-related concepts such as perplexity and burstiness are treated as rough diagnostic signals, not proof of authorship."
@@ -448,9 +448,11 @@ Before finalizing any humanized text, confirm:
 - rewrite this UI button label so it names the actual action instead of saying Submit
 - rename this React component across all call-sites in the repo
 - audit this WCAG 2.2 contrast violation on the dashboard
+- Owned by `microcopy`
 
 **Related skills**
-- Verify with: `doc-updater`
+- Verify with: `linguistics`
+- Related: `linguistics`, `microcopy`, `semantics`
 
 **Concept**
 - Mental model: Writing humanization is prose-quality repair, not authorship laundering. The useful primitives are AI tells (predictable filler, hedging, passive voice, hollow intensifiers), readability signals (sentence length, paragraph density, jargon load), rhythm signals (opening-word variety, sentence-length variance, paragraph cadence), audience register, and evidence specificity. The workflow moves through those primitives in order: remove tells, clarify actors, improve readability, vary rhythm, then calibrate tone to the surface. Detector-related concepts such as perplexity and burstiness are treated as rough diagnostic signals, not proof of authorship.

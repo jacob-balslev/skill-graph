@@ -4,7 +4,6 @@ description: "Use when reasoning about the line at which execution context chang
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"boundary\":[\"rendering-models\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: frontend-engineering
@@ -23,6 +22,7 @@ metadata:
   triggers: "[\"can I pass this function as a prop\",\"why is my server-only module in the client bundle\",\"what does 'use client' actually do\",\"is it safe to put this secret in a server component\",\"why won't this Date / Map / class serialize\"]"
   examples: "[\"decide whether a piece of data must cross the network or can stay server-only\",\"diagnose why a component marked as a server component is being shipped to the client\",\"review whether secrets in server code can leak through serialized props\",\"design which functions are exposed as server actions and which stay internal\"]"
   anti_examples: "[\"decide whether a route should be SSG or SSR (use rendering-models)\",\"design HTTP authentication headers (use http-semantics)\",\"design the JSON shape of an API response body (use api-design)\"]"
+  relations: "{\"related\":[\"rendering-models\",\"http-semantics\",\"frontend-architecture\",\"type-safety\",\"api-design\"],\"boundary\":[{\"skill\":\"rendering-models\",\"reason\":\"rendering-models owns the staging of work across build/request/stream/interaction. client-server-boundary owns the serialization frontier — what can cross between server code and client code. The two compose: any rendering model that emits a server-produced artifact for client consumption faces a boundary.\"}],\"verify_with\":[\"type-safety\",\"api-design\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -236,6 +236,11 @@ After applying this skill, verify:
 - decide whether a route should be SSG or SSR (use rendering-models)
 - design HTTP authentication headers (use http-semantics)
 - design the JSON shape of an API response body (use api-design)
+- Owned by `rendering-models`: the staging of work across build/request/stream/interaction
+
+**Related skills**
+- Verify with: `type-safety`, `api-design`
+- Related: `rendering-models`, `http-semantics`, `frontend-architecture`, `type-safety`, `api-design`
 
 **Concept**
 - Mental model: |

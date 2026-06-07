@@ -32,7 +32,6 @@
   "files": [
     "bin/",
     "docs/",
-    "!docs/_archived/**",
     "!docs/_drafts/**",
     "!docs/research/**",
     "examples/",

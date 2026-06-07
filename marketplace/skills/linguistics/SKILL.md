@@ -7,7 +7,6 @@ allowed-tools: Read Grep
 metadata:
   grounding: "{\"subject_matter\":\"Linguistic precision for software identifiers, UI copy, error messages, technical documentation, and cross-cultural language choices\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://developers.google.com/style/voice\",\"https://developers.google.com/style/tone\",\"https://developers.google.com/style/translation\",\"https://learn.microsoft.com/en-us/windows/apps/design/style/writing-style\",\"https://learn.microsoft.com/en-us/windows/win32/debug/error-message-guidelines\",\"https://www.w3.org/TR/WCAG22/\",\"https://www.nngroup.com/articles/ten-usability-heuristics/\",\"https://www.nngroup.com/articles/hostile-error-messages/\"],\"failure_modes\":[\"naming_taste_mistaken_for_linguistic_fit\",\"artifact_casing_policy_confused_with_semantic_naming\",\"polysemous_identifier_left_unqualified\",\"generic_handle_process_or_utils_names_hide_contracts\",\"error_copy_blames_user_or_hides_action\",\"agent_register_leaks_into_end_user_copy\",\"global_audience_copy_uses_idioms_jargon_or_untranslatable_phrasing\",\"linguistics_overowns_refactor_docs_ia_microcopy_or_i18n_implementation\"],\"evidence_priority\":\"equal\"}"
   drift_check: "{\"last_verified\":\"2026-05-19\"}"
-  relations: "{\"boundary\":[\"naming-conventions\"]}"
   schema_version: "8"
   version: "1.2.0"
   subject: knowledge-organization
@@ -23,6 +22,7 @@ metadata:
   keywords: "[\"linguistic precision\",\"software linguistics\",\"identifier morphology\",\"polysemy resolution\",\"polysemy map\",\"register selection\",\"audience register\",\"blame-free error wording\",\"what why action error structure\",\"compound-word ordering\",\"abbreviation policy\",\"ambiguous identifier qualification\",\"semantic naming\",\"global audience language\",\"cross-cultural language awareness\",\"verb-noun naming rule\",\"unqualified polysemous identifier\",\"error-message linguistics\"]"
   examples: "[\"this variable is named provider but it could mean fulfillment, auth, or payment -- what linguistic rule applies?\",\"rewrite this error message to be specific, blame-free, and actionable\",\"the word shipping means seller cost in one file and customer charge in another -- how do we resolve the polysemy without a glossary cleanup?\",\"should this helper file be called utils.ts, helpers.ts, or something domain-specific?\",\"explain how to phrase the same finance concept for an end-user, an agent, and a developer\",\"audit this UI copy for register mismatch with the end-user audience\",\"when is an abbreviation acceptable in a code identifier?\",\"is this sentence clear for a global developer audience or full of idioms and ambiguous modifiers?\"]"
   anti_examples: "[\"decide kebab-case vs snake_case vs camelCase for new database columns\",\"restructure this doc into a tutorial format with progressive disclosure\",\"implement Intl.NumberFormat for DKK vs USD currency formatting\",\"give me the canonical definition of reconciliation in our domain\",\"review this PR for code quality and missing tests\",\"rename this function and update every call-site across the repo\",\"rewrite this release note only to remove AI tells and vary sentence rhythm\"]"
+  relations: "{\"boundary\":[{\"skill\":\"naming-conventions\",\"reason\":\"naming-conventions owns artifact-specific casing, prefix/suffix policy, and deterministic convention choice; linguistics owns the meaning-level rationale behind morphology, polysemy resolution, register, and error wording.\"},{\"skill\":\"refactor\",\"reason\":\"refactor owns behavior-preserving rename mechanics across call sites; linguistics owns choosing a precise name before or during the rename.\"},{\"skill\":\"information-architecture\",\"reason\":\"information-architecture owns docs/navigation/page hierarchy and findability; linguistics owns sentence-level and identifier-level meaning inside that structure.\"},{\"skill\":\"microcopy\",\"reason\":\"microcopy owns specialized in-product UI-text patterns such as button, empty-state, tooltip, dialog, and toast structures; linguistics owns underlying language rules and register diagnostics.\"},{\"skill\":\"writing-humanizer\",\"reason\":\"writing-humanizer owns prose polish, AI-tell removal, and rhythm repair; linguistics owns morphology, semantic ambiguity, audience register, and blame-free error language.\"}],\"related\":[\"semantics\",\"writing-humanizer\",\"microcopy\",\"prompt-craft\",\"intent-recognition\",\"code-review\"],\"verify_with\":[\"naming-conventions\",\"code-review\",\"writing-humanizer\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   mental_model: "|"
@@ -40,7 +40,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/knowledge-organization/linguistics/SKILL.md
-  skill_graph_export_description_projection: anti_examples
+  skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
 
@@ -507,6 +507,15 @@ LINGUISTICS I18N CHECK
 - review this PR for code quality and missing tests
 - rename this function and update every call-site across the repo
 - rewrite this release note only to remove AI tells and vary sentence rhythm
+- Owned by `naming-conventions`: artifact-specific casing, prefix/suffix policy, and deterministic convention choice
+- Owned by `refactor`: behavior-preserving rename mechanics across call sites
+- Owned by `information-architecture`: docs/navigation/page hierarchy and findability
+- Owned by `microcopy`: specialized in-product UI-text patterns such as button, empty-state, tooltip, dialog, and toast structures
+- Owned by `writing-humanizer`: prose polish, AI-tell removal, and rhythm repair
+
+**Related skills**
+- Verify with: `naming-conventions`, `code-review`, `writing-humanizer`
+- Related: `semantics`, `writing-humanizer`, `microcopy`, `prompt-craft`, `intent-recognition`, `code-review`
 
 **Concept**
 - Mental model: |

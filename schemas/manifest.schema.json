@@ -53,7 +53,7 @@
             "type": "integer",
             "minimum": 0
           },
-          "description": "Per-subject distribution across the closed 9-value subject enum (see schemas/SKILL_METADATA_PROTOCOL_schema.json § subject)."
+          "description": "Per-subject distribution across the closed 12-value subject enum (see schemas/SKILL_METADATA_PROTOCOL_schema.json § subject)."
         },
         "by_deployment_target": {
           "type": "object",

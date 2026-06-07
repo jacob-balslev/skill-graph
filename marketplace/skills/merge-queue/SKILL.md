@@ -5,7 +5,6 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  relations: "{\"boundary\":[\"version-control\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: software-engineering-method
@@ -20,6 +19,7 @@ metadata:
   stability: experimental
   keywords: "[\"merge queue\",\"atomic lock\",\"idempotency\",\"no-ff merge\",\"worktree cleanup\",\"agent branch\",\"master merge\"]"
   triggers: "[\"merge-queue\",\"agent-merge\"]"
+  relations: "{\"related\":[\"version-control\"],\"boundary\":[\"version-control\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -125,6 +125,9 @@ After applying this skill, verify:
 
 **When to use**
 - Triggers: `merge-queue`, `agent-merge`
+
+**Related skills**
+- Related: `version-control`
 
 **Keywords**
 - `merge queue`, `atomic lock`, `idempotency`, `no-ff merge`, `worktree cleanup`, `agent branch`, `master merge`

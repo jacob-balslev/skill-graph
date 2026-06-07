@@ -1,44 +1,29 @@
 ---
 name: component-architecture
-description: "Use when structuring a component library or design system for reuse across products, themes, and teams: layering of primitives, composites, and product-specific assemblies; component API design (props, polymorphism, compound components, render props vs hooks vs slots); the open-closed principle for component evolution; the headless/styled split for theming; controlled vs uncontrolled state contracts; ref forwarding and imperative escape hatches; composition over configuration trade-offs; and the cross-product reuse problem. Do NOT use for within-product module composition (use design-module-composition), design system meta-architecture (use design-system-architecture), the visual language itself (use visual-design-foundations or tokens), tactical hooks (library docs), or state-management decisions that are not component-API-shaped (use state-management). Do NOT use for pick the design tokens for color and spacing (use visual-design-foundations)."
+description: "Use when structuring a component library or design system for reuse across products, themes, and teams: layering of primitives, composites, and product-specific assemblies; component API design (props, polymorphism, compound components, render props vs hooks vs slots); the open-closed principle for component evolution; the headless/styled split for theming; controlled vs uncontrolled state contracts; ref exposure and imperative escape hatches; composition over configuration trade-offs; and the cross-product reuse problem. Do NOT use for within-product module composition (use design-module-composition), design system meta-architecture (use design-system-architecture), the visual language itself (use visual-design-foundations or tokens), tactical hooks (library docs), or state-management decisions that are not component-API-shaped (use state-management). Do NOT use for design the typography system: type scale, font pairing, text sizes, and reading rhythm."
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"adjacent\":[\"visual-design-foundations\"],\"boundary\":[\"design-module-composition\"]}"
-  schema_version: "8"
-  version: "1.0.0"
   subject: design
   deployment_target: portable
   scope: "Structuring a component library or design system for reuse across products, themes, and teams — layering of primitives/composites/product-specific assemblies, component API design (props, polymorphism, compound components, render props vs hooks vs slots), the open-closed principle for component evolution, the headless/styled split for theming, controlled vs uncontrolled state contracts, ref forwarding and imperative escape hatches, and composition-over-configuration trade-offs. Portable across any component library; principle-grounded, not repo-bound. Excludes within-product module composition (design-module-composition), design-system meta-architecture (design-system-architecture), the visual language itself (visual-design-foundations, tokens), tactical hooks (library docs), and non-component-API state-management decisions (state-management)."
   taxonomy_domain: design/component-systems
-  owner: skill-graph-maintainer
-  freshness: "2026-05-16"
-  drift_check: "{\"last_verified\":\"2026-05-16\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
-  keywords: "[\"component library design\",\"atomic design layering\",\"component primitives\",\"component composites\",\"compound components\",\"polymorphic component\",\"asChild prop\",\"headless component\",\"styled component\",\"controlled component\"]"
-  triggers: "[\"structure components for reuse\",\"how do I design this component API\",\"controlled or uncontrolled\",\"should I use props or composition\",\"compound component pattern\",\"headless vs styled\",\"primitive vs composite\"]"
-  examples: "[\"design the API surface for a Dialog component that must work in multiple products with different visual languages\",\"decide whether a Form component should be controlled, uncontrolled, or both\",\"structure a component library so primitives can be themed without rewriting the composites\",\"refactor a 30-prop component into a compound API that surfaces the right primitives\"]"
-  anti_examples: "[\"decide where the form's state lives across page navigations (use state-management)\",\"pick the design tokens for color and spacing (use visual-design-foundations)\",\"decide how a single product's modules are wired together internally (use design-module-composition)\",\"implement a specific React hook for form management (library docs / tactical decision)\",\"decide where state lives across the app — server, client UI, URL, or persistent (use state-management)\",\"design the application-level folder structure, routing, build, and deployment (use frontend-architecture)\"]"
+  keywords: "[\"component architecture\",\"component library design\",\"component API surface\",\"component primitives\",\"component composites\",\"compound components\",\"asChild prop\",\"headless component\",\"controlled component\",\"design system components\"]"
+  triggers: "[\"component architecture\",\"structure components for reuse\",\"design this component API\",\"controlled or uncontrolled component\",\"props or composition\",\"compound component pattern\",\"headless vs styled\",\"primitive vs composite\"]"
+  examples: "[\"design the component architecture and API surface for a Dialog primitive that must work across products and visual languages\",\"decide the controlled, uncontrolled, or hybrid state contract for a reusable FormField component\",\"layer a component library into primitives, composites, and product assemblies so theming can change without rewriting behavior\",\"refactor a 30-prop component into compound components, slots, and smaller primitives\"]"
+  anti_examples: "[\"design the typography system: type scale, font pairing, text sizes, and reading rhythm\",\"define the form validation, error messaging, submit behavior, and field grouping for checkout\"]"
+  relations: "{\"related\":[\"design-system-architecture\",\"design-module-composition\",\"visual-design-foundations\",\"state-management\",\"frontend-architecture\",\"typography-system\",\"color-system-design\",\"form-ux-architecture\",\"a11y\"],\"boundary\":[{\"skill\":\"design-module-composition\",\"reason\":\"design-module-composition owns how a single product's modules compose internally; component-architecture owns reusable component APIs and layers before product assembly.\"},{\"skill\":\"color-system-design\",\"reason\":\"color-system-design owns palette, token, contrast, and semantic color decisions; component-architecture owns the structural API that consumes tokens without hardcoding the visual language.\"},{\"skill\":\"typography-system\",\"reason\":\"typography-system owns type scale, font pairing, rhythm, and text hierarchy; component-architecture owns the reusable component API that consumes typography tokens and patterns.\"},{\"skill\":\"form-ux-architecture\",\"reason\":\"form-ux-architecture owns form validation, submission, grouping, and error experience; component-architecture owns reusable component state contracts and API surfaces such as FormField, Input, Select, and compound form primitives.\"}],\"verify_with\":[\"design-system-architecture\",\"design-module-composition\",\"a11y\"]}"
+  grounding: "{\"subject_matter\":\"Portable component-library architecture for reusable UI systems\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://www.radix-ui.com/primitives/docs/overview/introduction\",\"https://www.radix-ui.com/primitives/docs/guides/composition\",\"https://react-aria.adobe.com/getting-started\",\"https://ui.shadcn.com/docs\",\"https://vuejs.org/guide/components/slots.html\",\"https://react.dev/reference/react/forwardRef\",\"../skills/skills/design/component-architecture/references/component-architecture-2026-06-07.md\"],\"failure_modes\":[\"component_library_treated_as_flat_pile_of_widgets\",\"primitive_layer_depends_on_product_specific_assembly\",\"visual_language_hardcoded_into_reusable_behavior\",\"state_contract_left_implicit\",\"composition_replaced_by_boolean_prop_explosion\",\"ref_guidance_stale_for_react_19\"],\"evidence_priority\":\"equal\"}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
   analogy: "Component architecture is to a UI library what API design is to a backend service — the public contract is the only thing consumers see; every consumer depends on shape, behavior, and naming for things that may seem internal to the author; once a version ships, every prop and slot becomes a thing future versions must continue to support, just as every endpoint and field of a public API does. The headless/styled split is to component libraries what the data-plane/control-plane split is to distributed systems: separating the part that changes slowly (behavior, contracts) from the part that changes fast (visual treatment, theming)."
   misconception: "|"
-  concept: "{\"definition\":\"Component architecture is the architectural discipline of structuring a library of UI components so that they can be reused across products, themes, and teams without each reuse requiring a rewrite. The discipline answers four interlocking questions: (1) at what LAYER does a given concern belong — primitive, composite, product-specific assembly; (2) what is the API SURFACE — which props, slots, refs, callbacks, render functions, and which are open for extension vs closed for modification; (3) what STATE CONTRACT does the component expose — controlled, uncontrolled, hybrid; (4) what THEMING and styling mechanism allows the component's behavior to remain stable while its visual language changes. The discipline is distinct from the visual design language itself (which colors, which type scale) and from within-product wiring (which screens compose which modules) — it is the architectural stratum that makes both possible by producing components whose API outlives any single product instance and any single visual treatment.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/component-architecture/SKILL.md
-  skill_graph_export_description_projection: anti_examples
+  skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
 
@@ -103,7 +88,7 @@ Default to hybrid. Consumers choose by passing `value` or `defaultValue`.
 | **Children / slots** | Structure | Consumer composes inner content |
 | **Compound components** (`Dialog.Root`, `Dialog.Trigger`, `Dialog.Content`) | Structure + implicit shared state via context | Multi-part components with structural variation |
 | **Render props / render functions** | Rendering | Consumer overrides how something renders, with access to internal state |
-| **Forward refs / imperative handles** | Imperative access | Escape hatch for cases declarative APIs cannot reach (focus, scroll, play) |
+| **Ref exposure / imperative handles** | Imperative access | Escape hatch for cases declarative APIs cannot reach (focus, scroll, play). In React 19, accept `ref` as a prop; use `forwardRef` for React 18 compatibility or libraries that still require it. |
 | **Polymorphism (`as` / `asChild`)** | Element type | Consumer chooses the semantic tag rendered |
 
 ## The Polymorphism Patterns
@@ -147,10 +132,11 @@ After applying this skill, verify:
 
 - Frost, B. (2016). *Atomic Design*. Brad Frost Web. The canonical layering framework: atoms / molecules / organisms / templates / pages. Establishes the discipline of layering as a property of well-structured component libraries.
 - Meyer, B. (1988). *Object-Oriented Software Construction*. Prentice Hall. The original articulation of the open-closed principle ("software entities should be open for extension, but closed for modification") — adapted in this skill to component evolution.
-- Radix UI. [Radix Primitives documentation](https://www.radix-ui.com/primitives/docs/overview/introduction). The modern reference implementation of the headless component pattern, the compound-component pattern, and the `asChild` polymorphism pattern. Establishes the contract that has become widely adopted across the React ecosystem.
-- Adobe. [React Aria documentation](https://react-spectrum.adobe.com/react-aria/). The reference implementation of accessibility-first headless components. Demonstrates the architectural commitment to keyboard, focus, and screen-reader support as primitive-layer concerns.
-- Erikson, M. (2020). ["Compound Components"](https://kentcdodds.com/blog/compound-components-with-react-hooks) [Kent C. Dodds]. Canonical modern articulation of the compound-component pattern with hooks-based React.
-- shadcn. [shadcn/ui documentation](https://ui.shadcn.com/). The 'registry' distribution model (copy into the consumer's repo) and the canonical example of the headless-primitive + styled-wrapper layered architecture.
+- Radix UI. [Radix Primitives documentation](https://www.radix-ui.com/primitives/docs/overview/introduction) and [Composition guide](https://www.radix-ui.com/primitives/docs/guides/composition). Current reference for accessible unstyled primitives, `asChild`, prop spreading, ref compatibility, and primitive composition.
+- Adobe. [React Aria getting started](https://react-aria.adobe.com/getting-started). Current reference for accessibility-first unstyled component parts, styling hooks, state data attributes, and building reusable wrappers.
+- React. [`forwardRef` reference](https://react.dev/reference/react/forwardRef). Current React 19 ref guidance: `forwardRef` remains compatibility knowledge, but new React 19 components can receive `ref` as a prop.
+- Dodds, K. C. (2020). ["Compound Components"](https://kentcdodds.com/blog/compound-components-with-react-hooks). Canonical modern articulation of the compound-component pattern with hooks-based React.
+- shadcn. [shadcn/ui documentation](https://ui.shadcn.com/docs). Current reference for the open-code distribution model, component ownership, composable interfaces, and registry-based component delivery.
 - Vue Team. [Vue.js Slots documentation](https://vuejs.org/guide/components/slots.html). The reference framework-native slot mechanism that predates and inspired React's compound-component patterns; demonstrates that the architectural principles apply across frameworks.
 - Liskov, B. (1987). "Data Abstraction and Hierarchy." *Proceedings of OOPSLA '87 Addendum*. The Liskov Substitution Principle — adapted in this skill as the constraint that polymorphic substitutions must preserve invariants.
 - Garlan, D., & Shaw, M. (1993). "An Introduction to Software Architecture." *Advances in Software Engineering and Knowledge Engineering*, Vol. 1. The foundational treatment of layered architectures as a software-architecture pattern; provides the dependency-direction reasoning this skill adapts to components.
@@ -167,22 +153,23 @@ After applying this skill, verify:
 - Scope: Structuring a component library or design system for reuse across products, themes, and teams — layering of primitives/composites/product-specific assemblies, component API design (props, polymorphism, compound components, render props vs hooks vs slots), the open-closed principle for component evolution, the headless/styled split for theming, controlled vs uncontrolled state contracts, ref forwarding and imperative escape hatches, and composition-over-configuration trade-offs. Portable across any component library; principle-grounded, not repo-bound. Excludes within-product module composition (design-module-composition), design-system meta-architecture (design-system-architecture), the visual language itself (visual-design-foundations, tokens), tactical hooks (library docs), and non-component-API state-management decisions (state-management).
 
 **When to use**
-- design the API surface for a Dialog component that must work in multiple products with different visual languages
-- decide whether a Form component should be controlled, uncontrolled, or both
-- structure a component library so primitives can be themed without rewriting the composites
-- refactor a 30-prop component into a compound API that surfaces the right primitives
-- Triggers: `structure components for reuse`, `how do I design this component API`, `controlled or uncontrolled`, `should I use props or composition`, `compound component pattern`, `headless vs styled`, `primitive vs composite`
+- design the component architecture and API surface for a Dialog primitive that must work across products and visual languages
+- decide the controlled, uncontrolled, or hybrid state contract for a reusable FormField component
+- layer a component library into primitives, composites, and product assemblies so theming can change without rewriting behavior
+- refactor a 30-prop component into compound components, slots, and smaller primitives
+- Triggers: `component architecture`, `structure components for reuse`, `design this component API`, `controlled or uncontrolled component`, `props or composition`, `compound component pattern`, `headless vs styled`, `primitive vs composite`
 
 **Not for**
-- decide where the form's state lives across page navigations (use state-management)
-- pick the design tokens for color and spacing (use visual-design-foundations)
-- decide how a single product's modules are wired together internally (use design-module-composition)
-- implement a specific React hook for form management (library docs / tactical decision)
-- decide where state lives across the app — server, client UI, URL, or persistent (use state-management)
-- design the application-level folder structure, routing, build, and deployment (use frontend-architecture)
+- design the typography system: type scale, font pairing, text sizes, and reading rhythm
+- define the form validation, error messaging, submit behavior, and field grouping for checkout
+- Owned by `design-module-composition`: how a single product's modules compose internally
+- Owned by `color-system-design`: palette, token, contrast, and semantic color decisions
+- Owned by `typography-system`: type scale, font pairing, rhythm, and text hierarchy
+- Owned by `form-ux-architecture`: form validation, submission, grouping, and error experience
 
 **Related skills**
-- Related: `visual-design-foundations`
+- Verify with: `design-system-architecture`, `design-module-composition`, `a11y`
+- Related: `design-system-architecture`, `design-module-composition`, `visual-design-foundations`, `state-management`, `frontend-architecture`, `typography-system`, `color-system-design`, `form-ux-architecture`, `a11y`
 
 **Concept**
 - Mental model: |
@@ -191,7 +178,11 @@ After applying this skill, verify:
 - Analogy: Component architecture is to a UI library what API design is to a backend service — the public contract is the only thing consumers see; every consumer depends on shape, behavior, and naming for things that may seem internal to the author; once a version ships, every prop and slot becomes a thing future versions must continue to support, just as every endpoint and field of a public API does. The headless/styled split is to component libraries what the data-plane/control-plane split is to distributed systems: separating the part that changes slowly (behavior, contracts) from the part that changes fast (visual treatment, theming).
 - Common misconception: |
 
+**Grounding**
+- Mode: `universal`
+- Truth sources: `https://www.radix-ui.com/primitives/docs/overview/introduction`, `https://www.radix-ui.com/primitives/docs/guides/composition`, `https://react-aria.adobe.com/getting-started`, `https://ui.shadcn.com/docs`, `https://vuejs.org/guide/components/slots.html`, `https://react.dev/reference/react/forwardRef`, `../skills/skills/design/component-architecture/references/component-architecture-2026-06-07.md`
+
 **Keywords**
-- `component library design`, `atomic design layering`, `component primitives`, `component composites`, `compound components`, `polymorphic component`, `asChild prop`, `headless component`, `styled component`, `controlled component`
+- `component architecture`, `component library design`, `component API surface`, `component primitives`, `component composites`, `compound components`, `asChild prop`, `headless component`, `controlled component`, `design system components`
 
 <!-- skill-graph-context:end -->

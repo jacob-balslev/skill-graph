@@ -42,7 +42,7 @@
         "knowledge-organization",
         "product-domain"
       ],
-      "description": "Primary classification — the competency the skill teaches (\"what does this teach you to do?\"). Closed 12-value enum in 3 navigational bands: software & web engineering (backend-engineering, frontend-engineering, software-architecture, data-engineering); AI-agentic (agent-ops, ai-engineering); cross-cutting craft (quality-assurance, design, reasoning-strategy, software-engineering-method, knowledge-organization, product-domain). Balance rule: each subject must hold 5-25 skills. <5 = fold or recruit; >25 = subdivide via `taxonomy_domain` slash-path. See docs/adr/0020-twelve-shelf-competency-reaxis.md (supersedes the 9-value model in docs/adr/0017-five-axis-classification-model.md)."
+      "description": "Primary classification — the competency the skill teaches (\"what does this teach you to do?\"). Closed 12-value enum in 3 navigational bands: software & web engineering (backend-engineering, frontend-engineering, software-architecture, data-engineering); AI-agentic (agent-ops, ai-engineering); cross-cutting craft (quality-assurance, design, reasoning-strategy, software-engineering-method, knowledge-organization, product-domain). Balance rule: each subject must hold 5-25 skills. <5 = fold or recruit; >25 = subdivide via `taxonomy_domain` slash-path. See docs/adr/0020-twelve-shelf-competency-reaxis.md for the current shelf rationale."
     },
     "subjects": {
       "type": "array",

@@ -4,7 +4,6 @@ description: "Use when designing or reviewing test doubles — the stand-in obje
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"adjacent\":[\"test-driven-development\",\"test-coverage-strategy\"],\"boundary\":[\"testing-strategy\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: quality-assurance
@@ -22,6 +21,7 @@ metadata:
   triggers: "[\"should this be a mock or a stub\",\"are we using mocks correctly\",\"the test is brittle when I refactor\",\"do we need a fake here\",\"is this test really testing anything\"]"
   examples: "[\"decide between a mock, a stub, and a fake for a database collaborator in a test\",\"explain why over-mocking produces fragile tests that change with every refactor\",\"diagnose a passing test that mirrors the implementation rather than specifying behavior\",\"design an in-memory fake for a repository interface that supports both classicist tests and integration tests\"]"
   anti_examples: "[\"decide which test levels (unit/integration/e2e) the project should invest in (use testing-strategy)\",\"set up a production feature flag (use feature-gating)\",\"configure a specific mocking library — Jest, Sinon, Mockito (library docs)\"]"
+  relations: "{\"related\":[\"testing-strategy\",\"test-driven-development\",\"refactor\",\"api-design\",\"type-safety\"],\"boundary\":[{\"skill\":\"test-driven-development\",\"reason\":\"test-driven-development owns the design discipline of writing the test before the production code; this skill owns the design of the stand-in objects those tests use. The two compose: TDD prescribes the rhythm; test-doubles-design prescribes the stand-ins.\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the strategic question of what to test at which level; this skill owns the tactical construction of the stand-ins that make a given test possible.\"}],\"verify_with\":[\"test-driven-development\",\"refactor\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -147,9 +147,12 @@ After applying this skill, verify:
 - decide which test levels (unit/integration/e2e) the project should invest in (use testing-strategy)
 - set up a production feature flag (use feature-gating)
 - configure a specific mocking library — Jest, Sinon, Mockito (library docs)
+- Owned by `test-driven-development`: the design discipline of writing the test before the production code
+- Owned by `testing-strategy`: the strategic question of what to test at which level
 
 **Related skills**
-- Related: `test-driven-development`, `test-coverage-strategy`
+- Verify with: `test-driven-development`, `refactor`
+- Related: `testing-strategy`, `test-driven-development`, `refactor`, `api-design`, `type-safety`
 
 **Concept**
 - Mental model: |

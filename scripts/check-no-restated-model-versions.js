@@ -61,7 +61,7 @@ const ALLOW_PATH_SUBSTR = [
   'model-provider.js',                       // the registry (the one allowed home)
   'check-no-restated-model-versions.js',     // this file
   'CHANGELOG', 'changelog',
-  '/adr/', '/_archived/', '/archive/', '/.archive/',
+  '/adr/',
   '/research/', 'receipt', 'history', 'eval-history',
 ];
 

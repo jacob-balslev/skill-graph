@@ -4,7 +4,6 @@ description: "Use when reasoning about horizontal partitioning of data across no
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"adjacent\":[\"cap-theorem-tradeoffs\",\"indexing-strategy\",\"query-optimization\"],\"boundary\":[\"replication-patterns\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: data-engineering
@@ -22,6 +21,7 @@ metadata:
   triggers: "[\"how should we shard\",\"what's the right shard key\",\"hot shard\",\"cross-shard transaction\",\"consistent hashing\"]"
   examples: "[\"choose a shard key for a multi-tenant system where 90% of queries are tenant-scoped\",\"diagnose a hot shard caused by skewed shard-key distribution\",\"design the resharding strategy when adding nodes to a hash-sharded cluster\",\"decide whether to accept cross-shard JOIN complexity or denormalize\"]"
   anti_examples: "[\"design replication topology for the same data (use replication-patterns)\",\"tune a single slow query (use query-optimization)\",\"design indexes within one shard (use indexing-strategy)\"]"
+  relations: "{\"related\":[\"replication-patterns\",\"cap-theorem-tradeoffs\",\"indexing-strategy\",\"data-modeling\"],\"boundary\":[{\"skill\":\"replication-patterns\",\"reason\":\"replication-patterns owns copying the same data across nodes; this skill owns splitting different data across nodes. The two compose: a sharded system can replicate each shard. They answer different questions.\"},{\"skill\":\"cap-theorem-tradeoffs\",\"reason\":\"cap-theorem-tradeoffs owns the theoretical consistency-availability frame; this skill owns the operational partitioning that often interacts with it (cross-shard transactions have stronger consistency requirements than single-shard ones).\"},{\"skill\":\"indexing-strategy\",\"reason\":\"indexing-strategy owns within-node retrieval; this skill owns how data is divided across nodes. Indexes within a shard are designed normally; cross-shard secondary indexes are a separate, harder problem.\"}],\"verify_with\":[\"replication-patterns\",\"data-modeling\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -170,9 +170,13 @@ After applying this skill, verify:
 - design replication topology for the same data (use replication-patterns)
 - tune a single slow query (use query-optimization)
 - design indexes within one shard (use indexing-strategy)
+- Owned by `replication-patterns`: copying the same data across nodes
+- Owned by `cap-theorem-tradeoffs`: the theoretical consistency-availability frame
+- Owned by `indexing-strategy`: within-node retrieval
 
 **Related skills**
-- Related: `cap-theorem-tradeoffs`, `indexing-strategy`, `query-optimization`
+- Verify with: `replication-patterns`, `data-modeling`
+- Related: `replication-patterns`, `cap-theorem-tradeoffs`, `indexing-strategy`, `data-modeling`
 
 **Concept**
 - Mental model: |

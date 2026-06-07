@@ -1,18 +1,10 @@
 ---
-schema_version: 8
 name: link-rot-detection
 description: "Use when authoring or reviewing a periodic-scan job that walks every external link in a markdown content set and flags 404s, redirects to unrelated content, and connection failures. Activate this skill whenever the task says 'check our links' or mentions a link-rot scan, broken-link audit, or link-health report. Do NOT use for live runtime link checking inside the rendered page (use a frontend a11y / UX skill) or for chasing a specific broken-link incident from a user report (use debugging)."
-version: 0.1.0
 subject: quality-assurance
 deployment_target: portable
 taxonomy_domain: content/maintenance
-owner: markdown-static-site-maintainer
-freshness: "2026-05-06"
-drift_check:
-  last_verified: "2026-05-06"
-eval_artifacts: none
-eval_state: unverified
-routing_eval: absent
+scope: "Portable workflow skill for periodic link-rot detection across markdown content sets. Excludes live runtime link checking, one-off incident debugging, and UI treatment of broken-link states."
 stability: experimental
 license: MIT
 compatibility:
@@ -53,13 +45,6 @@ relations:
       reason: "refactor changes scanner code shape; this skill enforces the detection contract that any refactor must preserve"
   verify_with:
     - testing-strategy
-portability:
-  readiness: scripted
-  targets:
-    - skill-md
-lifecycle:
-  stale_after_days: 180
-  review_cadence: quarterly
 ---
 
 # Link-Rot Detection

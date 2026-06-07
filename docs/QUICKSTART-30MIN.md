@@ -65,7 +65,7 @@ The template lints clean as-is, so you can incrementally edit and re-lint to cat
 
 ## M8–M11: Fill in the required fields (v8 classification + sidecar)
 
-The required v8 `SKILL.md` frontmatter fields are: `name`, `description`, `subject` (9-enum), `deployment_target` (`portable`/`project`), and `scope` (free-text PRD-style description). The required sibling `audit-state.json` fields are: `schema_version`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, and `routing_eval`. See [`skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` § Schema contract](../skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md#schema-contract). The template has all current fields — you're replacing values, not inventing a new shape.
+The required v8 `SKILL.md` frontmatter fields are: `name`, `description`, `subject` (12-enum), `deployment_target` (`portable`/`project`), and `scope` (free-text PRD-style description). The required sibling `audit-state.json` fields are: `schema_version`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, and `routing_eval`. See [`skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` § Schema contract](../skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md#schema-contract). The template has all current fields — you're replacing values, not inventing a new shape.
 
 For `markdown-post-frontmatter-review`, the `SKILL.md` frontmatter values look like:
 
@@ -74,7 +74,7 @@ name: markdown-post-frontmatter-review
 description: "Authoring and reviewing the YAML frontmatter of a markdown post — required fields (title, date, slug, tags), validation against the content schema, ambiguous date formats, slug/file-path alignment."
 
 # v8 classification (required)
-subject: code-engineering
+subject: backend-engineering
 deployment_target: project
 scope: "Markdown post frontmatter review for a static-site content project"
 ```
@@ -162,27 +162,20 @@ cp examples/skill-metadata-template.md skills/post-archive-rebuild/SKILL.md
 Edit `skills/post-archive-rebuild/SKILL.md` to set:
 
 ```yaml
-schema_version: 8
 name: post-archive-rebuild
 description: "Re-indexing the post archive after frontmatter changes — walking every post, re-extracting indexed fields, writing the updated archive page."
-version: 0.1.0
 
 # v8 classification (required)
-subject: code-engineering
+subject: backend-engineering
 deployment_target: portable
-
-owner: <your-handle>
-freshness: "2026-05-06"
-drift_check:
-  last_verified: "2026-05-06"
-eval_artifacts: none
-eval_state: unverified
-routing_eval: absent
+scope: "Portable workflow skill for rebuilding a markdown post archive after frontmatter changes. Excludes authoring or reviewing individual post frontmatter."
 relations:
   depends_on:
     - skill: markdown-post-frontmatter-review
       min_version: "^0.1.0"
 ```
+
+Keep `schema_version`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, and `routing_eval` in the sibling `audit-state.json`; do not duplicate them in `SKILL.md`.
 
 Body: include the required `## Workflow` section (workflow archetype mandates it), plus `## Coverage`, `## Philosophy`, `## Verification`, `## Do NOT Use When`.
 

@@ -1,11 +1,10 @@
 ---
 name: information-architecture
-description: "Use when structuring information for findability: navigation, page hierarchy, docs architecture, sitemap shape, labeling systems, wayfinding, and content grouping. Do NOT use for formal category-governance work (use `taxonomy-design`), responsive page composition (use `layout-composition`), component/token architecture (use `design-system-architecture`), or sentence-level UI text (use `microcopy`). Do NOT use for make the category taxonomy and assignment rules for this skill library. Do NOT use for define design tokens, component APIs, and theming rules. Do NOT use for rewrite this tooltip and empty-state copy. Do NOT use for audit keyboard accessibility and ARIA semantics."
+description: "Use when structuring information for findability: navigation, page hierarchy, docs architecture, sitemap shape, labeling systems, wayfinding, and content grouping. Do NOT use for formal category-governance work (use `taxonomy-design`), responsive page composition (use `layout-composition`), component/token architecture (use `design-system-architecture`), or sentence-level UI text (use `microcopy`). Do NOT use for make the category taxonomy and assignment rules for this skill library. Do NOT use for define design tokens, component APIs, and theming rules. Do NOT use for rewrite this tooltip and empty-state copy. Do NOT use for audit keyboard accessibility and ARIA semantics. Do NOT use for structure inside a page or screen (use layout-composition). Do NOT use for sentence-level UI text (use microcopy)."
 license: MIT
 compatibility: "Portable IA guidance for apps, documentation, dashboards, admin tools, and skill libraries."
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"adjacent\":[\"interaction-feedback\",\"layout-composition\",\"task-analysis\"],\"boundary\":[\"design-system-architecture\",\"taxonomy-design\"],\"verify_with\":[\"a11y\"]}"
   subject: design
   subjects: "[\"design\",\"knowledge-organization\"]"
   deployment_target: portable
@@ -15,10 +14,11 @@ metadata:
   keywords: "[\"information architecture\",\"navigation structure\",\"sitemap\",\"wayfinding\",\"page hierarchy\",\"docs architecture\",\"labeling system\",\"content grouping\",\"findability\",\"content model\"]"
   examples: "[\"our docs have good content but nobody can find the setup instructions - how should the IA change?\",\"design the navigation and page hierarchy for this admin app\",\"these dashboard sections overlap and users do not know where to look first\",\"should this be a top-level nav item, a tab, a filter, or a page section?\"]"
   anti_examples: "[\"make the category taxonomy and assignment rules for this skill library\",\"define design tokens, component APIs, and theming rules\",\"rewrite this tooltip and empty-state copy\",\"audit keyboard accessibility and ARIA semantics\"]"
+  relations: "{\"boundary\":[{\"skill\":\"layout-composition\",\"reason\":\"layout-composition owns structure inside a page or screen; information-architecture owns cross-page organization and wayfinding\"},{\"skill\":\"microcopy\",\"reason\":\"microcopy owns sentence-level UI text; information-architecture owns placement and hierarchy\"}],\"related\":[\"taxonomy-design\",\"task-analysis\",\"design-system-architecture\",\"layout-composition\",\"a11y\"],\"verify_with\":[\"task-analysis\",\"a11y\"]}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/information-architecture/SKILL.md
-  skill_graph_export_description_projection: anti_examples
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Information Architecture
@@ -88,10 +88,12 @@ This skill ships a comprehension-eval artifact at [`examples/evals/information-a
 - define design tokens, component APIs, and theming rules
 - rewrite this tooltip and empty-state copy
 - audit keyboard accessibility and ARIA semantics
+- Owned by `layout-composition`: structure inside a page or screen
+- Owned by `microcopy`: sentence-level UI text
 
 **Related skills**
-- Verify with: `a11y`
-- Related: `interaction-feedback`, `layout-composition`, `task-analysis`
+- Verify with: `task-analysis`, `a11y`
+- Related: `taxonomy-design`, `task-analysis`, `design-system-architecture`, `layout-composition`, `a11y`
 
 **Keywords**
 - `information architecture`, `navigation structure`, `sitemap`, `wayfinding`, `page hierarchy`, `docs architecture`, `labeling system`, `content grouping`, `findability`, `content model`

@@ -13,7 +13,7 @@ Use this page when you know the kind of answer you need but not the owning file 
 | Understand verdicts | [`verdict-semantics.md`](verdict-semantics.md) | Canonical enum meanings and confidence ordering. |
 | Design or audit eval artifacts | [`comprehension-eval-spec.md`](comprehension-eval-spec.md) and [`application-eval-spec.md`](application-eval-spec.md) | Separate contracts for concept comprehension and behavior-change evidence. |
 | Check audit-loop execution surfaces | [`skill-audit-loop-executable-map.md`](skill-audit-loop-executable-map.md) | Maps checks, scripts, artifacts, and write surfaces. |
-| Follow current plans | [`plans/PLANS.md`](plans/PLANS.md) | Active plans index. |
+| Follow current plans | [`plans/PLANS.md`](plans/PLANS.md) | Active and in-flight plans index. Completed plans are removed to git history. |
 | Read accepted decisions | [`adr/`](adr/) | Architecture decision records, including status updates and supersessions. |
 | Review research and audits | [`research/`](research/) | Dated analysis, evidence reviews, and multi-model audit reports. |
 | Publish or syndicate skills | [`publish-workflow.md`](publish-workflow.md), [`marketplace-syndication.md`](marketplace-syndication.md) | Public release and marketplace staging workflow. |
@@ -33,5 +33,4 @@ Use this page when you know the kind of answer you need but not the owning file 
 ## Notes
 
 - Generated docs such as [`status.generated.md`](status.generated.md) and [`marketplace-publication-queue.generated.md`](marketplace-publication-queue.generated.md) report current outputs; edit their generators instead of hand-editing them.
-- Archived docs under [`_archived/`](_archived/) preserve historical context and should not be treated as current operating guidance.
 - Drafts under [`_drafts/`](_drafts/) are not binding until promoted to an active owner.

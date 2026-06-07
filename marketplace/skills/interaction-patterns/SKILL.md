@@ -1,11 +1,10 @@
 ---
 name: interaction-patterns
-description: "Use when choosing or auditing UI interaction patterns and controls: tabs vs pages, dropdown vs combobox, stepper vs wizard, modal vs inline edit, disclosure, command menus, selection, filtering, and gesture alternatives. Do NOT use for accessibility compliance (use `a11y`), task decomposition (use `task-analysis`), feedback-state staging (use `interaction-feedback`), or reusable component API design (use `design-system-architecture`). Do NOT use for audit this combobox for ARIA roles and keyboard support. Do NOT use for define the user's top task before choosing controls. Do NOT use for add skeleton loading and optimistic feedback to this action. Do NOT use for define the component props, variants, slots, and token contract."
+description: "Use when choosing or auditing UI interaction patterns and controls: tabs vs pages, dropdown vs combobox, stepper vs wizard, modal vs inline edit, disclosure, command menus, selection, filtering, and gesture alternatives. Do NOT use for accessibility compliance (use `a11y`), task decomposition (use `task-analysis`), feedback-state staging (use `interaction-feedback`), or reusable component API design (use `design-system-architecture`). Do NOT use for audit this combobox for ARIA roles and keyboard support. Do NOT use for define the user's top task before choosing controls. Do NOT use for add skeleton loading and optimistic feedback to this action. Do NOT use for define the component props, variants, slots, and token contract. Do NOT use for feedback states after an action (use interaction-feedback). Do NOT use for component props, variants, slots, and token contracts (use design-module-composition)."
 license: MIT
 compatibility: Portable interaction-pattern guidance for web and app UI. Pattern choices should be checked against platform conventions and accessible-widget guidance before implementation.
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"adjacent\":[\"interaction-feedback\"],\"boundary\":[\"task-analysis\",\"a11y\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: design
@@ -22,6 +21,7 @@ metadata:
   keywords: "[\"interaction-patterns\",\"control pattern selection\",\"dropdown combobox choice\",\"modal inline edit choice\",\"tabs accordion choice\",\"bulk selection pattern\",\"command menu pattern\",\"disclosure pattern\",\"gesture alternative\",\"modal vs panel choice\"]"
   examples: "[\"should this control be a dropdown, combobox, radio group, or stepper?\",\"choose the interaction pattern for bulk editing rows in this table\",\"this modal interrupts the flow - should the edit be inline instead?\",\"decide whether these settings belong in tabs, accordion sections, or separate pages\"]"
   anti_examples: "[\"audit this combobox for ARIA roles and keyboard support\",\"define the user's top task before choosing controls\",\"add skeleton loading and optimistic feedback to this action\",\"define the component props, variants, slots, and token contract\"]"
+  relations: "{\"boundary\":[{\"skill\":\"interaction-feedback\",\"reason\":\"interaction-feedback owns feedback states after an action; interaction-patterns owns the primary control and flow shape\"},{\"skill\":\"design-module-composition\",\"reason\":\"design-module-composition owns component props, variants, slots, and token contracts; interaction-patterns owns choosing the user-facing control pattern\"},{\"skill\":\"component-architecture\",\"reason\":\"component-architecture owns the component-library layering question (primitives, composites, product-specific) and headless/styled, controlled/uncontrolled splits; interaction-patterns owns choosing the user-facing control pattern before any component is designed\"}],\"related\":[\"layout-composition\",\"form-ux-architecture\",\"microcopy\",\"semiotics\",\"a11y\",\"task-analysis\",\"design-system-architecture\",\"spec-driven-development\"],\"verify_with\":[\"a11y\",\"task-analysis\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -33,7 +33,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/interaction-patterns/SKILL.md
-  skill_graph_export_description_projection: anti_examples
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Interaction Patterns
@@ -103,9 +103,13 @@ This skill ships a comprehension-eval artifact at [`examples/evals/interaction-p
 - define the user's top task before choosing controls
 - add skeleton loading and optimistic feedback to this action
 - define the component props, variants, slots, and token contract
+- Owned by `interaction-feedback`: feedback states after an action
+- Owned by `design-module-composition`: component props, variants, slots, and token contracts
+- Owned by `component-architecture`
 
 **Related skills**
-- Related: `interaction-feedback`
+- Verify with: `a11y`, `task-analysis`
+- Related: `layout-composition`, `form-ux-architecture`, `microcopy`, `semiotics`, `a11y`, `task-analysis`, `design-system-architecture`, `spec-driven-development`
 
 **Keywords**
 - `interaction-patterns`, `control pattern selection`, `dropdown combobox choice`, `modal inline edit choice`, `tabs accordion choice`, `bulk selection pattern`, `command menu pattern`, `disclosure pattern`, `gesture alternative`, `modal vs panel choice`

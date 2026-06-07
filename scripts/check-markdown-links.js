@@ -8,13 +8,9 @@
  * and 404 after push.
  *
  * Severity model:
- *   - Active docs (default): broken links are errors and fail the build.
- *   - Archived docs (under any `_archived/` segment): broken links are warnings
- *     and DO NOT fail the build. Archived docs are historical snapshots; the
- *     project's link guarantees apply to the active surface only.
- *
- * Override with --strict-archived to treat archived broken links as errors
- * (useful when migrating an archive batch or auditing snapshot integrity).
+ *   - Broken local links are errors and fail the build.
+ *   - Completed plans/docs are removed to git history; no in-tree path gets
+ *     warning-only treatment for broken local links.
  */
 
 'use strict';
@@ -25,14 +21,6 @@ const { workspaceRoot } = require('./lib/roots');
 
 const REPO_ROOT = workspaceRoot();
 const IGNORED_DIRS = new Set(['.git', 'node_modules', '.artifacts', '.roundtable']);
-
-// Lenient policy: any markdown file beneath a `_archived/` segment is treated
-// as a historical snapshot. Broken links inside such files become warnings
-// rather than build-failing errors.
-function isArchivedPath(absPath) {
-  const rel = path.relative(REPO_ROOT, absPath).split(path.sep);
-  return rel.some(segment => segment === '_archived');
-}
 
 function repoRelative(filePath) {
   return path.relative(REPO_ROOT, filePath).split(path.sep).join('/');
@@ -191,27 +179,18 @@ function checkFile(filePath) {
 }
 
 function main() {
-  const flagArgs = process.argv.slice(2).filter(a => a.startsWith('--'));
-  const strictArchived = flagArgs.includes('--strict-archived');
   const args = process.argv.slice(2).filter(a => !a.startsWith('--'));
   const files = args.length > 0
     ? args.map(a => path.resolve(a)).filter(p => fs.existsSync(p) && p.toLowerCase().endsWith('.md'))
     : collectMarkdownFiles(REPO_ROOT).sort((a, b) => repoRelative(a).localeCompare(repoRelative(b)));
 
   const failures = [];
-  const warnings = [];
   for (const file of files) {
-    const archived = !strictArchived && isArchivedPath(file);
     for (const issue of checkFile(file)) {
-      (archived ? warnings : failures).push({ file, ...issue });
+      failures.push({ file, ...issue });
     }
   }
 
-  for (const warning of warnings) {
-    process.stderr.write(
-      `WARN ${repoRelative(warning.file)}:${warning.line}: ${warning.message} (${warning.target}) [archived snapshot]\n`
-    );
-  }
   for (const failure of failures) {
     process.stderr.write(
       `${repoRelative(failure.file)}:${failure.line}: ${failure.message} (${failure.target})\n`
@@ -219,14 +198,11 @@ function main() {
   }
 
   if (failures.length > 0) {
-    process.stderr.write(`FAIL markdown links: ${failures.length} broken local link(s) in active docs (${warnings.length} in _archived/ ignored — use --strict-archived to elevate)\n`);
+    process.stderr.write(`FAIL markdown links: ${failures.length} broken local link(s)\n`);
     process.exit(1);
   }
 
-  const suffix = warnings.length > 0
-    ? ` — ${warnings.length} archived-doc warning(s) ignored (use --strict-archived to elevate)`
-    : '';
-  process.stdout.write(`OK   markdown links (${files.length} file(s))${suffix}\n`);
+  process.stdout.write(`OK   markdown links (${files.length} file(s))\n`);
 }
 
 module.exports = {
@@ -234,7 +210,6 @@ module.exports = {
   collectMarkdownFiles,
   existsCaseSensitive,
   extractInlineLinks,
-  isArchivedPath,
   slugifyHeading,
 };
 

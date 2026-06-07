@@ -1,23 +1,25 @@
 ---
 name: audit
-description: "Audit one skill (or a scope) against live repo truth. Reads every field, runs the deterministic + drift + optional graded pipeline, writes the verdict back to the skill's Health Block. No mutations. Replaces the old audit-skill, domain-audit, bidirectional-audit, deep-repo-audit, workspace-audit, skill-audit."
+description: "Audit one skill (or a scope) against live repo truth. Reads every field, runs the deterministic + drift + optional graded pipeline, writes verdict fields to the skill's audit-state.json sidecar. No SKILL.md mutations. Replaces the old audit-skill, domain-audit, bidirectional-audit, deep-repo-audit, workspace-audit, skill-audit."
 argument-hint: "<skill-name> [--graded] [--fix] [--source-first] [--fix-code-too] [--scope skill|cluster|repo|workspace] [--pilot 5]"
 version: 1.0.0
 since: 2026-05-17
 status: active
 superseded_by: null
-last_changed: 2026-05-23
+last_changed: 2026-06-07
 ---
 
 # /audit — Read every field, write the verdict
 
-Audit one skill against live repo truth. No mutations to the skill itself; writes the audit fingerprint to the Health Block fields in the skill's own frontmatter.
+Audit one skill against live repo truth. No mutations to `SKILL.md`; writes the audit fingerprint to the skill's sibling `audit-state.json` sidecar.
 
 ## Why this audit exists
 
 > **Audit Doctrine — link only.** The canonical doctrine is `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md` § Audit Doctrine — Intent and Teaching, Not Arbitrary Lint. It evaluates each skill on three axes (intent fidelity, teaching efficacy, upstream currency) and `application_verdict` is the real quality signal. Lint is a floor, never the goal. Do not restate the doctrine here — link to it.
 
 ## What it writes
+
+These fields live in `audit-state.json`; long-form evidence lives in the run directory described below.
 
 | Field | When |
 |---|---|
@@ -34,7 +36,7 @@ Audit one skill against live repo truth. No mutations to the skill itself; write
 ```
 /audit <skill-name>                        # Standard single-skill audit
 /audit <skill-name> --graded               # Adds the 7-dimension LLM grader pass
-/audit <skill-name> --fix                  # Deterministic Integrity-gate shape fix (v7->v8 frontmatter migration); no LLM
+/audit <skill-name> --fix                  # Deterministic Integrity-gate shape fix for stale frontmatter/sidecar shape; no LLM
 /audit <skill-name> --dry-run --fix        # Preview the shape fix without writing
 /audit <skill-name> --source-first         # Reads source code BEFORE the skill (prevents anchoring) — was audit:domain-audit
 /audit <skill-name> --fix-code-too         # Also fix code violations the skill detects (LLM-driven) — was audit:bidirectional-audit
@@ -49,7 +51,7 @@ Audit one skill against live repo truth. No mutations to the skill itself; write
 The binding per-skill contract lives at [`skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 3 — Per-Skill Audit Runbook](../../../skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook) (consolidated 2026-05-25; the historical standalone `skill-graph/audits/per-skill-contract.md` was absorbed into Part 3 of the audit loop doc). The five-phase audit shape runs internally:
 
 1. **Deterministic** — `skill-lint.js` (external mandates only — we do not author new internal lint rules to manufacture findings) → writes `lint_verdict` → rolls up into `structural_verdict`
-   - **`--fix` (deterministic remediation)** — when step 1 found shape violations, applies the v7→v8 frontmatter migration (`lib/audit/migrate-frontmatter.js`: remove retired fields, rename `domain → taxonomy_domain` / `domain_object → subject_matter`, drop enum `scope`, add `deployment_target`), regenerates field comments, and re-lints. Binary, no LLM, no evals. Distinct from `--fix-code-too` (which is an LLM-driven cross-artifact code fix). Caller commits per-skill.
+   - **`--fix` (deterministic remediation)** — when step 1 found shape violations, applies the current frontmatter and sidecar shape migration (`lib/audit/migrate-frontmatter.js`: remove retired frontmatter fields, rename `domain → taxonomy_domain` / `domain_object → subject_matter`, drop enum `scope`, add `deployment_target`), regenerates field comments, and re-lints. Binary, no LLM, no evals. Distinct from `--fix-code-too` (which is an LLM-driven cross-artifact code fix). Caller commits per-skill.
 2. **Drift** — `skill-graph-drift.js` against `grounding.truth_sources` → writes `drift_status` → rolls up into `truth_verdict`
 3. **Graded** (only `--graded`) — gate 8 (comprehension) and gate 9 (application, only when `application.json` exists) → write `comprehension_verdict` + `application_verdict`
 4. **Stamp** — writes `last_audited` to today's ISO date
@@ -60,7 +62,7 @@ Users see one command. Phases are an implementation detail.
 
 ## Output
 
-Health Block fields are written to the SKILL.md frontmatter. Long-form evidence lands in a **dated
+Audit Status fields are written to `audit-state.json`. Long-form evidence lands in a **dated
 run directory** (one per run, never clobbered), created from the `run_id` you get when you claim:
 
 ```bash
@@ -81,7 +83,7 @@ node scripts/skill/skill-audit-claim.js release <skill> --status completed --str
     latest -> runs/<newest>
 ```
 
-The Health Block is the state. The run dir is evidence. The `_ledger.jsonl` + `history.jsonl` are
+The `audit-state.json` sidecar is the state. The run dir is evidence. The `_ledger.jsonl` + `history.jsonl` are
 the queryable record of who audited what, when, and how many times — `node scripts/skill/skill-audit-ledger.js summary <skill>`.
 See `docs/reference/skill-audit-pipeline.md` § "Artifact Family (run-dir layout)".
 

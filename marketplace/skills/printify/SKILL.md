@@ -3,7 +3,6 @@ name: printify
 description: "Use when working with Printify — the print-on-demand REST API, catalog model (blueprints, print providers, variants, print areas), product creation and publish lifecycle to connected channels, order routing, shipping cost queries, and HMAC SHA-256 webhook verification. Do NOT use for non-Printify POD vendors, generic Shopify storefront work, or print-file (artwork) generation. Do NOT use for Generate the artwork PNG file that gets uploaded as a print file. Do NOT use for Implement the Shopify side of the Printify-to-Shopify sync. Do NOT use for Design a generic POD-vendor-agnostic product schema."
 license: CC-BY-4.0
 metadata:
-  relations: "{\"adjacent\":[\"webhook-integration\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: product-domain
@@ -21,6 +20,7 @@ metadata:
   triggers: "[\"printify\",\"printify api\",\"printify webhook\",\"print on demand\"]"
   examples: "[\"Create a Printify product from a blueprint + print provider + variant set and publish it to a connected Shopify store\",\"Handle a Printify order:updated webhook and reconcile fulfillment status\",\"Resolve shipping cost for a basket of Printify variants given a destination country\"]"
   anti_examples: "[\"Generate the artwork PNG file that gets uploaded as a print file\",\"Implement the Shopify side of the Printify-to-Shopify sync\",\"Design a generic POD-vendor-agnostic product schema\"]"
+  relations: "{\"related\":[\"shopify\",\"webhook-integration\",\"api-design\"],\"boundary\":[{\"skill\":\"shopify\",\"reason\":\"Printify publishes to Shopify (and other channels) but the Shopify-side concerns — theme display, Shopify webhooks, Admin API — belong in the shopify skill.\"}]}"
   structural_verdict: PASS
   truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
@@ -83,9 +83,10 @@ The publish lifecycle is asynchronous and partially observable. Treat publish su
 - Generate the artwork PNG file that gets uploaded as a print file
 - Implement the Shopify side of the Printify-to-Shopify sync
 - Design a generic POD-vendor-agnostic product schema
+- Owned by `shopify`
 
 **Related skills**
-- Related: `webhook-integration`
+- Related: `shopify`, `webhook-integration`, `api-design`
 
 **Keywords**
 - `printify api`, `print on demand`, `printify blueprints`, `printify print providers`, `printify publish lifecycle`, `printify webhooks`, `printify variants`, `printify shipping costs`, `printify order routing`, `print provider catalog`

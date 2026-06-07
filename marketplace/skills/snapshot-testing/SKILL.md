@@ -1,42 +1,30 @@
 ---
 name: snapshot-testing
-description: "Use when reasoning about snapshot testing as a tactical technique: the capture-and-compare-against-baseline pattern, the difference between data snapshots (serialized object trees), DOM snapshots (rendered HTML trees), and visual snapshots (pixel images), the approval-cycle discipline that determines whether the technique adds testing value or just maintenance burden, the failure modes (auto-update without review, snapshot churn on irrelevant changes, large snapshots that hide diffs), where snapshot testing fits (structural regression of complex outputs) and where it doesn't (behavioral specification of contracts), and the relationship to visual regression testing tools (Chromatic, Percy, Loki, Playwright screenshots). Do NOT use for behavioral assertions about output values (use example tests in testing-strategy), for universal property claims (use property-based-testing), for the construction of test doubles (use test-doubles-design), or for end-to-end user-journey testing (use e2e-test-design)."
+description: "Use when reasoning about snapshot testing as a tactical technique: capture-and-compare against a reviewed baseline, data snapshots, DOM snapshots, text/file snapshots, visual snapshots, approval-cycle discipline, snapshot churn, unstable inputs, large unreadable diffs, golden files, characterization tests, and visual regression review with tools such as Jest, Vitest, Playwright screenshots, Storybook/Chromatic, and Percy. Do NOT use for the overall test-level mix (use `testing-strategy`), universal property claims (use `property-based-testing`), test double construction (use `test-doubles-design`), strict test-first workflow design (use `test-driven-development`), or end-to-end user journey design (use `e2e-test-design`). Do NOT use for choose the overall unit integration e2e and performance test mix for this feature. Do NOT use for use property-based testing with fast-check generated arrays to assert sort output is ordered and preserves items."
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"adjacent\":[\"e2e-test-design\"]}"
-  schema_version: "8"
-  version: "1.0.0"
   subject: quality-assurance
   deployment_target: portable
+  scope: "Teaching snapshot testing as a portable quality-assurance technique: capture a known-good output artifact, compare future output against that baseline, review diffs, and either update the baseline after human approval or fix the production change. Covers data, DOM/HTML, text/file, generated-output, golden-file, characterization, and visual snapshot variants; serializer/determinism controls; approval-cycle discipline; snapshot size/readability; and when visual regression tools are the right comparison surface. Excludes the overall test strategy mix, universal property claims, test double construction, strict test-first workflow design, and e2e journey design."
   taxonomy_domain: quality/testing
-  owner: skill-graph-maintainer
-  freshness: "2026-05-16"
-  drift_check: "{\"last_verified\":\"2026-05-16\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"snapshot testing\",\"golden file\",\"characterization test\",\"approval testing\",\"visual regression\",\"Chromatic\",\"Percy\",\"Storybook\",\"Jest snapshot\",\"DOM snapshot\"]"
   triggers: "[\"should this be a snapshot test\",\"the snapshot keeps changing\",\"is visual regression testing the same thing\",\"should we auto-update snapshots\",\"snapshot file is too big\"]"
-  examples: "[\"decide whether a rendered component is a candidate for a snapshot test or for behavioral tests\",\"diagnose a test suite where every PR updates snapshot files — likely snapshot churn from non-stable inputs\",\"explain why auto-updating snapshots without review removes the testing value\",\"design an approval cycle for a visual regression suite (Chromatic / Percy)\"]"
-  anti_examples: "[\"specify the exact return value of a calculation (use example tests under testing-strategy)\",\"verify a universal property like sort correctness (use property-based-testing)\",\"design end-to-end user journey tests (use e2e-test-design)\"]"
+  examples: "[\"should this Jest DOM snapshot test use toMatchSnapshot or hand-written assertions\",\"diagnose Jest snapshot file churn when every PR updates snapshots because timestamps random IDs and order change\",\"explain why running jest -u or vitest -u without reviewing snapshot diffs removes the testing value\",\"design an approval cycle for a visual snapshot regression suite using Playwright or Chromatic\"]"
+  anti_examples: "[\"choose the overall unit integration e2e and performance test mix for this feature\",\"use property-based testing with fast-check generated arrays to assert sort output is ordered and preserves items\",\"design a test double fake payment provider and decide mock stub or fake\",\"write an end-to-end checkout journey from cart to payment confirmation\"]"
+  relations: "{\"related\":[\"testing-strategy\",\"property-based-testing\",\"test-driven-development\",\"test-doubles-design\",\"e2e-test-design\",\"diff-analysis\"],\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the strategic question of what to test at which level; snapshot-testing owns one tactical capture-and-compare technique inside that strategy.\"},{\"skill\":\"property-based-testing\",\"reason\":\"property-based-testing asserts universal claims across generated inputs; snapshot-testing captures one concrete output and compares it to a reviewed baseline.\"},{\"skill\":\"test-driven-development\",\"reason\":\"test-driven-development owns strict test-first workflow discipline; snapshot-testing usually needs existing output before the baseline can be captured.\"},{\"skill\":\"test-doubles-design\",\"reason\":\"test-doubles-design owns fake/stub/mock stand-ins for collaborators; snapshot-testing owns baseline artifacts for output comparison.\"},{\"skill\":\"e2e-test-design\",\"reason\":\"e2e-test-design owns user-journey correctness across a running system; snapshot-testing may provide visual or structural regression checks inside that journey but does not design the journey itself.\"}],\"verify_with\":[\"testing-strategy\",\"diff-analysis\"]}"
+  grounding: "{\"subject_matter\":\"Portable snapshot testing and visual regression testing practice across data, DOM, text, file, and image baselines\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://jestjs.io/docs/snapshot-testing\",\"https://main.vitest.dev/guide/learn/snapshots\",\"https://playwright.dev/docs/test-snapshots\",\"https://storybook.js.org/docs/writing-tests/snapshot-testing\",\"https://storybook.js.org/docs/9/writing-tests/visual-testing\",\"https://www.chromatic.com/docs/snapshots/\",\"../skills/skills/quality-assurance/snapshot-testing/references/snapshot-testing-2026-06-07.md\"],\"failure_modes\":[\"auto_update_without_review\",\"snapshot_churn_from_nondeterministic_output\",\"large_unreadable_snapshot_diff\",\"snapshot_used_instead_of_explicit_behavior_assertion\",\"visual_snapshot_without_stable_environment\",\"property_or_journey_test_misrouted_to_snapshot\",\"baseline_file_not_committed_or_reviewed\"],\"evidence_priority\":\"equal\"}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
   analogy: "A snapshot test is to a piece of output what a wedding photograph is to a memory of the day — the photograph does not say what the wedding *should* have looked like, only what it did look like; on the next anniversary, you compare the room to the photograph and notice 'the curtains are different' (intentional — they were replaced) or 'the picture is crooked' (unintentional — fix it). A photograph filed away without anyone ever looking at it again is not a record; it is paper. A snapshot file the team auto-accepts via `-u` is the same."
   misconception: "|"
-  concept: "{\"definition\":\"Snapshot testing is a tactical testing technique in which the output of a system under test is captured on a known-good run, stored as an artifact (the snapshot), and compared against fresh output on each subsequent test run. A mismatch is the test failure. The snapshot itself is the assertion — there is no hand-written claim about what the output should be; the claim is 'the output should equal what it was last time, until someone deliberately approves a new baseline.' The discipline is in the *approval cycle*: when the output legitimately changes, a human reviews the diff and accepts the new baseline; when the change is unexpected, the test failure surfaces the regression. A snapshot test without disciplined approval review is not a test; it is a record of whatever the output happened to be on the day the snapshot was last updated.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/snapshot-testing/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Snapshot Testing
@@ -140,11 +128,12 @@ After applying this skill, verify:
 
 - Feathers, M. (2004). *Working Effectively with Legacy Code*. Prentice Hall. Introduces "characterization tests" — capturing current behavior as a safety net for refactoring legacy code. The conceptual ancestor of snapshot testing.
 - Jest Team. ["Snapshot Testing — Jest Documentation"](https://jestjs.io/docs/snapshot-testing). The most-adopted JavaScript snapshot-testing implementation; canonical reference for inline snapshots, the `__snapshots__/` convention, and the `--updateSnapshot` flag and its discipline implications.
-- Llopis, N. ["Approval Tests"](https://approvaltests.com/). Cross-language framework explicitly focused on the approval cycle as the central discipline; useful as a contrast to auto-update-heavy tools.
-- Chromatic. ["Visual Testing Handbook"](https://www.chromatic.com/blog/visual-testing-handbook/). Practitioner-oriented guide to visual snapshot testing, perceptual diff, cross-browser concerns, and PR-integrated review UI.
-- Percy / BrowserStack. ["Visual Testing Documentation"](https://docs.percy.io/). Reference for the centralized-snapshot-service pattern in visual regression testing.
-- Storybook Team. ["Visual testing with Storybook"](https://storybook.js.org/docs/writing-tests/visual-testing). Reference for integrating visual snapshot testing with component development workflows.
-- Reactive Tests. ["Testing Library — Snapshot considerations"](https://testing-library.com/docs/queries/about/#priority) and broader [Testing Library documentation](https://testing-library.com/). Practitioner reference for DOM snapshot best practices in React/Vue test suites.
+- Vitest Team. ["Snapshot Testing — Vitest Guide"](https://main.vitest.dev/guide/learn/snapshots). Current reference for Vitest external, inline, and file snapshots; emphasizes reviewing diffs before updates.
+- Playwright Team. ["Visual comparisons"](https://playwright.dev/docs/test-snapshots). Current reference for screenshot baselines, update flow, environment sensitivity, pixel-diff options, and non-image snapshots.
+- Storybook Team. ["Snapshot tests"](https://storybook.js.org/docs/writing-tests/snapshot-testing). Current reference for snapshot testing Portable Stories and the Storyshots deprecation note.
+- Storybook Team. ["Visual tests"](https://storybook.js.org/docs/9/writing-tests/visual-testing). Current reference for Storybook visual tests and review of changed pixels.
+- Chromatic. ["Snapshots"](https://www.chromatic.com/docs/snapshots/). Current reference for centralized visual snapshot capture, metadata, and comparison workflow.
+- ApprovalTests. ["Approval Tests"](https://approvaltests.com/). Cross-language framework explicitly focused on the approval cycle as the central discipline; useful as a contrast to auto-update-heavy tools.
 - Spadini, D., Schvarcbacher, M., Oprescu, A.-M., Bruntink, M., & Bacchelli, A. (2020). ["Investigating Severity Thresholds for Test Smells"](https://dl.acm.org/doi/10.1145/3387940.3392177). Industrial study including snapshot-test smells; useful empirical signal on approval-cycle failure modes.
 
 ## Skill Graph context
@@ -155,21 +144,29 @@ After applying this skill, verify:
 - Subject: `quality-assurance`
 - Deployment: `portable`
 - Domain: `quality/testing`
+- Scope: Teaching snapshot testing as a portable quality-assurance technique: capture a known-good output artifact, compare future output against that baseline, review diffs, and either update the baseline after human approval or fix the production change. Covers data, DOM/HTML, text/file, generated-output, golden-file, characterization, and visual snapshot variants; serializer/determinism controls; approval-cycle discipline; snapshot size/readability; and when visual regression tools are the right comparison surface. Excludes the overall test strategy mix, universal property claims, test double construction, strict test-first workflow design, and e2e journey design.
 
 **When to use**
-- decide whether a rendered component is a candidate for a snapshot test or for behavioral tests
-- diagnose a test suite where every PR updates snapshot files — likely snapshot churn from non-stable inputs
-- explain why auto-updating snapshots without review removes the testing value
-- design an approval cycle for a visual regression suite (Chromatic / Percy)
+- should this Jest DOM snapshot test use toMatchSnapshot or hand-written assertions
+- diagnose Jest snapshot file churn when every PR updates snapshots because timestamps random IDs and order change
+- explain why running jest -u or vitest -u without reviewing snapshot diffs removes the testing value
+- design an approval cycle for a visual snapshot regression suite using Playwright or Chromatic
 - Triggers: `should this be a snapshot test`, `the snapshot keeps changing`, `is visual regression testing the same thing`, `should we auto-update snapshots`, `snapshot file is too big`
 
 **Not for**
-- specify the exact return value of a calculation (use example tests under testing-strategy)
-- verify a universal property like sort correctness (use property-based-testing)
-- design end-to-end user journey tests (use e2e-test-design)
+- choose the overall unit integration e2e and performance test mix for this feature
+- use property-based testing with fast-check generated arrays to assert sort output is ordered and preserves items
+- design a test double fake payment provider and decide mock stub or fake
+- write an end-to-end checkout journey from cart to payment confirmation
+- Owned by `testing-strategy`: the strategic question of what to test at which level
+- Owned by `property-based-testing`
+- Owned by `test-driven-development`: strict test-first workflow discipline
+- Owned by `test-doubles-design`: fake/stub/mock stand-ins for collaborators
+- Owned by `e2e-test-design`: user-journey correctness across a running system
 
 **Related skills**
-- Related: `e2e-test-design`
+- Verify with: `testing-strategy`, `diff-analysis`
+- Related: `testing-strategy`, `property-based-testing`, `test-driven-development`, `test-doubles-design`, `e2e-test-design`, `diff-analysis`
 
 **Concept**
 - Mental model: |
@@ -177,6 +174,10 @@ After applying this skill, verify:
 - Boundary: |
 - Analogy: A snapshot test is to a piece of output what a wedding photograph is to a memory of the day — the photograph does not say what the wedding *should* have looked like, only what it did look like; on the next anniversary, you compare the room to the photograph and notice 'the curtains are different' (intentional — they were replaced) or 'the picture is crooked' (unintentional — fix it). A photograph filed away without anyone ever looking at it again is not a record; it is paper. A snapshot file the team auto-accepts via `-u` is the same.
 - Common misconception: |
+
+**Grounding**
+- Mode: `universal`
+- Truth sources: `https://jestjs.io/docs/snapshot-testing`, `https://main.vitest.dev/guide/learn/snapshots`, `https://playwright.dev/docs/test-snapshots`, `https://storybook.js.org/docs/writing-tests/snapshot-testing`, `https://storybook.js.org/docs/9/writing-tests/visual-testing`, `https://www.chromatic.com/docs/snapshots/`, `../skills/skills/quality-assurance/snapshot-testing/references/snapshot-testing-2026-06-07.md`
 
 **Keywords**
 - `snapshot testing`, `golden file`, `characterization test`, `approval testing`, `visual regression`, `Chromatic`, `Percy`, `Storybook`, `Jest snapshot`, `DOM snapshot`

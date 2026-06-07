@@ -4,40 +4,41 @@ description: "Use when designing how a database keeps multiple copies of its dat
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"adjacent\":[\"cap-theorem-tradeoffs\"],\"boundary\":[\"sharding-strategy\"]}"
-  schema_version: "8"
-  version: "1.0.0"
   subject: data-engineering
   deployment_target: portable
+  scope: "Designing database replication topologies and operational guardrails for keeping multiple copies of the same data in agreement across nodes: single-leader, multi-leader, leaderless/quorum; synchronous, semi-synchronous, and asynchronous replication; log-shipping and statement/row/trigger/logical mechanisms; read-after-write mitigations; failover and split-brain prevention; conflict resolution; and backup-vs-replica boundaries. Portable across distributed database systems. Excludes horizontal partitioning across nodes (sharding-strategy), the abstract CAP/PACELC frame itself (cap-theorem-tradeoffs), single-node transaction guarantees (acid-fundamentals), isolation-level choice (transaction-isolation), and query/index tuning (query-optimization/indexing-strategy)."
   taxonomy_domain: engineering/data
-  owner: skill-graph-maintainer
-  freshness: "2026-05-16"
-  drift_check: "{\"last_verified\":\"2026-05-16\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"replication\",\"primary replica\",\"multi-leader\",\"leaderless\",\"quorum\",\"synchronous replication\",\"asynchronous replication\",\"replication lag\",\"read-after-write\",\"failover\"]"
   triggers: "[\"single-leader vs multi-leader\",\"synchronous vs async replication\",\"what happens on failover\",\"split brain\",\"read-after-write consistency\"]"
   examples: "[\"design replication topology for a service with one region writing and three regions reading\",\"decide between synchronous and asynchronous replication given a target RPO\",\"diagnose stale reads after a write — likely replication lag without read-after-write handling\",\"explain the split-brain risk in multi-leader replication\"]"
   anti_examples: "[\"horizontally partition data across nodes (use sharding-strategy)\",\"reason about the CAP theorem abstractly (use cap-theorem-tradeoffs)\",\"explain ACID properties (use acid-fundamentals)\"]"
+  relations: "{\"related\":[\"cap-theorem-tradeoffs\",\"acid-fundamentals\",\"sharding-strategy\",\"transaction-isolation\",\"indexing-strategy\",\"query-optimization\"],\"verify_with\":[\"cap-theorem-tradeoffs\",\"sharding-strategy\",\"transaction-isolation\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
   analogy: "Replication is to a database what mirror copies of a master photograph are to a museum's record — single-leader async is the photographer keeping the negative and printing copies as requested; single-leader sync is the conservator requiring two darkroom signatures before any print leaves the building; multi-leader is multiple authorized photographers in different cities each accepting submissions and reconciling at intervals; leaderless quorum is asking three of five archivists to vote on whether this print matches the master, accepting their verdict. Failover is replacing the negative-keeper when they retire; split brain is what happens when the agency forgets to revoke the old keeper's keys."
   misconception: "|"
-  concept: "{\"definition\":\"Replication is the discipline of keeping multiple copies of the same data on multiple nodes so that the system can serve reads from any copy, survive the failure of any node, or both. The three foundational topologies are single-leader (primary-replica; one node accepts writes, others receive a stream of changes), multi-leader (multi-primary; multiple nodes accept writes and reconcile), and leaderless (quorum; clients write to a quorum of nodes directly). Each topology has its own consistency, availability, conflict-handling, and operational properties; choosing among them is choosing the system's CAP/PACELC position and accepting the operational complexity that comes with it. Synchronous vs asynchronous replication is an orthogonal choice within each topology, trading durability/consistency against latency. The discipline is matching the topology and the synchrony choice to the workload's actual requirements for read scaling, write availability, recovery point objective (RPO), and recovery time objective (RTO).\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/data-engineering/replication-patterns/SKILL.md
 ---
+
+## Concept of the skill
+
+**What it is:** Replication is the design discipline for keeping multiple copies of the same data on multiple nodes so a database can survive failures, scale reads, or place data near users.
+
+**Mental model:** The core choices are topology, synchrony, replication mechanism, read-freshness policy, failover policy, and conflict handling. Single-leader systems serialize writes through one primary, multi-leader systems accept writes in more than one place and must merge conflicts, and leaderless systems use quorums so clients can read or write through multiple nodes.
+
+**Why it exists:** A single database copy creates one point of failure and one read bottleneck. Replication adds resilience and scale, but it also creates lag, failover, stale-read, and split-brain risks that the application must deliberately handle.
+
+**What it is NOT:** It is not sharding, which splits different data across nodes. It is not CAP theory itself, single-node ACID guarantees, isolation-level selection, query tuning, indexing, or backups.
+
+**Adjacent concepts:** `sharding-strategy` partitions data; `cap-theorem-tradeoffs` names the consistency/availability frame; `acid-fundamentals` and `transaction-isolation` describe local transaction guarantees; backup and restore practice protects against replicated corruption or deletion.
+
+**One-line analogy:** Replication is like keeping synchronized copies of a critical operations log in several control rooms: the system keeps working when one room fails, but everyone needs rules for who may write, how copies catch up, and who takes charge after an outage.
+
+**Common misconception:** Turning replication on does not automatically create zero data loss, fresh reads, safe failover, or backups; each of those safety properties requires an explicit topology, synchrony, routing, fencing, monitoring, and recovery choice.
 
 # Replication Patterns
 
@@ -145,6 +146,7 @@ After applying this skill, verify:
 - Subject: `data-engineering`
 - Deployment: `portable`
 - Domain: `engineering/data`
+- Scope: Designing database replication topologies and operational guardrails for keeping multiple copies of the same data in agreement across nodes: single-leader, multi-leader, leaderless/quorum; synchronous, semi-synchronous, and asynchronous replication; log-shipping and statement/row/trigger/logical mechanisms; read-after-write mitigations; failover and split-brain prevention; conflict resolution; and backup-vs-replica boundaries. Portable across distributed database systems. Excludes horizontal partitioning across nodes (sharding-strategy), the abstract CAP/PACELC frame itself (cap-theorem-tradeoffs), single-node transaction guarantees (acid-fundamentals), isolation-level choice (transaction-isolation), and query/index tuning (query-optimization/indexing-strategy).
 
 **When to use**
 - design replication topology for a service with one region writing and three regions reading
@@ -159,7 +161,8 @@ After applying this skill, verify:
 - explain ACID properties (use acid-fundamentals)
 
 **Related skills**
-- Related: `cap-theorem-tradeoffs`
+- Verify with: `cap-theorem-tradeoffs`, `sharding-strategy`, `transaction-isolation`
+- Related: `cap-theorem-tradeoffs`, `acid-fundamentals`, `sharding-strategy`, `transaction-isolation`, `indexing-strategy`, `query-optimization`
 
 **Concept**
 - Mental model: |

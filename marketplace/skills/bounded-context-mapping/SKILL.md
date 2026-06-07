@@ -1,11 +1,10 @@
 ---
 name: bounded-context-mapping
-description: "Use when drawing Domain-Driven Design boundaries: bounded contexts, context maps, ownership seams, upstream/downstream relationships, anti-corruption layers, shared kernels, and translation boundaries. Do NOT use for pre-DDD entity discovery (use `conceptual-modeling`), database schema design (use `data-modeling`), or HTTP endpoint design (use `api-design`). Do NOT use for list entities, attributes, and cardinalities before any architecture decision. Do NOT use for create SQL tables, foreign keys, and indexes. Do NOT use for design REST routes and response envelopes. Do NOT use for write an ADR for the boundary decision after we already chose it."
+description: "Use when drawing Domain-Driven Design boundaries: bounded contexts, context maps, ownership seams, upstream/downstream relationships, anti-corruption layers, shared kernels, and translation boundaries. Do NOT use for pre-DDD entity discovery (use `conceptual-modeling`), database schema design (use `data-modeling`), or HTTP endpoint design (use `api-design`). Do NOT use for list entities, attributes, and cardinalities before any architecture decision. Do NOT use for create SQL tables, foreign keys, and indexes. Do NOT use for design REST routes and response envelopes. Do NOT use for write an ADR for the boundary decision after we already chose it. Do NOT use for persistence structure after context boundaries inform ownership (use data-modeling)."
 license: MIT
 compatibility: "Portable DDD boundary-mapping discipline for monoliths, modular monoliths, services, event-driven systems, and agent workspaces."
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"boundary\":[\"conceptual-modeling\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: software-architecture
@@ -22,6 +21,7 @@ metadata:
   keywords: "[\"bounded context\",\"context map\",\"domain-driven design\",\"DDD boundary\",\"anti-corruption layer\",\"shared kernel\",\"upstream downstream\",\"conformist\",\"customer supplier\",\"domain boundary\"]"
   examples: "[\"orders, fulfillment, payments, and support all use status differently - where should the bounded contexts be?\",\"map the upstream/downstream relationships before we split this module\",\"do we need an anti-corruption layer between our canonical order model and Shopify?\",\"which concepts belong to a shared kernel and which are context-local?\"]"
   anti_examples: "[\"list entities, attributes, and cardinalities before any architecture decision\",\"create SQL tables, foreign keys, and indexes\",\"design REST routes and response envelopes\",\"write an ADR for the boundary decision after we already chose it\"]"
+  relations: "{\"boundary\":[{\"skill\":\"conceptual-modeling\",\"reason\":\"conceptual-modeling discovers domain structure before DDD boundary ownership is assigned\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling owns persistence structure after context boundaries inform ownership\"},{\"skill\":\"architecture-decision-records\",\"reason\":\"architecture-decision-records records a chosen decision; bounded-context-mapping analyzes the boundary before the decision is recorded\"}],\"related\":[\"event-storming\",\"system-interface-contracts\",\"conceptual-modeling\",\"architecture-decision-records\",\"api-design\"],\"depends_on\":[\"conceptual-modeling\"],\"verify_with\":[\"semantic-relations\",\"system-interface-contracts\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -33,7 +33,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-architecture/bounded-context-mapping/SKILL.md
-  skill_graph_export_description_projection: anti_examples
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Bounded Context Mapping
@@ -98,6 +98,14 @@ The central question is: "Where does this word mean something different?" Those 
 - create SQL tables, foreign keys, and indexes
 - design REST routes and response envelopes
 - write an ADR for the boundary decision after we already chose it
+- Owned by `conceptual-modeling`
+- Owned by `data-modeling`: persistence structure after context boundaries inform ownership
+- Owned by `architecture-decision-records`
+
+**Related skills**
+- Depends on: `conceptual-modeling`
+- Verify with: `semantic-relations`, `system-interface-contracts`
+- Related: `event-storming`, `system-interface-contracts`, `conceptual-modeling`, `architecture-decision-records`, `api-design`
 
 **Keywords**
 - `bounded context`, `context map`, `domain-driven design`, `DDD boundary`, `anti-corruption layer`, `shared kernel`, `upstream downstream`, `conformist`, `customer supplier`, `domain boundary`

@@ -4,8 +4,8 @@
  *
  * Validates that `schemas/SKILL_METADATA_PROTOCOL_schema.json` and `schemas/manifest.schema.json`
  * carry the enum values mandated by:
- *   - ADR-0011 (four-verdict Audit Status, historically called the Health Block)
- *   - ADR-0020 twelve-shelf re-axis (`subject` 12-enum, supersedes ADR-0017's 9),
+ *   - ADR-0011 (four-verdict Audit Status)
+ *   - ADR-0020 twelve-shelf re-axis (`subject` 12-enum),
  *     `deployment_target` 2-enum, and free-text `scope` with NO enum). The
  *     amendment retired the `operation` axis, removed the `scope` enum, and
  *     dropped the `category` and `type` axes. This checker asserts the
@@ -51,8 +51,8 @@ const SPEC = {
     integer: [8],
     string: ['8'],
   },
-  // classification subject enum (ADR-0020 twelve-shelf competency re-axis,
-  // supersedes the ADR-0017 9-value model). 3 bands: engineering /
+  // classification subject enum (ADR-0020 twelve-shelf competency re-axis).
+  // 3 bands: engineering /
   // AI-agentic / cross-cutting craft.
   v8_subject: [
     'backend-engineering',

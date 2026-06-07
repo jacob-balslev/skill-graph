@@ -4,7 +4,6 @@ description: "Use when reasoning about how a web UI is produced and delivered: c
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"boundary\":[\"client-server-boundary\",\"frontend-architecture\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: frontend-engineering
@@ -22,6 +21,7 @@ metadata:
   triggers: "[\"should this page be server-rendered\",\"static or dynamic\",\"what's the difference between SSR and RSC\",\"why is this page slow to first paint\",\"should this be a client component\"]"
   examples: "[\"decide whether a product page should be SSG with revalidation or SSR\",\"explain why a marketing page is fast but a dashboard is slow despite both 'server rendering'\",\"choose between streaming SSR and a loading skeleton\",\"diagnose why a server component re-renders on every navigation\"]"
   anti_examples: "[\"organize the folder structure of a frontend codebase (use frontend-architecture)\",\"decide what types can cross the network boundary (use client-server-boundary)\",\"design HTTP cache headers (use http-semantics)\"]"
+  relations: "{\"related\":[\"frontend-architecture\",\"client-server-boundary\",\"http-semantics\",\"performance-engineering\",\"vercel-composition-patterns\"],\"boundary\":[{\"skill\":\"frontend-architecture\",\"reason\":\"frontend-architecture owns how the codebase is organized; rendering-models owns where and when the UI is produced. A route's architecture and its rendering model are independent decisions.\"},{\"skill\":\"client-server-boundary\",\"reason\":\"client-server-boundary owns the serialization frontier (what can cross between server and client code). rendering-models owns the staging of work across build/request/stream/interaction.\"}],\"verify_with\":[\"performance-engineering\",\"frontend-architecture\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -189,6 +189,12 @@ After applying this skill, verify:
 - organize the folder structure of a frontend codebase (use frontend-architecture)
 - decide what types can cross the network boundary (use client-server-boundary)
 - design HTTP cache headers (use http-semantics)
+- Owned by `frontend-architecture`: how the codebase is organized
+- Owned by `client-server-boundary`: the serialization frontier (what can cross between server and client code)
+
+**Related skills**
+- Verify with: `performance-engineering`, `frontend-architecture`
+- Related: `frontend-architecture`, `client-server-boundary`, `http-semantics`, `performance-engineering`, `vercel-composition-patterns`
 
 **Concept**
 - Mental model: |

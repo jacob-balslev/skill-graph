@@ -236,7 +236,7 @@ Core required axes (v8 — see `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.
 
 - `name` — kebab-case, head-noun-anchored (see `docs/head-noun-glossary.md`); aligns with parent directory.
 - `description` — short description of what the skill is about. Activation signals belong to `keywords`/`triggers`/`examples`/`anti_examples`; boundary semantics belong to `relations.boundary`.
-- `subject` — primary browse shelf (the competency the skill teaches), ONE of twelve closed values in 3 bands: **engineering** `backend-engineering`, `frontend-engineering`, `software-architecture`, `data-engineering`; **AI-agentic** `agent-ops`, `ai-engineering`; **cross-cutting** `quality-assurance`, `design`, `reasoning-strategy`, `software-engineering-method`, `knowledge-organization`, `product-domain`. Each subject holds 5–25 skills; <5 = fold or recruit, >25 = subdivide via `taxonomy_domain`. To propose a 13th value: ADR + ≥5 primary-fit skills. See [ADR-0020](docs/adr/0020-twelve-shelf-competency-reaxis.md) (supersedes the 9-value enum in [ADR-0017](docs/adr/0017-five-axis-classification-model.md)).
+- `subject` — primary browse shelf (the competency the skill teaches), ONE of twelve closed values in 3 bands: **engineering** `backend-engineering`, `frontend-engineering`, `software-architecture`, `data-engineering`; **AI-agentic** `agent-ops`, `ai-engineering`; **cross-cutting** `quality-assurance`, `design`, `reasoning-strategy`, `software-engineering-method`, `knowledge-organization`, `product-domain`. Each subject holds 5–25 skills; <5 = fold or recruit, >25 = subdivide via `taxonomy_domain`. To propose a 13th value: ADR + ≥5 primary-fit skills. See [ADR-0020](docs/adr/0020-twelve-shelf-competency-reaxis.md) for the current shelf rationale.
 - `deployment_target` — deployment targeting, ONE of two values: `portable` (any project), `project` (one specific project; requires `grounding`). The `scope` field is now a required free-text PRD-style statement (the v8 `scope` enum's `workspace` value was removed 2026-05-27; see ADR-0017 amendment).
 - `subjects[]` (optional, max 2, primary first) covers polyhierarchy when a skill genuinely spans two browse shelves.
 
@@ -462,7 +462,7 @@ For any single Skill Metadata Protocol field (`name`, `description`, `subject`, 
 | **Field-name glossary** + head-noun registry | `docs/glossary.md` (concepts) + `docs/head-noun-glossary.md` (skill-name nouns) | New protocol concept → glossary; new skill name head noun → head-noun-glossary. |
 | **ADRs** (architectural decisions, repo lifecycle, schema deprecation) | `docs/adr/NNNN-<slug>.md` | One file per decision. Never inline an ADR into AGENTS.md; link to it. |
 | **Proposals** (in-flight, not yet decided) | `docs/proposals/*.md` | When accepted, follow through to canonical doc + ADR in the same change. |
-| **Plans** (active multi-step work) | `docs/plans/*.md` | Move to `docs/_archived/` on completion. |
+| **Plans** (active multi-step work) | `docs/plans/*.md` | Keep only active/in-flight plans here. When a plan completes or is superseded, remove the plan file from the live tree with `git rm`; git history is the archive. |
 | **Research findings** (one-shot investigations) | `docs/research/*.md` | If findings drive a change, also update the affected canonical doc in the same commit. |
 | **Concept primer / onboarding narrative** | `skill-metadata-protocol/PRIMER.md` + `docs/QUICKSTART-30MIN.md` | Long-form teaching. Edit when the public mental model of the project shifts. |
 | **Positioning vs other systems** (prompt libraries, marketplaces, runtimes) | `docs/positioning.md` + `docs/positioning-vs-marketplaces.md` | Edit when external landscape shifts or our positioning changes. |
@@ -511,7 +511,7 @@ When a code or schema change lands, update the matching documentation rows in th
 | **Skill audit loop or checklist** (`scripts/skill-audit.js`, `lib/audit/*`) | `skill-audit-loop/SKILL_AUDIT_LOOP.md`, `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 2, `AGENTS.md` § Skill Audit Loop |
 | **Marketplace publication tooling/queue** | `docs/marketplace-publication-queue.generated.md` (_generated_), per-snapshot `docs/marketplace-publication-priority-YYYY-MM-DD.md` if a new priority cut is published |
 | **Proposals** | `docs/proposals/*.md` (the proposal file itself); if accepted, follow through to the canonical doc and an ADR in the same change |
-| **Plans** | `docs/plans/*.md` (the plan file); when completed, move from active to `docs/_archived/` |
+| **Plans** | `docs/plans/*.md` while active; when completed or superseded, remove from the live tree with `git rm` and rely on git history for recovery |
 | **Research findings** | `docs/research/*.md` (the research file); if findings drive a change, also update the affected canonical doc in the same commit |
 | **New ADR** (architectural decision) | `docs/adr/NNNN-<slug>.md` (new), `CHANGELOG.md` if architecturally visible, `AGENTS.md` if governance changes |
 | **Schema, lint, manifest projection** | See `## Coupled Changes` above — tier-coordinated changes have stricter coupling rules than this table |

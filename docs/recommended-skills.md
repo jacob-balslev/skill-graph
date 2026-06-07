@@ -1,6 +1,6 @@
 # Recommended Skills for the OSS Library
 
-> Which skills should an OSS Skill Graph library ship to be credibly useful to **all humans and AI agents**? This page names the recommended set, organized by relevance tier. For the broader Wave 2 expansion plan (skills that demonstrate the standard's expressive range across archetypes and scopes), read [`_archived/wave-2-extraction-2026-05-23.md`](_archived/wave-2-extraction-2026-05-23.md).
+> Which skills should an OSS Skill Graph library ship to be credibly useful to **all humans and AI agents**? This page names the recommended set, organized by relevance tier.
 
 **Status note (2026-05-10):** the current repo ships the Tier A and Tier B recommendations plus additional conceptual skills. This document is retained as sequencing rationale and recommendation criteria, not as the current inventory.
 
@@ -135,7 +135,7 @@ The board's #1 recommendation (SKI-149) is to **prove the existing ~20 agentic-c
 
 To set expectations:
 
-- **Not a graph-density demo.** The broader [`_archived/wave-2-extraction-2026-05-23.md`](_archived/wave-2-extraction-2026-05-23.md) optimizes for archetype × scope coverage and inter-skill relations. This list optimizes for adopter utility. The two lists overlap but are not the same.
+- **Not a graph-density demo.** This list optimizes for adopter utility, not archetype × scope coverage or inter-skill relation density.
 - **Not a comprehensive index.** A real adopter will need project-specific skills beyond Tier A + B. Tier C names categories, not exhaustive lists.
 - **Not a contract.** This is a recommendation. The OSS library has moved beyond the original 8-starter baseline; this doc explains the recommended order and why those skills mattered. The maintainer chooses the actual sequence.
 
@@ -175,5 +175,4 @@ Both decisions are the maintainer's. The recommendations above hold regardless.
 | Field-by-field semantics | [`SKILL_METADATA_PROTOCOL_field-reference.md`](../skill-metadata-protocol/field-reference.md) |
 | Authoring template | [`../examples/skill-metadata-template.md`](../examples/skill-metadata-template.md) |
 | Architecture and authority tiers | [`SKILL_GRAPH.md`](../SKILL_GRAPH.md) |
-| Broader Wave 2 plan (graph-density-optimized) | [`_archived/wave-2-extraction-2026-05-23.md`](_archived/wave-2-extraction-2026-05-23.md) |
 | 4-reviewer board meeting and synthesis | the 2026-05-04 multi-model synthesis (kept private) |

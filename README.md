@@ -136,10 +136,10 @@ This is a compact `SKILL.md` frontmatter example. The full authoring scaffold is
 name: product-page-ux-review
 description: "Reviewing a product page's UX, visual hierarchy, interaction patterns, accessibility, and conversion-critical content."
 # v8 classification (required)
-subject: design-craft
+subject: design
 deployment_target: project
 scope: "Shopify product page UX review for an ecommerce project"
-taxonomy_domain: design-craft/ux
+taxonomy_domain: design/ux
 keywords:
   - product page UX
   - visual hierarchy
@@ -225,7 +225,7 @@ Skill Metadata Protocol uses several independent axes. They should not be collap
 | **Polyhierarchy** | `subjects[]` | zero, one, or two | Optional secondary subject when a skill genuinely spans two browse shelves. `subjects[0]` matches `subject`. |
 | **Deployment target** | `deployment_target` | one | Where it deploys: `portable` (any project) or `project` (one specific project; requires `grounding`). |
 | **Scope** | `scope` | one | Free-text PRD-style description of the deployment context. Not an enum. |
-| **Domain path** | `taxonomy_domain` | zero or one | Slash-delimited hierarchy subdividing `subject`, such as `design-craft/ux` or `code-engineering/api-design`. |
+| **Domain path** | `taxonomy_domain` | zero or one | Slash-delimited hierarchy subdividing `subject`, such as `design/ux` or `engineering/api-design`. |
 | **Project belonging** | `project[]` | many | Belonging-entity references for `deployment_target: project` skills (handle + role). |
 | **Routing group** | `routing_bundles` | many | Runtime bundles or dispatch groups. |
 | **Relations** | `relations.*` | many | Typed graph edges between skills. |
@@ -233,15 +233,15 @@ Skill Metadata Protocol uses several independent axes. They should not be collap
 
 ### Current Subjects
 
-`subject` is a **closed enum of nine**, enforced by the schema:
+`subject` is a **closed enum of twelve**, enforced by the schema:
 
-`agent-ops`, `code-engineering`, `frontend-ui`, `design-craft`, `data-analytics`, `quality-assurance`, `meta-methods`, `knowledge-organization`, `product-domain`
+`backend-engineering`, `frontend-engineering`, `software-architecture`, `data-engineering`, `agent-ops`, `ai-engineering`, `quality-assurance`, `design`, `reasoning-strategy`, `software-engineering-method`, `knowledge-organization`, `product-domain`
 
 These are the values used across the canonical skill library (the sibling `~/Development/skills/` repo at `skills/<subject>/<name>/`) and the `examples/fixture-skills/` specimens. Cross-cutting fit is expressed via `subjects[]` (max 2) or `relations.related`, never by adding new subject values without an ADR.
 
 ### Current Taxonomy Domain Guidance
 
-`taxonomy_domain` is optional and subject-local. It subdivides a crowded `subject`; it is not a global enum and it does not replace the nine `subject` shelves above. Use one organizing principle per slash path, keep paths shallow, and prefer facets (`subjects[]`, `project[]`, `repo[]`, `routing_bundles`, and `relations`) when a second access path is needed.
+`taxonomy_domain` is optional and subject-local. It subdivides a crowded `subject`; it is not a global enum and it does not replace the twelve `subject` shelves above. Use one organizing principle per slash path, keep paths shallow, and prefer facets (`subjects[]`, `project[]`, `repo[]`, `routing_bundles`, and `relations`) when a second access path is needed.
 
 Examples from the current library:
 
@@ -270,7 +270,7 @@ Triangulation means selecting skills from multiple independent signals:
 | Signal | Example |
 |---|---|
 | **Project surface** | `deployment_target: project`, `project: [{handle: shopify-storefront}]`, `paths: components/product/**/*` |
-| **Subject and domain** | `subject: design-craft`, `taxonomy_domain: design-craft/ux` |
+| **Subject and domain** | `subject: design`, `taxonomy_domain: design/ux` |
 | **Method or phase** | `design-thinking`, `user-research`, `ideation`, `prototyping`, `usability-testing` |
 | **Related skills** | `visual-hierarchy`, `color-system-design`, `typography-system`, `dark-mode-implementation` |
 | **Verification skills** | `a11y`, `testing-strategy`, `code-review` |

@@ -1,19 +1,10 @@
 ---
-schema_version: 8
 name: content-source-router
 description: "Use when dispatching a content-fetch task across the multiple sources the site reads from — local markdown under `content/`, MDX with React components under `content/mdx/`, and a headless-CMS sync under `lib/cms/`. Activate this skill whenever the task says 'render this content' or 'where does this post come from' without naming a specific source, or when adding a new source to the routing surface. Do NOT use for the actual rendering of one source (use the per-source skill — `markdown-post-frontmatter-validation`, an MDX rendering skill, or a CMS-sync skill) or for chasing a specific routing bug (use debugging)."
-version: 0.1.0
-subject: code-engineering
+subject: backend-engineering
 deployment_target: project
 taxonomy_domain: content/routing
 scope: "Content-source dispatch logic for the markdown-static-site example project — routes fetches between local markdown, MDX, and headless-CMS sources."
-owner: markdown-static-site-maintainer
-freshness: "2026-05-06"
-drift_check:
-  last_verified: "2026-05-06"
-eval_artifacts: none
-eval_state: unverified
-routing_eval: absent
 stability: experimental
 license: MIT
 compatibility:
@@ -73,16 +64,9 @@ grounding:
     - new_source_added_without_router_update
     - error_response_from_one_source_silently_retried_via_another
   evidence_priority: repo_code_first
-portability:
-  readiness: scripted
-  targets:
-    - skill-md
 project:
   - handle: markdown-static-site
     role: primary
-lifecycle:
-  stale_after_days: 90
-  review_cadence: quarterly
 ---
 
 # Content Source Router

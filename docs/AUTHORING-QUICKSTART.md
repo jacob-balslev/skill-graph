@@ -87,7 +87,7 @@ Expected: zero errors, zero warnings. If warnings appear (e.g. legacy field valu
 ---
 name: example-protocol-native
 description: "Conway's Law applied as a forward design constraint for API boundary placement — team topologies, organizational coupling, domain ownership boundaries."
-subject: meta-methods
+subject: software-architecture
 deployment_target: portable
 scope: "Portable reasoning skill for applying Conway's Law to API boundary placement, team topology decisions, and organizational coupling analysis. Excludes individual service design and static org-chart documentation."
 keywords:
@@ -142,7 +142,7 @@ description: "Use when explaining how to apply Conway's Law to API boundary desi
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  subject: meta-methods
+  subject: software-architecture
   deployment_target: portable
   scope: "Portable reasoning skill for applying Conway's Law to API boundary placement, team topology decisions, and organizational coupling analysis. Excludes individual service design and static org-chart documentation."
   keywords: "[\"Conway's Law\",\"team topologies\",\"API boundary\",\"organizational coupling\"]"
@@ -188,7 +188,7 @@ Neither blocks first commit. A new skill ships honestly with `eval_state: unveri
 
 | Mistake | What it looks like | Fix |
 |---|---|---|
-| Picking `meta-methods` or `knowledge-organization` because the skill feels meta | `subject: meta-methods` when the skill could plausibly fit `code-engineering` / `agent-ops` / `quality-assurance` | These two subjects are anti-junk-drawer gates. Pick another subject unless the skill teaches methodology/reasoning (`meta-methods`) or taxonomy/semantics work (`knowledge-organization`) AND cannot be plausibly assigned elsewhere. |
+| Picking a broad subject because the skill feels meta | `subject: software-engineering-method` when the skill could plausibly fit `backend-engineering` / `frontend-engineering` / `software-architecture` / `agent-ops` / `quality-assurance` | Pick `software-engineering-method` for engineering process skills, `reasoning-strategy` for decision/reasoning frameworks, and `knowledge-organization` for taxonomy/semantics work; otherwise use the concrete engineering, design, AI, QA, or architecture shelf. |
 | Description is a summary, not a routing contract | "This skill teaches Conway's Law" | Rewrite as routing instructions: "Use when..." + "Do NOT use for..." with concrete examples. |
 | Setting `eval_state: passing` without a receipt | New skill optimistically claims passing evals in `audit-state.json` | Default to `unverified`. Flip to `passing` only after a real grader run produces a receipt. Same rule for `routing_eval: present`. |
 | Stamping Audit Status fields by hand | Author writes `structural_verdict: PASS` on first commit | Leave the Audit Status absent. The audit loop writes those sidecar fields; hand-edits will be overwritten on the next `audit` run. |

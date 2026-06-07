@@ -1,0 +1,22 @@
+{
+  "schema_version": 8,
+  "version": "0.1.0",
+  "owner": "markdown-static-site-maintainer",
+  "freshness": "2026-05-06",
+  "drift_check": {
+    "last_verified": "2026-05-06"
+  },
+  "eval_artifacts": "none",
+  "eval_state": "unverified",
+  "routing_eval": "absent",
+  "portability": {
+    "readiness": "scripted",
+    "targets": [
+      "skill-md"
+    ]
+  },
+  "lifecycle": {
+    "stale_after_days": 90,
+    "review_cadence": "quarterly"
+  }
+}

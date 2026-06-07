@@ -10,7 +10,7 @@
 
 | Fixture | Subject | Deployment Target | Tests | Status |
 |---|---|---|---|---|
-| [`minimal-capability`](minimal-capability/SKILL.md) | code-engineering | portable | Bare-minimum v8 frontmatter; happy-path lint pass | **shipped** |
+| [`minimal-capability`](minimal-capability/SKILL.md) | backend-engineering | portable | Bare-minimum v8 frontmatter; happy-path lint pass | **shipped** |
 | [`with-grounding`](with-grounding/SKILL.md) | knowledge-organization | project | Conditional requiredness — `deployment_target: project` requires `grounding.*` sub-fields | **shipped** |
 | [`with-relations`](with-relations/SKILL.md) | knowledge-organization | portable | Relation target resolution and live item shapes for `related`, `boundary`, `verify_with`, and `depends_on` | **shipped** |
 | [`comprehension-full`](comprehension-full/SKILL.md) | knowledge-organization | portable | Flat Understanding fields + nested `concept` fallback (`anyOf`) | **shipped** |

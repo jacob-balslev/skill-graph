@@ -5,7 +5,6 @@ license: MIT
 compatibility: "Language- and stack-agnostic. The classification taxonomy, evidence protocol, and confidence ladder apply to any software failure investigation; specific technique names (git bisect, EXPLAIN plans, HMAC verification) are illustrative — substitute the equivalents of your stack."
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"adjacent\":[\"problem-locating-solving\"],\"boundary\":[\"debugging\"]}"
   schema_version: "8"
   version: "1.1.0"
   subject: software-engineering-method
@@ -21,6 +20,7 @@ metadata:
   keywords: "[\"diagnostic triage software failure\",\"symptom classification taxonomy\",\"what kind of bug is this\",\"which debugging approach\",\"diagnostic routing framework\",\"evidence collection before hypothesis\",\"confidence ladder debugging\",\"escalation criteria debugging\",\"cascade vs coincidence failure\",\"environment ghost\"]"
   examples: "[\"the agent has been chasing this bug for 30 minutes — what's the structural fix?\",\"the symptoms span data integrity and UI rendering — which is the root cause?\",\"the build fails locally but passes in CI — how do I diagnose that class first?\",\"I have a stack trace and an unhandled exception — what's the cheapest technique?\",\"intermittent failure that doesn't reproduce on retry — which class is this?\",\"we ran profiling, instrumentation, and bisect — none converge. What did we misclassify?\",\"two engineers disagree on whether this is a config issue or a logic error — what evidence settles it?\"]"
   anti_examples: "[\"actually execute scientific-method debugging on this stack trace\",\"review this AI-generated PR for correctness\",\"scan this repo for OWASP top 10 vulnerabilities\",\"design observability instrumentation for this service\",\"decide which agent should pick up this ticket\",\"what's the right test pyramid for this feature\"]"
+  relations: "{\"boundary\":[{\"skill\":\"debugging\",\"reason\":\"debugging is the *execution* phase (run a chosen technique against an already-classified failure); diagnosis is the *triage* phase before debugging — classify first, then debug\"}],\"related\":[\"debugging\",\"error-tracking\",\"code-review\",\"owasp-security\",\"testing-strategy\"],\"verify_with\":[\"debugging\"]}"
   grounding: "{\"subject_matter\":\"Portable software-failure diagnostic triage: evidence collection, symptom classification, technique selection, confidence tracking, escalation, and sensitive diagnostic evidence handling\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://sre.google/sre-book/effective-troubleshooting/\",\"https://git-scm.com/docs/git-bisect\",\"https://stackoverflow.com/help/minimal-reproducible-example\",\"https://developer.chrome.com/docs/devtools/performance/overview\",\"https://www.postgresql.org/docs/current/sql-explain.html\",\"https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html\",\"https://opentelemetry.io/docs/security/handling-sensitive-data/\"],\"failure_modes\":[\"fixing_before_classification\",\"hypothesis_without_baseline_evidence\",\"wrong_technique_for_problem_class\",\"confidence_inflation_without_verification\",\"stuck_state_not_escalated_or_reclassified\",\"diagnostic_evidence_captures_sensitive_or_secret_data\",\"eval_or_routing_claim_inflated_without_run\"],\"evidence_priority\":\"equal\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
@@ -402,9 +402,11 @@ The current eval metadata remains intentionally conservative: `eval_artifacts: p
 - design observability instrumentation for this service
 - decide which agent should pick up this ticket
 - what's the right test pyramid for this feature
+- Owned by `debugging`
 
 **Related skills**
-- Related: `problem-locating-solving`
+- Verify with: `debugging`
+- Related: `debugging`, `error-tracking`, `code-review`, `owasp-security`, `testing-strategy`
 
 **Grounding**
 - Mode: `universal`

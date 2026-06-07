@@ -1,46 +1,26 @@
 ---
 name: okrs
-description: "Objectives and Key Results goal-setting methodology for turning strategy, quarterly priorities, product goals, or team focus areas into outcome-oriented Objectives, measurable Key Results, review cadences, and learning loops. Do NOT use for Decide our winning aspiration, where to play, and how to win. Do NOT use for Rank these backlog items by reach, impact, confidence, and effort. Do NOT use for Build a KPI dashboard for ongoing operational health. Do NOT use for Design employee bonus criteria for annual performance reviews. Do NOT use for Create a project Gantt chart with dependencies and task owners. Do NOT use for measurable execution goals after strategy direction is chosen (use playing-to-win). Do NOT use for outcome commitments and measurable progress (use prioritization). Do NOT use for one specific goal-setting method (use methodology). Do NOT use for strategic or team outcome goals (use performance-budgets). Do NOT use for planning and review of goal outcomes (use evaluation)."
+description: "Objectives and Key Results goal-setting methodology for turning strategy, quarterly priorities, product goals, or team focus areas into outcome-oriented Objectives, measurable Key Results, review cadences, and learning loops. Do NOT use for Decide our winning aspiration, where to play, and how to win. Do NOT use for Use constraint-awareness to identify hard constraints before choosing a strategy or goal. Do NOT use for measurable execution goals after strategy direction is chosen (use playing-to-win). Do NOT use for goal-setting after constraints and priorities are understood (use constraint-awareness)."
 license: MIT
 compatibility: "Markdown, strategy memos, operating plans, quarterly planning, goal reviews"
 allowed-tools: Read Grep
 metadata:
-  eval_last_run: "{\"at\":\"2026-05-30T15:16:09.302Z\",\"status\":\"fail\",\"runner\":\"node skill-graph/lib/audit/evaluate-skill.js --mode application\"}"
-  schema_version: "8"
-  version: "1.0.0"
   subject: reasoning-strategy
   deployment_target: portable
   scope: "OKR goal-setting for strategy execution: define qualitative Objectives, 2-5 measurable outcome Key Results, alignment checks, scoring, review cadence, and learning loops. Excludes upstream strategy formulation, backlog prioritization, KPI dashboard design, compensation evaluation, and task-list management."
   taxonomy_domain: foundations/strategy-execution
-  owner: skill-graph-maintainer
-  freshness: "2026-05-30"
-  drift_check: "{\"last_verified\":\"2026-05-30\",\"truth_source_hashes\":{\"skills/meta-methods/okrs/references/okrs-sources.md\":\"6a13842fa7f2a28eb074e8d07ec60e44ed62d4d810e5eb5f5b8da1e8f578d7af\",\"skills/meta-methods/okrs/references/upstream-displacement-2026-05-30.md\":\"c2847669c62fc06eb90a0fd7d559aac88642a6055c831fb0245825e5f932f252\"}}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
   stability: stable
   keywords: "[\"OKRs\",\"objectives and key results\",\"objective key results\",\"goal setting\",\"quarterly goals\",\"key results\",\"stretch goals\",\"outcome goals\",\"OKR scoring\",\"goal alignment\"]"
   triggers: "[\"okrs\",\"objectives-and-key-results\",\"objective-key-results\"]"
-  examples: "[\"Turn this product strategy into quarterly OKRs.\",\"Rewrite these team goals as Objectives and Key Results with measurable outcomes.\",\"Our OKRs look like a task list; fix them.\",\"Create OKRs for this launch plan and include scoring guidance.\",\"Check whether these Key Results are measurable and outcome-based.\"]"
-  anti_examples: "[\"Decide our winning aspiration, where to play, and how to win.\",\"Rank these backlog items by reach, impact, confidence, and effort.\",\"Build a KPI dashboard for ongoing operational health.\",\"Design employee bonus criteria for annual performance reviews.\",\"Create a project Gantt chart with dependencies and task owners.\"]"
-  relations: "{\"boundary\":[{\"skill\":\"playing-to-win\",\"reason\":\"okrs owns measurable execution goals after strategy direction is chosen; playing-to-win owns the upstream integrated strategy choices\"},{\"skill\":\"prioritization\",\"reason\":\"okrs owns outcome commitments and measurable progress; prioritization owns ranking a known queue of work by scoring criteria\"},{\"skill\":\"methodology\",\"reason\":\"okrs owns one specific goal-setting method; methodology owns broad process-design and quality-gate selection\"},{\"skill\":\"performance-budgets\",\"reason\":\"okrs owns strategic or team outcome goals; performance-budgets owns technical nonfunctional thresholds and runtime performance contracts\"},{\"skill\":\"evaluation\",\"reason\":\"okrs owns planning and review of goal outcomes; evaluation owns judging artifacts, systems, or options against criteria\"}],\"related\":[\"playing-to-win\",\"prioritization\",\"methodology\",\"constraint-awareness\",\"expected-value\",\"epistemic-grounding\"],\"verify_with\":[\"constraint-awareness\",\"epistemic-grounding\",\"methodology\"]}"
-  grounding: "{\"subject_matter\":\"Objectives and Key Results as a portable goal-setting and strategy-execution methodology\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://www.whatmatters.com/faqs/okr-meaning-definition-example\",\"https://rework.withgoogle.com/intl/en/guides/set-goals-with-okrs\",\"https://okrinstitute.org/okrs/\",\"skills/meta-methods/okrs/references/okrs-sources.md\",\"skills/meta-methods/okrs/references/upstream-displacement-2026-05-30.md\"],\"failure_modes\":[\"objectives_without_strategy_context\",\"key_results_as_tasks_or_outputs\",\"key_results_without_baselines_or_targets\",\"too_many_objectives_diffusing_focus\",\"okrs_used_as_compensation_evaluation\",\"sandbagged_or_unreachable_goals\",\"no_check_in_or_scoring_cadence\",\"cascading_everything_instead_of_aligning_priorities\"],\"evidence_priority\":\"general_knowledge_first\"}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  comprehension_state: present
+  examples: "[\"Use okrs to turn this product strategy into quarterly Objectives and Key Results.\",\"Rewrite these OKRs so Objectives are qualitative and Key Results are measurable outcomes with baselines and targets.\",\"Our OKRs look like a task list; convert the activities into outcome Key Results.\",\"Create an OKR set for this launch plan with scoring cadence and retrospective guidance.\"]"
+  anti_examples: "[\"Decide our winning aspiration, where to play, and how to win.\",\"Use constraint-awareness to identify hard constraints before choosing a strategy or goal.\"]"
+  relations: "{\"boundary\":[{\"skill\":\"playing-to-win\",\"reason\":\"okrs owns measurable execution goals after strategy direction is chosen; playing-to-win owns the upstream integrated strategy choices\"},{\"skill\":\"constraint-awareness\",\"reason\":\"okrs owns goal-setting after constraints and priorities are understood; constraint-awareness owns identifying hard limits and trade-off boundaries\"}],\"related\":[\"playing-to-win\",\"prioritization\",\"methodology\",\"performance-budgets\",\"evaluation\",\"constraint-awareness\",\"expected-value\",\"epistemic-grounding\"],\"verify_with\":[\"constraint-awareness\",\"epistemic-grounding\",\"methodology\"]}"
+  grounding: "{\"subject_matter\":\"Objectives and Key Results as a portable goal-setting and strategy-execution methodology\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://www.whatmatters.com/faqs/okr-meaning-definition-example\",\"https://rework.withgoogle.com/intl/en/guides/set-goals-with-okrs\",\"https://okrinstitute.org/okrs/\",\"skills/reasoning-strategy/okrs/references/okrs-sources.md\",\"skills/reasoning-strategy/okrs/references/upstream-displacement-2026-05-30.md\"],\"failure_modes\":[\"objectives_without_strategy_context\",\"key_results_as_tasks_or_outputs\",\"key_results_without_baselines_or_targets\",\"too_many_objectives_diffusing_focus\",\"okrs_used_as_compensation_evaluation\",\"sandbagged_or_unreachable_goals\",\"no_check_in_or_scoring_cadence\",\"cascading_everything_instead_of_aligning_priorities\"],\"evidence_priority\":\"general_knowledge_first\"}"
   mental_model: "OKRs connect strategic intent to measurable learning over a fixed planning period. The primitives are a small set of qualitative Objectives, two to five measurable Key Results per Objective, owners, baselines, targets, check-in cadence, score, and retrospective learning. Objectives describe the important outcome to pursue; Key Results define observable evidence that the outcome happened."
   purpose: "This skill prevents agents from turning OKRs into task lists, KPI inventories, or aspirational slogans. It forces the work to state what matters this period, how success will be measured, what evidence proves progress, what will be reviewed during the period, and what the team should learn from the score."
   boundary: "OKRs are for measurable goal-setting and strategy execution. They are not the strategy itself, a project plan, a backlog scoring model, a KPI dashboard for business-as-usual monitoring, a compensation review system, or a list of every task a team will do. Those tools can feed or follow OKRs, but they do not replace outcome-oriented Objectives and measurable Key Results."
   analogy: "OKRs are like a compass plus mile markers: the Objective points toward the destination, and the Key Results show whether the team is actually getting closer."
   misconception: "The common mistake is treating Key Results as planned activities. A Key Result is not 'launch feature X' unless the launch itself proves the outcome; stronger Key Results measure the customer, business, quality, or learning change the work is supposed to create."
-  structural_verdict: PASS
-  truth_verdict: UNVERIFIED
-  comprehension_verdict: SKIPPED_BASELINE_HIGH
-  application_verdict: REDUNDANT
-  last_changed: "2026-05-30"
-  last_audited: "2026-05-30"
-  lint_verdict: PASS
-  drift_status: EXTERNAL_UNHASHED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/okrs/SKILL.md
@@ -286,28 +266,21 @@ Before finalizing OKRs, verify:
 - Scope: OKR goal-setting for strategy execution: define qualitative Objectives, 2-5 measurable outcome Key Results, alignment checks, scoring, review cadence, and learning loops. Excludes upstream strategy formulation, backlog prioritization, KPI dashboard design, compensation evaluation, and task-list management.
 
 **When to use**
-- Turn this product strategy into quarterly OKRs.
-- Rewrite these team goals as Objectives and Key Results with measurable outcomes.
-- Our OKRs look like a task list; fix them.
-- Create OKRs for this launch plan and include scoring guidance.
-- Check whether these Key Results are measurable and outcome-based.
+- Use okrs to turn this product strategy into quarterly Objectives and Key Results.
+- Rewrite these OKRs so Objectives are qualitative and Key Results are measurable outcomes with baselines and targets.
+- Our OKRs look like a task list; convert the activities into outcome Key Results.
+- Create an OKR set for this launch plan with scoring cadence and retrospective guidance.
 - Triggers: `okrs`, `objectives-and-key-results`, `objective-key-results`
 
 **Not for**
 - Decide our winning aspiration, where to play, and how to win.
-- Rank these backlog items by reach, impact, confidence, and effort.
-- Build a KPI dashboard for ongoing operational health.
-- Design employee bonus criteria for annual performance reviews.
-- Create a project Gantt chart with dependencies and task owners.
+- Use constraint-awareness to identify hard constraints before choosing a strategy or goal.
 - Owned by `playing-to-win`: measurable execution goals after strategy direction is chosen
-- Owned by `prioritization`: outcome commitments and measurable progress
-- Owned by `methodology`: one specific goal-setting method
-- Owned by `performance-budgets`: strategic or team outcome goals
-- Owned by `evaluation`: planning and review of goal outcomes
+- Owned by `constraint-awareness`: goal-setting after constraints and priorities are understood
 
 **Related skills**
 - Verify with: `constraint-awareness`, `epistemic-grounding`, `methodology`
-- Related: `playing-to-win`, `prioritization`, `methodology`, `constraint-awareness`, `expected-value`, `epistemic-grounding`
+- Related: `playing-to-win`, `prioritization`, `methodology`, `performance-budgets`, `evaluation`, `constraint-awareness`, `expected-value`, `epistemic-grounding`
 
 **Concept**
 - Mental model: OKRs connect strategic intent to measurable learning over a fixed planning period. The primitives are a small set of qualitative Objectives, two to five measurable Key Results per Objective, owners, baselines, targets, check-in cadence, score, and retrospective learning. Objectives describe the important outcome to pursue; Key Results define observable evidence that the outcome happened.
@@ -318,7 +291,7 @@ Before finalizing OKRs, verify:
 
 **Grounding**
 - Mode: `universal`
-- Truth sources: `https://www.whatmatters.com/faqs/okr-meaning-definition-example`, `https://rework.withgoogle.com/intl/en/guides/set-goals-with-okrs`, `https://okrinstitute.org/okrs/`, `skills/meta-methods/okrs/references/okrs-sources.md`, `skills/meta-methods/okrs/references/upstream-displacement-2026-05-30.md`
+- Truth sources: `https://www.whatmatters.com/faqs/okr-meaning-definition-example`, `https://rework.withgoogle.com/intl/en/guides/set-goals-with-okrs`, `https://okrinstitute.org/okrs/`, `skills/reasoning-strategy/okrs/references/okrs-sources.md`, `skills/reasoning-strategy/okrs/references/upstream-displacement-2026-05-30.md`
 
 **Keywords**
 - `OKRs`, `objectives and key results`, `objective key results`, `goal setting`, `quarterly goals`, `key results`, `stretch goals`, `outcome goals`, `OKR scoring`, `goal alignment`

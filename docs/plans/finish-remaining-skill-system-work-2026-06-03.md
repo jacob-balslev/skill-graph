@@ -1,8 +1,8 @@
 # Prompt: Finish ALL remaining Skill Graph SYSTEM work (SKI board)
 
 > Type: Plan / execution handoff prompt
-> Created: 2026-06-03 (supersedes the Sales-Hub-board `solve-remaining-skill-system-work-2026-06-03.md` —
-> the skill-graph backlog migrated to the dedicated **skill-metadata-protocol** Linear org, team **SKI**,
+> Created: 2026-06-03 (supersedes the prior Sales-Hub-board handoff, removed from the live tree because
+> completed/superseded plans live in git history; the skill-graph backlog migrated to the dedicated **skill-metadata-protocol** Linear org, team **SKI**,
 > on 2026-06-03; the old SH- board is archived).
 > Scope: the SYSTEM side of the Skill Graph project (schema, scripts, audit-loop infra, prompts,
 > protocol/audit docs, graders, hooks, CI). **CONTENT work (individual `SKILL.md` bodies + per-skill

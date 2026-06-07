@@ -68,10 +68,13 @@ adds factual provenance under `metadata`:
 ```yaml
 metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: "Skill Metadata Protocol v4"
   skill_graph_project: "Skill Graph"
   skill_graph_canonical_skill: "skills/<name>/SKILL.md"
 ```
+
+`skill_graph_protocol` is intentionally not emitted. It was retired from the
+marketplace surface because it looked like a content-conformance claim while the
+exporter could only prove source provenance.
 
 The marketplace generator also applies export-specific descriptions only for
 skills whose canonical descriptions exceed the 1024-character Agent Skills

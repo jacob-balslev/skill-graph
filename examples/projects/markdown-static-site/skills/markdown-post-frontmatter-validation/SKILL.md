@@ -1,19 +1,10 @@
 ---
-schema_version: 8
 name: markdown-post-frontmatter-validation
 description: "Use when authoring or reviewing the frontmatter of a markdown post — checking required fields (title, date, slug, tags), validating against the content schema in `lib/content/schema.ts`, catching ambiguous date formats or tags not in the controlled vocabulary, and ensuring the slug matches the file path. Activate this skill whenever the task touches files under `content/posts/**/*.md`, the `parsePostFrontmatter()` helper, or any code path that reads YAML frontmatter from a content file. Do NOT use for general YAML schema design (use a generic schema-design skill) or for chasing a specific build-time validation failure (use debugging)."
-version: 0.1.0
-subject: code-engineering
+subject: backend-engineering
 deployment_target: project
 taxonomy_domain: content/markdown/frontmatter
 scope: "Markdown post frontmatter validation for the markdown-static-site example project — required fields, date format, slug consistency, controlled-vocabulary tagging."
-owner: markdown-static-site-maintainer
-freshness: "2026-05-06"
-drift_check:
-  last_verified: "2026-05-06"
-eval_artifacts: none
-eval_state: unverified
-routing_eval: absent
 stability: experimental
 license: MIT
 compatibility:
@@ -75,16 +66,9 @@ grounding:
     - slug_mismatch_with_file_path
     - frontmatter_block_not_terminated
   evidence_priority: repo_code_first
-portability:
-  readiness: scripted
-  targets:
-    - skill-md
 project:
   - handle: markdown-static-site
     role: primary
-lifecycle:
-  stale_after_days: 90
-  review_cadence: quarterly
 ---
 
 # Markdown Post Frontmatter Validation

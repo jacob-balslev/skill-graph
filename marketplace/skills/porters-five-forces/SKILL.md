@@ -7,7 +7,6 @@ allowed-tools: Read Grep
 metadata:
   last_audited: "2026-05-31"
   lint_verdict: PASS
-  relations: "{\"adjacent\":[\"positioning\"],\"boundary\":[\"seven-powers\",\"playing-to-win\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: reasoning-strategy
@@ -25,6 +24,7 @@ metadata:
   keywords: "[\"porter five forces\",\"porters five forces\",\"five forces\",\"industry structure\",\"competitive forces\",\"industry attractiveness\",\"buyer power\",\"supplier power\",\"threat of entrants\",\"threat of substitutes\",\"competitive rivalry\"]"
   examples: "[\"analyze this market with Porter's Five Forces\",\"which forces make this industry unattractive?\",\"is supplier power or buyer power the bigger risk in this category?\",\"we are entering a new market; diagnose industry structure before we choose a position\",\"map how substitutes and new entrants could change the profit pool\"]"
   anti_examples: "[\"turn this vague product strategy into where-to-play and how-to-win choices\",\"rank these roadmap items by expected impact\",\"estimate the TAM for this market\",\"classify this company's durable moat source\",\"write OKRs for the chosen strategy\"]"
+  relations: "{\"boundary\":[{\"skill\":\"playing-to-win\",\"reason\":\"playing-to-win owns integrated strategy choices; porters-five-forces owns upstream industry-structure diagnosis\"}],\"related\":[\"playing-to-win\",\"constraint-awareness\",\"epistemic-grounding\",\"framework-fit-analysis\",\"prioritization\"],\"verify_with\":[\"epistemic-grounding\",\"constraint-awareness\"]}"
   grounding: "{\"subject_matter\":\"Porter's Five Forces competitive strategy framework\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://www.isc.hbs.edu/strategy/business-strategy/Pages/the-five-forces.aspx\",\"https://hbr.org/2008/01/the-five-competitive-forces-that-shape-strategy\",\"skills/meta-methods/porters-five-forces/references/porters-five-forces-sources.md\",\"skills/meta-methods/porters-five-forces/references/upstream-displacement-2026-05-26.md\"],\"failure_modes\":[\"industry_boundary_too_broad\",\"direct_competitor_only_view\",\"force_names_listed_without_drivers\",\"firm_strength_confused_with_industry_structure\",\"substitutes_confused_with_rivals\",\"market_size_substituted_for_profitability\",\"static_snapshot_ignores_trends\"],\"evidence_priority\":\"general_knowledge_first\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
@@ -273,9 +273,11 @@ Before finishing, verify:
 - estimate the TAM for this market
 - classify this company's durable moat source
 - write OKRs for the chosen strategy
+- Owned by `playing-to-win`: integrated strategy choices
 
 **Related skills**
-- Related: `positioning`
+- Verify with: `epistemic-grounding`, `constraint-awareness`
+- Related: `playing-to-win`, `constraint-awareness`, `epistemic-grounding`, `framework-fit-analysis`, `prioritization`
 
 **Concept**
 - Mental model: Porter's Five Forces treats profitability as a structural outcome of five pressures around an industry, not just the visible fight among direct competitors. The primitives are the industry boundary, buyers, suppliers, potential entrants, substitutes, current rivals, structural drivers behind each force, and the resulting division of economic value across the profit pool.

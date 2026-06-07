@@ -4,7 +4,6 @@ description: "Use when reasoning about how a system, user, or designer's interna
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"boundary\":[\"knowledge-modeling\"]}"
   subject: reasoning-strategy
   deployment_target: portable
   scope: "Mental-models reasoning for diagnosing how users, designers, developers, teams, and agents represent a system differently from how it actually behaves. Portable across UX, distributed systems, type systems, API design, and collaboration contexts. Covers the three-model frame, the two gulfs, analogy/metaphor as model-seeding, model failure modes, model depth layers, and validation against system behavior. Excludes formal entity/schema modeling (conceptual-modeling), representation-paradigm choice (knowledge-modeling), empirical research-method design (user-research), cognitive-bias analysis, and tactical implementation choices."
@@ -14,6 +13,7 @@ metadata:
   triggers: "[\"how do I think about\",\"users expect X but the system does Y\",\"this is confusing\",\"the user's model doesn't match\",\"why is this surprising\",\"what's the right metaphor\"]"
   examples: "[\"users keep trying to drag a row to reorder but the table doesn't support drag — diagnose the model mismatch\",\"explain why race conditions across parallel tool calls are hard for developers to anticipate\",\"decide on the right metaphor for a feature that combines folders and tags\",\"the team disagrees on what 'workspace' means in the product — surface the divergent mental models\"]"
   anti_examples: "[\"draw the boxes-and-arrows diagram of the system (use knowledge-modeling)\",\"name the React hook for managing form state (tactical implementation choice)\",\"write user-research interview questions (use user-research)\",\"teach a junior engineer about distributed-systems consistency models\"]"
+  relations: "{\"related\":[\"conceptual-modeling\",\"knowledge-modeling\",\"user-research\",\"semantics\"],\"verify_with\":[\"user-research\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -162,6 +162,10 @@ After applying this skill, verify:
 - name the React hook for managing form state (tactical implementation choice)
 - write user-research interview questions (use user-research)
 - teach a junior engineer about distributed-systems consistency models
+
+**Related skills**
+- Verify with: `user-research`
+- Related: `conceptual-modeling`, `knowledge-modeling`, `user-research`, `semantics`
 
 **Concept**
 - Mental model: |

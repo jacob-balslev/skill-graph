@@ -1,45 +1,31 @@
 ---
 name: real-time-updates
-description: "Use when designing browser freshness for live dashboards, notifications, progress views, or data that can change after initial render. Covers transport choice among polling, Server-Sent Events, and bidirectional sockets; webhook-to-UI propagation; optimistic updates; stale-data indicators; reconnect and catch-up behavior; and avoiding disruptive auto-refresh. Do NOT use for low-level stream/backpressure protocol design (use `streaming-architecture`), recurring schedule design (use `cron-scheduling`), or background worker execution semantics (use `background-jobs`). Do NOT use for design the backpressure protocol for an HTTP stream. Do NOT use for choose the cron expression for a daily refresh. Do NOT use for move a slow export into a queue and define retry policy. Do NOT use for debug a deployed stream outage. Do NOT use for design an outbound event schema and topic naming standard."
+description: "Use when designing browser-facing freshness for live dashboards, notifications, progress views, feeds, and data that can change after initial render. Covers freshness contracts, transport choice among adaptive polling, Server-Sent Events, and bidirectional sockets, webhook-to-UI propagation, client cache invalidation, stale-data indicators, reconnect and catch-up behavior, centralized subscription ownership, and non-disruptive update UX. Do NOT use for low-level stream/backpressure protocol design (use `streaming-architecture`), async event envelope/topic contracts (use `event-contract-design`), recurring schedule design (use `cron-scheduling`), durable worker execution semantics (use `background-jobs`), generic UI action feedback (use `interaction-feedback`), or serialization/trust boundaries (use `client-server-boundary`). Do NOT use for design the backpressure protocol for an HTTP stream. Do NOT use for choose the cron expression for a daily refresh."
 license: MIT
 compatibility: "Portable browser freshness guidance for web applications. Transport limits vary by hosting platform, proxy, browser, and runtime; verify those limits before production rollout."
-allowed-tools: Read Grep Bash
+allowed-tools: Read Grep
 metadata:
-  relations: "{\"adjacent\":[\"background-jobs\"],\"boundary\":[\"streaming-architecture\"]}"
-  schema_version: "7"
-  version: "1.1.0"
   subject: backend-engineering
   deployment_target: portable
+  scope: "Designing browser-facing freshness for web application views whose data can change after initial render: freshness contracts, stale-state communication, adaptive polling, Server-Sent Events, bidirectional socket justification, webhook-to-UI propagation, reconnect/catch-up, client cache invalidation, optimistic update reconciliation, and centralized subscription ownership. Portable across dashboards, feeds, progress panels, notifications, and live status surfaces. Excludes low-level streaming/backpressure contracts (streaming-architecture), async event envelope/topic contracts (event-contract-design), recurring trigger design (cron-scheduling), durable worker execution semantics (background-jobs), generic UI action feedback states (interaction-feedback), and server/client serialization or trust boundaries (client-server-boundary)."
   taxonomy_domain: engineering/realtime/browser-freshness
-  owner: skill-graph-maintainer
-  freshness: "2026-05-21"
-  drift_check: "{\"last_verified\":\"2026-05-21\"}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
   stability: stable
-  keywords: "[\"real-time updates\",\"live dashboard\",\"browser freshness\",\"stale data indicator\",\"Server-Sent Events\",\"SSE\",\"WebSocket\",\"adaptive polling\",\"optimistic update\",\"reconnect catch-up\",\"new data banner\",\"live notification\",\"push updates\",\"freshness timestamp\"]"
+  keywords: "[\"real-time updates\",\"live dashboard\",\"browser freshness\",\"stale data indicator\",\"Server-Sent Events\",\"WebSocket\",\"adaptive polling\",\"reconnect catch-up\",\"client cache invalidation\",\"freshness timestamp\"]"
   triggers: "[\"real-time-updates-skill\",\"live-data-skill\",\"browser-freshness-skill\",\"dashboard-refresh-skill\",\"stale-data-skill\"]"
-  examples: "[\"choose between polling, SSE, and WebSocket for a dashboard\",\"show when data is stale without disrupting the user\",\"design reconnect and catch-up behavior after an EventSource disconnect\",\"add optimistic UI with rollback for a reversible action\",\"avoid multiple components polling the same resource\"]"
-  anti_examples: "[\"design the backpressure protocol for an HTTP stream\",\"choose the cron expression for a daily refresh\",\"move a slow export into a queue and define retry policy\",\"debug a deployed stream outage\",\"design an outbound event schema and topic naming standard\"]"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
-  comprehension_state: present
+  examples: "[\"choose between polling, SSE, and WebSocket for a live dashboard\",\"show stale data status and last-updated timestamp for a live dashboard without disrupting the user\",\"design reconnect and catch-up behavior after an EventSource disconnect\",\"add optimistic UI with rollback and server reconciliation for a live list update\",\"centralize polling and subscription ownership so dashboard widgets share one freshness channel\"]"
+  anti_examples: "[\"design the backpressure protocol for an HTTP stream\",\"choose the cron expression for a daily refresh\",\"move a slow export into a queue and define retry policy\",\"debug a deployed stream outage\"]"
+  relations: "{\"related\":[\"streaming-architecture\",\"background-jobs\",\"cron-scheduling\",\"event-contract-design\",\"interaction-feedback\",\"client-server-boundary\"],\"boundary\":[{\"skill\":\"streaming-architecture\",\"reason\":\"streaming-architecture owns producer, stream, consumer, backpressure, termination, and low-level protocol semantics; real-time-updates owns browser freshness UX, cache invalidation, and transport selection.\"},{\"skill\":\"background-jobs\",\"reason\":\"background-jobs owns durable worker execution, retry policy, and progress state; real-time-updates owns how browser views learn about that state.\"},{\"skill\":\"cron-scheduling\",\"reason\":\"cron-scheduling owns recurring trigger timing and missed-run behavior; real-time-updates owns user-visible freshness after data exists.\"}],\"verify_with\":[\"interaction-feedback\",\"streaming-architecture\",\"event-contract-design\",\"client-server-boundary\"]}"
+  grounding: "{\"subject_matter\":\"Portable browser freshness and real-time UI update design for web applications\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://html.spec.whatwg.org/multipage/server-sent-events.html\",\"https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events\",\"https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API\",\"https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API\",\"https://www.rfc-editor.org/rfc/rfc6455\",\"https://react.dev/reference/react/useOptimistic\",\"https://tanstack.com/query/latest/docs/framework/react/guides/polling\",\"../skills/skills/backend-engineering/real-time-updates/references/real-time-updates-2026-06-07.md\"],\"failure_modes\":[\"transport_chosen_before_freshness_contract\",\"bidirectional_socket_for_one_way_updates\",\"live_claim_without_timestamp_or_connection_state\",\"reconnect_without_catch_up\",\"eventsource_reconnect_treated_as_lossless_replay\",\"component_local_polling_duplication\",\"silent_auto_refresh_disrupts_active_user_work\",\"optimistic_update_without_rollback_or_authoritative_reconciliation\",\"push_payload_treated_as_authoritative_state_without_refetch\"],\"evidence_priority\":\"equal\"}"
   mental_model: "Browser freshness has four primitives: a source of change, a delivery channel, a browser cache or view state, and a freshness contract shown to the user. The delivery channel can be polling, Server-Sent Events, or a bidirectional socket, but the user contract is the same: communicate what changed, how fresh the view is, whether the connection is healthy, and how missed changes are recovered."
   purpose: "Real-time update design prevents a rendered view from pretending old data is current. It replaces page-load-only fetching and disruptive blind auto-refresh with explicit freshness indicators, centralized subscriptions, reconnect catch-up, and transport choices matched to directionality and infrastructure constraints."
-  boundary: "This skill is not low-level streaming protocol design, worker queue design, schedule design, or incident debugging. It starts when a browser-facing view needs to stay fresh and ends with transport choice, subscription ownership, stale-state UX, reconnect recovery, and optimistic-update safety."
+  boundary: "This skill is not low-level streaming protocol design, async event contract design, worker queue design, schedule design, generic interaction feedback, client/server serialization and trust analysis, or incident debugging. It starts when a browser-facing view needs to stay fresh and ends with the freshness contract, transport choice, subscription ownership, stale-state UX, reconnect recovery, cache invalidation, and optimistic-update reconciliation."
   analogy: "A real-time UI is a newsroom ticker: it needs a wire service, an editor that knows what changed, and a visible timestamp so readers know whether the headline is current."
   misconception: "The common mistake is treating real-time as a transport choice first. The actual design starts with the freshness promise: how current the view must be, what happens during disconnect, when updates are safe to apply automatically, and when the user needs control."
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/real-time-updates/SKILL.md
-  skill_graph_export_description_projection: anti_examples
+  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Real-Time Updates
@@ -49,6 +35,7 @@ metadata:
 - Browser freshness decisions for dashboards, feeds, progress panels, notifications, and views that can become stale after initial render.
 - Transport selection among adaptive polling, Server-Sent Events, and bidirectional sockets.
 - Webhook-to-UI propagation at a pattern level: external change, server state, browser notification, and catch-up fetch.
+- Client cache invalidation and refetch orchestration after a live notification.
 - Optimistic update safety: when to apply immediately, when to wait, and how to roll back.
 - Stale-data communication: timestamps, stale badges, connection status, and non-disruptive refresh prompts.
 - Reconnect and missed-update recovery: last seen version, cursor, timestamp, or sequence number.
@@ -61,6 +48,8 @@ Stale data without a freshness signal is a false statement. A dashboard that fet
 Real-time design is not the same as choosing the flashiest transport. Polling can be the best design when data changes slowly or hosting cannot keep long connections open. Server-Sent Events are the default for one-way server-to-browser updates. Bidirectional sockets are justified only when the browser must also send frequent low-latency messages over the same channel. The transport is a consequence of the freshness contract, not the starting point.
 
 The strongest systems also keep control with the user. If an update would reorder a table, interrupt a form, clear a selection, or move the scroll position, the interface should announce that new data is available instead of silently replacing the view.
+
+A browser update message should usually be treated as a freshness signal, not as the entire source of truth. Push can tell the browser what changed; the browser still reconciles from durable server state or a cache that is invalidated and refetched.
 
 ## Freshness Contract First
 
@@ -291,6 +280,8 @@ After applying this skill, verify:
 | `background-jobs` | You are moving slow work into a durable worker, designing job states, retries, progress records, or cancellation. |
 | `cron-scheduling` | You are choosing when recurring work starts, preventing schedule overlap, or designing missed-run behavior. |
 | `event-contract-design` | You are defining async event envelopes, topic names, compatibility, replay, or producer/consumer ownership. |
+| `interaction-feedback` | You are designing generic loading, pending, error, retry, undo, or success feedback for an action without a browser freshness or missed-update problem. |
+| `client-server-boundary` | You are deciding what can cross between server and client runtimes, how it serializes, or which side can be trusted. |
 | `debugging` | A live update channel is already failing and you need reproduction, logs, and root-cause isolation. |
 
 ## Anti-Patterns
@@ -313,13 +304,14 @@ After applying this skill, verify:
 - Subject: `backend-engineering`
 - Deployment: `portable`
 - Domain: `engineering/realtime/browser-freshness`
+- Scope: Designing browser-facing freshness for web application views whose data can change after initial render: freshness contracts, stale-state communication, adaptive polling, Server-Sent Events, bidirectional socket justification, webhook-to-UI propagation, reconnect/catch-up, client cache invalidation, optimistic update reconciliation, and centralized subscription ownership. Portable across dashboards, feeds, progress panels, notifications, and live status surfaces. Excludes low-level streaming/backpressure contracts (streaming-architecture), async event envelope/topic contracts (event-contract-design), recurring trigger design (cron-scheduling), durable worker execution semantics (background-jobs), generic UI action feedback states (interaction-feedback), and server/client serialization or trust boundaries (client-server-boundary).
 
 **When to use**
-- choose between polling, SSE, and WebSocket for a dashboard
-- show when data is stale without disrupting the user
+- choose between polling, SSE, and WebSocket for a live dashboard
+- show stale data status and last-updated timestamp for a live dashboard without disrupting the user
 - design reconnect and catch-up behavior after an EventSource disconnect
-- add optimistic UI with rollback for a reversible action
-- avoid multiple components polling the same resource
+- add optimistic UI with rollback and server reconciliation for a live list update
+- centralize polling and subscription ownership so dashboard widgets share one freshness channel
 - Triggers: `real-time-updates-skill`, `live-data-skill`, `browser-freshness-skill`, `dashboard-refresh-skill`, `stale-data-skill`
 
 **Not for**
@@ -327,19 +319,26 @@ After applying this skill, verify:
 - choose the cron expression for a daily refresh
 - move a slow export into a queue and define retry policy
 - debug a deployed stream outage
-- design an outbound event schema and topic naming standard
+- Owned by `streaming-architecture`: producer, stream, consumer, backpressure, termination, and low-level protocol semantics
+- Owned by `background-jobs`: durable worker execution, retry policy, and progress state
+- Owned by `cron-scheduling`: recurring trigger timing and missed-run behavior
 
 **Related skills**
-- Related: `background-jobs`
+- Verify with: `interaction-feedback`, `streaming-architecture`, `event-contract-design`, `client-server-boundary`
+- Related: `streaming-architecture`, `background-jobs`, `cron-scheduling`, `event-contract-design`, `interaction-feedback`, `client-server-boundary`
 
 **Concept**
 - Mental model: Browser freshness has four primitives: a source of change, a delivery channel, a browser cache or view state, and a freshness contract shown to the user. The delivery channel can be polling, Server-Sent Events, or a bidirectional socket, but the user contract is the same: communicate what changed, how fresh the view is, whether the connection is healthy, and how missed changes are recovered.
 - Purpose: Real-time update design prevents a rendered view from pretending old data is current. It replaces page-load-only fetching and disruptive blind auto-refresh with explicit freshness indicators, centralized subscriptions, reconnect catch-up, and transport choices matched to directionality and infrastructure constraints.
-- Boundary: This skill is not low-level streaming protocol design, worker queue design, schedule design, or incident debugging. It starts when a browser-facing view needs to stay fresh and ends with transport choice, subscription ownership, stale-state UX, reconnect recovery, and optimistic-update safety.
+- Boundary: This skill is not low-level streaming protocol design, async event contract design, worker queue design, schedule design, generic interaction feedback, client/server serialization and trust analysis, or incident debugging. It starts when a browser-facing view needs to stay fresh and ends with the freshness contract, transport choice, subscription ownership, stale-state UX, reconnect recovery, cache invalidation, and optimistic-update reconciliation.
 - Analogy: A real-time UI is a newsroom ticker: it needs a wire service, an editor that knows what changed, and a visible timestamp so readers know whether the headline is current.
 - Common misconception: The common mistake is treating real-time as a transport choice first. The actual design starts with the freshness promise: how current the view must be, what happens during disconnect, when updates are safe to apply automatically, and when the user needs control.
 
+**Grounding**
+- Mode: `universal`
+- Truth sources: `https://html.spec.whatwg.org/multipage/server-sent-events.html`, `https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events`, `https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API`, `https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API`, `https://www.rfc-editor.org/rfc/rfc6455`, `https://react.dev/reference/react/useOptimistic`, `https://tanstack.com/query/latest/docs/framework/react/guides/polling`, `../skills/skills/backend-engineering/real-time-updates/references/real-time-updates-2026-06-07.md`
+
 **Keywords**
-- `real-time updates`, `live dashboard`, `browser freshness`, `stale data indicator`, `Server-Sent Events`, `SSE`, `WebSocket`, `adaptive polling`, `optimistic update`, `reconnect catch-up`, `new data banner`, `live notification`, `push updates`, `freshness timestamp`
+- `real-time updates`, `live dashboard`, `browser freshness`, `stale data indicator`, `Server-Sent Events`, `WebSocket`, `adaptive polling`, `reconnect catch-up`, `client cache invalidation`, `freshness timestamp`
 
 <!-- skill-graph-context:end -->

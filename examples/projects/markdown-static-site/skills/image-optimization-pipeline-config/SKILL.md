@@ -1,19 +1,10 @@
 ---
-schema_version: 8
 name: image-optimization-pipeline-config
 description: "Use when authoring or reviewing the build-time image pipeline config — defining responsive srcset breakpoints, picking output formats (AVIF / WebP / JPEG fallback), tuning compression quality per format, and ensuring the pipeline never produces a lossy artifact for source PNGs with transparency. Activate this skill whenever the task touches `lib/images/pipeline.config.ts`, `scripts/build-images.ts`, or any code path that resizes or recompresses content images. Do NOT use for runtime image rendering choices (use a frontend skill) or for chasing a specific build failure (use debugging)."
-version: 0.1.0
-subject: code-engineering
+subject: backend-engineering
 deployment_target: project
 taxonomy_domain: content/build/images
 scope: "Build-time image pipeline configuration for the markdown-static-site example project — srcset breakpoints, format negotiation, transparency preservation, and idempotency."
-owner: markdown-static-site-maintainer
-freshness: "2026-05-06"
-drift_check:
-  last_verified: "2026-05-06"
-eval_artifacts: none
-eval_state: unverified
-routing_eval: absent
 stability: experimental
 license: MIT
 compatibility:
@@ -74,16 +65,9 @@ grounding:
     - quality_setting_too_aggressive_visible_artifacts
     - pipeline_doesnt_skip_already_optimized_outputs
   evidence_priority: repo_code_first
-portability:
-  readiness: scripted
-  targets:
-    - skill-md
 project:
   - handle: markdown-static-site
     role: primary
-lifecycle:
-  stale_after_days: 90
-  review_cadence: quarterly
 ---
 
 # Image Optimization Pipeline Config

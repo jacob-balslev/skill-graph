@@ -1,46 +1,50 @@
 ---
 name: streaming-architecture
-description: "Use when reasoning about systems that emit a sequence of values over time and consume them incrementally: the producer/stream/consumer/backpressure/termination primitives, the difference between streaming and request-response, the difference between streaming and pub-sub messaging, how WHATWG Streams, Server-Sent Events, HTTP chunked transfer, WebSockets, gRPC streaming, and React Server Component streaming compose, push vs pull backpressure, and the failure modes (slow consumer, abandoned consumer, partial-result correctness). Do NOT use for the message-history protocol between a model and a tool runtime (use tool-call-flow), for the realtime-update channel design (use websocket / SSE skills), for the specific encoding of token-by-token LLM output streaming (use llm-streaming if it exists; otherwise tool-call-flow), or for event-driven architecture and event sourcing (use event-driven-architecture). Do NOT use for design the JSON shape of a single response payload (use api-design)."
+description: "Use when reasoning about systems that emit a sequence of values over time and consume them incrementally: the producer/stream/consumer/backpressure/termination primitives, the difference between streaming and request-response, the difference between streaming and pub-sub messaging, how WHATWG Streams, Server-Sent Events, HTTP chunked transfer, WebSockets, gRPC streaming, and React Server Component streaming compose, push vs pull backpressure, and the failure modes (slow consumer, abandoned consumer, partial-result correctness). Do NOT use for the message-history protocol between a model and a tool runtime (use tool-call-flow), browser freshness or live dashboard UX transport choice (use real-time-updates), single-response API design (use api-design), durable worker execution and retry semantics (use background-jobs), or event payload/domain-event contracts (use event-contract-design). Do NOT use for design the JSON shape and status codes for a single request-response API payload."
 license: MIT
+compatibility: Portable streaming-architecture guidance. Transport capabilities and proxy/runtime limits vary; verify them in the target platform before production rollout.
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"adjacent\":[\"http-semantics\"],\"boundary\":[\"tool-call-flow\"]}"
-  schema_version: "8"
-  version: "1.0.0"
   subject: backend-engineering
   deployment_target: portable
+  scope: "Teaching the portable architecture discipline for incremental value delivery over time: producer, stream, consumer, backpressure, framing, termination, reconnect/resume, in-stream error semantics, and transport trade-offs across HTTP chunked transfer, Server-Sent Events, WebSocket, HTTP/2/gRPC, WHATWG Streams, Node streams, and React server rendering streams. Applies when one logical result is delivered as many ordered chunks or messages and the system must reason about slow consumers, abandoned consumers, partial-result correctness, and resource bounds. Excludes browser freshness UX and live-dashboard transport selection (real-time-updates), single request/response payload design (api-design), durable worker execution and retries (background-jobs), model/tool transcript protocol design (tool-call-flow), event payload/domain-event contracts (event-contract-design), and page-level rendering-model taxonomy (rendering-models)."
   taxonomy_domain: engineering/realtime
-  owner: skill-graph-maintainer
-  freshness: "2026-05-16"
-  drift_check: "{\"last_verified\":\"2026-05-16\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
+  grounding: "{\"subject_matter\":\"Portable streaming architecture: incremental value delivery, flow control, framing, termination, reconnect/resume, and transport trade-offs across HTTP chunked transfer, SSE, WebSocket, HTTP/2/gRPC, WHATWG Streams, Node streams, Reactive Streams, and React server rendering streams\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://www.rfc-editor.org/rfc/rfc9112#name-chunked-transfer-coding\",\"https://www.rfc-editor.org/rfc/rfc9113#name-streams-and-multiplexing\",\"https://www.rfc-editor.org/rfc/rfc6455\",\"https://html.spec.whatwg.org/multipage/server-sent-events.html\",\"https://streams.spec.whatwg.org/\",\"https://nodejs.org/api/stream.html\",\"https://grpc.io/docs/what-is-grpc/core-concepts/\",\"https://www.reactive-streams.org/\",\"https://react.dev/reference/react-dom/server/renderToPipeableStream\",\"https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Using_readable_streams\"],\"failure_modes\":[\"Choosing a transport before naming producer, consumer, framing, backpressure, and termination\",\"Treating streaming as a single-response API design problem\",\"Routing browser freshness UX to low-level streaming architecture\",\"Assuming TCP flow control solves application slow-consumer memory growth\",\"Treating silence as stream termination\",\"Using WebSocket for one-way server-to-client streaming without a bidirectional requirement\",\"Using SSE reconnect semantics as if they applied to WebSocket or gRPC exactly-once resume\"],\"evidence_priority\":\"general_knowledge_first\"}"
   stability: experimental
   keywords: "[\"streaming\",\"stream\",\"backpressure\",\"SSE\",\"server-sent events\",\"chunked transfer\",\"HTTP/2\",\"WebSocket\",\"WHATWG Streams\",\"ReadableStream\"]"
-  triggers: "[\"how should this endpoint stream\",\"should this be SSE or WebSocket\",\"is the consumer slow\",\"what's the backpressure story\",\"partial result delivery\"]"
-  examples: "[\"design the response shape for an endpoint that returns 50,000 rows incrementally\",\"decide between SSE and WebSocket for a live progress feed\",\"diagnose why a fast producer is exhausting memory when the consumer falls behind\",\"explain why an RSC-streamed page renders out of order and how the boundary resolves\"]"
-  anti_examples: "[\"design the JSON shape of a single response payload (use api-design)\",\"implement the model→tool message-history protocol (use tool-call-flow)\",\"design pub-sub topic structure (use event-driven-architecture)\"]"
+  triggers: "[\"streaming-architecture\",\"how should this endpoint stream\",\"producer stream consumer backpressure termination\",\"what's the backpressure story\",\"partial result delivery\"]"
+  examples: "[\"model a producer, stream, consumer, backpressure, and termination contract for an SSE progress stream\",\"choose a pull, credit-based push, drop, block, or sampling backpressure strategy for a stream whose producer outruns its consumer\",\"compare HTTP chunked transfer, SSE, WebSocket, gRPC streaming, WHATWG Streams, and Node streams by directionality, framing, backpressure, and termination\"]"
+  anti_examples: "[\"design the JSON shape and status codes for a single request-response API payload\",\"choose polling, SSE, or WebSocket for browser dashboard freshness UX\",\"move a slow CSV export into a background job and define retry policy\"]"
+  relations: "{\"related\":[\"real-time-updates\",\"api-design\",\"background-jobs\",\"client-server-boundary\",\"rendering-models\",\"performance-budgets\",\"tool-call-flow\",\"event-contract-design\"],\"boundary\":[{\"skill\":\"api-design\",\"reason\":\"api-design owns the request/response surface for one bounded round trip; streaming-architecture owns the multi-value-over-time surface where one logical response is delivered as ordered chunks.\"},{\"skill\":\"real-time-updates\",\"reason\":\"real-time-updates owns browser freshness UX and live-dashboard transport selection; streaming-architecture owns the low-level producer/stream/consumer/backpressure/termination contract.\"},{\"skill\":\"background-jobs\",\"reason\":\"background-jobs owns durable worker execution, retry policy, and persisted progress; streaming-architecture owns incremental delivery while the producer is emitting.\"}],\"verify_with\":[\"api-design\",\"performance-budgets\",\"real-time-updates\",\"client-server-boundary\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
   analogy: "A streaming architecture is to data delivery what a conveyor belt is to a factory's order fulfillment — you do not wait for an entire shipment to be assembled before any piece leaves the warehouse; the belt moves boxes one at a time, the loading dock signals when it's full (backpressure), a final marker indicates the shipment is complete (termination), and the receiving truck can start unloading the first box while the last one is still being assembled. A conveyor with no full-dock signal flings boxes onto the floor; a conveyor with no end-marker keeps the truck driver waiting forever."
   misconception: "|"
-  concept: "{\"definition\":\"A streaming architecture is one where a producer emits a sequence of values over time and a consumer processes them incrementally, with an explicit flow-control signal (backpressure) regulating the rate between them. The architecture decouples production speed from consumption speed and makes partial results observable before the producer finishes — or before the producer is even known to terminate.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/streaming-architecture/SKILL.md
   skill_graph_export_description_projection: anti_examples
+  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Streaming Architecture
+
+## Concept of the skill
+
+**What it is:** `streaming-architecture` is the discipline for designing one logical result as an ordered sequence of values over time, with explicit flow control, framing, error, resume, and termination semantics.
+
+**Mental model:** Every streaming design has a producer, stream, consumer, backpressure path, and termination signal. Transports encode those primitives differently; they do not replace the design work.
+
+**Why it exists:** Some results are too large, too slow, or too useful early to wait for a complete batch response. Streaming gives earlier value and bounded memory only when the contract is explicit.
+
+**What it is NOT:** It is not browser freshness UX, one-shot API payload design, durable worker execution, model/tool transcript protocol design, event-contract design, or the page-level rendering taxonomy.
+
+**Adjacent concepts:** `real-time-updates` owns browser freshness and live-dashboard UX; `api-design` owns one bounded request/response surface; `background-jobs` owns durable queued work; `tool-call-flow` owns model/tool message-history protocol; `rendering-models` owns CSR/SSR/SSG/RSC taxonomy; `event-contract-design` owns event payload and topic contracts.
+
+**One-line analogy:** A streaming architecture is a conveyor belt: boxes move one at a time, the dock signals when it is full, and a final marker says the shipment is complete.
+
+**Common misconception:** The transport is not the concept. The concept is the contract for ordered incremental delivery, backpressure, and termination.
 
 ## Coverage
 
@@ -183,7 +187,7 @@ The choice depends on whether the consumer can usefully proceed past an error. F
 | Remix loader streaming with `defer()` | Promise serialization over the response stream |
 | `fetch()` response body | WHATWG ReadableStream wrapping the network response |
 | Node `res.write()` / `res.end()` | Node Readable on the response object |
-| OpenAI/Anthropic/Gemini LLM streaming SDKs | SSE over HTTP; SDK parses event frames into iterable values |
+| LLM token streaming SDKs | HTTP response streams, often SSE-like event frames; SDK parses frames into iterable values |
 
 Each of these is the same five-primitive contract dressed in a framework's API. The framework adds typing, suspense integration, error boundary handling, and ergonomic composition — but the underlying contract is the streaming-architecture primitive.
 
@@ -204,9 +208,10 @@ After applying this skill, verify:
 | Instead of this skill | Use | Why |
 |---|---|---|
 | Designing the message-history protocol between a model and a tool runtime | `tool-call-flow` | tool-call-flow is a specialization of streaming for the model↔runtime cycle; this skill is the underlying primitive |
-| Choosing or designing event-driven and pub-sub architectures | `event-driven-architecture` | event-driven owns named-occurrence routing; streaming owns ordered-emission channels |
+| Designing event payload contracts or domain-event topic semantics | `event-contract-design` | event-contract-design owns named occurrence payloads and topic contracts; streaming owns ordered-emission channels |
 | Designing the JSON shape of a single response payload | `api-design` | api-design owns request/response surfaces; streaming-architecture owns multi-value-over-time surfaces |
-| Implementing realtime collaborative updates with CRDT/OT | dedicated collab/sync skill | streaming is the transport; collaborative state has its own design layer above |
+| Keeping a browser dashboard, notification list, or progress view fresh | `real-time-updates` | real-time-updates owns user-visible freshness UX, reconnect catch-up, and transport selection for browser views |
+| Moving long-running work into a durable queue with retry policy | `background-jobs` | background-jobs owns durable execution and retries; streaming-architecture owns incremental delivery while a producer is emitting |
 | Designing the page-level rendering taxonomy | `rendering-models` | rendering-models owns CSR/SSR/SSG/RSC; this skill owns the streaming primitive those depend on |
 
 ## Key Sources
@@ -219,7 +224,7 @@ After applying this skill, verify:
 - Node.js. [Stream API documentation](https://nodejs.org/api/stream.html). Readable, Writable, Duplex, Transform; backpressure via highWaterMark and `pipe()`.
 - gRPC Authors. [gRPC Concepts — RPC Lifecycle](https://grpc.io/docs/what-is-grpc/core-concepts/). Server-streaming, client-streaming, and bidirectional-streaming RPC modes.
 - Reactive Streams. [Reactive Streams Specification](https://www.reactive-streams.org/). The cross-language specification for asynchronous stream processing with non-blocking backpressure — the basis of Akka Streams, RxJava, Project Reactor.
-- React. [Streaming Server Rendering with Suspense (React 18 announcement)](https://react.dev/reference/react-dom/server). The framework-level streaming model that Next.js App Router and RSC build on.
+- React. [renderToPipeableStream](https://react.dev/reference/react-dom/server/renderToPipeableStream). The server-rendering API that pipes React HTML to a Node.js stream and supports aborting unfinished rendering.
 - Mozilla Developer Network. [Using readable streams](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Using_readable_streams). Practical reference for browser-side stream consumption.
 
 ## Skill Graph context
@@ -230,21 +235,25 @@ After applying this skill, verify:
 - Subject: `backend-engineering`
 - Deployment: `portable`
 - Domain: `engineering/realtime`
+- Scope: Teaching the portable architecture discipline for incremental value delivery over time: producer, stream, consumer, backpressure, framing, termination, reconnect/resume, in-stream error semantics, and transport trade-offs across HTTP chunked transfer, Server-Sent Events, WebSocket, HTTP/2/gRPC, WHATWG Streams, Node streams, and React server rendering streams. Applies when one logical result is delivered as many ordered chunks or messages and the system must reason about slow consumers, abandoned consumers, partial-result correctness, and resource bounds. Excludes browser freshness UX and live-dashboard transport selection (real-time-updates), single request/response payload design (api-design), durable worker execution and retries (background-jobs), model/tool transcript protocol design (tool-call-flow), event payload/domain-event contracts (event-contract-design), and page-level rendering-model taxonomy (rendering-models).
 
 **When to use**
-- design the response shape for an endpoint that returns 50,000 rows incrementally
-- decide between SSE and WebSocket for a live progress feed
-- diagnose why a fast producer is exhausting memory when the consumer falls behind
-- explain why an RSC-streamed page renders out of order and how the boundary resolves
-- Triggers: `how should this endpoint stream`, `should this be SSE or WebSocket`, `is the consumer slow`, `what's the backpressure story`, `partial result delivery`
+- model a producer, stream, consumer, backpressure, and termination contract for an SSE progress stream
+- choose a pull, credit-based push, drop, block, or sampling backpressure strategy for a stream whose producer outruns its consumer
+- compare HTTP chunked transfer, SSE, WebSocket, gRPC streaming, WHATWG Streams, and Node streams by directionality, framing, backpressure, and termination
+- Triggers: `streaming-architecture`, `how should this endpoint stream`, `producer stream consumer backpressure termination`, `what's the backpressure story`, `partial result delivery`
 
 **Not for**
-- design the JSON shape of a single response payload (use api-design)
-- implement the model→tool message-history protocol (use tool-call-flow)
-- design pub-sub topic structure (use event-driven-architecture)
+- design the JSON shape and status codes for a single request-response API payload
+- choose polling, SSE, or WebSocket for browser dashboard freshness UX
+- move a slow CSV export into a background job and define retry policy
+- Owned by `api-design`: the request/response surface for one bounded round trip
+- Owned by `real-time-updates`: browser freshness UX and live-dashboard transport selection
+- Owned by `background-jobs`: durable worker execution, retry policy, and persisted progress
 
 **Related skills**
-- Related: `http-semantics`
+- Verify with: `api-design`, `performance-budgets`, `real-time-updates`, `client-server-boundary`
+- Related: `real-time-updates`, `api-design`, `background-jobs`, `client-server-boundary`, `rendering-models`, `performance-budgets`, `tool-call-flow`, `event-contract-design`
 
 **Concept**
 - Mental model: |
@@ -252,6 +261,10 @@ After applying this skill, verify:
 - Boundary: |
 - Analogy: A streaming architecture is to data delivery what a conveyor belt is to a factory's order fulfillment — you do not wait for an entire shipment to be assembled before any piece leaves the warehouse; the belt moves boxes one at a time, the loading dock signals when it's full (backpressure), a final marker indicates the shipment is complete (termination), and the receiving truck can start unloading the first box while the last one is still being assembled. A conveyor with no full-dock signal flings boxes onto the floor; a conveyor with no end-marker keeps the truck driver waiting forever.
 - Common misconception: |
+
+**Grounding**
+- Mode: `universal`
+- Truth sources: `https://www.rfc-editor.org/rfc/rfc9112#name-chunked-transfer-coding`, `https://www.rfc-editor.org/rfc/rfc9113#name-streams-and-multiplexing`, `https://www.rfc-editor.org/rfc/rfc6455`, `https://html.spec.whatwg.org/multipage/server-sent-events.html`, `https://streams.spec.whatwg.org/`, `https://nodejs.org/api/stream.html`, `https://grpc.io/docs/what-is-grpc/core-concepts/`, `https://www.reactive-streams.org/`, `https://react.dev/reference/react-dom/server/renderToPipeableStream`, `https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Using_readable_streams`
 
 **Keywords**
 - `streaming`, `stream`, `backpressure`, `SSE`, `server-sent events`, `chunked transfer`, `HTTP/2`, `WebSocket`, `WHATWG Streams`, `ReadableStream`

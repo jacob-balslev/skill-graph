@@ -5,7 +5,6 @@ license: MIT
 compatibility: "Markdown, YAML, JSON Schema"
 allowed-tools: Read Grep Bash Write Edit
 metadata:
-  relations: "{\"adjacent\":[\"best-practice\",\"methodical\",\"no-cutting-corners\",\"semantics\",\"evaluation\"],\"boundary\":[\"skill-infrastructure\"]}"
   subject: agent-ops
   deployment_target: portable
   scope: "Creating a new SKILL.md from scratch, restructuring a draft before it becomes a stable skill, or teaching the canonical Skill Metadata Protocol frontmatter and body structure — schema-conformant frontmatter, v8 classification, body layout by skill intent, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes), focused authoring gates, and routing-eval honesty. Portable across any Skill-Metadata-Protocol library; principle-grounded, not repo-bound. Excludes modifying an already-written skill (edit directly), general technical documentation, and fixing a malformed skill detected by health tooling (skill-infrastructure)."
@@ -14,6 +13,7 @@ metadata:
   keywords: "[\"skill authoring\",\"new skill\",\"writing a skill\",\"skill scaffold\",\"skill template\",\"skill frontmatter\",\"skill metadata protocol\",\"v8 classification\",\"description vs coverage\",\"routing eval\"]"
   examples: "[\"I'm writing a new skill from scratch — where do I start?\",\"how do I choose subject and deployment_target for a new skill?\",\"what's the difference between description and the ## Coverage section?\",\"scaffold a new skill that teaches react component composition patterns\",\"I copied skill-metadata-template.md but my new skill won't pass lint — help\",\"draft frontmatter for a skill that owns deployment rollback\",\"how do I strip teaching annotations from the template before commit?\",\"should I flip routing_eval to present on my new skill?\"]"
   anti_examples: "[\"refactor my existing skill to be more concise\",\"my skill's routing isn't activating — why?\",\"audit my skill library for stale frontmatter\",\"write a developer guide for the contributor docs\",\"review this skill's content for correctness\"]"
+  relations: "{\"boundary\":[{\"skill\":\"skill-router\",\"reason\":\"skill-router dispatches between existing skills at request time; skill-scaffold is the authoring-time guide for a NEW skill\"},{\"skill\":\"skill-infrastructure\",\"reason\":\"skill-infrastructure runs health tooling across the entire skill library after authoring; skill-scaffold is the authoring-time guide for creating a single new skill before it joins the library\"}],\"related\":[\"naming-conventions\",\"refactor\"],\"verify_with\":[]}"
   grounding: "{\"subject_matter\":\"Authoring a new SKILL.md against Skill Metadata Protocol v8\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://github.com/jacob-balslev/skill-graph/blob/main/examples/skill-metadata-template.md\",\"https://github.com/jacob-balslev/skill-graph/blob/main/skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md\",\"https://github.com/jacob-balslev/skill-graph/blob/main/schemas/SKILL_METADATA_PROTOCOL_schema.json\",\"https://github.com/jacob-balslev/skill-graph/blob/main/skill-metadata-protocol/field-reference.md\"],\"failure_modes\":[\"placeholder_sludge\",\"cargo_cult_meta_sections\",\"description_coverage_collapse\",\"authoring_gate_skipped\",\"inflated_routing_eval\",\"retired_field_reintroduced\"],\"evidence_priority\":\"equal\"}"
   mental_model: "Skill scaffolding is protocol-backed authoring, not free-form prompt writing. The scaffold separates the routing contract, field contract, concept model, grounding evidence, body sections, and verification gates so a new skill becomes a routable graph node rather than a decorative Markdown file."
   purpose: "This skill prevents new SKILL.md files from inheriting template comments, false eval claims, stale schema fields, dangling relations, or vague descriptions. It turns authoring into a reproducible sequence: start from the canonical template, choose the v8 classification and body shape, adapt the contract, remove teaching annotations, and verify before publishing."
@@ -157,9 +157,11 @@ Use this checklist as the authoring gate before committing a skill. Every item m
 - audit my skill library for stale frontmatter
 - write a developer guide for the contributor docs
 - review this skill's content for correctness
+- Owned by `skill-router`
+- Owned by `skill-infrastructure`
 
 **Related skills**
-- Related: `best-practice`, `methodical`, `no-cutting-corners`, `semantics`, `evaluation`
+- Related: `naming-conventions`, `refactor`
 
 **Concept**
 - Mental model: Skill scaffolding is protocol-backed authoring, not free-form prompt writing. The scaffold separates the routing contract, field contract, concept model, grounding evidence, body sections, and verification gates so a new skill becomes a routable graph node rather than a decorative Markdown file.

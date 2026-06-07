@@ -3,7 +3,6 @@ name: journey-mapping
 description: "Use when mapping a user's experience across multiple touchpoints and time, surfacing emotional peaks and troughs, identifying opportunity moments in a cross-channel flow, or aligning a team on the end-to-end experience including back-stage support processes. Do NOT use for decomposing a single screen into UI steps (use task-analysis) or for drawing back-end service architecture diagrams — journey maps describe human experience, not system topology. Do NOT use for Break down the steps a user takes inside the upload modal. Do NOT use for Draw the microservice call graph for the checkout API. Do NOT use for Diagram the database schema for the order entity."
 license: CC-BY-4.0
 metadata:
-  relations: "{\"boundary\":[\"task-analysis\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: design
@@ -26,6 +25,7 @@ metadata:
   triggers: "[\"journey map\",\"service blueprint\",\"map the user experience\",\"customer journey\",\"touchpoints\"]"
   examples: "[\"Build a journey map for first-time tax filers from awareness through filing to refund.\",\"Add a service-blueprint layer below this journey map showing the back-stage support steps.\",\"Identify the emotional low points in this onboarding journey and the opportunities at each.\",\"Map the cross-channel experience of returning an online order to a physical store.\"]"
   anti_examples: "[\"Break down the steps a user takes inside the upload modal.\",\"Draw the microservice call graph for the checkout API.\",\"Diagram the database schema for the order entity.\"]"
+  relations: "{\"related\":[\"research-synthesis\",\"information-architecture\",\"design-thinking\",\"problem-framing\",\"task-analysis\",\"bounded-context-mapping\"]}"
   structural_verdict: PASS
   truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
@@ -100,6 +100,9 @@ The practice resists two failure modes. The first is the **anodyne happy-path ma
 - Break down the steps a user takes inside the upload modal.
 - Draw the microservice call graph for the checkout API.
 - Diagram the database schema for the order entity.
+
+**Related skills**
+- Related: `research-synthesis`, `information-architecture`, `design-thinking`, `problem-framing`, `task-analysis`, `bounded-context-mapping`
 
 **Concept**
 - Mental model: A journey map is a time-ordered model of one actor's lived experience across touchpoints and channels, layering what they do, think, and feel against the front-stage interactions and the back-stage processes that produce each moment. Experience is treated as one continuous arc, not a set of isolated screens.

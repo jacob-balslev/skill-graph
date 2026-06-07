@@ -5,7 +5,6 @@ license: MIT
 compatibility: "Provider- and harness-agnostic. Patterns apply across Claude Code, Cursor, Copilot, OpenCode, Aider, Continue, custom Anthropic/OpenAI/Google SDK loops, and self-hosted multi-agent systems. Specific filenames in this skill (continuation.json, claim.lock, session-logs.jsonl) are example artefacts -- substitute your harness's equivalents."
 allowed-tools: Read Grep Bash Edit Write
 metadata:
-  relations: "{\"boundary\":[\"prompt-craft\"]}"
   schema_version: "8"
   version: "1.1.0"
   subject: software-architecture
@@ -24,6 +23,7 @@ metadata:
   keywords: "[\"agent engineering\",\"agentic engineering\",\"multi-agent systems\",\"production agent system\",\"orchestration patterns\",\"orchestrator worker\",\"fan-out merge\",\"consensus pattern\",\"evaluator optimizer\",\"sequential chain\"]"
   examples: "[\"we want to fan out 40 classification subtasks to subagents — what coordination pattern should we use and what are the failure modes?\",\"two of our agents claimed the same task and produced duplicate PRs — what atomicity guarantee prevents this?\",\"the orchestrator burns 6x the budget we planned every Tuesday — where do we add cost visibility and caps?\",\"an agent loop ran for four hours without progress before anyone noticed — how do we detect silent stalls?\",\"we keep getting context-contamination bugs where agent B uses stale output from agent A's failed run — fix the protocol\",\"audit this agent loop and tell me whether it's production-ready or still a demo\",\"is consensus-of-three worth the 3x cost for security-critical decisions, or is two-pass cheaper and good enough?\",\"design the lifecycle for a long-running autonomous agent that survives crashes mid-task\"]"
   anti_examples: "[\"improve this prompt's wording to get better outputs\",\"the agent made 17 read calls when 3 greps would have done\",\"design what skills get loaded for which prompts\",\"scaffold a new SKILL.md for our orchestration runbook\",\"review this AI-generated PR for correctness\",\"the test suite is failing after my change — find the cause\",\"draft an architecture note explaining why we chose Postgres\"]"
+  relations: "{\"boundary\":[{\"skill\":\"architecture-decision-records\",\"reason\":\"architecture-decision-records records and explains decisions; agent-engineering designs the agent-system architecture being decided\"}],\"related\":[\"context-engineering\",\"context-window\",\"tool-call-strategy\",\"prompt-craft\",\"summarization\",\"debugging\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
   grounding: "{\"subject_matter\":\"Production AI agent system architecture and multi-agent coordination\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://www.anthropic.com/engineering/building-effective-agents\",\"https://www.anthropic.com/engineering/multi-agent-research-system\",\"https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents\",\"https://openai.github.io/openai-agents-python/tracing/\",\"https://arxiv.org/abs/2308.08155\"],\"failure_modes\":[\"coordination_pattern_mismatch\",\"unbounded_agent_loop\",\"missing_observability\",\"duplicate_task_claims\",\"handoff_context_loss\",\"over_delegation_cost_spike\"],\"evidence_priority\":\"equal\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
@@ -457,6 +457,11 @@ After applying agent-engineering decisions, verify:
 - review this AI-generated PR for correctness
 - the test suite is failing after my change — find the cause
 - draft an architecture note explaining why we chose Postgres
+- Owned by `architecture-decision-records`
+
+**Related skills**
+- Verify with: `testing-strategy`, `code-review`
+- Related: `context-engineering`, `context-window`, `tool-call-strategy`, `prompt-craft`, `summarization`, `debugging`
 
 **Concept**
 - Mental model: Agent engineering treats LLM calls as unreliable, tool-using components inside a larger workflow. The core move is to make lifecycle, delegation, coordination, verification, observability, budgets, and recovery explicit so model variability is contained by system design.

@@ -4,7 +4,6 @@ description: "Use when reasoning about the consistency-availability-partition-to
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"adjacent\":[\"transaction-isolation\",\"replication-patterns\",\"sharding-strategy\"],\"boundary\":[\"acid-fundamentals\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: data-engineering
@@ -23,6 +22,7 @@ metadata:
   triggers: "[\"CAP theorem\",\"CP or AP\",\"what should we do on partition\",\"is this strongly consistent\",\"PACELC\"]"
   examples: "[\"decide whether a new distributed service should be CP or AP given its workload\",\"explain why CAP's C and ACID's C are different concepts despite sharing the letter\",\"diagnose a system claiming 'CA' (consistency + availability without P) — likely confused, since P is not optional\",\"design the partition-mode behavior of a multi-region service\"]"
   anti_examples: "[\"choose a transaction isolation level (use transaction-isolation)\",\"explain the four ACID properties (use acid-fundamentals)\",\"design the replication topology of a database (use replication-patterns)\"]"
+  relations: "{\"related\":[\"acid-fundamentals\",\"transaction-isolation\",\"replication-patterns\",\"sharding-strategy\"],\"boundary\":[{\"skill\":\"replication-patterns\",\"reason\":\"replication-patterns owns the design patterns for multi-replica systems (primary-replica, multi-primary, leaderless quorum); this skill owns the C/A/P trade-off that motivates choosing among them. The two compose: this is the theoretical frame; replication-patterns is the operational realization.\"},{\"skill\":\"sharding-strategy\",\"reason\":\"sharding-strategy owns horizontal partitioning of data across nodes; this skill owns the C/A trade-off when those shards must coordinate or recover from network partition between them.\"}],\"verify_with\":[\"acid-fundamentals\",\"replication-patterns\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -176,9 +176,12 @@ After applying this skill, verify:
 - choose a transaction isolation level (use transaction-isolation)
 - explain the four ACID properties (use acid-fundamentals)
 - design the replication topology of a database (use replication-patterns)
+- Owned by `replication-patterns`: the design patterns for multi-replica systems (primary-replica, multi-primary, leaderless quorum)
+- Owned by `sharding-strategy`: horizontal partitioning of data across nodes
 
 **Related skills**
-- Related: `transaction-isolation`, `replication-patterns`, `sharding-strategy`
+- Verify with: `acid-fundamentals`, `replication-patterns`
+- Related: `acid-fundamentals`, `transaction-isolation`, `replication-patterns`, `sharding-strategy`
 
 **Concept**
 - Mental model: |

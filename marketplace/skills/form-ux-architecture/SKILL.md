@@ -1,11 +1,10 @@
 ---
 name: form-ux-architecture
-description: "Use when designing or auditing form structure and validation UX: field grouping, required vs optional inputs, validation timing, client/server validation split, submission lifecycle, recovery, multi-step forms, and high-risk data entry. Do NOT use for labels and announcements alone (use `a11y`), validation-message wording (use `microcopy`), API schema design (use `api-design`), or stored data modeling (use `data-modeling`). Do NOT use for add labels so assistive tech can read each field. Do NOT use for rewrite the inline validation messages. Do NOT use for define the request and response schema for the form submit endpoint. Do NOT use for model the database columns that store these inputs."
+description: "Use when designing or auditing form structure and validation UX: field grouping, required vs optional inputs, validation timing, client/server validation split, submission lifecycle, recovery, multi-step forms, and high-risk data entry. Do NOT use for labels and announcements alone (use `a11y`), validation-message wording (use `microcopy`), API schema design (use `api-design`), or stored data modeling (use `data-modeling`). Do NOT use for add labels so assistive tech can read each field. Do NOT use for rewrite the inline validation messages. Do NOT use for define the request and response schema for the form submit endpoint. Do NOT use for model the database columns that store these inputs. Do NOT use for validation-message wording (use microcopy)."
 license: MIT
 compatibility: Portable form UX guidance for web and app forms. Client-side validation improves UX; server-side validation remains mandatory for trust and security.
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"boundary\":[\"a11y\"]}"
   schema_version: "8"
   version: "1.0.0"
   subject: design
@@ -22,6 +21,7 @@ metadata:
   keywords: "[\"form-ux\",\"form architecture\",\"validation timing\",\"client server validation\",\"field grouping\",\"submission lifecycle\",\"form recovery\",\"multi-step forms\",\"required optional inputs\",\"error recovery flow\"]"
   examples: "[\"design the validation lifecycle for this signup form\",\"audit this checkout form for grouping, required fields, and recovery\",\"should this be one form, a wizard, or progressive disclosure?\",\"split client-side and server-side validation responsibilities for this form\"]"
   anti_examples: "[\"add labels so assistive tech can read each field\",\"rewrite the inline validation messages\",\"define the request and response schema for the form submit endpoint\",\"model the database columns that store these inputs\"]"
+  relations: "{\"boundary\":[{\"skill\":\"microcopy\",\"reason\":\"microcopy owns validation-message wording; form-ux-architecture owns when validation appears and how users recover\"}],\"related\":[\"interaction-patterns\",\"interaction-feedback\",\"task-analysis\",\"a11y\",\"microcopy\",\"api-design\",\"data-modeling\"],\"verify_with\":[\"a11y\",\"microcopy\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -33,7 +33,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/form-ux-architecture/SKILL.md
-  skill_graph_export_description_projection: anti_examples
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Form UX Architecture
@@ -104,6 +104,11 @@ This skill ships a comprehension-eval artifact at [`examples/evals/form-ux-archi
 - rewrite the inline validation messages
 - define the request and response schema for the form submit endpoint
 - model the database columns that store these inputs
+- Owned by `microcopy`: validation-message wording
+
+**Related skills**
+- Verify with: `a11y`, `microcopy`
+- Related: `interaction-patterns`, `interaction-feedback`, `task-analysis`, `a11y`, `microcopy`, `api-design`, `data-modeling`
 
 **Keywords**
 - `form-ux`, `form architecture`, `validation timing`, `client server validation`, `field grouping`, `submission lifecycle`, `form recovery`, `multi-step forms`, `required optional inputs`, `error recovery flow`
