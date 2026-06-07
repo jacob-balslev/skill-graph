@@ -4,10 +4,12 @@ description: "Walk the corpus. For each skill in priority order (application_ver
 argument-hint: "[--top N] [--continuous] [--scope all] [--failure-budget N] [--pilot <skill>]"
 version: 1.0.0
 since: 2026-05-17
-status: active
-superseded_by: null
-last_changed: 2026-05-23
+status: deprecated
+superseded_by: skill-audit-loop
+last_changed: 2026-06-07
 ---
+
+> **DEPRECATED (2026-06-07T14:47+02:00).** `/evolve` (the legacy corpus walker that dispatches `run-skill-improvement-loop.js`) is superseded by the Skill Audit Loop: run one skill via `/skill-audit-loop` (now runs the full audit -> improve -> evaluate loop and records the four verdicts), or drain the whole corpus via `scripts/run-panel-loop.sh --worklist`. Kept for back-compat; its engine retires once no consumer remains (follow-up). Recover: `git show <sha>^:commands/audit/evolve.md`.
 
 # /evolve — Walk the corpus, one skill at a time
 
