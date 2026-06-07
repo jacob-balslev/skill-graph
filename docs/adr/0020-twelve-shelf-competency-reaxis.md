@@ -65,7 +65,23 @@ A one-time codemod (`scripts/migrate-subject-reaxis-v9.js`, retired after this m
 
 - **Positive:** every shelf answers one question; `ai-engineering` + `software-architecture` are first-class for the AI-agentic-web-dev identity; no phantom or sink shelf; `subject` and `taxonomy_domain` stop contradicting each other.
 - **Follow-up (CONTENT, via the audit loop):** re-shelving created cross-shelf `relations.boundary` edges (a boundary edge is a same-shelf exclusion guard) and left `taxonomy_domain` sub-paths un-normalized under the new shelves. Both are per-skill `relations`/`taxonomy_domain` cleanup for `/audit:*`, not schema violations.
-- **Negative:** a large corpus migration (123 folder moves); `product-domain` rides at the floor pending recruitment.
+- **Negative:** a large corpus migration (123 folder moves); `product-domain` rides at the floor pending recruitment — **resolved in favour of recruit, see the Addendum below (SKI-293).**
+
+## Addendum — 2026-06-07: `product-domain` recruit-or-fold resolved → **RECRUIT** (SKI-293)
+
+The floor-exception above left `product-domain` on a conditional ("recruit to ≥5 genuine verticals, or fold via a follow-up ADR if the growth path does not materialize"). This addendum resolves that conditional.
+
+**Corrected facts.** SKI-293's framing said "3 skills, all Printify." That is inaccurate. The shelf holds **3 primary members spanning 3 distinct vendors** — `etsy`, `shopify`, `printify` — not a single-vendor cluster. It also has **2 polyhierarchy secondaries** that already browse under it via `subjects[]`: `seo-strategy` `[quality-assurance, product-domain]` and `webhook-integration` `[backend-engineering, product-domain]`. So the effective browse population of the shelf is 5; only the *primary* count (3) sits below the 5-skill floor.
+
+**Decision: RECRUIT — keep the shelf, do not fold.** The fold path is explicitly rejected. Rationale (the same distinction that justified keeping the shelf over retiring it like the `data-analytics` phantom):
+
+1. **Genuine vertical content with no better home.** Platform-specific integration playbooks (`etsy`/`shopify`/`printify`) are not generic backend craft. Folding them into `backend-engineering` would violate the disambiguation contract's rule 7 (the product-domain gate exists precisely so genuine external verticals are not dissolved into engineering primitives), and would lose the vertical browse axis.
+2. **The library's identity needs a vertical shelf.** The public positioning is AI-agentic web development hosting domain verticals (ecommerce now; future verticals such as tax/VAT-return skills). Retiring the only vertical shelf is a positioning regression, not a MECE win.
+3. **The growth path is concrete, not hypothetical** (this is what `data-analytics` lacked). Named recruit pipeline — each candidate a genuine external product/market vertical that passes rule 7: additional ecommerce platforms (`woocommerce`, `bigcommerce`, `amazon-selling-partner`), payments/billing domain (`stripe-billing`), and tax/compliance verticals (`vat-oss`, `eu-vat-returns`). Authoring any **two** of these brings the primary count to the ≥5 floor.
+
+**Floor-review trigger.** This recruit decision is reviewed if the shelf's **primary** count has not reached ≥5 by the next 12-shelf balance census (the recurring `subject`-distribution audit). If the growth path has not materialized by then, a fold follow-up ADR moves `etsy`/`shopify`/`printify` to `backend-engineering` (with a `subjects: [backend-engineering, product-domain]` note) and retires the shelf. Until that trigger fires, `product-domain` stays as a kept floor-exception.
+
+**Execution is CONTENT-mode (filed, not done here).** Authoring the recruit-pipeline vertical skills is CONTENT work that flows through skill creation / `/audit:*` against the current contract — it is **not** performed in this SYSTEM commit and no `SKILL.md` is edited here. This addendum *is* the recorded decision (AC: "decision recorded; shelf at floor or folded" → shelf kept at floor with an explicit recruit commitment + a review trigger).
 
 ## References
 - [ADR-0017](0017-five-axis-classification-model.md) — the superseded 9-value model (five-axis shape retained).
