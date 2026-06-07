@@ -1,7 +1,7 @@
 # Skill Audit Loop — Per-Model REVISE Pass
 
 > Phase 2 (revise step) of the multi-agent panel enrich loop
-> (`lib/audit/run-panel-enrich.js`). After the cross-review step, each agent receives the
+> (`lib/audit/run-skill-audit-loop.js`). After the cross-review step, each agent receives the
 > feedback addressed to ITS proposal and revises. The orchestrator detects convergence by
 > hashing the revised proposal: when no alive agent's proposal changes in a round, the
 > panel has converged. Portable across all panel models. Last updated: 2026-06-05 (v1).

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # run-panel-loop.sh — supervised BATCH/DRAIN driver for the multi-agent panel enrich loop.
 #
-# Per skill: runs the official panel enrich loop (lib/audit/run-panel-enrich.js — Opus 4.8 +
+# Per skill: runs the official panel enrich loop (lib/audit/run-skill-audit-loop.js — Opus 4.8 +
 # GPT-5.5 MANDATORY + free advisory by default), and commits each KEPT SKILL.md path-limited
 # (CONTENT, AUDIT_LOOP=1) in ~/Development/skills. A per-skill statusline bridge paints the
 # multi-agent panel ABOVE the session statusline so the run is never a blind background task.
@@ -27,7 +27,7 @@
 #   run-panel-loop.sh (--worklist [--lane <name>] | --skills-file <path>)
 #                     [--max-rounds N] [--no-advisory] [--timeout S] [--work-root D] [--dry-run]
 #
-# Exit-code contract of run-panel-enrich.js (consumed below):
+# Exit-code contract of run-skill-audit-loop.js (consumed below):
 #   0 = enrichment KEPT/applied  ->  commit SKILL.md (+ audit-state.json); release status=completed
 #   2 = eval guardrail REVERTED  ->  nothing committed;                    release status=reverted
 #   1 = crash / 143|137 = watchdog-killed -> logged, continue;             release status=aborted
@@ -36,14 +36,14 @@ set -uo pipefail
 DEV=/Users/jacobbalslev/Development
 SG="$DEV/skill-graph"
 SKILLS_REPO="$DEV/skills"
-ENRICH="$SG/lib/audit/run-panel-enrich.js"
+ENRICH="$SG/lib/audit/run-skill-audit-loop.js"
 BRIDGE="$DEV/scripts/agent/panel-heartbeat-to-agent-state.js"
 CLAIM="$DEV/scripts/skill/skill-audit-claim.js"
 BUILD_LIST="$DEV/scripts/skill/build-skill-list.js"
 BUDGET="$DEV/scripts/model/budget-monitor.js"
 CHECKPOINT="$DEV/scripts/loop/loop-checkpoint.js"
 STEERING="$DEV/scripts/loop/loop-steering.js"
-LOOP_ID="skill-panel-enrich"          # distinct from the OpenCode "skill-audit" loop checkpoint
+LOOP_ID="skill-skill-audit-loop"          # distinct from the OpenCode "skill-audit" loop checkpoint
 
 SKILLS_FILE=""
 WORKLIST=0
@@ -178,7 +178,7 @@ enrich_one_skill() { # $1=slug $2=dir
       local MSG="$WORK_ROOT/$slug.commit-msg.txt"
       local adv_alive; adv_alive=$(node -e 'try{console.log((require(process.argv[1]).advisory_models_alive||[]).join(", ")||"none")}catch(e){console.log("n/a")}' "$RESULT" 2>/dev/null || echo n/a)
       {
-        printf 'content(%s): panel-enrich — Opus 4.8 + GPT-5.5 + advisory (eval-guarded keep)\n\n' "$slug"
+        printf 'content(%s): skill-audit-loop — Opus 4.8 + GPT-5.5 + advisory (eval-guarded keep)\n\n' "$slug"
         printf 'Enriched via the multi-agent panel loop (run-panel-loop drain).\n'
         printf 'Eval guardrail verdict: KEEP. Advisory alive: %s.\n\n' "$adv_alive"
         printf 'Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>\n'
@@ -216,7 +216,7 @@ resolve_dir() { find "$SKILLS_REPO/skills" -type d -name "$1" -not -path '*/node
 # top skill forever and NEVER advances (verified bug 2026-06-06: api-design re-enriched on
 # loop). We snapshot the ranked, public-safe, not-yet-completed slugs ONCE, iterate each
 # exactly once (so a revert/fail moves on instead of looping), skip any already carrying a
-# `content(<slug>): panel-enrich` commit (resume-safe), claim for cross-process dedup, and
+# `content(<slug>): skill-audit-loop` commit (resume-safe), claim for cross-process dedup, and
 # refresh the worklist after each skill so a restart's snapshot excludes what just completed.
 drain_worklist() {
   echo "run-panel-loop: WORKLIST drain · advisory=$([ -z "$ADV_FLAG" ] && echo full-panel || echo floor-only) · timeout=${TIMEOUT}s · agent=$AGENT_ID" >&2
@@ -225,7 +225,7 @@ drain_worklist() {
   # a killed run leaves a slot held, which then refuses EVERY future skill's claim (verified
   # 2026-06-06: an orphaned api-design--opus slot failed all 99 skills at phase 1a). The drain is
   # the sole panel runner, so at startup no panel slot is legitimately held — clear them.
-  for _m in opus codex-current gemini gemini-flash minimax big-pickle deepseek-flash mimo nemotron panel-enrich; do
+  for _m in opus codex-current gemini gemini-flash minimax big-pickle deepseek-flash mimo nemotron skill-audit-loop; do
     rm -f "$DEV"/.claude/agent-memory/skill-audit-*--"$_m" 2>/dev/null || true
   done
   node "$BUILD_LIST" --write >/dev/null 2>&1 || true
@@ -238,8 +238,8 @@ drain_worklist() {
     if steering_says_stop; then echo "run-panel-loop: steering pause/stop — exiting" >&2; break; fi
     while budget_blocked; do echo "run-panel-loop: opus daily budget exhausted — sleeping 300s" >&2; sleep 300; done
 
-    if git -C "$SKILLS_REPO" log -1 --grep="content(${slug}): panel-enrich" --format=%h 2>/dev/null | grep -q .; then
-      echo "[$nn/$TOTAL] $slug — already panel-enriched (git), skipping" >&2; skipped=$((skipped+1)); continue
+    if git -C "$SKILLS_REPO" log -1 --grep="content(${slug}): skill-audit-loop" --format=%h 2>/dev/null | grep -q .; then
+      echo "[$nn/$TOTAL] $slug — already skill-audit-looped (git), skipping" >&2; skipped=$((skipped+1)); continue
     fi
     local dir; dir=$(resolve_dir "$slug")
     if [ -z "$dir" ] || [ ! -f "$dir/SKILL.md" ]; then
@@ -250,14 +250,14 @@ drain_worklist() {
       enrich_one_skill "$slug" "$dir"
       echo "run-panel-loop: DRY preview complete (1 skill)" >&2; return
     fi
-    if ! node "$CLAIM" claim "$slug" --model panel-enrich --op audit >/dev/null 2>&1; then
+    if ! node "$CLAIM" claim "$slug" --model skill-audit-loop --op audit >/dev/null 2>&1; then
       echo "[$nn/$TOTAL] $slug — claim race (held by another agent), skipping" >&2; continue
     fi
     processed=$((processed+1))
     echo "[$nn/$TOTAL] $slug — enriching -> ${dir#$SKILLS_REPO/}" >&2
     checkpoint update --loop "$LOOP_ID" --item "$slug" --phase processing
     enrich_one_skill "$slug" "$dir"
-    node "$CLAIM" release "$slug" --model panel-enrich --status "$REL_STATUS" >/dev/null 2>&1 || true
+    node "$CLAIM" release "$slug" --model skill-audit-loop --status "$REL_STATUS" >/dev/null 2>&1 || true
     node "$BUILD_LIST" --write >/dev/null 2>&1 || true
     checkpoint update --loop "$LOOP_ID" --phase done
     echo "[$nn/$TOTAL] $slug — $REL_STATUS" >&2

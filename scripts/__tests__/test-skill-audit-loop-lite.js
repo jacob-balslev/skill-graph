@@ -6,7 +6,7 @@
 // eval guardrail, keep-or-revert), all without live CLIs.
 
 const assert = require('assert');
-const enrich = require('../../lib/audit/run-bidirectional-enrich');
+const enrich = require('../../lib/audit/run-skill-audit-loop-lite');
 
 let passed = 0;
 function check(name, fn) {
@@ -86,7 +86,7 @@ check('F9: an invalid/capped run (certifying_clean:false) DEFERS — never rever
   assert.strictEqual(enrich.decideKeepOrRevert({ synthesized_verdict: 'HARMFUL', certifying_clean: false }).action, 'keep');
 });
 
-console.log('3. runBidirectionalEnrich — DI sequencing');
+console.log('3. runSkillAuditLoopLite — DI sequencing');
 
 function makeDeps(overrides = {}) {
   const calls = { claims: [], releases: [], proposals: [], curated: 0, prepared: 0, cleaned: 0, applied: 0, evalDirs: [] };
@@ -116,7 +116,7 @@ function makeDeps(overrides = {}) {
 
 check('runs both frontier models, curates, evals the ENRICHED copy, keeps + applies', () => {
   const deps = makeDeps();
-  const r = enrich.runBidirectionalEnrich({ skill: 's', skillDir: '/x/skills/s', cwd: '/x/skill-graph', deps });
+  const r = enrich.runSkillAuditLoopLite({ skill: 's', skillDir: '/x/skills/s', cwd: '/x/skill-graph', deps });
   assert.deepStrictEqual(deps._calls.claims, ['opus', 'codex-current']);
   assert.deepStrictEqual(deps._calls.proposals, ['opus', 'codex-current']);
   assert.deepStrictEqual(deps._calls.releases, ['opus:completed', 'codex-current:completed']);
@@ -139,14 +139,14 @@ check('anti-loss violation in the merge throws (no silent lossy merge)', () => {
   const deps = makeDeps({
     curate: () => ({ mergedSkillPath: 'SKILL.md', mergeLedgerPath: 'm.json', mergeLedger: { contributions: [{ id: 9, disposition: 'dropped' }] } }),
   });
-  assert.throws(() => enrich.runBidirectionalEnrich({ skill: 's', skillDir: '/x/s', cwd: '/x', deps }), /anti-loss/);
+  assert.throws(() => enrich.runSkillAuditLoopLite({ skill: 's', skillDir: '/x/s', cwd: '/x', deps }), /anti-loss/);
 });
 
 check('genuine regression (HARMFUL eval) => revert: does NOT apply to canonical (SH-6686)', () => {
   const deps = makeDeps({
     runEvalDirection: ({ direction, executionProfile }) => ({ direction, verdict: 'HARMFUL', certification_tier: 'certifying', execution_profile: executionProfile }),
   });
-  const r = enrich.runBidirectionalEnrich({ skill: 's', skillDir: '/x/s', cwd: '/x', deps });
+  const r = enrich.runSkillAuditLoopLite({ skill: 's', skillDir: '/x/s', cwd: '/x', deps });
   assert.strictEqual(r.keep_or_revert.action, 'revert');
   // The canonical skill is mutated ONLY on keep — a revert never applies (no git-revert-HEAD).
   assert.strictEqual(deps._calls.applied, 0);
@@ -157,7 +157,7 @@ check('genuine regression (HARMFUL eval) => revert: does NOT apply to canonical 
 
 check('eval guardrail skipped when no direction runner injected (enrich-only) => keep + apply, eval null', () => {
   const deps = makeDeps({ runEvalDirection: undefined });
-  const r = enrich.runBidirectionalEnrich({ skill: 's', skillDir: '/x/s', cwd: '/x', deps });
+  const r = enrich.runSkillAuditLoopLite({ skill: 's', skillDir: '/x/s', cwd: '/x', deps });
   assert.strictEqual(r.eval, null);
   assert.strictEqual(r.keep_or_revert.action, 'keep');
   assert.strictEqual(r.applied, true); // keep => apply, even when the eval was deferred
@@ -168,7 +168,7 @@ check('eval artifact MISSING (deps.evalArtifactExists=false) => guardrail skippe
   // guardrail must SKIP (absence of an eval is not a regression) instead of crashing
   // deep in runApplicationEval. A runner is injected, but the artifact predicate is false.
   const deps = makeDeps({ evalArtifactExists: () => false });
-  const r = enrich.runBidirectionalEnrich({ skill: 's', skillDir: '/x/s', cwd: '/x', deps });
+  const r = enrich.runSkillAuditLoopLite({ skill: 's', skillDir: '/x/s', cwd: '/x', deps });
   assert.strictEqual(r.eval, null, 'eval skipped when artifact absent');
   assert.strictEqual(deps._calls.evalDirs.length, 0, 'the direction runner was never invoked');
   assert.strictEqual(r.keep_or_revert.action, 'keep');
@@ -178,14 +178,14 @@ check('eval artifact MISSING (deps.evalArtifactExists=false) => guardrail skippe
 
 check('eval artifact PRESENT (deps.evalArtifactExists=true) => guardrail runs as before', () => {
   const deps = makeDeps({ evalArtifactExists: () => true });
-  const r = enrich.runBidirectionalEnrich({ skill: 's', skillDir: '/x/s', cwd: '/x', deps });
+  const r = enrich.runSkillAuditLoopLite({ skill: 's', skillDir: '/x/s', cwd: '/x', deps });
   assert.strictEqual(r.eval.synthesized_verdict, 'APPLICABLE');
   assert.strictEqual(deps._calls.evalDirs.length, 2, 'both directions ran');
 });
 
 check('requires skill, skillDir, cwd, and the injected deps', () => {
-  assert.throws(() => enrich.runBidirectionalEnrich({ deps: {} }), /skill, skillDir, and cwd are required/);
-  assert.throws(() => enrich.runBidirectionalEnrich({ skill: 's', skillDir: '/x', cwd: '/x', deps: {} }), /must be a function/);
+  assert.throws(() => enrich.runSkillAuditLoopLite({ deps: {} }), /skill, skillDir, and cwd are required/);
+  assert.throws(() => enrich.runSkillAuditLoopLite({ skill: 's', skillDir: '/x', cwd: '/x', deps: {} }), /must be a function/);
 });
 
 console.log(`\nResults: ${passed} passed, 0 failed`);

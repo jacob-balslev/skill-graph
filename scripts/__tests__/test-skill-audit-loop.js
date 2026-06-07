@@ -1,10 +1,10 @@
 'use strict';
 
-// Unit tests for the multi-agent PANEL enrich orchestrator (run-panel-enrich.js).
-// Pure DI — no real dispatch, no fs. Mirrors test-bidirectional-enrich.js patterns.
+// Unit tests for the multi-agent PANEL enrich orchestrator (run-skill-audit-loop.js).
+// Pure DI — no real dispatch, no fs. Mirrors test-skill-audit-loop-lite.js patterns.
 
 const assert = require('assert');
-const panel = require('../../lib/audit/run-panel-enrich');
+const panel = require('../../lib/audit/run-skill-audit-loop');
 
 let passed = 0;
 function check(name, fn) {
@@ -144,8 +144,8 @@ check('SKI-211: advisory churn does NOT block convergence — stability is manda
   assert.strictEqual(r.rounds, 1, 'converges at round 1 — mandatory stable immediately');
 });
 
-// ── 3. runPanelEnrich — DI sequencing ──
-console.log('3. runPanelEnrich — DI sequencing');
+// ── 3. runSkillAuditLoop — DI sequencing ──
+console.log('3. runSkillAuditLoop — DI sequencing');
 
 function makeDeps(overrides = {}) {
   const calls = { mandatoryProposals: [], advisoryProposals: [], curatedWith: null, applied: 0, evalDirs: [] };
@@ -171,7 +171,7 @@ function makeDeps(overrides = {}) {
 
 check('runs mandatory + advisory proposals, converges, curates with advisory+crossReview, keeps + applies', () => {
   const deps = makeDeps();
-  const r = panel.runPanelEnrich({ skill: 's', skillDir: '/x/skills/s', cwd: '/x/skill-graph', advisoryModels: ['minimax', 'gemini'], deps });
+  const r = panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/skills/s', cwd: '/x/skill-graph', advisoryModels: ['minimax', 'gemini'], deps });
   assert.deepStrictEqual(deps._calls.mandatoryProposals, ['opus', 'codex-current']);
   assert.deepStrictEqual(deps._calls.advisoryProposals, ['minimax', 'gemini']);
   // curate received both mandatory proposals + advisory + crossReview key
@@ -189,12 +189,12 @@ check('runs mandatory + advisory proposals, converges, curates with advisory+cro
 
 check('MANDATORY propose failure ABORTS the run', () => {
   const deps = makeDeps({ researchAndPropose: ({ model }) => { if (model === 'codex-current') throw new Error('codex down'); return { proposalPath: `p-${model}.md` }; } });
-  assert.throws(() => panel.runPanelEnrich({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], deps }), /MANDATORY research\/propose failed.*codex down/);
+  assert.throws(() => panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], deps }), /MANDATORY research\/propose failed.*codex down/);
 });
 
 check('ADVISORY propose failure does NOT abort — recorded in advisory_failures', () => {
   const deps = makeDeps({ researchAndProposeAdvisory: ({ model }) => (model === 'minimax' ? { ok: false, error: 'minimax timeout' } : { ok: true, proposalPath: `p-${model}.md` }) });
-  const r = panel.runPanelEnrich({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: ['minimax', 'gemini'], deps });
+  const r = panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: ['minimax', 'gemini'], deps });
   assert.strictEqual(r.applied, true);
   assert.deepStrictEqual(r.advisory_models_alive, ['gemini']);
   assert.strictEqual(r.advisory_failures.length, 1);
@@ -203,17 +203,17 @@ check('ADVISORY propose failure does NOT abort — recorded in advisory_failures
 
 check('anti-loss violation in the merge throws', () => {
   const deps = makeDeps({ curate: () => ({ mergedSkillPath: 'SKILL.md', mergeLedgerPath: 'm.json', mergeLedger: { contributions: [{ id: 9, surfaced_by: 'opus', disposition: 'dropped' }] } }) });
-  assert.throws(() => panel.runPanelEnrich({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], deps }), /anti-loss/);
+  assert.throws(() => panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], deps }), /anti-loss/);
 });
 
 check('mandatory coverage gap throws (curator dropped a frontier proposal entirely)', () => {
   const deps = makeDeps({ curate: () => ({ mergedSkillPath: 'SKILL.md', mergeLedgerPath: 'm.json', mergeLedger: { contributions: [{ id: 1, surfaced_by: 'opus', disposition: 'kept' }] } }) });
-  assert.throws(() => panel.runPanelEnrich({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], deps }), /mandatory coverage gap/);
+  assert.throws(() => panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], deps }), /mandatory coverage gap/);
 });
 
 check('missing eval artifact => guardrail skipped => keep + apply, eval null', () => {
   const deps = makeDeps({ evalArtifactExists: () => false });
-  const r = panel.runPanelEnrich({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], deps });
+  const r = panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], deps });
   assert.strictEqual(r.eval, null);
   assert.strictEqual(deps._calls.evalDirs.length, 0);
   assert.strictEqual(r.keep_or_revert.action, 'keep');
@@ -222,15 +222,15 @@ check('missing eval artifact => guardrail skipped => keep + apply, eval null', (
 
 check('HARMFUL eval => revert, does NOT apply', () => {
   const deps = makeDeps({ runEvalDirection: ({ direction, executionProfile }) => ({ direction, verdict: 'HARMFUL', certification_tier: 'certifying', execution_profile: executionProfile }) });
-  const r = panel.runPanelEnrich({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], deps });
+  const r = panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], deps });
   assert.strictEqual(r.keep_or_revert.action, 'revert');
   assert.strictEqual(r.applied, false);
 });
 
 check('requires skill/skillDir/cwd, 2-model mandatory, and injected deps', () => {
-  assert.throws(() => panel.runPanelEnrich({ deps: {} }), /skill, skillDir, and cwd are required/);
-  assert.throws(() => panel.runPanelEnrich({ skill: 's', skillDir: '/x', cwd: '/x', mandatoryModels: ['opus'], deps: {} }), /2-element array/);
-  assert.throws(() => panel.runPanelEnrich({ skill: 's', skillDir: '/x', cwd: '/x', advisoryModels: [], deps: {} }), /must be a function/);
+  assert.throws(() => panel.runSkillAuditLoop({ deps: {} }), /skill, skillDir, and cwd are required/);
+  assert.throws(() => panel.runSkillAuditLoop({ skill: 's', skillDir: '/x', cwd: '/x', mandatoryModels: ['opus'], deps: {} }), /2-element array/);
+  assert.throws(() => panel.runSkillAuditLoop({ skill: 's', skillDir: '/x', cwd: '/x', advisoryModels: [], deps: {} }), /must be a function/);
 });
 
 console.log(`\nResults: ${passed} passed, 0 failed`);

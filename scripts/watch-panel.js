@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 'use strict';
 
-// ─── Canonical collected-TUI viewer for the panel-enrich loop ────────────────────
+// ─── Canonical collected-TUI viewer for the skill-audit-loop loop ────────────────────
 //
-// Reads the heartbeat <status-file> written by `lib/audit/run-panel-enrich.js` (via
+// Reads the heartbeat <status-file> written by `lib/audit/run-skill-audit-loop.js` (via
 // `lib/audit/panel-progress.js`) and renders the COLLECTED multi-agent view — every panel
 // agent (Opus/GPT MANDATORY, free advisory) with its live phase/state — using the SAME
 // canonical renderer the live TTY header uses (`renderCollected`). One rendering, one

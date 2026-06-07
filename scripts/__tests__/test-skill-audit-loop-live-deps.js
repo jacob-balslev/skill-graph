@@ -1,12 +1,12 @@
 'use strict';
 
-// Unit tests for panel-enrich-live-deps.js — pure seams + dry-run wiring. No real CLI.
+// Unit tests for skill-audit-loop-live-deps.js — pure seams + dry-run wiring. No real CLI.
 
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const live = require('../../lib/audit/panel-enrich-live-deps');
+const live = require('../../lib/audit/skill-audit-loop-live-deps');
 
 let passed = 0;
 function check(name, fn) {
@@ -34,7 +34,7 @@ check('advisory opencode + gemini backends resolve', () => {
 console.log('3. dry-run deps — offline, deterministic, write-to-path');
 check('advisory propose writes a non-empty proposal file (dry-run)', () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'panel-live-'));
-  const deps = live.createPanelEnrichDeps({ skillGraphRoot: root, dryRun: true });
+  const deps = live.createSkillAuditLoopDeps({ skillGraphRoot: root, dryRun: true });
   const slot = deps.claimAdvisorySlot({ skill: 's', model: 'minimax' });
   assert.strictEqual(slot.ok, true);
   const r = deps.researchAndProposeAdvisory({ skill: 's', skillDir: path.join(root, 'skills', 's'), model: 'minimax', brief: 'b', artifactsDir: slot.artifactsDir });
@@ -46,7 +46,7 @@ check('advisory propose writes a non-empty proposal file (dry-run)', () => {
 });
 check('dry-run crossReview returns empty feedback; revise reports no change', () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'panel-live-'));
-  const deps = live.createPanelEnrichDeps({ skillGraphRoot: root, dryRun: true });
+  const deps = live.createSkillAuditLoopDeps({ skillGraphRoot: root, dryRun: true });
   const cr = deps.crossReview({ skill: 's', reviewerModel: 'minimax', reviewerTier: 'advisory', ownProposalPath: '/x', otherProposals: [], round: 1 });
   assert.deepStrictEqual(cr, { ok: true, feedback: [] });
   const slot = deps.claimAdvisorySlot({ skill: 's', model: 'minimax' });
@@ -56,7 +56,7 @@ check('dry-run crossReview returns empty feedback; revise reports no change', ()
   fs.rmSync(root, { recursive: true, force: true });
 });
 check('exposes the full panel deps interface', () => {
-  const deps = live.createPanelEnrichDeps({ skillGraphRoot: os.tmpdir(), dryRun: true });
+  const deps = live.createSkillAuditLoopDeps({ skillGraphRoot: os.tmpdir(), dryRun: true });
   for (const fn of ['buildResearchBrief', 'claimSlot', 'releaseSlot', 'researchAndPropose', 'curate', 'prepareEnrichedEval', 'applyMerge', 'evalArtifactExists', 'hashProposal', 'claimAdvisorySlot', 'researchAndProposeAdvisory', 'crossReview', 'reviseProposal']) {
     assert.strictEqual(typeof deps[fn], 'function', `deps.${fn} is a function`);
   }
@@ -76,7 +76,7 @@ check('sandboxed reviser captures the emitted document (preamble stripped) and r
   fs.writeFileSync(ownProposalPath, '---\nname: s\n---\n# s\nOLD proposal\n');
   const revisedDoc = `---\nname: s\nschema_version: 8\n---\n# s — revised\n\n${'## Section\n\nEnriched content here. '.repeat(40)}`;
   let dispatchedMode = null;
-  const deps = live.createPanelEnrichDeps({
+  const deps = live.createSkillAuditLoopDeps({
     skillGraphRoot: root,
     advisoryDispatch: ({ mode }) => { dispatchedMode = mode; return { ok: true, stdout: `Here is the revised skill:\n\n${revisedDoc}`, stderr: '' }; },
   });
@@ -102,7 +102,7 @@ check('sandboxed reviser that emits no usable document leaves the proposal byte-
   const ownProposalPath = path.join(runDir, 's.minimax.proposed-SKILL.md');
   fs.writeFileSync(ownProposalPath, '---\nname: s\n---\n# s\nKEPT\n');
   const before = fs.readFileSync(ownProposalPath, 'utf8');
-  const deps = live.createPanelEnrichDeps({
+  const deps = live.createSkillAuditLoopDeps({
     skillGraphRoot: root,
     advisoryDispatch: () => ({ ok: true, stdout: 'I think this looks good, no changes needed.', stderr: '' }),
   });

@@ -1,9 +1,9 @@
 'use strict';
 
 // Unit test: the LIVE production deps for the bidirectional ENRICH orchestrator
-// (lib/audit/enrich-live-deps.js). Covers the pure seams (arg builders, claim-output
+// (lib/audit/skill-audit-loop-lite-deps.js). Covers the pure seams (arg builders, claim-output
 // parser, prompt assembly, proposal paths) AND a full DRY-RUN through the real
-// orchestrator (runBidirectionalEnrich) in a temp dir — proving the wiring path
+// orchestrator (runSkillAuditLoopLite) in a temp dir — proving the wiring path
 // (claim → propose → curate → anti-loss → keep) without dispatching any LLM or
 // mutating a real SKILL.md. The live multi-model pilot verifies the actual dispatch.
 
@@ -11,8 +11,8 @@ const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const d = require('../../lib/audit/enrich-live-deps');
-const { runBidirectionalEnrich } = require('../../lib/audit/run-bidirectional-enrich');
+const d = require('../../lib/audit/skill-audit-loop-lite-deps');
+const { runSkillAuditLoopLite } = require('../../lib/audit/run-skill-audit-loop-lite');
 
 let passed = 0;
 function check(name, fn) {
@@ -123,8 +123,8 @@ check('dry-run runs claim → propose(both) → curate → anti-loss → keep', 
   const ORIGINAL = '---\nname: demo-skill\n---\n# Demo\nBody.\n';
   fs.writeFileSync(canonical, ORIGINAL);
 
-  const deps = d.createLiveEnrichDeps({ skillGraphRoot: tmp, workspaceRoot: tmp, dryRun: true });
-  const result = runBidirectionalEnrich({ skill, skillDir, cwd: tmp, deps });
+  const deps = d.createSkillAuditLoopLiteDeps({ skillGraphRoot: tmp, workspaceRoot: tmp, dryRun: true });
+  const result = runSkillAuditLoopLite({ skill, skillDir, cwd: tmp, deps });
 
   // Both frontier models produced a proposal.
   assert.strictEqual(result.proposals.length, 2);
@@ -158,7 +158,7 @@ check('claimSlot claims --op audit per model; curate claims --op merge with a di
   fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: demo-skill\n---\n# Demo\n');
   // The live researchAndPropose loads the enrich-pass template from <root>/prompts/.
   fs.mkdirSync(path.join(tmp, 'prompts'), { recursive: true });
-  fs.writeFileSync(path.join(tmp, 'prompts', 'skill-audit-loop-enrich-pass.md'), '```\nENRICH TEMPLATE\n```\n');
+  fs.writeFileSync(path.join(tmp, 'prompts', 'skill-audit-loop-improve-pass.md'), '```\nENRICH TEMPLATE\n```\n');
 
   const claims = [];
   const releases = [];
@@ -184,7 +184,7 @@ check('claimSlot claims --op audit per model; curate claims --op merge with a di
     return '';
   }
 
-  const deps = d.createLiveEnrichDeps({ skillGraphRoot: tmp, workspaceRoot: tmp, dryRun: false, dispatch: stubDispatch });
+  const deps = d.createSkillAuditLoopLiteDeps({ skillGraphRoot: tmp, workspaceRoot: tmp, dryRun: false, dispatch: stubDispatch });
   const s1 = deps.claimSlot({ skill, model: 'opus' });
   deps.researchAndPropose({ skill, skillDir, model: 'opus', brief: 'B', artifactsDir: s1.artifactsDir });
   deps.releaseSlot({ skill, model: 'opus', status: 'completed' });

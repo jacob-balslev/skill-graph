@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# start-panel-drain.sh — launch the unattended panel-enrich DRAIN in a visible Ghostty session.
+# start-panel-drain.sh — launch the unattended skill-audit-loop DRAIN in a visible Ghostty session.
 #
 # The chosen vehicle for "look through every skill automatically" (decided 2026-06-06): a visible,
 # steerable Ghostty tab running run-panel-loop.sh --worklist (full panel, advisory pre-logged-in).

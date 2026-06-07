@@ -2,10 +2,10 @@
 
 > Portable across the two frontier models — the registry roles `opus` and `codex-current`.
 > This is the **per-model enrich pass** the bidirectional enrich orchestrator
-> (`lib/audit/run-bidirectional-enrich.js`) dispatches to EACH frontier model
+> (`lib/audit/run-skill-audit-loop-lite.js`) dispatches to EACH frontier model
 > independently. You produce a **proposal**, not a commit — the curator unions the
 > two proposals into the SKILL.md afterward. Read the WHY first:
-> [`docs/audit-loop-enrich-philosophy.md`](../docs/audit-loop-enrich-philosophy.md).
+> [`docs/skill-audit-loop-philosophy.md`](../docs/skill-audit-loop-philosophy.md).
 >
 > Last updated: 2026-06-03 (v1). Authored alongside the two-frontier enrich orchestrator.
 
@@ -20,7 +20,7 @@ You are running ONE model's ENRICH PASS for ONE skill. Work from the skill-graph
 ║  objective is knowledge/quality. The downstream eval is a GUARDRAIL, not   ║
 ║  your objective. NEVER propose removing curated knowledge because "it      ║
 ║  didn't move a score" — removal requires a recorded reason that the        ║
-║  content is wrong, redundant, or harmful. (audit-loop-enrich-philosophy.md)║
+║  content is wrong, redundant, or harmful. (skill-audit-loop-philosophy.md)║
 ╚══════════════════════════════════════════════════════════════════════════╝
 
 INSTRUCTION AND DATA BOUNDARY

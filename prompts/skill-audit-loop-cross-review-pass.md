@@ -1,6 +1,6 @@
 # Skill Audit Loop — Per-Model CROSS-REVIEW Pass
 
-> Phase 2 of the multi-agent panel enrich loop (`lib/audit/run-panel-enrich.js`).
+> Phase 2 of the multi-agent panel enrich loop (`lib/audit/run-skill-audit-loop.js`).
 > After every panel agent (the mandatory frontier pair — `strongest-reasoning-grader` +
 > `codex-current`; advisory free models) has
 > produced its OWN proposal, EACH agent reviews every OTHER agent's proposal and gives
