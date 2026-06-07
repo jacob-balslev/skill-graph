@@ -34,6 +34,17 @@ Run the eval suite (`evals/<skill>.json` plus the optional `evals/comprehension.
 /evaluate <skill-name> --eval-id <id>        # Re-run one specific case
 ```
 
+## Codex GPT-5.5 CLI profile
+
+When the default evaluator path is unavailable because it would route through the Claude CLI, use the canonical Skill Graph wrapper instead of hand-assembling environment variables:
+
+```
+skill-graph evaluate:gpt-5.5 --comprehension skills/<skill>/evals/comprehension.json
+skill-graph evaluate:gpt-5.5 --mode application --application skills/<skill> skills/<skill>/evals/application.json
+```
+
+The wrapper lives in `lib/audit/evaluate-skill-codex-gpt-5.5.js`. It delegates to `lib/audit/evaluate-skill.js`, forces `--grader codex`, `--generator codex`, `--tools-on`, and `--single-model`, and pins the comprehension/application generator and grader env vars to `gpt-5.5`. Same-family Codex/GPT evidence is honest but provisional; it cannot earn `PASS` or `APPLICABLE`.
+
 ## When this fires automatically
 
 - `/improve` calls `/evaluate` immediately after every accepted edit to enforce keep-or-revert.

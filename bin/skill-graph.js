@@ -248,6 +248,14 @@ Note: evolve depends on lib/audit-shared/auto-improve.js (bundled with @skill-gr
     script: 'lib/audit/evaluate-skill.js',
     help: `Usage: skill-graph evaluate [options] <eval-file>\n\nRun the eval suite for one skill and stamp the result into the skill's audit-state.json sidecar.\n\nArguments:\n  <eval-file>                  Path to evals/<skill>.json (or comprehension.json / application.json).\n\nOptions:\n  --mode <comprehension|application>   Which grader to run.\n  --application <skill-dir>            Required with --mode application; the skill's directory.\n  --trials N                           Application: trials per case (default 3, recommended 3–5).\n  --certifying                         Application: attest a cross-family dual-run (with differing\n                                       --generator-family/--grader-family) — REQUIRED to earn APPLICABLE.\n  --generator-family F / --grader-family G   Declared families for the cross-family check (not a model selector).\n  --single-model                       Force PROVISIONAL (explicit single-model self-assessment).\n  --dry-run                            Print what would be stamped without writing.\n\nWrites (when not --dry-run):\n  - eval_score, eval_failed_ids, freshness in audit-state.json.\n  - comprehension_verdict (when --mode comprehension runs).\n  - application_verdict + eval_last_run (when --mode application runs — the\n    primary quality signal per skill-audit-loop/SKILL_AUDIT_LOOP.md § Audit Doctrine).\n    A non-certifying application run caps APPLICABLE at PROVISIONAL.\n\nSee: skill-audit-loop/SKILL_AUDIT_LOOP.md § The Inner Pipeline of evaluate\n`,
   },
+  'evaluate:gpt-5.5': {
+    script: 'lib/audit/evaluate-skill-codex-gpt-5.5.js',
+    help: `Usage: skill-graph evaluate:gpt-5.5 [evaluate options] <eval-file>\n\nRun the canonical evaluator through Codex CLI + GPT-5.5 with tools-on execution.\n\nThis profile injects:\n  --grader codex\n  --generator codex\n  --tools-on\n  --single-model\n  COMPREHENSION_GRADER_MODEL=gpt-5.5\n  COMPREHENSION_GENERATOR_MODEL=gpt-5.5\n  APPLICATION_GRADER_MODEL=gpt-5.5\n  APPLICATION_GENERATOR_MODEL=gpt-5.5\n\nBecause generator and grader are both Codex/GPT, positive behavior evidence is PROVISIONAL only.\nDo not pass --certifying to this profile; use a cross-family run when PASS/APPLICABLE is required.\n`,
+  },
+  'evaluate:codex-gpt-5.5': {
+    script: 'lib/audit/evaluate-skill-codex-gpt-5.5.js',
+    help: `Usage: skill-graph evaluate:codex-gpt-5.5 [evaluate options] <eval-file>\n\nAlias for skill-graph evaluate:gpt-5.5.\n`,
+  },
   status: {
     script: 'lib/audit/skill-status.js',
     help: `Usage: skill-graph status <skill-name> [options]\n\nRead-only view of a skill's Audit Status (loop-stamped audit-state.json fields joined with SKILL.md).\n\nArguments:\n  <skill-name>      Skill directory name.\n\nOptions:\n  --json            Emit JSON instead of a human-readable table.\n  --audit-root <p>  Root directory for SKILL.md lookup (default: auto-detect).\n\nExit codes:\n  0  Success (including the graceful no-Audit-Status case).\n  1  Fatal error (manifest unreadable, unexpected parse failure).\n\nSee: skill-audit-loop/SKILL_AUDIT_LOOP.md § The Audit Status — state lives in audit-state.json\n`,
@@ -344,6 +352,7 @@ Commands:
   audit <skill>    Run the Integrity Gate, write evidence artifacts, and stamp audit-state.json
   improve          Karpathy keep-or-revert improvement loop for one skill or asset
   evaluate         Run the eval suite for one skill and stamp comprehension_verdict / application_verdict
+  evaluate:gpt-5.5 Run evaluate through Codex CLI + GPT-5.5 with tools-on, PROVISIONAL-only evidence
   status <skill>   Print the Audit Status for a skill (read-only)
   route <query>    Select and explain skills for a natural-language query
   drift            Check or record grounding truth-source hashes (drift sentinel)
@@ -370,6 +379,7 @@ Examples:
   skill-graph add debugging
   skill-graph lint --include-template
   skill-graph audit my-skill --graded
+  skill-graph evaluate:gpt-5.5 --comprehension skills/my-skill/evals/comprehension.json
   skill-graph route "audit my skills for schema conformance"
   skill-graph drift --record --apply skills/graph-audit
   skill-graph eval-staleness
