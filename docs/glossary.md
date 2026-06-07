@@ -120,7 +120,7 @@ Globally-unique persistent identifier in the `urn:skill:<repo>:<skill-name>` for
 
 ### `schema_version`
 
-Integer or string-of-integer identifying the Skill Metadata Protocol version. Currently `3`. Bumps on breaking changes to field semantics, shape, or required-ness. Additive additions (new optional fields, new enum values, new lint warnings) do not bump the version.
+Integer or string-of-integer identifying the Skill Metadata Protocol version. Currently `8` (the binding value lives in `schemas/SKILL_METADATA_PROTOCOL_schema.json`; the live contract state is in `SKILL_GRAPH.md § Current State`). Bumps on breaking changes to field semantics, shape, or required-ness. Additive additions (new optional fields, new enum values, new lint warnings) do not bump the version.
 
 ### `stability`
 

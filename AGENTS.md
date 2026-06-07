@@ -242,7 +242,7 @@ Core required axes (v8 — see `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.
 
 Activation surfaces: `keywords` (≤10), `triggers` (exact), `examples` / `anti_examples` (positive/negative prompts). Routing edges live in `relations` (`related` / `boundary` / `verify_with` / `depends_on` / `broader` / `narrower` / `disjoint_with`).
 
-Closure of `subject` (9 values) is justified by Miller's 7±2 browseability + MECE pressure + the `foundations` / `knowledge-organization` anti-junk-drawer gate. See `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Classification` for the disambiguation rules.
+Closure of `subject` (12 values) is justified by Miller's 7±2 browseability + MECE pressure + the `foundations` / `knowledge-organization` anti-junk-drawer gate. See `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Classification` for the disambiguation rules.
 
 Understanding-fields contract (when `comprehension_state: present`) — see `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` § Understanding for the binding rules:
 
@@ -676,7 +676,7 @@ npm run release:check    # release-readiness gate — the corpus gates verify:sy
 
 ### Audit-evidence consistency gate (now in `npm run verify`)
 
-The audit-evidence honesty gate is **wired into `npm run verify`** as of 2026-05-30. It was previously excluded on the rationale that historical verdict records claiming a graded verdict without their artifact would force `verify` red and block unrelated SYSTEM work. That rationale is obsolete: the stale records that caused the reds were run-records for skills no longer in the library (renamed/merged/deleted), so there was no SKILL.md to downgrade and no artifact to author — they were junk. They were deleted (`73f9e0f`), the gate went green, and it is now part of the full gate so the evidence-honesty check is no longer institutionally excluded from "green."
+The audit-evidence honesty gate is **wired into `npm run verify`** as of 2026-05-30. It was previously excluded on the rationale that historical verdict records claiming a graded verdict without their artifact would force `verify` red and block unrelated SYSTEM work. That rationale is obsolete: the stale records that caused the reds were run-records for skills no longer in the library (renamed/merged/deleted), so there was no SKILL.md to downgrade and no artifact to author — they were junk. They were deleted (workspace commit `73f9e0f` — in the `~/Development` workspace repo, NOT skill-graph; resolve via `git -C ~/Development show 73f9e0f`), the gate went green, and it is now part of the full gate so the evidence-honesty check is no longer institutionally excluded from "green."
 
 | Gate | Command | What it catches |
 |---|---|---|

@@ -12,7 +12,7 @@ A skill name is a **noun-anchored compound**, not a verb. The **head noun** is t
 - `client-server-boundary` — head = `boundary`, modifiers = `client`, `server`
 - `epistemic-grounding` — head = `grounding`, modifier = `epistemic`
 
-This file enumerates head nouns currently in use across the 102 skills in `skill-graph/skills/`, plus head nouns reserved for upcoming gap-fill skills. Adding a new head noun to a skill name should require justifying it here.
+This file enumerates head nouns currently in use across the canonical skill library (live count in `SKILL_GRAPH.md § Current State` / `docs/status.generated.md` — never hand-stamped here), plus head nouns reserved for upcoming gap-fill skills. Adding a new head noun to a skill name should require justifying it here.
 
 ## Why head nouns matter
 
