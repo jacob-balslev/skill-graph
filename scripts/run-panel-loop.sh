@@ -3,8 +3,14 @@
 #
 # Per skill: runs the official panel enrich loop (lib/audit/run-skill-audit-loop.js — Opus 4.8 +
 # GPT-5.5 MANDATORY + free advisory by default), and commits each KEPT SKILL.md path-limited
-# (CONTENT, AUDIT_LOOP=1) in ~/Development/skills. A per-skill statusline bridge paints the
-# multi-agent panel ABOVE the session statusline so the run is never a blind background task.
+# (CONTENT, AUDIT_LOOP=1) in ~/Development/skills. The runner writes a per-skill heartbeat
+# status.json; the canonical viewer is `scripts/watch-panel.js <status-file>` (collected multi-agent
+# block — the main-area surface, never the statusline). The per-skill statusline bridge below is an
+# OPTIONAL complement for this unattended terminal/Ghostty drain (where there is no Claude Code
+# main conversation area) — it is NOT the panel surface. Per the panel-visibility rule
+# (SKILL_AUDIT_LOOP.md § "Canonical way to run the PANEL loop VISIBLY"), the panel belongs in the
+# main conversation area; the statusline is only a cheap complement. Either way the run is never a
+# blind background task — a viewer (watch-panel.js or the bridge) is always attached to the heartbeat.
 #
 # Two source modes:
 #   --worklist        Drain EVERY eligible skill via the shared claim/ledger system
@@ -151,6 +157,8 @@ enrich_one_skill() { # $1=slug $2=dir
   local ENRICH_PID=$!
   start_watchdog "$ENRICH_PID" "$TIMEOUT"; local WD="$WATCHDOG_PID"
 
+  # OPTIONAL statusline complement for this unattended terminal drain (NOT the panel surface — the
+  # main-area viewer is watch-panel.js on $STATUS; see header). Kept as a cheap tab-title hint.
   local BRIDGE_PID=""
   if [ -f "$BRIDGE" ]; then
     for _ in 1 2 3 4 5 6 7 8; do [ -f "$STATUS" ] && break; sleep 1; done
