@@ -228,7 +228,7 @@ These fields are required only when a specific condition is met. The frontmatter
 |---|---|---|
 | `grounding` | non-empty `project[]` (project-anchored) | frontmatter schema `allOf` |
 | `superseded_by` | `stability: deprecated` | cross-file lint / frontmatter lint |
-| `mental_model` + `purpose` + `boundary` + `analogy` + `misconception` | `comprehension_state: present` in `audit-state.json` | cross-file lint |
+| `mental_model` + `purpose` + `concept_boundary` + `analogy` + `misconception` | `comprehension_state: present` in `audit-state.json` | cross-file lint |
 | `eval_artifacts: present` | `eval_state: passing` or `eval_state: monitored` | sidecar schema `allOf` |
 
 ### Optional (strongly recommended)
@@ -245,9 +245,10 @@ relations       # typed edges to sibling skills
                 # listed skills from co-routing when THIS skill wins (it does
                 # NOT defer to them). Write reason text as ownership
                 # ("I own this exclusively over X"), never deference
-                # ("use X instead"). Renamed to relations.suppresses in v8.1
-                # per ADR-0018. See § Relations § `boundary` for the full
-                # WARNING and rationale.
+                # ("use X instead"). Canonical name is relations.suppresses
+                # (ADR-0018, SYSTEM half landed); relations.boundary is the
+                # deprecated alias the router falls back to. See § Relations
+                # § `suppresses` for the full WARNING and rationale.
 ```
 
 ### Optional (enrichment)
@@ -270,7 +271,9 @@ comprehension_state # absent | present
 # Understanding fields (v6+, flat) — required when comprehension_state: present
 mental_model    # string — primitives and their relationships
 purpose         # string — the problem this concept solves
-boundary        # string — what this concept is NOT (with mechanism, not just label)
+concept_boundary # string — what this concept is NOT (with mechanism, not just label).
+                # Canonical name (ADR-0018); top-level `boundary` is the deprecated
+                # alias the normalizer maps to `concept_boundary`.
 analogy         # string — one-sentence metaphor preserving the core mechanism
 misconception   # string — the wrong mental model people bring
 concept         # DEPRECATED in v6 — legacy v5 nested block; back-compat only
@@ -453,7 +456,7 @@ The three Evaluation Status fields are orthogonal — they measure different dim
 **`comprehension_state`** (in `audit-state.json`)
 - Optional comprehension-grading axis.
 - `absent` or omitted: no comprehension grading is declared.
-- `present`: the skill has comprehension grading and must populate either the **five flat Understanding fields** (`mental_model`, `purpose`, `boundary`, `analogy`, `misconception`) OR the legacy nested `concept` block.
+- `present`: the skill has comprehension grading and must populate either the **five flat Understanding fields** (`mental_model`, `purpose`, `concept_boundary`, `analogy`, `misconception`) OR the legacy nested `concept` block.
 - `skill-lint.js` enforces this as a cross-file rule: the sidecar flag requires the frontmatter Understanding fields. The flat fields are canonical; the legacy nested `concept` block is retired from the current frontmatter contract.
 
 ### Understanding (v6+, flat)
@@ -473,10 +476,10 @@ Required when `comprehension_state: present`. No protocol length cap on any of t
 - What problem the concept solves AND the alternative it replaced. Concrete pain point + prior alternative.
 - Graded by the comprehension grader's `purpose` dimension (weight 1.0).
 
-**`boundary`** (the Understanding field — distinct from `relations.boundary`)
+**`concept_boundary`** (the Understanding field — distinct from the routing edge `relations.suppresses`/`relations.boundary`)
 - Things commonly confused with the concept but that are NOT it. Express each difference as a *mechanism* (different primitives, different purpose, different scope) — not just different names.
-- Graded by the comprehension grader's `boundary` dimension (weight 1.5).
-- Field-name collision with `relations.boundary` is documented but **not** intentional — both fields are renamed in v8.1 per [ADR-0018](../docs/adr/0018-relations-boundary-semantic-inversion.md) (top-level `boundary` → `concept_boundary`; `relations.boundary` → `relations.suppresses`). Until then: top-level `boundary` is a string teaching the concept's edges; `relations.boundary` is an array of skill-name exclusion targets (see § Relations § `boundary` — it excludes listed skills from co-routing when this skill wins, not defers to them).
+- Graded by the comprehension grader's `boundary` dimension (weight 1.5). (The grader *dimension* is still named `boundary`; the authored *field* is `concept_boundary`.)
+- The original field-name collision with the routing edge `relations.boundary` was resolved by [ADR-0018](../docs/adr/0018-relations-boundary-semantic-inversion.md), and the SYSTEM half has **landed**: the schema's canonical Understanding field is `concept_boundary` (top-level `boundary` is the DEPRECATED alias), `skill-lint.js` requires `concept_boundary`, and `parse-frontmatter.js` normalizes the deprecated top-level `boundary` → `concept_boundary` before lint/preflight see the frontmatter. The companion routing rename `relations.boundary` → `relations.suppresses` likewise landed (router reads `suppresses` first). New skills author `concept_boundary` (the teaching string) and `relations.suppresses` (the skill-name exclusion array — it excludes listed skills from co-routing when this skill wins, not defers to them; see § Relations § `suppresses`). The CONTENT half — renaming both in unmigrated corpus skills — drains through the audit loop per-skill.
 
 **`analogy`**
 - One-sentence analogy that preserves the core mechanism. Translate for a non-expert without breaking the structural relationship between primitives.
@@ -484,7 +487,7 @@ Required when `comprehension_state: present`. No protocol length cap on any of t
 
 **`misconception`**
 - The wrong mental model people bring and why it misleads. Authored hint to inoculate the agent against the common error trap.
-- Not directly graded; complements `boundary`.
+- Not directly graded; complements `concept_boundary`.
 
 **`concept`** (DEPRECATED in v6 — accepted for v5 back-compat)
 - Legacy nested teaching block with seven sub-fields: `definition`, `mental_model`, `purpose`, `boundary`, `taxonomy`, `analogy`, `misconception`.
@@ -610,7 +613,7 @@ relations:
 
 **`suppresses`** (preferred) / `boundary` (deprecated alias) — the routing-layer field, distinct from the top-level Understanding `boundary` field
 
-> **The verb matches the mechanic.** Per [ADR-0018](../docs/adr/0018-relations-boundary-semantic-inversion.md), the routing-exclusion edge was renamed `boundary` → `suppresses` because the old name read as deference while the runtime mechanic is exclusion. **The SYSTEM half landed** (2026-06-07): the schema accepts `relations.suppresses`, the router/manifest/exporter/lint read `suppresses` first and fall back to the deprecated `boundary` alias, and the JSON-LD context maps both to `sg:disjointOwnership`. The CONTENT half — renaming the alias in the ~113 corpus skills still carrying `boundary` — drains through the audit loop per-skill (a CONTENT-mode task tracks it). The companion Understanding-`boundary` → `concept_boundary` rename is NOT yet landed and remains future work in ADR-0018.
+> **The verb matches the mechanic.** Per [ADR-0018](../docs/adr/0018-relations-boundary-semantic-inversion.md), the routing-exclusion edge was renamed `boundary` → `suppresses` because the old name read as deference while the runtime mechanic is exclusion. **The SYSTEM half landed** (2026-06-07): the schema accepts `relations.suppresses`, the router/manifest/exporter/lint read `suppresses` first and fall back to the deprecated `boundary` alias, and the JSON-LD context maps both to `sg:disjointOwnership`. The CONTENT half — renaming the alias in the ~113 corpus skills still carrying `boundary` — drains through the audit loop per-skill (a CONTENT-mode task tracks it). The companion Understanding-field rename `boundary` → `concept_boundary` **also landed** (SYSTEM half): the schema's canonical Understanding field is `concept_boundary` with top-level `boundary` retained only as the DEPRECATED alias, `skill-lint.js` requires `concept_boundary`, and `parse-frontmatter.js` normalizes the deprecated top-level `boundary` → `concept_boundary`. Its CONTENT half — the corpus rename — drains through the same per-skill audit loop.
 >
 > New skills MUST author `relations.suppresses`. `suppresses: [skill-B]` means "**exclude skill-B from co-routing results when this skill wins.**" Always write `reason` text that reflects ownership ("I own this exclusively over skill-B"), never deference ("use skill-B instead"), because the latter will mislead the next author — skill-B is suppressed by this entry, not promoted.
 >
@@ -723,7 +726,7 @@ taxonomy_domain, project, repo, stability, superseded_by, license,
 compatibility, allowed-tools, triggers, keywords, examples,
 anti_examples, paths, relations, grounding,
 # Understanding fields — author these when comprehension_state: present
-mental_model, purpose, boundary, analogy, misconception
+mental_model, purpose, concept_boundary, analogy, misconception
 ```
 
 **Loop-owned `audit-state.json` fields:**
