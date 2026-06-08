@@ -115,14 +115,14 @@ ok('TTY → writes ANSI scroll-region + header escapes', () => {
   const text = out.text();
   assert.ok(text.includes('\x1b['), 'emits ANSI escapes on a TTY');
   assert.ok(text.includes('Opus 4.8'), 'renders the agent row by display name (Model Identity Discipline)');
-  assert.ok(text.includes('MANDATORY'), 'renders the tier tag');
+  assert.ok(text.includes('Skill Audit Loop'), 'renders the collected header');
   r.teardown();
   assert.ok(out.text().includes('\x1b[r'), 'teardown resets the scroll region');
 });
 
 // ── 3b. renderCollected — the canonical collected view ──
 console.log('3b. renderCollected (canonical collected view)');
-ok('renders a summary header + one tree row per agent', () => {
+ok('renders a single-line header + one tree row per agent (no per-row tier tag)', () => {
   const status = {
     skill: 'schema-evolution', phase: 'cross-review r1/2', elapsed_s: 125,
     done: 1, total: 3, failed: 0,
@@ -133,43 +133,61 @@ ok('renders a summary header + one tree row per agent', () => {
     ],
   };
   const lines = renderCollected(status);
-  assert.strictEqual(lines.length, 5, '2 summary lines + 3 agent rows');
-  assert.ok(lines[0].includes('schema-evolution') && lines[0].includes('1/3 done') && lines[0].includes('cross-review r1/2'));
-  assert.ok(lines[1].includes('2 MANDATORY') && lines[1].includes('1 advisory'));
-  assert.ok(lines[2].includes('Opus 4.8') && lines[2].includes('MANDATORY') && lines[2].includes('reviewing'));
-  assert.ok(lines[2].startsWith('├') && lines[4].startsWith('└'), 'tree branches');
-  assert.ok(lines[4].includes('MiniMax M3') && lines[4].includes('advisory'));
+  assert.strictEqual(lines.length, 4, '1 header line + 3 agent rows');
+  assert.ok(lines[0].startsWith('Skill Audit Loop: (schema-evolution)'), 'new header prefix');
+  assert.ok(lines[0].includes('cross-review r1/2') && lines[0].includes('1/3'), 'header carries phase + counters');
+  assert.ok(lines[1].includes('Opus 4.8') && lines[1].includes('reviewing'), 'agent row by display name + state');
+  assert.ok(!lines[1].includes('[MANDATORY]') && !lines[1].includes('[advisory]'), 'no per-row tier tag');
+  assert.ok(lines[1].startsWith('├') && lines[3].startsWith('└'), 'tree branches');
+  assert.ok(lines[3].includes('MiniMax M3'), 'advisory row by display name');
 });
 ok('marks DONE in the header when complete', () => {
   const lines = renderCollected({ skill: 's', phase: 'apply (keep)', done: 2, total: 2, complete: true, agents: [] });
   assert.ok(lines[0].includes('DONE'));
 });
-ok('tolerates a missing/empty status object', () => {
+ok('tolerates a missing/empty status object (single header line)', () => {
   const lines = renderCollected(null);
-  assert.ok(Array.isArray(lines) && lines.length === 2, 'header lines even with no agents');
+  assert.ok(Array.isArray(lines) && lines.length === 1, 'one header line even with no agents');
 });
-ok('renders the QUALITY tier (boardmeeting panel) distinctly from advisory', () => {
+ok('shows the failure reason (+ detail) on a skipped/failed row', () => {
+  const lines = renderCollected({
+    skill: 's', phase: 'propose (advisory)', done: 1, total: 3,
+    agents: [
+      { model: 'opus', tier: 'mandatory', phase: 'propose', state: 'proposed' },
+      { model: 'minimax', tier: 'advisory', phase: 'propose', state: 'skipped', failure_reason: 'error', failure_detail: 'opencode exit 1' },
+      { model: 'big-pickle', tier: 'advisory', phase: 'propose', state: 'skipped', failure_reason: 'no-document' },
+    ],
+  });
+  const mm = lines.find((l) => l.includes('MiniMax M3'));
+  const bp = lines.find((l) => l.includes('Big Pickle'));
+  assert.ok(mm.includes('skipped (error: opencode exit 1)'), 'reason + detail shown');
+  assert.ok(bp.includes('skipped (no-document)'), 'reason shown without detail');
+});
+ok('quality + advisory render by display name, ordering preserved, no tier tag', () => {
   const lines = renderCollected({
     skill: 'board', phase: 'review', done: 1, total: 3, failed: 1,
     agents: [
       { model: 'opus', tier: 'quality', phase: 'review', state: 'reviewing' },
-      { model: 'codex-current', tier: 'quality', phase: 'review', state: 'running' },
+      { model: 'codex-current', tier: 'quality', phase: 'review', state: 'reviewing' },
       { model: 'minimax', tier: 'advisory', phase: 'review', state: 'done' },
     ],
   });
-  assert.ok(lines[1].includes('2 QUALITY') && lines[1].includes('1 advisory'), 'quality counted as core, not advisory');
-  assert.ok(lines[2].includes('[QUALITY]'), 'quality-tier row labeled QUALITY');
-  assert.ok(!lines[2].includes('[advisory]'), 'quality row not mislabeled advisory');
+  assert.ok(lines[0].startsWith('Skill Audit Loop: (board)'), 'header prefix');
+  assert.ok(!lines.some((l) => l.includes('[QUALITY]') || l.includes('[advisory]')), 'no tier tags in rows');
+  assert.ok(lines[3].includes('MiniMax M3'), 'advisory row rendered last');
 });
-ok('mandatory panel (skill-audit-loop) keeps its exact header', () => {
-  const lines = renderCollected({
-    skill: 'methodical', phase: 'propose', done: 1, total: 2,
-    agents: [
-      { model: 'opus', tier: 'mandatory', phase: 'propose', state: 'proposed' },
-      { model: 'minimax', tier: 'advisory', phase: null, state: 'queued' },
-    ],
-  });
-  assert.ok(lines[1].includes('1 MANDATORY (Opus + GPT)'), 'mandatory header unchanged');
+ok('live timer: nowMs extrapolates active elapsed past the frozen snapshot', () => {
+  const tsMs = 1700000000000;
+  const status = {
+    skill: 's', phase: 'propose', done: 0, total: 1, elapsed_s: 5,
+    ts: new Date(tsMs).toISOString(),
+    agents: [{ model: 'opus', tier: 'mandatory', phase: 'propose', state: 'proposing', elapsed_s: 5 }],
+  };
+  const snap = renderCollected(status);                          // no nowMs → snapshot 5s
+  const live = renderCollected(status, { nowMs: tsMs + 30000 }); // +30s past the heartbeat
+  assert.ok(snap[1].includes('5s'), 'snapshot shows base elapsed');
+  assert.ok(live[1].includes('35s'), 'live agent row counts up by (now - ts)');
+  assert.ok(live[0].includes('35s'), 'live header counts up too');
 });
 
 // ── 4. helper ──
