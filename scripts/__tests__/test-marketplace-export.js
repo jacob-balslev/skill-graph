@@ -60,28 +60,41 @@ if (!_sourceDir || !fs.existsSync(_sourceDir)) {
 const skills = collectCanonicalSkills();
 assert(skills.length > 0, 'canonical skills should be discovered');
 
-const longDescriptions = [];
-for (const skill of skills) {
-  const sourceLength = String(skill.fm.description || '').length;
-  const exportDescription = exportDescriptionForSkill(skill);
-  assert(
-    exportDescription.description.length <= MARKETPLACE_DESCRIPTION_LIMIT,
-    `${skill.fm.name} export description exceeds marketplace limit`
-  );
-  if (sourceLength > MARKETPLACE_DESCRIPTION_LIMIT) {
-    longDescriptions.push(skill.fm.name);
+// SKI-319: the per-skill description-limit + override-parity assertions are CORPUS-COMPLETENESS
+// checks — they scan EVERY live skill and redden when a parallel CONTENT session edits a real
+// skill's description over the marketplace limit (the doctrine: corpus-completeness belongs in
+// verify:corpus, never in verify:system / test:unit). Run them ONLY in the corpus lane (the
+// `--corpus` flag, set by `npm run test:marketplace-corpus` inside verify:corpus). In the SYSTEM
+// unit run (test:unit, no flag) they are skipped — `marketplace:verify` enforces the limit
+// corpus-wide in the corpus lane regardless. The export-LOGIC tests below always run.
+const CORPUS_MODE = process.argv.includes('--corpus');
+if (CORPUS_MODE) {
+  const longDescriptions = [];
+  for (const skill of skills) {
+    const sourceLength = String(skill.fm.description || '').length;
+    const exportDescription = exportDescriptionForSkill(skill);
     assert(
-      EXPORT_DESCRIPTION_OVERRIDES[skill.fm.name],
-      `${skill.fm.name} needs an explicit export description override`
+      exportDescription.description.length <= MARKETPLACE_DESCRIPTION_LIMIT,
+      `${skill.fm.name} export description exceeds marketplace limit`
     );
+    if (sourceLength > MARKETPLACE_DESCRIPTION_LIMIT) {
+      longDescriptions.push(skill.fm.name);
+      assert(
+        EXPORT_DESCRIPTION_OVERRIDES[skill.fm.name],
+        `${skill.fm.name} needs an explicit export description override`
+      );
+    }
   }
+  const overrideNames = Object.keys(EXPORT_DESCRIPTION_OVERRIDES).sort();
+  assert(
+    JSON.stringify(overrideNames) === JSON.stringify(longDescriptions.sort()),
+    'description overrides should exist only for over-limit canonical descriptions'
+  );
+} else {
+  process.stdout.write(
+    'SKIP corpus description-limit + override-parity checks (corpus-completeness — run via `npm run test:marketplace-corpus` / verify:corpus; marketplace:verify enforces the limit in the corpus lane)\n'
+  );
 }
-
-const overrideNames = Object.keys(EXPORT_DESCRIPTION_OVERRIDES).sort();
-assert(
-  JSON.stringify(overrideNames) === JSON.stringify(longDescriptions.sort()),
-  'description overrides should exist only for over-limit canonical descriptions'
-);
 
 const a11y = skills.find(skill => skill.fm.name === 'a11y');
 assert(a11y, 'a11y fixture skill should exist');
