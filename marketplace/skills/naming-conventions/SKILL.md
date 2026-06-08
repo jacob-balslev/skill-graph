@@ -6,19 +6,19 @@ compatibility: Language-agnostic
 allowed-tools: Read Grep Bash Edit
 metadata:
   subject: software-engineering-method
+  public: "true"
   scope: "Portable naming-decision guidance for files, functions, variables, types, routes, database columns, environment variables, and related code/system artifacts. Teaches truthful identifier morphology, artifact-specific casing, abbreviation discipline, name-vs-path semantics, rename coordination, and detection of names that lie. Excludes prose documentation writing, structural refactoring where naming is incidental, whole-diff code review, debugging a misnamed behavior after failure, and end-user UI copy."
   taxonomy_domain: engineering/naming
   stability: experimental
   keywords: "[\"naming\",\"naming convention\",\"name a file\",\"name a function\",\"name a variable\",\"name a type\",\"rename\",\"identifier\",\"kebab case\",\"camel case\"]"
   examples: "[\"what should I name this util that converts between order shapes?\",\"is `isValidUser` or `validateUser` the right name for this guard?\",\"this function is called `getThing` but it also writes to disk — rename it\",\"kebab-case or snake_case for a new database column?\",\"the type is called `Result` but it's specifically the order-pricing result — rename\",\"should I prefix this hook with `use` or just call it `subscribeOrders`?\",\"we have `User` and `UserAccount` and `AccountUser` — which means what?\",\"rename plan: this column was called `created` but it stores the ship date\"]"
   anti_examples: "[\"refactor this 200-line function into smaller pieces\",\"write a doc explaining our naming conventions\",\"review this PR's naming choices\",\"the variable named `userIsActive` is logging the wrong value\",\"scaffold a new skill that teaches naming conventions\"]"
-  relations: "{\"boundary\":[{\"skill\":\"refactor\",\"reason\":\"refactor reshapes existing code structure; naming-conventions decides what an artifact should be CALLED, before or independently of restructuring\"},{\"skill\":\"debugging\",\"reason\":\"debugging chases observed wrong behaviour; naming-conventions catches names that LIE about their meaning before the bug ships\"}],\"related\":[\"refactor\",\"code-review\"],\"verify_with\":[\"code-review\"]}"
+  relations: "{\"suppresses\":[{\"skill\":\"refactor\",\"reason\":\"refactor reshapes existing code structure; naming-conventions decides what an artifact should be CALLED, before or independently of restructuring\"},{\"skill\":\"debugging\",\"reason\":\"debugging chases observed wrong behaviour; naming-conventions catches names that LIE about their meaning before the bug ships\"}],\"related\":[\"code-review\"],\"verify_with\":[\"code-review\"]}"
   mental_model: "A name is a compact contract. It binds an artifact kind, a casing convention, a grammatical shape, and a behavior promise. Good naming starts by identifying the artifact type, choosing the casing that readers expect for that artifact, selecting words whose verbs and nouns match actual behavior, and then coordinating the rename so every reference carries the same meaning."
   purpose: "Prevents code and system artifacts from lying to future readers. Accurate names reduce debugging time, make APIs and data models easier to scan, and keep refactors honest because the name travels with every call site while comments explaining a bad name usually rot."
+  concept_boundary: "This skill decides what an artifact should be called. It does not restructure code, review a whole diff, write prose documentation about a convention, debug a runtime failure, or choose end-user UI copy. If the work changes structure, use refactor; if the work evaluates all PR risks, use code-review; if the behavior is already broken, use debugging."
   analogy: "Naming is like labeling circuit breakers: a short label is only useful if it truthfully names the circuit it controls."
   misconception: "The wrong mental model is that naming is cosmetic. A misleading name is a behavioral bug in the reader's model: `getOrder()` that returns `undefined`, `validate()` that mutates input, or `created` that stores a ship date will eventually cause wrong assumptions."
-  public: "true"
-  concept_boundary: "This skill decides what an artifact should be called. It does not restructure code, review a whole diff, write prose documentation about a convention, debug a runtime failure, or choose end-user UI copy. If the work changes structure, use refactor; if the work evaluates all PR risks, use code-review; if the behavior is already broken, use debugging."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-engineering-method/naming-conventions/SKILL.md
@@ -53,7 +53,7 @@ metadata:
 - Names that lie: identifiers whose words promise a behaviour the code does not deliver, and how to detect them (the function called `getX` that also writes; the boolean called `isReady` that means "should be ready"; the column called `created` that stores the ship date)
 - Cross-cutting consistency: when a naming choice in one part of the codebase forces a related choice elsewhere (table column `customer_id` and TypeScript type `Customer.id`)
 
-## Philosophy
+## Philosophy of the skill
 
 Names are the most-read part of any codebase. Every reader pays the cost of a bad name; only the author pays the cost of choosing well. The single most valuable property of a name is *truthfulness*: a name that lies — about what an artifact does, returns, or means — is more harmful than a name that is merely unclear. The second-most-valuable property is *consistency with sibling names*: a function called `getOrders` should sit alongside `getCustomers`, not `loadCustomers`. The third is *brevity*, and only the third — short names that mislead are not a virtue.
 
@@ -170,7 +170,7 @@ Renaming is a small change that touches many places. Do all of them in one commi
 
 **Related skills**
 - Verify with: `code-review`
-- Related: `refactor`, `code-review`
+- Related: `code-review`
 
 **Concept**
 - Mental model: A name is a compact contract. It binds an artifact kind, a casing convention, a grammatical shape, and a behavior promise. Good naming starts by identifying the artifact type, choosing the casing that readers expect for that artifact, selecting words whose verbs and nouns match actual behavior, and then coordinating the rename so every reference carries the same meaning.
