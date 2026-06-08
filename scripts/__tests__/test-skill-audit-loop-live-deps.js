@@ -112,4 +112,25 @@ check('sandboxed reviser that emits no usable document leaves the proposal byte-
   fs.rmSync(root, { recursive: true, force: true });
 });
 
+console.log('SKI-251. looksLikeSkillDoc — write-path acceptance requires a real SKILL.md identity');
+check('a real SKILL.md (frontmatter + non-empty name) is accepted', () => {
+  const doc = `---\nname: my-skill\ndescription: does a thing\n---\n# My Skill\n${'x'.repeat(500)}`;
+  assert.strictEqual(live.looksLikeSkillDoc(doc), true);
+});
+check('a plan wrapped in stray frontmatter (no name) is REJECTED (SKI-251 hole closed)', () => {
+  const doc = `---\nstatus: draft\nnotes: here is my plan\n---\n${'I will analyze then act. '.repeat(40)}`;
+  assert.strictEqual(live.looksLikeSkillDoc(doc), false);
+});
+check('frontmatter with an empty name is rejected', () => {
+  const doc = `---\nname:   \ndescription: x\n---\n# Body\n${'x'.repeat(500)}`;
+  assert.strictEqual(live.looksLikeSkillDoc(doc), false);
+});
+check('a substantial no-frontmatter doc still passes via the heading fallback', () => {
+  const doc = `# A\n## B\n### C\n#### D\n## E\n${'y'.repeat(2000)}`;
+  assert.strictEqual(live.looksLikeSkillDoc(doc), true);
+});
+check('a short prose plan passes neither path', () => {
+  assert.strictEqual(live.looksLikeSkillDoc('Here is my plan: do X then Y.'), false);
+});
+
 console.log(`\nResults: ${passed} passed, 0 failed`);
