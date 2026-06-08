@@ -37,8 +37,8 @@ must accept this pairing — when the sidecar declares
 
 The five flat Understanding fields in frontmatter plus
 `comprehension_state: present` in the audit-state sidecar, proving the
-cross-file comprehension contract. No grounding (deployment_target:
-portable), no relations.
+cross-file comprehension contract. No grounding (ambient — no
+`project[]`, `public: true`), no relations.
 
 ## Philosophy of the skill
 
