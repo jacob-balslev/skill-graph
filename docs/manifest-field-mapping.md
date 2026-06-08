@@ -44,7 +44,7 @@ Every top-level authored field in `schemas/SKILL_METADATA_PROTOCOL_schema.json` 
 | 6 | `subject` | copied through unchanged | v8 primary classification — closed 12-value enum. See `schemas/SKILL_METADATA_PROTOCOL_schema.json § subject`. |
 | 7 | `subjects` | copied through unchanged | Optional polyhierarchy — ordered array (max 2), `subjects[0]` matches `subject`. |
 | 8 | `taxonomy_domain` | copied through unchanged | Optional slash-delimited sub-path within a `subject` (e.g. `backend-engineering/integrations/shopify`). Renamed from `domain`. |
-| 9 | `deployment_target` | copied through unchanged | Closed 2-enum: `portable` \| `project`. Drives project-fit filtering. |
+| 9 | `public` | copied through unchanged | Boolean publishability gate. Drives the marketplace-export filter. Project-fit is carried by `project[]` (row 34a). |
 | 10 | `scope` | copied through unchanged | Required free-text PRD-style statement in `SKILL.md`. Not an enum. |
 | 11 | `owner` | copied through unchanged | `owner`. |
 | 12 | `freshness` | grouped under parent | `health.freshness`. |
@@ -95,7 +95,7 @@ These fields exist in `skills.manifest.json` with no authored counterpart:
 | `generated_at` | Timestamp written by the manifest generator at compile time. |
 | `workspace` | Echoed from `.skill-graph/config.json` when present — emits `skill_roots` and `projects` so consumers can resolve semantic tags without re-reading the config. New in v3. |
 | `summary.total_skills` | Count of entries in `skills[]`. |
-| `summary.by_subject`, `summary.by_deployment_target`, `summary.by_schema_version`, `summary.by_stability`, `summary.by_project` | Rollup counts derived from the corresponding authored fields across all skills. `by_deployment_target` replaced `by_scope` when `scope` became free-text. `by_project` is only present when workspace mode is active. |
+| `summary.by_subject`, `summary.by_public`, `summary.by_schema_version`, `summary.by_stability`, `summary.by_project` | Rollup counts derived from the corresponding authored fields across all skills. `by_public` replaced `by_deployment_target` when the `deployment_target` enum became the boolean `public` gate. `by_project` is only present when workspace mode is active. |
 | `skills[].id` | Stable identifier derived from `name`. Normalization rules live in the generator; `id` may be equal to `name` when no normalization is needed. |
 | `skills[].path` | Repo-relative path to the source `SKILL.md` file, written by the generator when it reads the file. |
 | `skills[].project` | Literal handle of the project root this skill was loaded from. Absent for skills loaded from a shared root without a project owner. New in v3. |
@@ -314,7 +314,7 @@ The `skill-metadata-template` starter (`examples/skill-metadata-template.md`) is
 name: skill-metadata-template
 description: "Authoring template for new Skill Metadata Protocol skills. ..."
 subject: knowledge-organization
-deployment_target: project
+public: false
 taxonomy_domain: skill-system/authoring
 scope: "Covers authoring a new Skill Metadata Protocol SKILL.md from scratch; does not cover the audit loop or manifest generation."
 stability: stable
@@ -387,7 +387,7 @@ portability:
   "description": "Authoring template for new Skill Metadata Protocol skills. ...",
   "version": "1.0.0",
   "subject": "knowledge-organization",
-  "deployment_target": "project",
+  "public": false,
   "taxonomy_domain": "skill-system/authoring",
   "scope": "Covers authoring a new Skill Metadata Protocol SKILL.md from scratch; does not cover the audit loop or manifest generation.",
   "owner": "maintainer",
@@ -441,7 +441,7 @@ Each arrow corresponds to one row of the rename map.
 
 - `name` → `id` **and** `name` — the generator writes both. `id` is the stable reference used by other manifest entries (e.g. `relations.related: ["documentation"]` refers to the `id` of another skill). `name` remains human-readable for display.
 - `name` → `path` — the generator records the source file path; this is the only way a consumer can trace a manifest entry back to its authored source without re-scanning the repo.
-- `description`, `subject`, `deployment_target`, `scope`, and `stability` come from `SKILL.md`; `version` and `owner` come from `audit-state.json`. The joined manifest entry preserves them at the top level. `subject` is enum-checked in the manifest (closed 12-value enum); `deployment_target` is enum-checked (closed 2-value enum: `portable`/`project`); `scope` is free-text, passed through unchanged. (Historical note: v2 `family` was renamed to `browse_category` in v3, then to `category` in v4, then replaced by `subject` + `deployment_target` in v8 — see § Migration Note — v2 → v3.)
+- `description`, `subject`, `public`, `scope`, and `stability` come from `SKILL.md`; `version` and `owner` come from `audit-state.json`. The joined manifest entry preserves them at the top level. `subject` is enum-checked in the manifest (closed 12-value enum); `public` is type-checked (boolean); `scope` is free-text, passed through unchanged. (Historical note: v2 `family` was renamed to `browse_category` in v3, then to `category` in v4, then replaced by `subject` + `public` in v8 — see § Migration Note — v2 → v3.)
 - `license`, `compatibility`, `allowed-tools` — straight copies (post-SH-5776). The three SKILL.md base-standard optional fields flow through unchanged; a consumer that only speaks SKILL.md sees them at the expected keys.
 - `triggers`, `keywords`, `paths` → `activation.triggers`, `activation.keywords`, `activation.paths` — three sibling authored fields are grouped under a single `activation` object. This matches the semantic: they are all activation signals. The grouping is a presentation choice, not a loss.
 - `relations` → `relations` — copied through with the full sub-key set (`adjacent`, `related`, `broader`, `narrower`, `boundary`, `disjoint_with`, `verify_with`, `depends_on`). Same shape on both sides.

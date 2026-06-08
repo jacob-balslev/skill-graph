@@ -16,7 +16,7 @@ Every skill (a small instruction manual you hand the AI) gets asked two unrelate
 
 A **publishing and security** question. It has nothing to do with whether the skill is any good. Two checks decide it, and **both already exist and run today**:
 
-- **Is it general-purpose, or tied to your private business?** A skill like "how to write a good React hook" is general and can be shared. A skill about Sales Hub / Printify / your internal database is private and must stay home. The field that records this is `deployment_target` (`portable` = shareable, `project` = private to one project). The publisher refuses anything marked `project`.
+- **Is it general-purpose, or tied to your private business?** A skill like "how to write a good React hook" is general and can be shared. A skill about Sales Hub / Printify / your internal database is private and must stay home. The field that records this is `public` (`true` = shareable, `false` = private to one project). The publisher refuses anything marked `public: false`.
   - Code: `scripts/export-marketplace-skills.js:353-381` (also blocks legacy `scope` values and `grounding.grounding_mode: repo_specific` / `repo_internal`).
 - **Does it leak secrets?** A scanner reads the whole skill and blocks it if it finds emails, API keys, tokens, private file paths, internal table names, etc.
   - Code: `scripts/lib/privacy-patterns.js`, run as a layered gate (export-time, pre-push hook, CI) per `docs/adr/0012-internal-skill-library-separation.md`.
@@ -46,7 +46,7 @@ This is not an accident to fix — it is a designed property:
   Question 1: can it go public?            Question 2: is it any good?
   (publishing + security)                  (quality)
   owner: export / marketplace pipeline     owner: Audit & Evaluation system
-  fields: deployment_target,               field: application_verdict
+  fields: public,               field: application_verdict
           privacy/secret scanner                  (Behavior Gate, audit-state.json)
   status: BUILT, runs today                status: being built out (SH-6624 runner)
                          \                 /

@@ -1,16 +1,16 @@
 # Grounding Policy — When a Portable Skill MUST Ground Its Claims
 
 > Type: Reference (SYSTEM doctrine). Created 2026-06-07 (SKI-289).
-> Companion to `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` § Classification (`deployment_target`),
+> Companion to `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` § Classification (`public` / `project[]`),
 > `docs/verdict-semantics.md` (`truth_verdict`), and the `epistemic-grounding` skill.
 > Authoritative for the audit loop's grounding requirement; the schema enforces the
-> `deployment_target: project ⇒ grounding` half mechanically, this doc defines the
-> `portable`-subset half that the audit loop (`/audit:improve`, Truth Gate) enforces by judgment.
+> `non-empty project[] ⇒ grounding` half mechanically, this doc defines the
+> ambient-subset (no `project[]`) half that the audit loop (`/audit:improve`, Truth Gate) enforces by judgment.
 
 ## The problem this policy solves
 
 The schema (`schemas/SKILL_METADATA_PROTOCOL_schema.json`) mandates a populated `grounding`
-block **only** for `deployment_target: project` skills. That rule is correct but incomplete: it
+block **only** for skills with a non-empty `project[]` (project-anchored). That rule is correct but incomplete: it
 leaves every `portable` skill ungrounded by default, including portable skills that make
 **concrete, externally-checkable claims** (specific API signatures, framework behaviors,
 file-structure conventions, named tool flags, version-specific facts). Those claims rot, drift,
@@ -18,7 +18,7 @@ and hallucinate exactly like project claims do — portability does not make a c
 
 Corpus state at authoring (2026-06-07, 170 skills, grounded via `grounding` block presence with content):
 
-| deployment_target | total | grounded | ungrounded |
+| anchoring (2026-06-07 snapshot) | total | grounded | ungrounded |
 |---|---|---|---|
 | `project` | 4 | 4 | 0 |
 | `portable` | 166 | 65 | **101** |
@@ -34,12 +34,12 @@ deploys. A skill MUST ground when it asserts facts that an external truth source
 refute. A skill is grounding-exempt when its content is a reasoning discipline, mental model, or
 heuristic whose validity does not depend on any current external artifact.
 
-### Axis 1 — `deployment_target`
+### Axis 1 — project anchoring (`project[]`)
 
-| `deployment_target` | Grounding obligation |
+| Project anchoring | Grounding obligation |
 |---|---|
-| `project` | **MUST ground.** Already schema-enforced. `grounding.subject_matter` + `truth_sources` naming the project's real files/contracts. |
-| `portable` | Determined by Axis 2 below. |
+| Anchored (non-empty `project[]`) | **MUST ground.** Already schema-enforced. `grounding.subject_matter` + `truth_sources` naming the project's real files/contracts. |
+| Ambient (no `project[]`) | Determined by Axis 2 below. |
 
 ### Axis 2 — claim kind (applies to `portable` skills)
 
@@ -97,7 +97,7 @@ having no `grounding` block — its truth verdict is assessed against its concep
 
 ## Enforcement
 
-- **Schema (mechanical):** `deployment_target: project ⇒ grounding` — unchanged, already enforced.
+- **Schema (mechanical):** non-empty `project[]` ⇒ `grounding` — already enforced (schema `allOf`).
 - **Audit loop (judgment):** `/audit:improve` and the Truth Gate apply the Axis-2 / subject-default
   table above to `portable` skills. A must-ground portable skill with no grounding is a Truth Gate
   finding, drained via `/audit:improve`.

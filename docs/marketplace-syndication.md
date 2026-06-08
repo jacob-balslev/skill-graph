@@ -163,7 +163,7 @@ When no projection runs (typed fields empty, or every projected slug was already
 
 ### Motivation — the description projection covers only the boundary signal
 
-The description projection above surfaces the negative-boundary signal, but it is bounded by the 1024-character ceiling and is, by design, only about `Do NOT use for X`. Every *other* meaningful protocol field — `subject`, `subjects[]`, `deployment_target`, `taxonomy_domain`, `scope`, the positive activation signal (`examples`, `triggers`), the full `relations` graph (`depends_on` / `verify_with` / `related` / `broader` / `narrower` / `disjoint_with`), the Understanding fields, `grounding`, lifecycle (`stability` / `freshness` / `superseded_by`), the four Audit Status verdicts, and `keywords` — is carried JSON-encoded under the exported `metadata:` map. **Vendor auto-loaders (Claude, Codex, OpenCode, Gemini) do not read the `metadata:` map.** They read `name` + `description` at startup and the SKILL.md **body** on activation. So the graph was invisible to a consuming agent even though it was present in the file.
+The description projection above surfaces the negative-boundary signal, but it is bounded by the 1024-character ceiling and is, by design, only about `Do NOT use for X`. Every *other* meaningful protocol field — `subject`, `subjects[]`, `public`, `taxonomy_domain`, `scope`, the positive activation signal (`examples`, `triggers`), the full `relations` graph (`depends_on` / `verify_with` / `related` / `broader` / `narrower` / `disjoint_with`), the Understanding fields, `grounding`, lifecycle (`stability` / `freshness` / `superseded_by`), the four Audit Status verdicts, and `keywords` — is carried JSON-encoded under the exported `metadata:` map. **Vendor auto-loaders (Claude, Codex, OpenCode, Gemini) do not read the `metadata:` map.** They read `name` + `description` at startup and the SKILL.md **body** on activation. So the graph was invisible to a consuming agent even though it was present in the file.
 
 ### What the projection does
 
@@ -173,7 +173,7 @@ The rendered section has eight sub-blocks, emitted only when their fields are pr
 
 | Block | Fields rendered |
 |---|---|
-| **Classification** | `subject` (+ secondary `subjects[]`), `deployment_target`, `taxonomy_domain`, `scope` |
+| **Classification** | `subject` (+ secondary `subjects[]`), `public`, `taxonomy_domain`, `scope` |
 | **When to use** | `examples`, `triggers` |
 | **Not for** | `anti_examples`, `relations.boundary` (with the `owns` clause from each Shape-B reason) |
 | **Related skills** | `relations.depends_on` / `verify_with` / `related` (+`adjacent`) / `broader` / `narrower` / `disjoint_with` |
@@ -204,7 +204,7 @@ The public skills library (`jacob-balslev/skills`) is defended by four independe
 | Layer | Where | What it blocks |
 |---|---|---|
 | **L1 — Working tree `.gitignore`** | `jacob-balslev/skills` `.gitignore` — allowlist model (`/*` + re-include only public-safe paths) | `git add -A` or `git add .` picks up internal content |
-| **L2 — Export pipeline publication gate** | `scripts/export-marketplace-skills.js` — excludes `deployment_target: project`, legacy internal scope values, and `grounding_mode: repo_specific\|repo_internal`; scans generated surface for `PRIVACY_PATTERNS` | Internal skills flowing through the export pipeline |
+| **L2 — Export pipeline publication gate** | `scripts/export-marketplace-skills.js` — excludes `public: false` (primary; back-compat also catches `deployment_target: project`), legacy internal scope values, and `grounding_mode: repo_specific\|repo_internal`; scans generated surface for `PRIVACY_PATTERNS` | Internal skills flowing through the export pipeline |
 | **L3 — Pre-push hook** | `jacob-balslev/skills` repo: `hooks/pre-push` + `hooks/install.js` | Any push — scans changed `SKILL.md` files for `PRIVACY_PATTERNS` hits before the push leaves the local machine |
 | **L4 — CI workflow** | `jacob-balslev/skills` repo: `.github/workflows/privacy-scan.yml` + `scripts/ci-privacy-scan.js` | Any PR or push to `main` — runs the full-tree scan on the remote side |
 
