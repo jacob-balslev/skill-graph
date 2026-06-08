@@ -228,14 +228,27 @@ resolve_dir() { find "$SKILLS_REPO/skills" -type d -name "$1" -not -path '*/node
 # refresh the worklist after each skill so a restart's snapshot excludes what just completed.
 drain_worklist() {
   echo "run-panel-loop: WORKLIST drain · advisory=$([ -z "$ADV_FLAG" ] && echo full-panel || echo floor-only) · timeout=${TIMEOUT}s · agent=$AGENT_ID" >&2
-  # Self-heal: clear panel per-model SLOT locks orphaned by a previously KILLED run. The panel
-  # enrich claims fixed per-model agent ids (enrich-opus, …) under a "one skill per agent" guard;
-  # a killed run leaves a slot held, which then refuses EVERY future skill's claim (verified
-  # 2026-06-06: an orphaned api-design--opus slot failed all 99 skills at phase 1a). The drain is
-  # the sole panel runner, so at startup no panel slot is legitimately held — clear them.
+  # Self-heal (startup): clear panel per-model SLOT lock FILES orphaned by a previously KILLED
+  # run. Historically the panel claimed FIXED per-model owners, so a killed run's held slot
+  # refused EVERY future skill's claim (verified 2026-06-06: an orphaned api-design slot failed
+  # all 99 skills at phase 1a). SKI-230 now run-scopes the owners (curate-<model>-<runToken>), so
+  # a stale lock no longer BLOCKS a new run — but clearing the stale lock FILES at startup is
+  # still good hygiene (the drain is the sole panel runner; no panel slot is legitimately held
+  # at startup). The trap + mid-loop reap below (SKI-234) cover orphans that arise DURING the run.
   for _m in opus codex-current gemini gemini-flash minimax big-pickle deepseek-flash mimo nemotron skill-audit-loop; do
     rm -f "$DEV"/.claude/agent-memory/skill-audit-*--"$_m" 2>/dev/null || true
   done
+  # SKI-234: release THIS run's in-flight claim if the drain is interrupted (SIGINT/SIGTERM) or
+  # exits mid-skill, so a killed drain never leaves its current slug claimed for the next wave to
+  # trip over. Same AGENT_ID (exported above) so release matches the owner. On normal completion
+  # CLAIMED_SLUG is "" (cleared after each release), so the EXIT trap is a no-op.
+  CLAIMED_SLUG=""
+  cleanup_in_flight_claim() {
+    [ -n "$CLAIMED_SLUG" ] || return 0
+    node "$CLAIM" release "$CLAIMED_SLUG" --model skill-audit-loop --status aborted >/dev/null 2>&1 || true
+    CLAIMED_SLUG=""
+  }
+  trap cleanup_in_flight_claim EXIT INT TERM
   node "$BUILD_LIST" --write >/dev/null 2>&1 || true
   local LIST="$DEV/.opencode/progress/SKILL_LIST.json"
   mapfile -t SLUGS < <(node -e 'try{const j=require(process.argv[1]);for(const e of (j.worklist||j.skills||[])){if(e.repoScope&&e.repoScope!=="shared")continue;const st=e.status||"pending";if(st==="completed"||st==="done")continue;process.stdout.write(e.skill+"\n")}}catch(e){}' "$LIST" 2>/dev/null)
@@ -261,11 +274,17 @@ drain_worklist() {
     if ! node "$CLAIM" claim "$slug" --model skill-audit-loop --op audit >/dev/null 2>&1; then
       echo "[$nn/$TOTAL] $slug — claim race (held by another agent), skipping" >&2; continue
     fi
+    CLAIMED_SLUG="$slug"   # SKI-234: track the in-flight slug for the interrupt trap
     processed=$((processed+1))
     echo "[$nn/$TOTAL] $slug — enriching -> ${dir#$SKILLS_REPO/}" >&2
     checkpoint update --loop "$LOOP_ID" --item "$slug" --phase processing
     enrich_one_skill "$slug" "$dir"
     node "$CLAIM" release "$slug" --model skill-audit-loop --status "$REL_STATUS" >/dev/null 2>&1 || true
+    CLAIMED_SLUG=""        # SKI-234: released cleanly — nothing in flight for the trap
+    # SKI-234: periodic mid-loop orphan reap (every 10 processed) so a multi-day drain clears
+    # stale/orphaned locks (e.g. from watchdog-killed panel sub-processes) DURING the run, not
+    # only at startup. The claim system also TTL-reaps opportunistically; this is the explicit sweep.
+    if [ $((processed % 10)) -eq 0 ]; then node "$CLAIM" reap >/dev/null 2>&1 || true; fi
     node "$BUILD_LIST" --write >/dev/null 2>&1 || true
     checkpoint update --loop "$LOOP_ID" --phase done
     echo "[$nn/$TOTAL] $slug — $REL_STATUS" >&2
