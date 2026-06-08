@@ -361,9 +361,12 @@ node bin/skill-graph.js lint <skill-name>
 # Drift sentinel — check or record declared truth-source hashes
 node bin/skill-graph.js drift
 
-# Evaluate a skill (writes eval_score, eval_failed_ids, and the graded verdicts)
-node lib/audit/evaluate-skill.js --mode comprehension skills/<skill-name>/evals/comprehension.json
-node lib/audit/evaluate-skill.js --mode application --application skills/<skill-name> skills/<skill-name>/evals/application.json
+# Evaluate a skill (writes eval_score, eval_failed_ids, and the graded verdicts).
+# CANONICAL surface: `skill-graph evaluate` / `node bin/skill-graph.js evaluate`. It wraps
+# the implementation `lib/audit/evaluate-skill.js`; the workspace `scripts/skill/evaluate-skill.js`
+# is a divergent-fork wrapper (SH-6603). Prefer the bin/skill-graph surface.
+node bin/skill-graph.js evaluate --mode comprehension skills/<skill-name>/evals/comprehension.json
+node bin/skill-graph.js evaluate --mode application --application skills/<skill-name> skills/<skill-name>/evals/application.json
 
 # Evolve the corpus — audit, improve, evaluate in priority order
 # (PREVIEW · standalone path flags are required when the skill library is not cwd)
