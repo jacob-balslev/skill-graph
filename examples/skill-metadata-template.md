@@ -105,7 +105,7 @@ examples:
   - "how do I choose subject and public for my new skill?"
   - "what's the difference between description and the ## Coverage section?"
 # anti_examples: near-miss prompts that should route ELSEWHERE.
-# Pair with relations.boundary to tell the router which skill owns the
+# Pair with relations.suppresses to tell the router which skill owns the
 # confusable territory. Leave absent until you have SEEN the router misfire;
 # speculative anti_examples rarely match reality.
 # See skill-metadata-protocol/field-reference.md § anti_examples.
@@ -115,26 +115,30 @@ anti_examples:
 # workspace_tags was removed. Project belonging-entity identity lives in the
 # `project[]` array near the top of the frontmatter.
 relations:
-  # TEMPLATE NOTE: boundary items may be bare skill names OR `{skill, reason}`
-  # objects (v3). Reasons are strongly recommended — they make the boundary
-  # self-documenting.
+  # TEMPLATE NOTE: `suppresses` is the canonical routing-exclusion edge (ADR-0018);
+  # `boundary` is its DEPRECATED alias, retained only for unmigrated skills — new
+  # skills author `suppresses`. Items may be bare skill names OR `{skill, reason}`
+  # objects. Reasons are strongly recommended — they make the exclusion
+  # self-documenting. ⚠ The edge is INVERSE to a "defer-to" pointer: it EXCLUDES
+  # the listed skills from co-routing when THIS skill wins. Write reasons as
+  # ownership ("I own X over the listed skill"), never deference ("use X instead").
   #
-  # This scaffold ships with empty `boundary` and `verify_with` arrays because
+  # This scaffold ships with empty `suppresses` and `verify_with` arrays because
   # the skill-graph tooling repo has no peer skill library. In a real library,
   # populate the arrays as shown in the
   # commented example below (uncomment and replace with skills that exist in
   # YOUR workspace):
   #
-  # boundary:
+  # suppresses:
   #   - skill: refactor
-  #     reason: "refactor is behavior-preserving code modification, not skill authoring"
+  #     reason: "I own skill authoring; refactor is behavior-preserving code modification, not authoring"
   #   - skill: skill-router
-  #     reason: "skill-router dispatches between existing skills at request time; this template creates a NEW skill"
+  #     reason: "I own authoring a NEW skill; skill-router dispatches between existing skills at request time"
   #   - skill: skill-infrastructure
-  #     reason: "skill-infrastructure verifies the authored metadata of an existing skill; this template is the authoring-time guide"
+  #     reason: "I own the authoring-time guide; skill-infrastructure verifies the metadata of an existing skill"
   # verify_with:
   #   - skill-infrastructure
-  boundary: []
+  suppresses: []
   verify_with: []
   # OPTIONAL — io_contract (SKI-52): a deterministic, LLM-free composition
   # contract. Declares the abstract artifact TYPES this skill consumes (`inputs`)
@@ -179,7 +183,7 @@ grounding:
 
 > **SCAFFOLD — NOT A PRODUCTION SKILL.** This file is the starting point authors copy when creating a new skill. It lives at `examples/skill-metadata-template.md` deliberately; production skills live at `skills/<name>/SKILL.md` with a sibling `audit-state.json`. The authoring flow is: copy → rename → classify → adapt → strip teaching annotations → seed the sidecar → verify → commit. Until you have completed those steps, the file you are editing is a *scaffold*, not a skill.
 
-> **TEMPLATE NOTE — HOW TO READ THIS FILE:** This file is a real, valid, schema-conformant Skill Metadata Protocol skill whose *subject* is skill authoring itself. Read it as a finished specimen of the contract, then adapt it by (1) renaming the identity, (2) choosing `subject`, `public`, free-text `scope`, and `taxonomy_domain` when useful, (3) rewriting `description`, `## Coverage`, `## Philosophy`, and `## Verification` for your subject, (4) removing any section or field that does not apply to the skill's intended use, and (5) stripping ONLY the **`# TEMPLATE NOTE:` YAML comments and `> **TEMPLATE NOTE:**` body blockquotes** (authoring scaffolding) — the **field-purpose comments STAY** in your derived skill (they are co-located documentation, not scaffolding). Verify with `grep -n "TEMPLATE NOTE" <derived-skill>` returning zero hits AND `grep -c "^\s*#" <derived-skill>` showing the field-purpose comments are preserved. Never ship placeholder sludge (`your-skill-name`, `path/to/file`, `todo`). If a section does not apply, remove it — do not keep it and fill it with fake content. Convention spec: `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`.
+> **TEMPLATE NOTE — HOW TO READ THIS FILE:** This file is a real, valid, schema-conformant Skill Metadata Protocol skill whose *subject* is skill authoring itself. Read it as a finished specimen of the contract, then adapt it by (1) renaming the identity, (2) choosing `subject`, `public`, free-text `scope`, and `taxonomy_domain` when useful, (3) rewriting `description`, `## Coverage`, `## Philosophy of the skill`, and `## Verification` for your subject, (4) removing any section or field that does not apply to the skill's intended use, and (5) stripping ONLY the **`# TEMPLATE NOTE:` YAML comments and `> **TEMPLATE NOTE:**` body blockquotes** (authoring scaffolding) — the **field-purpose comments STAY** in your derived skill (they are co-located documentation, not scaffolding). Verify with `grep -n "TEMPLATE NOTE" <derived-skill>` returning zero hits AND `grep -c "^\s*#" <derived-skill>` showing the field-purpose comments are preserved. Never ship placeholder sludge (`your-skill-name`, `path/to/file`, `todo`). If a section does not apply, remove it — do not keep it and fill it with fake content. Convention spec: `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`.
 
 > **TEMPLATE NOTE — CONDITIONAL FIELDS:** `superseded_by` is required only when `stability: deprecated`. `routing_bundles` only applies when routing-group ownership is part of the skill contract. `triggers` and `paths` are shown because this template is both label-routable and file-activated; most skills need only one. `grounding` is REQUIRED when `project[]` is non-empty (a project-anchored skill); remove the block entirely for ambient/portable skills unless they ground in external specs. `public` is the boolean publishability gate (true = marketplace-safe; false = carries private data, never published) — independent of `project[]`. `project[]` and `repo[]` are optional but recommended; omit for ambient / cross-project skills. `lifecycle`, `runtime_telemetry`, and `portability` are NOT frontmatter — per [ADR-0019](../docs/adr/0019-audit-state-sidecar-separation.md) they live in the sibling `audit-state.json` sidecar (see `examples/skill-audit-state-template.md`), along with `schema_version`, `version`, `owner`, `freshness`, `drift_check`, the `eval_*` triple, and the four Audit Status verdicts. The audit/eval loop (`/audit:*`) owns that file; new-skill authors seed the 7 required sidecar fields and leave the verdict fields absent until a real audit or eval run writes evidence.
 
@@ -231,7 +235,7 @@ Use this checklist as the authoring gate before committing a skill adapted from 
 - [ ] `drift_check` is an object with `last_verified`; local `truth_source_hashes` are recorded only when the drift tool can compute them
 - [ ] `compatibility` is an object (not a free-text string) when present
 - [ ] `eval_artifacts`, `eval_state`, and `routing_eval` in `audit-state.json` reflect actual artifact, runtime, and routing-eval evidence
-- [ ] All `relations` entries point to skills that exist in the target repo; `boundary` entries with unclear rationale use the `{skill, reason}` form
+- [ ] All `relations` entries point to skills that exist in the target repo; `suppresses` entries with unclear rationale use the `{skill, reason}` form
 - [ ] `project[]` is populated with `{handle, role}` entries when the skill is project-specific OR absent when the skill is ambient — same for `repo[]`. Not left with stale or placeholder handles.
 - [ ] No placeholder sludge (`your-skill-name`, `path/to/file`, `todo`) remains
 - [ ] No `> **TEMPLATE NOTE:**` blockquotes or `# TEMPLATE NOTE:` YAML comments remain in the adapted skill
