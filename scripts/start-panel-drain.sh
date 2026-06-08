@@ -13,8 +13,11 @@
 # SYSTEM infrastructure (canonical-location). It launches the loop; the loop makes CONTENT commits.
 #
 # Usage:
-#   start-panel-drain.sh [--lane <name>] [--no-advisory] [--timeout S] [--here] [--dry-run]
+#   start-panel-drain.sh [--lane <name>] [--no-advisory] [--timeout S] [--here|--nohup] [--dry-run]
 #     --here       run the drain in THIS terminal (foreground) instead of spawning a Ghostty tab
+#     --nohup      launch the drain DETACHED (nohup + pid file) so a tab/SSH-session close cannot
+#                  SIGHUP it (SKI-279); pid -> $DRAIN_PID_FILE, output -> $DRAIN_LOG, returns at once.
+#                  macOS lacks setsid, so this uses `nohup … & disown` (the documented idiom).
 #     other flags  passed through to run-panel-loop.sh
 set -uo pipefail
 
@@ -25,10 +28,12 @@ SPAWN="$DEV/scripts/agent/spawn-ghostty-tab.sh"
 BUILD_LIST="$DEV/scripts/skill/build-skill-list.js"
 
 HERE=0
+NOHUP=0
 PASS=()
 while [ $# -gt 0 ]; do
   case "$1" in
     --here)        HERE=1; shift ;;
+    --nohup)       NOHUP=1; shift ;;
     --lane)        PASS+=(--lane "$2"); shift 2 ;;
     --timeout)     PASS+=(--timeout "$2"); shift 2 ;;
     --no-advisory) PASS+=(--no-advisory); ADVISORY_OFF=1; shift ;;
@@ -37,6 +42,12 @@ while [ $# -gt 0 ]; do
   esac
 done
 ADVISORY_OFF="${ADVISORY_OFF:-0}"
+if [ "$HERE" -eq 1 ] && [ "$NOHUP" -eq 1 ]; then
+  echo "start-panel-drain: --here and --nohup are mutually exclusive." >&2; exit 64
+fi
+# Detached-launch destinations (SKI-279). Overridable via env for callers that manage their own dirs.
+DRAIN_PID_FILE="${DRAIN_PID_FILE:-/tmp/enrich-loop/drain.pid}"
+DRAIN_LOG="${DRAIN_LOG:-/tmp/enrich-loop/drain.log}"
 
 echo "── panel-drain preflight ──────────────────────────────────────────" >&2
 
@@ -72,6 +83,28 @@ DRAIN_CMD="cd '$DEV' && AGENT_ID='panel-drain-corpus' bash '$LOOP' --worklist ${
 if [ "$HERE" -eq 1 ]; then
   echo "• running drain HERE (foreground): $DRAIN_CMD" >&2
   exec bash -c "$DRAIN_CMD"
+fi
+
+# 3a. detached launch (SKI-279): nohup so a tab/SSH-session close cannot SIGHUP the multi-hour
+#     drain. pid -> $DRAIN_PID_FILE, output -> $DRAIN_LOG. macOS has no setsid; `nohup … & disown`
+#     detaches from the controlling terminal's SIGHUP. Returns immediately (the loop runs on).
+if [ "$NOHUP" -eq 1 ]; then
+  mkdir -p "$(dirname "$DRAIN_PID_FILE")" "$(dirname "$DRAIN_LOG")"
+  if [ -f "$DRAIN_PID_FILE" ] && kill -0 "$(cat "$DRAIN_PID_FILE" 2>/dev/null)" 2>/dev/null; then
+    echo "• a drain is already running (pid $(cat "$DRAIN_PID_FILE"), $DRAIN_PID_FILE). Refusing to start a second." >&2
+    echo "  Stop it first:  kill \$(cat '$DRAIN_PID_FILE')" >&2
+    exit 75
+  fi
+  echo "• launching drain DETACHED (nohup): $DRAIN_CMD" >&2
+  nohup bash -c "$DRAIN_CMD" >"$DRAIN_LOG" 2>&1 &
+  DRAIN_PID=$!
+  disown "$DRAIN_PID" 2>/dev/null || true
+  echo "$DRAIN_PID" >"$DRAIN_PID_FILE"
+  echo "  ✓ drain detached (pid $DRAIN_PID). Survives tab/session close." >&2
+  echo "    log:  tail -f '$DRAIN_LOG'" >&2
+  echo "    pid:  $DRAIN_PID_FILE   (stop: kill \$(cat '$DRAIN_PID_FILE'))" >&2
+  echo "    steer: loop-steering.json (pause_after_current)" >&2
+  exit 0
 fi
 
 # 3. spawn the visible Ghostty tab running the drain (raw-command 'shell' mode)
