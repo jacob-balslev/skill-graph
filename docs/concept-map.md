@@ -24,9 +24,9 @@ The exact field count:
 
 - **25 agent-facing frontmatter fields** — the current `SKILL.md` surface authors maintain for routing and execution.
 - **28 audit-state sidecar fields** — the sibling `audit-state.json` surface the Skill Audit Loop owns.
-- **5 required frontmatter fields** — every `SKILL.md` must populate `name`, `description`, `subject`, `deployment_target`, and `scope`.
+- **5 required frontmatter fields** — every `SKILL.md` must populate `name`, `description`, `subject`, `public`, and `scope`.
 - **7 required sidecar fields** — every `audit-state.json` must populate `schema_version`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, and `routing_eval`.
-- **Conditionally-required fields** — `grounding` when `deployment_target: project`, `superseded_by` when `stability: deprecated`, and the Understanding fields or `concept` when `comprehension_state: present`.
+- **Conditionally-required fields** — `grounding` when `project[]` is non-empty, `superseded_by` when `stability: deprecated`, and the Understanding fields or `concept` when `comprehension_state: present`.
 - **Optional enrichment fields** — including nested sub-fields inside `relations`, `grounding`, `portability`, `compatibility`, `lifecycle`, `runtime_telemetry`, and concept/eval receipts.
 
 When you see "possible fields" counted anywhere, that is the count including nested sub-fields and legacy aliases individually. The current contract is the two-file ADR-0019 shape, not the older single-frontmatter count.
@@ -50,7 +50,7 @@ The kind of skill and where it lives in the library.
 | Field | Cardinality | Role | Required? |
 |---|---|---|---|
 | `subject` | one enum | Primary browse shelf — one of twelve closed values (`backend-engineering`, `frontend-engineering`, `software-architecture`, `data-engineering`, `agent-ops`, `ai-engineering`, `quality-assurance`, `design`, `reasoning-strategy`, `software-engineering-method`, `knowledge-organization`, `product-domain`) | always |
-| `deployment_target` | one enum | Where the skill deploys — `portable` or `project` | always |
+| `public` | boolean | Publishability gate — `true` shareable / `false` private to one project | always |
 | `scope` | one string | Free-text PRD-style statement of what the skill teaches and what it does not | always |
 | `subjects` | up to 2 | Polyhierarchy when a skill genuinely spans two shelves (primary first, must equal `subject`) | optional |
 | `taxonomy_domain` | one slash-path | Hierarchical sub-path within a `subject` (e.g. `ecommerce/integrations/shopify`) | optional |
@@ -94,7 +94,7 @@ How the skill surfaces to a router. The three trigger fields (`triggers`, `keywo
 | `examples` | many | Positive-class activation prompts (few-shot retrieval targets) |
 | `anti_examples` | many | Negative-class prompts (hard negatives for boundary discrimination) |
 | `paths` | many glob patterns | File-surface activation |
-| `project[]` | many | Project belonging references (handle + role) for `deployment_target: project` skills |
+| `project[]` | many | Project belonging references (handle + role) for project-anchored (`public: false`) skills |
 
 ### Relations (one object, up to 8 predicate keys, each optional)
 
@@ -112,7 +112,7 @@ Typed edges to sibling skills. Lint verifies every target exists.
 
 `related` is the canonical broad association predicate. `boundary` records ownership exclusions for routing. ADR 0001 records the historical `adjacent` rename; ADR 0006 records the `boundary` / `disjoint_with` split.
 
-### Grounding (1 object, 5 required sub-fields — conditional on `deployment_target: project`)
+### Grounding (1 object, 5 required sub-fields — conditional on non-empty `project[]`)
 
 Ties the skill to hashable artifacts and documents the trust hierarchy.
 
@@ -145,7 +145,7 @@ Skill Graph keeps these classification and belonging dimensions distinct. Each r
 
 | Axis | Field | Orthogonality | Question |
 |---|---|---|---|
-| Deployment target | `deployment_target` | Strict — `portable`/`project` do not overlap | Where does this deploy? |
+| Publishability | `public` | boolean — `true` (shareable) / `false` (private) | Is this safe to publish? |
 | Scope | `scope` | Free-text, not an enum | PRD-style description of deployment context |
 | Taxonomy | `subject` + `taxonomy_domain` | Strict — one shelf, one optional tree path | What kind of concern is this? |
 | Project belonging | `project[]` | Strict — explicit belonging references, no hierarchy | Which specific project is this anchored to? |
@@ -165,7 +165,7 @@ An earlier concept map (pre-2026-04-20) contained six inaccuracies now corrected
 3. Described `drift_check` as a scalar date — corrected to object (v3 shape, schema-enforced).
 4. Called the axes "4 orthogonal" — corrected to separate strict classification/belonging dimensions from query-time routing bundles.
 5. Stated the field count without distinguishing authored-vs-possible — clarified that the current contract has 25 agent-facing frontmatter fields plus 28 audit-state sidecar fields, while aliases and nested sub-field counts are separate measures.
-6. Omitted the required-for-all set (`subject`, `deployment_target`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`) — restored and grouped under Classification, Health & drift, and Evaluation Status.
+6. Omitted the required-for-all set (`subject`, `public`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`) — restored and grouped under Classification, Health & drift, and Evaluation Status.
 
 ## References
 

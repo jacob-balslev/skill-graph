@@ -58,7 +58,7 @@ The fields you pay for cluster into 8 semantic purposes (Identity, Classificatio
 For the full conceptual primer read [`SKILL_METADATA_PROTOCOL_PRIMER.md`](../skill-metadata-protocol/PRIMER.md). To migrate your first skill from a valid plain `SKILL.md` file:
 
 1. **Copy the template** — `cp examples/skill-metadata-template.md skills/<your-skill>/SKILL.md`. The template is a real, valid, schema-conformant Skill Metadata Protocol skill whose subject is skill authoring itself; adapt by rewriting identity, description, body, and verification.
-2. **Add the required Skill Metadata Protocol fields** — in `SKILL.md`: `name`, `description`, `subject` (12-enum), `deployment_target`, and free-text `scope`; in sibling `audit-state.json`: `schema_version: 8`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, and `routing_eval`. The template inline-comments each field.
+2. **Add the required Skill Metadata Protocol fields** — in `SKILL.md`: `name`, `description`, `subject` (12-enum), `public`, and free-text `scope`; in sibling `audit-state.json`: `schema_version: 8`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, and `routing_eval`. The template inline-comments each field.
 3. **Strip the teaching annotations** — every `> **TEMPLATE NOTE:**` blockquote and `# TEMPLATE NOTE:` YAML comment must be removed before commit.
 4. **Validate locally:**
    ```bash

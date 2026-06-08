@@ -39,7 +39,7 @@ Required in `SKILL.md`:
 | 1 | `name` | string | Lowercase alphanumerics, hyphens, slashes, colons. Must match parent directory name. Used as routing target by other skills. |
 | 2 | `description` | string | Short description of what the skill is about. Activation signals belong to `keywords`/`triggers`/`examples`/`anti_examples`; boundary semantics belong to `relations.boundary`. |
 | 3 | `subject` | enum | One of the closed 12-value enum (3 bands, ADR-0020): `backend-engineering`, `frontend-engineering`, `software-architecture`, `data-engineering`, `agent-ops`, `ai-engineering`, `quality-assurance`, `design`, `reasoning-strategy`, `software-engineering-method`, `knowledge-organization`, `product-domain`. Primary classification — what the skill teaches. |
-| 4 | `deployment_target` | enum | One of: `portable` (any project) or `project` (one specific project; requires `grounding`). |
+| 4 | `public` | boolean | `true` = publishable/shareable; `false` = private to one project (project-anchored skills also set `project[]` + `grounding`). |
 | 5 | `scope` | string | Required free-text PRD-style description of the deployment context. Not an enum. |
 
 Required in sibling `audit-state.json`:
@@ -60,7 +60,7 @@ Triggered only when the gating condition applies. Schema-enforced via `allOf`:
 
 | Field | Required when |
 |---|---|
-| `grounding` | `deployment_target: project` |
+| `grounding` | non-empty `project[]` |
 | `superseded_by` | `stability: deprecated` |
 
 For routable skills, add `keywords` as a recommended activation surface: up to 10 semantic phrases a user would naturally type. `keywords` are reviewed by routing evals and routing review, but they are not a schema-required field.
@@ -88,7 +88,7 @@ Expected: zero errors, zero warnings. If warnings appear (e.g. legacy field valu
 name: example-protocol-native
 description: "Conway's Law applied as a forward design constraint for API boundary placement — team topologies, organizational coupling, domain ownership boundaries."
 subject: software-architecture
-deployment_target: portable
+public: true
 scope: "Portable reasoning skill for applying Conway's Law to API boundary placement, team topology decisions, and organizational coupling analysis. Excludes individual service design and static org-chart documentation."
 keywords:
   - Conway's Law
@@ -143,7 +143,7 @@ license: MIT
 allowed-tools: Read Grep
 metadata:
   subject: software-architecture
-  deployment_target: portable
+  public: true
   scope: "Portable reasoning skill for applying Conway's Law to API boundary placement, team topology decisions, and organizational coupling analysis. Excludes individual service design and static org-chart documentation."
   keywords: "[\"Conway's Law\",\"team topologies\",\"API boundary\",\"organizational coupling\"]"
   relations: "{\"related\":[\"api-design\"],\"boundary\":[]}"
@@ -179,7 +179,7 @@ git commit --only -F /tmp/msg -- skills/<your-skill-name>/SKILL.md skills/<your-
 
 Two follow-ups, both optional at authoring time:
 
-- **Record truth hashes** if `deployment_target: project` and you populated `grounding.truth_sources`: `node scripts/skill-graph-drift.js --record --apply skills/<your-skill-name>`. This makes the drift sentinel useful.
+- **Record truth hashes** if the skill is project-anchored (`public: false` + `project[]`) and you populated `grounding.truth_sources`: `node scripts/skill-graph-drift.js --record --apply skills/<your-skill-name>`. This makes the drift sentinel useful.
 - **Author an eval** if you want the skill behaviorally certified: write `skills/<your-skill-name>/evals/comprehension.json` and run `node lib/audit/evaluate-skill.js --mode comprehension skills/<your-skill-name>/evals/comprehension.json`.
 
 Neither blocks first commit. A new skill ships honestly with `eval_state: unverified` in `audit-state.json` and `application_verdict: UNVERIFIED` by absence until an audit/eval run writes a receipt.

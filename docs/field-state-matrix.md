@@ -24,7 +24,7 @@
 | `SKILL.md` | `name` | string | human-authored | n/a |
 | `SKILL.md` | `description` | string >= 20 | human-authored | n/a |
 | `SKILL.md` | `subject` | closed 12-enum | human-authored | n/a |
-| `SKILL.md` | `deployment_target` | closed 2-enum | human-authored | n/a |
+| `SKILL.md` | `public` | boolean | human-authored | n/a |
 | `SKILL.md` | `scope` | string | human-authored | n/a |
 | `audit-state.json` | `schema_version` | int/string enum `8` | human-authored in sidecar; loop-maintained | n/a (canonical value is `8`) |
 | `audit-state.json` | `owner` | string | human-authored in sidecar | n/a |
@@ -42,7 +42,7 @@ Required only when the gating condition applies. All **human-authored**.
 
 | Field | Required when | Enforced by |
 |---|---|---|
-| `grounding` | `deployment_target: project` | schema `allOf` |
+| `grounding` | non-empty `project[]` | schema `allOf` |
 | `superseded_by` | `stability: deprecated` | schema `allOf` |
 
 ## Optional, strongly recommended (5 fields)
@@ -68,14 +68,14 @@ All **human-authored** unless tagged otherwise.
 | `paths` | glob[] | human-authored | Gitignore-style negations allowed; all-negation lists are rejected by lint. |
 | `examples` | string[] | human-authored | Positive activation examples in user voice. 2-5 recommended. |
 | `anti_examples` | string[] | human-authored | Negative class. Prompts that look related but a different skill should handle. |
-| `project` | `{handle, role}[]` | human-authored | Belonging-entity references for `deployment_target: project` skills. Absent = ambient skill (applies across all projects). Replaces old `workspace_tags`. |
+| `project` | `{handle, role}[]` | human-authored | Belonging-entity references for project-anchored skills. Absent = ambient skill (applies across all projects). Replaces old `workspace_tags`. |
 | `repo` | `{handle, url}[]` | human-authored | Repo-level belonging-entity references. Complements `project[]`. |
 | `routing_bundles` | string[] | human-authored | Routing group memberships. |
 | `taxonomy_domain` | string | human-authored | Slash-delimited hierarchical sub-path within a `subject` (e.g. `engineering/api-design`). Complements `subject`. Renamed from `domain`. |
 
 ### Classification (taxonomy)
 
-`subject` and `deployment_target` are the required classification axes (see the Required table); `taxonomy_domain` (above) subdivides an over-subscribed subject. The one optional classification field:
+`subject` and `public` are the required classification axes (see the Required table); `taxonomy_domain` (above) subdivides an over-subscribed subject. The one optional classification field:
 
 | Field | Type | State | Notes |
 |---|---|---|---|
@@ -95,7 +95,7 @@ The five Understanding fields are **human-authored** in `SKILL.md`. The sidecar'
 | `misconception` | string | human-authored | The wrong mental model people bring. Complements `boundary`; not directly graded. |
 | `concept` | object | **deprecated** | v5 nested teaching block. Accepted for v5/v6 back-compat. Lint warns when populated alongside missing flat fields. |
 
-### Grounding (required when deployment_target: project)
+### Grounding (required when project[] is non-empty)
 
 | Field | Type | State | Notes |
 |---|---|---|---|
@@ -157,7 +157,7 @@ The Skill Audit Loop owns these in `audit-state.json`. **Do not hand-author.** H
 |---|---|
 | `id` | Derived from the skill's path relative to `skills/` (e.g. `task-execution`). |
 | `path` | Relative path to the `SKILL.md` file. |
-| `summary` | Aggregate counts (`total_skills`, `by_subject`, `by_deployment_target`, `by_schema_version`, `by_stability`, `by_project`). |
+| `summary` | Aggregate counts (`total_skills`, `by_subject`, `by_public`, `by_schema_version`, `by_stability`, `by_project`). |
 | `generated_at` | ISO timestamp of when the manifest was generated. |
 | `activation` | Compiled block merging `triggers`, `keywords`, `paths`, `examples`, `anti_examples`. |
 | `health` | Compiled block merging `eval_artifacts`, `eval_state`, `routing_eval`, `comprehension_state`, `eval_last_run`, `freshness`, `drift_check`. |
