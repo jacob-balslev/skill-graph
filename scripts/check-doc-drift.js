@@ -193,6 +193,24 @@ function buildPatterns(activeVersion) {
       suppressInLegacyContext: true,
     });
   }
+  // SKI-321: a retired classification field presented as a current authorable
+  // field (a YAML key in an example, or a backticked identifier in prose).
+  // Warn-class (advisory) — consistent with stale-version-phrase above; the
+  // legacy-context + allowlist suppression keeps retirement notes / historical
+  // docs from firing.
+  for (const field of RETIRED_FIELDS) {
+    warnPatterns.push({
+      kind: 'retired-field',
+      // YAML-key form only (`field:` at line start) — the high-precision signal
+      // that a doc is TEACHING the field as authorable (an example block). A
+      // backticked mention in analysis/rationale prose (benchmarks/, field-
+      // rationale) legitimately discusses the field and is not authoring drift,
+      // so it is deliberately not matched.
+      regex: new RegExp(String.raw`^\s*${field}\s*:`),
+      field,
+      suppressInLegacyContext: true,
+    });
+  }
   return { errorPatterns, warnPatterns };
 }
 
@@ -227,7 +245,15 @@ function buildMigrationSectionMask(lines) {
 
 // Lines that legitimately describe an old version as historical/back-compat
 // are not drift. Patterns flagged `suppressInLegacyContext` skip these.
-const LEGACY_CONTEXT_RE = /\b(legacy|deprecated|back-?compat|backward|historical|superseded|supersedes|retired|frozen|pinned|strict superset|allOf|anyOf|prior version|previous|earlier)\b/i;
+const LEGACY_CONTEXT_RE = /\b(legacy|deprecated|back-?compat|backward|historical|superseded|supersedes|retired|removed|replaced|renamed|no longer|do not author|frozen|pinned|strict superset|allOf|anyOf|prior version|previous|earlier)\b/i;
+
+// SKI-321: classification fields removed from the schema. A doc that still
+// presents one as a current, authorable field is drift. Only DISTINCTIVE
+// identifiers are listed — generic words (type/category/domain) appear in too
+// many innocent contexts to match by name. Retirement notes ("X was retired/
+// removed/renamed") and allowlisted historical docs (ADRs, migrations,
+// CHANGELOG) are suppressed via LEGACY_CONTEXT_RE + isAllowlisted().
+const RETIRED_FIELDS = ['routing_bundles', 'deployment_target'];
 
 function scanFile(absPath, patterns) {
   const text = fs.readFileSync(absPath, 'utf8');
