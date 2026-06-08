@@ -135,7 +135,7 @@ description: "Shopify integration patterns covering the Admin API, webhook handl
 - Start new skills at `1.0.0`.
 - Increment the patch version for small corrections (examples, wording, typos).
 - Increment the minor version when new sections or fields are added without breaking the existing shape.
-- Increment the major version when content is reorganized in a way that breaks the existing shape, or the skill's classification (`subject` / `deployment_target`) changes.
+- Increment the major version when content is reorganized in a way that breaks the existing shape, or the skill's classification (`subject` / `public`) changes.
 
 **Example.**
 ```yaml
@@ -232,7 +232,7 @@ taxonomy_domain: ecommerce/integrations/shopify
 
 **Purpose.** PRD-style free-text statement of what this skill teaches and what it does not. Mirrors the body `## Coverage` plus `## Do NOT Use When` sections at the frontmatter level for fast scanning.
 
-**Repurpose.** Earlier, `scope` was a closed enum (`portable` / `workspace` / `project`) that classified deployment-targeting. The deployment-target role moved to the new required field `deployment_target` (with the `workspace` value removed); `scope` was repurposed to a free-text PRD-style field. The repurpose resolves the long-standing collision with the PRD sense of "in/out of scope" used freely in body prose. See the ADR-0017 amendment of 2026-05-27.
+**Repurpose.** Earlier, `scope` was a closed enum (`portable` / `workspace` / `project`) that classified deployment-targeting. The deployment-target role first moved to an interim `deployment_target` enum (with the `workspace` value removed), then to the boolean `public` gate (ADR-0017 amendment); `scope` was repurposed to a free-text PRD-style field. The repurpose resolves the long-standing collision with the PRD sense of "in/out of scope" used freely in body prose. See the ADR-0017 amendment of 2026-05-27.
 
 **Rules.**
 - Required. String. No enum constraint.
@@ -303,7 +303,7 @@ project:
     role: consumer
 ```
 
-**When to use.** When the skill is meaningfully coupled to one or more projects. Required in practice when `deployment_target: project` (the project[] array names *which* projects the deployment-target applies to).
+**When to use.** When the skill is meaningfully coupled to one or more projects. Required in practice when the skill is project-anchored (the `project[]` array names *which* projects it belongs to).
 
 **When NOT to use.** Truly ambient `portable` skills with no project affiliation.
 
@@ -959,7 +959,7 @@ eval:
 2. `eval_score >= 4.0` — grader score meets the quality bar.
 3. `routing_eval: present` — the skill has been verified in a routing eval.
 4. `drift_check.last_verified` within 90 days — skill has been recently verified against truth sources.
-5. For `deployment_target: project` skills: `grounding.truth_sources` must be non-empty.
+5. For project-anchored (non-empty `project[]`) skills: `grounding.truth_sources` must be non-empty.
 
 **Example.**
 ```yaml
@@ -1227,7 +1227,7 @@ paths:
   - src/webhooks/shopify.ts
 ```
 
-**When to use.** For `deployment_target: project` skills that govern specific files or directories. Omit for portable skills.
+**When to use.** For project-anchored skills that govern specific files or directories. Omit for ambient/portable skills.
 
 **When NOT to use.** Generic skills with no specific file surfaces. Do not add paths as aspirational documentation — only add paths the skill actively covers.
 
@@ -1253,7 +1253,7 @@ These are **Claude Code native frontmatter fields**, not Skill Graph protocol fi
 
 **Rules.**
 - This is a Claude Code runtime control, not a Skill Graph routing or classification field. Routers, manifest generators, and lint scripts ignore it.
-- Only author on skills with `deployment_target: project` where the project's runner infrastructure explicitly invokes the skill in an autonomous (non-interactive) mode.
+- Only author on project-anchored skills where the project's runner infrastructure explicitly invokes the skill in an autonomous (non-interactive) mode.
 - Do not author on portable skills or skills invoked interactively.
 
 **Example.**
@@ -1261,7 +1261,7 @@ These are **Claude Code native frontmatter fields**, not Skill Graph protocol fi
 name: skill-audit-runner
 description: Autonomous audit-loop runner for the Skill Audit Loop batch pipeline.
 subject: agent-ops
-deployment_target: project
+public: false
 scope: Orchestrates per-skill audit passes in autonomous batch mode without user interaction.
 context: fork
 disallowed-tools: AskUserQuestion
@@ -1392,13 +1392,13 @@ relations:
 
 ## `grounding`
 
-**Purpose.** Declares what the skill governs in the real world or codebase, and provides evidence anchors for repo-grounded verification. Required for `deployment_target: project` skills.
+**Purpose.** Declares what the skill governs in the real world or codebase, and provides evidence anchors for repo-grounded verification. Required for project-anchored (non-empty `project[]`) skills.
 
 **Rename.** `grounding.domain_object` was renamed to `grounding.subject_matter`; the v3.1 `grounding.subject` alias was retired. See the ADR-0017 amendment of 2026-05-27.
 
 **Rules.**
 - Object with five required sub-fields: `subject_matter`, `grounding_mode`, `truth_sources`, `failure_modes`, `evidence_priority`.
-- Omit entirely for `deployment_target: portable` skills (unless you want to ground a portable skill in external specs — then keep `grounding_mode: universal`).
+- Omit entirely for ambient/portable skills (unless you want to ground a portable skill in external specs — then keep `grounding_mode: universal`).
 - `grounding_mode` must be one of `repo_specific`, `universal`, or `hybrid`.
 - `evidence_priority` must be one of `repo_code_first`, `general_knowledge_first`, or `equal`.
 
@@ -1436,7 +1436,7 @@ grounding:
 - `anchor` is checked by lint as either a Markdown heading slug or literal text in the file.
 - `drift_check.truth_source_hashes` uses the normalized key: `path` for whole-file sources, `path#Lstart-Lend` for line ranges, and `path#anchor` for anchor-only sources.
 
-**When to use.** Required for `deployment_target: project`. Strongly recommended for any skill that makes concrete implementation claims, even if `deployment_target` is `portable`.
+**When to use.** Required for project-anchored skills. Strongly recommended for any skill that makes concrete implementation claims, even if the skill is portable.
 
 **When NOT to use.** Portable skills with no specific codebase claims. Omit the entire block rather than populating it with placeholder values.
 

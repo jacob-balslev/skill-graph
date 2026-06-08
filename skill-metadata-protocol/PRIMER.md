@@ -16,7 +16,7 @@
 | [`SKILL_GRAPH.md`](../SKILL_GRAPH.md) | Repo organisation: five **authority tiers** (schema / explanation / enforcement / consumer / specimen) and the invariants CI enforces |
 | [`skill-metadata-protocol/design-rationale.md`](design-rationale.md) | Archetype section map, requiredness groups, schema strictness rules |
 | [`skill-metadata-protocol/field-reference.md`](field-reference.md) | Per-field semantics for all current v8 top-level fields |
-| [`skill-metadata-protocol/field-decision-guide.md`](field-decision-guide.md) | Decision tables for `deployment_target`, `scope`, `relations.*`, Evaluation Status, `portability`, `project[]` |
+| [`skill-metadata-protocol/field-decision-guide.md`](field-decision-guide.md) | Decision tables for `public`, `scope`, `relations.*`, Evaluation Status, `portability`, `project[]` |
 | [`docs/manifest-field-mapping.md`](../docs/manifest-field-mapping.md) | The authored → generated bridge: rename map, loss policy, migration notes |
 | [SKILL.md specification](https://agentskills.io/specification) | The base standard Skill Metadata Protocol extends |
 
@@ -95,7 +95,7 @@ Skill Metadata Protocol is materially more expensive to author and maintain than
 - **One skill is load-bearing for another** and you have silently broken the assumption by editing the parent. `depends_on` surfaces the breakage at lint time instead of at routing time.
 - **One or more skills are grounded in specific repo files** and you have noticed the skill get stale the day after the file is rewritten. `drift_check.truth_source_hashes` catches that on the next lint run.
 - **You run evals on skills** and want the router to respect quality, not just relevance. `eval_state` + `--min-eval-state passing` turns "we have evals" into "routing honours evals."
-- **You are authoring skills for multiple projects** that share some and diverge on others. Use `deployment_target: portable` for shared skills, and `project[]` belonging references on `deployment_target: project` skills to express per-project anchoring — without naming specific codebases in a flat tag.
+- **You are authoring skills for multiple projects** that share some and diverge on others. Use `public: true` for shared skills, and `project[]` belonging references on project-anchored skills to express per-project anchoring — without naming specific codebases in a flat tag.
 
 ### Stay on base SKILL.md when
 
@@ -158,7 +158,7 @@ flowchart TB
 
 **Fields.** `grounding.subject_matter`, `grounding.grounding_mode`, `grounding.truth_sources`, `grounding.failure_modes`, `grounding.evidence_priority`, `drift_check.truth_source_hashes`, `lifecycle.stale_after_days`, `freshness`, `eval_state`.
 
-**What it answers.** *Is what this skill claims still true?* Grounding is conditional on `deployment_target: project` and is enforced by the schema. The drift sentinel (`scripts/skill-graph-drift.js`) SHA-256-hashes every listed `truth_source` and reports one of four states: `CLEAN`, `DRIFT`, `BROKEN` (file moved or deleted), or `NO_BASELINE` (hashes not recorded yet). `lifecycle.stale_after_days` time-boxes the freshness claim independently. This is the layer that turns an abstract ontology into a knowledge graph populated with real entities, and keeps the representation honest as those entities change.
+**What it answers.** *Is what this skill claims still true?* Grounding is conditional on a non-empty `project[]` and is enforced by the schema. The drift sentinel (`scripts/skill-graph-drift.js`) SHA-256-hashes every listed `truth_source` and reports one of four states: `CLEAN`, `DRIFT`, `BROKEN` (file moved or deleted), or `NO_BASELINE` (hashes not recorded yet). `lifecycle.stale_after_days` time-boxes the freshness claim independently. This is the layer that turns an abstract ontology into a knowledge graph populated with real entities, and keeps the representation honest as those entities change.
 
 **What you do with this:** Re-baseline `truth_source_hashes` after every deliberate edit to the source file (`node scripts/skill-graph-drift.js --record --apply <skill-dir>`). When the drift sentinel reports DRIFT, re-verify the skill's `## Verification` checklist against the changed truth source *before* re-recording — drift is a prompt to re-read the truth source, not to silently rubber-stamp the new hash.
 
@@ -167,7 +167,7 @@ flowchart TB
 The reference router (`scripts/skill-graph-route.js`) reads all four layers and produces a single ranked result set. For a query `"accessibility keyboard navigation"` scoped to `--project <your-project>`:
 
 1. **Layer 1** matches against `description`, `keywords`, `triggers`, `paths`. Non-matches are filtered out.
-2. **`project[]`** (Layer 1 field) filters further by project belonging when `deployment_target: project`.
+2. **`project[]`** (Layer 1 field) filters further by project belonging when `project[]` is present.
 3. **Layer 3** expands the `depends_on` closure — any skill whose dependency is also matched is boosted; co-loads `verify_with` targets of selected skills.
 4. **Layer 3** applies `boundary`: if a matched skill's boundary targets another skill that also matched, the boundary-owner absorbs the prompt and the boundary-loser is excluded.
 5. **Layer 4** applies the quality gate. The default `--min-eval-state` is `unverified`, which admits everything; passing `--min-eval-state passing` excludes skills below that state. Staleness from `lifecycle.stale_after_days` is annotated on the result line (a `⚠ stale` marker), not used for exclusion.
@@ -182,13 +182,13 @@ Beyond the four metadata layers that express *meaning*, a library needs four ind
 
 | Axis | Field | Cardinality | Purpose |
 |---|---|---|---|
-| **Deployment target** | `deployment_target` | Single value: `portable` or `project` | *Where does this skill deploy?* |
+| **Publishability** | `public` | Boolean: `true` (publishable) or `false` (private) | *Is this safe to release publicly?* |
 | **Scope** | `scope` | Free-text string | *PRD-style description of the deployment context.* |
 | **Taxonomy (hierarchy)** | `subject` + `taxonomy_domain` | Single position in the tree | *What kind of concern is this?* |
 | **Project belonging** | `project[]` | Many objects (handle + role) | *Which specific project(s) is this skill anchored to?* |
 | **Routing group (bundle)** | `routing_bundles` | Many-to-many | *Which router-query-time bundle does this skill join?* |
 
-The axes compose without nesting. A single skill can be `deployment_target: portable` with `subject: backend-engineering`, `taxonomy_domain: backend-engineering/linting/eslint-rules`, and `routing_bundles: [quality, linting]` — each axis carries a different shape of answer, and the router uses them for different things.
+The axes compose without nesting. A single skill can be `public: true` with `subject: backend-engineering`, `taxonomy_domain: backend-engineering/linting/eslint-rules`, and `routing_bundles: [quality, linting]` — each axis carries a different shape of answer, and the router uses them for different things.
 
 ### 4.1 Deployment target — *where does this deploy?*
 
@@ -197,7 +197,7 @@ Two values, chosen at authoring time and enforced by the schema:
 - **`portable`** — applies to any project. Most reusable skills (for example the starter `refactor` and `testing-strategy`) use this value.
 - **`project`** — anchored to one specific project. Triggers Layer 4 (Grounding): `grounding.subject_matter`, `truth_sources`, and `drift_check.truth_source_hashes` become required, so the skill is pinned to the real artifacts it describes and the drift sentinel can catch silent divergence.
 
-`deployment_target` is the first axis the router filters on and the only axis with body-structure implications (`grounding` is conditional on `deployment_target: project`). The `scope` field is a free-text PRD-style description of the deployment context — it is not an enum and does not replace `deployment_target`. For the full decision table, see `skill-metadata-protocol/field-decision-guide.md § 1. Which deployment_target do I use?`.
+`public` (with `subject`) gives the router broad stratum separation; `project[]` is the axis with body-structure implications (`grounding` is conditional on a non-empty `project[]`) and carries project-fit. The `scope` field is a free-text PRD-style description — it is not an enum. For the full decision tables, see `skill-metadata-protocol/field-decision-guide.md`.
 
 ### 4.2 Taxonomy — *what kind of concern is this?*
 
@@ -207,7 +207,7 @@ Use `taxonomy_domain` only when the library is big enough that a tree helps navi
 
 ### 4.3 Projects — *which project is this skill anchored to?*
 
-Skills that are reusable across projects use `deployment_target: portable` and need no project belonging reference. Skills that are anchored to one specific project use `deployment_target: project` and carry a `project[]` array of belonging references (each with a `handle` and `role`). Use `repo[]` when the belonging reference is a specific repository rather than a product project.
+Skills reusable across projects use `public: true` and need no project belonging reference. Skills anchored to one specific project carry a `project[]` array of belonging references (and are typically `public: false`) (each with a `handle` and `role`). Use `repo[]` when the belonging reference is a specific repository rather than a product project.
 
 `project[]` names the *specific project* a skill is grounded in — **not** a keyword tag for routing. Routing remains driven by `keywords`, `triggers`, and `routing_bundles`.
 
@@ -221,8 +221,8 @@ Unlike taxonomy (one position in a tree, strict hierarchy), routing groups are *
 
 If two axes appear to answer the same question for your skill, pick by cardinality:
 
-- **One answer?** Use `deployment_target` or Taxonomy.
-- **Anchored to a specific project?** Set `deployment_target: project` and add a `project[]` entry.
+- **One answer?** Use `public` or Taxonomy.
+- **Anchored to a specific project?** Add a `project[]` entry (and set `public: false` if it carries private data).
 - **Many answers along a "which retrieval bundle" dimension?** Use `routing_bundles`.
 
 If an adopter-specific concept doesn't fit any of the axes, the activation surface (`keywords`, `triggers`) is the escape valve. Do not stretch `routing_bundles` into a project-membership meaning.
@@ -271,7 +271,7 @@ name: refactor
 description: "Reorganizing existing code without changing external behavior."
 version: 1.0.0
 subject: backend-engineering
-deployment_target: portable
+public: true
 owner: skill-graph-maintainer
 freshness: "2026-05-27"
 drift_check:

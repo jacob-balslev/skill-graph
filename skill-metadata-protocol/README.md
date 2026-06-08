@@ -17,13 +17,13 @@ Each axis below is *named* here and *specified* in [`field-reference.md`](field-
 | Axis | Required | What it declares |
 |------|----------|------------------|
 | `subject` | yes | Primary browse shelf — one of twelve closed values (`backend-engineering`, `frontend-engineering`, `software-architecture`, `data-engineering`, `agent-ops`, `ai-engineering`, `quality-assurance`, `design`, `reasoning-strategy`, `software-engineering-method`, `knowledge-organization`, `product-domain`). |
-| `deployment_target` | yes | `portable` (any project) or `project` (anchored to one repo — requires `grounding`). |
+| `public` | yes | boolean — `true` (publishable/shareable) or `false` (private to one project). Project anchoring is carried by `project[]`. |
 | `scope` | yes | Free-text PRD-style statement of what the skill teaches and where it deploys. |
 | `subjects[]` | when it applies | Polyhierarchy (max 2, primary first) for a skill that genuinely spans two shelves. |
 | `taxonomy_domain` | optional | Slash-delimited sub-path that subdivides an over-subscribed `subject`. |
 | `keywords` | recommended | Up to 10 fuzzy activation terms (capped to prevent keyword stuffing). |
 | `relations` | when it applies | Typed edges to sibling skills — see [Relations, Briefly](#relations-briefly). |
-| `grounding` | when `deployment_target: project` | `truth_sources`, `grounding_mode`, `failure_modes` — what the skill is checked against. |
+| `grounding` | when `project[]` is non-empty | `truth_sources`, `grounding_mode`, `failure_modes` — what the skill is checked against. |
 | Understanding fields | when `comprehension_state: present` | `mental_model`, `purpose`, `boundary`, `analogy`, `misconception`. |
 | Audit Status | written by the loop | `structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict` — see [`../docs/verdict-semantics.md`](../docs/verdict-semantics.md). |
 
@@ -44,7 +44,7 @@ The payoff of typing the frontmatter: a query resolves to the right skill, co-lo
 
 ```mermaid
 flowchart LR
-  FM["SKILL.md frontmatter<br/>subject · deployment_target · scope<br/>keywords · relations · grounding"]:::input
+  FM["SKILL.md frontmatter<br/>subject · public · scope<br/>keywords · relations · grounding"]:::input
   Norm["normalizeFrontmatter()<br/>flat ↔ nested → one contract"]:::tool
   Man["skills.manifest.json<br/>typed nodes + edges"]:::artifact
   Q(["query"]):::input
