@@ -7,7 +7,6 @@ metadata:
   version: "1.0.0"
   subject: product-domain
   subjects: "[\"product-domain\",\"backend-engineering\"]"
-  deployment_target: portable
   taxonomy_domain: engineering/integrations
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
@@ -27,6 +26,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/product-domain/shopify/SKILL.md
@@ -70,7 +70,6 @@ The theme surface and the API surface should remain separable. Online Store 2.0 
 
 **Classification**
 - Subject: `product-domain` (also: `backend-engineering`)
-- Deployment: `portable`
 - Domain: `engineering/integrations`
 
 **When to use**

@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: agent-ops
-  deployment_target: portable
   scope: "Building and operating multi-source intelligence pipelines across video, GitHub, Reddit, curated lists, search, and RSS — source adapters, the discovery/transcription/summarization/evaluation phases, deduplication, schedules, per-stage model choice, and actionable brief generation. Portable across any content-monitoring pipeline; principle-grounded, not repo-bound. Excludes SEO keyword research (keywords) and competitive product analysis (user-research)."
   taxonomy_domain: agent/ops
   owner: skill-graph-maintainer
@@ -29,6 +28,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/content-monitor/SKILL.md
@@ -236,7 +236,6 @@ After modifying the content monitor pipeline, verify:
 
 **Classification**
 - Subject: `agent-ops`
-- Deployment: `portable`
 - Domain: `agent/ops`
 - Scope: Building and operating multi-source intelligence pipelines across video, GitHub, Reddit, curated lists, search, and RSS — source adapters, the discovery/transcription/summarization/evaluation phases, deduplication, schedules, per-stage model choice, and actionable brief generation. Portable across any content-monitoring pipeline; principle-grounded, not repo-bound. Excludes SEO keyword research (keywords) and competitive product analysis (user-research).
 

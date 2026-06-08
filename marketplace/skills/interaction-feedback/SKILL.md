@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: design
-  deployment_target: portable
   scope: "Designing UI feedback around user actions and system state — loading, skeletons, optimistic updates, progress, success, errors, empty states, retries, disabled/pending states, autosave, undo, and perceived latency. Portable across any interactive UI; principle-grounded, not repo-bound. Excludes the words inside feedback (microcopy), accessibility announcement mechanics (a11y), business lifecycle modeling (state-machine-modeling), and performance optimization (performance-engineering)."
   taxonomy_domain: design/interaction
   owner: skill-graph-maintainer
@@ -30,6 +29,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/interaction-feedback/SKILL.md
@@ -88,7 +88,6 @@ This skill ships a comprehension-eval artifact at [`examples/evals/interaction-f
 
 **Classification**
 - Subject: `design`
-- Deployment: `portable`
 - Domain: `design/interaction`
 - Scope: Designing UI feedback around user actions and system state — loading, skeletons, optimistic updates, progress, success, errors, empty states, retries, disabled/pending states, autosave, undo, and perceived latency. Portable across any interactive UI; principle-grounded, not repo-bound. Excludes the words inside feedback (microcopy), accessibility announcement mechanics (a11y), business lifecycle modeling (state-machine-modeling), and performance optimization (performance-engineering).
 

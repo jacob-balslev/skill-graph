@@ -7,7 +7,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: quality-assurance
-  deployment_target: portable
   taxonomy_domain: quality/testing
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
@@ -24,7 +23,6 @@ metadata:
   relations: "{\"related\":[\"testing-strategy\",\"integration-test-design\",\"snapshot-testing\",\"test-driven-development\",\"contract-testing\"],\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the strategic ratio of test levels; this skill owns the design of the e2e tier specifically — the smallest tier in the pyramid/trophy, the most expensive per test, the most user-meaningful per test.\"},{\"skill\":\"integration-test-design\",\"reason\":\"integration-test-design owns tests of internal seams between units; this skill owns user-journey tests through the whole stack including UI. The cost difference is an order of magnitude; conflating them either inflates CI cost or misses real e2e coverage.\"},{\"skill\":\"contract-testing\",\"reason\":\"contract-testing verifies the interface between consumer and provider via consumer-driven contracts; this skill verifies the user-journey behavior end-to-end. Contracts replace e2e tests across service boundaries when the journey is service-to-service; e2e is for journeys with humans at one end.\"},{\"skill\":\"snapshot-testing\",\"reason\":\"Visual snapshot tests are a regression net at e2e or component scope; this skill owns the user-journey behavior end-to-end. They compose: visual snapshots within e2e tests catch UI changes the journey assertions don't.\"}],\"verify_with\":[\"testing-strategy\",\"integration-test-design\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "An e2e test is to a software system what a flight rehearsal is to a launch — you do not certify a rocket by testing each bolt in a clean room (units), nor by firing each engine in isolation (integration), nor by writing a specification of what the avionics should do (contract); you certify it by performing the entire launch sequence, with real fuel, against a real flight plan, with the actual crew, and you do this rarely because each rehearsal costs millions and ten high-fidelity rehearsals tell you more than a thousand quick ones."
   misconception: "|"
   concept: "{\"definition\":\"End-to-end (e2e) test design is the discipline of designing tests that exercise a complete user-visible path through the entire system — the UI, the application layer, the data layer, external integrations, and back. The unit of test is the *user journey*: a sequence of user actions and the observable outcomes the user experiences. E2e tests are the highest-scope tier of the test pyramid (or trophy) — the fewest in count, the slowest per test, the most user-meaningful per test. Their value is the confidence that the system, assembled, works for a real user task; their cost is real and growing with the system's complexity. The discipline of e2e test design is keeping the count small enough that the cost stays manageable while keeping the coverage broad enough that the tests are load-bearing evidence the system works for users.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
@@ -34,6 +32,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/e2e-test-design/SKILL.md
@@ -146,7 +146,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `quality-assurance`
-- Deployment: `portable`
 - Domain: `quality/testing`
 
 **When to use**
@@ -172,7 +171,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: An e2e test is to a software system what a flight rehearsal is to a launch — you do not certify a rocket by testing each bolt in a clean room (units), nor by firing each engine in isolation (integration), nor by writing a specification of what the avionics should do (contract); you certify it by performing the entire launch sequence, with real fuel, against a real flight plan, with the actual crew, and you do this rarely because each rehearsal costs millions and ten high-fidelity rehearsals tell you more than a thousand quick ones.
 - Common misconception: |
 

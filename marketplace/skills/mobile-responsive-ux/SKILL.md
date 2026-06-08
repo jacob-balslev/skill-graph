@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.1.0"
   subject: frontend-engineering
-  deployment_target: portable
   scope: "Mobile-specific UX patterns for SaaS dashboards and operational web apps: touch-friendly targets, thumb-zone optimization, swipe gestures, condensed data display, bottom navigation, bottom sheets, mobile inputs, and pull-to-refresh. Portable across mobile web products; principle-grounded, not repo-bound. Excludes desktop-first layout composition (layout-composition), component/token architecture (design-system-architecture), and accessibility compliance breadth such as ARIA, keyboard, screen reader, and audit rules (a11y)."
   taxonomy_domain: design/display
   owner: skill-graph-maintainer
@@ -26,7 +25,6 @@ metadata:
   relations: "{\"related\":[\"layout-composition\",\"interaction-patterns\",\"a11y\"],\"verify_with\":[\"a11y\",\"layout-composition\"]}"
   mental_model: "Mobile dashboard UX treats the phone as a quick control surface, not a shrunken analytics workstation. The primitives are reach, target size, glanceable hierarchy, progressive disclosure, touch gestures with visible alternatives, mobile-appropriate inputs, and recovery from cramped or interrupted use."
   purpose: "This skill prevents agents from compressing desktop tables, sidebars, modals, and hover interactions into a phone viewport. It preserves the mobile user's likely job: check status, spot a problem, perform one short action, and leave."
-  boundary: "This skill does not own general responsive structure across all breakpoints; that belongs to layout-composition. It does not own accessibility compliance, ARIA, keyboard order, screen reader behavior, or audit mechanics; that belongs to a11y. It does not own component token architecture or visual style systems."
   analogy: "Mobile dashboard UX is a pocket control panel: it exposes the few controls and readings that matter while the full cockpit remains on desktop."
   misconception: "The common mistake is believing responsive means the same desktop screen made narrower. Correct mobile UX changes the task shape, density, navigation, and interaction model for touch and interruption."
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
@@ -38,6 +36,8 @@ metadata:
   last_audited: "2026-06-01"
   last_changed: "2026-06-01"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "This skill does not own general responsive structure across all breakpoints; that belongs to layout-composition. It does not own accessibility compliance, ARIA, keyboard order, screen reader behavior, or audit mechanics; that belongs to a11y. It does not own component token architecture or visual style systems."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/mobile-responsive-ux/SKILL.md
@@ -342,7 +342,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `frontend-engineering`
-- Deployment: `portable`
 - Domain: `design/display`
 - Scope: Mobile-specific UX patterns for SaaS dashboards and operational web apps: touch-friendly targets, thumb-zone optimization, swipe gestures, condensed data display, bottom navigation, bottom sheets, mobile inputs, and pull-to-refresh. Portable across mobile web products; principle-grounded, not repo-bound. Excludes desktop-first layout composition (layout-composition), component/token architecture (design-system-architecture), and accessibility compliance breadth such as ARIA, keyboard, screen reader, and audit rules (a11y).
 
@@ -367,7 +366,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: Mobile dashboard UX treats the phone as a quick control surface, not a shrunken analytics workstation. The primitives are reach, target size, glanceable hierarchy, progressive disclosure, touch gestures with visible alternatives, mobile-appropriate inputs, and recovery from cramped or interrupted use.
 - Purpose: This skill prevents agents from compressing desktop tables, sidebars, modals, and hover interactions into a phone viewport. It preserves the mobile user's likely job: check status, spot a problem, perform one short action, and leave.
-- Boundary: This skill does not own general responsive structure across all breakpoints; that belongs to layout-composition. It does not own accessibility compliance, ARIA, keyboard order, screen reader behavior, or audit mechanics; that belongs to a11y. It does not own component token architecture or visual style systems.
 - Analogy: Mobile dashboard UX is a pocket control panel: it exposes the few controls and readings that matter while the full cockpit remains on desktop.
 - Common misconception: The common mistake is believing responsive means the same desktop screen made narrower. Correct mobile UX changes the task shape, density, navigation, and interaction model for touch and interruption.
 

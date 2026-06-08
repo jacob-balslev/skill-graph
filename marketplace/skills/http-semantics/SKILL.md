@@ -7,7 +7,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: backend-engineering
-  deployment_target: portable
   taxonomy_domain: engineering/protocol
   owner: skill-graph-maintainer
   freshness: "2026-06-07"
@@ -24,7 +23,6 @@ metadata:
   relations: "{\"related\":[\"api-design\",\"webhook-integration\",\"system-interface-contracts\"],\"boundary\":[{\"skill\":\"api-design\",\"reason\":\"api-design owns the surface shape (routes, request/response schemas, pagination); http-semantics owns the protocol-level method/status/header contract that any HTTP API builds on.\"},{\"skill\":\"webhook-integration\",\"reason\":\"webhook-integration owns inbound provider mechanics (signing, retry, vendor-specific topics); http-semantics owns vendor-neutral HTTP method and status semantics.\"}],\"verify_with\":[\"api-design\",\"code-review\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "HTTP semantics is to web APIs what the rules of grammar are to written language — the framework provides the dictionary (routes, handlers, middleware) but the grammar is non-negotiable, and a sentence that follows the dictionary while violating the grammar is technically intelligible but causes downstream tooling (CDNs, proxies, client libraries) to misinterpret it."
   misconception: "|"
   concept: "{\"definition\":\"HTTP semantics is the IETF-standardized contract layer (RFC 9110, 9111, 9112) that defines method meanings, status code families, request/response metadata, conditional requests, content negotiation, and caching — independent of any specific framework or language. It is the wire-level meaning that every HTTP API inherits.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
@@ -34,6 +32,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/http-semantics/SKILL.md
@@ -380,7 +380,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `backend-engineering`
-- Deployment: `portable`
 - Domain: `engineering/protocol`
 
 **When to use**
@@ -405,7 +404,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: HTTP semantics is to web APIs what the rules of grammar are to written language — the framework provides the dictionary (routes, handlers, middleware) but the grammar is non-negotiable, and a sentence that follows the dictionary while violating the grammar is technically intelligible but causes downstream tooling (CDNs, proxies, client libraries) to misinterpret it.
 - Common misconception: |
 

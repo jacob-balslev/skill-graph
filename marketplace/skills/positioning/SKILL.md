@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: reasoning-strategy
-  deployment_target: portable
   scope: "April Dunford product-positioning methodology for choosing the market context that makes a product's differentiated value obvious to best-fit buyers. Includes competitive alternatives, unique attributes, value themes, target segmentation, market category, optional trend context, positioning capture, and sales-message translation. Excludes integrated company strategy, industry-structure analysis, value-innovation market creation, durable moat diagnosis, and finished copywriting."
   taxonomy_domain: foundations/strategy
   owner: skill-graph-maintainer
@@ -28,7 +27,6 @@ metadata:
   comprehension_state: present
   mental_model: "Product positioning is market-context design. The primitives are the customer's real competitive alternatives, the product's unique attributes, the value those attributes enable, the customer segments that care intensely about that value, the market category that makes the value obvious, optional trends that explain why now, and the captured position that aligns go-to-market teams. The method works in sequence because each later choice depends on the customer-relative evidence created by the earlier one."
   purpose: "This skill prevents agents from treating positioning as a slogan, tagline, persona exercise, or generic differentiation list. It forces the answer to start with what customers would otherwise use, then map product attributes to value, value to best-fit customers, and customer value to a category frame that makes the product easy to understand and buy."
-  boundary: "Positioning chooses the market context for communicating a product's differentiated value. It is not an integrated strategy cascade, Blue Ocean value-innovation design, Five Forces industry analysis, Seven Powers moat diagnosis, segmentation-only STP marketing, final copywriting, brand identity, or OKR execution tracking. Those tools can feed or consume the position, but they do not replace the competitive-alternatives-first mechanism."
   analogy: "Positioning is like placing a product on the right shelf in a store so buyers instantly know what to compare it with, why it is different, and whether it is for them."
   misconception: "The common mistake is thinking positioning starts with how the company wants to describe itself. Dunford-style positioning starts with the customer's real alternatives and works outward to attributes, value, best-fit buyers, category, and proof."
   structural_verdict: PASS
@@ -39,6 +37,8 @@ metadata:
   last_audited: "2026-05-29"
   lint_verdict: PASS
   drift_status: EXTERNAL_UNHASHED
+  public: "true"
+  concept_boundary: "Positioning chooses the market context for communicating a product's differentiated value. It is not an integrated strategy cascade, Blue Ocean value-innovation design, Five Forces industry analysis, Seven Powers moat diagnosis, segmentation-only STP marketing, final copywriting, brand identity, or OKR execution tracking. Those tools can feed or consume the position, but they do not replace the competitive-alternatives-first mechanism."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/positioning/SKILL.md
@@ -294,7 +294,6 @@ For [customers] who [current alternative/problem], [product] is a [category] tha
 
 **Classification**
 - Subject: `reasoning-strategy`
-- Deployment: `portable`
 - Domain: `foundations/strategy`
 - Scope: April Dunford product-positioning methodology for choosing the market context that makes a product's differentiated value obvious to best-fit buyers. Includes competitive alternatives, unique attributes, value themes, target segmentation, market category, optional trend context, positioning capture, and sales-message translation. Excludes integrated company strategy, industry-structure analysis, value-innovation market creation, durable moat diagnosis, and finished copywriting.
 
@@ -324,7 +323,6 @@ For [customers] who [current alternative/problem], [product] is a [category] tha
 **Concept**
 - Mental model: Product positioning is market-context design. The primitives are the customer's real competitive alternatives, the product's unique attributes, the value those attributes enable, the customer segments that care intensely about that value, the market category that makes the value obvious, optional trends that explain why now, and the captured position that aligns go-to-market teams. The method works in sequence because each later choice depends on the customer-relative evidence created by the earlier one.
 - Purpose: This skill prevents agents from treating positioning as a slogan, tagline, persona exercise, or generic differentiation list. It forces the answer to start with what customers would otherwise use, then map product attributes to value, value to best-fit customers, and customer value to a category frame that makes the product easy to understand and buy.
-- Boundary: Positioning chooses the market context for communicating a product's differentiated value. It is not an integrated strategy cascade, Blue Ocean value-innovation design, Five Forces industry analysis, Seven Powers moat diagnosis, segmentation-only STP marketing, final copywriting, brand identity, or OKR execution tracking. Those tools can feed or consume the position, but they do not replace the competitive-alternatives-first mechanism.
 - Analogy: Positioning is like placing a product on the right shelf in a store so buyers instantly know what to compare it with, why it is different, and whether it is for them.
 - Common misconception: The common mistake is thinking positioning starts with how the company wants to describe itself. Dunford-style positioning starts with the customer's real alternatives and works outward to attributes, value, best-fit buyers, category, and proof.
 

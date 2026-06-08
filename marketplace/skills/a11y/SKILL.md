@@ -16,7 +16,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: quality-assurance
-  deployment_target: portable
   taxonomy_domain: quality/accessibility
   owner: skill-graph-maintainer
   freshness: "2026-04-18"
@@ -35,6 +34,7 @@ metadata:
   truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/a11y/SKILL.md
@@ -100,7 +100,6 @@ This skill ships a comprehension-eval artifact at [`examples/evals/a11y.json`](h
 
 **Classification**
 - Subject: `quality-assurance`
-- Deployment: `portable`
 - Domain: `quality/accessibility`
 
 **When to use**

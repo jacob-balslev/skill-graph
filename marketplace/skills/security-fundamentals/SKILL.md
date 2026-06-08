@@ -5,7 +5,6 @@ license: MIT
 allowed-tools: Read Grep
 metadata:
   subject: quality-assurance
-  deployment_target: portable
   scope: "Teaching the portable design discipline behind secure applications: threat modeling, assets/adversaries/trust boundaries, Saltzer and Schroeder principles, input-validation placement, authentication vs authorization, secret classification, least privilege, secure defaults, defense in depth, and blast-radius reduction. Applies before and during feature/API/route/data-flow design when the question is whether a system can safely handle data, identity, and authority under hostile input and partial failure. Excludes OWASP-category deep code review (owasp-security), LLM-specific prompt/context/tool injection (prompt-injection-defense), vendor webhook signing/retry mechanics (webhook-integration), implementation of cryptographic primitives or KMS/envelope-encryption mechanics (vendor/library docs), legal/compliance artifacts, and organizational security training."
   taxonomy_domain: quality/security
   grounding: "{\"subject_matter\":\"Portable application-security fundamentals: threat modeling, trust boundaries, secure design principles, input validation, identity, authorization, least privilege, and defense in depth\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://www.cs.virginia.edu/~evans/cs551/saltzer/\",\"https://owasp.org/Top10/2021/\",\"https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html\",\"https://pages.nist.gov/800-63-4/sp800-63b.html\",\"https://www.cisa.gov/sites/default/files/2023-06/principles_approaches_for_security-by-design-default_508c.pdf\",\"https://owasp.org/www-project-top-10-for-large-language-model-applications/\"],\"failure_modes\":[\"Treating security as a checklist of controls rather than a property of trust boundaries\",\"Conflating authentication with authorization and checking permissions only at session establishment\",\"Relying on client-side validation or type annotations instead of server-side boundary parsing\",\"Routing OWASP-category deep code review to the broad fundamentals skill instead of owasp-security\",\"Routing LLM instruction-channel attacks to classical application-security review instead of prompt-injection-defense\",\"Referencing non-existent skill ids for compliance, scanner configuration, or credential-encryption implementation\"],\"evidence_priority\":\"general_knowledge_first\"}"
@@ -17,9 +16,10 @@ metadata:
   relations: "{\"related\":[\"owasp-security\",\"type-safety\",\"api-design\",\"http-semantics\",\"prompt-injection-defense\",\"webhook-integration\",\"error-tracking\",\"guardrails\",\"code-review\"],\"verify_with\":[\"owasp-security\",\"type-safety\",\"api-design\",\"prompt-injection-defense\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "Security fundamentals is to a software system what structural engineering is to a building — load-bearing walls, fire egress, electrical isolation, foundation depth are not features added after the building works; they are properties of the design from the first sketch, and retrofitting them costs ten times more and produces worse results than designing them in. A building that survives an earthquake does so because of decisions made at the structural-engineering stage, not because of decorations added later."
   misconception: "|"
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/security-fundamentals/SKILL.md
@@ -179,7 +179,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `quality-assurance`
-- Deployment: `portable`
 - Domain: `quality/security`
 - Scope: Teaching the portable design discipline behind secure applications: threat modeling, assets/adversaries/trust boundaries, Saltzer and Schroeder principles, input-validation placement, authentication vs authorization, secret classification, least privilege, secure defaults, defense in depth, and blast-radius reduction. Applies before and during feature/API/route/data-flow design when the question is whether a system can safely handle data, identity, and authority under hostile input and partial failure. Excludes OWASP-category deep code review (owasp-security), LLM-specific prompt/context/tool injection (prompt-injection-defense), vendor webhook signing/retry mechanics (webhook-integration), implementation of cryptographic primitives or KMS/envelope-encryption mechanics (vendor/library docs), legal/compliance artifacts, and organizational security training.
 
@@ -205,7 +204,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: Security fundamentals is to a software system what structural engineering is to a building — load-bearing walls, fire egress, electrical isolation, foundation depth are not features added after the building works; they are properties of the design from the first sketch, and retrofitting them costs ten times more and produces worse results than designing them in. A building that survives an earthquake does so because of decisions made at the structural-engineering stage, not because of decorations added later.
 - Common misconception: |
 

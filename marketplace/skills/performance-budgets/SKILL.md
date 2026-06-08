@@ -7,7 +7,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: quality-assurance
-  deployment_target: portable
   scope: "Declaring, measuring, and enforcing performance thresholds as a quality contract rather than an aspirational target — the three budget axes (time, size, count), the four governing properties of a real budget (metric, threshold, percentile, consequence), the Core Web Vitals set (LCP, INP, CLS), the RAIL model, Lighthouse budgets.json, lab vs field measurement, and treating budget breach as a build/deploy failure. Portable across any product with performance SLAs; principle-grounded, not repo-bound. Excludes profiling and optimizing a specific slow path (performance-engineering), the rendering-model choice that bounds achievable budgets (rendering-models), and observability/telemetry signal design (observability-modeling)."
   taxonomy_domain: quality/performance
   owner: skill-graph-maintainer
@@ -25,7 +24,6 @@ metadata:
   relations: "{\"related\":[\"performance-engineering\",\"rendering-models\",\"observability-modeling\",\"testing-strategy\",\"http-semantics\"],\"boundary\":[{\"skill\":\"performance-engineering\",\"reason\":\"performance-engineering owns the activity of measuring, profiling, and improving performance. performance-budgets owns the threshold-and-consequence contract. The two compose: budgets define the failure conditions; engineering produces the improvements that prevent breach.\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns runtime-correctness verification. performance-budgets is an analogous discipline for non-functional properties — a budget breach is the same kind of CI failure as a failing test.\"}],\"verify_with\":[\"performance-engineering\",\"observability-modeling\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "A performance budget is to a web app what a calorie budget is to a diet — the calorie count of any single meal is information; the calorie budget is what you do about it when you exceed it. A diet that 'tracks' calories without consequence is description; a diet with a calorie *budget* is discipline. And a per-meal budget (per-route) catches drift earlier than a per-day total: by the time the day total breaches, the offending meal is hours behind you and harder to undo."
   misconception: "|"
   concept: "{\"definition\":\"A performance budget is a declared, measurable threshold for a user-affecting property of a system — load time, interaction latency, layout stability, bundle size, request count — treated as a contract the system must satisfy. A budget has four parts: the metric (what is measured), the threshold (the maximum or minimum acceptable value), the percentile (whose experience the threshold describes), and the consequence (what happens when the threshold is breached). Without all four, the number is an aspiration, not a budget.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
@@ -35,6 +33,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/performance-budgets/SKILL.md
@@ -220,7 +220,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `quality-assurance`
-- Deployment: `portable`
 - Domain: `quality/performance`
 - Scope: Declaring, measuring, and enforcing performance thresholds as a quality contract rather than an aspirational target — the three budget axes (time, size, count), the four governing properties of a real budget (metric, threshold, percentile, consequence), the Core Web Vitals set (LCP, INP, CLS), the RAIL model, Lighthouse budgets.json, lab vs field measurement, and treating budget breach as a build/deploy failure. Portable across any product with performance SLAs; principle-grounded, not repo-bound. Excludes profiling and optimizing a specific slow path (performance-engineering), the rendering-model choice that bounds achievable budgets (rendering-models), and observability/telemetry signal design (observability-modeling).
 
@@ -245,7 +244,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: A performance budget is to a web app what a calorie budget is to a diet — the calorie count of any single meal is information; the calorie budget is what you do about it when you exceed it. A diet that 'tracks' calories without consequence is description; a diet with a calorie *budget* is discipline. And a per-meal budget (per-route) catches drift earlier than a per-day total: by the time the day total breaches, the offending meal is hours behind you and harder to undo.
 - Common misconception: |
 

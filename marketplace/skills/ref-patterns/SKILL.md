@@ -7,7 +7,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: frontend-engineering
-  deployment_target: portable
   scope: "Designing and reviewing React ref usage — refs (mutable handle that survives renders without triggering them) vs state (reactive value), useRef for DOM access and mutable instance values, ref callbacks for mount/unmount hooks, forwardRef (and the React 19 ref-as-prop change that retires it for new code), useImperativeHandle for a controlled imperative surface, ref forwarding through compound-component primitives (Radix Slot / Headless UI), and the rule that refs are an escape hatch (DOM access, non-React DOM libraries, focus, animation, measurement, imperative APIs) never a substitute for state. Portable across React codebases; principle-grounded, not repo-bound. Excludes broader hook discipline (hooks-patterns), component layering (component-architecture), state location and ownership (state-management), the use-client/use-server boundary (client-server-boundary), and form-state/validation (form-ux-architecture)."
   taxonomy_domain: engineering/frontend
   owner: skill-graph-maintainer
@@ -25,7 +24,6 @@ metadata:
   relations: "{\"related\":[\"hooks-patterns\",\"component-architecture\",\"state-management\",\"client-server-boundary\",\"form-ux-architecture\"],\"boundary\":[{\"skill\":\"hooks-patterns\",\"reason\":\"hooks-patterns owns the broader hook discipline — Rules of Hooks, dependency arrays, custom hooks, the You Might Not Need an Effect rule, the render/effect/cleanup mental model. ref-patterns covers the ref family specifically (useRef, forwardRef, useImperativeHandle, ref callbacks) and the design rule for when a ref is the right primitive vs when state is. They cross-reference but solve different problems.\"},{\"skill\":\"state-management\",\"reason\":\"state-management owns the location and ownership decisions for the four kinds of state (server / client UI / URL / persistent). ref-patterns is about the mutable-handle primitive that is NOT state — using a ref when a useState was needed (or vice versa) is the most common ref misuse. ref-patterns covers the boundary; state-management owns state itself.\"},{\"skill\":\"client-server-boundary\",\"reason\":\"client-server-boundary owns the serialization and directive mechanics. Refs only work in Client Components — a ref cannot be passed through a Server Component or serialized across the 'use client' boundary. ref-patterns notes this constraint; client-server-boundary owns the broader boundary semantics that explain why.\"}],\"verify_with\":[\"code-review\",\"hooks-patterns\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "A ref is to a React component what a static local variable is to a C function — it persists across calls (renders), reading it does not make the function 'depend on' it, writing to it does not change the function's signature or trigger any caller-visible event, and its single purpose is to hold the state that is not part of the function's interface. State, by contrast, is to the component what the function's return value is to the caller: every read participates in the contract, every change requires a re-evaluation."
   misconception: "|"
   concept: "{\"definition\":\"A React ref is a mutable object — `{ current: T }` — created by `useRef(initial)` that persists across renders without participating in the render cycle. Writing to `ref.current` does not trigger a re-render; reading from it does not subscribe the component to changes. The two canonical uses are (1) holding a reference to a DOM node so it can be focused, measured, or handed to a non-React library, and (2) holding a mutable value (an interval id, a latest-arguments closure, a previous-value snapshot) that drives side effects but is not part of what gets rendered. The design rule is: if the value should cause a re-render when it changes, it is state. If it should not, it is a ref.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
@@ -35,6 +33,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/ref-patterns/SKILL.md
@@ -319,7 +319,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `frontend-engineering`
-- Deployment: `portable`
 - Domain: `engineering/frontend`
 - Scope: Designing and reviewing React ref usage — refs (mutable handle that survives renders without triggering them) vs state (reactive value), useRef for DOM access and mutable instance values, ref callbacks for mount/unmount hooks, forwardRef (and the React 19 ref-as-prop change that retires it for new code), useImperativeHandle for a controlled imperative surface, ref forwarding through compound-component primitives (Radix Slot / Headless UI), and the rule that refs are an escape hatch (DOM access, non-React DOM libraries, focus, animation, measurement, imperative APIs) never a substitute for state. Portable across React codebases; principle-grounded, not repo-bound. Excludes broader hook discipline (hooks-patterns), component layering (component-architecture), state location and ownership (state-management), the use-client/use-server boundary (client-server-boundary), and form-state/validation (form-ux-architecture).
 
@@ -350,7 +349,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: A ref is to a React component what a static local variable is to a C function — it persists across calls (renders), reading it does not make the function 'depend on' it, writing to it does not change the function's signature or trigger any caller-visible event, and its single purpose is to hold the state that is not part of the function's interface. State, by contrast, is to the component what the function's return value is to the caller: every read participates in the contract, every change requires a re-evaluation.
 - Common misconception: |
 

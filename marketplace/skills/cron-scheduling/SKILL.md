@@ -6,7 +6,6 @@ compatibility: "Portable web-application scheduling guidance. Verify provider li
 allowed-tools: Read Grep Bash
 metadata:
   subject: backend-engineering
-  deployment_target: portable
   scope: "Cron-job architecture for web applications — Inngest schedule integration, Vercel Cron configuration, retry logic, monitoring and alerting for failed crons, and idempotency requirements — for designing scheduled tasks, configuring triggers, and debugging missed or duplicate executions. Portable across web-application stacks; principle-grounded, not repo-bound. Excludes general background-job queue design and one-off task debugging unrelated to scheduling."
   taxonomy_domain: engineering/scheduling
   stability: experimental
@@ -18,9 +17,10 @@ metadata:
   grounding: "{\"subject_matter\":\"Cron scheduling patterns for web applications across Vercel Cron and Inngest scheduled functions\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://vercel.com/docs/cron-jobs\",\"https://vercel.com/docs/cron-jobs/manage-cron-jobs\",\"https://www.inngest.com/docs/learn/inngest-functions\",\"https://www.inngest.com/docs/reference/typescript/functions/triggers\",\"https://www.inngest.com/docs/functions/concurrency\",\"https://www.inngest.com/docs/reference/typescript/functions/handling-failures\",\"https://www.inngest.com/docs/platform/monitor/observability-metrics\"],\"failure_modes\":[\"cron_endpoint_unauthorized\",\"cron_route_runs_long_work_inline\",\"duplicate_schedule_invocation_not_idempotent\",\"missed_or_failed_cron_has_no_alert\",\"cron_runs_overlap_and_corrupt_state\",\"timezone_assumption_drifts_from_user_expectation\"],\"evidence_priority\":\"equal\"}"
   mental_model: "Cron scheduling has six primitives: a schedule expression, a trigger surface, an authenticated entrypoint, a durable execution target, an idempotency key for the execution window, and observability that proves starts, completions, misses, and failures. The scheduler decides when work starts; a background job or workflow usually does the work; locks and idempotency make duplicate or overlapping starts safe."
   purpose: "Cron work fails in ways that ordinary request handlers hide: the provider can deliver a scheduled request more than once, skip retries after a failed invocation, overlap long runs, run in UTC when the user expects local time, or keep invoking a nonexistent route. This skill makes those recurring-job risks explicit before code is shipped."
-  boundary: "This skill owns time-based triggers and schedule-specific reliability. It does not own generic queue architecture, event-contract design, webhook ingestion, browser push transports, or one-off worker debugging. It should compose with background-jobs once a cron trigger hands off durable work."
   analogy: "A cron schedule is an alarm clock wired to a factory: the alarm can ring on time, twice, or not at all, so the factory still needs a front desk, work order number, lock, status board, and missed-alarm monitor."
   misconception: "The common mistake is treating cron as just a five-field string. The string is only the trigger; production cron design also needs auth, UTC/local-time intent, idempotency, overlap prevention, failure handling, and monitoring."
+  public: "true"
+  concept_boundary: "This skill owns time-based triggers and schedule-specific reliability. It does not own generic queue architecture, event-contract design, webhook ingestion, browser push transports, or one-off worker debugging. It should compose with background-jobs once a cron trigger hands off durable work."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/cron-scheduling/SKILL.md
@@ -263,7 +263,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `backend-engineering`
-- Deployment: `portable`
 - Domain: `engineering/scheduling`
 - Scope: Cron-job architecture for web applications — Inngest schedule integration, Vercel Cron configuration, retry logic, monitoring and alerting for failed crons, and idempotency requirements — for designing scheduled tasks, configuring triggers, and debugging missed or duplicate executions. Portable across web-application stacks; principle-grounded, not repo-bound. Excludes general background-job queue design and one-off task debugging unrelated to scheduling.
 
@@ -291,7 +290,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: Cron scheduling has six primitives: a schedule expression, a trigger surface, an authenticated entrypoint, a durable execution target, an idempotency key for the execution window, and observability that proves starts, completions, misses, and failures. The scheduler decides when work starts; a background job or workflow usually does the work; locks and idempotency make duplicate or overlapping starts safe.
 - Purpose: Cron work fails in ways that ordinary request handlers hide: the provider can deliver a scheduled request more than once, skip retries after a failed invocation, overlap long runs, run in UTC when the user expects local time, or keep invoking a nonexistent route. This skill makes those recurring-job risks explicit before code is shipped.
-- Boundary: This skill owns time-based triggers and schedule-specific reliability. It does not own generic queue architecture, event-contract design, webhook ingestion, browser push transports, or one-off worker debugging. It should compose with background-jobs once a cron trigger hands off durable work.
 - Analogy: A cron schedule is an alarm clock wired to a factory: the alarm can ring on time, twice, or not at all, so the factory still needs a front desk, work order number, lock, status board, and missed-alarm monitor.
 - Common misconception: The common mistake is treating cron as just a five-field string. The string is only the trigger; production cron design also needs auth, UTC/local-time intent, idempotency, overlap prevention, failure handling, and monitoring.
 

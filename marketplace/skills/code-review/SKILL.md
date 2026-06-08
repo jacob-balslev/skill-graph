@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.1.0"
   subject: quality-assurance
-  deployment_target: portable
   scope: "Portable pull-request and diff review discipline for evaluating proposed code before merge: intent/scope validation, test-first reading, implementation and call-site review, blast-radius tracing, AI-generated code verification, tool-output interpretation, comment phrasing, severity grading mapped to Conventional Comments, reviewer qualification, and explicit approve/request-changes/close/pause decisions. Excludes writing the code under review, root-cause debugging after a failure ships, security-only audits that need OWASP depth, test-plan design before authoring, and raw diff explanation without a merge decision."
   taxonomy_domain: quality/code-review
   owner: skill-graph-maintainer
@@ -28,7 +27,6 @@ metadata:
   comprehension_state: present
   mental_model: "A code review is a pre-merge risk assessment over a proposed change. Its primitives are intent, diff, test evidence, implementation behavior, public-contract blast radius, project conventions, tool findings, reviewer qualifications, severity, and the final merge decision. The reviewer compares the author's claims and tool outputs against the code and surrounding system before deciding whether the change can safely enter the shared codebase."
   purpose: "This skill prevents plausible-looking changes from entering the codebase without enough evidence. It keeps reviews focused on code health and shipped behavior rather than taste, while preserving human accountability when AI agents generate code or produce review comments."
-  boundary: "This skill evaluates a proposed change and returns review findings plus a merge decision. It does not author the implementation, debug a shipped failure, design the test plan before code exists, conduct a security-only audit, or merely summarize a patch without deciding whether the change should merge."
   analogy: "A code review is an airlock: the change can pass through only after its purpose, evidence, and blast radius are checked against the environment it is entering."
   misconception: "The common mistake is treating review as either style policing or a CI duplicate. CI proves a limited set of automated checks passed; review asks whether the change is the right change, whether the tests are meaningful, whether hidden callers or users are affected, and whether any remaining risk is acceptable."
   structural_verdict: PASS
@@ -37,6 +35,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "This skill evaluates a proposed change and returns review findings plus a merge decision. It does not author the implementation, debug a shipped failure, design the test plan before code exists, conduct a security-only audit, or merely summarize a patch without deciding whether the change should merge."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/code-review/SKILL.md
@@ -337,7 +337,6 @@ This skill ships eval artifacts at [`evals/evals.json`](https://github.com/jacob
 
 **Classification**
 - Subject: `quality-assurance`
-- Deployment: `portable`
 - Domain: `quality/code-review`
 - Scope: Portable pull-request and diff review discipline for evaluating proposed code before merge: intent/scope validation, test-first reading, implementation and call-site review, blast-radius tracing, AI-generated code verification, tool-output interpretation, comment phrasing, severity grading mapped to Conventional Comments, reviewer qualification, and explicit approve/request-changes/close/pause decisions. Excludes writing the code under review, root-cause debugging after a failure ships, security-only audits that need OWASP depth, test-plan design before authoring, and raw diff explanation without a merge decision.
 
@@ -371,7 +370,6 @@ This skill ships eval artifacts at [`evals/evals.json`](https://github.com/jacob
 **Concept**
 - Mental model: A code review is a pre-merge risk assessment over a proposed change. Its primitives are intent, diff, test evidence, implementation behavior, public-contract blast radius, project conventions, tool findings, reviewer qualifications, severity, and the final merge decision. The reviewer compares the author's claims and tool outputs against the code and surrounding system before deciding whether the change can safely enter the shared codebase.
 - Purpose: This skill prevents plausible-looking changes from entering the codebase without enough evidence. It keeps reviews focused on code health and shipped behavior rather than taste, while preserving human accountability when AI agents generate code or produce review comments.
-- Boundary: This skill evaluates a proposed change and returns review findings plus a merge decision. It does not author the implementation, debug a shipped failure, design the test plan before code exists, conduct a security-only audit, or merely summarize a patch without deciding whether the change should merge.
 - Analogy: A code review is an airlock: the change can pass through only after its purpose, evidence, and blast radius are checked against the environment it is entering.
 - Common misconception: The common mistake is treating review as either style policing or a CI duplicate. CI proves a limited set of automated checks passed; review asks whether the change is the right change, whether the tests are meaningful, whether hidden callers or users are affected, and whether any remaining risk is acceptable.
 

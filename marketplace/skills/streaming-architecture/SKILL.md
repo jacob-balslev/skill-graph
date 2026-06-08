@@ -6,7 +6,6 @@ compatibility: Portable streaming-architecture guidance. Transport capabilities 
 allowed-tools: Read Grep
 metadata:
   subject: backend-engineering
-  deployment_target: portable
   scope: "Teaching the portable architecture discipline for incremental value delivery over time: producer, stream, consumer, backpressure, framing, termination, reconnect/resume, in-stream error semantics, and transport trade-offs across HTTP chunked transfer, Server-Sent Events, WebSocket, HTTP/2/gRPC, WHATWG Streams, Node streams, and React server rendering streams. Applies when one logical result is delivered as many ordered chunks or messages and the system must reason about slow consumers, abandoned consumers, partial-result correctness, and resource bounds. Excludes browser freshness UX and live-dashboard transport selection (real-time-updates), single request/response payload design (api-design), durable worker execution and retries (background-jobs), model/tool transcript protocol design (tool-call-flow), event payload/domain-event contracts (event-contract-design), and page-level rendering-model taxonomy (rendering-models)."
   taxonomy_domain: engineering/realtime
   grounding: "{\"subject_matter\":\"Portable streaming architecture: incremental value delivery, flow control, framing, termination, reconnect/resume, and transport trade-offs across HTTP chunked transfer, SSE, WebSocket, HTTP/2/gRPC, WHATWG Streams, Node streams, Reactive Streams, and React server rendering streams\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://www.rfc-editor.org/rfc/rfc9112#name-chunked-transfer-coding\",\"https://www.rfc-editor.org/rfc/rfc9113#name-streams-and-multiplexing\",\"https://www.rfc-editor.org/rfc/rfc6455\",\"https://html.spec.whatwg.org/multipage/server-sent-events.html\",\"https://streams.spec.whatwg.org/\",\"https://nodejs.org/api/stream.html\",\"https://grpc.io/docs/what-is-grpc/core-concepts/\",\"https://www.reactive-streams.org/\",\"https://react.dev/reference/react-dom/server/renderToPipeableStream\",\"https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Using_readable_streams\"],\"failure_modes\":[\"Choosing a transport before naming producer, consumer, framing, backpressure, and termination\",\"Treating streaming as a single-response API design problem\",\"Routing browser freshness UX to low-level streaming architecture\",\"Assuming TCP flow control solves application slow-consumer memory growth\",\"Treating silence as stream termination\",\"Using WebSocket for one-way server-to-client streaming without a bidirectional requirement\",\"Using SSE reconnect semantics as if they applied to WebSocket or gRPC exactly-once resume\"],\"evidence_priority\":\"general_knowledge_first\"}"
@@ -18,9 +17,10 @@ metadata:
   relations: "{\"related\":[\"real-time-updates\",\"api-design\",\"background-jobs\",\"client-server-boundary\",\"rendering-models\",\"performance-budgets\",\"tool-call-flow\",\"event-contract-design\"],\"boundary\":[{\"skill\":\"api-design\",\"reason\":\"api-design owns the request/response surface for one bounded round trip; streaming-architecture owns the multi-value-over-time surface where one logical response is delivered as ordered chunks.\"},{\"skill\":\"real-time-updates\",\"reason\":\"real-time-updates owns browser freshness UX and live-dashboard transport selection; streaming-architecture owns the low-level producer/stream/consumer/backpressure/termination contract.\"},{\"skill\":\"background-jobs\",\"reason\":\"background-jobs owns durable worker execution, retry policy, and persisted progress; streaming-architecture owns incremental delivery while the producer is emitting.\"}],\"verify_with\":[\"api-design\",\"performance-budgets\",\"real-time-updates\",\"client-server-boundary\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "A streaming architecture is to data delivery what a conveyor belt is to a factory's order fulfillment — you do not wait for an entire shipment to be assembled before any piece leaves the warehouse; the belt moves boxes one at a time, the loading dock signals when it's full (backpressure), a final marker indicates the shipment is complete (termination), and the receiving truck can start unloading the first box while the last one is still being assembled. A conveyor with no full-dock signal flings boxes onto the floor; a conveyor with no end-marker keeps the truck driver waiting forever."
   misconception: "|"
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/streaming-architecture/SKILL.md
@@ -233,7 +233,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `backend-engineering`
-- Deployment: `portable`
 - Domain: `engineering/realtime`
 - Scope: Teaching the portable architecture discipline for incremental value delivery over time: producer, stream, consumer, backpressure, framing, termination, reconnect/resume, in-stream error semantics, and transport trade-offs across HTTP chunked transfer, Server-Sent Events, WebSocket, HTTP/2/gRPC, WHATWG Streams, Node streams, and React server rendering streams. Applies when one logical result is delivered as many ordered chunks or messages and the system must reason about slow consumers, abandoned consumers, partial-result correctness, and resource bounds. Excludes browser freshness UX and live-dashboard transport selection (real-time-updates), single request/response payload design (api-design), durable worker execution and retries (background-jobs), model/tool transcript protocol design (tool-call-flow), event payload/domain-event contracts (event-contract-design), and page-level rendering-model taxonomy (rendering-models).
 
@@ -258,7 +257,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: A streaming architecture is to data delivery what a conveyor belt is to a factory's order fulfillment — you do not wait for an entire shipment to be assembled before any piece leaves the warehouse; the belt moves boxes one at a time, the loading dock signals when it's full (backpressure), a final marker indicates the shipment is complete (termination), and the receiving truck can start unloading the first box while the last one is still being assembled. A conveyor with no full-dock signal flings boxes onto the floor; a conveyor with no end-marker keeps the truck driver waiting forever.
 - Common misconception: |
 

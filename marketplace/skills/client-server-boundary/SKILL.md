@@ -7,7 +7,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: frontend-engineering
-  deployment_target: portable
   scope: "Reasoning about the line at which execution context changes between a server runtime and a client runtime — what values can cross via serialization and what cannot, the directives that mark transitions ('use client', 'use server'), the difference between server-rendered HTML and a serialized component tree, the trust model that treats client input as adversarial, and the consequences of leaking server-only modules into client bundles. Portable across any server/client web framework; principle-grounded, not repo-bound. Excludes when and where the UI is produced (rendering-models), the HTTP wire protocol itself (http-semantics), frontend codebase organization (frontend-architecture), and API JSON-shape design (api-design)."
   taxonomy_domain: engineering/frontend
   owner: skill-graph-maintainer
@@ -25,7 +24,6 @@ metadata:
   relations: "{\"related\":[\"rendering-models\",\"http-semantics\",\"frontend-architecture\",\"type-safety\",\"api-design\"],\"boundary\":[{\"skill\":\"rendering-models\",\"reason\":\"rendering-models owns the staging of work across build/request/stream/interaction. client-server-boundary owns the serialization frontier — what can cross between server code and client code. The two compose: any rendering model that emits a server-produced artifact for client consumption faces a boundary.\"}],\"verify_with\":[\"type-safety\",\"api-design\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "The client-server boundary is to a unified codebase what an embassy boundary is to a city — both spaces exist in the same physical address, but inside the embassy the law of one country applies (server: full filesystem, secret access, database), outside the law of another applies (client: browser sandbox, no secrets), and everyone crossing must pass through documented customs (serialization) with their bags inspected (validation) and stamped (authentication)."
   misconception: "|"
   concept: "{\"definition\":\"The client-server boundary is the line in a unified codebase at which execution context changes — between a server runtime (full filesystem, secret access, database connections) and a client runtime (browser, no filesystem, no server secrets, untrusted by the server). Anything that crosses the boundary must be serialized: encoded as bytes on one side, decoded into a value on the other. The boundary is marked by directives, enforced by the framework, and made invisible to the developer who treats it correctly.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
@@ -35,6 +33,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/client-server-boundary/SKILL.md
@@ -221,7 +221,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `frontend-engineering`
-- Deployment: `portable`
 - Domain: `engineering/frontend`
 - Scope: Reasoning about the line at which execution context changes between a server runtime and a client runtime — what values can cross via serialization and what cannot, the directives that mark transitions ('use client', 'use server'), the difference between server-rendered HTML and a serialized component tree, the trust model that treats client input as adversarial, and the consequences of leaking server-only modules into client bundles. Portable across any server/client web framework; principle-grounded, not repo-bound. Excludes when and where the UI is produced (rendering-models), the HTTP wire protocol itself (http-semantics), frontend codebase organization (frontend-architecture), and API JSON-shape design (api-design).
 
@@ -245,7 +244,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: The client-server boundary is to a unified codebase what an embassy boundary is to a city — both spaces exist in the same physical address, but inside the embassy the law of one country applies (server: full filesystem, secret access, database), outside the law of another applies (client: browser sandbox, no secrets), and everyone crossing must pass through documented customs (serialization) with their bags inspected (validation) and stamped (authentication).
 - Common misconception: |
 

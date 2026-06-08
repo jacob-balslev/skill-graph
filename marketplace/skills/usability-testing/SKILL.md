@@ -6,7 +6,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: design
-  deployment_target: portable
   scope: "Observing real users attempting tasks on a prototype or live product to surface usability issues — moderated or unmoderated, think-aloud protocol, task scenarios, severity rating, and sample sizing per Nielsen's heuristics. Portable across any product under evaluation; principle-grounded, not repo-bound. Excludes automated test suites, code coverage, CI pipelines, and unit/integration testing (testing-strategy) — this is human-behavior observation, not engineering verification."
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
@@ -26,6 +25,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/usability-testing/SKILL.md
@@ -70,7 +70,6 @@ The practice is opinionated about moderator behavior. The moderator's job is to 
 
 **Classification**
 - Subject: `design`
-- Deployment: `portable`
 - Scope: Observing real users attempting tasks on a prototype or live product to surface usability issues — moderated or unmoderated, think-aloud protocol, task scenarios, severity rating, and sample sizing per Nielsen's heuristics. Portable across any product under evaluation; principle-grounded, not repo-bound. Excludes automated test suites, code coverage, CI pipelines, and unit/integration testing (testing-strategy) — this is human-behavior observation, not engineering verification.
 
 **When to use**

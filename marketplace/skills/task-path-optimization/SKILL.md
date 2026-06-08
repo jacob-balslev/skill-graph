@@ -5,7 +5,6 @@ metadata:
   schema_version: "8"
   version: "1.1.0"
   subject: software-engineering-method
-  deployment_target: portable
   scope: "Choosing the optimal execution path before starting work — plan-vs-act gates, agent-architecture selection (chaining, routing, parallelization, orchestrator-worker, evaluator-optimizer), scope-management heuristics, critical-path analysis across task networks, and context-budget awareness, including the fresh-approach reset when a task has failed twice. Portable across any agentic execution; principle-grounded, not repo-bound. Excludes executing the chosen plan (task-execution), debugging failures (troubleshooting, diagnosis), and tool-level efficiency (tool-call-strategy)."
   eval_artifacts: present
   eval_state: passing
@@ -20,7 +19,6 @@ metadata:
   comprehension_state: present
   mental_model: "Task path optimization is route planning before execution: classify the task shape, choose the lightest sufficient approach, sequence dependencies, isolate exploration when context would get polluted, and switch strategy after repeated failure instead of pushing harder on a bad path."
   purpose: "This skill prevents agents from either coding too soon on ambiguous work or over-planning simple work. It makes the execution path an explicit decision so planning, delegation, parallelization, review, and context reset are used only when the task shape justifies them."
-  boundary: "This skill chooses the approach before execution. It does not execute the implementation, debug a concrete failure, optimize individual tool calls, manage Linear issue lifecycle, or record durable architecture decisions."
   analogy: "Task path optimization is like choosing a route before a trip: walking across the street needs no map, crossing a city needs traffic awareness, and crossing a mountain range needs checkpoints and fallback routes."
   misconception: "The common mistake is treating more process as safer. The safest path is the smallest path that still handles ambiguity, dependency, risk, and verification."
   last_audited: "2026-05-28"
@@ -30,6 +28,8 @@ metadata:
   truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  public: "true"
+  concept_boundary: "This skill chooses the approach before execution. It does not execute the implementation, debug a concrete failure, optimize individual tool calls, manage Linear issue lifecycle, or record durable architecture decisions."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-engineering-method/task-path-optimization/SKILL.md
@@ -331,7 +331,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `software-engineering-method`
-- Deployment: `portable`
 - Scope: Choosing the optimal execution path before starting work — plan-vs-act gates, agent-architecture selection (chaining, routing, parallelization, orchestrator-worker, evaluator-optimizer), scope-management heuristics, critical-path analysis across task networks, and context-budget awareness, including the fresh-approach reset when a task has failed twice. Portable across any agentic execution; principle-grounded, not repo-bound. Excludes executing the chosen plan (task-execution), debugging failures (troubleshooting, diagnosis), and tool-level efficiency (tool-call-strategy).
 
 **When to use**
@@ -358,7 +357,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: Task path optimization is route planning before execution: classify the task shape, choose the lightest sufficient approach, sequence dependencies, isolate exploration when context would get polluted, and switch strategy after repeated failure instead of pushing harder on a bad path.
 - Purpose: This skill prevents agents from either coding too soon on ambiguous work or over-planning simple work. It makes the execution path an explicit decision so planning, delegation, parallelization, review, and context reset are used only when the task shape justifies them.
-- Boundary: This skill chooses the approach before execution. It does not execute the implementation, debug a concrete failure, optimize individual tool calls, manage Linear issue lifecycle, or record durable architecture decisions.
 - Analogy: Task path optimization is like choosing a route before a trip: walking across the street needs no map, crossing a city needs traffic awareness, and crossing a mountain range needs checkpoints and fallback routes.
 - Common misconception: The common mistake is treating more process as safer. The safest path is the smallest path that still handles ambiguity, dependency, risk, and verification.
 

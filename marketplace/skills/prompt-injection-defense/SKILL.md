@@ -5,7 +5,6 @@ license: MIT
 allowed-tools: Read Grep
 metadata:
   subject: ai-engineering
-  deployment_target: portable
   scope: "Reasoning about prompt-injection defense for systems that pass untrusted content to language models: data-vs-instruction collapse, direct and indirect injection, exfiltration, action-trigger attacks, untrusted content surfaces, and defense-in-depth through capability constraint, origin tracking, separated planning/execution, human approval, and least authority. Portable across LLM-integrated products and agent architectures. Excludes model jailbreaking/policy bypass, general API security, non-LLM input validation, and ordinary tool-call protocol design."
   taxonomy_domain: quality/security
   stability: experimental
@@ -17,9 +16,10 @@ metadata:
   grounding: "{\"subject_matter\":\"Portable prompt-injection threat modeling and defense-in-depth for LLM-integrated systems and agents\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://genai.owasp.org/llmrisk/llm01-prompt-injection/\",\"https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html\",\"https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks\",\"https://csrc.nist.gov/pubs/ai/100/2/e2025/final\",\"https://www.ncsc.gov.uk/blog-post/prompt-injection-is-not-sql-injection\",\"https://arxiv.org/abs/2302.12173\",\"../skills/skills/ai-engineering/prompt-injection-defense/references/prompt-injection-defense-2026-06-07.md\"],\"failure_modes\":[\"treating_prompt_injection_as_a_model_bug_fixed_by_prompt_wording\",\"confusing_jailbreak_policy_bypass_with_agent_action_exfiltration_risk\",\"trusting_rag_tool_results_attachments_or_subagent_output_as_instructions\",\"allowing_untrusted_content_and_high_impact_tools_in_the_same_turn\",\"relying_on_content_filters_without_capability_constraint_or_human_approval\",\"rendering_model_output_with_unrestricted_external_image_or_link_targets\",\"letting_human_approval_dialog_text_be_derived_from_untrusted_model_output\"],\"evidence_priority\":\"equal\"}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "Prompt injection defense is to LLM-integrated systems what blast walls are to fuel depots — you cannot prevent the fuel from being flammable (the structural property), so you do not try; you build the walls so that an ignition contains itself, the radius is bounded, and the rest of the depot survives. The walls are the architectural defense; the model's susceptibility is the fuel's flammability — a property of its physics, not a bug to fix."
   misconception: "|"
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/ai-engineering/prompt-injection-defense/SKILL.md
@@ -152,7 +152,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `ai-engineering`
-- Deployment: `portable`
 - Domain: `quality/security`
 - Scope: Reasoning about prompt-injection defense for systems that pass untrusted content to language models: data-vs-instruction collapse, direct and indirect injection, exfiltration, action-trigger attacks, untrusted content surfaces, and defense-in-depth through capability constraint, origin tracking, separated planning/execution, human approval, and least authority. Portable across LLM-integrated products and agent architectures. Excludes model jailbreaking/policy bypass, general API security, non-LLM input validation, and ordinary tool-call protocol design.
 
@@ -178,7 +177,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: Prompt injection defense is to LLM-integrated systems what blast walls are to fuel depots — you cannot prevent the fuel from being flammable (the structural property), so you do not try; you build the walls so that an ignition contains itself, the radius is bounded, and the rest of the depot survives. The walls are the architectural defense; the model's susceptibility is the fuel's flammability — a property of its physics, not a bug to fix.
 - Common misconception: |
 

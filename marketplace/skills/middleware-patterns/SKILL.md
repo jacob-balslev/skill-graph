@@ -7,7 +7,6 @@ metadata:
   schema_version: "8"
   version: "2.0.0"
   subject: frontend-engineering
-  deployment_target: portable
   scope: "Designing and reviewing the Next.js request-preprocessing layer — the single root file (`proxy.ts` since Next.js 16, function `proxy`, Node.js runtime; or the deprecated-but-retained `middleware.ts`, function `middleware`, Edge Runtime by default with a Node.js opt-in since 15.5) that runs cross-cutting request/response transforms before route resolution. Covers the proxy↔middleware runtime split and its capability consequences, the matcher config (including the `_next/data` always-runs and Server-Function-coverage gotchas), the NextRequest/NextResponse API (cookies/headers; geolocation()/ipAddress() from @vercel/functions after the Next.js 15 geo/ip removal), the four response shapes (next/rewrite/redirect/direct), waitUntil background work, the official next/experimental/testing/server utilities, the canonical patterns (auth gate, locale routing, A/B testing, header injection, geo-routing, bot blocking), the per-matched-request performance cost, the CVE-2025-29927 lesson that this layer is not a security boundary, and the rule that it is for cross-cutting concerns, never per-route business logic. Portable across Next.js App Router projects; principle-grounded, not repo-bound. Excludes per-route endpoint logic (route-handler-design), the Server Action surface (server-actions-design), abstract HTTP semantics (http-semantics), CSP and hardening (security-fundamentals), and the streaming model (streaming-architecture)."
   taxonomy_domain: engineering/frontend
   owner: skill-graph-maintainer
@@ -25,7 +24,6 @@ metadata:
   relations: "{\"related\":[\"route-handler-design\",\"server-actions-design\",\"http-semantics\",\"security-fundamentals\",\"server-components-design\",\"client-server-boundary\",\"webhook-integration\"],\"boundary\":[{\"skill\":\"server-actions-design\",\"reason\":\"server-actions-design owns the internal-mutation surface invoked from the app's own UI; the proxy/middleware layer is the cross-cutting request preprocessor that runs before any route or action. A Server Action call passes through proxy on its way to the server — but only if its route matches the matcher.\"},{\"skill\":\"server-components-design\",\"reason\":\"server-components-design owns the render path that produces a page; proxy runs upstream of render and can rewrite, redirect, or pass through. Proxy does not replace render; it gates and rewrites it.\"}],\"verify_with\":[\"code-review\",\"security-fundamentals\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "The proxy/middleware layer is to a Next.js app what a building's lobby concierge is to its offices — every visitor passes through the lobby before reaching any specific floor; the concierge can glance at ID badges (auth UX gate), redirect visitors to the right elevator (locale or A/B rewrite), hand out lanyards with security policies attached (CSP nonce, request-ID header), or turn away obvious bad-faith visitors at the door (bot block) — but a concierge's glance is not the vault lock: the office door still verifies you (route-level auth), because anyone who slips past the lobby (CVE-2025-29927) must still be stopped at the office itself."
   misconception: "|"
   concept: "{\"definition\":\"The Next.js request-preprocessing layer is a single async function exported from one root file (`proxy.ts`/`proxy` since Next.js 16 on the Node.js runtime; the deprecated `middleware.ts`/`middleware` on the Edge Runtime) that runs before route resolution for every request matching its `matcher` config. It receives a `NextRequest` and returns a `NextResponse` (or implicitly `NextResponse.next()`), and can do four things: pass through (`next`), rewrite to a different internal path (`rewrite`), redirect to a different URL (`redirect`), or short-circuit with a direct response. It runs once per request before any page render, Server Component fetch, Server Action, or Route Handler executes — making it the place to apply genuinely cross-cutting concerns, while never being the authorization boundary itself.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
@@ -35,6 +33,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/middleware-patterns/SKILL.md
@@ -608,7 +608,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `frontend-engineering`
-- Deployment: `portable`
 - Domain: `engineering/frontend`
 - Scope: Designing and reviewing the Next.js request-preprocessing layer — the single root file (`proxy.ts` since Next.js 16, function `proxy`, Node.js runtime; or the deprecated-but-retained `middleware.ts`, function `middleware`, Edge Runtime by default with a Node.js opt-in since 15.5) that runs cross-cutting request/response transforms before route resolution. Covers the proxy↔middleware runtime split and its capability consequences, the matcher config (including the `_next/data` always-runs and Server-Function-coverage gotchas), the NextRequest/NextResponse API (cookies/headers; geolocation()/ipAddress() from @vercel/functions after the Next.js 15 geo/ip removal), the four response shapes (next/rewrite/redirect/direct), waitUntil background work, the official next/experimental/testing/server utilities, the canonical patterns (auth gate, locale routing, A/B testing, header injection, geo-routing, bot blocking), the per-matched-request performance cost, the CVE-2025-29927 lesson that this layer is not a security boundary, and the rule that it is for cross-cutting concerns, never per-route business logic. Portable across Next.js App Router projects; principle-grounded, not repo-bound. Excludes per-route endpoint logic (route-handler-design), the Server Action surface (server-actions-design), abstract HTTP semantics (http-semantics), CSP and hardening (security-fundamentals), and the streaming model (streaming-architecture).
 
@@ -640,7 +639,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: The proxy/middleware layer is to a Next.js app what a building's lobby concierge is to its offices — every visitor passes through the lobby before reaching any specific floor; the concierge can glance at ID badges (auth UX gate), redirect visitors to the right elevator (locale or A/B rewrite), hand out lanyards with security policies attached (CSP nonce, request-ID header), or turn away obvious bad-faith visitors at the door (bot block) — but a concierge's glance is not the vault lock: the office door still verifies you (route-level auth), because anyone who slips past the lobby (CVE-2025-29927) must still be stopped at the office itself.
 - Common misconception: |
 

@@ -6,7 +6,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: design
-  deployment_target: portable
   scope: "Turning raw qualitative research output (interview transcripts, field notes, diary entries, observation logs) into themes, patterns, insight statements, and design-ready artifacts via affinity mapping, empathy maps, and jobs-to-be-done framing. Portable across any qualitative-research effort; principle-grounded, not repo-bound. Excludes collecting new research (user-research), quantitative analysis and statistical inference, and summarizing a single document (synthesis operates on a corpus of qualitative evidence)."
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
@@ -26,6 +25,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/research-synthesis/SKILL.md
@@ -68,7 +68,6 @@ The discipline is wary of premature abstraction. A theme named too early ("users
 
 **Classification**
 - Subject: `design`
-- Deployment: `portable`
 - Scope: Turning raw qualitative research output (interview transcripts, field notes, diary entries, observation logs) into themes, patterns, insight statements, and design-ready artifacts via affinity mapping, empathy maps, and jobs-to-be-done framing. Portable across any qualitative-research effort; principle-grounded, not repo-bound. Excludes collecting new research (user-research), quantitative analysis and statistical inference, and summarizing a single document (synthesis operates on a corpus of qualitative evidence).
 
 **When to use**

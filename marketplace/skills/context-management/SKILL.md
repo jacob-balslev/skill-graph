@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: agent-ops
-  deployment_target: portable
   scope: "Deciding what to load into an active agent session, recovering from context drift, preparing compaction or restart, distilling raw inputs into a working summary, and writing a resumable handoff — intake triage, the six-step context-management loop, working-set shaping, evidence-first loading, drift signals, anti-drift rules, compaction-ready handoffs, and selective rebuild after context loss. Portable across any agent session; principle-grounded, not repo-bound. Excludes token math (context-window), prompt wording (prompt-craft), persistent memory curation, and multi-graph context architecture (context-graph)."
   taxonomy_domain: agent/context
   owner: skill-graph-maintainer
@@ -30,6 +29,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/context-management/SKILL.md
@@ -203,7 +203,6 @@ Do not "warm up" by re-reading everything. Recovery is a _selective_ rebuild, no
 
 **Classification**
 - Subject: `agent-ops`
-- Deployment: `portable`
 - Domain: `agent/context`
 - Scope: Deciding what to load into an active agent session, recovering from context drift, preparing compaction or restart, distilling raw inputs into a working summary, and writing a resumable handoff — intake triage, the six-step context-management loop, working-set shaping, evidence-first loading, drift signals, anti-drift rules, compaction-ready handoffs, and selective rebuild after context loss. Portable across any agent session; principle-grounded, not repo-bound. Excludes token math (context-window), prompt wording (prompt-craft), persistent memory curation, and multi-graph context architecture (context-graph).
 

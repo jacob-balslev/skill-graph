@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: reasoning-strategy
-  deployment_target: portable
   scope: "Principled negotiation and BATNA methodology for preparing and conducting negotiations: map parties and issues, separate relationship from substance, convert positions into interests, create option packages, use objective criteria, compare offers to BATNA/reservation value/ZOPA, and choose accept, improve, pause, or walk away. Excludes persuasion copy, legal advice, crisis/hostage negotiation, broad business strategy, and one-party decision scoring without counterparties."
   taxonomy_domain: foundations/negotiation
   owner: skill-graph-maintainer
@@ -29,7 +28,6 @@ metadata:
   comprehension_state: present
   mental_model: "Principled negotiation treats agreement as joint problem solving under walkaway discipline. The primitives are parties, issues, relationship concerns, positions, underlying interests, options for mutual gain, objective criteria, BATNAs, reservation values, and the zone of possible agreement. The method separates people from substantive problems, expands value before dividing it, and accepts only agreements that beat the relevant BATNA."
   purpose: "This skill prevents agents from treating negotiation as either hardball demands or friendly concession. It forces preparation around interests, alternatives, standards, option packages, and walkaway thresholds so the agent can improve the negotiation without recommending a bad deal just because an agreement is available."
-  boundary: "Principled negotiation is for preparing and conducting negotiations with counterparties. It is not generic persuasion, legal advice, crisis negotiation, compensation-policy design, competitive strategy formulation, product positioning, or one-party expected-value analysis. Those methods may inform a negotiation, but they do not replace interest-based bargaining and BATNA comparison."
   analogy: Principled negotiation is like designing a bridge both sides can cross while keeping a mapped exit road in case the bridge would lead somewhere worse than leaving.
   misconception: "The common mistake is thinking principled negotiation means being nice, compromising, or always reaching agreement. The method is cooperative about problem solving and firm about standards and BATNA; walking away from a worse-than-BATNA deal is success, not failure."
   structural_verdict: PASS
@@ -42,6 +40,8 @@ metadata:
   drift_status: EXTERNAL_UNHASHED
   eval_score: "4.38"
   eval_failed_ids: "[]"
+  public: "true"
+  concept_boundary: "Principled negotiation is for preparing and conducting negotiations with counterparties. It is not generic persuasion, legal advice, crisis negotiation, compensation-policy design, competitive strategy formulation, product positioning, or one-party expected-value analysis. Those methods may inform a negotiation, but they do not replace interest-based bargaining and BATNA comparison."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/principled-negotiation/SKILL.md
@@ -298,7 +298,6 @@ Before finalizing a negotiation answer, check:
 
 **Classification**
 - Subject: `reasoning-strategy`
-- Deployment: `portable`
 - Domain: `foundations/negotiation`
 - Scope: Principled negotiation and BATNA methodology for preparing and conducting negotiations: map parties and issues, separate relationship from substance, convert positions into interests, create option packages, use objective criteria, compare offers to BATNA/reservation value/ZOPA, and choose accept, improve, pause, or walk away. Excludes persuasion copy, legal advice, crisis/hostage negotiation, broad business strategy, and one-party decision scoring without counterparties.
 
@@ -329,7 +328,6 @@ Before finalizing a negotiation answer, check:
 **Concept**
 - Mental model: Principled negotiation treats agreement as joint problem solving under walkaway discipline. The primitives are parties, issues, relationship concerns, positions, underlying interests, options for mutual gain, objective criteria, BATNAs, reservation values, and the zone of possible agreement. The method separates people from substantive problems, expands value before dividing it, and accepts only agreements that beat the relevant BATNA.
 - Purpose: This skill prevents agents from treating negotiation as either hardball demands or friendly concession. It forces preparation around interests, alternatives, standards, option packages, and walkaway thresholds so the agent can improve the negotiation without recommending a bad deal just because an agreement is available.
-- Boundary: Principled negotiation is for preparing and conducting negotiations with counterparties. It is not generic persuasion, legal advice, crisis negotiation, compensation-policy design, competitive strategy formulation, product positioning, or one-party expected-value analysis. Those methods may inform a negotiation, but they do not replace interest-based bargaining and BATNA comparison.
 - Analogy: Principled negotiation is like designing a bridge both sides can cross while keeping a mapped exit road in case the bridge would lead somewhere worse than leaving.
 - Common misconception: The common mistake is thinking principled negotiation means being nice, compromising, or always reaching agreement. The method is cooperative about problem solving and firm about standards and BATNA; walking away from a worse-than-BATNA deal is success, not failure.
 

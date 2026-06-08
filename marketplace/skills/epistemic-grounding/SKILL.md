@@ -5,7 +5,6 @@ license: MIT
 allowed-tools: Read Grep WebSearch WebFetch
 metadata:
   subject: reasoning-strategy
-  deployment_target: portable
   scope: "Portable claim-grounding discipline for skill content, documentation, audit findings, architecture proposals, code review comments, research summaries, and other artifacts that assert facts. Teaches Toulmin claim/data/warrant/backing/qualifier/rebuttal structure, the verified/source-supported/inferred/asserted/unverified/contradicted claim-state labels, the chain-of-verification procedure for upgrading a claim's grounding state, RFC 2119/RFC 8174 modality, source-to-claim warrants, citation faithfulness, native citation-tool limits, source-priority (primary over secondary), scoped absence/negative claims, conflict handling, currentness checks, and honest hedging. Excludes execution-level evidence receipts and output completeness (methodology), naming precision (semantics), retrieval/context architecture (context-engineering), and grader/rubric design (evaluation or agent-eval-design)."
   taxonomy_domain: foundations/epistemics
   stability: experimental
@@ -16,9 +15,10 @@ metadata:
   relations: "{\"related\":[\"methodology\",\"semantics\",\"evaluation\",\"agent-eval-design\",\"best-practice\",\"context-engineering\",\"bayesian-reasoning\",\"first-principles-thinking\"],\"verify_with\":[\"methodology\",\"evaluation\",\"best-practice\",\"context-engineering\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "Epistemic grounding is to claims what double-entry bookkeeping is to financial transactions — every assertion has a corresponding source and warrant on the other side of the ledger, and any unpaired entry is a red flag in the audit."
   misconception: "|"
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/epistemic-grounding/SKILL.md
@@ -304,7 +304,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `reasoning-strategy`
-- Deployment: `portable`
 - Domain: `foundations/epistemics`
 - Scope: Portable claim-grounding discipline for skill content, documentation, audit findings, architecture proposals, code review comments, research summaries, and other artifacts that assert facts. Teaches Toulmin claim/data/warrant/backing/qualifier/rebuttal structure, the verified/source-supported/inferred/asserted/unverified/contradicted claim-state labels, the chain-of-verification procedure for upgrading a claim's grounding state, RFC 2119/RFC 8174 modality, source-to-claim warrants, citation faithfulness, native citation-tool limits, source-priority (primary over secondary), scoped absence/negative claims, conflict handling, currentness checks, and honest hedging. Excludes execution-level evidence receipts and output completeness (methodology), naming precision (semantics), retrieval/context architecture (context-engineering), and grader/rubric design (evaluation or agent-eval-design).
 
@@ -329,7 +328,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: Epistemic grounding is to claims what double-entry bookkeeping is to financial transactions — every assertion has a corresponding source and warrant on the other side of the ledger, and any unpaired entry is a red flag in the audit.
 - Common misconception: |
 

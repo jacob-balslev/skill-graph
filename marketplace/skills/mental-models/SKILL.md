@@ -5,7 +5,6 @@ license: MIT
 allowed-tools: Read Grep
 metadata:
   subject: reasoning-strategy
-  deployment_target: portable
   scope: "Mental-models reasoning for diagnosing how users, designers, developers, teams, and agents represent a system differently from how it actually behaves. Portable across UX, distributed systems, type systems, API design, and collaboration contexts. Covers the three-model frame, the two gulfs, analogy/metaphor as model-seeding, model failure modes, model depth layers, and validation against system behavior. Excludes formal entity/schema modeling (conceptual-modeling), representation-paradigm choice (knowledge-modeling), empirical research-method design (user-research), cognitive-bias analysis, and tactical implementation choices."
   taxonomy_domain: foundations/mental-models
   stability: experimental
@@ -16,9 +15,10 @@ metadata:
   relations: "{\"related\":[\"conceptual-modeling\",\"knowledge-modeling\",\"user-research\",\"semantics\"],\"verify_with\":[\"user-research\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "A mental model is to a system what a map is to a city — the map is not the territory, the map is useful precisely because it is smaller and selective, and a traveler navigating with the wrong map (a city map for a different city, an out-of-date map, a tourist map missing the metro) does not get lost because the map is 'wrong' but because the map's selectiveness does not match the route they need."
   misconception: "|"
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/mental-models/SKILL.md
@@ -146,7 +146,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `reasoning-strategy`
-- Deployment: `portable`
 - Domain: `foundations/mental-models`
 - Scope: Mental-models reasoning for diagnosing how users, designers, developers, teams, and agents represent a system differently from how it actually behaves. Portable across UX, distributed systems, type systems, API design, and collaboration contexts. Covers the three-model frame, the two gulfs, analogy/metaphor as model-seeding, model failure modes, model depth layers, and validation against system behavior. Excludes formal entity/schema modeling (conceptual-modeling), representation-paradigm choice (knowledge-modeling), empirical research-method design (user-research), cognitive-bias analysis, and tactical implementation choices.
 
@@ -170,7 +169,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: A mental model is to a system what a map is to a city — the map is not the territory, the map is useful precisely because it is smaller and selective, and a traveler navigating with the wrong map (a city map for a different city, an out-of-date map, a tourist map missing the metro) does not get lost because the map is 'wrong' but because the map's selectiveness does not match the route they need.
 - Common misconception: |
 

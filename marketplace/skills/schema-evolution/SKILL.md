@@ -5,7 +5,6 @@ license: MIT
 allowed-tools: Read Grep
 metadata:
   subject: data-engineering
-  deployment_target: portable
   scope: "Evolving a database schema over time without breaking deployed application code — the expand/contract pattern, zero-downtime change rules, the backwards/forwards compatibility envelope (deploy ordering and rollback discipline), the per-change-type safe procedure (add/drop/rename column, type change, constraints, indexes), dual-write/dual-read transitions with named source-of-truth and production consistency-check rules, the bounded lock-acquisition discipline that makes even a metadata-only change safe under live traffic (Postgres lock_timeout + retry, or the engine equivalent), the cross-engine online-change mechanisms (Postgres CONCURRENTLY/NOT VALID, MySQL INSTANT/INPLACE/COPY Online DDL, gh-ost/pt-osc ghost-table cutover, Vitess/PlanetScale revert windows), the view-based multi-version tools (pgroll, Reshape) and the migration-lint enforcement layer (Strong Migrations, Squawk, Atlas) that encode the discipline. Portable across relational databases and deploy pipelines; principle-grounded, not repo-bound. Excludes mechanical execution of one migration (database-migration), schema design from scratch (data-modeling), query tuning (query-optimization), and distributed-data partitioning (sharding-strategy)."
   taxonomy_domain: engineering/data
   stability: experimental
@@ -17,9 +16,10 @@ metadata:
   anti_examples: "[\"execute one ALTER TABLE migration mechanically (use database-migration)\",\"design a schema from scratch (use data-modeling)\",\"diagnose a slow query (use query-optimization)\",\"choose shard keys or repartition data across nodes (use sharding-strategy)\"]"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "Schema evolution is to a database what stage carpentry is to a Broadway musical — the show does not stop; you do not bolt a new staircase to the stage during the second act; you build the new staircase upstage while the old staircase serves the cast (expand), gradually rehearse the cast to use the new one while the old still works (migrate), and only after every performer has memorized the new route do you remove the old staircase (contract). Removing the old before everyone has migrated is the production-incident equivalent of a missed cue; swinging a heavy set piece across the stage mid-scene without warning the cast — even briefly — is the lock-queue freeze."
   misconception: "|"
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/data-engineering/schema-evolution/SKILL.md
@@ -321,7 +321,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `data-engineering`
-- Deployment: `portable`
 - Domain: `engineering/data`
 - Scope: Evolving a database schema over time without breaking deployed application code — the expand/contract pattern, zero-downtime change rules, the backwards/forwards compatibility envelope (deploy ordering and rollback discipline), the per-change-type safe procedure (add/drop/rename column, type change, constraints, indexes), dual-write/dual-read transitions with named source-of-truth and production consistency-check rules, the bounded lock-acquisition discipline that makes even a metadata-only change safe under live traffic (Postgres lock_timeout + retry, or the engine equivalent), the cross-engine online-change mechanisms (Postgres CONCURRENTLY/NOT VALID, MySQL INSTANT/INPLACE/COPY Online DDL, gh-ost/pt-osc ghost-table cutover, Vitess/PlanetScale revert windows), the view-based multi-version tools (pgroll, Reshape) and the migration-lint enforcement layer (Strong Migrations, Squawk, Atlas) that encode the discipline. Portable across relational databases and deploy pipelines; principle-grounded, not repo-bound. Excludes mechanical execution of one migration (database-migration), schema design from scratch (data-modeling), query tuning (query-optimization), and distributed-data partitioning (sharding-strategy).
 
@@ -349,7 +348,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: Schema evolution is to a database what stage carpentry is to a Broadway musical — the show does not stop; you do not bolt a new staircase to the stage during the second act; you build the new staircase upstage while the old staircase serves the cast (expand), gradually rehearse the cast to use the new one while the old still works (migrate), and only after every performer has memorized the new route do you remove the old staircase (contract). Removing the old before everyone has migrated is the production-incident equivalent of a missed cue; swinging a heavy set piece across the stage mid-scene without warning the cast — even briefly — is the lock-queue freeze.
 - Common misconception: |
 

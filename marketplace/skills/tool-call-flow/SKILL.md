@@ -7,7 +7,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: ai-engineering
-  deployment_target: portable
   scope: "The protocol-level cycle by which a language model uses external tools — the four phases (declaration, request, execution, continuation), the message-history state model tying them together, the structural differences between vendor protocols (Anthropic tool-use, OpenAI function-calling, MCP) and how they compose, parallel vs sequential calls, in-cycle error handling and retries, and the model-produces-intent / runtime-executes-intent separation. Portable across any tool-using LLM runtime; principle-grounded, not repo-bound. Excludes the decision of when and how many tool calls to make (tool-call-strategy), agent-system architecture and coordination (agent-engineering), prompt wording (prompt-craft), and designing evals for tool-use behavior (agent-eval-design)."
   taxonomy_domain: agent/protocol
   owner: skill-graph-maintainer
@@ -25,7 +24,6 @@ metadata:
   relations: "{\"related\":[\"tool-call-strategy\",\"agent-engineering\",\"api-design\",\"type-safety\",\"client-server-boundary\"],\"boundary\":[{\"skill\":\"tool-call-strategy\",\"reason\":\"tool-call-strategy owns the decision of when, how many, and which tools to call (token cost, redundancy, parallelization, decision gate). tool-call-flow owns the protocol-level cycle that makes any call possible. The two compose: strategy decides what to do; flow describes the mechanism that carries it out.\"}],\"verify_with\":[\"tool-call-strategy\",\"agent-eval-design\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "A tool-call flow is to a language model what a procurement system is to an executive — the executive does not personally drive to the supplier; they sign a typed purchase order, the procurement department validates the order, executes it, and returns the receipt with whatever was delivered or with a documented reason it could not be. The executive's signature is intent; the department's stamp is authorization; the receipt is the only state of the cycle that survives, and the next decision is made against that record."
   misconception: "|"
   concept: "{\"definition\":\"A tool-call flow is the multi-turn protocol by which a language model uses external capabilities. It has four phases — declaration (the runtime tells the model which tools exist and their parameter schemas), request (the model emits a structured tool-call message specifying tool name and arguments), execution (the runtime invokes the underlying capability and produces a result), continuation (the runtime appends the result to the message history and re-prompts the model, which either continues with another tool call or produces a final answer). The state of the cycle lives in the message history; the model is stateless across calls.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
@@ -35,6 +33,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/ai-engineering/tool-call-flow/SKILL.md
@@ -263,7 +263,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `ai-engineering`
-- Deployment: `portable`
 - Domain: `agent/protocol`
 - Scope: The protocol-level cycle by which a language model uses external tools — the four phases (declaration, request, execution, continuation), the message-history state model tying them together, the structural differences between vendor protocols (Anthropic tool-use, OpenAI function-calling, MCP) and how they compose, parallel vs sequential calls, in-cycle error handling and retries, and the model-produces-intent / runtime-executes-intent separation. Portable across any tool-using LLM runtime; principle-grounded, not repo-bound. Excludes the decision of when and how many tool calls to make (tool-call-strategy), agent-system architecture and coordination (agent-engineering), prompt wording (prompt-craft), and designing evals for tool-use behavior (agent-eval-design).
 
@@ -287,7 +286,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: A tool-call flow is to a language model what a procurement system is to an executive — the executive does not personally drive to the supplier; they sign a typed purchase order, the procurement department validates the order, executes it, and returns the receipt with whatever was delivered or with a documented reason it could not be. The executive's signature is intent; the department's stamp is authorization; the receipt is the only state of the cycle that survives, and the next decision is made against that record.
 - Common misconception: |
 

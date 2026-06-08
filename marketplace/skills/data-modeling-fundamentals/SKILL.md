@@ -7,7 +7,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: data-engineering
-  deployment_target: portable
   scope: "The foundational theory beneath data modeling — Codd's relational model (1970) and its algebra, the normal forms (1NF–5NF, BCNF) as a constraint-elimination sequence, functional dependencies and the closure algorithm, Chen's entity-relationship model (1976), the principled case for and against denormalization, the relational-vs-document tradeoff at the conceptual level, and the immutable-data-model alternative (event sourcing, append-only tables) with its grounding literature. Portable across any data-modeling effort; principle-grounded, not repo-bound. Excludes practical persistence design and method (data-modeling), applying changes to an existing schema (schema-evolution), choosing indexes (indexing-strategy), and the conceptual-modeling layer above the data model (conceptual-modeling)."
   taxonomy_domain: engineering/data
   owner: skill-graph-maintainer
@@ -25,7 +24,6 @@ metadata:
   relations: "{\"related\":[\"data-modeling\",\"conceptual-modeling\",\"entity-relationship-modeling\",\"schema-evolution\"],\"boundary\":[{\"skill\":\"schema-evolution\",\"reason\":\"schema-evolution owns the migration mechanics — how to change a deployed schema without downtime. This skill owns the static theory of what a good schema is. The decision 'this schema should be in 3NF' is grounded by this skill; the application of that decision to a live database is `schema-evolution`'s domain.\"}],\"verify_with\":[\"data-modeling\",\"entity-relationship-modeling\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "Data-modeling fundamentals is to schema design what Euclidean geometry is to architecture — the architect does not draw a right-angled wall by intuition each time; they draw it because the geometry guarantees stability and squares lock together. A schema in 3NF is the wall built to plumb, where every dependency is structural and no anomaly is hiding in the carpentry. Denormalization is the deliberate decision to cut a non-load-bearing wall for an open floor plan — defensible when the workload justifies it, indefensible when the cost is invisible."
   misconception: "|"
   concept: "{\"definition\":\"Data-modeling fundamentals is the body of formal theory beneath practical database design: Codd's relational model (1970), which represents data as relations (sets of tuples) and provides a closed algebra (selection, projection, join, union, intersection, difference, division) for querying them; the normal forms (1NF through 5NF and BCNF), each defined by the elimination of a specific class of dependency anomaly; the theory of functional dependencies and the closure algorithm used to derive normal-form membership and candidate keys; Chen's entity-relationship model (1976), which sits above the relational model as a higher-abstraction modeling layer that translates downward into relations; the principled justifications for normalization (avoid update, insert, delete anomalies) and for denormalization (workload-driven performance trade-offs against the normal-form baseline); and the alternative data models — document, graph, key-value, columnar, event-sourced — each of which can be characterized by what relational primitives it preserves, relaxes, or trades for a different access pattern. The skill is the *theory* a practitioner draws on when deciding what shape data should take and why; the practical application of that theory is `data-modeling`.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
@@ -35,6 +33,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/data-engineering/data-modeling-fundamentals/SKILL.md
@@ -151,7 +151,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `data-engineering`
-- Deployment: `portable`
 - Domain: `engineering/data`
 - Scope: The foundational theory beneath data modeling — Codd's relational model (1970) and its algebra, the normal forms (1NF–5NF, BCNF) as a constraint-elimination sequence, functional dependencies and the closure algorithm, Chen's entity-relationship model (1976), the principled case for and against denormalization, the relational-vs-document tradeoff at the conceptual level, and the immutable-data-model alternative (event sourcing, append-only tables) with its grounding literature. Portable across any data-modeling effort; principle-grounded, not repo-bound. Excludes practical persistence design and method (data-modeling), applying changes to an existing schema (schema-evolution), choosing indexes (indexing-strategy), and the conceptual-modeling layer above the data model (conceptual-modeling).
 
@@ -176,7 +175,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: Data-modeling fundamentals is to schema design what Euclidean geometry is to architecture — the architect does not draw a right-angled wall by intuition each time; they draw it because the geometry guarantees stability and squares lock together. A schema in 3NF is the wall built to plumb, where every dependency is structural and no anomaly is hiding in the carpentry. Denormalization is the deliberate decision to cut a non-load-bearing wall for an open floor plan — defensible when the workload justifies it, indefensible when the cost is invisible.
 - Common misconception: |
 

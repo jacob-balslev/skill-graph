@@ -9,7 +9,6 @@ metadata:
   version: "1.0.0"
   subject: backend-engineering
   subjects: "[\"backend-engineering\",\"product-domain\"]"
-  deployment_target: portable
   taxonomy_domain: integrations/webhooks
   owner: skill-graph-maintainer
   freshness: "2026-05-06"
@@ -30,6 +29,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/webhook-integration/SKILL.md
@@ -361,7 +361,6 @@ This skill ships a comprehension-eval artifact at [`examples/evals/webhook-integ
 
 **Classification**
 - Subject: `backend-engineering` (also: `product-domain`)
-- Deployment: `portable`
 - Domain: `integrations/webhooks`
 
 **When to use**

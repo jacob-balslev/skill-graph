@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "2.0.0"
   subject: quality-assurance
-  deployment_target: portable
   scope: "Teaches the security-specific review lens for the OWASP Top 10:2025 (mapped to 2021): per-category detection greps, mitigations, a procedural source-to-sink review workflow over trust boundaries, severity grading and responsible disclosure, software-supply-chain hardening, error-path (fail-open) review, security-test probes, and the elevated-risk patterns of AI-generated code — turning findings into severity-ranked, root-cause remediation. Applies when the task is an explicit security audit, a feature threat model, or an auth / input-handling implementation. Out of scope: holistic per-PR review (code-review), production-bug hunts (debugging), broad test-level strategy (testing-strategy), LLM prompt/RAG injection and agent-tool-authority defence (prompt-injection-defense), and security-policy authoring (documentation)."
   taxonomy_domain: quality/security
   grounding: "{\"subject_matter\":\"Application-security review using OWASP Top 10:2025, ASVS 5.0, OWASP Cheat Sheets, current supply-chain/tooling guidance, and empirical AI-generated-code risk evidence\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://owasp.org/www-project-top-ten/\",\"https://github.com/OWASP/Top10\",\"https://owasp.org/Top10/2025/\",\"https://owasp.org/Top10/2025/0x00_2025-Introduction/\",\"https://owasp.org/Top10/2025/A01_2025-Broken_Access_Control/\",\"https://owasp.org/Top10/2025/A03_2025-Software_Supply_Chain_Failures/\",\"https://owasp.org/Top10/2025/A04_2025-Cryptographic_Failures/\",\"https://owasp.org/Top10/2025/A09_2025-Security_Logging_and_Alerting_Failures/\",\"https://owasp.org/Top10/2025/A10_2025-Mishandling_of_Exceptional_Conditions/\",\"https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html\",\"https://github.com/OWASP/ASVS\",\"https://slsa.dev/spec/v1.2/\",\"https://docs.npmjs.com/trusted-publishers/\",\"https://help.openai.com/en/articles/20001107-codex-security\",\"https://support.claude.com/en/articles/11932705-automated-security-reviews-in-claude-code\",\"https://www.veracode.com/blog/genai-code-security-report/\",\"https://appsecsanta.com/research/ai-code-security-study-2026\"],\"failure_modes\":[\"Citing 2021 category numbers after the 2025 renumber (e.g. calling SSRF 'A10') and mis-routing a finding's A0x label\",\"SSRF removed instead of re-homed under Broken Access Control\",\"Vulnerable components treated as only CVE scanning, not whole-chain supply-chain integrity\",\"Treating a clean SAST/SCA scan as proof of safety rather than the absence of a known-pattern match\",\"AI security reviewer treated as a replacement for human security judgment\",\"Stamping a single AI-vuln-rate multiplier as fixed when published rates vary by language, model, and methodology\",\"Applying this web-appsec taxonomy to an LLM instruction-channel attack (prompt/RAG injection) that belongs to the OWASP LLM Top 10 and prompt-injection-defense\",\"Exception handlers reviewed as code quality, not as security-relevant fail-open paths\",\"Security findings disclosed with exploit payloads or secrets\"],\"evidence_priority\":\"general_knowledge_first\"}"
@@ -28,7 +27,6 @@ metadata:
   comprehension_state: present
   mental_model: "Application-security review is source-to-sink reasoning over trust boundaries. The reviewer identifies attacker-controlled inputs, privileged operations, sensitive data, external dependencies, configuration, and error paths, then asks whether each path preserves confidentiality, integrity, availability, and authorization under hostile input and partial failure."
   purpose: "This skill prevents plausible-looking code from shipping with security-relevant decisions left implicit. It gives agents a current OWASP vocabulary, concrete detection patterns, mitigations, abuse tests, and reporting discipline so security review finds root causes rather than isolated symptoms."
-  boundary: "This skill owns traditional application-security review, OWASP Top 10 web-app weaknesses, and security-specific threat modeling. It does not own holistic PR approval, root-cause debugging after a failure, broad test-level strategy, policy documentation, or LLM-specific prompt-injection and agent-authority architecture."
   analogy: "An OWASP review is a border inspection for a software system: every crossing between trust zones is checked for identity, permission, payload, destination, and failure behavior."
   misconception: "The common mistake is treating the OWASP Top 10 as ten labels to memorize. The better model is to use the labels as routing names for underlying CWE-shaped failure modes; the fix follows the weakness and the trust boundary, not the A0x number."
   structural_verdict: PASS
@@ -37,6 +35,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "This skill owns traditional application-security review, OWASP Top 10 web-app weaknesses, and security-specific threat modeling. It does not own holistic PR approval, root-cause debugging after a failure, broad test-level strategy, policy documentation, or LLM-specific prompt-injection and agent-authority architecture."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/owasp-security/SKILL.md
@@ -353,7 +353,6 @@ Grade every finding so prioritisation is a property of the finding, not a debate
 
 **Classification**
 - Subject: `quality-assurance`
-- Deployment: `portable`
 - Domain: `quality/security`
 - Scope: Teaches the security-specific review lens for the OWASP Top 10:2025 (mapped to 2021): per-category detection greps, mitigations, a procedural source-to-sink review workflow over trust boundaries, severity grading and responsible disclosure, software-supply-chain hardening, error-path (fail-open) review, security-test probes, and the elevated-risk patterns of AI-generated code — turning findings into severity-ranked, root-cause remediation. Applies when the task is an explicit security audit, a feature threat model, or an auth / input-handling implementation. Out of scope: holistic per-PR review (code-review), production-bug hunts (debugging), broad test-level strategy (testing-strategy), LLM prompt/RAG injection and agent-tool-authority defence (prompt-injection-defense), and security-policy authoring (documentation).
 
@@ -388,7 +387,6 @@ Grade every finding so prioritisation is a property of the finding, not a debate
 **Concept**
 - Mental model: Application-security review is source-to-sink reasoning over trust boundaries. The reviewer identifies attacker-controlled inputs, privileged operations, sensitive data, external dependencies, configuration, and error paths, then asks whether each path preserves confidentiality, integrity, availability, and authorization under hostile input and partial failure.
 - Purpose: This skill prevents plausible-looking code from shipping with security-relevant decisions left implicit. It gives agents a current OWASP vocabulary, concrete detection patterns, mitigations, abuse tests, and reporting discipline so security review finds root causes rather than isolated symptoms.
-- Boundary: This skill owns traditional application-security review, OWASP Top 10 web-app weaknesses, and security-specific threat modeling. It does not own holistic PR approval, root-cause debugging after a failure, broad test-level strategy, policy documentation, or LLM-specific prompt-injection and agent-authority architecture.
 - Analogy: An OWASP review is a border inspection for a software system: every crossing between trust zones is checked for identity, permission, payload, destination, and failure behavior.
 - Common misconception: The common mistake is treating the OWASP Top 10 as ten labels to memorize. The better model is to use the labels as routing names for underlying CWE-shaped failure modes; the fix follows the weakness and the trust boundary, not the A0x number.
 

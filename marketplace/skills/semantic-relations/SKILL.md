@@ -6,7 +6,6 @@ compatibility: "Vocabulary-layer skill, stack- and storage-agnostic. The relatio
 allowed-tools: Read Grep
 metadata:
   subject: knowledge-organization
-  deployment_target: portable
   scope: "Teaches pre-formal relation typing for concept edges in graphs, maps, taxonomies, ontologies-in-sketch, and skill-boundary analysis: IS-A, PART-OF, synonymy/polysemy, thematic roles, and relation properties. Excludes formal ontology axioms, full conceptual/domain modeling, representation-paradigm choice, taxonomy governance, database relationships, and operational ID mapping."
   taxonomy_domain: foundations/semantics
   stability: experimental
@@ -17,9 +16,10 @@ metadata:
   grounding: "{\"subject_matter\":\"Semantic relation typing for concept edges, lexical sense relations, knowledge-organization links, thematic roles, and relation-property checks\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://wordnet.princeton.edu/\",\"https://www.w3.org/TR/skos-reference/\",\"https://www.w3.org/TR/owl2-primer/\",\"https://framenet.icsi.berkeley.edu/WhatIsFrameNet\"],\"failure_modes\":[\"generic_related_to_edges_collapse_relation_meaning\",\"is_a_part_of_conflation_breaks_inheritance_reasoning\",\"synonym_polysemy_homonymy_confusion_drives_wrong_rename_or_flattening\",\"relation_properties_left_implicit\",\"thematic_roles_conflate_actor_instrument_cause_or_goal\",\"relation_typing_overowns_formal_ontology_taxonomy_or_database_design\",\"publishability_scan_false_positive_from_customer_specific_examples\"],\"evidence_priority\":\"equal\"}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "Semantic-relations is to a knowledge graph what road-type labels are to a transit map: motorway, slip road, roundabout, bridge, tunnel, and one-way street are each typed connections with their own traversal rules. A map that labels every road connector is nearly useless for navigation; precise relation vocabulary makes the map a tool rather than an illustration."
   misconception: "|"
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/knowledge-organization/semantic-relations/SKILL.md
@@ -293,7 +293,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `knowledge-organization`
-- Deployment: `portable`
 - Domain: `foundations/semantics`
 - Scope: Teaches pre-formal relation typing for concept edges in graphs, maps, taxonomies, ontologies-in-sketch, and skill-boundary analysis: IS-A, PART-OF, synonymy/polysemy, thematic roles, and relation properties. Excludes formal ontology axioms, full conceptual/domain modeling, representation-paradigm choice, taxonomy governance, database relationships, and operational ID mapping.
 
@@ -328,7 +327,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: Semantic-relations is to a knowledge graph what road-type labels are to a transit map: motorway, slip road, roundabout, bridge, tunnel, and one-way street are each typed connections with their own traversal rules. A map that labels every road connector is nearly useless for navigation; precise relation vocabulary makes the map a tool rather than an illustration.
 - Common misconception: |
 

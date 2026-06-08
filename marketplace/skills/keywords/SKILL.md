@@ -6,7 +6,6 @@ compatibility: Portable keyword research and marketplace keyword-mapping guidanc
 allowed-tools: Read Grep Bash
 metadata:
   subject: knowledge-organization
-  deployment_target: portable
   scope: "Keyword research, search-intent mapping, topical clustering, product/listing target assignment, marketplace field translation, cannibalization detection, and rank-tracking cadence for public ecommerce, marketplace, SaaS, and content surfaces. Portable across projects, but external platform constraints drift and must be verified against current official docs before high-stakes listing or SEO work. Excludes SEO implementation and schema strategy (seo-strategy), final prose writing (writing-humanizer), and navigation/page hierarchy (information-architecture)."
   taxonomy_domain: product/search
   stability: experimental
@@ -18,9 +17,10 @@ metadata:
   grounding: "{\"subject_matter\":\"Keyword research, intent mapping, topical clustering, and marketplace/search field translation for public e-commerce, marketplace, SaaS, and content surfaces\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://help.etsy.com/hc/en-us/articles/360000336307-How-to-Use-Tags-to-Get-Found-in-Search\",\"https://help.etsy.com/hc/en-us/articles/115015628707-How-to-Create-a-Listing\",\"https://sellercentral.amazon.com/seller-forums/discussions/t/53388506-a05d-4b8c-9097-cad20f9e1b88\",\"https://sellercentral.amazon.com/seller-forums/discussions/t/62ec93fbb444d7778947b087b3056cc5\",\"https://developers.google.com/search/docs/appearance/title-link\",\"https://developers.google.com/search/docs/appearance/snippet\",\"https://help.shopify.com/en/manual/promoting-marketing/seo/adding-keywords\",\"https://help.shopify.com/en/manual/promoting-marketing/seo/seo-overview\"],\"failure_modes\":[\"keyword_stuffing_mistaken_for_strategy\",\"platform_field_limits_drift_silently\",\"marketplace_tags_padded_with_irrelevant_terms\",\"amazon_search_terms_repeat_title_or_brand_fields\",\"shopify_keyword_guidance_ignores_readability\",\"intent_mapping_skipped_before_page_or_listing_targeting\",\"cannibalization_collapses_distinct_search_intents\",\"rank_tracking_claims_made_without_baseline_or_cadence\",\"keyword_skill_overowns_seo_implementation_finished_prose_or_information_architecture\"],\"evidence_priority\":\"equal\"}"
   mental_model: "Keyword work is demand translation. Raw queries are evidence of language, intent, and platform constraints; the skill turns them into targetable clusters, page/listing assignments, and measurement baselines without pretending that keywords alone create rankings."
   purpose: "This skill prevents agents from jumping straight to generic SEO copy, stuffing repeated terms into marketplace fields, or targeting one query from multiple pages. It gives a repeatable process for finding search language, mapping intent, respecting platform fields, and measuring whether changes moved visibility."
-  boundary: "This skill owns research, clustering, intent mapping, field translation, cannibalization detection, and tracking setup. It does not build SEO pages, write final listing or page prose, design navigation, diagnose technical SEO, guarantee rankings, or bypass current marketplace policy checks."
   analogy: "Keyword research is like translating customer demand into a shelf map: each phrase tells you where a shopper is looking, but the shelf still needs good products, labels, layout, and measurement."
   misconception: "The common mistake is treating keywords as magic words to repeat. Search systems reward relevance, clarity, and satisfaction signals; repeated or irrelevant terms can waste fields, confuse readers, and make pages compete with each other."
+  public: "true"
+  concept_boundary: "This skill owns research, clustering, intent mapping, field translation, cannibalization detection, and tracking setup. It does not build SEO pages, write final listing or page prose, design navigation, diagnose technical SEO, guarantee rankings, or bypass current marketplace policy checks."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/knowledge-organization/keywords/SKILL.md
@@ -255,7 +255,6 @@ These are grounding points, not permanent invariants. Re-check them when platfor
 
 **Classification**
 - Subject: `knowledge-organization`
-- Deployment: `portable`
 - Domain: `product/search`
 - Scope: Keyword research, search-intent mapping, topical clustering, product/listing target assignment, marketplace field translation, cannibalization detection, and rank-tracking cadence for public ecommerce, marketplace, SaaS, and content surfaces. Portable across projects, but external platform constraints drift and must be verified against current official docs before high-stakes listing or SEO work. Excludes SEO implementation and schema strategy (seo-strategy), final prose writing (writing-humanizer), and navigation/page hierarchy (information-architecture).
 
@@ -287,7 +286,6 @@ These are grounding points, not permanent invariants. Re-check them when platfor
 **Concept**
 - Mental model: Keyword work is demand translation. Raw queries are evidence of language, intent, and platform constraints; the skill turns them into targetable clusters, page/listing assignments, and measurement baselines without pretending that keywords alone create rankings.
 - Purpose: This skill prevents agents from jumping straight to generic SEO copy, stuffing repeated terms into marketplace fields, or targeting one query from multiple pages. It gives a repeatable process for finding search language, mapping intent, respecting platform fields, and measuring whether changes moved visibility.
-- Boundary: This skill owns research, clustering, intent mapping, field translation, cannibalization detection, and tracking setup. It does not build SEO pages, write final listing or page prose, design navigation, diagnose technical SEO, guarantee rankings, or bypass current marketplace policy checks.
 - Analogy: Keyword research is like translating customer demand into a shelf map: each phrase tells you where a shopper is looking, but the shelf still needs good products, labels, layout, and measurement.
 - Common misconception: The common mistake is treating keywords as magic words to repeat. Search systems reward relevance, clarity, and satisfaction signals; repeated or irrelevant terms can waste fields, confuse readers, and make pages compete with each other.
 

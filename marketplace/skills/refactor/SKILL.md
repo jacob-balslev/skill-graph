@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: software-engineering-method
-  deployment_target: portable
   scope: "Behavior-preserving restructuring of existing code — extracting functions, reducing duplication, renaming for clarity, splitting modules, and tightening structure, with every change verified against before/after behavior so external contracts stay identical. Portable across any language or codebase; principle-grounded, not repo-bound. Excludes bug investigation and root-cause isolation (debugging, diagnosis), adding new product behavior (feature implementation), and documentation authoring (doc-updater) even when the docs describe the refactored code."
   owner: skill-graph-maintainer
   freshness: "2026-04-18"
@@ -29,6 +28,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-engineering-method/refactor/SKILL.md
@@ -93,7 +93,6 @@ This skill ships a comprehension-eval artifact at [`examples/evals/refactor.json
 
 **Classification**
 - Subject: `software-engineering-method`
-- Deployment: `portable`
 - Scope: Behavior-preserving restructuring of existing code — extracting functions, reducing duplication, renaming for clarity, splitting modules, and tightening structure, with every change verified against before/after behavior so external contracts stay identical. Portable across any language or codebase; principle-grounded, not repo-bound. Excludes bug investigation and root-cause isolation (debugging, diagnosis), adding new product behavior (feature implementation), and documentation authoring (doc-updater) even when the docs describe the refactored code.
 
 **When to use**

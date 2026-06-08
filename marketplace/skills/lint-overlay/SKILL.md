@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: quality-assurance
-  deployment_target: portable
   owner: skill-graph-maintainer
   freshness: "2026-04-18"
   drift_check: "{\"last_verified\":\"2026-05-13\",\"truth_source_hashes\":{\"scripts/skill-lint.js\":\"3a78f75f8921542b91dc619cd41bde29bf379de3c16bdcf3653c854ecbe9fa29\",\"scripts/lint/check-routing-quality.js\":\"b57d10f4c7c4e42a1a86c2741cbac6708e2de7dedb51b13f707283fbf91e32b5\",\"scripts/lint/check-routing-eval.js\":\"ab541922dfcbfb2cd7740c4abebb892e8b26477643e9d802fd0ea4cfbc8de649\",\"examples/evals/lint-overlay.json\":\"d60dcd4512904f36e56702d5338295dbf1238448b988dc60225fdd77285eaff9\",\"skills/testing-strategy/SKILL.md\":\"9c5da135ab8834843367da9e9120c92b57e81d1680ef84a0ea9e32f362e1456e\"}}"
@@ -30,6 +29,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/lint-overlay/SKILL.md
@@ -105,7 +105,6 @@ This skill ships a comprehension-eval artifact at [`examples/evals/lint-overlay.
 
 **Classification**
 - Subject: `quality-assurance`
-- Deployment: `portable`
 
 **When to use**
 - plan ESLint rule introduction for a monorepo that has never had linting

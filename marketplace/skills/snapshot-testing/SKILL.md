@@ -5,7 +5,6 @@ license: MIT
 allowed-tools: Read Grep
 metadata:
   subject: quality-assurance
-  deployment_target: portable
   scope: "Teaching snapshot testing as a portable quality-assurance technique: capture a known-good output artifact, compare future output against that baseline, review diffs, and either update the baseline after human approval or fix the production change. Covers data, DOM/HTML, text/file, generated-output, golden-file, characterization, and visual snapshot variants; serializer/determinism controls; approval-cycle discipline; snapshot size/readability; and when visual regression tools are the right comparison surface. Excludes the overall test strategy mix, universal property claims, test double construction, strict test-first workflow design, and e2e journey design."
   taxonomy_domain: quality/testing
   stability: experimental
@@ -17,9 +16,10 @@ metadata:
   grounding: "{\"subject_matter\":\"Portable snapshot testing and visual regression testing practice across data, DOM, text, file, and image baselines\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://jestjs.io/docs/snapshot-testing\",\"https://main.vitest.dev/guide/learn/snapshots\",\"https://playwright.dev/docs/test-snapshots\",\"https://storybook.js.org/docs/writing-tests/snapshot-testing\",\"https://storybook.js.org/docs/9/writing-tests/visual-testing\",\"https://www.chromatic.com/docs/snapshots/\",\"../skills/skills/quality-assurance/snapshot-testing/references/snapshot-testing-2026-06-07.md\"],\"failure_modes\":[\"auto_update_without_review\",\"snapshot_churn_from_nondeterministic_output\",\"large_unreadable_snapshot_diff\",\"snapshot_used_instead_of_explicit_behavior_assertion\",\"visual_snapshot_without_stable_environment\",\"property_or_journey_test_misrouted_to_snapshot\",\"baseline_file_not_committed_or_reviewed\"],\"evidence_priority\":\"equal\"}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "A snapshot test is to a piece of output what a wedding photograph is to a memory of the day — the photograph does not say what the wedding *should* have looked like, only what it did look like; on the next anniversary, you compare the room to the photograph and notice 'the curtains are different' (intentional — they were replaced) or 'the picture is crooked' (unintentional — fix it). A photograph filed away without anyone ever looking at it again is not a record; it is paper. A snapshot file the team auto-accepts via `-u` is the same."
   misconception: "|"
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/snapshot-testing/SKILL.md
@@ -142,7 +142,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `quality-assurance`
-- Deployment: `portable`
 - Domain: `quality/testing`
 - Scope: Teaching snapshot testing as a portable quality-assurance technique: capture a known-good output artifact, compare future output against that baseline, review diffs, and either update the baseline after human approval or fix the production change. Covers data, DOM/HTML, text/file, generated-output, golden-file, characterization, and visual snapshot variants; serializer/determinism controls; approval-cycle discipline; snapshot size/readability; and when visual regression tools are the right comparison surface. Excludes the overall test strategy mix, universal property claims, test double construction, strict test-first workflow design, and e2e journey design.
 
@@ -171,7 +170,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: A snapshot test is to a piece of output what a wedding photograph is to a memory of the day — the photograph does not say what the wedding *should* have looked like, only what it did look like; on the next anniversary, you compare the room to the photograph and notice 'the curtains are different' (intentional — they were replaced) or 'the picture is crooked' (unintentional — fix it). A photograph filed away without anyone ever looking at it again is not a record; it is paper. A snapshot file the team auto-accepts via `-u` is the same.
 - Common misconception: |
 

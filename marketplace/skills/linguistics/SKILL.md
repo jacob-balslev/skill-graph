@@ -10,7 +10,6 @@ metadata:
   schema_version: "8"
   version: "1.2.0"
   subject: knowledge-organization
-  deployment_target: portable
   taxonomy_domain: foundations/language
   owner: skill-graph-maintainer
   freshness: "2026-05-19"
@@ -27,7 +26,6 @@ metadata:
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "Linguistics in software is grammar for the interface between people and systems: the syntax of a name or sentence should make the intended meaning easy to recover without hidden context."
   misconception: "The common mistake is treating naming and wording as personal preference. Ambiguous words, weak compounds, blame-heavy error text, and wrong register create predictable comprehension failures; agreement inside one team does not make the language portable or clear."
   concept: "{\"definition\":\"Linguistics applied to software is the discipline of using human-language structure, meaning, context, and audience register to shape code identifiers, labels, error messages, UI copy, and technical prose so readers can decode intent reliably.\",\"mental_model\":\"Treat every name or visible string as a small language artifact. Its form carries a contract: morphology makes the artifact parseable, semantics fixes what it means, pragmatics fits the situation, and register fits the audience.\",\"purpose\":\"The skill replaces taste-based naming and copy decisions with repeatable linguistic checks for ambiguity, misleading names, register mismatch, blame assignment, and cross-language readability.\",\"boundary\":\"It does not own casing convention policy, repo-wide rename mechanics, document information architecture, specialized UI microcopy pattern catalogs, final prose humanization, or locale-format implementation.\",\"taxonomy\":\"Foundations/language capability covering morphology, semantics, pragmatics, sociolinguistic register, error-message language, and cross-cultural language awareness for software surfaces.\",\"analogy\":\"It is grammar for the interface between people and software: the syntax of a name or sentence should make the intended meaning easy to recover without hidden context.\",\"misconception\":\"The common mistake is treating naming and wording as personal preference. Ambiguous words, weak compounds, blame-heavy error text, and wrong register create predictable comprehension failures.\"}"
@@ -37,6 +35,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/knowledge-organization/linguistics/SKILL.md
@@ -486,7 +486,6 @@ LINGUISTICS I18N CHECK
 
 **Classification**
 - Subject: `knowledge-organization`
-- Deployment: `portable`
 - Domain: `foundations/language`
 
 **When to use**
@@ -520,7 +519,6 @@ LINGUISTICS I18N CHECK
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: Linguistics in software is grammar for the interface between people and systems: the syntax of a name or sentence should make the intended meaning easy to recover without hidden context.
 - Common misconception: The common mistake is treating naming and wording as personal preference. Ambiguous words, weak compounds, blame-heavy error text, and wrong register create predictable comprehension failures; agreement inside one team does not make the language portable or clear.
 

@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: reasoning-strategy
-  deployment_target: portable
   taxonomy_domain: foundations/analysis
   owner: skill-graph-maintainer
   freshness: "2026-05-06"
@@ -29,6 +28,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/task-analysis/SKILL.md
@@ -229,7 +229,6 @@ After applying task analysis, verify:
 
 **Classification**
 - Subject: `reasoning-strategy`
-- Deployment: `portable`
 - Domain: `foundations/analysis`
 
 **When to use**

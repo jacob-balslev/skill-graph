@@ -7,13 +7,13 @@
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld) (frontmatter fields only — the sidecar is not exported/RDF'd).
 > **Two-file split:** per [ADR-0019](../docs/adr/0019-audit-state-sidecar-separation.md), agent-facing fields live in `SKILL.md` frontmatter; audit/eval/provenance fields live in the `audit-state.json` sidecar.
 
-Schema version: **8** · Total fields: **53**
+Schema version: **8** · Total fields: **54**
 
 ---
 
 ## Frontmatter fields (`SKILL.md`)
 
-> Source schema: `schemas/SKILL_METADATA_PROTOCOL_schema.json`. Field count: **25** · Required: **5**.
+> Source schema: `schemas/SKILL_METADATA_PROTOCOL_schema.json`. Field count: **26** · Required: **5**.
 
 ---
 
@@ -81,13 +81,13 @@ PRD-style free-text scope statement — what this skill teaches and what it does
 
 ---
 
-### `deployment_target` *(required)*
+### `public` *(required)*
 
-**Type:** `portable` | `project`
+**Type:** boolean
 
-Deployment targeting — where this skill applies. `portable` (any project, repo-agnostic patterns), `project` (one specific project; requires `grounding`). Replaces the v8 `scope` enum; the `workspace` value is removed because no corpus skill needed a deployment state between `portable` and `project` — workspace-grounded skills migrate to `deployment_target: project` with explicit `project[]` membership. Drives multi-project overlay decisions and the router's project-fit check. See the ADR-0017 amendment of 2026-05-27.
+Publishability gate — is this skill safe for public release to the skills.sh marketplace? `true` (publishable: carries no private data — repo-agnostic patterns, public-repo grounding, or otherwise leak-free), `false` (private: carries private API keys, personal data, customer data, bank/financial data, or internal-only operational doctrine and must NEVER be published). This is the SINGLE switch that drives the marketplace-export filter (`export-marketplace-skills.js` excludes `public: false`) and enforces the HARD private-content boundary (see `~/.claude-profiles/.../memory/skill-graph-private-content-boundary`). Replaces the v8 `deployment_target` enum: publishability — not deployment location — is what the export gate actually needs; project-grounding is carried separately by `grounding` + `project[]`. Migration alias: `deployment_target: portable` → `public: true`, `deployment_target: project` → `public: false` (the conservative default — a project-grounded skill is assumed private until the audit loop confirms otherwise). See the ADR-0017 amendment.
 
-**Full reference:** [`skill-metadata-protocol/field-reference.md#deployment_target`](field-reference.md#deployment_target)
+**Full reference:** [`skill-metadata-protocol/field-reference.md#public`](field-reference.md#public)
 
 ---
 
@@ -126,11 +126,21 @@ What problem the concept solves and the alternative it replaced. Concrete pain p
 
 ---
 
+### `concept_boundary` *(optional)*
+
+**Type:** string
+
+Things commonly confused with the concept but that are NOT it. Express each difference as a mechanism (different primitives, purpose, or scope) — not just different names. No length cap. Authored input read by the comprehension grader's boundary dimension (weight 1.5). Canonical name as of ADR-0018, which renamed the top-level Understanding field from `boundary` to `concept_boundary` so the token no longer collides with the routing-layer `relations.suppresses` (formerly `relations.boundary`). New skills author `concept_boundary`.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#concept_boundary`](field-reference.md#concept_boundary)
+
+---
+
 ### `boundary` *(optional)*
 
 **Type:** string
 
-Things commonly confused with the concept but that are NOT it. Express each difference as a mechanism (different primitives, purpose, or scope) — not just different names. No length cap. Authored input read by the comprehension grader's `boundary` dimension (weight 1.5). Replaces nested `concept.boundary` in v6. Distinct from `relations.boundary` (routing-layer exclusion).
+DEPRECATED alias of `concept_boundary` (renamed per ADR-0018 to remove the token collision with the routing edge `relations.boundary`/`relations.suppresses`). Retained ONLY for skills not yet migrated; the normalizer presents it as `concept_boundary` and `concept_boundary` wins when both are present. New skills MUST author `concept_boundary`. Structural removal of this alias is CONTENT-mode work the audit loop drains per-skill.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#boundary`](field-reference.md#boundary)
 

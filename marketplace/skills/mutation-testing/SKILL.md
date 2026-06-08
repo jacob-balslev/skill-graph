@@ -7,7 +7,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: quality-assurance
-  deployment_target: portable
   taxonomy_domain: quality/testing
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
@@ -24,7 +23,6 @@ metadata:
   relations: "{\"related\":[\"test-coverage-strategy\",\"test-driven-development\",\"testing-strategy\",\"eval-driven-development\"],\"boundary\":[{\"skill\":\"test-coverage-strategy\",\"reason\":\"test-coverage-strategy owns the structural signal of which code the test suite reaches; mutation-testing owns the behavioral signal of whether the test suite would catch a defect at that code location. The two compose: coverage is a necessary precondition for mutation testing to apply (an uncovered mutant trivially survives); mutation is the next layer of test-quality signal.\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the strategic question of what to test at which level; this skill owns one measurement of how good the tests at any level actually are.\"},{\"skill\":\"test-driven-development\",\"reason\":\"TDD produces tests with high behavioral specificity as a side effect; mutation testing is one way to measure whether that specificity is in fact present in a given test suite.\"}],\"verify_with\":[\"test-coverage-strategy\",\"testing-strategy\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "Mutation testing is to a test suite what a fire drill is to a building's evacuation plan — you do not measure preparedness by counting how many exits exist (coverage), you measure it by deliberately staging a fire and watching whether anyone notices in time (mutation kill rate). An exit that nobody walks through during the drill is not really an exit, regardless of how prominently it is signposted."
   misconception: "|"
   concept: "{\"definition\":\"Mutation testing is a behavioral test-suite quality measurement in which the production code is automatically modified by small, syntactically-valid changes (mutants) and the test suite is run against each modified version. If the test suite fails on a mutant, the mutant is 'killed' — the tests caught the change. If the test suite still passes, the mutant 'survived' — the tests did not catch the change, which means the tests do not actually verify the behavior at that code location. The mutation score is the ratio of killed mutants to total (excluding equivalent mutants, which produce no observable behavior change despite the syntactic modification). Unlike code coverage, which measures whether the tests *reach* a piece of code, mutation testing measures whether the tests *verify* it.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
@@ -34,6 +32,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/mutation-testing/SKILL.md
@@ -145,7 +145,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `quality-assurance`
-- Deployment: `portable`
 - Domain: `quality/testing`
 
 **When to use**
@@ -170,7 +169,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: Mutation testing is to a test suite what a fire drill is to a building's evacuation plan — you do not measure preparedness by counting how many exits exist (coverage), you measure it by deliberately staging a fire and watching whether anyone notices in time (mutation kill rate). An exit that nobody walks through during the drill is not really an exit, regardless of how prominently it is signposted.
 - Common misconception: |
 

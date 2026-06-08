@@ -7,7 +7,6 @@ metadata:
   schema_version: "8"
   version: "1.1.0"
   subject: frontend-engineering
-  deployment_target: portable
   taxonomy_domain: engineering/frontend
   owner: skill-graph-maintainer
   freshness: "2026-06-07"
@@ -24,7 +23,6 @@ metadata:
   relations: "{\"related\":[\"client-server-boundary\",\"rendering-models\",\"hooks-patterns\",\"streaming-architecture\",\"suspense-patterns\",\"server-actions-design\"],\"boundary\":[{\"skill\":\"client-server-boundary\",\"reason\":\"client-server-boundary owns the serialization-and-directive mechanics of the boundary itself ('use client', what can cross, RSC payload format); server-components-design owns the discipline of which work belongs on the server side of that boundary.\"},{\"skill\":\"rendering-models\",\"reason\":\"rendering-models owns the strategic decision among SSR, SSG, ISR, and CSR; server-components-design operates within the App Router / RSC paradigm and is one rendering mode among several.\"},{\"skill\":\"hooks-patterns\",\"reason\":\"hooks-patterns covers state and effect discipline on Client Components; Server Components cannot use those primitives at all, so the two skills cover disjoint surfaces.\"},{\"skill\":\"server-actions-design\",\"reason\":\"server-actions-design owns the write path (mutations, 'use server' functions, form actions, re-authorization inside the action); server-components-design owns the read path (components that fetch and render data). They share the server/client boundary infrastructure but are disjoint design surfaces.\"}],\"verify_with\":[\"code-review\",\"rendering-models\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "A Server Component is to a React tree what a printed page is to a book — the typesetter (server) sets the lead, presses the ink, and ships the printed page (RSC payload); the reader's table lamp (Client Component) is wired and switchable at the reader's end. You do not ship the typesetter to the reader's living room, and you do not ship the lamp's wiring to the printer — the boundary is where 'this never changes once it leaves my workshop' ends and 'this responds to who touches it' begins. And just as a typesetter proofs the galley to strip the editor's private margin notes before the page is printed, a Server Component must strip private fields before the rendered output ships to the reader."
   misconception: "|"
   concept: "{\"definition\":\"A React Server Component is a component that runs only on the server, never ships to the browser as JavaScript, can be async, and can directly access server-side resources (databases, file system, secrets) — its output is serialized to a wire format (the RSC payload) and reconstituted into the client tree without a separate API layer. Server Components compose with Client Components in a single tree, but the directionality is one-way: a Server Component can render a Client Component, but a Client Component cannot import a Server Component as a child.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
@@ -34,6 +32,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/server-components-design/SKILL.md
@@ -461,7 +461,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `frontend-engineering`
-- Deployment: `portable`
 - Domain: `engineering/frontend`
 
 **When to use**
@@ -490,7 +489,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: A Server Component is to a React tree what a printed page is to a book — the typesetter (server) sets the lead, presses the ink, and ships the printed page (RSC payload); the reader's table lamp (Client Component) is wired and switchable at the reader's end. You do not ship the typesetter to the reader's living room, and you do not ship the lamp's wiring to the printer — the boundary is where 'this never changes once it leaves my workshop' ends and 'this responds to who touches it' begins. And just as a typesetter proofs the galley to strip the editor's private margin notes before the page is printed, a Server Component must strip private fields before the rendered output ships to the reader.
 - Common misconception: |
 

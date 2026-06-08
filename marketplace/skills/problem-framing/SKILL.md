@@ -6,7 +6,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: reasoning-strategy
-  deployment_target: portable
   scope: "Reframing a stated problem before solutions are committed — surfacing assumptions, separating symptoms from root needs, converting feature-request briefs into problem statements, and aligning a team on the problem before design proceeds. Portable across any design or product effort; principle-grounded, not repo-bound. Excludes code-level bug triage, runtime failure diagnosis, and root-cause analysis of system errors (engineering investigation, not design framing)."
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
@@ -26,6 +25,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/problem-framing/SKILL.md
@@ -68,7 +68,6 @@ The practice is opinionated about language. "How might we" is not interchangeabl
 
 **Classification**
 - Subject: `reasoning-strategy`
-- Deployment: `portable`
 - Scope: Reframing a stated problem before solutions are committed — surfacing assumptions, separating symptoms from root needs, converting feature-request briefs into problem statements, and aligning a team on the problem before design proceeds. Portable across any design or product effort; principle-grounded, not repo-bound. Excludes code-level bug triage, runtime failure diagnosis, and root-cause analysis of system errors (engineering investigation, not design framing).
 
 **When to use**

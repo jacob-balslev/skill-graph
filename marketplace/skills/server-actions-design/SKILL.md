@@ -5,7 +5,6 @@ license: MIT
 allowed-tools: Read Grep
 metadata:
   subject: frontend-engineering
-  deployment_target: portable
   scope: "Teaching the portable mutation-design discipline for React Server Functions and Next.js Server Actions: when a 'use server' function becomes an invokable POST endpoint, how form action/formAction integration preserves progressive enhancement, how useActionState and useFormStatus report mutation state, how to validate and authorize untrusted arguments, how to revalidate or refresh UI after writes, and how to choose between an in-app action and a public API contract. Applies to Next.js App Router mutations and form submissions. Excludes read-path Server Component fetching (server-components-design), general client/server serialization mechanics (client-server-boundary), public REST/GraphQL/mobile/third-party API design (api-design), and visual form UX or accessibility details (form-ux-architecture)."
   taxonomy_domain: engineering/frontend
   grounding: "{\"subject_matter\":\"React Server Functions and Next.js Server Actions for App Router mutations\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://nextjs.org/docs/app/getting-started/mutating-data\",\"https://nextjs.org/docs/app/api-reference/directives/use-server\",\"https://nextjs.org/docs/app/guides/data-security\",\"https://nextjs.org/docs/app/api-reference/config/next-config-js/serverActions\",\"https://nextjs.org/docs/app/api-reference/functions/revalidatePath\",\"https://nextjs.org/docs/app/api-reference/functions/revalidateTag\",\"https://nextjs.org/docs/app/api-reference/functions/updateTag\",\"https://nextjs.org/docs/app/api-reference/functions/refresh\",\"https://react.dev/reference/react/useActionState\",\"https://react.dev/reference/react-dom/hooks/useFormStatus\"],\"failure_modes\":[\"Treating 'use server' as internal-only instead of a public POST endpoint\",\"Relying on TypeScript call signatures or UI controls instead of server-side parsing and authorization\",\"Using Server Actions for third-party/mobile/public API contracts that need stable HTTP semantics\",\"Forgetting cache revalidation/refresh after writes\",\"Using event handlers or startTransition for forms that should preserve progressive enhancement\",\"Leaving old useFormState or stale Server Actions-only terminology unconnected to current Server Functions wording\"],\"evidence_priority\":\"general_knowledge_first\"}"
@@ -17,9 +16,10 @@ metadata:
   relations: "{\"related\":[\"server-components-design\",\"client-server-boundary\",\"form-ux-architecture\",\"api-design\",\"hooks-patterns\",\"security-fundamentals\",\"http-semantics\"],\"verify_with\":[\"client-server-boundary\",\"server-components-design\",\"api-design\",\"security-fundamentals\",\"form-ux-architecture\",\"hooks-patterns\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "A Server Action is like a service-counter form wired straight to the back office: the customer fills out normal paperwork, the clerk executes privileged work behind the counter, and the office must still check identity, authority, and the paperwork before changing records."
   misconception: "|"
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/server-actions-design/SKILL.md
@@ -322,7 +322,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `frontend-engineering`
-- Deployment: `portable`
 - Domain: `engineering/frontend`
 - Scope: Teaching the portable mutation-design discipline for React Server Functions and Next.js Server Actions: when a 'use server' function becomes an invokable POST endpoint, how form action/formAction integration preserves progressive enhancement, how useActionState and useFormStatus report mutation state, how to validate and authorize untrusted arguments, how to revalidate or refresh UI after writes, and how to choose between an in-app action and a public API contract. Applies to Next.js App Router mutations and form submissions. Excludes read-path Server Component fetching (server-components-design), general client/server serialization mechanics (client-server-boundary), public REST/GraphQL/mobile/third-party API design (api-design), and visual form UX or accessibility details (form-ux-architecture).
 
@@ -349,7 +348,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: A Server Action is like a service-counter form wired straight to the back office: the customer fills out normal paperwork, the clerk executes privileged work behind the counter, and the office must still check identity, authority, and the paperwork before changing records.
 - Common misconception: |
 

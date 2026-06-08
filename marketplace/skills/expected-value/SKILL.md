@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: reasoning-strategy
-  deployment_target: portable
   taxonomy_domain: foundations/decision-quality
   owner: skill-graph-maintainer
   freshness: "2026-05-27"
@@ -28,7 +27,6 @@ metadata:
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   mental_model: "Expected value is a weighted average over possible futures. The primitives are actions, mutually exclusive outcomes, probabilities conditional on each action, values or utilities in one shared unit, costs, constraints, and sensitivity ranges. For each action, multiply each outcome value by its probability, sum the products, subtract costs, and compare the resulting expectation against alternatives inside the feasible set."
   purpose: "This skill prevents agents from choosing by best-case story, worst-case fear, or unweighted option lists when probabilities and payoffs are already available. It replaces intuition-only recommendations with an explicit probability-weighted comparison, plus sensitivity checks that show which assumptions drive the decision."
-  boundary: "Expected value chooses among actions once probabilities and values are accepted or can be reasonably estimated. It does not update probabilities from evidence, trace unmodeled downstream consequences, run broad backlog scoring with qualitative criteria, or perform domain-specific valuation work. Those tools may feed the outcome model, but this skill owns probability-weighted action comparison."
   analogy: "Expected value is like a scale that weighs every possible future by both its size and its chance of happening, then subtracts the cost of putting that future on the scale."
   misconception: "The common mistake is treating expected value as the outcome to expect in a single trial. Expected value is a long-run or portfolio guide; a positive average can still be vetoed by ruin risk, hard constraints, non-repeatability, or made-up inputs."
   last_changed: "2026-05-27"
@@ -39,6 +37,8 @@ metadata:
   application_verdict: UNVERIFIED
   lint_verdict: PASS
   drift_status: EXTERNAL_UNHASHED
+  public: "true"
+  concept_boundary: "Expected value chooses among actions once probabilities and values are accepted or can be reasonably estimated. It does not update probabilities from evidence, trace unmodeled downstream consequences, run broad backlog scoring with qualitative criteria, or perform domain-specific valuation work. Those tools may feed the outcome model, but this skill owns probability-weighted action comparison."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/expected-value/SKILL.md
@@ -320,7 +320,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `reasoning-strategy`
-- Deployment: `portable`
 - Domain: `foundations/decision-quality`
 
 **When to use**
@@ -345,7 +344,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: Expected value is a weighted average over possible futures. The primitives are actions, mutually exclusive outcomes, probabilities conditional on each action, values or utilities in one shared unit, costs, constraints, and sensitivity ranges. For each action, multiply each outcome value by its probability, sum the products, subtract costs, and compare the resulting expectation against alternatives inside the feasible set.
 - Purpose: This skill prevents agents from choosing by best-case story, worst-case fear, or unweighted option lists when probabilities and payoffs are already available. It replaces intuition-only recommendations with an explicit probability-weighted comparison, plus sensitivity checks that show which assumptions drive the decision.
-- Boundary: Expected value chooses among actions once probabilities and values are accepted or can be reasonably estimated. It does not update probabilities from evidence, trace unmodeled downstream consequences, run broad backlog scoring with qualitative criteria, or perform domain-specific valuation work. Those tools may feed the outcome model, but this skill owns probability-weighted action comparison.
 - Analogy: Expected value is like a scale that weighs every possible future by both its size and its chance of happening, then subtracts the cost of putting that future on the scale.
 - Common misconception: The common mistake is treating expected value as the outcome to expect in a single trial. Expected value is a long-run or portfolio guide; a positive average can still be vetoed by ruin risk, hard constraints, non-repeatability, or made-up inputs.
 

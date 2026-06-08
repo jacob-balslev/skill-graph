@@ -7,7 +7,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: frontend-engineering
-  deployment_target: portable
   taxonomy_domain: engineering/frontend
   owner: skill-graph-maintainer
   freshness: "2026-05-15"
@@ -24,7 +23,6 @@ metadata:
   relations: "{\"related\":[\"frontend-architecture\",\"client-server-boundary\",\"http-semantics\",\"performance-engineering\",\"vercel-composition-patterns\"],\"boundary\":[{\"skill\":\"frontend-architecture\",\"reason\":\"frontend-architecture owns how the codebase is organized; rendering-models owns where and when the UI is produced. A route's architecture and its rendering model are independent decisions.\"},{\"skill\":\"client-server-boundary\",\"reason\":\"client-server-boundary owns the serialization frontier (what can cross between server and client code). rendering-models owns the staging of work across build/request/stream/interaction.\"}],\"verify_with\":[\"performance-engineering\",\"frontend-architecture\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "Rendering models are to web pages what cooking styles are to restaurant kitchens — the same ingredients (data, components, markup) get plated differently depending on whether the kitchen pre-cooks at dawn (SSG), cooks to order during service (SSR), streams courses out as they finish (streaming SSR), or hands raw ingredients to the diner to assemble themselves (CSR), and no one style is right for every menu item."
   misconception: "|"
   concept: "{\"definition\":\"A rendering model is the strategy by which a web user interface is produced and delivered, defined by two axes: when the work happens (build time, request time, response stream, or user interaction) and where it executes (server, edge, or client). The choice of model determines first-paint latency, time-to-interactive, server cost, cache behavior, and which content can be indexed by crawlers.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
@@ -34,6 +32,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/rendering-models/SKILL.md
@@ -175,7 +175,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `frontend-engineering`
-- Deployment: `portable`
 - Domain: `engineering/frontend`
 
 **When to use**
@@ -199,7 +198,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: Rendering models are to web pages what cooking styles are to restaurant kitchens — the same ingredients (data, components, markup) get plated differently depending on whether the kitchen pre-cooks at dawn (SSG), cooks to order during service (SSR), streams courses out as they finish (streaming SSR), or hands raw ingredients to the diner to assemble themselves (CSR), and no one style is right for every menu item.
 - Common misconception: |
 

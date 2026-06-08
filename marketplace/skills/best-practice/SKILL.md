@@ -6,7 +6,6 @@ compatibility: "Applies to any web application codebase using TypeScript, React,
 allowed-tools: Read Grep Bash
 metadata:
   subject: quality-assurance
-  deployment_target: portable
   scope: "Portable final-pass quality enforcement across code, templates, skills, prompts, scripts, documentation, pages, and design. Use after or alongside specialist skills to catch boundary-spanning issues in security, accessibility, performance, testing, design-system use, documentation, DevOps, AI/LLM artifacts, and Next.js App Router patterns. Excludes deep specialist methodology owned by code-review, owasp-security, a11y, design-system-architecture, color-system-design, typography-system, testing-strategy, and agent-eval-design."
   taxonomy_domain: quality/cross-domain
   stability: stable
@@ -15,6 +14,7 @@ metadata:
   anti_examples: "[\"reviewing PR feedback phrasing and comment classification (use code-review)\",\"performing a deep OWASP threat review (use owasp-security)\",\"designing keyboard focus behavior or live-region placement (use a11y)\",\"designing the color system and contrast model (use color-system-design)\",\"implementing font loading and vertical rhythm (use typography-system)\",\"designing a skill's comprehension or application eval suite (use agent-eval-design)\"]"
   relations: "{\"boundary\":[{\"skill\":\"code-review\",\"reason\":\"best-practice owns the broad final quality gate across artifacts; code-review owns review process, finding classification, and feedback phrasing\"},{\"skill\":\"owasp-security\",\"reason\":\"best-practice owns breadth-level security checks in a cross-domain pass; owasp-security owns deep application-security review\"},{\"skill\":\"a11y\",\"reason\":\"best-practice owns broad accessibility reminders in a final quality pass; a11y owns detailed accessibility implementation and verification\"}],\"related\":[\"code-review\",\"owasp-security\",\"a11y\",\"testing-strategy\",\"test-coverage-strategy\",\"performance-engineering\",\"performance-budgets\",\"design-system-architecture\",\"visual-design-foundations\",\"layout-composition\",\"color-system-design\",\"typography-system\",\"microcopy\",\"architecture-decision-records\",\"skill-scaffold\",\"agent-eval-design\",\"server-components-design\",\"server-actions-design\"],\"verify_with\":[\"code-review\",\"owasp-security\",\"a11y\",\"testing-strategy\",\"design-system-architecture\"]}"
   grounding: "{\"subject_matter\":\"Cross-cutting quality enforcement across 14 domains\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[],\"failure_modes\":[\"specialist_boundary_gaps\",\"heading_hierarchy_violations\",\"hardcoded_values_bypass_token_system\",\"server_actions_treated_as_internal\",\"dead_tests_accumulate\"],\"evidence_priority\":\"general_knowledge_first\"}"
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/best-practice/SKILL.md
@@ -224,7 +224,6 @@ These rules appear across 3+ domains — **highest enforcement weight**:
 
 **Classification**
 - Subject: `quality-assurance`
-- Deployment: `portable`
 - Domain: `quality/cross-domain`
 - Scope: Portable final-pass quality enforcement across code, templates, skills, prompts, scripts, documentation, pages, and design. Use after or alongside specialist skills to catch boundary-spanning issues in security, accessibility, performance, testing, design-system use, documentation, DevOps, AI/LLM artifacts, and Next.js App Router patterns. Excludes deep specialist methodology owned by code-review, owasp-security, a11y, design-system-architecture, color-system-design, typography-system, testing-strategy, and agent-eval-design.
 

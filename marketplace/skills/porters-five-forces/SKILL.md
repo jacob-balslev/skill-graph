@@ -10,7 +10,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: reasoning-strategy
-  deployment_target: portable
   scope: "Industry competitive-structure analysis using Porter's Five Forces — defining industry boundaries, diagnosing each of the five forces (rivalry, new entrants, supplier power, buyer power, substitutes) by their structural drivers, reading dynamic trends, and translating force intensity into profit-pool and positioning implications. Portable across any domain doing competitive or market-structure analysis; principle-grounded, not repo-bound. Excludes integrated strategy-cascade design (playing-to-win), durable-moat classification (seven-powers), task/option scoring (prioritization), and generic market sizing."
   taxonomy_domain: foundations/strategy
   owner: skill-graph-maintainer
@@ -30,7 +29,6 @@ metadata:
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   mental_model: "Porter's Five Forces treats profitability as a structural outcome of five pressures around an industry, not just the visible fight among direct competitors. The primitives are the industry boundary, buyers, suppliers, potential entrants, substitutes, current rivals, structural drivers behind each force, and the resulting division of economic value across the profit pool."
   purpose: "This skill prevents agents from mistaking a market summary, TAM estimate, competitor list, or company-strength memo for competitive strategy analysis. It replaces shallow market attractiveness prose with a force-by-force diagnosis of who can capture value, who can bid it away, which forces are changing, and what strategic position or no-go decision follows."
-  boundary: "Five Forces is for industry-structure and profit-pool diagnosis. It is not a Playing to Win strategy cascade, Seven Powers moat taxonomy, SWOT inventory, PESTEL macro scan, market-sizing model, OKR system, backlog prioritization method, or firm-specific capability audit. Those tools can feed or follow the analysis, but they do not replace the five structural forces."
   analogy: "Five Forces is like checking the pressure on all sides of a container: the firm may be strong, but the industry's structure determines where the pressure leaks value away."
   misconception: "The common mistake is treating Five Forces as a checklist of five labels or as a direct-competitor analysis. The method only works when each force is tied to structural drivers and then translated into profitability, positioning, and change over time."
   structural_verdict: PASS
@@ -39,6 +37,8 @@ metadata:
   application_verdict: UNVERIFIED
   eval_score: "4.17"
   eval_failed_ids: "[]"
+  public: "true"
+  concept_boundary: "Five Forces is for industry-structure and profit-pool diagnosis. It is not a Playing to Win strategy cascade, Seven Powers moat taxonomy, SWOT inventory, PESTEL macro scan, market-sizing model, OKR system, backlog prioritization method, or firm-specific capability audit. Those tools can feed or follow the analysis, but they do not replace the five structural forces."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/porters-five-forces/SKILL.md
@@ -256,7 +256,6 @@ Before finishing, verify:
 
 **Classification**
 - Subject: `reasoning-strategy`
-- Deployment: `portable`
 - Domain: `foundations/strategy`
 - Scope: Industry competitive-structure analysis using Porter's Five Forces — defining industry boundaries, diagnosing each of the five forces (rivalry, new entrants, supplier power, buyer power, substitutes) by their structural drivers, reading dynamic trends, and translating force intensity into profit-pool and positioning implications. Portable across any domain doing competitive or market-structure analysis; principle-grounded, not repo-bound. Excludes integrated strategy-cascade design (playing-to-win), durable-moat classification (seven-powers), task/option scoring (prioritization), and generic market sizing.
 
@@ -282,7 +281,6 @@ Before finishing, verify:
 **Concept**
 - Mental model: Porter's Five Forces treats profitability as a structural outcome of five pressures around an industry, not just the visible fight among direct competitors. The primitives are the industry boundary, buyers, suppliers, potential entrants, substitutes, current rivals, structural drivers behind each force, and the resulting division of economic value across the profit pool.
 - Purpose: This skill prevents agents from mistaking a market summary, TAM estimate, competitor list, or company-strength memo for competitive strategy analysis. It replaces shallow market attractiveness prose with a force-by-force diagnosis of who can capture value, who can bid it away, which forces are changing, and what strategic position or no-go decision follows.
-- Boundary: Five Forces is for industry-structure and profit-pool diagnosis. It is not a Playing to Win strategy cascade, Seven Powers moat taxonomy, SWOT inventory, PESTEL macro scan, market-sizing model, OKR system, backlog prioritization method, or firm-specific capability audit. Those tools can feed or follow the analysis, but they do not replace the five structural forces.
 - Analogy: Five Forces is like checking the pressure on all sides of a container: the firm may be strong, but the industry's structure determines where the pressure leaks value away.
 - Common misconception: The common mistake is treating Five Forces as a checklist of five labels or as a direct-competitor analysis. The method only works when each force is tied to structural drivers and then translated into profitability, positioning, and change over time.
 

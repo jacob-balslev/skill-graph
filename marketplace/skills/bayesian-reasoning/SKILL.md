@@ -10,7 +10,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: reasoning-strategy
-  deployment_target: portable
   taxonomy_domain: foundations/decision-quality
   owner: skill-graph-maintainer
   freshness: "2026-05-26"
@@ -29,13 +28,14 @@ metadata:
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   mental_model: "Bayesian reasoning treats belief as a state that changes when evidence arrives. The primitives are a hypothesis, prior probability or base rate, evidence, likelihood of seeing that evidence if the hypothesis were true, likelihood of seeing it if the hypothesis were false, posterior belief, residual uncertainty, and update history. The key move is comparing how much better the evidence is explained by one hypothesis than by alternatives, then updating from the prior instead of starting from the vividness of the evidence."
   purpose: "This skill prevents agents from jumping from a salient signal to a confident conclusion. It replaces binary diagnosis, anecdote-weighting, and base-rate neglect with an explicit update loop: start with the prior, estimate evidential force, adjust belief in the right direction, avoid double-counting correlated evidence, and state what would change the posterior next."
-  boundary: "Bayesian reasoning updates probabilities and confidence; it does not by itself choose the action with the best payoff, produce an expected value table, fit a statistical model, create a strategy cascade, analyze industry structure, or rank a backlog. Those downstream tools may consume Bayesian probabilities, but this skill owns the belief update."
   analogy: "Bayesian reasoning is like adjusting a dimmer switch rather than flipping a light switch: evidence moves confidence up or down from where it started, and stronger evidence moves it farther."
   misconception: "The common mistake is treating Bayes as a formula that requires precise numbers. The formula is the idealized version; in agent work the practical discipline is often qualitative: make the prior explicit, compare evidence under competing hypotheses, update directionally, and label uncertainty instead of inventing decimals."
   structural_verdict: PASS
   truth_verdict: UNVERIFIED
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  public: "true"
+  concept_boundary: "Bayesian reasoning updates probabilities and confidence; it does not by itself choose the action with the best payoff, produce an expected value table, fit a statistical model, create a strategy cascade, analyze industry structure, or rank a backlog. Those downstream tools may consume Bayesian probabilities, but this skill owns the belief update."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/bayesian-reasoning/SKILL.md
@@ -217,7 +217,6 @@ Before finishing, verify:
 
 **Classification**
 - Subject: `reasoning-strategy`
-- Deployment: `portable`
 - Domain: `foundations/decision-quality`
 
 **When to use**
@@ -243,7 +242,6 @@ Before finishing, verify:
 **Concept**
 - Mental model: Bayesian reasoning treats belief as a state that changes when evidence arrives. The primitives are a hypothesis, prior probability or base rate, evidence, likelihood of seeing that evidence if the hypothesis were true, likelihood of seeing it if the hypothesis were false, posterior belief, residual uncertainty, and update history. The key move is comparing how much better the evidence is explained by one hypothesis than by alternatives, then updating from the prior instead of starting from the vividness of the evidence.
 - Purpose: This skill prevents agents from jumping from a salient signal to a confident conclusion. It replaces binary diagnosis, anecdote-weighting, and base-rate neglect with an explicit update loop: start with the prior, estimate evidential force, adjust belief in the right direction, avoid double-counting correlated evidence, and state what would change the posterior next.
-- Boundary: Bayesian reasoning updates probabilities and confidence; it does not by itself choose the action with the best payoff, produce an expected value table, fit a statistical model, create a strategy cascade, analyze industry structure, or rank a backlog. Those downstream tools may consume Bayesian probabilities, but this skill owns the belief update.
 - Analogy: Bayesian reasoning is like adjusting a dimmer switch rather than flipping a light switch: evidence moves confidence up or down from where it started, and stronger evidence moves it farther.
 - Common misconception: The common mistake is treating Bayes as a formula that requires precise numbers. The formula is the idealized version; in agent work the practical discipline is often qualitative: make the prior explicit, compare evidence under competing hypotheses, update directionally, and label uncertainty instead of inventing decimals.
 

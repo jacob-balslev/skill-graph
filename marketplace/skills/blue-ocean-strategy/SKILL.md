@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: reasoning-strategy
-  deployment_target: portable
   scope: "Blue Ocean Strategy for market-creating strategy work: diagnose the current value curve, reconstruct market boundaries, target noncustomers, design eliminate/reduce/raise/create moves, and test utility-price-cost-adoption viability. Excludes Five Forces industry-pressure diagnosis, Seven Powers moat taxonomy, generic positioning copy, and OKR execution tracking."
   taxonomy_domain: foundations/strategy
   owner: skill-graph-maintainer
@@ -28,7 +27,6 @@ metadata:
   comprehension_state: present
   mental_model: "Blue Ocean Strategy treats strategy as reconstruction of demand and value, not as winning a head-to-head fight inside fixed industry boundaries. The primitives are the current strategic profile, factors of competition, buyer utility, price, cost, adoption hurdles, noncustomers, alternative markets, and the eliminate/reduce/raise/create choices that produce a new value curve. A valid blue ocean move lifts buyer value and lowers or changes cost logic enough to open new demand."
   purpose: "This skill prevents agents from calling ordinary differentiation, feature bundling, or low-price competition a blue ocean. It forces the work through the strategy canvas, boundary reconstruction, noncustomer insight, the Four Actions Framework, ERRC grid, and commercial viability checks so the answer shows how the move creates new demand rather than merely performing better on the old industry's factors."
-  boundary: "Blue Ocean Strategy is for designing value innovation and new market space. It is not Porter's Five Forces industry-structure diagnosis, Seven Powers moat-source classification, Playing to Win integrated strategy-cascade formulation, generic positioning, OKR execution design, or backlog prioritization. Those methods may feed or follow the work, but they do not replace value-curve reconstruction."
   analogy: Blue Ocean Strategy is like redrawing a game board so new players want to enter and old scoring rules stop deciding the winner.
   misconception: "The common mistake is treating Blue Ocean Strategy as creative differentiation or an instruction to avoid competitors. The method is stricter: it must reconstruct buyer value, reduce or eliminate costly old factors, create or raise factors that unlock demand, and pass utility, price, cost, and adoption tests."
   structural_verdict: PASS
@@ -38,6 +36,8 @@ metadata:
   last_audited: "2026-05-28"
   lint_verdict: PASS
   drift_status: EXTERNAL_UNHASHED
+  public: "true"
+  concept_boundary: "Blue Ocean Strategy is for designing value innovation and new market space. It is not Porter's Five Forces industry-structure diagnosis, Seven Powers moat-source classification, Playing to Win integrated strategy-cascade formulation, generic positioning, OKR execution design, or backlog prioritization. Those methods may feed or follow the work, but they do not replace value-curve reconstruction."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/blue-ocean-strategy/SKILL.md
@@ -268,7 +268,6 @@ Before finishing, verify:
 
 **Classification**
 - Subject: `reasoning-strategy`
-- Deployment: `portable`
 - Domain: `foundations/strategy`
 - Scope: Blue Ocean Strategy for market-creating strategy work: diagnose the current value curve, reconstruct market boundaries, target noncustomers, design eliminate/reduce/raise/create moves, and test utility-price-cost-adoption viability. Excludes Five Forces industry-pressure diagnosis, Seven Powers moat taxonomy, generic positioning copy, and OKR execution tracking.
 
@@ -296,7 +295,6 @@ Before finishing, verify:
 **Concept**
 - Mental model: Blue Ocean Strategy treats strategy as reconstruction of demand and value, not as winning a head-to-head fight inside fixed industry boundaries. The primitives are the current strategic profile, factors of competition, buyer utility, price, cost, adoption hurdles, noncustomers, alternative markets, and the eliminate/reduce/raise/create choices that produce a new value curve. A valid blue ocean move lifts buyer value and lowers or changes cost logic enough to open new demand.
 - Purpose: This skill prevents agents from calling ordinary differentiation, feature bundling, or low-price competition a blue ocean. It forces the work through the strategy canvas, boundary reconstruction, noncustomer insight, the Four Actions Framework, ERRC grid, and commercial viability checks so the answer shows how the move creates new demand rather than merely performing better on the old industry's factors.
-- Boundary: Blue Ocean Strategy is for designing value innovation and new market space. It is not Porter's Five Forces industry-structure diagnosis, Seven Powers moat-source classification, Playing to Win integrated strategy-cascade formulation, generic positioning, OKR execution design, or backlog prioritization. Those methods may feed or follow the work, but they do not replace value-curve reconstruction.
 - Analogy: Blue Ocean Strategy is like redrawing a game board so new players want to enter and old scoring rules stop deciding the winner.
 - Common misconception: The common mistake is treating Blue Ocean Strategy as creative differentiation or an instruction to avoid competitors. The method is stricter: it must reconstruct buyer value, reduce or eliminate costly old factors, create or raise factors that unlock demand, and pass utility, price, cost, and adoption tests.
 

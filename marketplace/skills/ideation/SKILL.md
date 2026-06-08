@@ -6,7 +6,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: design
-  deployment_target: portable
   scope: "Generating a wide range of solution concepts before converging — running structured idea-generation sessions, breaking out of solution fixation, and moving from divergent to convergent selection with explicit criteria. Portable across any design or product effort; principle-grounded, not repo-bound. Excludes collaborative engineering domain discovery (event-storming), solo deep technical design, and final go/no-go investment decisions."
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
@@ -26,6 +25,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/ideation/SKILL.md
@@ -68,7 +68,6 @@ The discipline is sceptical of "good enough" early ideas. The first three ideas 
 
 **Classification**
 - Subject: `design`
-- Deployment: `portable`
 - Scope: Generating a wide range of solution concepts before converging — running structured idea-generation sessions, breaking out of solution fixation, and moving from divergent to convergent selection with explicit criteria. Portable across any design or product effort; principle-grounded, not repo-bound. Excludes collaborative engineering domain discovery (event-storming), solo deep technical design, and final go/no-go investment decisions.
 
 **When to use**

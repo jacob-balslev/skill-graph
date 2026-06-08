@@ -5,7 +5,6 @@ license: MIT
 allowed-tools: Read Grep
 metadata:
   subject: data-engineering
-  deployment_target: portable
   scope: "Designing database replication topologies and operational guardrails for keeping multiple copies of the same data in agreement across nodes: single-leader, multi-leader, leaderless/quorum; synchronous, semi-synchronous, and asynchronous replication; log-shipping and statement/row/trigger/logical mechanisms; read-after-write mitigations; failover and split-brain prevention; conflict resolution; and backup-vs-replica boundaries. Portable across distributed database systems. Excludes horizontal partitioning across nodes (sharding-strategy), the abstract CAP/PACELC frame itself (cap-theorem-tradeoffs), single-node transaction guarantees (acid-fundamentals), isolation-level choice (transaction-isolation), and query/index tuning (query-optimization/indexing-strategy)."
   taxonomy_domain: engineering/data
   stability: experimental
@@ -16,9 +15,10 @@ metadata:
   relations: "{\"related\":[\"cap-theorem-tradeoffs\",\"acid-fundamentals\",\"sharding-strategy\",\"transaction-isolation\",\"indexing-strategy\",\"query-optimization\"],\"verify_with\":[\"cap-theorem-tradeoffs\",\"sharding-strategy\",\"transaction-isolation\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "Replication is to a database what mirror copies of a master photograph are to a museum's record — single-leader async is the photographer keeping the negative and printing copies as requested; single-leader sync is the conservator requiring two darkroom signatures before any print leaves the building; multi-leader is multiple authorized photographers in different cities each accepting submissions and reconciling at intervals; leaderless quorum is asking three of five archivists to vote on whether this print matches the master, accepting their verdict. Failover is replacing the negative-keeper when they retire; split brain is what happens when the agency forgets to revoke the old keeper's keys."
   misconception: "|"
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/data-engineering/replication-patterns/SKILL.md
@@ -144,7 +144,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `data-engineering`
-- Deployment: `portable`
 - Domain: `engineering/data`
 - Scope: Designing database replication topologies and operational guardrails for keeping multiple copies of the same data in agreement across nodes: single-leader, multi-leader, leaderless/quorum; synchronous, semi-synchronous, and asynchronous replication; log-shipping and statement/row/trigger/logical mechanisms; read-after-write mitigations; failover and split-brain prevention; conflict resolution; and backup-vs-replica boundaries. Portable across distributed database systems. Excludes horizontal partitioning across nodes (sharding-strategy), the abstract CAP/PACELC frame itself (cap-theorem-tradeoffs), single-node transaction guarantees (acid-fundamentals), isolation-level choice (transaction-isolation), and query/index tuning (query-optimization/indexing-strategy).
 
@@ -167,7 +166,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: Replication is to a database what mirror copies of a master photograph are to a museum's record — single-leader async is the photographer keeping the negative and printing copies as requested; single-leader sync is the conservator requiring two darkroom signatures before any print leaves the building; multi-leader is multiple authorized photographers in different cities each accepting submissions and reconciling at intervals; leaderless quorum is asking three of five archivists to vote on whether this print matches the master, accepting their verdict. Failover is replacing the negative-keeper when they retire; split brain is what happens when the agency forgets to revoke the old keeper's keys.
 - Common misconception: |
 

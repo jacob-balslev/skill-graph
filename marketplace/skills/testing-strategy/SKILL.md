@@ -6,7 +6,6 @@ compatibility: "Markdown, Git, any codebase"
 allowed-tools: Read Grep Bash
 metadata:
   subject: quality-assurance
-  deployment_target: portable
   scope: "Portable test-scope and test-level decision-making for software changes: choosing what behavior or regression target deserves verification, selecting unit, integration, contract, or end-to-end evidence by risk and coupling, and avoiding tests whose maintenance cost exceeds their failure signal. Excludes root-cause debugging of active failures, implementation mechanics for a chosen test type, documentation writing, and architecture discussion without a concrete verification target."
   taxonomy_domain: quality/testing-strategy
   stability: experimental
@@ -19,9 +18,10 @@ metadata:
   grounding: "{\"subject_matter\":\"Test-scope and test-level selection for software changes\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://martinfowler.com/articles/practical-test-pyramid.html\",\"https://testing.googleblog.com/2010/12/test-sizes.html\",\"https://playwright.dev/docs/best-practices\",\"https://docs.pact.io/getting_started/how_pact_works\"],\"failure_modes\":[\"test_level_selected_by_file_type_not_risk\",\"mocked_unit_test_hides_cross_boundary_regression\",\"end_to_end_suite_expands_until_slow_and_flaky\",\"coverage_percentage_replaces_behavior_target\",\"production_regression_pinned_at_wrong_level\"],\"evidence_priority\":\"equal\"}"
   mental_model: "Testing strategy is the choice of verification target, test level, and evidence quality for a specific change. Its primitives are the behavior or regression target, the risk of failure, the coupling boundary that could hide the bug, the cheapest test level that can observe the behavior honestly, the expected failure signal, and the maintenance cost the suite will carry afterward."
   purpose: "Test suites become expensive when they chase coverage percentage, duplicate low-risk paths, or mock away the boundary that can actually fail. This skill exists to spend verification effort where it can prevent real regressions, while avoiding tests that will never produce useful signal."
-  boundary: "This skill owns the decision about what behavior to test and at which level for a planned change or regression target. It does not own root-cause debugging of a failing test, detailed implementation patterns for one chosen test type, documentation writing, performance-load verification, or architecture strategy without a concrete verification target."
   analogy: "A test strategy is placing sensors in a system: each sensor should sit where a meaningful failure can be observed with the least noise and maintenance cost."
   misconception: "The common mistake is choosing tests by edited file type or coverage percentage. The better choice starts from the behavior that could regress, then selects the cheapest level that can observe that failure without mocking it away."
+  public: "true"
+  concept_boundary: "This skill owns the decision about what behavior to test and at which level for a planned change or regression target. It does not own root-cause debugging of a failing test, detailed implementation patterns for one chosen test type, documentation writing, performance-load verification, or architecture strategy without a concrete verification target."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/testing-strategy/SKILL.md
@@ -104,7 +104,6 @@ This skill ships local eval artifacts at `skills/skills/quality-assurance/testin
 
 **Classification**
 - Subject: `quality-assurance`
-- Deployment: `portable`
 - Domain: `quality/testing-strategy`
 - Scope: Portable test-scope and test-level decision-making for software changes: choosing what behavior or regression target deserves verification, selecting unit, integration, contract, or end-to-end evidence by risk and coupling, and avoiding tests whose maintenance cost exceeds their failure signal. Excludes root-cause debugging of active failures, implementation mechanics for a chosen test type, documentation writing, and architecture discussion without a concrete verification target.
 
@@ -129,7 +128,6 @@ This skill ships local eval artifacts at `skills/skills/quality-assurance/testin
 **Concept**
 - Mental model: Testing strategy is the choice of verification target, test level, and evidence quality for a specific change. Its primitives are the behavior or regression target, the risk of failure, the coupling boundary that could hide the bug, the cheapest test level that can observe the behavior honestly, the expected failure signal, and the maintenance cost the suite will carry afterward.
 - Purpose: Test suites become expensive when they chase coverage percentage, duplicate low-risk paths, or mock away the boundary that can actually fail. This skill exists to spend verification effort where it can prevent real regressions, while avoiding tests that will never produce useful signal.
-- Boundary: This skill owns the decision about what behavior to test and at which level for a planned change or regression target. It does not own root-cause debugging of a failing test, detailed implementation patterns for one chosen test type, documentation writing, performance-load verification, or architecture strategy without a concrete verification target.
 - Analogy: A test strategy is placing sensors in a system: each sensor should sit where a meaningful failure can be observed with the least noise and maintenance cost.
 - Common misconception: The common mistake is choosing tests by edited file type or coverage percentage. The better choice starts from the behavior that could regress, then selects the cheapest level that can observe that failure without mocking it away.
 

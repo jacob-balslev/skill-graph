@@ -7,7 +7,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: data-engineering
-  deployment_target: portable
   scope: "The consistency-availability-partition-tolerance trade-off for distributed data systems — Brewer's CAP conjecture (2000), Gilbert & Lynch's 2002 proof, why P is not optional, the CP-vs-AP dichotomy, PACELC as the latency-vs-consistency extension that holds even without partition, the CAP-C vs ACID-C distinction, and the choice procedure of naming what the system must guarantee under partition. Portable across any distributed data system; principle-grounded, not repo-bound. Excludes single-node transactional guarantees (acid-fundamentals), choosing an isolation level (transaction-isolation), replication topology design (replication-patterns), and sharding decisions (sharding-strategy)."
   taxonomy_domain: engineering/data
   owner: skill-graph-maintainer
@@ -25,7 +24,6 @@ metadata:
   relations: "{\"related\":[\"acid-fundamentals\",\"transaction-isolation\",\"replication-patterns\",\"sharding-strategy\"],\"boundary\":[{\"skill\":\"replication-patterns\",\"reason\":\"replication-patterns owns the design patterns for multi-replica systems (primary-replica, multi-primary, leaderless quorum); this skill owns the C/A/P trade-off that motivates choosing among them. The two compose: this is the theoretical frame; replication-patterns is the operational realization.\"},{\"skill\":\"sharding-strategy\",\"reason\":\"sharding-strategy owns horizontal partitioning of data across nodes; this skill owns the C/A trade-off when those shards must coordinate or recover from network partition between them.\"}],\"verify_with\":[\"acid-fundamentals\",\"replication-patterns\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "CAP is to a distributed database what the Heisenberg uncertainty principle is to physics — you cannot simultaneously have a fully consistent reading and a fully available reading when the network has partitioned, just as you cannot simultaneously measure a precise position and a precise momentum. The trade-off is not a limit of the engineering, it is a limit of the physics; pretending otherwise is the source of every 'CA' system that claims to defy CAP and chooses one side anyway on its first partition."
   misconception: "|"
   concept: "{\"definition\":\"CAP is the theorem (Brewer 2000 as a conjecture; Gilbert & Lynch 2002 as a formal proof) that, in a distributed data system, you cannot simultaneously guarantee all three of: Consistency (every read returns the most recent write or an error), Availability (every request receives a non-error response), Partition tolerance (the system continues despite arbitrary message loss between nodes). Since real-world networks can and do partition, P is not optional — the choice is between C and A *during a partition*. A CP system refuses to serve some requests during partition to preserve consistency; an AP system serves all requests but may return stale data. PACELC (Abadi 2010) extends CAP by naming the *Else* case: even without partition, the system must trade Latency against Consistency, because synchronous replication for strong consistency takes time. The discipline is choosing C-vs-A *intentionally per workload*, knowing that P is given by physics and that even outside partition, latency-vs-consistency is a continuous choice.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
@@ -35,6 +33,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/data-engineering/cap-theorem-tradeoffs/SKILL.md
@@ -161,7 +161,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `data-engineering`
-- Deployment: `portable`
 - Domain: `engineering/data`
 - Scope: The consistency-availability-partition-tolerance trade-off for distributed data systems — Brewer's CAP conjecture (2000), Gilbert & Lynch's 2002 proof, why P is not optional, the CP-vs-AP dichotomy, PACELC as the latency-vs-consistency extension that holds even without partition, the CAP-C vs ACID-C distinction, and the choice procedure of naming what the system must guarantee under partition. Portable across any distributed data system; principle-grounded, not repo-bound. Excludes single-node transactional guarantees (acid-fundamentals), choosing an isolation level (transaction-isolation), replication topology design (replication-patterns), and sharding decisions (sharding-strategy).
 
@@ -186,7 +185,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: CAP is to a distributed database what the Heisenberg uncertainty principle is to physics — you cannot simultaneously have a fully consistent reading and a fully available reading when the network has partitioned, just as you cannot simultaneously measure a precise position and a precise momentum. The trade-off is not a limit of the engineering, it is a limit of the physics; pretending otherwise is the source of every 'CA' system that claims to defy CAP and chooses one side anyway on its first partition.
 - Common misconception: |
 

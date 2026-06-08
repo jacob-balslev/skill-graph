@@ -6,7 +6,6 @@ compatibility: "Markdown, strategy memos, operating plans, quarterly planning, g
 allowed-tools: Read Grep
 metadata:
   subject: reasoning-strategy
-  deployment_target: portable
   scope: "OKR goal-setting for strategy execution: define qualitative Objectives, 2-5 measurable outcome Key Results, alignment checks, scoring, review cadence, and learning loops. Excludes upstream strategy formulation, backlog prioritization, KPI dashboard design, compensation evaluation, and task-list management."
   taxonomy_domain: foundations/strategy-execution
   stability: stable
@@ -18,9 +17,10 @@ metadata:
   grounding: "{\"subject_matter\":\"Objectives and Key Results as a portable goal-setting and strategy-execution methodology\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://www.whatmatters.com/faqs/okr-meaning-definition-example\",\"https://rework.withgoogle.com/intl/en/guides/set-goals-with-okrs\",\"https://okrinstitute.org/okrs/\",\"skills/reasoning-strategy/okrs/references/okrs-sources.md\",\"skills/reasoning-strategy/okrs/references/upstream-displacement-2026-05-30.md\"],\"failure_modes\":[\"objectives_without_strategy_context\",\"key_results_as_tasks_or_outputs\",\"key_results_without_baselines_or_targets\",\"too_many_objectives_diffusing_focus\",\"okrs_used_as_compensation_evaluation\",\"sandbagged_or_unreachable_goals\",\"no_check_in_or_scoring_cadence\",\"cascading_everything_instead_of_aligning_priorities\"],\"evidence_priority\":\"general_knowledge_first\"}"
   mental_model: "OKRs connect strategic intent to measurable learning over a fixed planning period. The primitives are a small set of qualitative Objectives, two to five measurable Key Results per Objective, owners, baselines, targets, check-in cadence, score, and retrospective learning. Objectives describe the important outcome to pursue; Key Results define observable evidence that the outcome happened."
   purpose: "This skill prevents agents from turning OKRs into task lists, KPI inventories, or aspirational slogans. It forces the work to state what matters this period, how success will be measured, what evidence proves progress, what will be reviewed during the period, and what the team should learn from the score."
-  boundary: "OKRs are for measurable goal-setting and strategy execution. They are not the strategy itself, a project plan, a backlog scoring model, a KPI dashboard for business-as-usual monitoring, a compensation review system, or a list of every task a team will do. Those tools can feed or follow OKRs, but they do not replace outcome-oriented Objectives and measurable Key Results."
   analogy: "OKRs are like a compass plus mile markers: the Objective points toward the destination, and the Key Results show whether the team is actually getting closer."
   misconception: "The common mistake is treating Key Results as planned activities. A Key Result is not 'launch feature X' unless the launch itself proves the outcome; stronger Key Results measure the customer, business, quality, or learning change the work is supposed to create."
+  public: "true"
+  concept_boundary: "OKRs are for measurable goal-setting and strategy execution. They are not the strategy itself, a project plan, a backlog scoring model, a KPI dashboard for business-as-usual monitoring, a compensation review system, or a list of every task a team will do. Those tools can feed or follow OKRs, but they do not replace outcome-oriented Objectives and measurable Key Results."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/okrs/SKILL.md
@@ -261,7 +261,6 @@ Before finalizing OKRs, verify:
 
 **Classification**
 - Subject: `reasoning-strategy`
-- Deployment: `portable`
 - Domain: `foundations/strategy-execution`
 - Scope: OKR goal-setting for strategy execution: define qualitative Objectives, 2-5 measurable outcome Key Results, alignment checks, scoring, review cadence, and learning loops. Excludes upstream strategy formulation, backlog prioritization, KPI dashboard design, compensation evaluation, and task-list management.
 
@@ -285,7 +284,6 @@ Before finalizing OKRs, verify:
 **Concept**
 - Mental model: OKRs connect strategic intent to measurable learning over a fixed planning period. The primitives are a small set of qualitative Objectives, two to five measurable Key Results per Objective, owners, baselines, targets, check-in cadence, score, and retrospective learning. Objectives describe the important outcome to pursue; Key Results define observable evidence that the outcome happened.
 - Purpose: This skill prevents agents from turning OKRs into task lists, KPI inventories, or aspirational slogans. It forces the work to state what matters this period, how success will be measured, what evidence proves progress, what will be reviewed during the period, and what the team should learn from the score.
-- Boundary: OKRs are for measurable goal-setting and strategy execution. They are not the strategy itself, a project plan, a backlog scoring model, a KPI dashboard for business-as-usual monitoring, a compensation review system, or a list of every task a team will do. Those tools can feed or follow OKRs, but they do not replace outcome-oriented Objectives and measurable Key Results.
 - Analogy: OKRs are like a compass plus mile markers: the Objective points toward the destination, and the Key Results show whether the team is actually getting closer.
 - Common misconception: The common mistake is treating Key Results as planned activities. A Key Result is not 'launch feature X' unless the launch itself proves the outcome; stronger Key Results measure the customer, business, quality, or learning change the work is supposed to create.
 

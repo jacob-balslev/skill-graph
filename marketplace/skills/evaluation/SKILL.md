@@ -6,7 +6,6 @@ compatibility: "Portable completion-evaluation discipline for AI agent work, doc
 allowed-tools: Read Grep Bash
 metadata:
   subject: ai-engineering
-  deployment_target: portable
   scope: "Evidence-based evaluation of completed agent tasks, implementations, documents, skill upgrades, and other deliverables against the original request, acceptance criteria, verification evidence, quality rubric, and residual risks before calling the work done. Portable across software, documentation, and agent-output review when the evaluator can inspect the request, artifact, and evidence. Excludes designing eval datasets or graders (agent-eval-design), line-by-line diff review (code-review), choosing test levels (testing-strategy), designing the process before work starts (methodology), and root-cause investigation of known failures (debugging)."
   taxonomy_domain: engineering/evaluation
   stability: experimental
@@ -18,9 +17,10 @@ metadata:
   grounding: "{\"subject_matter\":\"Evidence-based evaluation of agent outputs, deliverables, and completion claims\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://github.com/openai/evals\",\"https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents\",\"https://docs.anthropic.com/en/docs/test-and-evaluate/develop-tests\",\"https://adk.dev/evaluate/\",\"https://airc.nist.gov/\"],\"failure_modes\":[\"self_assessment_optimism_marks_incomplete_work_done\",\"tests_pass_treated_as_full_quality_evidence\",\"score_inflated_despite_missing_acceptance_criteria\",\"rubric_omits_negative_boundaries_or_residual_risks\",\"evaluation_confused_with_code_review_or_eval_dataset_design\",\"unverified_claims_enter_final_report\"],\"evidence_priority\":\"equal\"}"
   mental_model: "Evaluation is a gate, not a compliment: compare the requested outcome, produced artifact, evidence trail, and meaningful failure modes before deciding whether the work is done."
   purpose: "Prevent optimistic completion claims by making scores, evidence gaps, required revisions, and residual risks explicit before acceptance."
-  boundary: "This skill applies after a concrete artifact or task result exists. It does not design eval suites, review a diff line by line, choose test levels, debug a failure, or design the process before implementation."
   analogy: "Evaluation is an inspection gate at the end of a production line: passing one measurement is not enough if the product misses the order, lacks traceability, or carries a known risk."
   misconception: "Tests passing, lint passing, or a plausible final answer is not the same as completion. Completion requires fit to request, sufficient evidence, handled risks, and honest reporting."
+  public: "true"
+  concept_boundary: "This skill applies after a concrete artifact or task result exists. It does not design eval suites, review a diff line by line, choose test levels, debug a failure, or design the process before implementation."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/ai-engineering/evaluation/SKILL.md
@@ -182,7 +182,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `ai-engineering`
-- Deployment: `portable`
 - Domain: `engineering/evaluation`
 - Scope: Evidence-based evaluation of completed agent tasks, implementations, documents, skill upgrades, and other deliverables against the original request, acceptance criteria, verification evidence, quality rubric, and residual risks before calling the work done. Portable across software, documentation, and agent-output review when the evaluator can inspect the request, artifact, and evidence. Excludes designing eval datasets or graders (agent-eval-design), line-by-line diff review (code-review), choosing test levels (testing-strategy), designing the process before work starts (methodology), and root-cause investigation of known failures (debugging).
 
@@ -212,7 +211,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: Evaluation is a gate, not a compliment: compare the requested outcome, produced artifact, evidence trail, and meaningful failure modes before deciding whether the work is done.
 - Purpose: Prevent optimistic completion claims by making scores, evidence gaps, required revisions, and residual risks explicit before acceptance.
-- Boundary: This skill applies after a concrete artifact or task result exists. It does not design eval suites, review a diff line by line, choose test levels, debug a failure, or design the process before implementation.
 - Analogy: Evaluation is an inspection gate at the end of a production line: passing one measurement is not enough if the product misses the order, lacks traceability, or carries a known risk.
 - Common misconception: Tests passing, lint passing, or a plausible final answer is not the same as completion. Completion requires fit to request, sufficient evidence, handled risks, and honest reporting.
 

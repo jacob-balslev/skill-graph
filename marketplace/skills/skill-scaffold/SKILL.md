@@ -6,7 +6,6 @@ compatibility: "Markdown, YAML, JSON Schema"
 allowed-tools: Read Grep Bash Write Edit
 metadata:
   subject: agent-ops
-  deployment_target: portable
   scope: "Creating a new SKILL.md from scratch, restructuring a draft before it becomes a stable skill, or teaching the canonical Skill Metadata Protocol frontmatter and body structure — schema-conformant frontmatter, v8 classification, body layout by skill intent, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes), focused authoring gates, and routing-eval honesty. Portable across any Skill-Metadata-Protocol library; principle-grounded, not repo-bound. Excludes modifying an already-written skill (edit directly), general technical documentation, and fixing a malformed skill detected by health tooling (skill-infrastructure)."
   taxonomy_domain: agent/skill-system
   stability: experimental
@@ -17,9 +16,10 @@ metadata:
   grounding: "{\"subject_matter\":\"Authoring a new SKILL.md against Skill Metadata Protocol v8\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://github.com/jacob-balslev/skill-graph/blob/main/examples/skill-metadata-template.md\",\"https://github.com/jacob-balslev/skill-graph/blob/main/skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md\",\"https://github.com/jacob-balslev/skill-graph/blob/main/schemas/SKILL_METADATA_PROTOCOL_schema.json\",\"https://github.com/jacob-balslev/skill-graph/blob/main/skill-metadata-protocol/field-reference.md\"],\"failure_modes\":[\"placeholder_sludge\",\"cargo_cult_meta_sections\",\"description_coverage_collapse\",\"authoring_gate_skipped\",\"inflated_routing_eval\",\"retired_field_reintroduced\"],\"evidence_priority\":\"equal\"}"
   mental_model: "Skill scaffolding is protocol-backed authoring, not free-form prompt writing. The scaffold separates the routing contract, field contract, concept model, grounding evidence, body sections, and verification gates so a new skill becomes a routable graph node rather than a decorative Markdown file."
   purpose: "This skill prevents new SKILL.md files from inheriting template comments, false eval claims, stale schema fields, dangling relations, or vague descriptions. It turns authoring into a reproducible sequence: start from the canonical template, choose the v8 classification and body shape, adapt the contract, remove teaching annotations, and verify before publishing."
-  boundary: "This skill is for authoring a new skill or restructuring a draft before it becomes a stable node. It is not for routine edits to an existing skill, router debugging, bulk graph audits, general documentation, or correctness review of an already-authored skill's domain content."
   analogy: "A skill scaffold is like construction formwork: it gives the new structure its shape while the concrete sets, but the temporary braces must be removed before the finished building is occupied."
   misconception: "The common mistake is treating the template as copy text to fill in. A scaffold is an authoring instrument: fields must be chosen for the new skill, template notes must disappear, and every health or eval claim must match evidence from the current change."
+  public: "true"
+  concept_boundary: "This skill is for authoring a new skill or restructuring a draft before it becomes a stable node. It is not for routine edits to an existing skill, router debugging, bulk graph audits, general documentation, or correctness review of an already-authored skill's domain content."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/skill-scaffold/SKILL.md
@@ -137,7 +137,6 @@ Use this checklist as the authoring gate before committing a skill. Every item m
 
 **Classification**
 - Subject: `agent-ops`
-- Deployment: `portable`
 - Domain: `agent/skill-system`
 - Scope: Creating a new SKILL.md from scratch, restructuring a draft before it becomes a stable skill, or teaching the canonical Skill Metadata Protocol frontmatter and body structure — schema-conformant frontmatter, v8 classification, body layout by skill intent, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes), focused authoring gates, and routing-eval honesty. Portable across any Skill-Metadata-Protocol library; principle-grounded, not repo-bound. Excludes modifying an already-written skill (edit directly), general technical documentation, and fixing a malformed skill detected by health tooling (skill-infrastructure).
 
@@ -166,7 +165,6 @@ Use this checklist as the authoring gate before committing a skill. Every item m
 **Concept**
 - Mental model: Skill scaffolding is protocol-backed authoring, not free-form prompt writing. The scaffold separates the routing contract, field contract, concept model, grounding evidence, body sections, and verification gates so a new skill becomes a routable graph node rather than a decorative Markdown file.
 - Purpose: This skill prevents new SKILL.md files from inheriting template comments, false eval claims, stale schema fields, dangling relations, or vague descriptions. It turns authoring into a reproducible sequence: start from the canonical template, choose the v8 classification and body shape, adapt the contract, remove teaching annotations, and verify before publishing.
-- Boundary: This skill is for authoring a new skill or restructuring a draft before it becomes a stable node. It is not for routine edits to an existing skill, router debugging, bulk graph audits, general documentation, or correctness review of an already-authored skill's domain content.
 - Analogy: A skill scaffold is like construction formwork: it gives the new structure its shape while the concrete sets, but the temporary braces must be removed before the finished building is occupied.
 - Common misconception: The common mistake is treating the template as copy text to fill in. A scaffold is an authoring instrument: fields must be chosen for the new skill, template notes must disappear, and every health or eval claim must match evidence from the current change.
 

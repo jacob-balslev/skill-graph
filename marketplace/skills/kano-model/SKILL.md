@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: reasoning-strategy
-  deployment_target: portable
   scope: "Kano model feature and customer-need classification for product, service, and quality decisions: classify candidate features by satisfaction response to presence and absence, design paired functional/dysfunctional questions, handle segment differences, translate must-be/performance/attractive/indifferent/reverse categories into roadmap implications, and avoid over-ranking delighters before basics. Excludes generic backlog scoring without customer-response evidence, broad qualitative research synthesis, product-market positioning, and financial expected-value comparison."
   taxonomy_domain: foundations/product-strategy
   owner: skill-graph-maintainer
@@ -29,7 +28,6 @@ metadata:
   comprehension_state: present
   mental_model: "Kano analysis maps how a defined customer segment reacts when a feature is present versus absent. The primitives are segment, candidate feature, functional question, dysfunctional question, response pair, quality category, satisfaction effect, dissatisfaction effect, evidence confidence, and time. Must-be features prevent dissatisfaction, performance features move satisfaction roughly with execution quality, attractive features create upside when present without penalty when absent, indifferent features do not matter much, reverse features hurt some users, and questionable responses signal confusion or bad survey design."
   purpose: "This skill prevents agents from treating all feature requests as the same kind of demand. It forces the answer to distinguish basics customers punish you for missing, performance attributes customers reward proportionally, delighters that can differentiate only after basics are covered, indifferent ideas that should not consume roadmap capacity, and reverse features that help one segment while hurting another."
-  boundary: "The Kano model is for classifying customer satisfaction response patterns to candidate features or service attributes. It is not a complete prioritization score, open-ended user-research synthesis, positioning strategy, expected-value calculation, accessibility or safety gate, or proof that a feature is worth building. Kano categories can feed those decisions, but they do not replace cost, feasibility, strategy, risk, or evidence-quality checks."
   analogy: "Kano analysis is like a control panel with different levers: some only stop alarms, some raise the gauge steadily, some create a burst of delight, and some should not be pulled for the wrong audience."
   misconception: "The common mistake is thinking delighters are always the highest priority. In Kano reasoning, missing basics can destroy satisfaction, performance attributes may deserve steady investment, and delighters only matter when they fit the segment and do not mask must-be gaps."
   structural_verdict: PASS
@@ -40,6 +38,8 @@ metadata:
   last_audited: "2026-06-01"
   lint_verdict: PASS
   drift_status: EXTERNAL_UNHASHED
+  public: "true"
+  concept_boundary: "The Kano model is for classifying customer satisfaction response patterns to candidate features or service attributes. It is not a complete prioritization score, open-ended user-research synthesis, positioning strategy, expected-value calculation, accessibility or safety gate, or proof that a feature is worth building. Kano categories can feed those decisions, but they do not replace cost, feasibility, strategy, risk, or evidence-quality checks."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/kano-model/SKILL.md
@@ -252,7 +252,6 @@ Before finalizing a Kano analysis, check:
 
 **Classification**
 - Subject: `reasoning-strategy`
-- Deployment: `portable`
 - Domain: `foundations/product-strategy`
 - Scope: Kano model feature and customer-need classification for product, service, and quality decisions: classify candidate features by satisfaction response to presence and absence, design paired functional/dysfunctional questions, handle segment differences, translate must-be/performance/attractive/indifferent/reverse categories into roadmap implications, and avoid over-ranking delighters before basics. Excludes generic backlog scoring without customer-response evidence, broad qualitative research synthesis, product-market positioning, and financial expected-value comparison.
 
@@ -282,7 +281,6 @@ Before finalizing a Kano analysis, check:
 **Concept**
 - Mental model: Kano analysis maps how a defined customer segment reacts when a feature is present versus absent. The primitives are segment, candidate feature, functional question, dysfunctional question, response pair, quality category, satisfaction effect, dissatisfaction effect, evidence confidence, and time. Must-be features prevent dissatisfaction, performance features move satisfaction roughly with execution quality, attractive features create upside when present without penalty when absent, indifferent features do not matter much, reverse features hurt some users, and questionable responses signal confusion or bad survey design.
 - Purpose: This skill prevents agents from treating all feature requests as the same kind of demand. It forces the answer to distinguish basics customers punish you for missing, performance attributes customers reward proportionally, delighters that can differentiate only after basics are covered, indifferent ideas that should not consume roadmap capacity, and reverse features that help one segment while hurting another.
-- Boundary: The Kano model is for classifying customer satisfaction response patterns to candidate features or service attributes. It is not a complete prioritization score, open-ended user-research synthesis, positioning strategy, expected-value calculation, accessibility or safety gate, or proof that a feature is worth building. Kano categories can feed those decisions, but they do not replace cost, feasibility, strategy, risk, or evidence-quality checks.
 - Analogy: Kano analysis is like a control panel with different levers: some only stop alarms, some raise the gauge steadily, some create a burst of delight, and some should not be pulled for the wrong audience.
 - Common misconception: The common mistake is thinking delighters are always the highest priority. In Kano reasoning, missing basics can destroy satisfaction, performance attributes may deserve steady investment, and delighters only matter when they fit the segment and do not mask must-be gaps.
 

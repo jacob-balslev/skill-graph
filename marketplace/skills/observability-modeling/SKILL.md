@@ -9,7 +9,6 @@ metadata:
   version: "1.0.0"
   subject: data-engineering
   subjects: "[\"data-engineering\",\"quality-assurance\"]"
-  deployment_target: portable
   scope: "Designing telemetry semantics before or during implementation — logs, metrics, traces, events, spans, attributes, correlation IDs, SLOs, alert signals, and the diagnostic questions telemetry must answer. Portable across any instrumented system; principle-grounded, not repo-bound. Excludes domain/business event contracts (event-contract-design), configuring an error tracker alone (error-tracking), performance optimization (performance-engineering), and debugging a current incident (debugging)."
   taxonomy_domain: engineering/observability
   owner: skill-graph-maintainer
@@ -31,6 +30,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/data-engineering/observability-modeling/SKILL.md
@@ -89,7 +89,6 @@ This skill ships a comprehension-eval artifact at [`examples/evals/observability
 
 **Classification**
 - Subject: `data-engineering` (also: `quality-assurance`)
-- Deployment: `portable`
 - Domain: `engineering/observability`
 - Scope: Designing telemetry semantics before or during implementation — logs, metrics, traces, events, spans, attributes, correlation IDs, SLOs, alert signals, and the diagnostic questions telemetry must answer. Portable across any instrumented system; principle-grounded, not repo-bound. Excludes domain/business event contracts (event-contract-design), configuring an error tracker alone (error-tracking), performance optimization (performance-engineering), and debugging a current incident (debugging).
 

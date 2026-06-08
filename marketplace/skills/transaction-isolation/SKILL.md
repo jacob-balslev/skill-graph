@@ -7,7 +7,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: backend-engineering
-  deployment_target: portable
   taxonomy_domain: engineering/data
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
@@ -24,7 +23,6 @@ metadata:
   relations: "{\"related\":[\"acid-fundamentals\",\"cap-theorem-tradeoffs\",\"data-modeling\",\"query-optimization\"],\"boundary\":[{\"skill\":\"acid-fundamentals\",\"reason\":\"acid-fundamentals owns the four-property ACID frame as a whole; this skill owns the I axis specifically — the choice and semantics of isolation levels as a tunable. The two compose: acid-fundamentals names isolation as one of four guarantees; this skill makes the I axis operational.\"}],\"verify_with\":[\"acid-fundamentals\",\"query-optimization\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "An isolation level is to a database what a confidentiality regime is to a research lab — Read Uncommitted is the open whiteboard (anyone can read anyone's half-finished work); Read Committed is the rule that you only photograph your colleague's notebook after they have signed each page; Repeatable Read is a sealed envelope (you read once, you keep reading the same thing for the duration); Serializable is a locked vault (you take exclusive custody, others queue); Snapshot Isolation is a private photocopy (you read from your photocopy, others read from theirs, and only at commit time do the photocopies have to agree on the world they were taken from)."
   misconception: "|"
   concept: "{\"definition\":\"Transaction isolation is the property — and the configurable choice — that determines whether concurrent transactions appear to execute serially or are permitted to observe each other's intermediate effects. The SQL standard defines four isolation levels (read uncommitted, read committed, repeatable read, serializable) by enumerating the anomalies each level may or may not permit (dirty reads, non-repeatable reads, phantom reads). Snapshot isolation, ubiquitous in modern MVCC databases, is a fifth practical level that the standard did not define. Stronger isolation eliminates more anomalies at the cost of concurrency (more transactions block or retry); weaker isolation admits anomalies that the application must handle, either by tolerating them, by upgrading the isolation level, or by using explicit locking. The discipline is choosing the isolation level by *naming the anomalies the application cannot tolerate*, not by reflex.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
@@ -34,6 +32,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/transaction-isolation/SKILL.md
@@ -131,7 +131,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `backend-engineering`
-- Deployment: `portable`
 - Domain: `engineering/data`
 
 **When to use**
@@ -154,7 +153,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: An isolation level is to a database what a confidentiality regime is to a research lab — Read Uncommitted is the open whiteboard (anyone can read anyone's half-finished work); Read Committed is the rule that you only photograph your colleague's notebook after they have signed each page; Repeatable Read is a sealed envelope (you read once, you keep reading the same thing for the duration); Serializable is a locked vault (you take exclusive custody, others queue); Snapshot Isolation is a private photocopy (you read from your photocopy, others read from theirs, and only at commit time do the photocopies have to agree on the world they were taken from).
 - Common misconception: |
 

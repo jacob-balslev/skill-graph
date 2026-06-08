@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: design
-  deployment_target: portable
   scope: "Designing and auditing form structure and validation UX — field grouping, required vs optional inputs, validation timing, the client/server validation split, the submission lifecycle, recovery, multi-step forms, and high-risk data entry. Portable across any form-bearing UI; principle-grounded, not repo-bound. Excludes labels and announcements alone (a11y), validation-message wording (microcopy), API schema design (api-design), and stored data modeling (data-modeling)."
   taxonomy_domain: design/ux
   owner: skill-graph-maintainer
@@ -30,6 +29,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/form-ux-architecture/SKILL.md
@@ -89,7 +89,6 @@ This skill ships a comprehension-eval artifact at [`examples/evals/form-ux-archi
 
 **Classification**
 - Subject: `design`
-- Deployment: `portable`
 - Domain: `design/ux`
 - Scope: Designing and auditing form structure and validation UX — field grouping, required vs optional inputs, validation timing, the client/server validation split, the submission lifecycle, recovery, multi-step forms, and high-risk data entry. Portable across any form-bearing UI; principle-grounded, not repo-bound. Excludes labels and announcements alone (a11y), validation-message wording (microcopy), API schema design (api-design), and stored data modeling (data-modeling).
 

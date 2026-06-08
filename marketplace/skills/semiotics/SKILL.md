@@ -6,7 +6,6 @@ compatibility: "Stack-agnostic sign-system analysis. The Peirce / Saussure / Bar
 allowed-tools: Read Grep
 metadata:
   subject: design
-  deployment_target: portable
   scope: "Designing and auditing icon systems, colors/badges/shapes, visual metaphors, interface signs, and naming-plus-visual surfaces that users misread — semiotic reasoning across icon/index/symbol, signifier/signified, denotation/connotation/myth, color/shape/position/iconography, affordances, code/API signifiers, and semiotic-coherence audits. Portable across any sign-bearing interface; principle-grounded, not repo-bound. Excludes actual UI wording (microcopy), palette/typography craft (visual-design-foundations), accessibility/contrast compliance (a11y), formal class hierarchies, and word morphology rules."
   taxonomy_domain: design/semantics
   stability: experimental
@@ -16,10 +15,11 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"microcopy\",\"reason\":\"microcopy owns the actual UI wording (button labels, empty states, tooltips, dialogs); semiotics owns the sign-system reasoning that determines what the words and accompanying visual signs should communicate — the same 'fix this UI element' prompt routes by whether the trigger is the wording itself or the sign system the wording sits inside\"},{\"skill\":\"visual-design-foundations\",\"reason\":\"visual-design-foundations owns visual craft decisions such as palette, type, spacing, and hierarchy; semiotics owns what those signs communicate\"}],\"related\":[\"linguistics\",\"a11y\",\"intent-recognition\",\"visual-design-foundations\",\"semantics\",\"semantic-relations\"],\"verify_with\":[\"a11y\",\"code-review\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "Semiotics is to interface design what choreography is to a play — the words are the script, but the actor's stance, hand position, gaze direction, and proximity to other actors are the choreography. A line that lands flat with the wrong choreography lands well with the right one; same words, different signs. A disabled button that uses only a paler color (signifier too quiet) is a stage actor whispering an exit cue the audience cannot hear."
   misconception: "|"
   grounding: "{\"subject_matter\":\"Interface sign-system analysis for icons, color, badges, affordances, visual metaphors, and code/API signifiers\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://plato.stanford.edu/archives/spr2024/entries/peirce-semiotics/\",\"https://openlibrary.org/books/OL23291521M/Course_in_general_linguistics.\",\"https://openlibrary.org/books/OL21215289M/Mythologies\",\"https://jnd.org/signifiers-not-affordances/\",\"https://www.nngroup.com/articles/icon-usability/\",\"https://www.w3.org/WAI/WCAG22/Understanding/use-of-color\"],\"failure_modes\":[\"icon_polysemy_masked_as_style_issue\",\"color_connotation_conflated_with_metric_direction\",\"disabled_state_lacks_anti_affordance\",\"abstract_icon_unpaired_before_convention_is_learned\",\"identifier_or_api_name_forces_reader_to_open_implementation\"],\"evidence_priority\":\"equal\"}"
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/semiotics/SKILL.md
@@ -250,7 +250,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `design`
-- Deployment: `portable`
 - Domain: `design/semantics`
 - Scope: Designing and auditing icon systems, colors/badges/shapes, visual metaphors, interface signs, and naming-plus-visual surfaces that users misread — semiotic reasoning across icon/index/symbol, signifier/signified, denotation/connotation/myth, color/shape/position/iconography, affordances, code/API signifiers, and semiotic-coherence audits. Portable across any sign-bearing interface; principle-grounded, not repo-bound. Excludes actual UI wording (microcopy), palette/typography craft (visual-design-foundations), accessibility/contrast compliance (a11y), formal class hierarchies, and word morphology rules.
 
@@ -280,7 +279,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: Semiotics is to interface design what choreography is to a play — the words are the script, but the actor's stance, hand position, gaze direction, and proximity to other actors are the choreography. A line that lands flat with the wrong choreography lands well with the right one; same words, different signs. A disabled button that uses only a paler color (signifier too quiet) is a stage actor whispering an exit cue the audience cannot hear.
 - Common misconception: |
 

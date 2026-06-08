@@ -8,7 +8,6 @@ metadata:
   schema_version: "7"
   version: "1.1.0"
   subject: backend-engineering
-  deployment_target: portable
   taxonomy_domain: engineering/async/background-jobs
   owner: skill-graph-maintainer
   freshness: "2026-05-21"
@@ -27,7 +26,6 @@ metadata:
   comprehension_state: present
   mental_model: "A background job system has five primitives: a producer records durable work, a queue orders and deduplicates it, a worker leases and executes it, a state store records progress and outcomes, and a notification path tells humans or systems what changed. Reliability comes from making each primitive explicit instead of hiding long work inside a request handler."
   purpose: "Background jobs keep interactive requests short while preserving reliable processing for slow, retryable, or batch-oriented work. They replace timeout-prone inline execution and untracked fire-and-forget calls with durable state, resumable progress, controlled concurrency, and observable outcomes."
-  boundary: "This skill is not schedule design, browser push transport design, event schema design, or incident debugging. It begins after work has been requested and ends with execution state, retry, progress, completion, cancellation, and failure handling."
   analogy: "A background job is a numbered work order in a shop: the front desk accepts the request, the workshop picks it up when capacity exists, and the status board shows where it is."
   misconception: "Putting work in a worker is not enough. Without durable state, idempotency, progress, retry policy, and observability, a background job is just an invisible request handler with a longer timeout."
   structural_verdict: PASS
@@ -36,6 +34,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "This skill is not schedule design, browser push transport design, event schema design, or incident debugging. It begins after work has been requested and ends with execution state, retry, progress, completion, cancellation, and failure handling."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/background-jobs/SKILL.md
@@ -292,7 +292,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `backend-engineering`
-- Deployment: `portable`
 - Domain: `engineering/async/background-jobs`
 
 **When to use**
@@ -319,7 +318,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: A background job system has five primitives: a producer records durable work, a queue orders and deduplicates it, a worker leases and executes it, a state store records progress and outcomes, and a notification path tells humans or systems what changed. Reliability comes from making each primitive explicit instead of hiding long work inside a request handler.
 - Purpose: Background jobs keep interactive requests short while preserving reliable processing for slow, retryable, or batch-oriented work. They replace timeout-prone inline execution and untracked fire-and-forget calls with durable state, resumable progress, controlled concurrency, and observable outcomes.
-- Boundary: This skill is not schedule design, browser push transport design, event schema design, or incident debugging. It begins after work has been requested and ends with execution state, retry, progress, completion, cancellation, and failure handling.
 - Analogy: A background job is a numbered work order in a shop: the front desk accepts the request, the workshop picks it up when capacity exists, and the status board shows where it is.
 - Common misconception: Putting work in a worker is not enough. Without durable state, idempotency, progress, retry policy, and observability, a background job is just an invisible request handler with a longer timeout.
 

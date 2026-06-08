@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: software-architecture
-  deployment_target: portable
   scope: "Designing and reviewing cross-boundary interface contracts across modules, services, jobs, APIs, event producers/consumers, webhooks, data engineering surfaces, and AI agents/tools. Owns the stable promise at the boundary: parties, semantics, data shape, invariants, failure behavior, idempotency, security/trust, operational SLOs, compatibility, deploy choreography, observability, and verification. Excludes detailed HTTP resource design, async event envelope/topic design, persistence schema design, root-cause debugging, and ADR recording after the contract decision is accepted."
   taxonomy_domain: architecture/contracts
   owner: skill-graph-maintainer
@@ -31,6 +30,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-architecture/system-interface-contracts/SKILL.md
@@ -291,7 +291,6 @@ This skill ships a comprehension-eval artifact at [`examples/evals/system-interf
 
 **Classification**
 - Subject: `software-architecture`
-- Deployment: `portable`
 - Domain: `architecture/contracts`
 - Scope: Designing and reviewing cross-boundary interface contracts across modules, services, jobs, APIs, event producers/consumers, webhooks, data engineering surfaces, and AI agents/tools. Owns the stable promise at the boundary: parties, semantics, data shape, invariants, failure behavior, idempotency, security/trust, operational SLOs, compatibility, deploy choreography, observability, and verification. Excludes detailed HTTP resource design, async event envelope/topic design, persistence schema design, root-cause debugging, and ADR recording after the contract decision is accepted.
 

@@ -7,7 +7,6 @@ metadata:
   schema_version: "7"
   version: "1.0.0"
   subject: reasoning-strategy
-  deployment_target: portable
   taxonomy_domain: foundations/reasoning
   owner: skill-graph-maintainer
   freshness: "2026-05-26"
@@ -24,7 +23,6 @@ metadata:
   relations: "{\"related\":[\"epistemic-grounding\",\"conceptual-modeling\",\"mental-models\",\"pattern-recognition\",\"debugging\"],\"verify_with\":[\"epistemic-grounding\",\"conceptual-modeling\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "First-principles thinking is like dismantling a machine to its load-bearing parts, discarding decorative casing and copied attachments, then rebuilding only the mechanism that the physics of the problem requires."
   misconception: "|"
   portability: "{\"readiness\":\"declared\",\"targets\":[\"skill-md\"]}"
@@ -35,6 +33,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/first-principles-thinking/SKILL.md
@@ -233,7 +233,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `reasoning-strategy`
-- Deployment: `portable`
 - Domain: `foundations/reasoning`
 
 **When to use**
@@ -256,7 +255,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: First-principles thinking is like dismantling a machine to its load-bearing parts, discarding decorative casing and copied attachments, then rebuilding only the mechanism that the physics of the problem requires.
 - Common misconception: |
 

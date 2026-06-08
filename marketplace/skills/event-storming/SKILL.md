@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: software-architecture
-  deployment_target: portable
   taxonomy_domain: architecture/domain-discovery
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
@@ -29,6 +28,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-architecture/event-storming/SKILL.md
@@ -84,7 +84,6 @@ Do not confuse domain events with technical notifications. "OrderPlaced" is busi
 
 **Classification**
 - Subject: `software-architecture`
-- Deployment: `portable`
 - Domain: `architecture/domain-discovery`
 
 **When to use**

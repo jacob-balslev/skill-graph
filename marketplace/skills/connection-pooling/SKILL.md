@@ -6,7 +6,6 @@ compatibility: "Portable database connection-pooling guidance. Pool limits, driv
 allowed-tools: Read Grep
 metadata:
   subject: backend-engineering
-  deployment_target: portable
   scope: "How an application manages its database connections — the server-side cost of a connection, application-level pools (HikariCP, pgx, node-postgres) vs proxy-level pools (PgBouncer, Pgpool, ProxySQL), the three PgBouncer modes (session/transaction/statement) and their feature compatibility, the pool-sizing math (Little's Law applied to database concurrency), the failure modes (connection exhaustion, hot-loop reconnects, prepared-statement breakage under transaction pooling, idle-in-transaction leaks), and the diagnostic procedure for connection contention. Portable across any DB-backed application; principle-grounded, not repo-bound. Excludes query-level performance (query-optimization), index design (indexing-strategy), read/write replica routing (replication-patterns), and cross-shard coordination (sharding-strategy)."
   taxonomy_domain: engineering/data
   grounding: "{\"subject_matter\":\"Portable database connection-pooling: application pools, proxy pools, PgBouncer pool modes, server-side connection costs, pool sizing, wait-time diagnostics, transaction/session feature compatibility, idle-in-transaction leaks, and reconnect storms\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing\",\"https://github.com/brettwooldridge/HikariCP/wiki/Down-the-Rabbit-Hole\",\"https://www.pgbouncer.org/usage.html\",\"https://www.pgbouncer.org/faq.html\",\"https://www.postgresql.org/docs/current/runtime-config-connection.html\",\"https://www.postgresql.org/docs/current/runtime-config-client.html\",\"https://www.jstor.org/stable/167570\",\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy.html\",\"https://github.com/supabase/supavisor\"],\"failure_modes\":[\"Sizing pools from request rate or app-instance count instead of measured concurrency\",\"Treating max_connections as a target rather than a ceiling\",\"Assuming transaction pooling preserves all session-level database features\",\"Diagnosing pool wait time as slow query time\",\"Ignoring idle-in-transaction leaks that hold pool slots and open transactions\",\"Letting autoscaled or serverless clients multiply direct database connections without a proxy cap\"],\"evidence_priority\":\"equal\"}"
@@ -18,9 +17,10 @@ metadata:
   relations: "{\"related\":[\"query-optimization\",\"indexing-strategy\",\"replication-patterns\",\"sharding-strategy\",\"transaction-isolation\",\"acid-fundamentals\",\"background-jobs\",\"streaming-architecture\",\"performance-engineering\"],\"boundary\":[{\"skill\":\"transaction-isolation\",\"reason\":\"transaction-isolation owns the per-transaction concurrency-correctness contract; connection-pooling owns the connection-level mechanics that determine whether a transaction's connection is held, released, or shared.\"},{\"skill\":\"acid-fundamentals\",\"reason\":\"acid-fundamentals owns ACID properties and transaction correctness concepts; connection-pooling owns database connection lifecycle, pooling modes, and wait queues.\"},{\"skill\":\"background-jobs\",\"reason\":\"background-jobs owns durable worker execution and retry policy; connection-pooling owns database connection contention and pool sizing for whatever workers or web requests use the database.\"},{\"skill\":\"streaming-architecture\",\"reason\":\"streaming-architecture owns producer/consumer backpressure for value streams; connection-pooling owns database connection wait queues and pool contention.\"}],\"verify_with\":[\"query-optimization\",\"replication-patterns\",\"transaction-isolation\",\"performance-engineering\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "A connection pool is to a database what a taxi rank is to an airport — every taxi has a standing cost (driver salary, fuel, parking space); a rank with too few taxis leaves passengers queuing on the curb; a rank with too many burns money on idle taxis and clogs the access road. The right number is the smallest that doesn't queue under peak arrival rate, sized by how long each taxi trip actually takes — and adding more taxis doesn't make the trips faster, it just lets more start at once."
   misconception: "|"
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/connection-pooling/SKILL.md
@@ -143,7 +143,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `backend-engineering`
-- Deployment: `portable`
 - Domain: `engineering/data`
 - Scope: How an application manages its database connections — the server-side cost of a connection, application-level pools (HikariCP, pgx, node-postgres) vs proxy-level pools (PgBouncer, Pgpool, ProxySQL), the three PgBouncer modes (session/transaction/statement) and their feature compatibility, the pool-sizing math (Little's Law applied to database concurrency), the failure modes (connection exhaustion, hot-loop reconnects, prepared-statement breakage under transaction pooling, idle-in-transaction leaks), and the diagnostic procedure for connection contention. Portable across any DB-backed application; principle-grounded, not repo-bound. Excludes query-level performance (query-optimization), index design (indexing-strategy), read/write replica routing (replication-patterns), and cross-shard coordination (sharding-strategy).
 
@@ -170,7 +169,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: A connection pool is to a database what a taxi rank is to an airport — every taxi has a standing cost (driver salary, fuel, parking space); a rank with too few taxis leaves passengers queuing on the curb; a rank with too many burns money on idle taxis and clogs the access road. The right number is the smallest that doesn't queue under peak arrival rate, sized by how long each taxi trip actually takes — and adding more taxis doesn't make the trips faster, it just lets more start at once.
 - Common misconception: |
 

@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.1.0"
   subject: agent-ops
-  deployment_target: portable
   scope: "Allocating context-window budget across system, skill-injection, working, and output zones; monitoring context health; deciding when to compact; preserving state before compaction; and recovering after — zone budgets, model-budget tables, the 80% compaction rule, pre/post-compact protocols, the persistence hierarchy, per-operation token costs, and token-reduction techniques for 1M/200K/128K windows. Portable across any context-limited agent; principle-grounded, not repo-bound. Excludes deciding what belongs in the working set (context-management), prompt design (prompt-craft), graph architecture (context-graph), and memory curation."
   taxonomy_domain: agent/context
   owner: skill-graph-maintainer
@@ -28,7 +27,6 @@ metadata:
   lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
   mental_model: "A context window is finite working memory shared by instructions, tools, skills, conversation history, tool results, reasoning/output budget, and files. Budget management is a runtime accounting loop: know the model's actual limit, reserve output and recovery headroom, measure the active working set, compact or checkpoint before overflow, and promote durable state out of live context before it can be lost."
   purpose: "This skill prevents long-running agent sessions from failing because they treated a large context window as unlimited, kept raw tool results after extracting facts, or began compaction too late to preserve the decision trail. It gives practical budget zones, health states, compaction timing, and recovery rules that compose with context-management and tool-call-strategy."
-  boundary: "This skill owns quantitative capacity planning and compaction timing. It does not decide which facts belong in the working set, design the context graph, write prompt wording, curate long-term memory, or choose the next tool; those skills consume its budget guidance."
   analogy: "Context-window management is like scuba air management: a large tank lets you dive longer, but you still track pressure, reserve enough air for ascent, and surface before the gauge is empty."
   misconception: "The common mistake is believing a larger window removes the need for discipline. Large windows expand the failure radius: bigger raw dumps, longer stale threads, and more expensive overflow. Good management keeps the window useful, not merely full."
   concept: "{\"definition\":\"Context-window management is the practice of allocating and protecting the finite token budget available to an LLM call or agent session, including instructions, tool schemas, injected skills, conversation history, tool results, retrieved files, and output headroom.\",\"mental_model\":\"Treat the window as working memory with a gauge. Every added message, tool result, file slice, image, or reasoning/output allocation consumes capacity. The operating loop is measure, reserve headroom, narrow inputs, checkpoint durable state, compact before overflow, and rebuild selectively after compaction.\",\"purpose\":\"It keeps long-running agent work from losing state or degrading quality when the active context becomes too large, noisy, or close to the model limit.\",\"boundary\":\"It is budget math and compaction timing, not qualitative working-set selection, prompt writing, graph topology, memory curation, or per-tool choice. It tells neighboring skills how much room they have and when the session must checkpoint or compact.\",\"taxonomy\":\"Core levers include zone budgeting, health-state thresholds, output headroom, tool-result shaping, targeted reads, progressive skill disclosure, compaction checkpoints, persistence hierarchy, and model-class strategy.\",\"analogy\":\"Context-window management is like scuba air management: a large tank lets you dive longer, but you still track pressure, reserve enough air for ascent, and surface before the gauge is empty.\",\"misconception\":\"A 1M-token window is not infinite. It delays overflow but does not remove context pollution, stale assumptions, output-headroom needs, or the cost of raw dumps.\"}"
@@ -38,6 +36,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "This skill owns quantitative capacity planning and compaction timing. It does not decide which facts belong in the working set, design the context graph, write prompt wording, curate long-term memory, or choose the next tool; those skills consume its budget guidance."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/context-window/SKILL.md
@@ -284,7 +284,6 @@ A 1M window is not a license to ignore the rules — it just shifts the breaking
 
 **Classification**
 - Subject: `agent-ops`
-- Deployment: `portable`
 - Domain: `agent/context`
 - Scope: Allocating context-window budget across system, skill-injection, working, and output zones; monitoring context health; deciding when to compact; preserving state before compaction; and recovering after — zone budgets, model-budget tables, the 80% compaction rule, pre/post-compact protocols, the persistence hierarchy, per-operation token costs, and token-reduction techniques for 1M/200K/128K windows. Portable across any context-limited agent; principle-grounded, not repo-bound. Excludes deciding what belongs in the working set (context-management), prompt design (prompt-craft), graph architecture (context-graph), and memory curation.
 
@@ -317,7 +316,6 @@ A 1M window is not a license to ignore the rules — it just shifts the breaking
 **Concept**
 - Mental model: A context window is finite working memory shared by instructions, tools, skills, conversation history, tool results, reasoning/output budget, and files. Budget management is a runtime accounting loop: know the model's actual limit, reserve output and recovery headroom, measure the active working set, compact or checkpoint before overflow, and promote durable state out of live context before it can be lost.
 - Purpose: This skill prevents long-running agent sessions from failing because they treated a large context window as unlimited, kept raw tool results after extracting facts, or began compaction too late to preserve the decision trail. It gives practical budget zones, health states, compaction timing, and recovery rules that compose with context-management and tool-call-strategy.
-- Boundary: This skill owns quantitative capacity planning and compaction timing. It does not decide which facts belong in the working set, design the context graph, write prompt wording, curate long-term memory, or choose the next tool; those skills consume its budget guidance.
 - Analogy: Context-window management is like scuba air management: a large tank lets you dive longer, but you still track pressure, reserve enough air for ascent, and surface before the gauge is empty.
 - Common misconception: The common mistake is believing a larger window removes the need for discipline. Large windows expand the failure radius: bigger raw dumps, longer stale threads, and more expensive overflow. Good management keeps the window useful, not merely full.
 

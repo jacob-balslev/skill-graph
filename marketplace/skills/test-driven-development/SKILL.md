@@ -7,7 +7,6 @@ metadata:
   schema_version: "8"
   version: "1.2.0"
   subject: quality-assurance
-  deployment_target: portable
   taxonomy_domain: quality/testing
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
@@ -25,7 +24,6 @@ metadata:
   grounding: "{\"subject_matter\":\"Reference-grounded Test-Driven Development concept, school taxonomy, design-discipline mechanics, and empirical evidence boundaries\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://martinfowler.com/bliki/TestDrivenDevelopment.html\",\"https://martinfowler.com/articles/mocksArentStubs.html\",\"https://link.springer.com/article/10.1007/s10664-008-9062-z\",\"https://ieeexplore.ieee.org/document/1423994\",\"https://ieeexplore.ieee.org/document/4493089\",\"https://doi.org/10.1016/j.infsof.2016.02.004\",\"https://dannorth.net/introducing-bdd/\"],\"failure_modes\":[\"treating_test_first_order_as_tdd_without_refactor_design_pressure\",\"over_specifying_interactions_so_tests_mirror_implementation\",\"choosing_london_or_detroit_school_accidentally\",\"using_tdd_as_a_substitute_for_testing_strategy\",\"treating_empirical_defect_reduction_numbers_as_guaranteed_outcomes\",\"claiming_eval_or_routing_verification_without_a_run\"],\"evidence_priority\":\"equal\"}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "TDD is to code design what a piano teacher's metronome is to a student's playing — the rhythm is not the music, but it surfaces every uneven phrase, every rushed measure, every hesitation, in time to correct it before it ossifies into habit."
   misconception: "|"
   concept: "{\"definition\":\"Test-Driven Development is a software design discipline in which the test for a behavior is written before the production code that satisfies it, the production code is written until the test passes, and the code is then refactored while the test suite stays green. The red-green-refactor cycle is the unit of work; the test suite is the design pressure that shapes the code.\",\"mental_model\":\"TDD applies pressure through short red-green-refactor loops. Red names one behavior before implementation, green proves the smallest production change satisfies it, and refactor improves the code and test shape without changing behavior. London-school TDD applies pressure through collaborator interactions and mocks; Detroit-school TDD applies pressure through observable state and sparse doubles; hybrid practice names which pressure is intentional.\",\"purpose\":\"TDD solves the problem of tests written after implementation merely mirroring the implementation. Writing the test first forces the interface, responsibility, and observable behavior to be designed before internal structure hardens. Regression coverage is a side effect; the primary purpose is design feedback while change is still cheap.\",\"boundary\":\"Testing-strategy chooses what level and scope deserves a test; TDD prescribes the rhythm inside that chosen surface. Test-doubles-design chooses the stand-ins used by tests; TDD chooses when and why tests are written. Refactor owns behavior-preserving restructuring; TDD invokes refactor as the third beat. Eval-driven-development is the LLM analog with statistical pass-rate rather than binary test pass/fail.\",\"taxonomy\":\"Prerequisite: testing-strategy selects the test surface. Composition: test-doubles-design supplies mocks, stubs, fakes, spies, and dummies when the chosen TDD school needs them. Phase relation: refactor is the third beat of each cycle. Alternative/analog: eval-driven-development adapts the iteration-first discipline to stochastic LLM systems.\",\"analogy\":\"TDD is to code design what a piano-teacher metronome is to a student performance: the rhythm is not the music, but it surfaces rushed measures and hesitations early enough to correct them before they become habit.\",\"misconception\":\"The common mistake is treating TDD as a mechanical rule to write tests first. Tests are not the point; they are the artifact of design through a test-shaped tool. A team that writes tests first but ignores design pressure gets the cost without the benefit.\"}"
@@ -37,6 +35,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/test-driven-development/SKILL.md
@@ -160,7 +160,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `quality-assurance`
-- Deployment: `portable`
 - Domain: `quality/testing`
 
 **When to use**
@@ -184,7 +183,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: TDD is to code design what a piano teacher's metronome is to a student's playing — the rhythm is not the music, but it surfaces every uneven phrase, every rushed measure, every hesitation, in time to correct it before it ossifies into habit.
 - Common misconception: |
 

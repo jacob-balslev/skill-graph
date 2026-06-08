@@ -5,7 +5,6 @@ license: MIT
 allowed-tools: Read Grep
 metadata:
   subject: quality-assurance
-  deployment_target: portable
   scope: "Designing and interpreting controlled-load tests for non-functional system properties: latency distributions, throughput, error rate, resource use, saturation, load profile, workload mix, percentiles, SLO thresholds, and load shapes such as smoke, load, stress, spike, soak, and breakpoint. Portable across web, API, service, and distributed-system test surfaces. Excludes optimization/profiling itself (performance-engineering), declaring budget contracts (performance-budgets), production observability/error monitoring, single-function microbenchmarks, fault injection, and test-suite quality measurement."
   taxonomy_domain: quality/testing
   stability: experimental
@@ -17,9 +16,10 @@ metadata:
   grounding: "{\"subject_matter\":\"Portable controlled-load performance testing for APIs, services, and user journeys\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://grafana.com/docs/k6/latest/using-k6/thresholds/\",\"https://grafana.com/docs/k6/latest/testing-guides/automated-performance-testing/\",\"https://grafana.com/docs/k6/latest/\",\"https://jmeter.apache.org/usermanual/\",\"https://docs.locust.io/\",\"https://docs.gatling.io/\",\"https://www.infoq.com/presentations/latency-pitfalls/\",\"../skills/skills/quality-assurance/performance-testing/references/performance-testing-2026-06-07.md\"],\"failure_modes\":[\"performance_test_without_slo_verdict\",\"acceptance_criteria_use_average_latency\",\"coordinated_omission_hidden_by_load_generator\",\"load_shape_mismatch_to_failure_mode\",\"non_production_like_environment_over_certified\",\"workload_mix_unlike_real_traffic\",\"tool_generator_becomes_bottleneck\"],\"evidence_priority\":\"equal\"}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "Performance testing is to a software system what a load-bearing inspection is to a bridge — you do not certify a bridge by walking across it (functional test) and concluding it works; you drive trucks of known weight across at increasing volumes, with strain gauges on every beam, and verify the deflection stays within spec under expected traffic, that the failure mode is graceful when overloaded (cracks before collapse), that nothing creeps over a long soak. A bridge whose 'average' load it can carry is 50 tonnes but whose p99 stressor reveals harmonic resonance at 80 tonnes is the bridge that fails on a windy day."
   misconception: "|"
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/performance-testing/SKILL.md
@@ -148,7 +148,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `quality-assurance`
-- Deployment: `portable`
 - Domain: `quality/testing`
 - Scope: Designing and interpreting controlled-load tests for non-functional system properties: latency distributions, throughput, error rate, resource use, saturation, load profile, workload mix, percentiles, SLO thresholds, and load shapes such as smoke, load, stress, spike, soak, and breakpoint. Portable across web, API, service, and distributed-system test surfaces. Excludes optimization/profiling itself (performance-engineering), declaring budget contracts (performance-budgets), production observability/error monitoring, single-function microbenchmarks, fault injection, and test-suite quality measurement.
 
@@ -179,7 +178,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: Performance testing is to a software system what a load-bearing inspection is to a bridge — you do not certify a bridge by walking across it (functional test) and concluding it works; you drive trucks of known weight across at increasing volumes, with strain gauges on every beam, and verify the deflection stays within spec under expected traffic, that the failure mode is graceful when overloaded (cracks before collapse), that nothing creeps over a long soak. A bridge whose 'average' load it can carry is 50 tonnes but whose p99 stressor reveals harmonic resonance at 80 tonnes is the bridge that fails on a windy day.
 - Common misconception: |
 

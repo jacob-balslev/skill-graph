@@ -5,7 +5,6 @@ license: MIT
 allowed-tools: Read Grep
 metadata:
   subject: frontend-engineering
-  deployment_target: portable
   scope: "Portable frontend state-placement discipline for deciding where each piece of application data lives, who owns it, how it propagates, and how it stays consistent across changes. Teaches the four-kinds classification (server state, client UI state, URL state, persistent state), the colocation-and-lifting decision path, single source of truth, server-state cache invalidation, URL state for deep-linking, and anti-pattern detection for prop drilling, duplicated state, state sprawl, and global-state-by-default. Excludes tactical library choice, API surface design, client/server execution-boundary decisions, distributed-system replication, and finite-state workflow modeling."
   taxonomy_domain: engineering/frontend
   stability: experimental
@@ -16,9 +15,10 @@ metadata:
   relations: "{\"related\":[\"rendering-models\",\"client-server-boundary\",\"frontend-architecture\",\"api-design\",\"state-machine-modeling\"],\"boundary\":[{\"skill\":\"client-server-boundary\",\"reason\":\"client-server-boundary owns the line between code-that-runs-where (server components, client components, the serialization boundary); this skill owns the orthogonal question of which side owns which piece of state. They compose: the boundary skill says what code runs where; this skill says what state lives where.\"},{\"skill\":\"rendering-models\",\"reason\":\"rendering-models owns the question of when content is generated (SSR, RSC, CSR, ISR); this skill owns the question of where data backing that content lives. The two intersect in server state: data fetched on the server that the client may still need to cache, invalidate, or localize.\"}],\"verify_with\":[\"rendering-models\",\"api-design\",\"state-machine-modeling\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "State management is to a frontend application what addressing is to a postal system — you do not ask 'should this letter exist?', you ask 'where does it live?', and the right destination depends entirely on the letter's kind: a registered package (server data with provable delivery), a postcard (URL state, public on the back), a private letter (client UI state, inside an envelope), a deed (persistent state, kept in the safe). One mailbox for everything produces predictable failures."
   misconception: "|"
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/state-management/SKILL.md
@@ -170,7 +170,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `frontend-engineering`
-- Deployment: `portable`
 - Domain: `engineering/frontend`
 - Scope: Portable frontend state-placement discipline for deciding where each piece of application data lives, who owns it, how it propagates, and how it stays consistent across changes. Teaches the four-kinds classification (server state, client UI state, URL state, persistent state), the colocation-and-lifting decision path, single source of truth, server-state cache invalidation, URL state for deep-linking, and anti-pattern detection for prop drilling, duplicated state, state sprawl, and global-state-by-default. Excludes tactical library choice, API surface design, client/server execution-boundary decisions, distributed-system replication, and finite-state workflow modeling.
 
@@ -196,7 +195,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: State management is to a frontend application what addressing is to a postal system — you do not ask 'should this letter exist?', you ask 'where does it live?', and the right destination depends entirely on the letter's kind: a registered package (server data with provable delivery), a postcard (URL state, public on the back), a private letter (client UI state, inside an envelope), a deed (persistent state, kept in the safe). One mailbox for everything produces predictable failures.
 - Common misconception: |
 

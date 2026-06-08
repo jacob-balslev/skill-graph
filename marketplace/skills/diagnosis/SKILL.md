@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.1.0"
   subject: software-engineering-method
-  deployment_target: portable
   taxonomy_domain: engineering/debugging
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
@@ -30,6 +29,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-engineering-method/diagnosis/SKILL.md
@@ -383,7 +383,6 @@ The current eval metadata remains intentionally conservative: `eval_artifacts: p
 
 **Classification**
 - Subject: `software-engineering-method`
-- Deployment: `portable`
 - Domain: `engineering/debugging`
 
 **When to use**

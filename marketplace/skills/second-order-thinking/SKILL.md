@@ -7,7 +7,6 @@ metadata:
   schema_version: "7"
   version: "1.0.0"
   subject: reasoning-strategy
-  deployment_target: portable
   taxonomy_domain: foundations/reasoning
   owner: skill-graph-maintainer
   freshness: "2026-05-21"
@@ -24,7 +23,6 @@ metadata:
   relations: "{\"related\":[\"inversion\",\"first-principles-thinking\",\"mental-models\",\"constraint-awareness\",\"pattern-recognition\"],\"verify_with\":[\"epistemic-grounding\",\"mental-models\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "Second-order thinking is like playing chess beyond the current move: the obvious move matters less than the position it creates after everyone else responds."
   misconception: "|"
   portability: "{\"readiness\":\"declared\",\"targets\":[\"skill-md\"]}"
@@ -35,6 +33,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/second-order-thinking/SKILL.md
@@ -245,7 +245,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `reasoning-strategy`
-- Deployment: `portable`
 - Domain: `foundations/reasoning`
 
 **When to use**
@@ -268,7 +267,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: Second-order thinking is like playing chess beyond the current move: the obvious move matters less than the position it creates after everyone else responds.
 - Common misconception: |
 

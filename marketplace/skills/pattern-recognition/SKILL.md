@@ -6,7 +6,6 @@ compatibility: "Language- and stack-agnostic. The recognition loop, clustering m
 allowed-tools: Read Grep
 metadata:
   subject: reasoning-strategy
-  deployment_target: portable
   scope: "Portable pattern-recognition methodology for auditing recurring issues, clustering errors, detecting convention drift, naming root-cause patterns, and converting repeated observations into prevention through docs, evals, lint rules, hooks, or architecture changes. Covers the Observe -> Cluster -> Name -> Codify -> Detect -> Prevent loop, grep-based scans, normalize-then-hash error clustering, board-health patterns, design-token and heading drift, domain-encoding traps, eval-as-pattern-tests, 5 Whys, pattern lifecycle states, and drift traps. Excludes one-off bug localization (debugging/diagnosis), PR-scope code judgment (code-review), naming-rule definition (naming-conventions), lint-rule implementation machinery (lint-overlay), and designing the classification system itself (taxonomy-design)."
   taxonomy_domain: foundations/cognition
   stability: experimental
@@ -16,9 +15,10 @@ metadata:
   relations: "{\"related\":[\"refactor\",\"naming-conventions\",\"lint-overlay\",\"diagnosis\",\"debugging\",\"code-review\"],\"verify_with\":[\"context-graph\",\"skill-infrastructure\",\"tool-call-strategy\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "Pattern recognition is to a codebase what epidemiology is to a city's public health — a doctor (debugging) treats one patient with one infection; the epidemiologist (this skill) notices that fourteen patients across three hospitals all have the same infection, traces it back to a contaminated water source (root cause), names the outbreak, prescribes a public-health intervention (lint rule, type constraint, architectural fix) that prevents the next thousand cases, and updates the surveillance protocol so the next outbreak is caught at three cases instead of fourteen."
   misconception: "|"
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/pattern-recognition/SKILL.md
@@ -494,7 +494,6 @@ Before codifying a pattern, confirm:
 
 **Classification**
 - Subject: `reasoning-strategy`
-- Deployment: `portable`
 - Domain: `foundations/cognition`
 - Scope: Portable pattern-recognition methodology for auditing recurring issues, clustering errors, detecting convention drift, naming root-cause patterns, and converting repeated observations into prevention through docs, evals, lint rules, hooks, or architecture changes. Covers the Observe -> Cluster -> Name -> Codify -> Detect -> Prevent loop, grep-based scans, normalize-then-hash error clustering, board-health patterns, design-token and heading drift, domain-encoding traps, eval-as-pattern-tests, 5 Whys, pattern lifecycle states, and drift traps. Excludes one-off bug localization (debugging/diagnosis), PR-scope code judgment (code-review), naming-rule definition (naming-conventions), lint-rule implementation machinery (lint-overlay), and designing the classification system itself (taxonomy-design).
 
@@ -522,7 +521,6 @@ Before codifying a pattern, confirm:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: Pattern recognition is to a codebase what epidemiology is to a city's public health — a doctor (debugging) treats one patient with one infection; the epidemiologist (this skill) notices that fourteen patients across three hospitals all have the same infection, traces it back to a contaminated water source (root cause), names the outbreak, prescribes a public-health intervention (lint rule, type constraint, architectural fix) that prevents the next thousand cases, and updates the surveillance protocol so the next outbreak is caught at three cases instead of fourteen.
 - Common misconception: |
 

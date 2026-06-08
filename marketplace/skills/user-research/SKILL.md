@@ -6,7 +6,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: design
-  deployment_target: portable
   scope: "Planning and conducting generative qualitative research with real users — interviews, contextual inquiry, ethnographic observation, diary studies — to learn what people do, think, and need in their own context. Portable across any product-discovery effort; principle-grounded, not repo-bound. Excludes analytics review, survey statistics, A/B test interpretation, and agent-side intent classification (different research practices)."
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
@@ -26,6 +25,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/user-research/SKILL.md
@@ -70,7 +70,6 @@ The practice is grounded in a specific epistemological claim: people are unrelia
 
 **Classification**
 - Subject: `design`
-- Deployment: `portable`
 - Scope: Planning and conducting generative qualitative research with real users — interviews, contextual inquiry, ethnographic observation, diary studies — to learn what people do, think, and need in their own context. Portable across any product-discovery effort; principle-grounded, not repo-bound. Excludes analytics review, survey statistics, A/B test interpretation, and agent-side intent classification (different research practices).
 
 **When to use**

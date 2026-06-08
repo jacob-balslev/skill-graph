@@ -6,7 +6,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: design
-  deployment_target: portable
   scope: "Designing reusable component modules — composition patterns, compound components, slot/children APIs, render props, headless component contracts, and the configuration-vs-composition choice. Portable across any component-based UI; principle-grounded, not repo-bound. Excludes application-level architecture, single-use feature components, and visual styling decisions."
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
@@ -26,6 +25,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/design-module-composition/SKILL.md
@@ -70,7 +70,6 @@ Headless primitives separate three concerns that are routinely conflated: state 
 
 **Classification**
 - Subject: `design`
-- Deployment: `portable`
 - Scope: Designing reusable component modules — composition patterns, compound components, slot/children APIs, render props, headless component contracts, and the configuration-vs-composition choice. Portable across any component-based UI; principle-grounded, not repo-bound. Excludes application-level architecture, single-use feature components, and visual styling decisions.
 
 **When to use**

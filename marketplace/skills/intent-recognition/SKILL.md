@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: ai-engineering
-  deployment_target: portable
   scope: "Classifying the intent of an operation BEFORE any tool call that could modify state, touch sensitive targets, rewrite history, install dependencies, publish packages, or expose credentials — sorting into Passive/Read, Reconnaissance, Modification, or Destructive/Irreversible by operation type plus target sensitivity, then running Identify / Confirm / Verify before action. Portable across any agent with tool access; principle-grounded, not repo-bound. Excludes deciding what code to write, executing already-classified work, reactive post-execution guardrails, and defining upstream governance policy."
   taxonomy_domain: ai-engineering/safety
   owner: skill-graph-maintainer
@@ -30,6 +29,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/ai-engineering/intent-recognition/SKILL.md
@@ -165,7 +165,6 @@ These triggers are deliberately broad. False positives (classifying a Passive ac
 
 **Classification**
 - Subject: `ai-engineering`
-- Deployment: `portable`
 - Domain: `ai-engineering/safety`
 - Scope: Classifying the intent of an operation BEFORE any tool call that could modify state, touch sensitive targets, rewrite history, install dependencies, publish packages, or expose credentials — sorting into Passive/Read, Reconnaissance, Modification, or Destructive/Irreversible by operation type plus target sensitivity, then running Identify / Confirm / Verify before action. Portable across any agent with tool access; principle-grounded, not repo-bound. Excludes deciding what code to write, executing already-classified work, reactive post-execution guardrails, and defining upstream governance policy.
 

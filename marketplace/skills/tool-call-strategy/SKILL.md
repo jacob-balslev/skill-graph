@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.1.0"
   subject: ai-engineering
-  deployment_target: portable
   taxonomy_domain: ai-engineering/tool-use
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
@@ -27,7 +26,6 @@ metadata:
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
   mental_model: "Tool-call strategy is the query planner for an agent's external actions. Treat every call as an expensive, stateful evidence-acquisition operation with three costs: latency, tokens, and context pollution. The goal is sufficient evidence with minimum noise: pick the narrowest tool that can answer the question, batch independent calls, keep dependent calls sequential, use scripts for deterministic bulk work, preserve reviewability for edits, and stop re-fetching facts already present in the conversation."
   purpose: "This skill prevents agents from wasting time and context with redundant reads, serial searches, unbounded terminal output, or hand-driven N+1 edits while also preventing the opposite failure of under-calling and hallucinating. It gives a portable decision framework for choosing tools, scripts, batching, subagents, and output-shaping patterns."
-  boundary: "This skill decides when, how many, and which external operations an already-running agent should use. It does not describe the protocol mechanics of tool-call messages, the whole context stack around the agent, prompt wording, runtime failure debugging, or the correctness mechanics of a refactor deliverable."
   analogy: "Tool-call strategy is like planning queries against a slow, expensive database: ask the smallest question that returns the needed evidence, combine independent queries when possible, avoid repeating a query whose result is already in hand, and use set-based operations for bulk deterministic work."
   misconception: "The common mistake is treating efficiency as fewer calls at all costs. Good strategy is not tool abstinence; it is evidence discipline. A necessary verification call is cheap compared with a hallucinated answer, while an unbounded log dump or a repeated file read can make every later decision worse."
   concept: "{\"definition\":\"Tool-call strategy is the discipline of choosing, batching, sequencing, and shaping an agent's external operations so each call produces enough evidence for the next decision without unnecessary latency, token cost, or context pollution.\",\"mental_model\":\"Treat tool use as query planning for an expensive, persistent evidence stream. Each call should have a specific information need, a bounded expected result, and a clear reason it cannot be satisfied from existing context. Independent calls can run together; dependent calls wait; deterministic bulk work moves into scripts; judgment-dependent work stays in the agent loop.\",\"purpose\":\"It keeps agents fast and accurate by preventing redundant reads, serial round trips, noisy outputs, and manual N+1 edits while preserving enough verification to avoid hallucination.\",\"boundary\":\"It is not the tool-call protocol itself, prompt wording, whole-context architecture, runtime debugging, or refactor methodology. It owns per-call efficiency choices inside those broader workflows.\",\"taxonomy\":\"Core levers include tool selection, script-vs-call gating, batching and parallelization, dependency detection, redundancy checks, output bounding, subagent isolation, and reviewable edit strategy.\",\"analogy\":\"Tool-call strategy is like planning queries against a slow, expensive database: ask the smallest question that returns the needed evidence, combine independent queries when possible, avoid repeating a query whose result is already in hand, and use set-based operations for bulk deterministic work.\",\"misconception\":\"Fewer calls is not automatically better. The correct target is sufficient evidence with minimal noise; skipping a needed check is worse than making one more focused call.\"}"
@@ -37,6 +35,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "This skill decides when, how many, and which external operations an already-running agent should use. It does not describe the protocol mechanics of tool-call messages, the whole context stack around the agent, prompt wording, runtime failure debugging, or the correctness mechanics of a refactor deliverable."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/ai-engineering/tool-call-strategy/SKILL.md
@@ -344,7 +344,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `ai-engineering`
-- Deployment: `portable`
 - Domain: `ai-engineering/tool-use`
 
 **When to use**
@@ -373,7 +372,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: Tool-call strategy is the query planner for an agent's external actions. Treat every call as an expensive, stateful evidence-acquisition operation with three costs: latency, tokens, and context pollution. The goal is sufficient evidence with minimum noise: pick the narrowest tool that can answer the question, batch independent calls, keep dependent calls sequential, use scripts for deterministic bulk work, preserve reviewability for edits, and stop re-fetching facts already present in the conversation.
 - Purpose: This skill prevents agents from wasting time and context with redundant reads, serial searches, unbounded terminal output, or hand-driven N+1 edits while also preventing the opposite failure of under-calling and hallucinating. It gives a portable decision framework for choosing tools, scripts, batching, subagents, and output-shaping patterns.
-- Boundary: This skill decides when, how many, and which external operations an already-running agent should use. It does not describe the protocol mechanics of tool-call messages, the whole context stack around the agent, prompt wording, runtime failure debugging, or the correctness mechanics of a refactor deliverable.
 - Analogy: Tool-call strategy is like planning queries against a slow, expensive database: ask the smallest question that returns the needed evidence, combine independent queries when possible, avoid repeating a query whose result is already in hand, and use set-based operations for bulk deterministic work.
 - Common misconception: The common mistake is treating efficiency as fewer calls at all costs. Good strategy is not tool abstinence; it is evidence discipline. A necessary verification call is cheap compared with a hallucinated answer, while an unbounded log dump or a repeated file read can make every later decision worse.
 

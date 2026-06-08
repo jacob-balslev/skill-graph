@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: software-engineering-method
-  deployment_target: portable
   taxonomy_domain: foundations/meta
   owner: skill-graph-maintainer
   freshness: "2026-05-23"
@@ -30,6 +29,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-engineering-method/problem-approach-router/SKILL.md
@@ -80,7 +80,6 @@ When a problem matches more than one row simultaneously (e.g., it is both novel 
 
 **Classification**
 - Subject: `software-engineering-method`
-- Deployment: `portable`
 - Domain: `foundations/meta`
 
 **When to use**

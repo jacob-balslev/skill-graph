@@ -7,7 +7,6 @@ metadata:
   schema_version: "8"
   version: "2.0.0"
   subject: backend-engineering
-  deployment_target: portable
   taxonomy_domain: engineering/backend
   owner: skill-graph-maintainer
   freshness: "2026-06-07"
@@ -24,7 +23,6 @@ metadata:
   relations: "{\"related\":[\"server-actions-design\",\"api-design\",\"http-semantics\",\"middleware-patterns\",\"webhook-integration\",\"streaming-architecture\",\"client-server-boundary\"],\"verify_with\":[\"code-review\",\"api-design\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "A Route Handler is to a Next.js app what a service window at a government office is to its workflow — different windows handle different services (`GET /posts`, `POST /comments`); each window has a posted sign saying which forms it accepts and what stamps it returns; you do not walk into the back office (Server Action) unless you work there. The window is the contract: filesystem path = window number, export name = service offered, function body = the clerk's actual work."
   misconception: "|"
   structural_verdict: PASS
@@ -33,6 +31,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-06-07"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/route-handler-design/SKILL.md
@@ -553,7 +553,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `backend-engineering`
-- Deployment: `portable`
 - Domain: `engineering/backend`
 
 **When to use**
@@ -583,7 +582,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: A Route Handler is to a Next.js app what a service window at a government office is to its workflow — different windows handle different services (`GET /posts`, `POST /comments`); each window has a posted sign saying which forms it accepts and what stamps it returns; you do not walk into the back office (Server Action) unless you work there. The window is the contract: filesystem path = window number, export name = service offered, function body = the clerk's actual work.
 - Common misconception: |
 

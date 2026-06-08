@@ -5,7 +5,6 @@ license: MIT
 allowed-tools: Read Grep
 metadata:
   subject: frontend-engineering
-  deployment_target: portable
   scope: "React Hooks as a discipline — when a render is the right shape for state, why the Rules of Hooks exist as a compile-time invariant, how the dependency array encodes a closure/rerender contract, when useEffect is the wrong primitive, derived vs stored state, when to extract a custom hook, and when memoization (useMemo, useCallback) is a footgun. Covers React 18+ (automatic batching, concurrent rendering); portable across React codebases; principle-grounded, not repo-bound. Excludes general React rendering models (rendering-models), the client/server boundary (client-server-boundary), component composition (component-architecture), and application-wide state location (state-management)."
   taxonomy_domain: engineering/frontend
   stability: experimental
@@ -17,9 +16,10 @@ metadata:
   grounding: "{\"subject_matter\":\"Portable React Hooks semantics and patterns for client components\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://react.dev/reference/rules/rules-of-hooks\",\"https://react.dev/reference/eslint-plugin-react-hooks/lints/exhaustive-deps\",\"https://react.dev/learn/you-might-not-need-an-effect\",\"https://react.dev/learn/reusing-logic-with-custom-hooks\",\"https://react.dev/reference/react/useEffectEvent\",\"https://react.dev/reference/react/useMemo\",\"https://react.dev/reference/react/useCallback\",\"https://react.dev/reference/react/memo\",\"https://github.com/reactwg/react-18/discussions/21\",\"../skills/skills/frontend-engineering/hooks-patterns/references/hooks-patterns-2026-06-07.md\"],\"failure_modes\":[\"useEffect_treated_as_general_when_x_changes_primitive\",\"derived_state_stored_and_resynchronized\",\"dependency_array_lies_about_closure_inputs\",\"memoization_used_without_profiler_or_memoized_consumer\",\"custom_hook_extracted_without_reuse_or_name\",\"react_19_effect_event_and_compiler_guidance_ignored\"],\"evidence_priority\":\"equal\"}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "Hooks are to function components what stack frames are to function calls — they let a function remember things across calls without breaking referential transparency from the outside, by tracking state in a slot array indexed by call order, and the Rules of Hooks are the same kind of invariant as 'do not goto into the middle of a stack frame': violating them produces undefined behavior masked by garbage collection rather than visible crashes."
   misconception: "|"
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/hooks-patterns/SKILL.md
@@ -209,7 +209,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `frontend-engineering`
-- Deployment: `portable`
 - Domain: `engineering/frontend`
 - Scope: React Hooks as a discipline — when a render is the right shape for state, why the Rules of Hooks exist as a compile-time invariant, how the dependency array encodes a closure/rerender contract, when useEffect is the wrong primitive, derived vs stored state, when to extract a custom hook, and when memoization (useMemo, useCallback) is a footgun. Covers React 18+ (automatic batching, concurrent rendering); portable across React codebases; principle-grounded, not repo-bound. Excludes general React rendering models (rendering-models), the client/server boundary (client-server-boundary), component composition (component-architecture), and application-wide state location (state-management).
 
@@ -237,7 +236,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: Hooks are to function components what stack frames are to function calls — they let a function remember things across calls without breaking referential transparency from the outside, by tracking state in a slot array indexed by call order, and the Rules of Hooks are the same kind of invariant as 'do not goto into the middle of a stack frame': violating them produces undefined behavior masked by garbage collection rather than visible crashes.
 - Common misconception: |
 

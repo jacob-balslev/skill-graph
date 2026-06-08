@@ -9,7 +9,6 @@ metadata:
   version: "1.1.0"
   subject: software-architecture
   subjects: "[\"software-architecture\",\"ai-engineering\"]"
-  deployment_target: portable
   scope: "Designing and evaluating production AI agent systems — multi-agent coordination patterns (orchestrator/worker, fan-out, consensus, sequential chain, evaluator/optimizer), the four pillars (architecture/lifecycle, task decomposition, coordination, production reliability), the six reliability requirements (observability, cost budgets, idempotency, failure recovery, safety caps, claim locks), the delegation decision framework with overhead crossover, and coordination-failure diagnosis (claim races, silent stalls, context contamination, runaway loops). Portable across any agent runtime; principle-grounded, not repo-bound. Excludes prompt wording (prompt-craft), per-call tool efficiency (tool-call-strategy), single-agent context-stack design (context-engineering), and runtime debugging of a deployed system (debugging)."
   taxonomy_domain: ai-engineering/architecture
   owner: skill-graph-maintainer
@@ -29,7 +28,6 @@ metadata:
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
   mental_model: "Agent engineering treats LLM calls as unreliable, tool-using components inside a larger workflow. The core move is to make lifecycle, delegation, coordination, verification, observability, budgets, and recovery explicit so model variability is contained by system design."
   purpose: "This skill prevents agent systems from shipping as impressive demos that stall, duplicate work, over-spend, lose handoff state, or silently produce unverified results under real workload pressure."
-  boundary: "This skill does not optimize one prompt, choose individual tool calls, design one agent's context payload, debug a single live incident, review generated code, or write the architecture decision record. It owns the architecture of agent loops and multi-agent coordination."
   analogy: "Agent engineering is like operating a crew of contractors on a construction site: each specialist may be capable, but the project succeeds only if the plan, locks, handoffs, inspections, budget, and stop conditions are explicit."
   misconception: "The common mistake is thinking more agents automatically means more capability. Extra agents also add coordination cost, context transfer risk, merge work, and failure modes; delegation is valuable only when independence, specialization, context protection, or cost reduction outweighs the overhead."
   concept: "{\"definition\":\"Agent engineering is the discipline of designing production AI agent systems: loops, handoffs, coordination patterns, lifecycle state, verification gates, observability, budgets, and recovery mechanisms around one or more LLM agents.\",\"mental_model\":\"Treat each LLM call as an unreliable component in a larger system. Use architecture to constrain variance: explicit state, clear ownership, durable handoffs, verification, stop conditions, and measurable operating limits.\",\"purpose\":\"It turns ad hoc prompt-and-tool demos into systems that can run unattended, survive crashes, coordinate multiple agents, control cost, and produce verifiable outcomes.\",\"boundary\":\"It is not prompt wording, per-tool efficiency, single-agent context assembly, incident debugging, code review, or ADR writing. Neighboring skills own those surfaces; agent-engineering owns the workflow architecture that composes them.\",\"taxonomy\":\"Core areas include lifecycle management, task decomposition, coordination patterns, handoff protocols, observability, cost controls, idempotency, failure recovery, safety caps, claim locks, and staged rollout.\",\"analogy\":\"Agent engineering is like operating a crew of contractors on a construction site: each specialist may be capable, but the project succeeds only if the plan, locks, handoffs, inspections, budget, and stop conditions are explicit.\",\"misconception\":\"More agents is not automatically better. Extra agents add coordination overhead, duplicated work risk, context-transfer loss, and merge complexity; delegation needs a positive expected value.\"}"
@@ -39,6 +37,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "This skill does not optimize one prompt, choose individual tool calls, design one agent's context payload, debug a single live incident, review generated code, or write the architecture decision record. It owns the architecture of agent loops and multi-agent coordination."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-architecture/agent-engineering/SKILL.md
@@ -435,7 +435,6 @@ After applying agent-engineering decisions, verify:
 
 **Classification**
 - Subject: `software-architecture` (also: `ai-engineering`)
-- Deployment: `portable`
 - Domain: `ai-engineering/architecture`
 - Scope: Designing and evaluating production AI agent systems — multi-agent coordination patterns (orchestrator/worker, fan-out, consensus, sequential chain, evaluator/optimizer), the four pillars (architecture/lifecycle, task decomposition, coordination, production reliability), the six reliability requirements (observability, cost budgets, idempotency, failure recovery, safety caps, claim locks), the delegation decision framework with overhead crossover, and coordination-failure diagnosis (claim races, silent stalls, context contamination, runaway loops). Portable across any agent runtime; principle-grounded, not repo-bound. Excludes prompt wording (prompt-craft), per-call tool efficiency (tool-call-strategy), single-agent context-stack design (context-engineering), and runtime debugging of a deployed system (debugging).
 
@@ -466,7 +465,6 @@ After applying agent-engineering decisions, verify:
 **Concept**
 - Mental model: Agent engineering treats LLM calls as unreliable, tool-using components inside a larger workflow. The core move is to make lifecycle, delegation, coordination, verification, observability, budgets, and recovery explicit so model variability is contained by system design.
 - Purpose: This skill prevents agent systems from shipping as impressive demos that stall, duplicate work, over-spend, lose handoff state, or silently produce unverified results under real workload pressure.
-- Boundary: This skill does not optimize one prompt, choose individual tool calls, design one agent's context payload, debug a single live incident, review generated code, or write the architecture decision record. It owns the architecture of agent loops and multi-agent coordination.
 - Analogy: Agent engineering is like operating a crew of contractors on a construction site: each specialist may be capable, but the project succeeds only if the plan, locks, handoffs, inspections, budget, and stop conditions are explicit.
 - Common misconception: The common mistake is thinking more agents automatically means more capability. Extra agents also add coordination cost, context transfer risk, merge work, and failure modes; delegation is valuable only when independence, specialization, context protection, or cost reduction outweighs the overhead.
 

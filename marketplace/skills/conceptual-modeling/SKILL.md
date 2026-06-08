@@ -10,7 +10,6 @@ metadata:
   schema_version: "8"
   version: "1.1.0"
   subject: software-architecture
-  deployment_target: portable
   scope: "Translating messy business requirements, stakeholder language, and early product ideas into an implementation-neutral domain model before schemas, endpoints, or DDD aggregates are named — entities, attributes, named relationships, cardinality, identity criteria, specialization/generalization, aggregation/composition, reification, abstraction-level control, stakeholder validation, and modeling anti-patterns. Portable across any domain-modeling effort; principle-grounded, not repo-bound. Excludes database ER diagrams with keys and normalization (data-modeling), formal ontology axioms in OWL/RDFS (ontology-modeling), and DDD tactical design (bounded-context-mapping)."
   taxonomy_domain: engineering/modeling
   owner: skill-graph-maintainer
@@ -28,7 +27,6 @@ metadata:
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "Conceptual modeling is the architectural floor plan before engineering drawings: it says what rooms exist, how people move between them, and what must be connected, while leaving materials, wiring, and load calculations to later specialists."
   misconception: "|"
   concept: "{\"definition\":\"Conceptual modeling is the implementation-neutral discipline of representing a domain as entities, attributes, relationships, identity criteria, cardinalities, and abstraction boundaries that stakeholders can validate before technical design begins.\",\"mental_model\":\"Treat the conceptual model as a contract between stakeholder language and later system design. It must preserve business meaning while postponing storage, API, ontology, and DDD implementation choices.\",\"purpose\":\"It exposes hidden domain decisions early: what exists, what makes two things the same, how concepts relate, which relationships carry their own data, and which constraints are business truths rather than technical preferences.\",\"boundary\":\"It does not design physical database schemas, write migrations, define formal ontology axioms, choose aggregate boundaries, perform code review, or settle implementation naming once the model is already accepted.\",\"taxonomy\":\"Core moves include entity discovery, attribute placement, relationship naming, cardinality and optionality analysis, identity criteria, aggregation versus composition, specialization/generalization, reification of relationship concepts, abstraction-level policing, and stakeholder scenario validation.\",\"analogy\":\"It is the architectural floor plan before engineering drawings: useful because it is precise about the lived structure while still independent of materials and machinery.\",\"misconception\":\"A conceptual model is not informal hand-waving and not a premature table diagram. It should be business-readable, constraint-aware, and intentionally implementation-neutral.\"}"
@@ -38,6 +36,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-architecture/conceptual-modeling/SKILL.md
@@ -255,7 +255,6 @@ Do not erase the conceptual model after implementation starts. Keep it as the ex
 
 **Classification**
 - Subject: `software-architecture`
-- Deployment: `portable`
 - Domain: `engineering/modeling`
 - Scope: Translating messy business requirements, stakeholder language, and early product ideas into an implementation-neutral domain model before schemas, endpoints, or DDD aggregates are named — entities, attributes, named relationships, cardinality, identity criteria, specialization/generalization, aggregation/composition, reification, abstraction-level control, stakeholder validation, and modeling anti-patterns. Portable across any domain-modeling effort; principle-grounded, not repo-bound. Excludes database ER diagrams with keys and normalization (data-modeling), formal ontology axioms in OWL/RDFS (ontology-modeling), and DDD tactical design (bounded-context-mapping).
 
@@ -291,7 +290,6 @@ Do not erase the conceptual model after implementation starts. Keep it as the ex
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: Conceptual modeling is the architectural floor plan before engineering drawings: it says what rooms exist, how people move between them, and what must be connected, while leaving materials, wiring, and load calculations to later specialists.
 - Common misconception: |
 

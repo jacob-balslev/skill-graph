@@ -6,7 +6,6 @@ compatibility: "Theory-level skill. Applies to any AI-coding workspace that main
 allowed-tools: Read Grep
 metadata:
   subject: knowledge-organization
-  deployment_target: portable
   scope: "Teaches choosing and maintaining the representation paradigm for domain knowledge: graphs, frames, semantic networks, production rules, concept maps, procedural ontologies, GraphRAG, or hybrids. Excludes stakeholder-readable conceptual modeling, database schema design, pure taxonomy hierarchy, formal ontology axioms, exact semantic edge labeling, and live skill-library tooling."
   taxonomy_domain: foundations/knowledge
   stability: experimental
@@ -17,9 +16,10 @@ metadata:
   grounding: "{\"subject_matter\":\"Knowledge representation paradigm choice and GraphRAG-ready knowledge modeling\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://doi.org/10.1016/0004-3702(82)90012-1\",\"https://books.google.com/books/about/Knowledge_Representation_and_Reasoning.html?id=ln6Ux-EZm6YC\",\"https://courses.media.mit.edu/2004spring/mas966/Minsky%201974%20Framework%20for%20knowledge.pdf\",\"https://www.w3.org/TR/skos-reference/\",\"https://arxiv.org/abs/2404.16130\"],\"failure_modes\":[\"representation_chosen_by_familiarity_not_query_pattern\",\"graph_structure_too_sparse_for_graphrag\",\"formalism_overfit_to_theory_not_maintenance\",\"tacit_knowledge_transcribed_without_validation\",\"taxonomy_used_when_rules_or_frames_are_required\"],\"evidence_priority\":\"equal\"}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "Knowledge modeling is to a knowledge artefact what choosing between blueprint, schematic, exploded view, flowchart, and storyboard is to documenting a complex device — the device hasn't changed, but each format makes different questions easy or impossible to answer. A blueprint answers 'where does this part go?'; a schematic answers 'what is connected to what?'; a flowchart answers 'what happens when?'. Showing a customer a wiring schematic when they want to know how the product is assembled is choosing the wrong representation, not failing at the documentation."
   misconception: "|"
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/knowledge-organization/knowledge-modeling/SKILL.md
@@ -254,7 +254,6 @@ Rules:
 
 **Classification**
 - Subject: `knowledge-organization`
-- Deployment: `portable`
 - Domain: `foundations/knowledge`
 - Scope: Teaches choosing and maintaining the representation paradigm for domain knowledge: graphs, frames, semantic networks, production rules, concept maps, procedural ontologies, GraphRAG, or hybrids. Excludes stakeholder-readable conceptual modeling, database schema design, pure taxonomy hierarchy, formal ontology axioms, exact semantic edge labeling, and live skill-library tooling.
 
@@ -285,7 +284,6 @@ Rules:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: Knowledge modeling is to a knowledge artefact what choosing between blueprint, schematic, exploded view, flowchart, and storyboard is to documenting a complex device — the device hasn't changed, but each format makes different questions easy or impossible to answer. A blueprint answers 'where does this part go?'; a schematic answers 'what is connected to what?'; a flowchart answers 'what happens when?'. Showing a customer a wiring schematic when they want to know how the product is assembled is choosing the wrong representation, not failing at the documentation.
 - Common misconception: |
 

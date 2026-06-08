@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: software-architecture
-  deployment_target: portable
   taxonomy_domain: architecture/dependencies
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
@@ -29,6 +28,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-architecture/dependency-architecture/SKILL.md
@@ -86,7 +86,6 @@ This skill ships a comprehension-eval artifact at [`examples/evals/dependency-ar
 
 **Classification**
 - Subject: `software-architecture`
-- Deployment: `portable`
 - Domain: `architecture/dependencies`
 
 **When to use**

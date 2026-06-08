@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: design
-  deployment_target: portable
   scope: "Choosing and auditing UI interaction patterns and controls — tabs vs pages, dropdown vs combobox, stepper vs wizard, modal vs inline edit, disclosure, command menus, selection, filtering, and gesture alternatives. Portable across any UI; principle-grounded, not repo-bound. Excludes accessibility compliance (a11y), task decomposition (task-analysis), feedback-state staging (interaction-feedback), and reusable component API design (design-system-architecture)."
   taxonomy_domain: design/interaction
   owner: skill-graph-maintainer
@@ -30,6 +29,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/interaction-patterns/SKILL.md
@@ -88,7 +88,6 @@ This skill ships a comprehension-eval artifact at [`examples/evals/interaction-p
 
 **Classification**
 - Subject: `design`
-- Deployment: `portable`
 - Domain: `design/interaction`
 - Scope: Choosing and auditing UI interaction patterns and controls — tabs vs pages, dropdown vs combobox, stepper vs wizard, modal vs inline edit, disclosure, command menus, selection, filtering, and gesture alternatives. Portable across any UI; principle-grounded, not repo-bound. Excludes accessibility compliance (a11y), task decomposition (task-analysis), feedback-state staging (interaction-feedback), and reusable component API design (design-system-architecture).
 

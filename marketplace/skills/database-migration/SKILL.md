@@ -6,7 +6,6 @@ compatibility: "Portable PostgreSQL 12+ migration guidance. Verify provider-spec
 allowed-tools: Read Grep Bash
 metadata:
   subject: data-engineering
-  deployment_target: portable
   scope: "Raw-SQL PostgreSQL migration safety for live systems — migration file shape, direct/unpooled migration connections, branching or snapshot rehearsal, low-lock DDL patterns, batched backfills, deploy compatibility, verification, and rollback planning. Portable across PostgreSQL application stacks; principle-grounded and provider-aware, not repo-bound. Excludes ORM-specific migration generation, already-failed migration debugging, broad schema lifecycle roadmapping, and row-level-security model design."
   taxonomy_domain: data/migrations
   stability: experimental
@@ -18,9 +17,10 @@ metadata:
   grounding: "{\"subject_matter\":\"PostgreSQL raw-SQL migration safety for live application databases\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://www.postgresql.org/docs/current/ddl-alter.html\",\"https://www.postgresql.org/docs/current/sql-altertable.html\",\"https://www.postgresql.org/docs/current/sql-createindex.html\",\"https://www.postgresql.org/docs/current/functions-admin.html\",\"https://neon.com/docs/introduction/branching\",\"https://neon.com/docs/connect/connection-pooling\",\"https://www.pgbouncer.org/features.html\"],\"failure_modes\":[\"volatile_default_rewrites_large_table\",\"plain_index_build_blocks_writes\",\"concurrent_index_inside_transaction\",\"foreign_key_added_with_immediate_full_validation\",\"migration_runner_uses_transaction_pooler\",\"long_backfill_runs_as_one_transaction\",\"type_change_rewrites_table_without_shadow_column\",\"rollback_path_missing\"],\"evidence_priority\":\"equal\"}"
   mental_model: "A database migration is one schema or data-shape change applied to a live persistence layer. Its primitives are the migration file, a direct migration connection, the lock profile of each statement, the deploy-compatibility window, any batched backfill, verification queries, and a rollback or restore path. The safe version splits one risky-looking change into ordered steps that preserve application reads and writes while the database changes underneath them."
   purpose: "Raw DDL can be syntactically correct and still take production down by blocking writes, rewriting a large table, breaking old application code, or leaving no practical rollback. This skill exists to make those production-specific failure modes visible before the migration ships."
-  boundary: "This skill owns the mechanics of one raw-SQL PostgreSQL migration and its immediate verification. It does not own ORM migration generation, post-incident debugging, broad schema lifecycle planning across releases, row-level-security policy design, or generic code-review scoring."
   analogy: "A live database migration is changing a bridge while traffic keeps moving: temporary lanes, flaggers, inspection points, and a detour plan matter as much as the final bridge shape."
   misconception: "The common mistake is treating a migration as a single SQL statement that passed on a small dev database. Production safety comes from lock analysis, deploy compatibility, batching, direct connection choice, verification, and rollback planning."
+  public: "true"
+  concept_boundary: "This skill owns the mechanics of one raw-SQL PostgreSQL migration and its immediate verification. It does not own ORM migration generation, post-incident debugging, broad schema lifecycle planning across releases, row-level-security policy design, or generic code-review scoring."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/data-engineering/database-migration/SKILL.md
@@ -458,7 +458,6 @@ This skill ships a local comprehension-eval artifact at `skills/skills/data-engi
 
 **Classification**
 - Subject: `data-engineering`
-- Deployment: `portable`
 - Domain: `data/migrations`
 - Scope: Raw-SQL PostgreSQL migration safety for live systems — migration file shape, direct/unpooled migration connections, branching or snapshot rehearsal, low-lock DDL patterns, batched backfills, deploy compatibility, verification, and rollback planning. Portable across PostgreSQL application stacks; principle-grounded and provider-aware, not repo-bound. Excludes ORM-specific migration generation, already-failed migration debugging, broad schema lifecycle roadmapping, and row-level-security model design.
 
@@ -489,7 +488,6 @@ This skill ships a local comprehension-eval artifact at `skills/skills/data-engi
 **Concept**
 - Mental model: A database migration is one schema or data-shape change applied to a live persistence layer. Its primitives are the migration file, a direct migration connection, the lock profile of each statement, the deploy-compatibility window, any batched backfill, verification queries, and a rollback or restore path. The safe version splits one risky-looking change into ordered steps that preserve application reads and writes while the database changes underneath them.
 - Purpose: Raw DDL can be syntactically correct and still take production down by blocking writes, rewriting a large table, breaking old application code, or leaving no practical rollback. This skill exists to make those production-specific failure modes visible before the migration ships.
-- Boundary: This skill owns the mechanics of one raw-SQL PostgreSQL migration and its immediate verification. It does not own ORM migration generation, post-incident debugging, broad schema lifecycle planning across releases, row-level-security policy design, or generic code-review scoring.
 - Analogy: A live database migration is changing a bridge while traffic keeps moving: temporary lanes, flaggers, inspection points, and a detour plan matter as much as the final bridge shape.
 - Common misconception: The common mistake is treating a migration as a single SQL statement that passed on a small dev database. Production safety comes from lock analysis, deploy compatibility, batching, direct connection choice, verification, and rollback planning.
 

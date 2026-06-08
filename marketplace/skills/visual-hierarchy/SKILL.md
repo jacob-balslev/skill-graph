@@ -6,7 +6,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: design
-  deployment_target: portable
   scope: "Establishing visual hierarchy — type-scale ratios, spacing rhythm, contrast as an ordering signal, weight and size as importance cues, and the layered relationship between primary, secondary, and tertiary information. Portable across any visual interface; principle-grounded, not repo-bound. Excludes content writing, information architecture, and specific color-palette construction (color-system-design)."
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
@@ -26,6 +25,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/visual-hierarchy/SKILL.md
@@ -70,7 +70,6 @@ Reading order is a property of the page, not just the markup. CSS source order, 
 
 **Classification**
 - Subject: `design`
-- Deployment: `portable`
 - Scope: Establishing visual hierarchy — type-scale ratios, spacing rhythm, contrast as an ordering signal, weight and size as importance cues, and the layered relationship between primary, secondary, and tertiary information. Portable across any visual interface; principle-grounded, not repo-bound. Excludes content writing, information architecture, and specific color-palette construction (color-system-design).
 
 **When to use**

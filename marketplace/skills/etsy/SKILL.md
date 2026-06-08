@@ -6,7 +6,6 @@ metadata:
   schema_version: "8"
   version: "1.2.0"
   subject: product-domain
-  deployment_target: portable
   scope: "Applying chosen keywords and merchandising decisions to Etsy listing fields — title, the 13 tags, category/attributes, description, photos, and listing video — and diagnosing an Etsy listing's search performance through Etsy's own first-party surfaces (the per-listing Search Visibility page, shop stats, and engagement rate). Includes the Etsy Open API listing surface and the special case where the listing's source of truth is an upstream print-on-demand platform (Printify/Printful) reached through an asynchronous, lock-gated, selectively-publishable lifecycle, and the translation/verification boundary between the POD product's fields and the live Etsy listing's indexed fields. Explicitly EXCLUDES keyword-research methodology (seed expansion, clustering, intent mapping, rank tracking), artwork/print-file generation, the POD product/blueprint/variant model itself, generic web SEO, and any non-Etsy marketplace or Shopify storefront."
   taxonomy_domain: ecommerce/marketplaces/etsy
   owner: skill-graph-maintainer
@@ -28,6 +27,7 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: ""
   lint_verdict: UNVERIFIED
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/product-domain/etsy/SKILL.md
@@ -176,7 +176,6 @@ Use official vendor docs first; verify against these before relying on a cached 
 
 **Classification**
 - Subject: `product-domain`
-- Deployment: `portable`
 - Domain: `ecommerce/marketplaces/etsy`
 - Scope: Applying chosen keywords and merchandising decisions to Etsy listing fields — title, the 13 tags, category/attributes, description, photos, and listing video — and diagnosing an Etsy listing's search performance through Etsy's own first-party surfaces (the per-listing Search Visibility page, shop stats, and engagement rate). Includes the Etsy Open API listing surface and the special case where the listing's source of truth is an upstream print-on-demand platform (Printify/Printful) reached through an asynchronous, lock-gated, selectively-publishable lifecycle, and the translation/verification boundary between the POD product's fields and the live Etsy listing's indexed fields. Explicitly EXCLUDES keyword-research methodology (seed expansion, clustering, intent mapping, rank tracking), artwork/print-file generation, the POD product/blueprint/variant model itself, generic web SEO, and any non-Etsy marketplace or Shopify storefront.
 

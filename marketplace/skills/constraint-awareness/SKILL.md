@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.1.0"
   subject: reasoning-strategy
-  deployment_target: portable
   taxonomy_domain: foundations/strategy
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
@@ -26,7 +25,6 @@ metadata:
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "Constraint awareness is to AI-coding what Drum-Buffer-Rope is to a factory floor — the slowest machine on the line sets the pace for the whole plant; speeding up the other machines just piles inventory in front of the bottleneck. Adding more agents to an AI-coding team where review bandwidth is the constraint is the same as buying faster CNC mills when the constraint is the inspection station — the parts pile up at inspection, the lead time gets worse, and the new mills look efficient locally while the whole shop ships less per day."
   misconception: "|"
   concept: "{\"definition\":\"Constraint awareness is the discipline of identifying the single resource that limits a system's throughput at any given time, and routing all improvement work through that resource. Drawn from Eliyahu Goldratt's Theory of Constraints (1984), it treats systems as throughput pipelines whose total output is bounded by their narrowest section — and treats local optimization of non-constraints as effort that produces no system-level gain.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
@@ -36,6 +34,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/constraint-awareness/SKILL.md
@@ -322,7 +322,6 @@ When the constraint moves, the Five Focusing Steps restart from step 1. The proc
 
 **Classification**
 - Subject: `reasoning-strategy`
-- Deployment: `portable`
 - Domain: `foundations/strategy`
 
 **When to use**
@@ -347,7 +346,6 @@ When the constraint moves, the Five Focusing Steps restart from step 1. The proc
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: Constraint awareness is to AI-coding what Drum-Buffer-Rope is to a factory floor — the slowest machine on the line sets the pace for the whole plant; speeding up the other machines just piles inventory in front of the bottleneck. Adding more agents to an AI-coding team where review bandwidth is the constraint is the same as buying faster CNC mills when the constraint is the inspection station — the parts pile up at inspection, the lead time gets worse, and the new mills look efficient locally while the whole shop ships less per day.
 - Common misconception: |
 

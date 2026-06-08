@@ -10,7 +10,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: reasoning-strategy
-  deployment_target: portable
   taxonomy_domain: foundations/strategy
   owner: skill-graph-maintainer
   freshness: "2026-05-26"
@@ -29,13 +28,14 @@ metadata:
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   mental_model: "Playing to Win treats strategy as five mutually reinforcing choices, not as a plan, goal list, or analysis deck. The primitives are a winning aspiration, a chosen playing field, a differentiated way to win there, the capabilities required to deliver that advantage, and the management systems that build and sustain those capabilities. The cascade works only when the answers fit together and force trade-offs."
   purpose: "This skill prevents agents from producing strategy-shaped prose that lacks choices. It replaces broad aspirations, market summaries, and initiative lists with an explicit cascade that says what the organization will do, what it will not do, why it can win in the chosen arena, and what must be true operationally for the choice to work."
-  boundary: "Playing to Win is for strategy formulation and choice integration. It is not Porter's Five Forces industry-structure diagnosis, Seven Powers moat taxonomy, OKR execution tracking, generic prioritization, scenario planning, or full financial valuation. Those tools may feed or follow the cascade, but they do not replace the five integrated choices."
   analogy: "A strategy cascade is like designing a bridge from both banks at once: the aspiration and market choice define one side, the advantage and capability system define the other, and the bridge fails if the pieces do not meet in the middle."
   misconception: "The common mistake is filling the five boxes independently. The cascade is not a worksheet; changing one answer should force a re-check of the others, because an aspiration with no winnable arena is hope and a how-to-win with no supporting capabilities is fantasy."
   structural_verdict: PASS
   truth_verdict: UNVERIFIED
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  public: "true"
+  concept_boundary: "Playing to Win is for strategy formulation and choice integration. It is not Porter's Five Forces industry-structure diagnosis, Seven Powers moat taxonomy, OKR execution tracking, generic prioritization, scenario planning, or full financial valuation. Those tools may feed or follow the cascade, but they do not replace the five integrated choices."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/playing-to-win/SKILL.md
@@ -262,7 +262,6 @@ Before finishing, verify:
 
 **Classification**
 - Subject: `reasoning-strategy`
-- Deployment: `portable`
 - Domain: `foundations/strategy`
 
 **When to use**
@@ -285,7 +284,6 @@ Before finishing, verify:
 **Concept**
 - Mental model: Playing to Win treats strategy as five mutually reinforcing choices, not as a plan, goal list, or analysis deck. The primitives are a winning aspiration, a chosen playing field, a differentiated way to win there, the capabilities required to deliver that advantage, and the management systems that build and sustain those capabilities. The cascade works only when the answers fit together and force trade-offs.
 - Purpose: This skill prevents agents from producing strategy-shaped prose that lacks choices. It replaces broad aspirations, market summaries, and initiative lists with an explicit cascade that says what the organization will do, what it will not do, why it can win in the chosen arena, and what must be true operationally for the choice to work.
-- Boundary: Playing to Win is for strategy formulation and choice integration. It is not Porter's Five Forces industry-structure diagnosis, Seven Powers moat taxonomy, OKR execution tracking, generic prioritization, scenario planning, or full financial valuation. Those tools may feed or follow the cascade, but they do not replace the five integrated choices.
 - Analogy: A strategy cascade is like designing a bridge from both banks at once: the aspiration and market choice define one side, the advantage and capability system define the other, and the bridge fails if the pieces do not meet in the middle.
 - Common misconception: The common mistake is filling the five boxes independently. The cascade is not a worksheet; changing one answer should force a re-check of the others, because an aspiration with no winnable arena is hope and a how-to-win with no supporting capabilities is fantasy.
 

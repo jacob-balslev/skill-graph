@@ -8,7 +8,6 @@ metadata:
   schema_version: "8"
   version: "1.1.0"
   subject: ai-engineering
-  deployment_target: portable
   scope: "Condensing prose while preserving meaning — session findings, wrap reports, research briefs, executive summaries, TLDRs, agent handoffs, progressive summaries, audit summaries, and long-document distillation — covering extractive vs abstractive summarization, what to keep vs drop, evidence preservation, summary levels, handoff summaries, and audit-report condensation without hiding findings. Portable across any text-condensation task; principle-grounded, not repo-bound. Excludes byte/data compression algorithms (compression), context-window budget math and compaction triggers (context-window), working-set selection (context-management), prose tone repair (writing-humanizer), and quality scoring (evaluation)."
   taxonomy_domain: agent/cognition
   owner: skill-graph-maintainer
@@ -27,7 +26,6 @@ metadata:
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
   mental_model: "Summarization is semantic compression: reduce a source to the smallest useful representation for a reader and task while preserving meaning, provenance, decisions, evidence, and next actions. It is lossy by design, so the quality question is not how short the summary is; it is whether the chosen loss is intentional, reversible through evidence links, and appropriate for the audience."
   purpose: "This skill prevents long agent outputs, research notes, audit reports, and handoffs from becoming technically complete but practically unreadable. It gives agents a repeatable way to choose summary level, preserve the causal chain, avoid invented claims, and leave enough evidence for a successor or reviewer to verify the condensed result."
-  boundary: "This skill does not choose the context-window budget, decide which sources enter the working set, compress bytes or files, repair prose tone, or score quality. It starts after the source material has been selected and the task asks for a smaller meaning-preserving prose artifact."
   analogy: "Summarization is like packing an evidence suitcase for a trip: you cannot bring the whole room, so you choose the items the next person will actually need, label where they came from, and leave a map back to the rest."
   misconception: "The common mistake is treating summarization as proportional shortening: trim every section equally, remove evidence first, and keep the same shape at smaller size. Good summarization is selective and task-aware; it may keep one decisive paragraph intact and drop an entire low-value section."
   concept: "{\"definition\":\"Summarization is semantic compression of prose: creating a shorter artifact that preserves the source's main meaning, task-relevant evidence, decisions, and provenance while intentionally omitting lower-value detail.\",\"mental_model\":\"Treat every summary as a lossy transform with a declared audience and job. First choose the summary level, then preserve the causal chain and evidence links, then cut material whose absence will not harm the reader's next decision.\",\"purpose\":\"It turns long agent outputs, research notes, audit reports, and handoff materials into usable briefs without losing the facts a successor needs to trust or continue the work.\",\"boundary\":\"It is not byte compression, context-budget math, working-set selection, prose tone repair, or quality scoring. Those neighboring skills decide size constraints, context membership, style, and evaluation; summarization preserves meaning inside the chosen constraint.\",\"taxonomy\":\"Core forms include TLDR, executive summary, brief, condensed report, progressive summary, agent handoff, research-to-memory note, and audit summary. Core methods include extractive, abstractive, synthesis, evidence-linking, and priority grouping.\",\"analogy\":\"Summarization is like packing an evidence suitcase for a trip: you cannot bring the whole room, so you choose the items the next person will actually need, label where they came from, and leave a map back to the rest.\",\"misconception\":\"Shorter is not automatically better. A summary that drops the decisive evidence, hides findings, or invents a clean story is worse than the messy source.\"}"
@@ -37,6 +35,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "This skill does not choose the context-window budget, decide which sources enter the working set, compress bytes or files, repair prose tone, or score quality. It starts after the source material has been selected and the task asks for a smaller meaning-preserving prose artifact."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/ai-engineering/summarization/SKILL.md
@@ -223,7 +223,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `ai-engineering`
-- Deployment: `portable`
 - Domain: `agent/cognition`
 - Scope: Condensing prose while preserving meaning — session findings, wrap reports, research briefs, executive summaries, TLDRs, agent handoffs, progressive summaries, audit summaries, and long-document distillation — covering extractive vs abstractive summarization, what to keep vs drop, evidence preservation, summary levels, handoff summaries, and audit-report condensation without hiding findings. Portable across any text-condensation task; principle-grounded, not repo-bound. Excludes byte/data compression algorithms (compression), context-window budget math and compaction triggers (context-window), working-set selection (context-management), prose tone repair (writing-humanizer), and quality scoring (evaluation).
 
@@ -240,7 +239,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: Summarization is semantic compression: reduce a source to the smallest useful representation for a reader and task while preserving meaning, provenance, decisions, evidence, and next actions. It is lossy by design, so the quality question is not how short the summary is; it is whether the chosen loss is intentional, reversible through evidence links, and appropriate for the audience.
 - Purpose: This skill prevents long agent outputs, research notes, audit reports, and handoffs from becoming technically complete but practically unreadable. It gives agents a repeatable way to choose summary level, preserve the causal chain, avoid invented claims, and leave enough evidence for a successor or reviewer to verify the condensed result.
-- Boundary: This skill does not choose the context-window budget, decide which sources enter the working set, compress bytes or files, repair prose tone, or score quality. It starts after the source material has been selected and the task asks for a smaller meaning-preserving prose artifact.
 - Analogy: Summarization is like packing an evidence suitcase for a trip: you cannot bring the whole room, so you choose the items the next person will actually need, label where they came from, and leave a map back to the rest.
 - Common misconception: The common mistake is treating summarization as proportional shortening: trim every section equally, remove evidence first, and keep the same shape at smaller size. Good summarization is selective and task-aware; it may keep one decisive paragraph intact and drop an entire low-value section.
 

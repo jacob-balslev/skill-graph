@@ -7,7 +7,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: frontend-engineering
-  deployment_target: portable
   scope: "Designing and reviewing React error boundaries — what a boundary catches (rendering, lifecycle, constructor errors) and what it does not (event-handler, async, SSR, in-boundary errors), why React still requires class components for boundaries, placement by granularity (page/feature/leaf), pairing with Suspense, the reset-and-recover pattern (resetKeys, error.reset), the Next.js error.tsx route-segment convention, and integration with error reporting. Covers React 18+ and Next.js App Router; portable across React codebases; principle-grounded, not repo-bound. Excludes Suspense boundary placement (suspense-patterns), general async error-handling and validation, backend error contracts (api-design), and observability infrastructure (error-tracking)."
   taxonomy_domain: engineering/frontend
   owner: skill-graph-maintainer
@@ -25,7 +24,6 @@ metadata:
   relations: "{\"related\":[\"suspense-patterns\",\"hooks-patterns\",\"error-tracking\",\"server-components-design\"],\"boundary\":[{\"skill\":\"suspense-patterns\",\"reason\":\"suspense-patterns owns the loading-state boundary mechanism; error-boundary owns the failure-state boundary mechanism. They pair in the canonical ErrorBoundary→Suspense→Component nesting but are distinct primitives that catch different signals (thrown Error vs thrown Promise).\"},{\"skill\":\"hooks-patterns\",\"reason\":\"hooks-patterns covers component-internal logic discipline; error-boundary is a tree-level mechanism that handles failures from anywhere in its descendant subtree. Class-component requirement of error boundaries is the one place hooks discipline does not apply.\"}],\"verify_with\":[\"code-review\",\"error-tracking\"]}"
   mental_model: "|"
   purpose: "|"
-  boundary: "|"
   analogy: "An error boundary is to React's component tree what a circuit breaker is to a building's electrical system — when a fault occurs in one circuit, the breaker for THAT circuit trips, isolating the fault so the rest of the building keeps running, while sub-panels still healthy on other circuits keep lights and outlets working. A single master breaker would protect against fault propagation but at the cost of darkening everything; the right granularity is one breaker per useful zone."
   misconception: "|"
   concept: "{\"definition\":\"An error boundary is a React component that catches JavaScript errors thrown anywhere in its descendant tree during rendering, in lifecycle methods, and in constructors — and renders a fallback UI instead of unmounting the broken subtree to the root. As of React 19 it must still be implemented as a class component using getDerivedStateFromError and/or componentDidCatch; function components cannot themselves be error boundaries (they can render one and provide its fallback). React's design choice: failure in a subtree should not require crashing the whole tree, but the boundary itself must be a stable component above the failure point.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
@@ -35,6 +33,8 @@ metadata:
   application_verdict: UNVERIFIED
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
+  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/error-boundary/SKILL.md
@@ -270,7 +270,6 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `frontend-engineering`
-- Deployment: `portable`
 - Domain: `engineering/frontend`
 - Scope: Designing and reviewing React error boundaries — what a boundary catches (rendering, lifecycle, constructor errors) and what it does not (event-handler, async, SSR, in-boundary errors), why React still requires class components for boundaries, placement by granularity (page/feature/leaf), pairing with Suspense, the reset-and-recover pattern (resetKeys, error.reset), the Next.js error.tsx route-segment convention, and integration with error reporting. Covers React 18+ and Next.js App Router; portable across React codebases; principle-grounded, not repo-bound. Excludes Suspense boundary placement (suspense-patterns), general async error-handling and validation, backend error contracts (api-design), and observability infrastructure (error-tracking).
 
@@ -297,7 +296,6 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Boundary: |
 - Analogy: An error boundary is to React's component tree what a circuit breaker is to a building's electrical system — when a fault occurs in one circuit, the breaker for THAT circuit trips, isolating the fault so the rest of the building keeps running, while sub-panels still healthy on other circuits keep lights and outlets working. A single master breaker would protect against fault propagation but at the cost of darkening everything; the right granularity is one breaker per useful zone.
 - Common misconception: |
 

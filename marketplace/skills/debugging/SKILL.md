@@ -9,7 +9,6 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: software-engineering-method
-  deployment_target: portable
   owner: skill-graph-maintainer
   freshness: "2026-04-18"
   drift_check: "{\"last_verified\":\"2026-04-18\"}"
@@ -29,6 +28,7 @@ metadata:
   application_verdict: REDUNDANT
   last_audited: "2026-05-28"
   lint_verdict: PASS
+  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-engineering-method/debugging/SKILL.md
@@ -95,7 +95,6 @@ This skill ships a comprehension-eval artifact at [`examples/evals/debugging.jso
 
 **Classification**
 - Subject: `software-engineering-method`
-- Deployment: `portable`
 
 **When to use**
 - my tests pass locally but fail in CI — why?

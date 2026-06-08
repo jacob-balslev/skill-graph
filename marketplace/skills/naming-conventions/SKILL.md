@@ -6,7 +6,6 @@ compatibility: Language-agnostic
 allowed-tools: Read Grep Bash Edit
 metadata:
   subject: software-engineering-method
-  deployment_target: portable
   scope: "Portable naming-decision guidance for files, functions, variables, types, routes, database columns, environment variables, and related code/system artifacts. Teaches truthful identifier morphology, artifact-specific casing, abbreviation discipline, name-vs-path semantics, rename coordination, and detection of names that lie. Excludes prose documentation writing, structural refactoring where naming is incidental, whole-diff code review, debugging a misnamed behavior after failure, and end-user UI copy."
   taxonomy_domain: engineering/naming
   stability: experimental
@@ -16,9 +15,10 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"refactor\",\"reason\":\"refactor reshapes existing code structure; naming-conventions decides what an artifact should be CALLED, before or independently of restructuring\"},{\"skill\":\"debugging\",\"reason\":\"debugging chases observed wrong behaviour; naming-conventions catches names that LIE about their meaning before the bug ships\"}],\"related\":[\"refactor\",\"code-review\"],\"verify_with\":[\"code-review\"]}"
   mental_model: "A name is a compact contract. It binds an artifact kind, a casing convention, a grammatical shape, and a behavior promise. Good naming starts by identifying the artifact type, choosing the casing that readers expect for that artifact, selecting words whose verbs and nouns match actual behavior, and then coordinating the rename so every reference carries the same meaning."
   purpose: "Prevents code and system artifacts from lying to future readers. Accurate names reduce debugging time, make APIs and data models easier to scan, and keep refactors honest because the name travels with every call site while comments explaining a bad name usually rot."
-  boundary: "This skill decides what an artifact should be called. It does not restructure code, review a whole diff, write prose documentation about a convention, debug a runtime failure, or choose end-user UI copy. If the work changes structure, use refactor; if the work evaluates all PR risks, use code-review; if the behavior is already broken, use debugging."
   analogy: "Naming is like labeling circuit breakers: a short label is only useful if it truthfully names the circuit it controls."
   misconception: "The wrong mental model is that naming is cosmetic. A misleading name is a behavioral bug in the reader's model: `getOrder()` that returns `undefined`, `validate()` that mutates input, or `created` that stores a ship date will eventually cause wrong assumptions."
+  public: "true"
+  concept_boundary: "This skill decides what an artifact should be called. It does not restructure code, review a whole diff, write prose documentation about a convention, debug a runtime failure, or choose end-user UI copy. If the work changes structure, use refactor; if the work evaluates all PR risks, use code-review; if the behavior is already broken, use debugging."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-engineering-method/naming-conventions/SKILL.md
@@ -146,7 +146,6 @@ Renaming is a small change that touches many places. Do all of them in one commi
 
 **Classification**
 - Subject: `software-engineering-method`
-- Deployment: `portable`
 - Domain: `engineering/naming`
 - Scope: Portable naming-decision guidance for files, functions, variables, types, routes, database columns, environment variables, and related code/system artifacts. Teaches truthful identifier morphology, artifact-specific casing, abbreviation discipline, name-vs-path semantics, rename coordination, and detection of names that lie. Excludes prose documentation writing, structural refactoring where naming is incidental, whole-diff code review, debugging a misnamed behavior after failure, and end-user UI copy.
 
@@ -176,7 +175,6 @@ Renaming is a small change that touches many places. Do all of them in one commi
 **Concept**
 - Mental model: A name is a compact contract. It binds an artifact kind, a casing convention, a grammatical shape, and a behavior promise. Good naming starts by identifying the artifact type, choosing the casing that readers expect for that artifact, selecting words whose verbs and nouns match actual behavior, and then coordinating the rename so every reference carries the same meaning.
 - Purpose: Prevents code and system artifacts from lying to future readers. Accurate names reduce debugging time, make APIs and data models easier to scan, and keep refactors honest because the name travels with every call site while comments explaining a bad name usually rot.
-- Boundary: This skill decides what an artifact should be called. It does not restructure code, review a whole diff, write prose documentation about a convention, debug a runtime failure, or choose end-user UI copy. If the work changes structure, use refactor; if the work evaluates all PR risks, use code-review; if the behavior is already broken, use debugging.
 - Analogy: Naming is like labeling circuit breakers: a short label is only useful if it truthfully names the circuit it controls.
 - Common misconception: The wrong mental model is that naming is cosmetic. A misleading name is a behavioral bug in the reader's model: `getOrder()` that returns `undefined`, `validate()` that mutates input, or `created` that stores a ship date will eventually cause wrong assumptions.
 
