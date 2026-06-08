@@ -402,7 +402,7 @@ reviewed_at: "2026-05-12"
 - `last_verified`: ISO 8601 date string (`YYYY-MM-DD`).
 - `truth_source_hashes`: optional map of normalized truth-source key -> SHA-256 hex digest.
 - Keys must match the normalized form produced from `grounding.truth_sources`: `path` for whole-file sources, `path#Lstart-Lend` for line ranges, and `path#anchor` for anchor-only sources. The drift sentinel (`scripts/skill-graph-drift.js`) reports DRIFT when any live hash differs from the recorded hash, BROKEN when a local truth source is missing, STALE when the lifecycle window is exceeded, NO_BASELINE when `truth_source_hashes` is absent but local truth sources are declared, and EXTERNAL_UNHASHED when a URL truth source is valid but not fetched by the zero-dependency sentinel.
-- For `scope: portable` skills with no external truth sources, `drift_check.last_verified` equals `freshness` and `truth_source_hashes` is omitted.
+- For ambient/portable skills (no `project[]`) with no external truth sources, `drift_check.last_verified` equals `freshness` and `truth_source_hashes` is omitted.
 - Record hashes with `node scripts/skill-graph-drift.js --record --apply <skill-path>`; preview without `--apply`.
 - A `drift_check.last_verified` date significantly older than `freshness` is a warning sign that editorial updates have outpaced verification.
 
@@ -775,12 +775,12 @@ routing_eval: absent
 | Value | Meaning |
 |---|---|
 | `absent` | No comprehension grading is declared |
-| `present` | A comprehension eval exists and the `concept` block is required |
+| `present` | A comprehension eval exists and the five flat Understanding fields are required (legacy nested `concept` block accepted for back-compat only) |
 
 **Rules.**
 - Optional in v3. Omitted means `absent`.
 - Independent of `routing_eval` and `eval_state`.
-- `present` requires the top-level `concept` block by schema rule.
+- `present` requires the five flat Understanding fields (`mental_model`, `purpose`, `concept_boundary`, `analogy`, `misconception`) by schema rule; the legacy nested `concept` block is accepted for back-compat only (flat fields win when both are present).
 
 **Example.**
 ```yaml
