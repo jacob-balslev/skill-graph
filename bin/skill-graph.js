@@ -65,6 +65,14 @@ Examples:
 
 Seed or run a single-skill audit against a SKILL.md file.
 
+SCOPE: \`audit --graded\` grades the seven Integrity-Gate / scorecard dimensions
+(metadata, activation, relation, grounding, content, eval-quality, portability)
+and writes findings.md / verdict.md / scorecard.md plus the sidecar
+\`lint_verdict\` / \`structural_verdict\` / \`truth_verdict\` / \`last_audited\`. It does
+NOT run the behavior eval suites and does NOT stamp \`comprehension_verdict\` /
+\`application_verdict\` — those Behavior-Gate verdicts come from
+\`skill-graph evaluate --mode comprehension|application\`.
+
 Arguments:
   <skill-name>       Skill directory name (relative to workspace skill roots).
 

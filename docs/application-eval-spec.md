@@ -47,6 +47,21 @@ Each case carries the scenario and the expected-behavior spec the grader scores 
 | `criteria[]` | **optional, PROVISIONAL** | Boolean per-criterion checklist — see below. |
 | `artifact` | **optional, PROVISIONAL** | Single input for the comparative grader — see below. |
 
+## Two eval shapes — `application.json` vs `comprehension.json` (NOT interchangeable)
+
+The application and comprehension evals are **different schemas with different array keys and a different `criticality` enum.** The most common authoring error is reusing one shape — or the wrong `criticality` value — for the other.
+
+| | `application.json` (this doc) | `comprehension.json` |
+|---|---|---|
+| Array key | `cases[]` (`--mode application` throws if it sees `evals[]`) | `evals[]` |
+| Per-item fields | `id, scenario_type, criticality, red_herring, scenario, context, question, expected_flags, expected_fix_hints, absent_signals` | `id, dimension, prompt, substance, calibration, truth_mode, skill_type, criticality, expected_elements` / `negative_expectation` |
+| `criticality` enum | `critical` / `high` / **`normal`** / `low` | `critical` / `high` / **`medium`** / `low` |
+| Validator | `scripts/check-application-evals.js` (criticality enum-pinned; **rejects `medium`**) | `lib/audit/eval-linter.js` (criticality required; default `medium`; not enum-pinned) |
+| Schema | `schemas/application.schema.json` | `schemas/comprehension.schema.json` |
+| Grader → verdict | `evaluate --mode application` → `application_verdict` | `evaluate --mode comprehension` → `comprehension_verdict` |
+
+> ⚠ **`criticality` differs between the two:** application uses `normal`, comprehension uses `medium`. Writing `criticality: medium` in an application case fails `check-application-evals.js` (the enum here is `critical / high / normal / low`). Full comprehension contract: [`comprehension-eval-spec.md`](./comprehension-eval-spec.md).
+
 ## How it is graded (deployed pointwise grader)
 
 For each case the runner runs **N trials** (`--trials`, default 3, recommended 3–5). Each trial is one baseline run (no skill) + one with_skill run (skill body injected), graded **independently** on 4 axes (0/1/2), then **paired** to compute a per-trial verdict from the delta. Independent (pointwise) grading means the grader never sees both runs side-by-side, so it is **not exposed to pairwise position bias** (verified 2026-05-30 against the LLM-as-judge literature; see `docs/research/`).
@@ -67,6 +82,29 @@ This is **enforced in the runner, not just documented** (SH-6624). The runner st
 - **`certifying`** — reached ONLY when the operator passes `--certifying` AND declares two *different* vendor families via `--generator-family <F>` and `--grader-family <G>` (e.g. `--generator-family opus --grader-family gpt-5.4`). These flags are a **declaration of provenance, not a model selector** — the runner never selects a model (the operator sets the session model). The declared families are recorded on every history record and on the run summary.
 
 `--single-model` is an additional, stronger override that forces `PROVISIONAL` even on a `certifying` run. Provisional is the safe default; `APPLICABLE` is a deliberate, recorded cross-family act.
+
+### Copy-paste certifying run (earns `APPLICABLE`)
+
+Earning `application_verdict: APPLICABLE` requires a cross-family dual-run: the `--certifying` flag plus two *different* declared vendor families. Omitting `--certifying`, or declaring the same family on both sides, silently caps the result at `PROVISIONAL`.
+
+```bash
+# Cross-family certifying run. Model families named by ROLE, not dated version
+# (per workspace AGENTS.md § Model Identity Discipline). The generator and grader
+# MUST be different families (here: anthropic generates, openai/Codex grades).
+APPLICATION_GENERATOR_MODEL=opus APPLICATION_GRADER_MODEL=<codex-current> \
+  node bin/skill-graph.js evaluate \
+    --mode application \
+    --application <skill-dir> \
+    <skill-dir>/evals/application.json \
+    --certifying \
+    --generator-family anthropic --grader-family openai \
+    --grader codex --generator claude \
+    --trials 3
+```
+
+- Drop `--certifying` **or** make `--generator-family` == `--grader-family` → the runner caps `APPLICABLE → PROVISIONAL` (the in-code form of "never certify without cross-family evidence").
+- `--generator-family` / `--grader-family` are a **declaration of provenance, not a model selector** — set the actual models via the env vars / session model.
+- For a same-family PROVISIONAL spot-check (no certification), use the `skill-graph evaluate:gpt-5.5` profile or pass `--single-model`.
 
 ## Provisional fields (`criteria[]`, `artifact`) — SH-6624 Phase-0 pilot
 

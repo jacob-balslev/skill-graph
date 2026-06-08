@@ -77,7 +77,7 @@ The three layers above describe **roles**; this table is the operational counter
 | Operation | Reads | Writes to `audit-state.json` sidecar | Writes artifacts |
 |---|---|---|---|
 | `audit` (Integrity Gate, no flags) | skill source + truth_sources | `last_audited`, `lint_verdict`, `structural_verdict`, `truth_verdict` | `audits/<skill>/{findings,verdict,scorecard}.md` |
-| `audit --graded` | + grader CLI | + `comprehension_verdict`, `application_verdict` (when their evals exist) | graded scorecard rows |
+| `audit --graded` | + grader CLI | (no new sidecar verdicts — same Integrity-Gate fields as `audit`) | graded qualitative scorecard rows for the seven dimensions. Does NOT stamp `comprehension_verdict` / `application_verdict` — those come from `evaluate --mode` (rows below). |
 | `evaluate --mode comprehension` | `evals/comprehension.json` | `eval_score`, `eval_failed_ids`, `freshness`, `comprehension_verdict` | grader receipt under `eval-history/` |
 | `evaluate --mode application` | `evals/application.json` + skill body | `eval_score`, `eval_failed_ids`, `freshness`, `application_verdict` | grader receipt + before/after diff |
 | `improve --field <name>` | skill body, last `evaluate` result | `last_changed`, possibly `eval_score` (post-keep) | commit + revert log when `eval_score` drops |

@@ -42,6 +42,21 @@ The shape is normative — `skill-graph/schemas/comprehension.schema.json` is th
 | `criticality` | yes | enum | `critical` / `high` / `medium` / `low`. |
 | `negative_expectation` | no | string | What the answer must NOT say. Recommended for `boundary` + `critical` cases. |
 
+## Two eval shapes — `comprehension.json` vs `application.json` (NOT interchangeable)
+
+The comprehension and application evals are **different schemas with different array keys and a different `criticality` enum.** The most common authoring error is reusing one shape — or the wrong `criticality` value — for the other.
+
+| | `comprehension.json` (this doc) | `application.json` |
+|---|---|---|
+| Array key | `evals[]` | `cases[]` (`--mode application` throws if it sees `evals[]`) |
+| Per-item fields | `id, dimension, prompt, substance, calibration, truth_mode, skill_type, criticality, expected_elements` / `negative_expectation` | `id, scenario_type, criticality, red_herring, scenario, context, question, expected_flags, expected_fix_hints, absent_signals` |
+| `criticality` enum | `critical` / `high` / **`medium`** / `low` | `critical` / `high` / **`normal`** / `low` |
+| Validator | `lib/audit/eval-linter.js` (criticality required; default `medium`; not enum-pinned) | `scripts/check-application-evals.js` (criticality enum-pinned; **rejects `medium`**) |
+| Schema | `schemas/comprehension.schema.json` | `schemas/application.schema.json` |
+| Grader → verdict | `evaluate --mode comprehension` → `comprehension_verdict` | `evaluate --mode application` → `application_verdict` |
+
+> ⚠ **`criticality` differs between the two:** comprehension uses `medium`, application uses `normal`. Writing `criticality: medium` in an application case fails `check-application-evals.js`. Full application contract: [`application-eval-spec.md`](./application-eval-spec.md).
+
 ## Rubric Dimensions
 
 Each dimension probes a different layer of comprehension. A complete eval set covers the core dimensions that matter for the skill, with the 5-case hard floor and 7-8 case practitioner default below:
