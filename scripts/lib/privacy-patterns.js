@@ -51,7 +51,14 @@ const PRIVACY_PATTERNS = [
   {
     id: 'email_address',
     message: 'email address',
-    regex: /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi,
+    // SKI-247: ReDoS-safe. The prior `[A-Z0-9.-]+\.[A-Z]{2,}` let the char class
+    // AND the final `\.` both match dots — ambiguous backtracking that degraded
+    // to O(n^2)+ on adversarial input (~3.3s at 32k chars on the export scan
+    // buffer). This label-based form has NO dot inside a label, so each `.`
+    // advances unambiguously → linear (~0.3ms at 32k). It matches the same real
+    // emails (or more completely, e.g. punycode TLDs) — never fewer, so the P0
+    // leak filter cannot under-match.
+    regex: /\b[A-Z0-9._%+-]+@[A-Z0-9-]+(?:\.[A-Z0-9-]+)+/gi,
   },
   {
     id: 'private_key',
