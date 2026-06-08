@@ -58,7 +58,13 @@ const SCHEMA_PATH = path.join(REPO, 'schemas', 'SKILL_METADATA_PROTOCOL_schema.j
 // joined sidecar (those fields moved out of frontmatter).
 const SIDECAR_SCHEMA_PATH = path.join(REPO, 'schemas', 'skill-audit-state.schema.json');
 const COMPREHENSION_MIN_CASES = 7; // audit doctrine floor (schema minItems is 5; doctrine wants >=7)
-const UNDERSTANDING_FIELDS = ['mental_model', 'purpose', 'boundary', 'analogy', 'misconception'];
+// The five flat Understanding fields the comprehension grader reads. Mirrors
+// scripts/skill-lint.js:UNDERSTANDING_FIELDS. The normalizer canonicalizes the
+// deprecated top-level `boundary` alias to `concept_boundary` (ADR-0018) before
+// preflight sees the frontmatter (parse-frontmatter normalize, lines 404-408), so
+// we check the canonical `concept_boundary` name — checking `boundary` here false-
+// reported 4/5 on every correctly-migrated skill.
+const UNDERSTANDING_FIELDS = ['mental_model', 'purpose', 'concept_boundary', 'analogy', 'misconception'];
 
 // audit/eval/provenance fields — the "bloat" the with-vs-without-metadata experiment strips.
 // Post-ADR-0019 these are sidecar fields (read from the joined sidecar, not frontmatter);
@@ -288,7 +294,7 @@ function fmt(a, opSel, plan, ensured) {
   L.push(`schema_version: ${a.operations.v8.schema_version}  |  audit status: structural=${a.audit_status.structural_verdict} truth=${a.audit_status.truth_verdict} comprehension=${a.audit_status.comprehension_verdict} application=${a.audit_status.application_verdict}`);
   const row = (label, ok, detail) => L.push(`  [${ok ? 'PASS' : 'GAP '}] ${label.padEnd(14)} ${detail}`);
   const o = a.operations;
-  row('v8', o.v8.ok, o.v8.ok ? 'all required fields + valid enums' : `missing: ${o.v8.missing_required.join(', ') || '(enums)'}${o.v8.subject_valid ? '' : ' [subject invalid]'}${o.v8.deployment_target_valid ? '' : ' [deployment_target invalid]'}`);
+  row('v8', o.v8.ok, o.v8.ok ? 'all required fields + valid enums' : `missing: ${o.v8.missing_required.join(', ') || '(enums)'}${o.v8.subject_valid ? '' : ' [subject invalid]'}${o.v8.public_valid ? '' : ' [public invalid]'}`);
   row('comprehension', o.comprehension.ok, `state=${o.comprehension.comprehension_state} understanding=${o.comprehension.understanding_fields_present.length}/5 comprehension.json=${o.comprehension.comprehension_json_exists ? `${o.comprehension.comprehension_cases} cases` : 'MISSING'}`);
   row('application', o.application.ok, o.application.application_json_exists ? 'application.json present' : 'application.json MISSING');
   row('pairwise', o.pairwise.ok, `body=${o.pairwise.body_nonempty ? 'ok' : 'EMPTY'} bloat-to-strip=${o.pairwise.bloat_fields_present.length} fields`);
