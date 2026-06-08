@@ -744,7 +744,7 @@ skill-graph status <skill>                                 # 8. read back the fo
 
 `skill-graph doctor` runs the fast deterministic smoke subset (links, protocol, drift, schema constants, lint, manifest) in one pass if you want a single pre-commit gate.
 
-> **The ONE canonical `evaluate` invocation.** The behavior verdicts are stamped by `skill-graph evaluate --mode comprehension|application` (the public CLI in `bin/skill-graph.js`, which wraps `lib/audit/evaluate-skill.js` — the implementation). The drain appendix's `scripts/skill/evaluate-skill.js` is a workspace **wrapper** and is currently a divergent fork (NOT yet a thin delegator — SH-6603); `lib/audit/evaluate-skill.js` is the implementation. Prefer the `skill-graph evaluate` surface; treat the others as wrappers/aliases. (Full canonical-vs-wrapper map: § Appendix § "Drain-orchestration reference".)
+> **The ONE canonical `evaluate` invocation.** The behavior verdicts are stamped by `skill-graph evaluate --mode comprehension|application` (the public CLI in `bin/skill-graph.js`, which wraps `lib/audit/evaluate-skill.js` — the implementation). The drain appendix's `scripts/skill/evaluate-skill.js` is now a workspace **thin delegator** (`require`s the canonical module + re-execs the CLI; SH-6603 collapse landed), `lib/audit/evaluate-skill.js` is the implementation. Prefer the `skill-graph evaluate` surface; treat the others as wrappers/aliases. (Full canonical-vs-wrapper map: § Appendix § "Drain-orchestration reference".)
 
 > **Instruction and data boundary.** The audit runbook intentionally reads untrusted or stale
 > skill bodies, eval prompts, audit artifacts, repo files, tool output, pasted examples, and
@@ -785,7 +785,7 @@ The numbered steps below orchestrate `@skill-graph/cli` canonical scripts togeth
 
 - Use the canonical CLI entrypoints: `skill-graph audit`, `skill-graph improve`, `skill-graph evaluate`, `skill-graph evolve` (defined in `bin/skill-graph.js`) — these wrap `lib/audit/*` and `scripts/skill-*.js` directly. **`skill-graph evaluate` is the ONE canonical evaluate surface** (the PRIMARY loop above uses it); the workspace `scripts/skill/evaluate-skill.js` below is a wrapper.
 - `scripts/skill/skill-lint.js` → canonical is `scripts/skill-lint.js` (note the path: no `skill/` subdirectory).
-- `scripts/skill/evaluate-skill.js` → canonical TARGET is `lib/audit/evaluate-skill.js`, but the workspace script is currently a **divergent fork, NOT yet a thin delegator** (verified 2026-05-28 — the divergence is bidirectional; both copies carry unique behavior). Collapse to a delegating shim is tracked by **SH-6603** (per ADR-0016). Until it lands, the two copies are not interchangeable.
+- `scripts/skill/evaluate-skill.js` → canonical TARGET is `lib/audit/evaluate-skill.js`. The workspace script is now a **thin delegator** (`module.exports = require(canonical)` for require-consumers + a CLI re-exec that passes args/exit codes through) — the divergent-fork collapse tracked by **SH-6603 / ADR-0016** has landed. The two are interchangeable; the workspace path is back-compat only — prefer the `skill-graph evaluate` CLI surface.
 - The workspace-only tools (`skill-audit-claim`, `source-truth-catalog`, `skill-census`, `build-skill-list`, `skill-test-runner`, `loop-checkpoint`) are the **multi-agent drain orchestration** layer (atomic lane claim, ledger, worklist, deep code probe, key-file test runner, loop telemetry). They have no npm-bundled equivalent because a single npm consumer auditing one skill does not need drain coordination — they are skippable, not blocking.
 
 #### Complete workspace-script → npm-consumer mapping
@@ -955,7 +955,7 @@ Every workspace-only command the numbered steps below use, and what a standalone
    - Per-skill grader entry check: `grep -q '"skill_name":"<skill-slug>"' agent-orchestration/logs/comprehension-history.jsonl && echo PASS || echo FAIL` — expect PASS; there must be at least one entry for this specific skill slug, not just any entry in the file
 9. **Checkpoint**:
    ```bash
-   node scripts/loop/loop-checkpoint.js advance --loop skill-audit --phase committed --evidence "skill-census: ok, skill-lint: ok"
+   node scripts/loop/loop-checkpoint.js advance --loop skill-audit --phase pre-commit --evidence "skill-census: ok, skill-lint: ok"
    ```
 10. **Release the claim FIRST** — this appends the terminal ledger line (with the four verdicts),
     points `latest` at your run dir, and frees the lock. It MUST happen before the commit so the
