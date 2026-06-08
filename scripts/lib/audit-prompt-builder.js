@@ -16,6 +16,10 @@ const fs   = require('fs');
 const path = require('path');
 const { parseFrontmatter } = require('./parse-frontmatter');
 const { resolveSkillRoots, resolveTruthSourcePath, collectSkillFiles } = require('./roots');
+// ADR-0019: a skill is SKILL.md frontmatter + a sibling audit-state.json sidecar. The
+// audit/eval/provenance fields (eval_artifacts, eval_state, portability, the four verdicts)
+// live in the sidecar. The graders must read the JOINED view, never raw frontmatter.
+const { readSidecar, joinSidecar } = require('./audit-state-sidecar');
 
 // ---------------------------------------------------------------------------
 // Dimension registry
@@ -142,6 +146,13 @@ function collectContext(opts) {
   const skillBody = fs.readFileSync(skillFile, 'utf8');
   const frontmatter = parseFrontmatter(skillBody);
 
+  // ADR-0019 join: eval_artifacts / eval_state / portability / the four verdicts moved to
+  // the sibling audit-state.json. Read the sidecar and compute the JOINED view (frontmatter
+  // wins on collision, sidecar fills the moved fields). A missing sidecar is the honest
+  // unmigrated/new case — readSidecar→null, joinSidecar→frontmatter unchanged, never a crash.
+  const sidecar = readSidecar(skillFile);
+  const joined = joinSidecar(frontmatter || {}, sidecar);
+
   const truthSources = [];
   const declared = (frontmatter && frontmatter.grounding && Array.isArray(frontmatter.grounding.truth_sources))
     ? frontmatter.grounding.truth_sources
@@ -170,6 +181,8 @@ function collectContext(opts) {
 
   const evalArtifacts = collectEvalArtifacts({
     frontmatter,
+    joined,
+    skillDir,
     repoRoot,
     charLimit: evalArtifactCharLimit,
   });
@@ -227,6 +240,7 @@ function collectContext(opts) {
     skillName,
     skillBody,
     frontmatter,
+    auditState: sidecar || null,
     truthSources,
     evalArtifacts,
     schemaContent,
@@ -367,36 +381,65 @@ function collectNeighborSummaries({ frontmatter, repoRoot, charLimit }) {
 /**
  * Discover and read the eval artifacts associated with a skill.
  *
- * Contract: a skill is associated with every `examples/evals/*.json` file whose
- * parsed JSON has `skill_name === frontmatter.name`. This matches the lint
- * check in `scripts/skill-lint.js#checkEvalCoherence`, so authoring / linting /
- * grading all agree on what "the eval artifact for this skill" means.
- *
- * Only runs when `frontmatter.eval_artifacts === 'present'`. Every other value
- * (including absent frontmatter) returns an empty array so prompts stay lean
- * for skills that have not shipped an eval.
+ * Resolution order (A1 fix — the grader was reading the legacy path only):
+ *   1. PER-SKILL: `skills/<name>/evals/{comprehension,application}.json` — the canonical
+ *      per-skill location. On-disk presence is ground truth: these files are included
+ *      whenever they exist, regardless of the `eval_artifacts` flag, because a stale flag
+ *      must never hide an eval that is actually shipped. This was the symptom — a skill with
+ *      8+7 cases on disk + `eval_artifacts: present` graded "no eval file exists".
+ *   2. LEGACY FALLBACK: every `<repoRoot>/examples/evals/*.json` whose parsed JSON has
+ *      `skill_name === frontmatter.name` (the old `checkEvalCoherence` contract). Used only
+ *      when no per-skill file is found, and gated on the JOINED `eval_artifacts === 'present'`
+ *      flag (A2 fix — `eval_artifacts` is a sidecar field post-ADR-0019, so gating on raw
+ *      `frontmatter.eval_artifacts` false-failed every migrated skill).
  *
  * Malformed JSON files are skipped silently — they surface as a lint error
  * elsewhere and should not break the grader run.
  *
  * @param {object} args
  * @param {object|null} args.frontmatter Parsed frontmatter from the skill.
+ * @param {object|null} [args.joined]    Joined frontmatter+sidecar view (sidecar-aware flag).
+ * @param {string} [args.skillDir]       Absolute path to the skill directory (per-skill evals).
  * @param {string} args.repoRoot         Absolute repo root.
  * @param {number} args.charLimit        Per-file character cap.
  * @returns {Array<{ path: string, content: string, truncated: boolean }>}
  */
-function collectEvalArtifacts({ frontmatter, repoRoot, charLimit }) {
-  if (!frontmatter || frontmatter.eval_artifacts !== 'present' || !frontmatter.name) return [];
+function collectEvalArtifacts({ frontmatter, joined, skillDir, repoRoot, charLimit }) {
+  const name = frontmatter && frontmatter.name;
+  const out = [];
+
+  const bound = (raw) => {
+    const truncated = raw.length > charLimit;
+    return { content: truncated ? raw.slice(0, charLimit) + '\n\n[…truncated]' : raw, truncated };
+  };
+
+  // 1. Per-skill canonical location — on-disk truth, flag-independent.
+  if (skillDir) {
+    const leaf = name || path.basename(skillDir);
+    for (const fileName of ['comprehension.json', 'application.json']) {
+      const abs = path.join(skillDir, 'evals', fileName);
+      if (!fs.existsSync(abs)) continue;
+      let raw;
+      try { raw = fs.readFileSync(abs, 'utf8'); } catch (_) { continue; }
+      try { JSON.parse(raw); } catch (_) { continue; } // malformed → lint error elsewhere, skip
+      const { content, truncated } = bound(raw);
+      out.push({ path: path.posix.join('skills', leaf, 'evals', fileName), content, truncated });
+    }
+  }
+  if (out.length > 0) return out;
+
+  // 2. Legacy fallback — examples/evals/*.json, gated on the sidecar-aware joined flag.
+  const flag = (joined && joined.eval_artifacts) || (frontmatter && frontmatter.eval_artifacts);
+  if (flag !== 'present' || !name) return out;
 
   const evalsDir = path.join(repoRoot, EVAL_ARTIFACTS_DIR_REL);
-  if (!fs.existsSync(evalsDir)) return [];
+  if (!fs.existsSync(evalsDir)) return out;
 
-  const out = [];
   let files;
   try {
     files = fs.readdirSync(evalsDir).filter(f => f.endsWith('.json')).sort();
   } catch (_) {
-    return [];
+    return out;
   }
 
   for (const fileName of files) {
@@ -413,10 +456,9 @@ function collectEvalArtifacts({ frontmatter, repoRoot, charLimit }) {
     } catch (_) {
       continue; // malformed eval files surface as lint errors, not grader breakage
     }
-    if (!parsed || parsed.skill_name !== frontmatter.name) continue;
+    if (!parsed || parsed.skill_name !== name) continue;
 
-    const truncated = raw.length > charLimit;
-    const content = truncated ? raw.slice(0, charLimit) + '\n\n[…truncated]' : raw;
+    const { content, truncated } = bound(raw);
     const relPath = path.posix.join(EVAL_ARTIFACTS_DIR_REL.split(path.sep).join('/'), fileName);
     out.push({ path: relPath, content, truncated });
   }
@@ -500,6 +542,7 @@ function buildDimensionPrompt(opts) {
   const {
     skillName,
     skillBody,
+    auditState,
     truthSources,
     evalArtifacts,
     schemaContent,
@@ -527,7 +570,7 @@ function buildDimensionPrompt(opts) {
   const evalBlock = !includeEvalBlock
     ? null
     : (evalArtifactsArr.length === 0
-        ? '(no eval artifact shipped for this skill — frontmatter.eval_artifacts is not `present` or no file in examples/evals/ matches skill_name)'
+        ? '(no eval artifact found — checked skills/<name>/evals/{comprehension,application}.json and the legacy examples/evals/*.json. Either none are shipped, or audit-state.json `eval_artifacts` is not `present`. Read the <audit-state> block for the declared eval_artifacts / eval_state value before concluding absence — those fields live in the sidecar, not the SKILL.md body.)'
         : evalArtifactsArr.map(ea => [
             `<eval-artifact path="${ea.path}"${ea.truncated ? ' truncated="true"' : ''}>`,
             ea.content.trim(),
@@ -570,6 +613,18 @@ function buildDimensionPrompt(opts) {
         ? `<export-transform path="${EXPORT_SCRIPT_REL}" available="true">\nThe export transform exists on disk. Run \`node ${EXPORT_SCRIPT_REL} skills/${skillName}\` to produce a SKILL.skill-md.md with only SKILL.md base fields at the top level. Only \`skill-md\` is a valid portability.targets value today; other runtimes (cursor, windsurf, copilot, agents-md) are deferred per v0.3.0 CHANGELOG.\n</export-transform>`
         : `<export-transform path="${EXPORT_SCRIPT_REL}" available="false">\nThe export transform script is missing from the repo. A skill declaring \`portability.readiness: scripted\` while the transform is absent is over-claiming — flag this as a contract violation.\n</export-transform>`);
 
+  // ADR-0019: the eval & portability graders must see the audit-state.json sidecar —
+  // eval_artifacts, eval_state, portability, and the four verdicts live there, NOT in the
+  // SKILL.md body embedded below. Without this block the grader inspects frontmatter only
+  // and false-reports "no portability block" / "eval_artifacts not present" for every
+  // migrated skill (A2). Embedded on the two dimensions that actually read those fields.
+  const includeAuditStateBlock = dimension.id === 'eval' || dimension.id === 'portability';
+  const auditStateBlock = !includeAuditStateBlock
+    ? null
+    : (auditState
+        ? `<audit-state path="audit-state.json">\n${JSON.stringify(auditState, null, 2)}\n</audit-state>`
+        : '<audit-state>(no audit-state.json sidecar on disk — this skill is not yet migrated to the ADR-0019 sidecar, so eval_artifacts / eval_state / portability / verdicts are genuinely absent. That is the honest unmigrated state, NOT over-claiming — judge accordingly.)</audit-state>');
+
   // STEPS are composed dynamically per dimension so only the context sources
   // the grader actually has are referenced. This keeps the step count honest
   // (no "read the schema" when no schema block is present) and the numbering
@@ -591,6 +646,9 @@ function buildDimensionPrompt(opts) {
   if (includePortabilityBlock) {
     steps.push(`${n++}. Read the <export-transform> note — it states whether the SKILL.md export script actually ships and how to invoke it.`);
   }
+  if (includeAuditStateBlock) {
+    steps.push(`${n++}. Read the <audit-state> block — it carries the skill's audit-state.json sidecar (eval_artifacts, eval_state, portability, the four verdicts). These fields live in the sidecar, NOT the SKILL.md body above; judge eval/portability claims against it, never against the body alone.`);
+  }
   steps.push(`${n++}. Read the pass criteria for dimension "${dimension.label}".`);
   steps.push(`${n++}. For each checklist bullet, mark PASS, PASS WITH FIXES, or FAIL with a quoted evidence snippet.`);
   steps.push(`${n++}. Aggregate into one dimension verdict and a 1–5 score (5 = state of the art, 1 = broken).`);
@@ -603,6 +661,7 @@ function buildDimensionPrompt(opts) {
   if (includeNeighborBlock)   evidenceParts.push('a neighbor summary');
   if (includeEvalBlock)       evidenceParts.push('an eval artifact');
   if (includePortabilityBlock) evidenceParts.push('the export-transform note');
+  if (includeAuditStateBlock) evidenceParts.push('the audit-state sidecar');
   const evidenceSources = evidenceParts.length === 2
     ? evidenceParts.join(' or ')
     : evidenceParts.slice(0, -1).join(', ') + ', or ' + evidenceParts[evidenceParts.length - 1];
@@ -629,6 +688,9 @@ function buildDimensionPrompt(opts) {
   }
   if (includePortabilityBlock) {
     inputSections.push('', portabilityBlock);
+  }
+  if (includeAuditStateBlock) {
+    inputSections.push('', auditStateBlock);
   }
   inputSections.push('', `<dimension id="${dimension.id}" label="${dimension.label}">`, criteria, '</dimension>');
 
