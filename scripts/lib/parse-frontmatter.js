@@ -62,9 +62,31 @@ function parseFrontmatter(text) {
       // Unterminated quote — leave the author's text alone.
       return raw;
     }
-    // Unquoted: find ` #` (space-hash).
-    const m = raw.match(/\s+#/);
-    if (m) return raw.slice(0, m.index);
+    // Unquoted (incl. flow `[..]` / `{..}`): a ` #` begins a comment ONLY at bracket depth 0
+    // and OUTSIDE any quoted run. A `#` inside a flow collection or a quoted substring is DATA,
+    // not a line comment — the old `/\s+#/` ignored brackets+quotes and truncated the whole
+    // structure (SKI-257: `[a, b #c, d]` collapsed to the string `[a, b`, losing the array and
+    // `d`; `["x # y", z]` collapsed to `["x`). Scan with depth + quote state; plain-scalar
+    // comment stripping stays YAML-correct (a top-level ` #` is still a comment).
+    let depth = 0;
+    let quote = null;
+    for (let idx = 0; idx < raw.length; idx++) {
+      const ch = raw[idx];
+      if (quote) {
+        if (ch === '\\') { idx++; continue; }
+        if (ch === quote) quote = null;
+        continue;
+      }
+      if (ch === '"' || ch === "'") { quote = ch; continue; }
+      if (ch === '[' || ch === '{') { depth++; continue; }
+      if (ch === ']' || ch === '}') { if (depth > 0) depth--; continue; }
+      // Comment start: a `#` at depth 0, outside quotes, immediately preceded by whitespace.
+      if (ch === '#' && depth === 0 && idx > 0 && /\s/.test(raw[idx - 1])) {
+        let start = idx;
+        while (start > 0 && /\s/.test(raw[start - 1])) start--; // strip the leading whitespace run too
+        return raw.slice(0, start);
+      }
+    }
     return raw;
   }
 

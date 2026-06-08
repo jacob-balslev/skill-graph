@@ -144,4 +144,31 @@ try {
   fs.rmSync(tempRoot, { recursive: true, force: true });
 }
 
+// SKI-257: stripInlineComment must NOT treat a ` #` inside a flow collection or a quoted
+// substring as a line comment — the old `/\s+#/` ignored bracket depth + quotes and truncated
+// the whole structure (silent data loss). Plain-scalar + trailing-comment stripping stays
+// YAML-correct.
+{
+  const fm = (line) => parseFrontmatter(`---\n${line}\n---\n`);
+  const eq = (actual, expected, msg) => assert(
+    JSON.stringify(actual) === JSON.stringify(expected),
+    `${msg}: expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`,
+  );
+
+  // The catastrophic cases the old heuristic destroyed:
+  eq(fm('keywords: [alpha, beta #gamma, delta]').keywords, ['alpha', 'beta', 'delta'],
+    'flow array with an inline # keeps its structure + trailing element (no truncation)');
+  eq(fm('rel: ["x # y", z]').rel, ['x # y', 'z'],
+    'a # inside a quoted array element is preserved as data');
+  eq(fm('k: [issue #42, bug #7]').k, ['issue', 'bug'],
+    'flow array elements with # are not collapsed to a truncated string');
+  eq(fm('obj: {a: 1, b: 2} # c').obj, { a: 1, b: 2 },
+    'a flow object is parsed whole; only the trailing comment is stripped');
+
+  // Plain-scalar + trailing-comment behavior stays YAML-correct (regression guard):
+  eq(fm('key: value # comment').key, 'value', 'plain-scalar trailing comment still stripped');
+  eq(fm('key: C# is a language').key, 'C# is a language', 'a # with no preceding space stays data');
+  eq(fm('arr: [a, b] # trailing').arr, ['a', 'b'], 'trailing comment after a flow array stripped');
+}
+
 process.stdout.write('PASS test-export-parser-drift: export/parser/drift/lint edge cases covered\n');
