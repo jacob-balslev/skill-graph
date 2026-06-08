@@ -184,7 +184,8 @@ check('claimSlot claims --op audit per model; curate claims --op merge with a di
     return '';
   }
 
-  const deps = d.createSkillAuditLoopLiteDeps({ skillGraphRoot: tmp, workspaceRoot: tmp, dryRun: false, dispatch: stubDispatch });
+  // SKI-230: inject a fixed runToken so the run-scoped AGENT_IDs are deterministic in-test.
+  const deps = d.createSkillAuditLoopLiteDeps({ skillGraphRoot: tmp, workspaceRoot: tmp, dryRun: false, dispatch: stubDispatch, runToken: 'TEST' });
   const s1 = deps.claimSlot({ skill, model: 'opus' });
   deps.researchAndPropose({ skill, skillDir, model: 'opus', brief: 'B', artifactsDir: s1.artifactsDir });
   deps.releaseSlot({ skill, model: 'opus', status: 'completed' });
@@ -199,11 +200,14 @@ check('claimSlot claims --op audit per model; curate claims --op merge with a di
   assert.strictEqual(proposeClaims.length, 2, 'two per-model audit claims');
   assert.deepStrictEqual(proposeClaims.map((c) => c.model).sort(), ['codex-current', 'opus']);
   assert.strictEqual(mergeClaims.length, 1, 'one curator merge claim');
-  // The curator merge lock has a DISTINCT owner from the per-model slots.
-  assert.strictEqual(mergeClaims[0].agentId, 'skill-audit-loop-curator');
-  assert.ok(!proposeClaims.some((c) => c.agentId === 'skill-audit-loop-curator'), 'propose slots are not the curator owner');
-  // The curator lock was released (finally block).
-  assert.ok(releases.some((r) => r.agentId === 'skill-audit-loop-curator'), 'curator lock released');
+  // SKI-230: the per-model + curator owners are RUN-SCOPED (suffixed with the runToken) so a
+  // killed run's orphaned slot cannot block a later run via the one-skill-per-agent guard.
+  assert.strictEqual(mergeClaims[0].agentId, 'skill-audit-loop-curator-TEST');
+  assert.deepStrictEqual(proposeClaims.map((c) => c.agentId).sort(), ['curate-codex-current-TEST', 'curate-opus-TEST'],
+    'per-model PROPOSE owners are run-scoped (curate-<model>-<runToken>)');
+  assert.ok(!proposeClaims.some((c) => c.agentId.startsWith('skill-audit-loop-curator')), 'propose slots are not the curator owner');
+  // The curator lock was released (finally block) under the SAME run-scoped owner.
+  assert.ok(releases.some((r) => r.agentId === 'skill-audit-loop-curator-TEST'), 'curator lock released under its run-scoped owner');
   assert.ok(fs.existsSync(merge.mergeLedgerPath));
 
   fs.rmSync(tmp, { recursive: true, force: true });
