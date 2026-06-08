@@ -56,7 +56,7 @@ _(The `extends` field and the `capability` / `workflow` / `router` / `overlay` a
 
 ### `repo_specific`
 
-Skill claims are grounded in a specific codebase. `deployment_target: project` skills use this mode or `hybrid`. `grounding.truth_sources` lists concrete file paths.
+Skill claims are grounded in a specific codebase. project-anchored (`public: false` / non-empty `project[]`) skills use this mode or `hybrid`. `grounding.truth_sources` lists concrete file paths.
 
 ### `universal`
 
@@ -70,7 +70,7 @@ Skill claims blend `repo_specific` and `universal` grounding. Use when a framewo
 
 ### `repo_code_first`
 
-When repo code and general knowledge disagree, trust the repo code. Default for `deployment_target: project` skills.
+When repo code and general knowledge disagree, trust the repo code. Default for project-anchored (`public: false`) skills.
 
 ### `general_knowledge_first`
 
@@ -126,9 +126,9 @@ The primary browse shelf: one of the twelve values enforced by `schemas/SKILL_ME
 
 Optional secondary browse shelves for skills that genuinely span more than one competency. Keep `subjects[0]` equal to `subject`; use at most two values.
 
-### `deployment_target`
+### `public`
 
-Where the skill is meant to run. `portable` skills can move across projects. `project` skills are tied to a specific project and require grounding.
+Publishability gate (boolean). `public: true` skills carry no private data and are safe to release to the public marketplace; `public: false` skills carry private/customer/internal data and are never published. Project anchoring (and the grounding requirement) is a separate axis carried by `project[]`.
 
 ### `scope`
 

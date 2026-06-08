@@ -8,16 +8,16 @@ Each section below has three parts: **Why this field exists**, **Common confusio
 
 ---
 
-## `deployment_target`
+## `public`
 
 ### Why this field exists
 
-`deployment_target` is the routing-layer signal that tells consumers (and humans) how transferable a skill is between projects. The two values map to two distinct relationships with the codebase:
+`public` is the publishability gate — the single boolean that decides whether a skill is safe to release to the public marketplace (skills.sh). It replaced the v8 `deployment_target` enum (the ADR-0017 amendment): publishability — not deployment location — is what the export gate actually needs.
 
-- `portable` — the skill captures patterns that apply across any project with no repo-specific coupling (e.g., `testing-strategy`, `webhook-integration`). Safe to load anywhere.
-- `project` — the skill is coupled to specific repo conventions, file paths, or proprietary terminology of one project. Loading it in another repo would mislead the agent. Requires a populated `grounding` block and a `project[]` declaration.
+- `true` — the skill carries no private data: repo-agnostic patterns, public-repo grounding, or otherwise leak-free (e.g., `testing-strategy`, `webhook-integration`). Safe for the public release.
+- `false` — the skill carries private API keys, personal/customer/financial data, or internal-only operational doctrine, and must NEVER be published. This is the fail-safe default: `export-marketplace-skills.js` excludes `public: false` AND any skill with a missing/undefined `public` flag, so the privacy boundary fails CLOSED — nothing reaches the public surface unless affirmatively marked publishable.
 
-Without `deployment_target`, a consumer cannot tell at a glance whether a skill inherited from another project is safe to use or is leaking assumptions. The router uses `deployment_target` together with `project[]` to enforce project-fit — a `project` skill for project A is filtered out when serving project B even if the keywords match.
+**Project anchoring is a separate axis.** Whether a skill is coupled to one project's repo conventions is carried by `project[]` (the belonging-entity references) plus a populated `grounding` block — not by `public`. A project-anchored skill (non-empty `project[]`) MUST ground its claims (schema `allOf`): grounding follows project membership, not the publishability gate. A skill can be `public: true` yet project-anchored (a shareable pattern documented against one repo), or `public: false` and ambient (private but not repo-coupled). The router uses `project[]` to enforce project-fit — a skill anchored to project A is filtered out when serving project B even if the keywords match.
 
 ### `scope` — the free-text companion
 
@@ -25,13 +25,13 @@ Without `deployment_target`, a consumer cannot tell at a glance whether a skill 
 
 ### Common confusion
 
-Authors previously used `scope: portable` as a lazy default without checking for hidden repo coupling. In v8, `deployment_target: portable` should still be set deliberately: only after a real check that the skill has no hidden coupling to a specific project. When in doubt, use `deployment_target: project` with the appropriate `grounding` and `project[]`.
+Authors previously leaned on `deployment_target` (or the older enum `scope: portable`) as a lazy default. In v8, set `public` deliberately: `true` only after a real check that the skill carries no private data, and `false` whenever it touches private/customer/internal material. If the skill is coupled to one project, also declare `project[]` + `grounding` — that is the project-fit signal, distinct from publishability.
 
 ### Worked example
 
 ```yaml
-# Coupled to a specific repo's table names + auth helpers
-deployment_target: project
+# Private: coupled to a specific repo + carries internal doctrine -> NOT publishable
+public: false
 project:
   - handle: sales-hub
     role: source-of-truth
@@ -39,8 +39,8 @@ grounding:
   subject_matter: Sales Hub order reconciliation logic
   grounding_mode: repo_specific
 
-# Universal patterns; safe to load in any project
-deployment_target: portable
+# Public: universal patterns, no private data -> safe to publish
+public: true
 
 # Required free-text description of what this specific skill covers/excludes
 scope: "Covers abstract testing strategy; does not cover project-specific test fixtures."
@@ -197,13 +197,13 @@ Three values are valid in v3: `repo_code_first` (repo evidence wins), `general_k
 
 ### Why this field exists
 
-`portability.readiness` exists because `deployment_target` says where a skill applies, while readiness says how proven its export path is. A skill can be `deployment_target: portable` and still have only a declared portability claim. Authors use `declared` for metadata-only portability, `scripted` when an export transform exists for at least one target, and `verified` when the exported output has been checked with a receipt.
+`portability.readiness` exists because `public` says whether a skill may be published, while readiness says how proven its export path is. A `public: true` skill can still have only a declared portability claim. Authors use `declared` for metadata-only portability, `scripted` when an export transform exists for at least one target, and `verified` when the exported output has been checked with a receipt.
 
-Consumers use `readiness` together with `deployment_target` to decide whether a skill is only theoretically portable, mechanically exportable, or already verified in a target runtime.
+Consumers use `readiness` together with `public` to decide whether a publishable skill is only theoretically portable, mechanically exportable, or already verified in a target runtime.
 
 ### Common confusion
 
-Do not use `readiness` as a second taxonomy for project fit. `deployment_target: portable` plus `portability.readiness: declared` is a valid state: the skill is intended to transfer, but no export verification exists yet. Move to `scripted` only when tooling exists, and to `verified` only when there is a concrete verification receipt.
+Do not use `readiness` as a second taxonomy for project fit (that is `project[]`). `public: true` plus `portability.readiness: declared` is a valid state: the skill is publishable, but no export verification exists yet. Move to `scripted` only when tooling exists, and to `verified` only when there is a concrete verification receipt.
 
 ---
 
@@ -213,7 +213,7 @@ Do not use `readiness` as a second taxonomy for project fit. `deployment_target:
 |---|---|
 | Schema-canonical field definitions (auto-generated) | [`SKILL_METADATA_PROTOCOL_field-reference.generated.md`](../skill-metadata-protocol/field-reference.generated.md) |
 | Full prose reference with examples and lint notes | [`SKILL_METADATA_PROTOCOL_field-reference.md`](../skill-metadata-protocol/field-reference.md) |
-| Decision tree for taxonomy fields (`subject`, `taxonomy_domain`, `deployment_target`, `project[]`, `routing_bundles`) | [`SKILL_METADATA_PROTOCOL_field-decision-guide.md`](../skill-metadata-protocol/field-decision-guide.md) |
+| Decision tree for taxonomy fields (`subject`, `taxonomy_domain`, `public`, `project[]`, `routing_bundles`) | [`SKILL_METADATA_PROTOCOL_field-decision-guide.md`](../skill-metadata-protocol/field-decision-guide.md) |
 | Predicate semantics (relations) | [`glossary.md` § Relation predicates](glossary.md) |
 | Authoring template | [`../examples/skill-metadata-template.md`](../examples/skill-metadata-template.md) |
 | Why the Evaluation Status is orthogonal | [`adr/0001-predicate-set.md`](adr/0001-predicate-set.md) + [`adr/0006-revise-predicate-rename.md`](adr/0006-revise-predicate-rename.md) |

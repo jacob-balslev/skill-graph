@@ -191,13 +191,13 @@ Protocol extension fields must not appear as extra top-level fields in the plain
 
 The exporter automatically excludes skills with:
 
-- `deployment_target: project`
+- `public: false` — the primary publishability gate (a missing/undefined `public` is also excluded, so the boundary fails CLOSED); a legacy `deployment_target: project` is still excluded via back-compat
 - legacy closed-scope values `scope: codebase`, `scope: operational`, or `scope: project`
 - `grounding_mode: repo_specific` or `grounding_mode: repo_internal`
 - Any privacy pattern violation (see `scripts/lib/privacy-patterns.js`)
 - `structural_verdict: FAIL`
 
-The exporter emits the live export count and the full excluded list on every run (`EXCLUDED from marketplace export: <path> (deployment_target: …, scope: …, grounding_mode: …)`). As of 2026-05-28, exactly two project-grounded skills are excluded by the `deployment_target: project` rule above — `agent-ops/skill-router` and `quality-assurance/graph-audit`, both carrying `grounding_mode: repo_specific`. The live exported-skill count is the single source of truth in `SKILL_GRAPH.md § Current State` and is not restated here to avoid drift.
+The exporter emits the live export count and the full excluded list on every run (`EXCLUDED from marketplace export: <path> (deployment_target: …, scope: …, grounding_mode: …)`). As of 2026-05-28, exactly two project-grounded skills are excluded (by the `public: false` gate, or — for skills not yet migrated off the retired enum — the legacy `deployment_target: project` back-compat) — `agent-ops/skill-router` and `quality-assurance/graph-audit`, both carrying `grounding_mode: repo_specific`. The live exported-skill count is the single source of truth in `SKILL_GRAPH.md § Current State` and is not restated here to avoid drift.
 
 ---
 
