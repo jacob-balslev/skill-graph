@@ -730,7 +730,7 @@ node bin/skill-graph.js improve --skill <skill-name>                # Karpathy k
 node bin/skill-graph.js evaluate --mode comprehension <eval-file>   # stamp comprehension_verdict
 node bin/skill-graph.js evaluate --mode application --application <skill-dir> <eval-file>  # stamp application_verdict
 node bin/skill-graph.js status <skill-name>                         # read-only Audit Status view
-node bin/skill-graph.js evolve --top 5                              # corpus walker (analyze → triage → execute → verify)
+node bin/skill-graph.js evolve --top 5                              # [PREVIEW] corpus walker (analyze → triage → execute → verify) — matches the bin/skill-graph.js --help label
 ```
 
 The CLI dispatchers delegate to `lib/audit/*.js` and pass arguments through verbatim. Calling the raw script paths still works (and is what the CLI invokes internally), but the CLI form is what the docs and `--help` reference.
