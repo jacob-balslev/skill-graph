@@ -146,7 +146,7 @@
       "properties": {
         "runtimes": {
           "type": "array",
-          "description": "Target agent runtimes with optional version constraints (e.g., `claude-code>=2.0`, `cursor>=0.40`). `agent_runtimes` is the supported alias.",
+          "description": "Target agent runtimes with optional version constraints (e.g., `claude-code>=2.0`, `cursor>=0.40`). `agent_runtimes` is the v3.1 preferred/canonical name (it disambiguates from the Node/container runtime); `runtimes` is the legacy alias. When both are present they must match.",
           "items": {
             "type": "string"
           }
@@ -160,7 +160,7 @@
         },
         "node": {
           "type": "string",
-          "description": "Node.js version constraint (e.g., `>=18`). `node_version` is the supported alias."
+          "description": "Node.js version constraint (e.g., `>=18`). `node_version` is the v3.1 preferred/canonical name (it disambiguates from `node` reading as a graph-node in a graph repo); `node` is the legacy alias. When both are present they must match."
         },
         "node_version": {
           "type": "string",
