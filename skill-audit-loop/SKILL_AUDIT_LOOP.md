@@ -606,7 +606,7 @@ Required dimension rows:
 Run this section when the skill is repo-grounded or implementation-aware.
 
 - [ ] `grounding` exists when the skill makes concrete implementation claims
-- [ ] `domain_object` clearly states what the skill governs
+- [ ] `grounding.subject_matter` clearly states what the skill governs
 - [ ] `truth_sources` point to real files or docs
 - [ ] `failure_modes` are concrete and testable
 - [ ] `evidence_priority` is explicit
