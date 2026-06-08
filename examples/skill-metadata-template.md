@@ -23,11 +23,12 @@ description: "Use when creating a new SKILL.md from scratch, restructuring a dra
 # software-engineering-method / knowledge-organization / product-domain.
 subject: agent-ops
 
-# deployment_target: where this skill applies. One of two closed values:
-# portable (any project, repo-agnostic) /
-# project (one or more specific projects; requires populated `grounding` block
-# AND populated `project[]` array naming which projects).
-deployment_target: project
+# public: publishability gate (boolean). true = safe for public marketplace
+# release (no private API keys / personal / customer / internal-only data);
+# false = carries private data, NEVER published. This is the single switch the
+# marketplace exporter filters on. When unsure, author `false` (fail-safe).
+# (Replaced the deployment_target enum — ADR-0017 amendment.)
+public: false
 
 # scope: required PRD-style free-text statement of what the skill teaches and
 # what it doesn't. Mirrors `## Coverage` plus `## Do NOT Use When` at the
@@ -41,7 +42,7 @@ scope: "Authoring a new SKILL.md against Skill Metadata Protocol v8: frontmatter
 taxonomy_domain: agent/skill-system
 
 # project: projects this skill is linked to. Array of {handle, role} objects.
-# Required pattern when `deployment_target: project`; suggested role values:
+# A non-empty project[] makes `grounding` schema-required; suggested role values:
 # source-of-truth, consumer, mirror.
 project:
   - handle: skill-graph
@@ -180,7 +181,17 @@ grounding:
 
 > **TEMPLATE NOTE — HOW TO READ THIS FILE:** This file is a real, valid, schema-conformant Skill Metadata Protocol skill whose *subject* is skill authoring itself. Read it as a finished specimen of the contract, then adapt it by (1) renaming the identity, (2) choosing `subject`, `deployment_target`, free-text `scope`, and `taxonomy_domain` when useful, (3) rewriting `description`, `## Coverage`, `## Philosophy`, and `## Verification` for your subject, (4) removing any section or field that does not apply to the skill's intended use, and (5) stripping ONLY the **`# TEMPLATE NOTE:` YAML comments and `> **TEMPLATE NOTE:**` body blockquotes** (authoring scaffolding) — the **field-purpose comments STAY** in your derived skill (they are co-located documentation, not scaffolding). Verify with `grep -n "TEMPLATE NOTE" <derived-skill>` returning zero hits AND `grep -c "^\s*#" <derived-skill>` showing the field-purpose comments are preserved. Never ship placeholder sludge (`your-skill-name`, `path/to/file`, `todo`). If a section does not apply, remove it — do not keep it and fill it with fake content. Convention spec: `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`.
 
-> **TEMPLATE NOTE — CONDITIONAL FIELDS:** `superseded_by` is required only when `stability: deprecated`. `routing_bundles` only applies when routing-group ownership is part of the skill contract. `triggers` and `paths` are shown because this template is both label-routable and file-activated; most skills need only one. `grounding` is REQUIRED for `deployment_target: project` skills; remove the block entirely for `deployment_target: portable` skills unless they ground in external specs. `project[]` and `repo[]` are optional but recommended; omit for ambient / cross-project skills. `lifecycle`, `runtime_telemetry`, and `portability` are NOT frontmatter — per [ADR-0019](../docs/adr/0019-audit-state-sidecar-separation.md) they live in the sibling `audit-state.json` sidecar (see `examples/skill-audit-state-template.md`), along with `schema_version`, `version`, `owner`, `freshness`, `drift_check`, the `eval_*` triple, and the four Audit Status verdicts. The audit/eval loop (`/audit:*`) owns that file; new-skill authors seed the 7 required sidecar fields and leave the verdict fields absent until a real audit or eval run writes evidence.
+> **TEMPLATE NOTE — CONDITIONAL FIELDS:** `superseded_by` is required only when `stability: deprecated`. `routing_bundles` only applies when routing-group ownership is part of the skill contract. `triggers` and `paths` are shown because this template is both label-routable and file-activated; most skills need only one. `grounding` is REQUIRED when `project[]` is non-empty (a project-anchored skill); remove the block entirely for ambient/portable skills unless they ground in external specs. `public` is the boolean publishability gate (true = marketplace-safe; false = carries private data, never published) — independent of `project[]`. `project[]` and `repo[]` are optional but recommended; omit for ambient / cross-project skills. `lifecycle`, `runtime_telemetry`, and `portability` are NOT frontmatter — per [ADR-0019](../docs/adr/0019-audit-state-sidecar-separation.md) they live in the sibling `audit-state.json` sidecar (see `examples/skill-audit-state-template.md`), along with `schema_version`, `version`, `owner`, `freshness`, `drift_check`, the `eval_*` triple, and the four Audit Status verdicts. The audit/eval loop (`/audit:*`) owns that file; new-skill authors seed the 7 required sidecar fields and leave the verdict fields absent until a real audit or eval run writes evidence.
+
+## Concept of the skill
+
+**What it is:** A `SKILL.md` is a machine-routable, human-readable unit of agent guidance — v8 frontmatter (the routing + classification contract) plus a body of skill-content sections.
+**Mental model:** Frontmatter is the contract a router reads to FIND the skill; the body is the teaching content an agent APPLIES once loaded. The five skill-content sections (this one, Coverage, Philosophy of the skill, Verification, Do NOT Use When) are required; audit/eval/provenance state lives in the sidecar.
+**Why it exists:** To make a teaching-skill library scale — explicit relevance, scope, grounding, and relations so the right skill is found, stays in its lane, and can be audited.
+**What it is NOT:** It is not a prompt snippet, an agent-runtime config, or a memory file; and the body sections are not optional prose — lint enforces them.
+**Adjacent concepts:** the Skill Metadata Protocol (this contract), the Skill Graph (the library system), the Skill Audit Loop (the maintenance discipline).
+**One-line analogy:** A skill is a well-catalogued library book — the frontmatter is the catalog card, the body is the text.
+**Common misconception:** That `name` + `description` (the base Agent-Skills shape) is enough — two fields cannot route, group, or audit a real library.
 
 ## Coverage
 

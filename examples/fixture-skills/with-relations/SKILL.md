@@ -2,7 +2,7 @@
 name: with-relations
 description: "Use as the v8-conformant fixture exercising typed relation predicates (related, boundary, verify_with, depends_on) using the live schema item shapes. Activate this skill when verifying that lint resolves cross-fixture relation targets without a sibling skills clone. Do NOT use as a production skill (use a real capability skill from the canonical library)."
 subject: knowledge-organization
-deployment_target: portable
+public: true
 scope: "Hermetic v8 fixture for validating relation target resolution and relation item shapes. Out: production relation modeling guidance."
 relations:
   related:
@@ -30,6 +30,16 @@ forms a closed cross-reference cluster — lint resolves every relation target
 from the fixtures directory alone, with no dependency on the sibling
 `../skills/skills/` canonical library.
 
+## Concept of the skill
+
+**What it is:** Relations are the typed edges of the Skill Graph that connect a skill to its siblings.
+**Mental model:** Each predicate (`related`, `suppresses`/`boundary`, `verify_with`, `depends_on`) carries a distinct routing semantic; the router walks them differently.
+**Why it exists:** To prove every relation predicate resolves its targets and that the deprecated `boundary` alias still routes alongside the canonical `suppresses`.
+**What it is NOT:** It is not a taxonomy (`subject`/`subjects[]`) and not grounding; relations connect skills, they do not classify or ground them.
+**Adjacent concepts:** `related`, `suppresses` (canonical for the former `boundary`), `verify_with`, `depends_on`, manifest relation-integrity validation.
+**One-line analogy:** Relations are the hyperlinks between skill pages; each link type means something different.
+**Common misconception:** That `boundary`/`suppresses` means "defer to that skill" — it means the opposite: exclude that skill from co-routing when this one wins.
+
 ## Coverage
 
 The four relation kinds with distinct semantics:
@@ -46,7 +56,7 @@ because boundary reasons are projected into export descriptions and audited for
 orientation. The `depends_on` entry carries `min_version` to exercise the
 version-constrained dependency shape.
 
-## Philosophy
+## Philosophy of the skill
 
 Relations are the edges of the Skill Graph. The four predicates are
 intentionally orthogonal: `related` is symmetric and weakly directional,

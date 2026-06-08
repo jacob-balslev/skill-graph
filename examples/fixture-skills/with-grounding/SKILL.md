@@ -1,9 +1,12 @@
 ---
 name: with-grounding
-description: "Use as the minimal v8-conformant project-grounded fixture for skill-graph package tests. Activate this skill when verifying that lint enforces deployment_target: project requiring grounding fields (subject_matter, grounding_mode, truth_sources, failure_modes, evidence_priority). Do NOT use as a production skill (use a real grounded skill from the canonical library)."
+description: "Use as the minimal v8-conformant project-grounded fixture for skill-graph package tests. Activate this skill when verifying that lint enforces the rule 'non-empty project[] requires grounding' (subject_matter, grounding_mode, truth_sources, failure_modes, evidence_priority). Do NOT use as a production skill (use a real grounded skill from the canonical library)."
 subject: knowledge-organization
-deployment_target: project
-scope: "Hermetic v8 fixture for validating project-grounded skill metadata and grounding requiredness. Out: production grounding guidance."
+public: false
+scope: "Hermetic v8 fixture for validating project-anchored skill metadata and grounding requiredness. Out: production grounding guidance."
+project:
+  - handle: skill-graph
+    role: source-of-truth
 keywords:
   - grounding
   - fixture
@@ -26,9 +29,19 @@ license: Apache-2.0
 
 # With-Grounding Fixture
 
-This fixture exercises the v8 rule `deployment_target: project → grounding
+This fixture exercises the v8 rule `non-empty project[] → grounding
 required`. It also carries `keywords` so routing-quality checks have realistic
 activation metadata to inspect, but `keywords` are not schema-required.
+
+## Concept of the skill
+
+**What it is:** A project-anchored skill declares which projects it belongs to (`project[]`) and grounds its claims in those projects' truth sources (`grounding`).
+**Mental model:** Project membership implies repo-specific claims, which the schema makes grounding mandatory for.
+**Why it exists:** To prove the v8 rule that a non-empty `project[]` requires a populated `grounding` block (re-anchored from the retired `deployment_target: project` rule).
+**What it is NOT:** It is not a portable/ambient skill (those carry no `project[]` and need no grounding), and `public: false` here marks it as not-for-marketplace, independent of grounding.
+**Adjacent concepts:** `grounding`, `project[]`, drift detection, the `public` publishability gate.
+**One-line analogy:** Grounding is a citation; a project-anchored claim without it is hearsay.
+**Common misconception:** That publishability (`public`) drives the grounding requirement — it does not; `project[]` presence does.
 
 ## Coverage
 
@@ -38,10 +51,10 @@ truth_source entry with `path` + `anchor` + `note`, and a non-empty
 `keywords` array for routing realism. No relations, no Audit Status, no
 Understanding fields.
 
-## Philosophy
+## Philosophy of the skill
 
 The grounding block is the contract that distinguishes a knowledge skill from
-a hallucinated one. A `deployment_target: project` skill is making claims about
+a hallucinated one. A project-anchored skill (non-empty `project[]`) is making claims about
 specific local files; those claims rot when the files move. The grounding block
 records *which* files anchor the claim, *how* to detect drift (anchor or
 line_range hashing), and *what* failure modes appear when drift occurs. This

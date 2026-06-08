@@ -24,6 +24,12 @@
  *   4. `description` field is non-empty
  *   5. Parent directory name equals the last `name` segment
  *   6. `subjects[0]` matches `subject` when both v8 fields are present
+ *   7. The five skill-content body sections are present (`## Concept of the skill`
+ *      — which must LEAD the others — `## Coverage`, `## Philosophy of the skill`,
+ *      `## Verification`, `## Do NOT Use When`) — REQUIRED_SKILL_BODY_SECTIONS.
+ *      Skill-content sections only; no audit/eval/provenance section is required
+ *      (that state lives in the audit-state.json sidecar). Added 2026-06-08,
+ *      reversing the 2026-05-19 "body structure is author judgment" stance.
  *
  * Exit 0 on success, 1 on any failure.
  *
@@ -731,6 +737,60 @@ function checkAuditStateSidecar(file, fm) {
   return errors;
 }
 
+// The skill-CONTENT body sections every skill must carry. This closes the
+// long-standing loophole where body-section structure was "author judgment, not
+// lint-enforced" (2026-05-19) — a skill could silently omit its behavior-change
+// surfaces (## Verification, ## Do NOT Use When). Per the 2026-06-08 user
+// directive, lint now REQUIRES every skill-content section and requires NO
+// audit/eval/provenance section (those live in the audit-state.json sidecar).
+// `## Concept of the skill` must lead (line <= 100) — it is what the agent reads first.
+// `## Concept of the skill` must LEAD (be the first of the required sections);
+// the other four have no ordering constraint. Position is measured by section
+// order, not absolute file line, so a skill with rich frontmatter is not
+// penalised.
+const REQUIRED_SKILL_BODY_SECTIONS = [
+  { heading: 'Concept of the skill', leads: true },
+  { heading: 'Coverage' },
+  { heading: 'Philosophy of the skill' },
+  { heading: 'Verification' },
+  { heading: 'Do NOT Use When' },
+];
+
+function checkRequiredBodySections(text) {
+  const errors = [];
+  const lines = text.split('\n');
+  const headingLine = new Map();
+  for (let i = 0; i < lines.length; i++) {
+    const m = lines[i].match(/^##\s+(.+?)\s*$/);
+    if (m && !headingLine.has(m[1])) headingLine.set(m[1], i + 1);
+  }
+  for (const sec of REQUIRED_SKILL_BODY_SECTIONS) {
+    if (!headingLine.has(sec.heading)) {
+      errors.push({
+        field: `## ${sec.heading}`,
+        msg: `required skill-content body section missing: \`## ${sec.heading}\`. Every skill must carry the five skill-content sections (Concept of the skill, Coverage, Philosophy of the skill, Verification, Do NOT Use When). Audit/eval/provenance sections are NOT required here — they live in audit-state.json.`,
+      });
+    }
+  }
+  // `## Concept of the skill` must lead: appear before every other present
+  // required section.
+  const conceptLn = headingLine.get('Concept of the skill');
+  if (conceptLn !== undefined) {
+    for (const sec of REQUIRED_SKILL_BODY_SECTIONS) {
+      if (sec.heading === 'Concept of the skill') continue;
+      const ln = headingLine.get(sec.heading);
+      if (ln !== undefined && ln < conceptLn) {
+        errors.push({
+          field: '## Concept of the skill',
+          msg: `\`## Concept of the skill\` must lead the skill-content sections, but \`## ${sec.heading}\` (line ${ln}) precedes it (line ${conceptLn}). Place Concept of the skill first, immediately after the title.`,
+        });
+        break;
+      }
+    }
+  }
+  return errors;
+}
+
 function lintFile(file, subjectRegistry) {
   const relPath = path.relative(REPO_ROOT, file);
   const text = fs.readFileSync(file, 'utf8');
@@ -752,6 +812,7 @@ function lintFile(file, subjectRegistry) {
     ...checkParentDirMatchesName(file, fm),
     ...checkSubjectsPrimaryMatchesSubject(fm),
     ...checkAuditStateSidecar(file, fm),
+    ...checkRequiredBodySections(text),
   ];
   const warnings = [
     ...checkFieldPurposeComments(text),

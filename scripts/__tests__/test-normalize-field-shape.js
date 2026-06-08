@@ -172,15 +172,29 @@ application_verdict: UNVERIFIED
 
 Capability body for the AC integration test.
 
-## When to use
+## Concept of the skill
 
-When verifying the mover.
+**What it is:** A fixture proving the ADR-0019 field-shape mover.
+**Mental model:** Audit fields belong in the sidecar; frontmatter stays agent-facing.
+**Why it exists:** To prove --apply relocates fields and both files lint clean.
+**What it is NOT:** Not a production skill.
+**Adjacent concepts:** the field-shape normalizer, the audit-state sidecar.
+**One-line analogy:** A moving van for misplaced metadata.
+**Common misconception:** That audit fields may live in frontmatter — they may not.
 
-## How
+## Coverage
 
-Run --apply.
+Verifies the mover produces lint-clean frontmatter + sidecar. Out: production use.
 
-## Do NOT use when
+## Philosophy of the skill
+
+The smallest fixture that exercises the mover should still satisfy every lint gate.
+
+## Verification
+
+Run the mover with --apply and lint both files; expect 0 errors.
+
+## Do NOT Use When
 
 You need a production skill.
 `;

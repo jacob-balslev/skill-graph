@@ -607,11 +607,15 @@ Run this section when the skill is repo-grounded or implementation-aware.
 
 ### 5. Content quality
 
-- [ ] the skill has a clear `Coverage` section
-- [ ] the skill has a clear `## Philosophy of the skill` section (renamed 2026-05-26 from `## Philosophy`)
-- [ ] the skill has a clear `Verification` section (recommended for any skill that makes procedural or verifiable claims; not lint-enforced — body section structure is author judgment per the 2026-05-19 audit-doctrine cleanup)
+**The five skill-content body sections are LINT-ENFORCED (2026-06-08, reversing the 2026-05-19 "author judgment" stance).** `scripts/skill-lint.js` (`REQUIRED_SKILL_BODY_SECTIONS`) fails any skill missing `## Concept of the skill` (must lead, line ≤ 100), `## Coverage`, `## Philosophy of the skill`, `## Verification`, or `## Do NOT Use When`. The principle: every *skill-content* section is required; **no** audit/eval/provenance section is required in the body (that state lives in the `audit-state.json` sidecar). The checklist items below are now the human companion to that hard gate, not advisory preferences.
+
+- [ ] `## Concept of the skill` is present within the first 100 lines (lint-enforced)
+- [ ] the skill has a clear `## Coverage` section (lint-enforced)
+- [ ] the skill has a clear `## Philosophy of the skill` section (lint-enforced; renamed 2026-05-26 from `## Philosophy`)
+- [ ] the skill has a clear `## Verification` section (lint-enforced)
+- [ ] the skill contains negative bounds — `## Do NOT Use When` (lint-enforced)
 - [ ] the skill has at least one concrete decision table, checklist, or routing rule
-- [ ] the skill contains negative bounds (`Do NOT Use When` or equivalent)
+- [ ] the skill does not contain generic model-native filler
 - [ ] the skill does not contain generic model-native filler
 - [ ] the skill does not claim behavior it cannot verify
 
