@@ -110,7 +110,7 @@
         "path": {
           "type": "string",
           "pattern": "^skills/_bundles/",
-          "description": "Path to the composite bundle's SKILL.md, e.g. `skills/_bundles/naming-decision/SKILL.md`."
+          "description": "Path to the composite bundle's SKILL.md, e.g. `skills/_bundles/<bundle-name>/SKILL.md`."
         },
         "replaces": {
           "type": "array",
