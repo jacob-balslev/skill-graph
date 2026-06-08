@@ -73,8 +73,10 @@ const AUDIT_STATE_SCHEMA_PATH = resolveSchemaPath(REPO_ROOT, 'skill-audit-state.
 const AUDIT_STATE_SCHEMA = (() => {
   try { return JSON.parse(fs.readFileSync(AUDIT_STATE_SCHEMA_PATH, 'utf8')); } catch { return null; }
 })();
-// The five flat Understanding fields the comprehension grader reads.
-const UNDERSTANDING_FIELDS = ['mental_model', 'purpose', 'boundary', 'analogy', 'misconception'];
+// The five flat Understanding fields the comprehension grader reads. The
+// normalizer canonicalizes the deprecated top-level `boundary` alias to
+// `concept_boundary` (ADR-0018) before lint sees the frontmatter.
+const UNDERSTANDING_FIELDS = ['mental_model', 'purpose', 'concept_boundary', 'analogy', 'misconception'];
 
 // Canonical Skill Metadata Protocol identifier shape. Plain Agent Skills export
 // has a stricter hyphen-only/64-char contract; that is enforced by export tools.
@@ -205,7 +207,7 @@ function validateWithSchema(value, schema, pointer = '', errors = []) {
       // immediately know it is a v8 conformance issue rather than a generic
       // "missing property" — the cause of the "I don't understand which check
       // fired" friction audit M3 named.
-      const V8_CLASSIFICATION_FIELDS = new Set(['subject', 'deployment_target', 'scope']);
+      const V8_CLASSIFICATION_FIELDS = new Set(['subject', 'public', 'scope']);
       for (const requiredField of schema.required) {
         if (!(requiredField in value)) {
           const isV8ClassificationField = V8_CLASSIFICATION_FIELDS.has(requiredField);

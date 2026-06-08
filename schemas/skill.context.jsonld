@@ -46,11 +46,11 @@
     },
     "scope": {
       "@id": "sg:scope",
-      "_note": "v8: PRD-style free-text scope statement, no enum. The deployment-targeting role moved to `deployment_target`."
+      "_note": "v8: PRD-style free-text scope statement, no enum. The publishability role is carried by the boolean `public`."
     },
-    "deployment_target": {
-      "@id": "sg:deploymentTarget",
-      "_note": "v8: Deployment targeting. Closed 2-value enum (portable, project). Replaces the original v8 `scope` enum; the `workspace` value is removed."
+    "public": {
+      "@id": "sg:public",
+      "_note": "v8: Boolean publishability gate. true = safe for public marketplace release; false = carries private data, never published. Replaced the `deployment_target` enum (ADR-0017 amendment) — publishability, not deployment location, is the export gate. Project-grounding moved to `grounding` + `project[]`."
     },
     "project": {
       "@id": "sg:project",
@@ -125,9 +125,13 @@
       "@container": "@set",
       "_note": "Cross-skill specialisation — target is a more specific skill"
     },
+    "concept_boundary": {
+      "@id": "sg:conceptBoundary",
+      "_note": "v6+ Understanding field (string) — things commonly confused with the concept but that are NOT it, expressed as a mechanism. Canonical name as of ADR-0018 (renamed from the top-level `boundary` so the token no longer collides with the routing-layer relations.boundary/relations.suppresses predicate). See _term_collisions.boundary and SKILL_METADATA_PROTOCOL.md § Understanding."
+    },
     "boundary": {
       "@id": "sg:conceptBoundary",
-      "_note": "v6+ Understanding field (string) — things commonly confused with the concept but that are NOT it, expressed as a mechanism. This is the TOP-LEVEL sense of `boundary`. The routing-layer relations.boundary predicate (sg:disjointOwnership) is defined separately via the property-scoped @context on `relations`. See _term_collisions.boundary and SKILL_METADATA_PROTOCOL.md § Understanding."
+      "_note": "DEPRECATED top-level alias of `concept_boundary` (ADR-0018). Same sg:conceptBoundary mapping; retained for skills not yet migrated. The routing-layer relations.boundary predicate (sg:disjointOwnership) is defined separately via the property-scoped @context on `relations`."
     },
     "disjoint_with": {
       "@id": "owl:disjointWith",

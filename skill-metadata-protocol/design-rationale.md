@@ -77,7 +77,7 @@ A Skill-Metadata-Protocol-enriched `SKILL.md` is *not* automatically a valid SKI
 | `compatibility` | SKILL.md optional | Kept top-level; optional |
 | `allowed-tools` | SKILL.md optional | Kept top-level as a space-separated string |
 | `metadata` | SKILL.md optional | Not used at the top level; the protocol promotes extensions to named fields |
-| `schema_version`, `version`, `subject`, `deployment_target`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` | Skill Metadata Protocol extension | Required by the protocol; additive to the base |
+| `schema_version`, `version`, `subject`, `public`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` | Skill Metadata Protocol extension | Required by the protocol; additive to the base |
 | `relations`, `grounding`, `portability`, `triggers`, `keywords`, `examples`, `anti_examples`, `paths`, `project`, `repo`, `subjects`, `taxonomy_domain`, `routing_bundles`, `lifecycle`, `runtime_telemetry`, `stability`, `superseded_by` | Skill Metadata Protocol extension | Optional protocol enrichments; additive to the base |
 
 A Skill-Metadata-Protocol-enriched `SKILL.md` is **not** a valid SKILL.md file as authored, because the protocol requires fields the base standard does not define. An export transform can produce an SKILL.md-valid file by moving every protocol extension field under the standard `metadata:` key. The transform is implemented as `scripts/export-skill.js`.
@@ -102,7 +102,7 @@ name
 description
 version
 subject
-deployment_target
+public
 scope
 owner
 freshness
@@ -128,7 +128,7 @@ triggers
 
 | Condition | Required field(s) |
 |---|---|
-| `deployment_target: project` | `grounding` (schema-enforced) |
+| non-empty `project[]` | `grounding` (schema-enforced) |
 | Routable skills (label or language activation) | `keywords`; `triggers` and `paths` when routing explicitly depends on them |
 
 ### Optional enrichments
@@ -234,7 +234,7 @@ The YAML frontmatter uses the current v8 schema, including the flat Understandin
 | **Classification** | [`schema_version`](field-reference.md#schema_version) | always | integer `8` |
 | | [`subject`](field-reference.md#subject) | always | closed 12-value enum — primary classification |
 | | [`subjects`](field-reference.md#subjects) | | ordered polyhierarchy array; first item matches `subject` (max 2) |
-| | [`deployment_target`](field-reference.md#deployment_target) | always | `portable` \| `project` |
+| | [`public`](field-reference.md#public) | always | `true` \| `false` |
 | | [`scope`](field-reference.md#scope) | always | free-text PRD-style statement |
 | | [`taxonomy_domain`](field-reference.md#taxonomy_domain) | | hierarchical path subdividing `subject` |
 | | [`stability`](field-reference.md#stability) | | `experimental` \| `stable` \| `deprecated` |
@@ -273,13 +273,13 @@ The YAML frontmatter uses the current v8 schema, including the flat Understandin
 | | [`project`](field-reference.md#project) | | { handle, role }[] (replaces `workspace_tags`) |
 | | `routing_bundles` _(retired SKI-286 — 0 acting consumer; see manifest-field-mapping.md)_ | | string[] |
 | **Relations** | [`relations`](field-reference.md#relations) | | `{ adjacent, related, broader, narrower, boundary, disjoint_with, verify_with, depends_on }` |
-| **Grounding** | [`grounding`](field-reference.md#grounding) | if `deployment_target: project` | `{ subject_matter, grounding_mode, truth_sources, failure_modes, evidence_priority }` |
+| **Grounding** | [`grounding`](field-reference.md#grounding) | if non-empty `project[]` | `{ subject_matter, grounding_mode, truth_sources, failure_modes, evidence_priority }` |
 | **Portability & Standards** | [`portability`](field-reference.md#portability) | | `{ readiness, targets }` |
 | | [`license`](field-reference.md#license) | | SPDX identifier |
 | | [`compatibility`](field-reference.md#compatibility) | | `{ runtimes?, node?, notes? }` |
 | | [`allowed-tools`](field-reference.md#allowed-tools) | | space-separated string |
 
-**Conditional requiredness in one line:** `grounding` when `deployment_target: project`, `superseded_by` when `stability: deprecated`, Understanding fields or `concept` when `comprehension_state: present`, and `eval_artifacts: present` when `eval_state` is `passing` or `monitored`. The schema enforces those rules via `allOf` / `anyOf`. `keywords` are recommended for routable skills and reviewed by routing review / routing evals, but they are not a required-field rule. For the decision tables that help you choose between `portable` / `project`, see [`skill-metadata-protocol/field-decision-guide.md`](field-decision-guide.md).
+**Conditional requiredness in one line:** `grounding` when `project[]` is non-empty, `superseded_by` when `stability: deprecated`, Understanding fields or `concept` when `comprehension_state: present`, and `eval_artifacts: present` when `eval_state` is `passing` or `monitored`. The schema enforces those rules via `allOf` / `anyOf`. `keywords` are recommended for routable skills and reviewed by routing review / routing evals, but they are not a required-field rule. For the decision tables that help you set `public: true` / `public: false` and decide project anchoring, see [`skill-metadata-protocol/field-decision-guide.md`](field-decision-guide.md).
 
 ## Why the Evaluation Status is orthogonal (ADR 0001 + ADR 0006)
 
@@ -426,11 +426,11 @@ A skill qualifies for `stability: stable` when it meets all five of the followin
 | 2 | Eval score meets quality bar | `eval_score` | ≥ 4.0 on the 0.0–5.0 audit scale (≡ 80%) |
 | 3 | Routing coverage evaluated | `routing_eval` | Value is `present` with a passing `skill-graph-routing-eval.js` receipt |
 | 4 | Drift verified recently | `drift_check.last_verified` | ISO 8601 date within the last 90 days |
-| 5 | Truth sources declared | `grounding.truth_sources` | Non-empty array; exempt when `deployment_target: portable` |
+| 5 | Truth sources declared | `grounding.truth_sources` | Non-empty array; exempt when the skill is not project-anchored (empty `project[]`) |
 
 **Severity:** All findings from this check are warnings, not errors. This prevents 141 currently-experimental skills from breaking the lint run if any author prematurely sets `stability: stable`.
 
-**When criterion 5 is exempt:** Skills with `deployment_target: portable` have no codebase tie-in by definition. They are exempt from criterion 5 because `grounding.truth_sources` is not meaningful for portable skills.
+**When criterion 5 is exempt:** Skills that are not project-anchored (empty `project[]`) have no codebase tie-in by definition. They are exempt from criterion 5 because `grounding.truth_sources` is not meaningful for repo-agnostic skills.
 
 **To promote a skill:** Satisfy each criterion, then change `stability: experimental` to `stability: stable`. The lint run will emit no stability-promotion warnings once all five criteria are met.
 

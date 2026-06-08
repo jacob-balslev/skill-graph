@@ -372,6 +372,45 @@ const EXPORT_PROVENANCE_FIELDS = new Set([
 ]);
 
 /**
+ * Translate deprecated field-name aliases to their canonical v8 names IN PLACE
+ * on an already-top-level frontmatter object, so unmigrated skills keep
+ * validating against the current schema (which only declares the canonical
+ * names as required) while the audit loop drains the corpus per-skill.
+ *
+ * Aliases handled:
+ *  - `deployment_target` (retired enum portable/project) → `public` boolean.
+ *    portable ⇒ public:true; anything else (project) ⇒ public:false, the
+ *    conservative default (a project-grounded skill is assumed private until
+ *    the audit loop confirms it is leak-free). The old key is removed so the
+ *    schema's `additionalProperties: false` does not reject it.
+ *  - top-level `boundary` (Understanding string) → `concept_boundary`.
+ *    Only the TOP-LEVEL string is touched; `relations.boundary` (the routing
+ *    edge, an array under `relations`) is left untouched.
+ *
+ * Canonical wins: if the canonical key is already present, the alias is dropped
+ * rather than overwriting the explicit author signal.
+ *
+ * @param {object} obj - A top-level frontmatter object (mutated and returned).
+ * @returns {object} The same object with aliases canonicalized.
+ */
+function applyDeprecatedAliases(obj) {
+  if (!obj || typeof obj !== 'object') return obj;
+  if ('deployment_target' in obj) {
+    if (!('public' in obj)) {
+      obj.public = obj.deployment_target === 'portable';
+    }
+    delete obj.deployment_target;
+  }
+  if (typeof obj.boundary === 'string') {
+    if (!('concept_boundary' in obj)) {
+      obj.concept_boundary = obj.boundary;
+    }
+    delete obj.boundary;
+  }
+  return obj;
+}
+
+/**
  * Convert a parsed frontmatter object from the marketplace export shape
  * (Skill Graph extension fields nested under `metadata:`, complex values
  * JSON-stringified) back to the canonical Skill Graph shape (all fields at
@@ -388,7 +427,7 @@ function normalizeFrontmatter(fm) {
   if (!fm || typeof fm !== 'object') return fm;
   const metadata = fm.metadata;
   if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) {
-    return fm;
+    return applyDeprecatedAliases({ ...fm });
   }
 
   const normalized = { ...fm };
@@ -466,7 +505,7 @@ function normalizeFrontmatter(fm) {
     if (key in normalized) normalized[key] = normalizeSpecialField(key, normalized[key]);
   }
 
-  return normalized;
+  return applyDeprecatedAliases(normalized);
 }
 
-module.exports = { parseFrontmatter, normalizeFrontmatter };
+module.exports = { parseFrontmatter, normalizeFrontmatter, applyDeprecatedAliases };

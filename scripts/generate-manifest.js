@@ -288,13 +288,13 @@ function buildSkillEntry(fm, filePath, skillId, _projectFromRoot) {
   }
   entry.description = fm.description;
   entry.version = fm.version;
-  // Classification: subject + deployment_target + scope are required; subjects[] is optional polyhierarchy.
-  // See the ADR-0017 amendment of 2026-05-27.
+  // Classification: subject + public + scope are required; subjects[] is optional polyhierarchy.
+  // `public` (boolean publishability gate) replaced the deployment_target enum — see the ADR-0017 amendment.
   entry.subject = fm.subject;
   if (Array.isArray(fm.subjects) && fm.subjects.length > 0) {
     entry.subjects = fm.subjects;
   }
-  entry.deployment_target = fm.deployment_target;
+  entry.public = fm.public;
   if (fm.scope !== undefined && fm.scope !== null) {
     entry.scope = fm.scope; // required free-text PRD content
   }
@@ -657,7 +657,7 @@ function deriveAuditState(skill) {
 /**
  * Compute summary aggregates over the skills array.
  *
- * facets: `by_subject` (classification), `by_deployment_target` (deployment targeting),
+ * facets: `by_subject` (classification), `by_public` (publishability gate, true/false),
  * `by_stability` (lifecycle posture), `by_project` (project belonging-entity bucketed by handle).
  *
  * `by_schema_version` lets consumers count migration progress directly from the
@@ -672,7 +672,7 @@ function deriveAuditState(skill) {
 function computeSummary(skills) {
   const by_schema_version = {};
   const by_subject = {};
-  const by_deployment_target = {};
+  const by_public = {};
   const by_stability = {};
   const by_project = {};
   const by_structural_verdict = {};
@@ -689,8 +689,9 @@ function computeSummary(skills) {
     by_schema_version[ver] = (by_schema_version[ver] || 0) + 1;
 
     if (skill.subject) by_subject[skill.subject] = (by_subject[skill.subject] || 0) + 1;
-    if (skill.deployment_target) {
-      by_deployment_target[skill.deployment_target] = (by_deployment_target[skill.deployment_target] || 0) + 1;
+    if (typeof skill.public === 'boolean') {
+      const key = skill.public ? 'true' : 'false';
+      by_public[key] = (by_public[key] || 0) + 1;
     }
     if (skill.stability) by_stability[skill.stability] = (by_stability[skill.stability] || 0) + 1;
     // project is an array of objects with `handle`. Bucket by each handle.
@@ -723,7 +724,7 @@ function computeSummary(skills) {
   const summary = { total_skills: skills.length };
   if (Object.keys(by_schema_version).length > 0) summary.by_schema_version = sortKeys(by_schema_version);
   if (Object.keys(by_subject).length > 0) summary.by_subject = sortKeys(by_subject);
-  if (Object.keys(by_deployment_target).length > 0) summary.by_deployment_target = sortKeys(by_deployment_target);
+  if (Object.keys(by_public).length > 0) summary.by_public = sortKeys(by_public);
   if (Object.keys(by_stability).length > 0) summary.by_stability = sortKeys(by_stability);
   if (Object.keys(by_project).length > 0) summary.by_project = sortKeys(by_project);
   if (Object.keys(by_structural_verdict).length > 0) summary.by_structural_verdict = sortKeys(by_structural_verdict);

@@ -31,7 +31,7 @@
  *   3  error (skill not found, schema unreadable)
  *
  * OPERATIONS and what each needs:
- *   v8            all schema `required` fields present + valid `subject`/`deployment_target` enums
+ *   v8            all schema `required` fields present + valid `subject` enum + boolean `public`
  *   comprehension v8 + comprehension_state:present + 5 Understanding fields + evals/comprehension.json
  *                 valid (skill_name, subject, evals, >=7 cases per the audit doctrine)
  *   application   evals/application.json present + valid-shaped
@@ -132,21 +132,21 @@ function assess(skillDir, schema, sidecarSchema) {
   const required = schema.required || [];
   const props = schema.properties || {};
   const subjectEnum = (props.subject || {}).enum || [];
-  const dtEnum = (props.deployment_target || {}).enum || [];
 
   // --- structural (v8) ---
-  // The frontmatter `required` set (name/description/subject/deployment_target/scope) MUST
+  // The frontmatter `required` set (name/description/subject/public/scope) MUST
   // live in SKILL.md, so check it against `fm` (the frontmatter), never the merged view —
   // a moved field satisfying a frontmatter-required slot would be a false PASS.
+  // The normalizer maps the retired deployment_target enum to the boolean `public`.
   const missingRequired = required.filter((k) => fm[k] === undefined || fm[k] === null || fm[k] === '');
   const subjectValid = fm.subject !== undefined && subjectEnum.includes(fm.subject);
-  const dtValid = fm.deployment_target !== undefined && dtEnum.includes(fm.deployment_target);
+  const publicValid = typeof fm.public === 'boolean';
   const v8 = {
-    ok: missingRequired.length === 0 && subjectValid && dtValid,
+    ok: missingRequired.length === 0 && subjectValid && publicValid,
     schema_version: merged.schema_version, // sidecar field (ADR-0019) — read from the join
     missing_required: missingRequired,
     subject: fm.subject, subject_valid: subjectValid,
-    deployment_target: fm.deployment_target, deployment_target_valid: dtValid,
+    public: fm.public, public_valid: publicValid,
   };
 
   // --- sidecar readiness (ADR-0019) ---
@@ -231,7 +231,7 @@ function remediation(op, a) {
   if ((op === 'v8' || op === 'all') && !o.v8.ok) {
     if (o.v8.missing_required.length) r.push({ kind: 'authoring', op: 'v8', action: `Author missing required fields: ${o.v8.missing_required.join(', ')}`, command: `/audit:improve --skill ${a.skill}  # add each missing required field` });
     if (!o.v8.subject_valid) r.push({ kind: 'authoring', op: 'v8', action: `Set a valid subject (currently ${JSON.stringify(o.v8.subject)})`, command: `/audit:improve --skill ${a.skill} --field subject` });
-    if (!o.v8.deployment_target_valid) r.push({ kind: 'authoring', op: 'v8', action: `Set a valid deployment_target (currently ${JSON.stringify(o.v8.deployment_target)})`, command: `/audit:improve --skill ${a.skill} --field deployment_target` });
+    if (!o.v8.public_valid) r.push({ kind: 'authoring', op: 'v8', action: `Set a boolean public (publishability gate; currently ${JSON.stringify(o.v8.public)})`, command: `/audit:improve --skill ${a.skill} --field public` });
   }
   if ((op === 'comprehension' || op === 'all') && !o.comprehension.ok) {
     if (o.comprehension.comprehension_state !== 'present') r.push({ kind: 'authoring', op: 'comprehension', action: 'Set comprehension_state: present', command: `/audit:improve --skill ${a.skill} --field comprehension_state` });

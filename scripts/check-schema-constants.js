@@ -68,12 +68,14 @@ const SPEC = {
     'knowledge-organization',
     'product-domain',
   ],
-  v8_deployment_target: ['portable', 'project'],
-  v8_required_fields: ['subject', 'deployment_target', 'scope'],
+  // `public` is the boolean publishability gate that replaced the
+  // deployment_target enum (ADR-0017 amendment) — it has no enum, so it is
+  // asserted by type, not by enum membership.
+  v8_required_fields: ['subject', 'public', 'scope'],
   // Frontmatter `required` is exactly the 5 agent-facing core fields after the
   // ADR-0019 sidecar split. schema_version/owner/freshness/drift_check/eval_*
   // are no longer frontmatter-required — they are sidecar-required.
-  frontmatter_required_exact: ['name', 'description', 'subject', 'deployment_target', 'scope'],
+  frontmatter_required_exact: ['name', 'description', 'subject', 'public', 'scope'],
   // Audit-state sidecar `required` (7 of the 8 previously-required audit fields;
   // `version` is optional in the sidecar). ADR-0019.
   sidecar_required_fields: [
@@ -152,6 +154,20 @@ function checkFreeText(label, def) {
   return { label, ok: true };
 }
 
+// Assert a property exists and is exactly the expected JSON-schema `type`.
+// Used for the boolean `public` publishability gate (ADR-0017 amendment) which
+// replaced the deployment_target enum — it is asserted by type, not enum.
+function checkType(label, def, expectedType) {
+  if (!def) return { label, ok: false, reason: 'property missing' };
+  if (def.type !== expectedType) {
+    return { label, ok: false, reason: `expected type ${expectedType}, found ${def.type || '(none)'}` };
+  }
+  if (Array.isArray(def.enum)) {
+    return { label, ok: false, reason: `expected a plain ${expectedType} — found an enum: ${def.enum.join(', ')}` };
+  }
+  return { label, ok: true };
+}
+
 // ---------------------------------------------------------------------------
 // Checks
 // ---------------------------------------------------------------------------
@@ -211,7 +227,7 @@ function runChecks() {
   if (skillProps.subjects && skillProps.subjects.items) {
     results.push(checkEnum('skill.schema subjects[].items (12-enum)', SPEC.v8_subject, skillProps.subjects.items.enum));
   }
-  results.push(checkEnum('skill.schema deployment_target (v8 2-enum)', SPEC.v8_deployment_target, skillProps.deployment_target && skillProps.deployment_target.enum));
+  results.push(checkType('skill.schema public (boolean publishability gate)', skillProps.public, 'boolean'));
 
   // scope is free-text under v8 — assert it carries NO enum (regression guard)
   results.push(checkFreeText('skill.schema scope (free-text, no enum)', skillProps.scope));
@@ -219,7 +235,7 @@ function runChecks() {
   // Manifest mirrors: per-skill enum must match
   results.push(checkRequiredFields('manifest.schema skills.required v8 fields', manifestSkillRequired, SPEC.v8_required_fields));
   results.push(checkEnum('manifest.schema skills.subject (12-enum)', SPEC.v8_subject, manifestSkillProps.subject && manifestSkillProps.subject.enum));
-  results.push(checkEnum('manifest.schema skills.deployment_target (v8 2-enum)', SPEC.v8_deployment_target, manifestSkillProps.deployment_target && manifestSkillProps.deployment_target.enum));
+  results.push(checkType('manifest.schema skills.public (boolean publishability gate)', manifestSkillProps.public, 'boolean'));
   results.push(checkFreeText('manifest.schema skills.scope (free-text, no enum)', manifestSkillProps.scope));
 
   // schema_version pass-through on per-skill entry — must list only v8

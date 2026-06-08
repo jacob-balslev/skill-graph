@@ -55,13 +55,13 @@
           },
           "description": "Per-subject distribution across the closed 12-value subject enum (see schemas/SKILL_METADATA_PROTOCOL_schema.json § subject)."
         },
-        "by_deployment_target": {
+        "by_public": {
           "type": "object",
           "additionalProperties": {
             "type": "integer",
             "minimum": 0
           },
-          "description": "Per-deployment_target distribution across the closed 2-value deployment_target enum (see schemas/SKILL_METADATA_PROTOCOL_schema.json § deployment_target). Renamed from `by_scope` — `scope` is now PRD-style free-text and not enum-bucketable."
+          "description": "Per-publishability distribution, bucketed by the boolean `public` gate as the string keys `true` / `false` (see schemas/SKILL_METADATA_PROTOCOL_schema.json § public). Replaced `by_deployment_target` when the deployment_target enum was retired in favor of the `public` publishability gate."
         },
         "by_stability": {
           "type": "object",
@@ -135,7 +135,7 @@
           "name",
           "description",
           "subject",
-          "deployment_target",
+          "public",
           "scope"
         ],
         "properties": {
@@ -207,13 +207,9 @@
             "type": "string",
             "description": "Required PRD-style free-text scope statement (see schemas/SKILL_METADATA_PROTOCOL_schema.json § scope). No enum constraint."
           },
-          "deployment_target": {
-            "type": "string",
-            "enum": [
-              "portable",
-              "project"
-            ],
-            "description": "Deployment targeting (see schemas/SKILL_METADATA_PROTOCOL_schema.json § deployment_target). replaces the original v8 `scope` enum; `workspace` value removed."
+          "public": {
+            "type": "boolean",
+            "description": "Publishability gate (see schemas/SKILL_METADATA_PROTOCOL_schema.json § public). `true` = safe for public marketplace release; `false` = carries private data, never published. Replaced the retired deployment_target enum; it is the single switch the marketplace exporter filters on."
           },
           "project": {
             "type": "array",
@@ -932,7 +928,11 @@
               },
               "boundary": {
                 "type": "string",
-                "description": "Things commonly confused with the concept but that are NOT it. Express each difference as a mechanism (different primitives, different purpose, different scope) - not just different names. No protocol length cap. Graded by the comprehension grader's `boundary` dimension (weight 1.5)."
+                "description": "DEPRECATED alias of `concept_boundary` (ADR-0018 renamed the top-level Understanding field to remove the token collision with the routing edge `relations.boundary`). Retained for unmigrated skills; the normalizer presents it as `concept_boundary`."
+              },
+              "concept_boundary": {
+                "type": "string",
+                "description": "Things commonly confused with the concept but that are NOT it. Express each difference as a mechanism (different primitives, different purpose, different scope) - not just different names. No protocol length cap. Graded by the comprehension grader's boundary dimension (weight 1.5). Canonical name as of ADR-0018 (renamed from `boundary`)."
               },
               "taxonomy": {
                 "type": "string",

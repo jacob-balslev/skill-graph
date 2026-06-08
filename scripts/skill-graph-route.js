@@ -82,20 +82,20 @@ const CLI_FRESH_MANIFEST = path.join(REPO_ROOT, '.skill-graph', '_route-cli.mani
  * `docs/plans/routing-harness-followup.md` § M1.
  */
 /**
- * Deployment-target tiebreaker ranks (lower wins). Doctrine: a skill bound to
- * a specific project is always more specific than a portable skill. Used in
- * `routeSkills()` sort. Unknown values fall back to `_default` so a manifest
- * with an unexpected value sorts last rather than throwing.
+ * Project-anchoring tiebreaker (lower wins). Doctrine: a skill anchored to one
+ * or more specific projects (non-empty `project[]`) is more specific than an
+ * ambient/cross-project skill, so it wins a score tie. Used in `routeSkills()`
+ * sort.
  *
- * (2026-05-27): renamed from `SCOPE_RANK`. The v8 `scope` enum
- * was repurposed to PRD-style free-text; deployment-targeting moved to the new
- * `deployment_target` field with the `workspace` value removed.
+ * Replaced `DEPLOYMENT_TARGET_RANK` (which keyed off the retired
+ * `deployment_target` enum) when publishability moved to the boolean `public`
+ * gate: publishability is NOT a routing-specificity signal, project membership
+ * is. (Match against the *active* project context is a future refinement; for
+ * now mere project-anchoring vs ambient is the discriminator.)
  */
-const DEPLOYMENT_TARGET_RANK = {
-  project: 0,
-  portable: 2,
-  _default: 99,
-};
+function projectFitRank(skill) {
+  return (Array.isArray(skill.project) && skill.project.length > 0) ? 0 : 2;
+}
 
 /**
  * Legacy type tiebreaker ranks (lower wins). Current v8 skills no longer
@@ -551,12 +551,14 @@ function routeSkills(manifest, options) {
 
   // Tiebreakers implement the current routing doctrine:
   //   1. Highest score wins.
-  //   2. On a score tie, narrower deployment_target wins: project > portable.
-  //   3. On a deployment_target tie, legacy `type` breaks ties only for older
+  //   2. On a score tie, a project-anchored skill (non-empty project[]) wins
+  //      over an ambient one (projectFitRank).
+  //   3. On a project-fit tie, legacy `type` breaks ties only for older
   //      sample manifests that still carry it.
   //   4. On a complete tie, alphabetical by name (stable, deterministic output).
   //
-  // (2026-05-27): DEPLOYMENT_TARGET_RANK replaces SCOPE_RANK.
+  // projectFitRank replaced DEPLOYMENT_TARGET_RANK when the deployment_target
+  // enum was retired in favor of the boolean `public` publishability gate.
   function typeRank(skill) {
     if (skill.type !== undefined) {
       return TYPE_RANK[skill.type] ?? TYPE_RANK._default;
@@ -565,7 +567,7 @@ function routeSkills(manifest, options) {
   }
   scored.sort((a, b) =>
     ((b.score + (b.qualityBoost || 0)) - (a.score + (a.qualityBoost || 0))) ||
-    (DEPLOYMENT_TARGET_RANK[a.skill.deployment_target] ?? DEPLOYMENT_TARGET_RANK._default) - (DEPLOYMENT_TARGET_RANK[b.skill.deployment_target] ?? DEPLOYMENT_TARGET_RANK._default) ||
+    (projectFitRank(a.skill) - projectFitRank(b.skill)) ||
     typeRank(a.skill) - typeRank(b.skill) ||
     a.skill.name.localeCompare(b.skill.name)
   );

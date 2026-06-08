@@ -6,21 +6,24 @@
  * only. The v7 classification fields (`type`, `category`, `categories`,
  * `primaryCategory`, …) are REMOVED — they are now `additionalProperties`
  * violations, not "optional back-compat" properties. The v8 classification
- * axes `subject` + `deployment_target` are both in the global required array;
- * `scope` is free-text (its old enum, including `workspace`, is gone); and
- * grounding is required when `deployment_target: project` (not keyed off
- * `scope` anymore). Grounding's domain label is `subject_matter`, not the
- * retired `domain_object`.
+ * axes `subject` + `public` are both in the global required array; `scope` is
+ * free-text (its old enum, including `workspace`, is gone); `public` is the
+ * boolean publishability gate that replaced the `deployment_target` enum; and
+ * grounding is required when `project[]` is non-empty (re-anchored from the
+ * retired `deployment_target: project` rule — publishability and project-
+ * grounding are decoupled). Grounding's domain label is `subject_matter`, not
+ * the retired `domain_object`.
  *
  * This test verifies:
- *   - Minimal v8 frontmatter (subject + deployment_target + scope) validates.
- *   - Legacy v7-shaped frontmatter (type/category, no subject/deployment_target)
+ *   - Minimal v8 frontmatter (subject + public + scope) validates.
+ *   - Legacy v7-shaped frontmatter (type/category, no subject/public)
  *     now FAILS — missing required axes AND additionalProperties violations.
  *     Any skill still carrying that shape is CONTENT-mode migration work.
  *   - A v8 skill that re-adds a retired v7 field (type/category) FAILS the
  *     clean cut (additionalProperties).
- *   - Missing `subject` fails; missing `deployment_target` fails.
- *   - `deployment_target: project` requires grounding; without it, fails.
+ *   - Missing `subject` fails; missing `public` fails.
+ *   - `public` is a boolean; a string ("yes") fails the type check.
+ *   - `project[]` presence requires grounding; without it, fails.
  *   - `scope` is required free-text (no enum); a v8 skill without it fails.
  *   - grounding requires `subject_matter`; the retired `domain_object` fails.
  *   - schema_version accepts 8 only (int or string); v7 is deprecated and
@@ -166,11 +169,11 @@ const v8Base = {
   name: 'test-skill',
   description: 'A test skill for v8 schema checks.',
   subject: 'backend-engineering',
-  deployment_target: 'portable',
+  public: true,
   scope: 'Teaches the test subsystem; not for unrelated concerns.',
 };
 
-check('minimal v8 frontmatter (subject + deployment_target + scope) validates', () => {
+check('minimal v8 frontmatter (subject + public + scope) validates', () => {
   const errors = validate(v8Base, SCHEMA);
   if (errors.length > 0) throw new Error(`v8 base failed: ${errors.join('; ')}`);
 });
@@ -195,8 +198,8 @@ check('legacy v7-shaped frontmatter fails (missing v8 fields + retired fields)',
   if (!errors.some(e => e.includes("missing key 'subject'"))) {
     throw new Error(`expected missing-subject error, got: ${errors.join('; ')}`);
   }
-  if (!errors.some(e => e.includes("missing key 'deployment_target'"))) {
-    throw new Error(`expected missing-deployment_target error, got: ${errors.join('; ')}`);
+  if (!errors.some(e => e.includes("missing key 'public'"))) {
+    throw new Error(`expected missing-public error, got: ${errors.join('; ')}`);
   }
   if (!errors.some(e => e.includes("unexpected key 'type'"))) {
     throw new Error(`expected additionalProperties error on 'type', got: ${errors.join('; ')}`);
@@ -222,22 +225,33 @@ check('v8 frontmatter missing subject fails', () => {
   }
 });
 
-check('v8 frontmatter missing deployment_target fails', () => {
+check('v8 frontmatter missing public fails', () => {
   const broken = { ...v8Base };
-  delete broken.deployment_target;
+  delete broken.public;
   const errors = validate(broken, SCHEMA);
-  if (errors.length === 0) throw new Error('v8 missing deployment_target should have failed validation');
-  if (!errors.some(e => e.includes("missing key 'deployment_target'"))) {
-    throw new Error(`expected missing-deployment_target error, got: ${errors.join('; ')}`);
+  if (errors.length === 0) throw new Error('v8 missing public should have failed validation');
+  if (!errors.some(e => e.includes("missing key 'public'"))) {
+    throw new Error(`expected missing-public error, got: ${errors.join('; ')}`);
   }
 });
 
-check('deployment_target: project validates when grounding present', () => {
-  // The schema's allOf rule requires a grounding block when
-  // deployment_target === 'project'. grounding's domain label is subject_matter.
+check('public accepts a boolean (publishability gate)', () => {
+  for (const v of [true, false]) {
+    const errors = validate({ ...v8Base, public: v }, SCHEMA);
+    if (errors.length > 0) throw new Error(`public: ${v} failed: ${errors.join('; ')}`);
+  }
+  // A non-boolean public is a type error.
+  const bad = validate({ ...v8Base, public: 'yes' }, SCHEMA);
+  if (bad.length === 0) throw new Error('public: "yes" (string) should fail the boolean type check');
+});
+
+check('project[] presence requires grounding — validates when grounding present', () => {
+  // The schema's allOf rule requires a grounding block when project[] is
+  // non-empty (re-anchored from the retired deployment_target: project rule).
   const projGrounded = {
     ...v8Base,
-    deployment_target: 'project',
+    public: false,
+    project: [{ handle: 'test-project', role: 'source-of-truth' }],
     grounding: {
       subject_matter: 'test subject matter',
       grounding_mode: 'repo_specific',
@@ -247,14 +261,14 @@ check('deployment_target: project validates when grounding present', () => {
     },
   };
   const errors = validate(projGrounded, SCHEMA);
-  if (errors.length > 0) throw new Error(`deployment_target:project with grounding failed: ${errors.join('; ')}`);
+  if (errors.length > 0) throw new Error(`project[]-anchored with grounding failed: ${errors.join('; ')}`);
 });
 
-check('deployment_target: project WITHOUT grounding fails', () => {
-  const projNoGrounding = { ...v8Base, deployment_target: 'project' };
+check('project[] presence WITHOUT grounding fails', () => {
+  const projNoGrounding = { ...v8Base, project: [{ handle: 'test-project' }] };
   const errors = validate(projNoGrounding, SCHEMA);
   if (errors.length === 0) {
-    throw new Error('deployment_target:project without grounding should have failed validation');
+    throw new Error('project[]-anchored skill without grounding should have failed validation');
   }
   if (!errors.some(e => e.includes("missing key 'grounding'") || e.includes('grounding'))) {
     throw new Error(`expected missing-grounding error, got: ${errors.join('; ')}`);
@@ -263,7 +277,7 @@ check('deployment_target: project WITHOUT grounding fails', () => {
 
 check('scope accepts any free-text string (no enum)', () => {
   // scope is free-text in v8 — the old enum (portable/workspace/codebase/…) is
-  // gone; deployment_target carries the deployment-targeting role now.
+  // gone; the publishability role is carried by the boolean `public`.
   const freeScope = { ...v8Base, scope: 'Teaches the Foo subsystem; not for Bar integrations.' };
   const errors = validate(freeScope, SCHEMA);
   if (errors.length > 0) throw new Error(`free-text scope failed: ${errors.join('; ')}`);
@@ -272,7 +286,7 @@ check('scope accepts any free-text string (no enum)', () => {
 check('grounding with retired domain_object key fails (subject_matter required)', () => {
   const groundingOldKey = {
     ...v8Base,
-    deployment_target: 'project',
+    project: [{ handle: 'test-project' }],
     grounding: {
       domain_object: 'test',
       grounding_mode: 'universal',

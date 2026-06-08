@@ -34,7 +34,7 @@ const CLEAN_FRONTMATTER = `---
 name: SKILLNAME
 description: "Fixture skill for preflight sidecar-read verification. Activate when checking that the joined sidecar supplies schema_version and verdicts. Do NOT use as a production skill."
 subject: backend-engineering
-deployment_target: portable
+public: true
 scope: "Fixture proving preflight reads moved fields from the sidecar. Out: production use."
 ---
 # Body

@@ -250,36 +250,37 @@ scope: "Controlled classification systems with explicit retrieval-task analysis.
 
 ---
 
-## `deployment_target`
+## `public`
 
-**Purpose.** Deployment targeting — where this skill applies. Tells the router and auditor whether the skill is repo-agnostic or coupled to one project.
+**Purpose.** Publishability gate — is this skill safe for public release to the skills.sh marketplace? It is the single switch the marketplace exporter (`scripts/export-marketplace-skills.js`) filters on, and the machine enforcement of the HARD private-content boundary.
 
-**History.** Replaces the earlier `scope` enum. The `workspace` value was removed. Skills previously tagged `scope: workspace` migrate to either `portable` or `project` based on author judgment per skill (the codemod refuses to infer the target). `project[]` and `repo[]` are authored independently.
+**History.** Replaces the `deployment_target` enum (`portable` / `project`). Publishability — not deployment location — is what the export gate actually needs: a skill is excluded from the public surface because it carries private data, not because it happens to be project-coupled. Project-grounding is now carried independently by `grounding` + `project[]`. Migration alias (applied by the normalizer): `deployment_target: portable` → `public: true`; `deployment_target: project` → `public: false` (the conservative default — a project-grounded skill is assumed private until the audit loop confirms it is leak-free). See the ADR-0017 amendment.
 
-**Allowed values.**
+**Allowed values.** A boolean.
 
-| Value | Meaning | Requires `grounding`? |
-|---|---|---|
-| `portable` | Repo-agnostic patterns — applies to any project | No |
-| `project` | Coupled to one or more specific projects | **Yes** (schema-enforced) |
+| Value | Meaning |
+|---|---|
+| `true` | Publishable — carries no private API keys, personal data, customer data, or internal-only operational doctrine. Exported to the marketplace. |
+| `false` | Private — carries private/secret/personal/customer/internal data. NEVER exported. |
 
 **Rules.**
-- **Required.** Every skill must declare a `deployment_target`.
-- `deployment_target: project` triggers a schema `allOf` rule that requires the `grounding` block. Lint fails without it.
-- Choose `portable` for broadly reusable skills.
-- The associated `project[]` array names which projects the skill applies to (see below).
+- **Required.** Every skill must declare a boolean `public`.
+- The marketplace export is **fail-safe**: only `public: true` (and not repo-grounding-excluded) skills are exported; `public: false` and a missing flag both stay private.
+- `public` does NOT trigger the `grounding` requirement — that is keyed off `project[]` presence (see `grounding`).
 
 **Example.**
 ```yaml
-deployment_target: project
+public: false
 project:
   - handle: skill-graph
     role: source-of-truth
+grounding:
+  subject_matter: "…"
 ```
 
 **When to use.** Always — required.
 
-**When NOT to use.** Do not use `project` for skills that make no concrete repo claims — use `portable` instead.
+**When NOT to use.** Never omit it. When unsure, author `public: false` (fail-safe) until the audit loop confirms the skill is leak-free.
 
 ---
 
@@ -825,19 +826,30 @@ purpose: "It prevents persistence shape from smuggling in a false domain model."
 
 ---
 
-## `boundary`
+## `concept_boundary`
 
-**Purpose.** v6 flat form of `concept.boundary`. An explicit statement of what the concept is **not** — adjacent concepts the agent might confuse it with.
+**Purpose.** An explicit statement of what the concept is **not** — adjacent concepts the agent might confuse it with. Canonical name as of ADR-0018, renamed from the top-level Understanding field `boundary` so the token no longer collides with the routing edge `relations.boundary` / `relations.suppresses`.
 
 **Rules.**
 - Optional. String.
-- Required when `comprehension_state: present` and using the v6 flat form.
-- This field is the primary grader input for the C4 rubric dimension (adjacent-concept discrimination). Weight 1.5 in the schema — second highest.
+- Required when `comprehension_state: present`.
+- This field is the primary grader input for the boundary rubric dimension (adjacent-concept discrimination). Weight 1.5 in the schema — second highest.
+- Express each difference as a *mechanism* (different primitives, purpose, or scope), not just a different name.
 
 **Example.**
 ```yaml
-boundary: "It is not database tuning, UI information architecture, or API envelope design."
+concept_boundary: "It is not database tuning, UI information architecture, or API envelope design."
 ```
+
+---
+
+## `boundary`
+
+**Purpose.** DEPRECATED alias of `concept_boundary` (renamed per ADR-0018 to remove the token collision with `relations.boundary`). Retained only for skills not yet migrated; the normalizer presents it as `concept_boundary`, and `concept_boundary` wins when both are present. New skills author `concept_boundary`.
+
+**Rules.**
+- Optional. String. Do not author in new skills — use `concept_boundary`.
+- Structural removal of this alias is CONTENT-mode work the audit loop drains per-skill.
 
 ---
 

@@ -229,13 +229,18 @@ function assertSourceRootIsPortable(sourceDir, workspaceConfig) {
     try {
       const text = fs.readFileSync(skillMd, 'utf8');
       const fm = _parseFm(text);
-      const scope = fm && (fm.scope || (fm.metadata && fm.metadata.scope));
-      const deploymentTarget = fm && fm.deployment_target;
-      // v8 primary gate: deployment_target === 'project' marks a repo-coupled skill.
-      // Legacy back-compat: scope: 'operational'|'codebase'|'project' from unmigrated skills
-      // also indicate internal-only content. Both check types remain so this guard
-      // fires correctly regardless of how far the audit-loop migration has progressed.
+      const md = fm && fm.metadata;
+      const scope = fm && (fm.scope || (md && md.scope));
+      const deploymentTarget = fm && (fm.deployment_target || (md && md.deployment_target));
+      // Raw (un-normalized) read — check both top-level and metadata.* for each signal.
+      // v8 primary gate: public === false marks a private/repo-coupled skill.
+      // Back-compat: deployment_target === 'project' (pre-public alias) and the
+      // legacy scope enum values from unmigrated skills also indicate internal-only
+      // content. All check types remain so this guard fires correctly regardless of
+      // how far the audit-loop migration has progressed.
+      const isPrivate = fm && (fm.public === false || (md && md.public === false));
       if (
+        isPrivate ||
         deploymentTarget === 'project' ||
         scope === 'operational' || scope === 'codebase' || scope === 'project'
       ) operationalCount++;
@@ -392,32 +397,28 @@ function collectCanonicalSkills(sourceDir = DEFAULT_SOURCE_DIR) {
       );
     }
 
-    // Exclude skills that are project-grounded or internal-only.
+    // Publishability gate — FAIL-SAFE. Only a skill explicitly marked
+    // `public: true` is exported. `public: false` (carries private data) AND a
+    // missing/undefined `public` flag (unmigrated or mis-authored) are both
+    // excluded, so the privacy boundary fails CLOSED: nothing reaches the
+    // public surface unless it has been affirmatively marked publishable.
+    // (The normalizer maps the retired `deployment_target: portable|project`
+    // to `public: true|false`, so unmigrated skills are gated correctly.)
     //
-    // v8 uses `deployment_target: project` for skills anchored to one specific
-    // project. Legacy exports may still carry the old closed-scope values, so
-    // keep those as an additional exclusion guard until the audit loop drains
-    // every historical source.
+    // grounding_mode: repo_specific | repo_internal is an ADDITIONAL guard —
+    // strong evidence of repo-coupling excludes the skill even if it were
+    // mismarked `public: true`.
     //
-    // Skills with grounding_mode: repo_specific or repo_internal are excluded
-    // even if another field claims portability. A portable skill may reference
-    // tooling files in this repo, but it should not declare repo-specific
-    // grounding.
-    //
-    // These skills are excluded with a stderr notice so maintainers can audit the list.
-    // They remain in the skills library for local use; only the marketplace surface is gated.
-    const deploymentTarget = fm.deployment_target;
-    const fmScope = fm.scope;
+    // Excluded skills get a stderr notice so maintainers can audit the list;
+    // they remain in the library for local use, only the marketplace surface is gated.
+    const isPublic = fm.public === true;
     const groundingMode = fm.grounding && fm.grounding.grounding_mode;
-    const EXCLUDED_LEGACY_SCOPES = new Set(['codebase', 'operational', 'project']);
     const EXCLUDED_GROUNDING_MODES = new Set(['repo_specific', 'repo_internal']);
-    const excludeByDeploymentTarget = deploymentTarget === 'project';
-    const excludeByLegacyScope = EXCLUDED_LEGACY_SCOPES.has(fmScope);
     const excludeByGrounding = EXCLUDED_GROUNDING_MODES.has(groundingMode);
-    if (excludeByDeploymentTarget || excludeByLegacyScope || excludeByGrounding) {
+    if (!isPublic || excludeByGrounding) {
       process.stderr.write(
         `EXCLUDED from marketplace export: ${repoRelative(skillMd)}` +
-        ` (deployment_target: ${deploymentTarget || 'unset'}, scope: ${fmScope || 'unset'}, grounding_mode: ${groundingMode || 'none'})\n`
+        ` (public: ${fm.public === undefined ? 'unset' : fm.public}, grounding_mode: ${groundingMode || 'none'})\n`
       );
       continue;
     }
