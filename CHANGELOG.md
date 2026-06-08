@@ -166,7 +166,7 @@ Skill Graph versions describe the contract at each checkpoint in the git history
 
 ## [0.5.10] — 2026-05-25
 
-## [0.5.10] — 2026-05-25
+> **npm publish status (recorded 2026-06-08T12:10Z):** `0.5.10` is the in-repo version in `package.json`. The npm-published `latest` is **`0.5.8`** — `0.5.9` and `0.5.10` are committed version bumps that were never pushed through the manually-gated CI publish workflow (`.github/workflows/publish.yml`, `workflow_dispatch`). `npx skills add` / `npm install -g @skill-graph/cli` installs `0.5.8` until a maintainer runs the publish workflow for `v0.5.10`. (SKI-16)
 
 The "canonical-shape sweep" release. Closes the 2026-05-25 multi-model restructure review backlog (51 commits, 22 distinct entries) with: ADR-0014 / ADR-0015 / ADR-0016 fully recorded; canonical homes for verdict semantics, comprehension eval shape, audits-manifest shape, and skill-routing-config shape; lane config + merge protocol relocated under `skill-graph/audits/`; the false-canonicality verifier hardened (enum split + resolution-via-downgrade); workspace zombies archived (`.claude/commands/audit-loop.md`, `.opencode/commands/skill-audit-opencode.md`); the 3 May 22-25 incident skills (`backend`, `mcp-builder`, `token-cost-estimation`) resolved via honest SKILL.md downgrade to `comprehension_verdict: UNVERIFIED`; and the upstream-currency third-axis question recorded as "stays as finding category, no fifth verdict slot."
 
