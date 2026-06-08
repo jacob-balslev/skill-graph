@@ -722,8 +722,12 @@ function assertSafeOutputRoot(outputRoot) {
 }
 
 function writeSurface(outputRoot, expectedFiles) {
-  assertSafeOutputRoot(outputRoot);
-  fs.rmSync(outputRoot, { recursive: true, force: true });
+  // SKI-249: delete the VALIDATED path, not the raw input. assertSafeOutputRoot
+  // returns the resolved+checked path; using its return for the recursive rmSync
+  // guarantees the directory we destroy is exactly the one that passed the
+  // protected-directory guard.
+  const resolvedRoot = assertSafeOutputRoot(outputRoot);
+  fs.rmSync(resolvedRoot, { recursive: true, force: true });
   for (const [filePath, text] of expectedFiles) {
     fs.mkdirSync(path.dirname(filePath), { recursive: true });
     fs.writeFileSync(filePath, text, 'utf8');
