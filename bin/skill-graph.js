@@ -80,12 +80,13 @@ Options:
   --audit-root <path>   Output directory root (default: audits/).
   --force               Overwrite existing audit artifacts.
   --dry-run             Resolve skill and run lint without writing any files. Exit 0 on success.
-                        With --fix, previews the migration instead of applying it.
-  --fix                 Deterministic Integrity-gate remediation. When lint finds shape
-                        violations, apply the v7->v8 frontmatter migration (remove retired
-                        fields, rename domain->taxonomy_domain & domain_object->subject_matter,
-                        drop enum scope, add deployment_target), regenerate field comments,
-                        and re-lint. No LLM, no evals, no keep-or-revert. Caller commits.
+                        With --fix, reports the (currently empty) repair catalog.
+  --fix                 Deterministic Integrity-gate remediation framework. The repair
+                        catalog is currently EMPTY: the v7->v8 shape codemod was retired to
+                        git history per AGENTS.md "Major Version Is a Clean Cut" (it produced
+                        the interim deployment_target shape that v8's public + free-text scope
+                        replaced). The framework stays for the next version's catalog; today
+                        remaining lint errors route to improve/manual.
   --graded              Enable the prompt-driven grader pass.
   --grader-cli <cmd>    Grader command (default: claude -p). Requires --graded.
   --grader-timeout <ms> Per-dimension grader timeout (default: 120000).
@@ -465,7 +466,7 @@ Examples:
   process.stdout.write(`Created: ${destFile}\n`);
   if (slug) {
     process.stdout.write(`\nNext steps:\n`);
-    process.stdout.write(`  1. Edit ${destFile} — fill in name, description, subject, deployment_target, scope, etc.\n`);
+    process.stdout.write(`  1. Edit ${destFile} — fill in name, description, subject, public, scope, etc.\n`);
     process.stdout.write(`  2. Strip all "# TEMPLATE NOTE:" comments and "> **TEMPLATE NOTE:**" blockquotes.\n`);
     process.stdout.write(`  3. Run: skill-graph lint ${slug}\n`);
   } else {

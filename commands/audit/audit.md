@@ -51,7 +51,7 @@ These fields live in `audit-state.json`; long-form evidence lives in the run dir
 The binding per-skill contract lives at [`skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 3 — Per-Skill Audit Runbook](../../../skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook) (consolidated 2026-05-25; the historical standalone `skill-graph/audits/per-skill-contract.md` was absorbed into Part 3 of the audit loop doc). The five-phase audit shape runs internally:
 
 1. **Deterministic** — `skill-lint.js` (external mandates only — we do not author new internal lint rules to manufacture findings) → writes `lint_verdict` → rolls up into `structural_verdict`
-   - **`--fix` (deterministic remediation)** — when step 1 found shape violations, applies the current frontmatter and sidecar shape migration (`lib/audit/migrate-frontmatter.js`: remove retired frontmatter fields, rename `domain → taxonomy_domain` / `domain_object → subject_matter`, drop enum `scope`, add `deployment_target`), regenerates field comments, and re-lints. Binary, no LLM, no evals. Distinct from `--fix-code-too` (which is an LLM-driven cross-artifact code fix). Caller commits per-skill.
+   - **`--fix` (deterministic remediation framework)** — the deterministic repair catalog is currently EMPTY: the v7→v8 shape codemod (`lib/audit/migrate-frontmatter.js`) was retired to git history per `AGENTS.md § Major Version Is a Clean Cut` (it produced the interim `deployment_target` shape that v8's `public` + free-text `scope` replaced, so it could no longer emit a valid current-v8 skill). The framework stays for the next version's catalog; today remaining lint errors route to `improve`/manual. Distinct from `--fix-code-too` (LLM-driven cross-artifact code fix).
 2. **Drift** — `skill-graph-drift.js` against `grounding.truth_sources` → writes `drift_status` → rolls up into `truth_verdict`
 3. **Graded** (only `--graded`) — gate 8 (comprehension) and gate 9 (application, only when `application.json` exists) → write `comprehension_verdict` + `application_verdict`
 4. **Stamp** — writes `last_audited` to today's ISO date
@@ -93,7 +93,7 @@ See `docs/reference/skill-audit-pipeline.md` § "Artifact Family (run-dir layout
 |---|---|
 | Standard health check on one skill | (none) |
 | Need LLM-graded dimension scores | `--graded` |
-| Skill fails lint on stale frontmatter shape (retired fields / missing `deployment_target`) | `--fix` (deterministic; no LLM) |
+| Skill fails lint on stale frontmatter shape (retired fields / missing `public`) | `improve`/manual (the deterministic `--fix` catalog is empty — v7→v8 codemod retired) |
 | Suspect anchoring on skill text | `--source-first` |
 | Cross-skill fix-up across code AND docs (LLM-driven) | `--fix-code-too` |
 | Auditing a multi-skill cluster | `--scope cluster` |
