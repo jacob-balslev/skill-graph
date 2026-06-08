@@ -110,6 +110,10 @@
             "type": "integer",
             "minimum": 0,
             "description": "Seconds this agent has been in its current active state (0 when not actively running)."
+          },
+          "failure_reason": {
+            "type": ["string", "null"],
+            "description": "On a failed/skipped agent, the distinct reason: 'timeout' (ran past the dispatch budget — often a free model web-search-looping), 'error' (auth/launch/crash), or 'no-document' (dispatch ok but no usable output). Null otherwise. Lets a buried advisory failure stay visible instead of collapsing to the ✗/– glyph (F4)."
           }
         }
       }
