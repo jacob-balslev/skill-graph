@@ -218,7 +218,7 @@ Cross-runtime compatibility envelope. `runtimes` lists target agent runtimes wit
 
 **Type:** string
 
-Optional space-separated whitelist of tools the skill is permitted to use (e.g., `Read Edit Bash`). Honoured by harnesses that gate tool calls per skill. Kebab-case spelling matches the common SKILL.md field name and Claude Code's `--allowed-tools` CLI flag. `allowed_tools` (snake_case) is the v3.1 preferred protocol alias; the export transform writes the kebab-case form for SKILL.md consumers.
+Optional space-separated whitelist of tools the skill is permitted to use (e.g., `Read Edit Bash`). Honoured by harnesses that gate tool calls per skill. Kebab-case spelling matches the common SKILL.md field name and Claude Code's `--allowed-tools` CLI flag. The canonical key is `allowed-tools` (kebab-case); `allowed_tools` (snake_case) is only a tolerated read alias the normalizer accepts — author the kebab form. The export transform writes the kebab-case form for SKILL.md consumers.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#allowed-tools`](field-reference.md#allowed-tools)
 
