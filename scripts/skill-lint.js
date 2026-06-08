@@ -131,14 +131,25 @@ function matchesType(value, expected) {
 function validateFormat(value, format) {
   if (format === 'date') return /^\d{4}-\d{2}-\d{2}$/.test(value);
   if (format === 'date-time') return !Number.isNaN(Date.parse(value));
+  // SKI-250: validate `uri` too — it is used by the schema and was previously
+  // passing unchecked. A genuinely UNKNOWN format still returns true: per JSON
+  // Schema, `format` is an annotation (not an assertion) for unrecognized
+  // formats, so permissiveness there is spec-correct, not a fail-open bug.
+  if (format === 'uri') {
+    try { new URL(value); return true; } catch { return false; }
+  }
   return true;
 }
 
 function validatePattern(value, pattern) {
   try {
     return new RegExp(pattern).test(value);
-  } catch {
-    return true;
+  } catch (err) {
+    // SKI-250: an invalid regex in the SCHEMA is an authoring bug, not a reason
+    // to silently pass the value. Surface it loudly and fail closed so the bad
+    // pattern is caught instead of letting every value through unchecked.
+    console.warn(`[skill-lint] invalid schema pattern ${JSON.stringify(pattern)}: ${err.message} — failing closed`);
+    return false;
   }
 }
 
@@ -177,10 +188,17 @@ function validateWithSchema(value, schema, pointer = '', errors = []) {
     });
   }
 
-  if (schema.if && validateSilently(value, schema.if)) {
-    if (schema.then) validateWithSchema(value, schema.then, pointer, errors);
-  } else if (schema.else) {
-    validateWithSchema(value, schema.else, pointer, errors);
+  // JSON Schema semantics (SKI-248): `else` applies ONLY when `if` is present
+  // AND its condition fails. The previous flat `else if (schema.else)` fired the
+  // else branch whenever `if` was absent, mis-applying else-only rules to every
+  // value. Wrap both branches in an outer `if (schema.if)` so neither then nor
+  // else runs when no `if` precondition is declared.
+  if (schema.if) {
+    if (validateSilently(value, schema.if)) {
+      if (schema.then) validateWithSchema(value, schema.then, pointer, errors);
+    } else if (schema.else) {
+      validateWithSchema(value, schema.else, pointer, errors);
+    }
   }
 
   if (schema.const !== undefined && !sameJson(value, schema.const)) {
