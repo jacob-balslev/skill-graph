@@ -6,47 +6,52 @@
 
 ---
 
-## 1. Which `deployment_target` do I use?
+## 1. What `public` value do I use? (and when is a skill project-anchored?)
 
-`deployment_target` tells routers and auditors whether your skill is portable across any project or anchored to one specific project.
+`public` is a boolean **publishability / private-data gate** — is this skill safe to release to the public skills.sh marketplace? It replaced the old `deployment_target` enum because publishability, not deployment location, is what the export gate actually needs. **Publishability and project-anchoring are two independent axes:**
 
-### Decision table
+- **`public`** answers *"does this skill carry private data?"* — `false` keeps it out of the public release.
+- **`project[]` + `grounding`** answers *"is this skill anchored to a specific repo's truth?"* — non-empty `project[]` triggers the schema-enforced `grounding` requirement.
 
-| Situation | Correct `deployment_target` |
+A skill can be project-anchored yet public (a portable pattern grounded in a public repo), or ambient yet private (carries an internal API key but isn't tied to one project). Set each axis on its own merits.
+
+### Decision table — `public`
+
+| Situation | Correct `public` |
 |---|---|
-| Skill applies across any codebase or team with no repo-specific claims | `portable` |
-| Skill makes concrete claims about files, APIs, or behavior in one specific project | `project` |
-| Skill is a starter or template that could be copied into any project | `portable` |
-| Skill references specific file paths, function names, or deployment details | `project` |
-| Skill documents abstract methodology (testing strategy, refactoring patterns) | `portable` |
+| Skill teaches an abstract methodology with no private data (testing strategy, refactoring patterns) | `true` |
+| Skill references private API keys, customer/personal data, bank details, or internal-only operations | `false` |
+| Skill is a starter or template safe for anyone to copy | `true` |
+| Skill quotes internal dashboards, private endpoints, or proprietary business logic | `false` |
+| Unsure whether anything private leaked in | `false` (fail-safe; the audit loop can promote it later) |
 
 ### Diagnostic questions
 
-**Q: Does my skill say "in `src/integrations/shopify/client.ts`" or similar?**
-→ `project`
+**Q: If a stranger installed this skill from skills.sh, would any private API key, customer record, or internal-operational detail be exposed?**
+→ `public: false`
 
-**Q: Does my skill say "in the codebase" without naming specific files?**
-→ `portable`
+**Q: Is everything in the skill an abstract/portable pattern or a fact about a *public* repo?**
+→ `public: true`
 
-**Q: Would this skill work unchanged if copied into a completely different project?**
-→ `portable` (if yes), `project` (if no)
+**Q: When in doubt?**
+→ `public: false` — the export gate is fail-safe; a skill is published only when explicitly `public: true`.
 
-### Important constraint
+### Project-anchoring (the separate axis)
 
-`deployment_target: project` requires a populated `grounding` block (schema-enforced). Populate `grounding.subject_matter` and the other grounding sub-fields before committing and run the protocol/manifest checks for full-contract validation. Also declare the project in `project[]` so consumers can resolve the project-fit axis.
+A skill that makes concrete claims about files, APIs, or behavior in one specific project should declare that project in `project[]` and populate a `grounding` block — **non-empty `project[]` makes `grounding` schema-required** (populate `grounding.subject_matter` and run the protocol/manifest checks). This is independent of `public`: anchor to a repo when the skill's claims are repo-specific, regardless of whether the skill is publishable.
 
 ### `scope` — the required free-text companion
 
-`scope` is a separate, required free-text field (not an enum). Use it for a PRD-style statement describing what this skill teaches and what it does not — for example, "Covers order reconciliation for the Sales Hub Shopify integration; does not cover payment disputes." It is not a routing enum and is not used to drive the project-fit filter. The deployment-targeting role belongs entirely to `deployment_target`.
+`scope` is a separate, required free-text field (not an enum). Use it for a PRD-style statement describing what this skill teaches and what it does not — for example, "Covers order reconciliation for the Sales Hub Shopify integration; does not cover payment disputes." It is not a routing enum, does not drive the project-fit filter, and does not carry the publishability role — that belongs entirely to `public`.
 
 ### Examples
 
 ```yaml
-# Correct: skill about abstract testing patterns
-deployment_target: portable
+# Correct: portable abstract pattern, safe to publish
+public: true
 
-# Correct: skill that covers Shopify integration in a specific project
-deployment_target: project
+# Correct: project-anchored skill that quotes private Sales Hub internals — keep private
+public: false
 project:
   - handle: sales-hub
     role: source-of-truth
@@ -175,8 +180,8 @@ The `readiness` field is operational, not ordinal. Each value says something con
 | `verified` | Export tooling exists AND the exported output has been verified in the target runtime with a receipt artifact. |
 
 **Quick heuristic:**
-- `deployment_target: portable` with no repo paths AND export script covers at least one target → `readiness: scripted`
-- `deployment_target: project` with concrete repo paths AND no export tooling yet → `readiness: declared`
+- A portable skill (no `project[]`, no repo paths) AND export script covers at least one target → `readiness: scripted`
+- A project-anchored skill (non-empty `project[]`, concrete repo paths) AND no export tooling yet → `readiness: declared`
 - Export tooling ran AND the output was loaded into the target runtime AND passed a smoke test → `readiness: verified`
 
 ### `portability.targets` decision
@@ -220,27 +225,26 @@ portability:
 | Situation | Correct `project[]` / `repo[]` usage |
 |---|---|
 | Skill applies to every project (cross-cutting concern) | Omit `project[]` and `repo[]` (ambient) |
-| Skill is `deployment_target: project` for one specific project | `project: [{handle: "<project-handle>", role: "source-of-truth"}]` |
+| Skill is anchored to one specific project | `project: [{handle: "<project-handle>", role: "source-of-truth"}]` |
 | Skill is anchored to one specific repo (not necessarily one project) | `repo: [{handle: "<repo-slug>", url: "https://github.com/..."}]` |
 | Skill applies to multiple projects that share a technology | Declare each project in `project[]` with its own role |
 | Single-project workspace | Either omit (ambient) or declare the one project — your choice |
 
 ### Diagnostic questions
 
-**Q: Is this skill `deployment_target: project`?**
-→ Yes → declare `project[]` with the project handle. The router uses this for project-fit filtering.
+**Q: Is this skill anchored to one specific project?**
+→ Yes → declare `project[]` with the project handle (this also makes `grounding` required). The router uses `project[]` for project-fit filtering.
 
 **Q: Is this skill a cross-cutting concern (GDPR, a11y, testing patterns, general coding rules)?**
 → Omit `project[]` and `repo[]` — ambient.
 
 **Q: Does this skill reference a specific repo's files or domain without being a single-project skill?**
-→ Use `repo[]` to anchor to the repo while keeping `deployment_target: portable` or `project` as appropriate.
+→ Use `repo[]` to anchor to the repo; set `project[]` only if it is also project-anchored, and `public` on its own merits.
 
 ### Example
 
 ```yaml
-# One specific project — project[] with role
-deployment_target: project
+# One specific project — project[] with role (makes grounding required)
 project:
   - handle: sales-hub
     role: source-of-truth
@@ -268,7 +272,7 @@ These four fields all group skills, but they answer different questions. Picking
 
 1. **Never use `subject` for routing-bundle membership.** It's a browse shelf. If you find yourself writing "when the router sees `backend-engineering` it should load all X" — you want `routing_bundles`, not `subject`.
 
-2. **Never use `project[]` for taxonomy.** It's a project-fit filter for `deployment_target: project` skills. If you find yourself declaring every project handle to build a grouping — you want `subject` or `taxonomy_domain`.
+2. **Never use `project[]` for taxonomy.** It's a project-fit filter for project-anchored skills. If you find yourself declaring every project handle to build a grouping — you want `subject` or `taxonomy_domain`.
 
 3. **Never use `taxonomy_domain` to filter routing.** A hierarchy helps humans find skills. The router doesn't walk it. If you want the router to match `backend-engineering/integrations/shopify` at query time, flatten it into `routing_bundles: [integrations]` or declare the project in `project[]`.
 
@@ -279,11 +283,11 @@ A Shopify skill in a project-anchored, large-library workspace:
 ```yaml
 subject: backend-engineering                                    # "Which flat browse shelf?" (one of the 12-value enum)
 taxonomy_domain: backend-engineering/integrations/shopify       # "Where in a tree?" (optional; complements subject for hierarchical browsing)
-deployment_target: project                                   # "Portable or project-specific?"
+public: false                                               # "Safe to publish?" — private (carries repo-internal detail)
 project:
-  - handle: sales-hub                                        # "Which project?"
+  - handle: sales-hub                                        # "Which project?" (project-anchored ⇒ grounding required)
     role: source-of-truth
 routing_bundles: [integrations]                              # "Which batch-activation group?"
 ```
 
-Each field does a distinct job. None is redundant with the others. A portable skill omits `project[]`; a library with no batch-activation pattern can omit `routing_bundles`; a library that does not need a hierarchical browse view can omit `taxonomy_domain`. `subject`, `deployment_target`, and `scope` are always present because they are required by the schema.
+Each field does a distinct job. None is redundant with the others. A portable skill omits `project[]`; a library with no batch-activation pattern can omit `routing_bundles`; a library that does not need a hierarchical browse view can omit `taxonomy_domain`. `subject`, `public`, and `scope` are always present because they are required by the schema.

@@ -14,7 +14,7 @@ name: skill-metadata-template
 # for Anthropic's own guidance on pushy descriptions.
 description: "Use when creating a new SKILL.md from scratch, restructuring a draft before it becomes a stable skill, or teaching an author the canonical Skill Metadata Protocol frontmatter and body structure. Covers schema-conformant frontmatter, v8 classification, body layout by skill intent, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes and YAML comments), and the authoring gate. Do NOT use when modifying an already-written skill (edit that skill directly), writing general technical documentation, or debugging routing for an existing skill."
 
-# === v8 Classification (subject + deployment_target; polyhierarchy via subjects[]) ===
+# === v8 Classification (subject + public; polyhierarchy via subjects[]) ===
 # See docs/adr/0020-twelve-shelf-competency-reaxis.md for the current shelf rationale.
 
 # subject: primary browse shelf — the competency the skill teaches. One of twelve closed values:
@@ -102,7 +102,7 @@ paths:
 # See skill-metadata-protocol/field-reference.md § examples.
 examples:
   - "I'm writing a new skill from scratch — where do I start?"
-  - "how do I choose subject and deployment_target for my new skill?"
+  - "how do I choose subject and public for my new skill?"
   - "what's the difference between description and the ## Coverage section?"
 # anti_examples: near-miss prompts that should route ELSEWHERE.
 # Pair with relations.boundary to tell the router which skill owns the
@@ -147,7 +147,7 @@ relations:
   #     - skill-md
   #   outputs:
   #     - audit-findings
-# grounding: required when `deployment_target: project`. Declares the truth
+# grounding: required when the skill is project-anchored (non-empty `project[]`). Declares the truth
 # sources the skill anchors to (files, schemas, vendor docs) and the failure
 # modes those sources prevent. Omit this entire block when the skill is
 # universal-knowledge (grounding_mode: universal is implicit by absence).
@@ -179,7 +179,7 @@ grounding:
 
 > **SCAFFOLD — NOT A PRODUCTION SKILL.** This file is the starting point authors copy when creating a new skill. It lives at `examples/skill-metadata-template.md` deliberately; production skills live at `skills/<name>/SKILL.md` with a sibling `audit-state.json`. The authoring flow is: copy → rename → classify → adapt → strip teaching annotations → seed the sidecar → verify → commit. Until you have completed those steps, the file you are editing is a *scaffold*, not a skill.
 
-> **TEMPLATE NOTE — HOW TO READ THIS FILE:** This file is a real, valid, schema-conformant Skill Metadata Protocol skill whose *subject* is skill authoring itself. Read it as a finished specimen of the contract, then adapt it by (1) renaming the identity, (2) choosing `subject`, `deployment_target`, free-text `scope`, and `taxonomy_domain` when useful, (3) rewriting `description`, `## Coverage`, `## Philosophy`, and `## Verification` for your subject, (4) removing any section or field that does not apply to the skill's intended use, and (5) stripping ONLY the **`# TEMPLATE NOTE:` YAML comments and `> **TEMPLATE NOTE:**` body blockquotes** (authoring scaffolding) — the **field-purpose comments STAY** in your derived skill (they are co-located documentation, not scaffolding). Verify with `grep -n "TEMPLATE NOTE" <derived-skill>` returning zero hits AND `grep -c "^\s*#" <derived-skill>` showing the field-purpose comments are preserved. Never ship placeholder sludge (`your-skill-name`, `path/to/file`, `todo`). If a section does not apply, remove it — do not keep it and fill it with fake content. Convention spec: `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`.
+> **TEMPLATE NOTE — HOW TO READ THIS FILE:** This file is a real, valid, schema-conformant Skill Metadata Protocol skill whose *subject* is skill authoring itself. Read it as a finished specimen of the contract, then adapt it by (1) renaming the identity, (2) choosing `subject`, `public`, free-text `scope`, and `taxonomy_domain` when useful, (3) rewriting `description`, `## Coverage`, `## Philosophy`, and `## Verification` for your subject, (4) removing any section or field that does not apply to the skill's intended use, and (5) stripping ONLY the **`# TEMPLATE NOTE:` YAML comments and `> **TEMPLATE NOTE:**` body blockquotes** (authoring scaffolding) — the **field-purpose comments STAY** in your derived skill (they are co-located documentation, not scaffolding). Verify with `grep -n "TEMPLATE NOTE" <derived-skill>` returning zero hits AND `grep -c "^\s*#" <derived-skill>` showing the field-purpose comments are preserved. Never ship placeholder sludge (`your-skill-name`, `path/to/file`, `todo`). If a section does not apply, remove it — do not keep it and fill it with fake content. Convention spec: `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`.
 
 > **TEMPLATE NOTE — CONDITIONAL FIELDS:** `superseded_by` is required only when `stability: deprecated`. `routing_bundles` only applies when routing-group ownership is part of the skill contract. `triggers` and `paths` are shown because this template is both label-routable and file-activated; most skills need only one. `grounding` is REQUIRED when `project[]` is non-empty (a project-anchored skill); remove the block entirely for ambient/portable skills unless they ground in external specs. `public` is the boolean publishability gate (true = marketplace-safe; false = carries private data, never published) — independent of `project[]`. `project[]` and `repo[]` are optional but recommended; omit for ambient / cross-project skills. `lifecycle`, `runtime_telemetry`, and `portability` are NOT frontmatter — per [ADR-0019](../docs/adr/0019-audit-state-sidecar-separation.md) they live in the sibling `audit-state.json` sidecar (see `examples/skill-audit-state-template.md`), along with `schema_version`, `version`, `owner`, `freshness`, `drift_check`, the `eval_*` triple, and the four Audit Status verdicts. The audit/eval loop (`/audit:*`) owns that file; new-skill authors seed the 7 required sidecar fields and leave the verdict fields absent until a real audit or eval run writes evidence.
 
@@ -195,14 +195,14 @@ grounding:
 
 ## Coverage
 
-- Frontmatter identity: `name`, `description`, `subject`, `deployment_target`, free-text `scope`, `taxonomy_domain` when useful, activation fields, relations, grounding, and the five flat Understanding fields when `comprehension_state` is present in the sidecar
+- Frontmatter identity: `name`, `description`, `subject`, `public`, free-text `scope`, `taxonomy_domain` when useful, activation fields, relations, grounding, and the five flat Understanding fields when `comprehension_state` is present in the sidecar
 - Sidecar identity: `schema_version`, `version`, `owner`, `freshness`, `drift_check`, eval status, verdicts, portability, and lifecycle in sibling `audit-state.json`
 - Semantic layer discipline: how `description:` (routing contract, ≤ 3 sentences) differs from `## Coverage` (scope map, bulleted topic list) and why each must stay in its own layer
 - Teaching-layer delivery: **field-purpose comments** (no prefix, STAY in derived skills) vs **`# TEMPLATE NOTE:` comments** and `> **TEMPLATE NOTE:**` blockquotes (authoring scaffolding, STRIPPED on derivation). See `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`
 - Body structure by intent: choose sections for how the agent will use the skill, not from retired `type` archetypes
 - Grounding via `grounding`: when a skill should declare truth sources and failure modes, and when it should stay `grounding_mode: universal`
 - drift evidence: when to record `drift_check.truth_source_hashes` in `audit-state.json` and how the drift sentinel consumes them
-- Project belonging-entity tagging: when to populate `project[]` and `repo[]`, when to leave a skill ambient (omit both arrays), how `deployment_target` interacts with `project[]` membership
+- Project belonging-entity tagging: when to populate `project[]` and `repo[]`, when to leave a skill ambient (omit both arrays), how `public` and `project[]` membership are independent axes (publishability vs anchoring)
 - Adapter workflow: how to strip a template down, how to detect and remove cargo-culted meta, and how to verify a new skill against `schemas/SKILL_METADATA_PROTOCOL_schema.json` before committing
 
 ## Philosophy of the skill

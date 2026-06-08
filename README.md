@@ -115,8 +115,8 @@ Skill Metadata Protocol makes these questions explicit:
 
 | Question | Protocol fields |
 |---|---|
-| What kind of skill is this? | `subject`, `deployment_target`, `scope`, `version`, `owner` |
-| Where does it belong? | `subject`, `subjects[]`, `taxonomy_domain`, `project[]`, `routing_bundles` |
+| What kind of skill is this? | `subject`, `public`, `scope`, `version`, `owner` |
+| Where does it belong? | `subject`, `subjects[]`, `taxonomy_domain`, `project[]` |
 | When should it load? | `description`, `keywords`, `triggers`, `examples`, `anti_examples`, `paths` |
 | What is it near, dependent on, hierarchically related to, formally disjoint from, or not responsible for? | `relations.related`, `relations.depends_on`, `relations.verify_with`, `relations.boundary`, `relations.broader`, `relations.narrower`, `relations.disjoint_with` |
 | What evidence makes it true? | `grounding.truth_sources`, `grounding.failure_modes`, `grounding.evidence_priority` |
@@ -137,7 +137,7 @@ name: product-page-ux-review
 description: "Reviewing a product page's UX, visual hierarchy, interaction patterns, accessibility, and conversion-critical content."
 # v8 classification (required)
 subject: design
-deployment_target: project
+public: false   # project-coupled, carries repo-specific guidance — not for the public release
 scope: "Shopify product page UX review for an ecommerce project"
 taxonomy_domain: design/ux
 keywords:
@@ -155,8 +155,6 @@ anti_examples:
 project:
   - handle: shopify-storefront
     role: primary
-routing_bundles:
-  - product-experience
 paths:
   - app/products/**/*
   - components/product/**/*
@@ -223,13 +221,12 @@ Skill Metadata Protocol uses several independent axes. They should not be collap
 |---|---|---:|---|
 | **Subject** | `subject` | one | Primary classification — what the skill teaches. Closed 12-value enum. |
 | **Polyhierarchy** | `subjects[]` | zero, one, or two | Optional secondary subject when a skill genuinely spans two browse shelves. `subjects[0]` matches `subject`. |
-| **Deployment target** | `deployment_target` | one | Where it deploys: `portable` (any project) or `project` (one specific project; requires `grounding`). |
+| **Publishability** | `public` | one | Boolean private-data gate: `true` = safe for the public skills.sh release, `false` = carries private API keys / personal / customer / internal-operational data. The single switch the marketplace exporter filters on. |
 | **Scope** | `scope` | one | Free-text PRD-style description of the deployment context. Not an enum. |
 | **Domain path** | `taxonomy_domain` | zero or one | Slash-delimited hierarchy subdividing `subject`, such as `design/ux` or `engineering/api-design`. |
-| **Project belonging** | `project[]` | many | Belonging-entity references for `deployment_target: project` skills (handle + role). |
-| **Routing group** | `routing_bundles` | many | Runtime bundles or dispatch groups. |
+| **Project belonging** | `project[]` | many | Belonging-entity references for project-anchored skills (handle + role). Non-empty `project[]` is what triggers the `grounding` requirement. |
 | **Relations** | `relations.*` | many | Typed graph edges between skills. |
-| **Grounding** | `grounding.*` | conditional | Truth sources and failure modes for repo-grounded skills (`deployment_target: project`). |
+| **Grounding** | `grounding.*` | conditional | Truth sources and failure modes for project-anchored skills (non-empty `project[]`). |
 
 ### Current Subjects
 
@@ -241,7 +238,7 @@ These are the values used across the canonical skill library (the sibling `~/Dev
 
 ### Current Taxonomy Domain Guidance
 
-`taxonomy_domain` is optional and subject-local. It subdivides a crowded `subject`; it is not a global enum and it does not replace the twelve `subject` shelves above. Use one organizing principle per slash path, keep paths shallow, and prefer facets (`subjects[]`, `project[]`, `repo[]`, `routing_bundles`, and `relations`) when a second access path is needed.
+`taxonomy_domain` is optional and subject-local. It subdivides a crowded `subject`; it is not a global enum and it does not replace the twelve `subject` shelves above. Use one organizing principle per slash path, keep paths shallow, and prefer facets (`subjects[]`, `project[]`, `repo[]`, and `relations`) when a second access path is needed.
 
 Examples from the current library:
 
@@ -253,14 +250,6 @@ Examples from the current library:
 | `agent-ops` | `agent/context` | `context-engineering`, `context-graph`, `context-management`, `context-window` |
 | `agent-ops` | `agent/skill-system` | `skill-infrastructure`, `skill-router`, `skill-scaffold` |
 
-### Current Project And Routing Groups
-
-`routing_bundles` demonstrated in this repo:
-
-`quality`
-
-Downstream projects should add their own tags: `shopify`, `checkout`, `billing`, `design-system`, `docs-site`, `mobile`, `b2b-saas`, `healthcare`, and so on. Tags are not a global ontology. They are routing and maintenance handles for your workspace.
-
 ## Skill Clusters And Triangulation
 
 The main payoff is not the YAML. The payoff is that a project can load the right cluster of skills for a real task.
@@ -269,7 +258,7 @@ Triangulation means selecting skills from multiple independent signals:
 
 | Signal | Example |
 |---|---|
-| **Project surface** | `deployment_target: project`, `project: [{handle: shopify-storefront}]`, `paths: components/product/**/*` |
+| **Project surface** | `public: false`, `project: [{handle: shopify-storefront}]`, `paths: components/product/**/*` |
 | **Subject and domain** | `subject: design`, `taxonomy_domain: design/ux` |
 | **Method or phase** | `design-thinking`, `user-research`, `ideation`, `prototyping`, `usability-testing` |
 | **Related skills** | `visual-hierarchy`, `color-system-design`, `typography-system`, `dark-mode-implementation` |
@@ -365,7 +354,7 @@ node scripts/verify-skill-md-export.js --plain marketplace/skills
 
 The staging surface lands under `marketplace/` for the two-step sync into `jacob-balslev/skills` (see `AGENTS.MD § Release sync`). The canonical end-user install path is `npx skills add jacob-balslev/skills` — that is the path consumers see, and it must remain working before any marketplace badge is added.
 
-**Consuming the best-quality skills locally (you, or any cloner).** The marketplace export is just one downstream profile. To compile the *whole* library — including `deployment_target: project` skills the marketplace gate excludes — into consumable Agent Skills for your own runtime, use `render`:
+**Consuming the best-quality skills locally (you, or any cloner).** The marketplace export is just one downstream profile. To compile the *whole* library — including `public: false` skills the marketplace gate excludes — into consumable Agent Skills for your own runtime, use `render`:
 
 ```bash
 skill-graph render --out ~/.claude/skills      # compile every skill into a runtime's skills dir

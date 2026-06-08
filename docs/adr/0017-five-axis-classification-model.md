@@ -2,9 +2,13 @@
 
 > **`subject` enum superseded by the 12-shelf competency re-axis ([ADR-0020](0020-twelve-shelf-competency-reaxis.md), 2026-06-03). See AGENTS.md § Major Version Is a Clean Cut.** The 9-value `subject` enum decided here (`agent-ops` · `code-engineering` · `frontend-ui` · `design-craft` · `data-analytics` · `quality-assurance` · `meta-methods` · `knowledge-organization` · `product-domain`) is no longer the live contract — read the 12-value enum in `schemas/SKILL_METADATA_PROTOCOL_schema.json`. The rest of this ADR (the five-axis *shape*: `subject` + `deployment_target` + free-text `scope` + `subjects[]` + `taxonomy_domain`, the operation-axis retirement, the v7→v8 cut) still stands.
 
-> Status: Accepted (2026-05-25), partially superseded (2026-05-27; `subject` enum superseded 2026-06-03 by ADR-0020)
+> Status: Accepted (2026-05-25), partially superseded (2026-05-27; `subject` enum superseded 2026-06-03 by ADR-0020; `deployment_target` enum replaced by boolean `public` 2026-06-08)
 > Supersedes the v7 category/categories/primaryCategory/family/layer/layerPrimary/routingRole tangle.
 > Companion: [ADR 0011](0011-split-audit-verdict-into-four-verdicts.md) (historical four-verdict Audit Status split; sidecar placement later changed by [ADR 0019](0019-audit-state-sidecar-separation.md))
+>
+> ### Update — 2026-06-08: `deployment_target` enum replaced by the boolean `public` gate
+>
+> The required `deployment_target: portable|project` enum introduced by the 2026-05-27 amendment (below) was **replaced by a required boolean `public` field** (commit `23e13dd`). Rationale: the enum conflated two independent axes — *publishability* (is the skill safe to release publicly?) and *deployment location* (portable vs project-coupled). The marketplace export gate only ever needed the first, so `public` is now the single private-data / publishability switch the exporter (`scripts/export-marketplace-skills.js`) filters on, and the `grounding` requirement was re-anchored to **non-empty `project[]`** (project anchoring) rather than the old `deployment_target: project`. The normalizer maps the retired enum (`portable` → `public: true`; `project` → `public: false`, the conservative private default) so unmigrated skills keep parsing. The live required core is now `subject` + `public` + `scope`. Read `schemas/SKILL_METADATA_PROTOCOL_schema.json` and `SKILL_METADATA_PROTOCOL.md` for the current contract; the `deployment_target` references in the older update blocks below are historical.
 >
 > ### Update — 2026-05-27: `workspace_tags` removal closed; entity vocabulary disambiguated
 >
