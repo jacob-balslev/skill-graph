@@ -63,7 +63,6 @@ const fm = {
   grounding: {
     subject_matter: 'Alias contract',
     grounding_mode: 'repo_specific',
-    claim_scope: 'repo_specific',
     truth_sources: ['schemas/SKILL_METADATA_PROTOCOL_schema.json'],
     failure_modes: ['silent_alias_drop'],
     evidence_priority: 'repo_code_first',
@@ -87,7 +86,7 @@ assert(entry.health.eval && entry.health.eval.content_state === 'unverified', 'n
 assert(entry.compatibility.agent_runtimes[0] === 'agent-runtime>=2.0', 'compatibility.agent_runtimes should pass through');
 assert(entry.compatibility.node_version === '>=20', 'compatibility.node_version should pass through');
 assert(entry.grounding.subject_matter === 'Alias contract', 'grounding.subject_matter should pass through');
-assert(entry.grounding.claim_scope === 'repo_specific', 'grounding.claim_scope should pass through');
+assert(entry.grounding.grounding_mode === 'repo_specific', 'grounding.grounding_mode (canonical; claim_scope alias removed SKI-241) should pass through');
 assert(entry.portability.export_targets[0] === 'skill-md', 'portability.export_targets should pass through');
 
 const mismatch = { ...fm, reviewed_at: '2099-01-01' };

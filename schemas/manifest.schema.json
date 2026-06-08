@@ -465,15 +465,6 @@
                   "hybrid"
                 ]
               },
-              "claim_scope": {
-                "type": "string",
-                "enum": [
-                  "repo_specific",
-                  "universal",
-                  "hybrid"
-                ],
-                "description": "v3.1 preferred alias for `grounding_mode`. Pass-through."
-              },
               "truth_sources": {
                 "type": "array",
                 "items": {

@@ -307,7 +307,6 @@ Records what the skill is grounded against — the truth sources, the grounding 
 
 - `subject_matter` *required* — Free-text label naming what the skill is grounded in (e.
 - `grounding_mode` *required* (`repo_specific` | `universal` | `hybrid`) — Whether the skill's claims are repo-specific, universal, or a hybrid.
-- `claim_scope` *optional* (`repo_specific` | `universal` | `hybrid`) — Whether the skill's claims are repo-specific, universal, or a hybrid (v3.
 - `truth_sources` *required* — Files, docs, or URLs that ground the skill's claims.
 - `failure_modes` *required*
 - `evidence_priority` *required* (`repo_code_first` | `general_knowledge_first` | `equal`)

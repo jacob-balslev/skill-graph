@@ -126,7 +126,7 @@ follow-up ticket the audit loop drains. The SYSTEM change ships independently of
 1. **Sidecar filename** — `audit-state.json`? `health.json`? `skill-state.json`? It carries audit +
    eval + provenance + distribution-internal + runtime — "audit-state" undersells provenance.
 2. **`grounding` is split-natured** — `truth_source_hashes` is the drift sentinel's input (audit) while
-   `subject_matter`/`claim_scope` are agent-facing scoping. Keep `grounding` whole in frontmatter, or
+   `subject_matter`/`grounding_mode` are agent-facing scoping. Keep `grounding` whole in frontmatter, or
    move the hash sub-field to the sidecar?
 3. **`lifecycle.stale_after_days`** feeds the router's staleness gate; like the verdicts it must reach
    the manifest even though `lifecycle` is audit-owned. Confirm the manifest-join covers it.

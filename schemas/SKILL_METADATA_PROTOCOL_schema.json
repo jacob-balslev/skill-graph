@@ -408,16 +408,7 @@
             "universal",
             "hybrid"
           ],
-          "description": "Whether the skill's claims are repo-specific, universal, or a hybrid. `claim_scope` is the supported alias."
-        },
-        "claim_scope": {
-          "type": "string",
-          "enum": [
-            "repo_specific",
-            "universal",
-            "hybrid"
-          ],
-          "description": "Whether the skill's claims are repo-specific, universal, or a hybrid (v3.1 preferred alias for `grounding_mode`). When both are present they must match. "
+          "description": "Whether the skill's claims are repo-specific, universal, or a hybrid. (The v3.1 `claim_scope` alias was removed 2026-06-08 per SKI-268/SKI-241 — it had zero corpus usage and its name collided with the top-level `scope` field; `grounding_mode` is the single canonical name.)"
         },
         "truth_sources": {
           "type": "array",

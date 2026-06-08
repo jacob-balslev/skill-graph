@@ -150,7 +150,6 @@
     "grounding": "sg:grounding",
     "subject_matter": "sg:subjectMatter",
     "grounding_mode": "sg:groundingMode",
-    "claim_scope": "sg:groundingMode",
     "truth_sources": {
       "@id": "dcterms:source",
       "@container": "@set",

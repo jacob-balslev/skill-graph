@@ -23,7 +23,8 @@ const ALIAS_PAIRS = [
   ['allowed-tools', 'allowed_tools'],
   ['compatibility.runtimes', 'compatibility.agent_runtimes'],
   ['compatibility.node', 'compatibility.node_version'],
-  ['grounding.grounding_mode', 'grounding.claim_scope'],
+  // grounding.claim_scope alias removed 2026-06-08 (SKI-241): zero corpus usage, and its name
+  // collided with the top-level `scope` field. Single canonical name: grounding.grounding_mode.
   ['portability.targets', 'portability.export_targets'],
 ];
 
