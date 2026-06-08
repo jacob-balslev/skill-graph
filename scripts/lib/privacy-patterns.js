@@ -173,7 +173,17 @@ function detectPrivacyViolations(filePaths, opts = {}) {
     try {
       text = fsModule.readFileSync(filePath, 'utf8');
     } catch (err) {
-      // Unreadable file — skip silently (caller may decide to error separately)
+      // SKI-256: FAIL CLOSED. A privacy/safety gate must never silently skip a file it
+      // cannot read — an unscannable file is NOT a clean file. Emit a blocking finding so
+      // the gate fails on it (callers treat findings as failures) instead of letting an
+      // unreadable file pass unscanned (the silent-skip here was a fail-open hole).
+      findings.push({
+        file: display(filePath),
+        line: 0,
+        id: 'unreadable-file',
+        message: `cannot scan for privacy violations — file unreadable (${err.code || err.message}); failing closed (an unscannable file must not pass the privacy gate)`,
+        match: '',
+      });
       continue;
     }
     findings.push(...scanPrivacyText(text, display(filePath)));
