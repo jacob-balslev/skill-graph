@@ -89,7 +89,7 @@ Skill Metadata Protocol is materially more expensive to author and maintain than
 ### Adopt when any of the following describe your library
 
 - **You need to know what a skill is relevant for** beyond its prose description: area, angle, project, stack, taxonomy, methodology, framework, semantic neighbours, and verification surface.
-- **You want library structure instead of a flat folder**. `subject`, `taxonomy_domain`, `keywords`, `routing_bundles`, and `relations.*` give you taxonomy, semantic clustering, and retrieval surfaces.
+- **You want library structure instead of a flat folder**. `subject`, `taxonomy_domain`, `keywords`, and `relations.*` give you taxonomy, semantic clustering, and retrieval surfaces.
 - **You want Karpathy-style eval loops for skills**. `examples`, `anti_examples`, `routing_eval`, `eval_state`, and `drift_check` give you repeatable cases and evidence instead of vibes.
 - **Two skills cover overlapping territory** and the agent routes to the wrong one on ambiguous prompts. `boundary` pushes the router off the wrong skill explicitly rather than relying on description re-ranking.
 - **One skill is load-bearing for another** and you have silently broken the assumption by editing the parent. `depends_on` surfaces the breakage at lint time instead of at routing time.
@@ -109,7 +109,7 @@ Skill Metadata Protocol organises the frontmatter into **four metadata layers**.
 
 ```mermaid
 flowchart TB
-  L1["<b>Layer 1 — Activation surface</b><br/>description · keywords · triggers · examples · anti_examples<br/>paths · routing_bundles · project[]"]
+  L1["<b>Layer 1 — Activation surface</b><br/>description · keywords · triggers · examples · anti_examples<br/>paths · project[]"]
   L2["<b>Layer 2 — Taxonomy</b><br/>subject · subjects[] · taxonomy_domain"]
   L3["<b>Layer 3 — Ontology</b><br/>relations.depends_on · verify_with · related · boundary"]
   L4["<b>Layer 4 — Grounding</b><br/>grounding.* · drift_check · lifecycle · freshness · eval_state"]
@@ -126,7 +126,7 @@ flowchart TB
 
 **Purpose.** Free-text signals and overlapping tags — the words, patterns, and logical groupings a skill belongs to.
 
-**Fields.** `description`, `keywords`, `triggers`, `examples`, `anti_examples`, `paths`, `routing_bundles`, `project[]`.
+**Fields.** `description`, `keywords`, `triggers`, `examples`, `anti_examples`, `paths`, `project[]`.
 
 **What it answers.** *Does this skill activate for this query?* This is the **semantic layer** — text for lexical retrieval, exactly what SKILL.md ships with. It is useful for discovery and not sufficient for reasoning.
 
@@ -186,9 +186,10 @@ Beyond the four metadata layers that express *meaning*, a library needs four ind
 | **Scope** | `scope` | Free-text string | *PRD-style description of the deployment context.* |
 | **Taxonomy (hierarchy)** | `subject` + `taxonomy_domain` | Single position in the tree | *What kind of concern is this?* |
 | **Project belonging** | `project[]` | Many objects (handle + role) | *Which specific project(s) is this skill anchored to?* |
-| **Routing group (bundle)** | `routing_bundles` | Many-to-many | *Which router-query-time bundle does this skill join?* |
 
-The axes compose without nesting. A single skill can be `public: true` with `subject: backend-engineering`, `taxonomy_domain: backend-engineering/linting/eslint-rules`, and `routing_bundles: [quality, linting]` — each axis carries a different shape of answer, and the router uses them for different things.
+> The per-skill `routing_bundles` field was **retired** (SKI-286) — see `SKILL_METADATA_PROTOCOL.md § routing_bundles`. Library-level batch-activation grouping is now served by the skill-injector routing config (`bundles` / `bundleTypes`), not per-skill frontmatter.
+
+The axes compose without nesting. A single skill can be `public: true` with `subject: backend-engineering` and `taxonomy_domain: backend-engineering/linting/eslint-rules` — each axis carries a different shape of answer, and the router uses them for different things.
 
 ### 4.1 Deployment target — *where does this deploy?*
 
@@ -209,13 +210,11 @@ Use `taxonomy_domain` only when the library is big enough that a tree helps navi
 
 Skills reusable across projects use `public: true` and need no project belonging reference. Skills anchored to one specific project carry a `project[]` array of belonging references (and are typically `public: false`) (each with a `handle` and `role`). Use `repo[]` when the belonging reference is a specific repository rather than a product project.
 
-`project[]` names the *specific project* a skill is grounded in — **not** a keyword tag for routing. Routing remains driven by `keywords`, `triggers`, and `routing_bundles`.
+`project[]` names the *specific project* a skill is grounded in — **not** a keyword tag for routing. Routing remains driven by `keywords`, `triggers`, and `relations`.
 
-### 4.4 Routing groups — *which query-time bundle does this skill join?*
+### 4.4 Batch-activation grouping — a library-level concern, not a per-skill field
 
-`routing_bundles` is a many-to-many logical grouping used **at router query time**, not at authoring. Adopters typically define 5-15 groups (`quality`, `security`, `design`, `ops`, etc.) and assign each skill to the one or two that best describe what it contributes. The consumer then runs router queries of the form *"return the best skill in group X whose other filters pass"* instead of trying to encode group membership in description text.
-
-Unlike taxonomy (one position in a tree, strict hierarchy), routing groups are **overlapping logical bundles**. A single skill can belong to `quality`, `security`, and `design` simultaneously without that meaning anything about a hierarchy.
+The per-skill `routing_bundles` field was **retired** (SKI-286): it accumulated zero acting consumer, since the router scores on `keywords` / `triggers` / `relations` and the manifest only copied the field through. Library-level batch-activation ("return the best skill in group X") is now served by the **skill-injector routing config** (`bundles` / `bundleTypes`), defined once per library rather than declared on each skill. Do not author `routing_bundles` on a skill. (Prior contract recoverable from git history; see `SKILL_METADATA_PROTOCOL.md § routing_bundles`.)
 
 ### 4.5 When axes collide
 
@@ -223,9 +222,8 @@ If two axes appear to answer the same question for your skill, pick by cardinali
 
 - **One answer?** Use `public` or Taxonomy.
 - **Anchored to a specific project?** Add a `project[]` entry (and set `public: false` if it carries private data).
-- **Many answers along a "which retrieval bundle" dimension?** Use `routing_bundles`.
 
-If an adopter-specific concept doesn't fit any of the axes, the activation surface (`keywords`, `triggers`) is the escape valve. Do not stretch `routing_bundles` into a project-membership meaning.
+If an adopter-specific concept doesn't fit any of the axes, the activation surface (`keywords`, `triggers`) is the escape valve.
 
 ---
 

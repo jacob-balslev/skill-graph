@@ -257,24 +257,23 @@ repo:
 
 ---
 
-## 5. Do I use `subject`, `taxonomy_domain`, `project[]`, or `routing_bundles`?
+## 5. Do I use `subject`, `taxonomy_domain`, or `project[]`?
 
-These four fields all group skills, but they answer different questions. Picking the wrong field creates misleading organization that corrodes routing quality. Use this table before adding any skill-grouping field:
+These three fields all group skills, but they answer different questions. Picking the wrong field creates misleading organization that corrodes routing quality. Use this table before adding any skill-grouping field:
 
 | Field | Answers the question | Shape | Primary consumer |
 |---|---|---|---|
 | `subject` | What flat browse shelf does this skill live on? | single string from the closed 12-value enum (see `SKILL_METADATA_PROTOCOL_field-reference.md § subject`) | human browse UI, filter dropdowns, routing first-pass discriminator |
 | `taxonomy_domain` | Where does this skill sit in a hierarchy for tree browsing within its `subject`? | optional slash-delimited path (e.g., `backend-engineering/integrations/shopify`) | folder-tree UI, docs site navigation |
 | `project[]` / `repo[]` | Which specific project(s) or repo(s) is this skill anchored to? | array of `{handle, role}` objects | router project-fit filter, manifest `by_project` rollup |
-| `routing_bundles` | Which batch-activation group does this skill belong to? | flat array (e.g., `[quality, security]`) | router batch-load by group label |
 
-### Three rules that prevent misuse
+> **Batch-activation grouping is NOT a per-skill field.** The per-skill `routing_bundles` field was **retired** (SKI-286, see `SKILL_METADATA_PROTOCOL.md § routing_bundles`) — it accumulated zero acting consumer. Library-level batch-activation ("load all skills in group X") is served by the skill-injector routing config (`bundles` / `bundleTypes`), not by frontmatter. Do not author `routing_bundles` on a skill.
 
-1. **Never use `subject` for routing-bundle membership.** It's a browse shelf. If you find yourself writing "when the router sees `backend-engineering` it should load all X" — you want `routing_bundles`, not `subject`.
+### Two rules that prevent misuse
 
-2. **Never use `project[]` for taxonomy.** It's a project-fit filter for project-anchored skills. If you find yourself declaring every project handle to build a grouping — you want `subject` or `taxonomy_domain`.
+1. **Never use `project[]` for taxonomy.** It's a project-fit filter for project-anchored skills. If you find yourself declaring every project handle to build a grouping — you want `subject` or `taxonomy_domain`.
 
-3. **Never use `taxonomy_domain` to filter routing.** A hierarchy helps humans find skills. The router doesn't walk it. If you want the router to match `backend-engineering/integrations/shopify` at query time, flatten it into `routing_bundles: [integrations]` or declare the project in `project[]`.
+2. **Never use `taxonomy_domain` to filter routing.** A hierarchy helps humans find skills. The router doesn't walk it. If you want the router to match `backend-engineering/integrations/shopify` at query time, declare the project in `project[]` or rely on the activation surface (`keywords`, `triggers`).
 
 ### Worked example
 
@@ -287,7 +286,6 @@ public: false                                               # "Safe to publish?"
 project:
   - handle: sales-hub                                        # "Which project?" (project-anchored ⇒ grounding required)
     role: source-of-truth
-routing_bundles: [integrations]                              # "Which batch-activation group?"
 ```
 
-Each field does a distinct job. None is redundant with the others. A portable skill omits `project[]`; a library with no batch-activation pattern can omit `routing_bundles`; a library that does not need a hierarchical browse view can omit `taxonomy_domain`. `subject`, `public`, and `scope` are always present because they are required by the schema.
+Each field does a distinct job. None is redundant with the others. A portable skill omits `project[]`; a library that does not need a hierarchical browse view can omit `taxonomy_domain`. `subject`, `public`, and `scope` are always present because they are required by the schema.

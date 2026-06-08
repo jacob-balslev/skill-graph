@@ -70,7 +70,7 @@ All **human-authored** unless tagged otherwise.
 | `anti_examples` | string[] | human-authored | Negative class. Prompts that look related but a different skill should handle. |
 | `project` | `{handle, role}[]` | human-authored | Belonging-entity references for project-anchored skills. Absent = ambient skill (applies across all projects). Replaces old `workspace_tags`. |
 | `repo` | `{handle, url}[]` | human-authored | Repo-level belonging-entity references. Complements `project[]`. |
-| `routing_bundles` | string[] | human-authored | Routing group memberships. |
+| `routing_bundles` | string[] | **RETIRED (SKI-286)** | Per-skill routing group membership — removed (zero acting consumer). Library-level batch-activation is served by the skill-injector routing config (`bundles`/`bundleTypes`). Do not author. |
 | `taxonomy_domain` | string | human-authored | Slash-delimited hierarchical sub-path within a `subject` (e.g. `engineering/api-design`). Complements `subject`. Renamed from `domain`. |
 
 ### Classification (taxonomy)
