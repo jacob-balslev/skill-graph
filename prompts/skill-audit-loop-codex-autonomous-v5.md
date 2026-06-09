@@ -233,11 +233,10 @@ VERDICT RULES
 Earn verdicts from evidence:
 - `structural_verdict`: PASS only when focused skill lint is clean.
 - `truth_verdict`: PASS only when repo/source truth claims are verified and fixed.
-- `comprehension_verdict`: PROVISIONAL when single-model self-assessment shows the skill teaches
-  the eval dimensions. Never claim grader-verified PASS without a real grader receipt.
-- `application_verdict`: PROVISIONAL when self-assessment shows the skill improved behavior. Never claim
-  APPLICABLE without a real grader receipt.
-- Use negative enums when warranted: SHALLOW, REDUNDANT, HARMFUL, MIXED.
+- `comprehension_verdict`: stamp only from `evaluate --mode comprehension` receipts.
+- `application_verdict`: stamp only from `evaluate --mode application` receipts.
+- Self-assessment belongs in `verdict.md` / `scorecard.md`; it is not a sidecar behavior-verdict receipt.
+- Use negative enums when warranted by evaluator receipts: SHALLOW, REDUNDANT, HARMFUL, MIXED.
 
 VERIFICATION BEFORE COMMIT
 Run:
@@ -264,6 +263,9 @@ the release step) are captured in the durable commit that follows:
   node scripts/skill/skill-audit-claim.js release <slug> --model "$MODEL" --status completed \
     --structural <STRUCTURAL_VERDICT> --truth <TRUTH_VERDICT> \
     --comprehension <COMPREHENSION_VERDICT> --application <APPLICATION_VERDICT>
+
+Use behavior verdict values only from actual evaluate receipts. If no evaluator ran for a dimension,
+preserve the prior sidecar value when known, otherwise use UNVERIFIED and explain it in the artifacts.
   node scripts/skill/build-skill-list.js --write
 
 If release fails, do not commit or claim another skill. Write memory with the failure evidence and stop.

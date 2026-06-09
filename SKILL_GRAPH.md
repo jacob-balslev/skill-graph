@@ -63,7 +63,7 @@ A common point of confusion: the canonical library and the in-repo `marketplace/
                                          (published to github.com/jacob-balslev/skills,
                                           indexed at skills.sh/jacob-balslev/skills)
 
-   ~/Development/skills/skills/<category>/<name>/SKILL.md   AUTHORING SOURCE (nested, hand-edited)
+   ~/Development/skills/skills/<subject>/<name>/SKILL.md    AUTHORING SOURCE (nested, hand-edited)
            │  scripts/export-marketplace-skills.js  (reads source, normalizes, applies publication gate)
            ▼
    skill-graph/marketplace/skills/<name>/SKILL.md          GENERATED EXPORT (staging, never hand-edited; flat)
@@ -437,7 +437,7 @@ Every edge is verifiable. `node bin/skill-graph.js lint examples/fixture-skills/
 | `LICENSE` | MIT. |
 | `.github/workflows/skill-graph-lint.yml` | CI: runs Tier 3 enforcement on every PR. |
 | `docs/integrations/github-actions.md` | Copy-paste CI snippet for adopters. |
-| [`skill-audit-loop/SKILL_AUDIT_LOOP.md`](skill-audit-loop/SKILL_AUDIT_LOOP.md) + `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 2 — Per-Skill Audit Checklist | The audit discipline — four operations (`audit` / `improve` / `evaluate` / `evolve`); the older five-phase flow is now the inner pipeline of `audit`. Consolidated into this repo per [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md); the standalone `skill-audit-loop` repo is an archived deprecation mirror. |
+| [`skill-audit-loop/SKILL_AUDIT_LOOP.md`](skill-audit-loop/SKILL_AUDIT_LOOP.md) + `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 2 — Per-Skill Audit Checklist | The Skill Audit Loop discipline — `Read → Verify → Evaluate → Research → Improve → Use → Evaluate → Grade`, implemented through the four operations (`audit` / `improve` / `evaluate` / `evolve`). Consolidated into this repo per [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md); the standalone `skill-audit-loop` repo is an archived deprecation mirror. |
 | `docs/plans/multi-root-workspace.md` | Shipped v0.4.0 design doc. |
 | `docs/plans/scripts-roadmap.md` | Forward-looking script plan. |
 

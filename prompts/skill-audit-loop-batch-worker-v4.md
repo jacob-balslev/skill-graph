@@ -116,9 +116,10 @@ Per-skill loop:
 11. Earn verdicts from evidence:
    - `structural_verdict`: PASS only when focused skill lint is clean.
    - `truth_verdict`: PASS only when source-truth claims are verified and drift is fixed.
-   - `comprehension_verdict`: PROVISIONAL when single-model self-assessment shows the skill teaches the eval dimensions.
-   - `application_verdict`: PROVISIONAL when self-assessment shows the skill improved behavior.
-   - Use negative enums when warranted. Do not claim grader-verified PASS/APPLICABLE without a real grader receipt.
+   - `comprehension_verdict`: stamp only from `evaluate --mode comprehension` receipts.
+   - `application_verdict`: stamp only from `evaluate --mode application` receipts.
+   - Self-assessment belongs in `verdict.md` / `scorecard.md`; it is not a sidecar behavior-verdict receipt.
+   - Use negative enums when warranted by evaluator receipts. Do not claim PASS/APPLICABLE without a real grader receipt.
    - (NEW in v4) If a real concern about the skill does not map to any of the four verdicts,
      record it in novelty-memo.md with `format_loss: true`. This is the signal that the verdict
      schema is missing a dimension. Do NOT distort an existing verdict to capture an off-rubric
@@ -132,7 +133,8 @@ Per-skill loop:
    - Rerun catalog/claim extractor after source changes.
    - `git diff --check -- <exact changed paths>`
 13. Release claim:
-   - `node scripts/skill/skill-audit-claim.js release <slug> --status completed --structural PASS --truth PASS --comprehension PROVISIONAL --application PROVISIONAL`
+   - `node scripts/skill/skill-audit-claim.js release <slug> --status completed --structural PASS --truth PASS --comprehension <COMPREHENSION_VERDICT> --application <APPLICATION_VERDICT>`
+   - Use behavior verdict values only from actual evaluate receipts; if no evaluator ran for a dimension, preserve the prior sidecar value when known, otherwise use UNVERIFIED and explain it.
 14. Rebuild worklist:
    - `node scripts/skill/build-skill-list.js --write`
 15. Commit path-limited in the repo that owns changed files:

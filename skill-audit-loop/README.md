@@ -6,7 +6,7 @@
 
 ## The Loop
 
-One shape: **`read → fix → test → next`**. One field per commit, kept or reverted on a single measurable signal — Karpathy keep-or-revert applied to skills. A change that does not move the eval score is reverted; the loop never accumulates unmeasured edits. The full doctrine, the inner pipelines, and the cadence are in [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md) (Part 1 doctrine, Part 2 checklist, Part 3 runbook). The mission this serves is canonical in [`../AGENTS.md` § Mission and Vision](../AGENTS.md#mission-and-vision): routing the right skill is the trunk; auditing whether it teaches well is the leaf this structure enables.
+The **Skill Audit Loop** is the umbrella for this lifecycle: **`Read → Verify → Evaluate → Research → Improve → Use → Evaluate → Grade`**. The lowercase `audit` operation is only the report-only Verify command inside that larger loop. Karpathy keep-or-revert applies at the Grade step: a candidate is reverted only on genuine regression, not merely because a narrow eval did not reward it. The full doctrine, the inner pipelines, and the cadence are in [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md) (Part 1 doctrine, Part 2 checklist, Part 3 runbook). The mission this serves is canonical in [`../AGENTS.md` § Mission and Vision](../AGENTS.md#mission-and-vision): routing the right skill is the trunk; auditing whether it teaches well is the leaf this structure enables.
 
 ## Four Operations
 
@@ -14,10 +14,10 @@ Four operations form the per-skill loop. Two further commands — `discover` (cr
 
 | Operation | What it does | Edits the skill body? |
 |---|---|---|
-| `audit` | Read every field; run the deterministic + drift + optional graded pipeline; stamp Audit Status. | no |
-| `improve` | Edit one field, one commit, time-boxed; auto-evaluate; revert the commit if `eval_score` drops. | yes |
+| `audit` | Read every field; run deterministic lint/drift plus optional qualitative scorecard; stamp only Integrity-Gate Audit Status fields. | no |
+| `improve` | Edit one field or candidate, time-boxed; auto-evaluate; revert only on harmful or measurable regression. | yes |
 | `evaluate` | Run the eval suite (LLM grader); write `eval_score`, `eval_failed_ids`, `freshness`, and the behavior verdicts. | no |
-| `evolve` | Walk the corpus in priority order; per skill run `audit → improve → evaluate`. | via `improve` |
+| `evolve` | Walk the corpus in priority order through analyze, triage, execute, verify, and checkpoint. | via `improve` |
 
 The grader machinery and inner-loop implementation live in [`../lib/audit/`](../lib/audit/); the runner prompts that drive each mode are in [`../prompts/`](../prompts/).
 
@@ -52,7 +52,7 @@ The Integrity Gate's deterministic field mapping is in [`SKILL_AUDIT_LOOP.md`](S
 
 Each skill carries a four-verdict Audit Status. `structural_verdict` and `truth_verdict` establish **eligibility** for assessment; `comprehension_verdict` and `application_verdict` record the **assessment** itself. **`application_verdict: APPLICABLE` is the only verdict that *certifies* a skill is useful** — the others are necessary, not sufficient.
 
-Confidence is ordered, and the value names which evidence backs it: **`APPLICABLE`** (from an independent dual-run grader) **>** `PROVISIONAL` (a single-model self-assessment, real evidence but one perspective) **>** `UNVERIFIED` (nobody has graded it). The canonical enum definitions, the eligibility-vs-certification distinction, and the disjointness rules are in [`../docs/verdict-semantics.md`](../docs/verdict-semantics.md) — this README never redefines them.
+Confidence is ordered, and the value names which evidence backs it: **`APPLICABLE`** (from certifying grader evidence) **>** `PROVISIONAL` (a lower-confidence eval receipt) **>** `UNVERIFIED` (no eval receipt for that dimension). The canonical enum definitions, the eligibility-vs-certification distinction, and the disjointness rules are in [`../docs/verdict-semantics.md`](../docs/verdict-semantics.md) — this README never redefines them.
 
 ## Doctrine
 

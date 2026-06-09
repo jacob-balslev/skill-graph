@@ -32,7 +32,7 @@ Skill Graph is three layers, each with its own front door. Keep them distinct �
 |---|---|---|
 | **Skill Metadata Protocol** | The per-skill contract — typed frontmatter that makes one skill's relevance and boundaries explicit. | [`skill-metadata-protocol/`](skill-metadata-protocol/) |
 | **Skill Graph** | The library-level system — compiles the manifest, routes queries, checks drift and overlap, exports back to plain `SKILL.md`. | [`SKILL_GRAPH.md`](SKILL_GRAPH.md) |
-| **Skill Audit Loop** | The maintenance discipline — `read → fix → test → next`, keeping each skill true as code and concepts drift. | [`skill-audit-loop/`](skill-audit-loop/) |
+| **Skill Audit Loop** | The maintenance discipline — `Read → Verify → Evaluate → Research → Improve → Use → Evaluate → Grade`, keeping each skill true as code and concepts drift. | [`skill-audit-loop/`](skill-audit-loop/) |
 
 The mission is relevance-at-scale: the Protocol makes relevance explicit, the Graph makes it queryable, and the Audit Loop keeps it true. Each folder front door summarizes its layer and links to the binding spec inside it. The *How … Differ* table further down separates these from the plain `SKILL.md` format.
 
@@ -467,7 +467,7 @@ Exit codes for `skill-graph evolve`:
 | [`skill-metadata-protocol/`](skill-metadata-protocol/) | Protocol layer — folder front door (`README.md`) plus the spec and its companions. |
 | [`skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md`](skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md) | **Canonical** normative spec for the `SKILL.md` frontmatter + `audit-state.json` sidecar contract. |
 | [`skill-audit-loop/`](skill-audit-loop/) | Audit-loop layer — folder front door (`README.md`) plus the canonical spec. |
-| [`skill-audit-loop/SKILL_AUDIT_LOOP.md`](skill-audit-loop/SKILL_AUDIT_LOOP.md) | **Canonical** audit procedure (4 operations: audit, improve, evaluate, evolve). |
+| [`skill-audit-loop/SKILL_AUDIT_LOOP.md`](skill-audit-loop/SKILL_AUDIT_LOOP.md) | **Canonical** Skill Audit Loop procedure: `Read → Verify → Evaluate → Research → Improve → Use → Evaluate → Grade`, implemented through the 4 operations (`audit`, `improve`, `evaluate`, `evolve`). |
 | [`prompts/`](prompts/) | The four operational runner prompts (single-model, batch-worker, codex-autonomous, minimal-iteration) that drive the audit loop across Claude / Codex / OpenCode. Project-root home per ADR-0015 (relocated 2026-06-01). |
 | `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 2 — Per-Skill Audit Checklist | Per-skill audit checklist used during `audit`. |
 | [`AGENTS.md`](AGENTS.md) | Agent-facing repo guide (doctrine, doc routing, validation commands, `lib/` layout, public-distribution contract). `CLAUDE.md` imports it. |

@@ -28,8 +28,10 @@ You are running the Skill Audit Loop. Work from the repo root (Development/).
 ║  not Gemini, not Claude/Opus, not OpenCode, not Codex — under any           ║
 ║  circumstance. The repo documents a MULTI-MODEL MERGE flow                  ║
 ║  (skill-audit-merge-v1.md). That is a SEPARATE, separately-orchestrated     ║
-║  process. IGNORE it. You are an AUDIT-mode contributor: you produce ONE     ║
-║  model's audit + upgrade for ONE skill and commit it. If you ever feel the  ║
+║  process. IGNORE it. You are a single-model Skill Audit Loop contributor:   ║
+║  run the Read→Verify→Evaluate→Research→Improve→Use→Evaluate→Grade lifecycle ║
+║  for ONE skill and commit it. The lowercase audit operation is report-only. ║
+║  If you ever feel the                                                        ║
 ║  urge to bring in a second model "for coverage," or to ask another model to ║
 ║  grade an eval you cannot run, STOP — that is the exact bug this rule       ║
 ║  exists to prevent. Single model, start to finish.                          ║
@@ -94,8 +96,8 @@ CLAIM (one skill at a time)
    If `claim` fails, another agent holds it — pick the next. Never hand-pick a Sales-Hub
    or personal/customer-data skill even if it ranks high; trust `next`.
 
-AUDIT + UPGRADE (run the full v2.2 contract, as YOU, one model)
-6. Inspect → Change → Verify against CURRENT SOURCE TRUTH:
+SKILL AUDIT LOOP LIFECYCLE (run the full v2.2 contract, as YOU, one model)
+6. Read → Verify → Evaluate → Research → Improve → Use → Evaluate → Grade against CURRENT SOURCE TRUTH:
    a. Catalog + tests: source-truth-catalog.js --skill <slug> --deep --json ;
       skill-test-runner.js --skill <slug> ; claim-extractor.js --skill <slug> --json
    b. VERIFY EVERY SOURCE-TRUTH CLAIM YOURSELF before changing or rejecting it. Re-grep,
@@ -118,31 +120,17 @@ AUDIT + UPGRADE (run the full v2.2 contract, as YOU, one model)
       - Fix all verified drift; preserve all existing capability (improve = ENRICH, never
         trim). Fix adjacent doc drift in the SAME commit, and grep *.md for stale refs to
         anything you renamed.
-   d. Earn the four Health-Block verdicts from evidence — never bump them for convenience:
+   d. Earn sidecar verdicts from receipts — never bump them for convenience:
       - structural_verdict: PASS only if skill-lint is clean for this skill.
       - truth_verdict: PASS only with firsthand source evidence for EVERY claim, after the
         drift you found is fixed. Otherwise UNVERIFIED.
-      - comprehension_verdict / application_verdict: do NOT default these to UNVERIFIED.
-        UNVERIFIED means "not assessed at all" — a vacuum. You ARE assessing the skill, so
-        record a real result. Assess it YOURSELF: this is single-model self-assessment and
-        does NOT violate RULE 0 — RULE 0 forbids spawning/consulting ANOTHER model, not
-        judging your own work.
-          * comprehension_verdict: answer each gradeable comprehension.json case the way the
-            skill content would lead an agent to answer it, and judge whether the skill
-            actually teaches enough to produce the correct answer. If yes → record PROVISIONAL.
-            If it teaches the dimension shallowly or redundantly → record SHALLOW / REDUNDANT
-            (and fix what you can in this commit).
-          * application_verdict: use your Step 8 self-assessment — apply the upgraded skill to a
-            realistic task and judge whether it changed agent behavior for the better. If yes
-            → record PROVISIONAL. If redundant / harmful / mixed → record REDUNDANT / HARMFUL /
-            MIXED.
-        PROVISIONAL = a real single-model result: lower-confidence, single-perspective, to be
-        CONFIRMED OR OVERTURNED by the independent dual-run grader later. It is NOT
-        grader-verified — never report PROVISIONAL as "verified" / "graded" / "best". Record
-        PASS / APPLICABLE ONLY if the dual-run grader pipeline actually executed and you have
-        its receipt — it can't run non-interactively here, and you MUST NOT substitute another
-        model to grade (RULE 0). The confidence hierarchy is
-        APPLICABLE (grader) > PROVISIONAL (you) > UNVERIFIED (nobody).
+      - comprehension_verdict / application_verdict: stamp ONLY from `evaluate --mode
+        comprehension|application` receipts. A diagnostic audit or your own self-assessment
+        can and should be written into `verdict.md` / `scorecard.md`, but it is NOT a
+        behavior-verdict receipt. If the evaluator did not run for a dimension, keep the
+        existing sidecar value or record UNVERIFIED with evidence that no eval receipt exists.
+        PASS / APPLICABLE require their documented grader receipts; never substitute your
+        own judgment or another model for the evaluator.
       - drift_status: use only a CANONICAL enum value — OK, DRIFT, BROKEN, STALE,
         NO_BASELINE, EXTERNAL_UNHASHED, UNKNOWN. (e.g. "current" is INVALID and census
         will flag it.) After fixing all drift, OK is correct.
@@ -163,8 +151,9 @@ VERIFY
             # (the only census error/warning lines that matter are YOUR skill's; pre-existing
             #  ones for other skills are not yours to fix in this commit)
      node --test <skill key-file tests>  (or skill-test-runner)        # all pass
-   Compare eval_score before/after — the merged skill must not regress it. If it does, revert
-   the regressing change and re-verify.
+   Compare eval_score before/after when an eval exists — the merged skill must not regress it.
+   Revert only harmful or measurable regression. A flat score, missing eval artifact, capped run,
+   or UNVERIFIED result is inconclusive and must not be used to strip useful curation.
    Write a single-model audit ledger under the run dir
    (skill-graph/skill-audit-loop/progress/skill-audits/<slug>/runs/<run-dir>/merge-ledger.md): every finding →
    kept / fixed / rejected(reason) + firsthand evidence. Your ledger Contributor is YOUR
@@ -176,9 +165,10 @@ self-assessment + DOCUMENT
 8. Apply the skill you just upgraded against the skill-graph repo as a real consumer would, to
    test its teaching efficacy. Surface ALL findings (canonical P0–P4 severity; show every
    finding, never a "top issues" subset). Route doc updates per the AGENTS.md Document Routing
-   Table. This self-assessment IS your application assessment: judge whether applying the skill changed
-   agent behavior for the better and record the Step 6d `application_verdict` from it
-   (PROVISIONAL if it helped; REDUNDANT / HARMFUL / MIXED if not) — do not leave it UNVERIFIED.
+   Table. This self-assessment is report evidence: judge whether applying the skill changed
+   agent behavior for the better and record that judgment in `verdict.md` / `scorecard.md`.
+   Do not stamp `application_verdict` from self-assessment; behavior sidecar verdicts come
+   from `evaluate --mode`.
 
    SOLVE-OR-FILE GATE — for EVERY finding, decide once (per
    `.claude/rules/overhead-proportional-to-work.md`):
@@ -204,11 +194,10 @@ self-assessment + DOCUMENT
 9. Release YOUR claim first (so the terminal ledger line and updated `latest` symlink are written
    before the commit), rebuild worklist, then commit the skill changes and run-dir artifacts together:
      node scripts/skill/skill-audit-claim.js release <slug> --status completed \
-        --structural PASS --truth PASS --comprehension PROVISIONAL --application PROVISIONAL
-   (PROVISIONAL = your single-model assessment from Step 6d + the Step 8 self-assessment; use
-   UNVERIFIED ONLY if you genuinely could not assess the dimension, and the negative enums
-   — SHALLOW/REDUNDANT for comprehension, REDUNDANT/HARMFUL/MIXED for application — when your
-   assessment was negative. Never record PASS/APPLICABLE without a dual-run grader receipt.)
+        --structural PASS --truth PASS --comprehension <COMPREHENSION_VERDICT> --application <APPLICATION_VERDICT>
+   Use behavior verdict values only from actual `evaluate --mode` receipts. If no evaluator ran
+   for a dimension, preserve the prior sidecar value when known, otherwise use UNVERIFIED and
+   explain in the artifacts. Never record PASS/APPLICABLE without the required grader receipt.
      node scripts/skill/build-skill-list.js --write
    (If `release` reports "no lock by pid-..." it is because the lock is bound to the claiming
    process's pid. In a single long-running loop process this won't happen; if it does, the

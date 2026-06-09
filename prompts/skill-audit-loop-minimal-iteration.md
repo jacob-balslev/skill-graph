@@ -104,10 +104,10 @@ any other model. The multi-model merge flow is separate and not for this prompt.
 9. Earn verdicts from evidence (not from convenience):
    - structural_verdict: PASS only when `skill-lint.js --skill <slug>` is clean
    - truth_verdict: PASS only when source-truth claims are verified and drift is fixed
-   - comprehension_verdict: PROVISIONAL when your single-model self-assessment shows the skill
-     teaches the dimensions. Never PASS without a dual-run grader receipt.
-   - application_verdict: PROVISIONAL when your self-assessment shows the skill improved behavior.
-     Never APPLICABLE without a dual-run grader receipt.
+   - comprehension_verdict: stamp only from `evaluate --mode comprehension` receipts. Put
+     self-assessment in the report; do not use it as a sidecar behavior verdict.
+   - application_verdict: stamp only from `evaluate --mode application` receipts. Never
+     APPLICABLE without the required grader receipt.
    - Use negative enums when warranted (SHALLOW, REDUNDANT, HARMFUL, MIXED).
 
 10. Verify:
@@ -125,7 +125,9 @@ any other model. The multi-model merge flow is separate and not for this prompt.
 
 12. Release claim and rebuild worklist:
     node scripts/skill/skill-audit-claim.js release <slug> --status completed \
-      --structural PASS --truth PASS --comprehension PROVISIONAL --application PROVISIONAL
+      --structural PASS --truth PASS --comprehension <COMPREHENSION_VERDICT> --application <APPLICATION_VERDICT>
+    Use behavior verdict values only from actual evaluate receipts; if no evaluator ran for a
+    dimension, preserve the prior sidecar value when known, otherwise use UNVERIFIED and explain it.
     node scripts/skill/build-skill-list.js --write
 
 13. Repeat from step 5 unless a stop condition is met:

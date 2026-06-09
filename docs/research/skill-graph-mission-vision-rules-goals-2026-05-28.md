@@ -147,7 +147,7 @@ The loop should let a library improve without becoming arbitrary churn. Each ski
 
 ### Rules
 
-1. The loop shape is `read -> fix -> test -> next`.
+1. The loop shape is `Read → Verify → Evaluate → Research → Improve → Use → Evaluate → Grade` (updated 2026-06-09; this supersedes the earlier short-form wording in this research note).
 2. `audit`, `improve`, `evaluate`, and `evolve` are the four per-skill operations.
 3. `discover` and `merge` are utilities, not replacements for the per-skill loop.
 4. Content work on individual skills runs through `/audit:audit`, `/audit:improve`, `/audit:evaluate`, or `/audit:evolve`.

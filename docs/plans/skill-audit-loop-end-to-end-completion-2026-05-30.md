@@ -87,7 +87,7 @@ Canonical contract: `skill-graph/SKILL_AUDIT_LOOP.md` § Part 3. Six commands un
 - **`evaluate`** — run the eval suite via LLM grader; write `eval_score`, `eval_failed_ids`,
   `freshness`, and the behavior verdict(s). **(But verified: only when `--write-verdict` is passed — Break #2.)**
 - **`evolve`** — corpus walker. **Verified conflict (GPT-5.4):** the docs (`SKILL_AUDIT_LOOP.md:220`)
-  describe `evolve` as a thin `audit → improve → evaluate` loop, but `bin/skill-graph.js:177` wires it
+  used the superseded thin-loop phrasing for `evolve`, but `bin/skill-graph.js:177` wires it
   to a *different* continuous auto-improve engine (`lib/audit/skill-evolution-loop.js`). Two meanings,
   one name — a contract/implementation split (Part 6, finding E1).
 
@@ -561,7 +561,7 @@ This is why Decision A's implementation (Step 5) is sequenced AFTER Steps 0–1,
 > Model: GPT-5.4 via Codex CLI (codex-cli 0.130.0, provider openai, reasoning xhigh). Command:
 > `codex exec -m gpt-5.4 --skip-git-repo-check` from `~/Development`. It read the repo and cites file:line.
 
-1. The architecture is conceptually sound, but operationally under-specified for self-maintenance. The 2-gate split is right, and the 4 verdicts are not the problem. The problem is that the named operations do not map cleanly to one executable state machine. The docs say `evolve` is a thin `audit → improve → evaluate` loop in SKILL_AUDIT_LOOP.md:220, but the public CLI wires `evolve` to a different continuous auto-improve engine in bin/skill-graph.js:177, whose implementation is analyzer/triage/execute/checkpoint orchestration in lib/audit/skill-evolution-loop.js:4. That is not over-engineering in concepts; it is too many unchecked execution paths.
+1. The architecture is conceptually sound, but operationally under-specified for self-maintenance. The 2-gate split is right, and the 4 verdicts are not the problem. The problem is that the named operations do not map cleanly to one executable state machine. The docs used the superseded thin-loop phrasing for `evolve` in SKILL_AUDIT_LOOP.md:220, but the public CLI wires `evolve` to a different continuous auto-improve engine in bin/skill-graph.js:177, whose implementation is analyzer/triage/execute/checkpoint orchestration in lib/audit/skill-evolution-loop.js:4. That is not over-engineering in concepts; it is too many unchecked execution paths.
 
 2. The two user decisions are mostly correct.
 - `Gate-out only proven-negative behavior verdicts; rank-weight the rest` is the right call for behavior routing. It avoids deleting 90% of the library for lack of evidence. Failure modes: if you apply this to structural/truth gates too, you will route broken skills; if `UNVERIFIED` is only weakly penalized, the router becomes a popularity contest over unassessed skills; if negative verdicts never expire, one bad run can tombstone a fixed skill.

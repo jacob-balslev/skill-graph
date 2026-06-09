@@ -1,6 +1,6 @@
 ---
 name: evolve
-description: "Walk the corpus. For each skill in priority order (application_verdict first, then last_audited staleness — see SKILL_AUDIT_LOOP.md § Loop Principles), run audit → improve (when needed) → evaluate. Replaces the old skill-evolution alias."
+description: "Walk the corpus. For each skill in priority order (application_verdict first, then last_audited staleness — see SKILL_AUDIT_LOOP.md § Loop Principles), run the analyzer-driven Skill Audit Loop lifecycle. Replaces the old skill-evolution alias."
 argument-hint: "[--top N] [--continuous] [--scope all] [--failure-budget N] [--pilot <skill>]"
 version: 1.0.0
 since: 2026-05-17
@@ -9,11 +9,11 @@ superseded_by: skill-audit-loop
 last_changed: 2026-06-07
 ---
 
-> **DEPRECATED (2026-06-07T14:47+02:00).** `/evolve` (the legacy corpus walker that dispatches `run-skill-improvement-loop.js`) is superseded by the Skill Audit Loop: run one skill via `/skill-audit-loop` (now runs the full audit -> improve -> evaluate loop and records the four verdicts), or drain the whole corpus via `scripts/run-panel-loop.sh --worklist`. Kept for back-compat; its engine retires once no consumer remains (follow-up). Recover: `git show <sha>^:commands/audit/evolve.md`.
+> **DEPRECATED (2026-06-07T14:47+02:00).** `/evolve` (the legacy corpus walker that dispatches `run-skill-improvement-loop.js`) is superseded by the Skill Audit Loop: run one skill via `/skill-audit-loop` (the full `Read → Verify → Evaluate → Research → Improve → Use → Evaluate → Grade` lifecycle), or drain the whole corpus via `scripts/run-panel-loop.sh --worklist`. Kept for back-compat; its engine retires once no consumer remains (follow-up). Recover: `git show <sha>^:commands/audit/evolve.md`.
 
 # /evolve — Walk the corpus, one skill at a time
 
-Run the corpus walker over the Skill Audit Loop. For each skill, in priority order: `/audit`, then `/improve` if a field is stale or failing, then `/evaluate`. Audit/eval/provenance fields are written back to the skill's sibling `audit-state.json` sidecar. The walker advances when each per-skill cycle completes.
+Run the analyzer-driven corpus walker over the Skill Audit Loop. In priority order it analyzes, triages, executes candidate improvements, verifies, and checkpoints. Audit/eval/provenance fields are written back to the skill's sibling `audit-state.json` sidecar by the operations it composes. The walker advances when each per-skill cycle completes.
 
 > **Preview maturity.** `evolve` is still a preview corpus walker. Use it with an explicit small scope first (`--top N` or `--pilot <skill>`) and verify each per-skill result before widening the run.
 
@@ -37,12 +37,11 @@ Walker priority is owned by `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md §
 ## Per-iteration shape
 
 ```
-audit(skill)                                  # writes last_audited plus structural/truth/comprehension/application verdicts
-if structural_verdict in {FAIL, PASS_WITH_FIXES} or truth_verdict in {DRIFT, BROKEN}:
-  field = pick_stalest_or_failing_field(skill)
-  improve(skill, field=field)                 # one commit, time-boxed, keep-or-revert via evaluate
-evaluate(skill)                                # writes application_verdict, eval_score, eval_failed_ids, freshness
-advance
+analyze corpus state                           # application_verdict first, then centrality + staleness
+triage top actions                             # improve_skill / ensure_evals / fix_semantics / scaffold_skill
+execute one action at a time                   # improve delegates to evaluate for keep-or-revert
+verify batch                                   # no regressions, artifacts present
+checkpoint                                     # resumable state + telemetry
 ```
 
 ## When to use

@@ -19,7 +19,7 @@ Most agent-skill projects answer one of these questions:
 
 Skill Graph answers a **different** question: **how do you keep a library of skills correct over time?**
 
-It does this by giving every skill a structured contract (`SKILL.md` frontmatter), a graph of typed edges between skills (`relations.*`), a four-operation audit loop (`audit`, `improve`, `evaluate`, `evolve`), and a Karpathy-style keep-or-revert discipline for changes. The contract is portable; the audit loop is the unique mechanism.
+It does this by giving every skill a structured contract (`SKILL.md` frontmatter), a graph of typed edges between skills (`relations.*`), and a Skill Audit Loop lifecycle: `Read → Verify → Evaluate → Research → Improve → Use → Evaluate → Grade`. The four operations (`audit`, `improve`, `evaluate`, `evolve`) are the executable command surface for that lifecycle, and Karpathy-style keep-or-revert is the discipline for candidate changes. The contract is portable; the audit loop is the unique mechanism.
 
 ## The "what this is not" matrix
 
@@ -82,7 +82,7 @@ The runtime layer answers "how does this skill execute?" The author/audit-time l
 ## Related reading
 
 - [`skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md`](../skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md) — the contract.
-- [`skill-audit-loop/SKILL_AUDIT_LOOP.md`](../skill-audit-loop/SKILL_AUDIT_LOOP.md) — the four operations (audit, improve, evaluate, evolve).
+- [`skill-audit-loop/SKILL_AUDIT_LOOP.md`](../skill-audit-loop/SKILL_AUDIT_LOOP.md) — the Skill Audit Loop lifecycle and its four operations (`audit`, `improve`, `evaluate`, `evolve`).
 - [`docs/quality-doctrine.md`](quality-doctrine.md) — what "improve" means in this discipline.
 - [`docs/adr/0009-sibling-repo-deprecation.md`](adr/0009-sibling-repo-deprecation.md) — why the protocol, audit, and CLI live in one repo now.
 - [Karpathy autoresearch](https://github.com/karpathy/autoresearch) — the keep-or-revert loop applied to LLM training scripts that Skill Graph borrows for skill libraries.

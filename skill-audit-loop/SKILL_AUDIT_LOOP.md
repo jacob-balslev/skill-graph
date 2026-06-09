@@ -17,7 +17,7 @@
 
 ### Rules
 
-1. **The loop has one shape:** `read → fix → test → next` — one field at a time, kept or reverted on a single measurable signal (Part 1).
+1. **The loop has one lifecycle:** `Read → Verify → Evaluate → Research → Improve → Use → Evaluate → Grade` (Part 1). The phrase **Skill Audit Loop** names the whole lifecycle; the lowercase `audit` operation is only the report-only Integrity-Gate command inside it.
 2. **Four per-skill operations:** `audit`, `improve`, `evaluate`, `evolve`. `discover` and `merge` are utilities, not replacements for the per-skill loop.
 3. **CONTENT work on a skill runs ONLY through `/audit:audit | improve | evaluate | evolve`.** Ad-hoc `SKILL.md` edits outside the loop are banned, and SYSTEM work is never mixed with CONTENT work in one task or commit.
 4. **Findings must be evidence-backed.** The audit is not a lint-test factory; never invent internal checks to manufacture findings, and an empty report on a genuinely good skill is a PASS.
@@ -38,13 +38,26 @@ Make the skill library self-correcting without making it careless: every skill c
 
 A skill is a contract about a subject. The contract is only true while the things it was written against still hold — the codebase drifts, the subject drifts, and the audit fingerprint in the skill's `audit-state.json` sidecar drifts with them. The Skill Audit Loop re-grounds a skill against current truth and records the result on the skill itself.
 
-This loop has one shape:
+The Skill Audit Loop is the umbrella. Its per-skill lifecycle has one ordered shape:
 
 ```
-read  →  fix  →  test  →  next
+Read  →  Verify  →  Evaluate  →  Research  →  Improve  →  Use  →  Evaluate  →  Grade
 ```
 
-That's it. One field at a time, keep or revert based on a single measurable signal, then move on. The discipline comes from Karpathy's auto-improvement loop: one editable asset, one scalar metric, one time box. The "read before changing" framing comes from Design Thinking. The structure here is the cheapest expression of both.
+That order is deliberate. The discipline comes from Karpathy's `autoresearch` pattern: constrain the editable surface, run a fixed measurement, keep only changes that survive the guardrail, and repeat. For skills, the editable surface is a candidate `SKILL.md` body, the fixed measurement is the eval/check suite, and the canonical skill is written only at the Grade step when the candidate is kept. The "read before changing" framing comes from Design Thinking, but the loop does not stop at a report.
+
+| Step | Question | Primary operation / artifact |
+|---|---|---|
+| **Read** | What does the skill currently claim, teach, route to, suppress, and rely on? | Read `SKILL.md`, `audit-state.json`, eval files, related skills, and truth sources. |
+| **Verify** | Are those claims true against current repo truth and current upstream sources? | `audit` Integrity Gate plus repo/web evidence; writes only structural/truth audit state and findings. |
+| **Evaluate** | What is the current behavior before a candidate improvement? | Baseline eval / prior sidecar verdict / eval receipt, or explicit `UNVERIFIED` when no artifact exists. |
+| **Research** | What should the skill teach now? | Repo + official/web research, upstream-displacement check, related-skill comparison. |
+| **Improve** | What candidate change strengthens the skill without trimming useful knowledge? | `improve` or panel proposal/curation writes a candidate, not yet a trusted canonical result. |
+| **Use** | Does an agent actually apply the candidate skill to the intended task shape? | Candidate skill is loaded in the eval/application path or used in the panel guardrail. |
+| **Evaluate** | Did the candidate regress, help, prove redundant, or remain inconclusive? | Same eval contract as the baseline; invalid/capped/missing evals are inconclusive, not regressions. |
+| **Grade** | Keep, revert, or defer, and what state is allowed to be stamped? | Keep/apply only on non-regression; revert applies nothing; behavior verdicts stamp only from eval receipts. |
+
+`audit` is therefore not the name of every step. It is the diagnostic/reporting operation used during **Verify**. The umbrella is the **Skill Audit Loop**.
 
 ## Audit Doctrine — Intent and Teaching, Not Arbitrary Lint
 
@@ -89,7 +102,7 @@ Every action in this loop falls into one of four operations. Keep one question i
 
 | Operation | What it does | Edits instructional content? | Writes |
 |---|---|---|---|
-| **audit** | Inspect one skill for structural validity, freshness, and truth-source drift. `--graded` also scores the behavior gates. | No | `audit-state.json`: `last_audited`, `lint_verdict`, `drift_status`, `structural_verdict`, `truth_verdict`; with `--graded`, also behavior verdicts. |
+| **audit** | Inspect one skill for structural validity, freshness, and truth-source drift. `--graded` adds a qualitative scorecard over metadata/content/eval-quality dimensions. | No | `audit-state.json`: `last_audited`, `lint_verdict`, `drift_status`, `structural_verdict`, `truth_verdict`. It does **not** stamp behavior verdicts. |
 | **improve** | Edit one field. One commit. Time-boxed. | Yes | `SKILL.md`: the chosen instructional/routing field. `audit-state.json`: `last_changed` when the loop records it. |
 | **evaluate** | Run deterministic checks and comprehension/application graders. | No | `audit-state.json`: eval scores/failures/freshness plus comprehension/application verdicts when those graders run. |
 | **evolve** | Walk the corpus by priority and compose analyze, improve, and evaluate per item through the improvement loop. | Yes (per skill) | The same `SKILL.md` and `audit-state.json` writes as the operations it composes. |
@@ -243,7 +256,7 @@ The Audit Status carries **four discrete verdicts** in each skill's sibling `aud
 }
 ```
 
-`application_verdict == APPLICABLE` is the only verdict that certifies a skill is **useful**; the other three are necessary infrastructure (the skill loads, exports cleanly, and the model has the concept) but do not certify usefulness. `PROVISIONAL` means one model assessed useful behavior without the independent application grader; `UNVERIFIED` means no application assessment has run.
+`application_verdict == APPLICABLE` is the only verdict that certifies a skill is **useful**; the other three are necessary infrastructure (the skill loads, exports cleanly, and the model has the concept) but do not certify usefulness. `PROVISIONAL` means a lower-confidence evaluation receipt exists but did not meet the certifying bar; `UNVERIFIED` means no application assessment has run.
 
 Before v6, this state was scattered across `eval-history.jsonl`, `routing-misses.jsonl`, `.opencode/progress/skill-audit-*`, `health-ledger.jsonl`, and `findings/*.md`. To know one skill's audit status you grepped five places. The Audit Status now collapses that to one sidecar. The loop reads it; the operations write it back.
 
@@ -320,10 +333,10 @@ Priority reads the Audit Status directly: the walker looks at `application_verdi
 
 ## Loop Principles
 
-1. **One skill, one field, one metric at a time.** Karpathy keep-or-revert pressure makes the loop tractable.
+1. **One skill, one candidate, one fixed measurement at a time.** Karpathy keep-or-revert pressure makes the loop tractable.
 2. **State lives in the artifact.** The Audit Status is the source of truth; logs are append-only evidence.
-3. **Read before changing.** `audit` must run before `improve` is allowed to write.
-4. **Deterministic checks first; graded checks second.** Lint and drift are mechanical and trustworthy; graded scores are subject to model variance.
+3. **Read and verify before changing.** Diagnostic `audit` is the report-only Verify operation; `improve` writes only after claims have evidence.
+4. **Evaluate before and after the candidate.** Baseline/current behavior and candidate behavior must be compared under the same contract when the artifact exists.
 5. **Fixes are tiny by default.** A field-sized change is the unit of work. Larger changes are decomposed into a sequence of field-sized improves.
 
 ## Loop Inputs
@@ -373,7 +386,7 @@ node bin/skill-graph.js drift
 node bin/skill-graph.js evaluate --mode comprehension skills/<skill-name>/evals/comprehension.json
 node bin/skill-graph.js evaluate --mode application --application skills/<skill-name> skills/<skill-name>/evals/application.json
 
-# Evolve the corpus — audit, improve, evaluate in priority order
+# Evolve the corpus — analyze, triage, execute, verify, checkpoint in priority order
 # (PREVIEW · standalone path flags are required when the skill library is not cwd)
 node bin/skill-graph.js evolve --workspace-root <workspace> --skills-dir <workspace>/skills --top 10
 
@@ -517,7 +530,7 @@ Every concrete audit run is one of two named modes. The protocol below is identi
 | **Diagnostic audit (report-only)** | First sweep, pre-release scan, multi-model roundtable, anything where you want the verdict before deciding on fixes. | Runs lint + drift + (optionally graded) phases, stamps the Integrity-layer Audit Status fields in `audit-state.json` (`last_audited`, `lint_verdict`, `structural_verdict`, `truth_verdict`), writes findings/verdict/scorecard artifacts. **Does NOT mutate the skill body or commit.** | Operator decides whether to file the findings as Linear tasks for later remediation, hand off to `improve`, or close as "no action — skill is healthy." The audit is a read step. |
 | **Remediation audit (fix + commit)** | Targeted run when a specific finding is known and the operator has commit-budget to fix it now. Typically preceded by an `improve --field <name>` step that landed the fix; the audit-after-improve confirms the verdict moved. | Same Integrity-layer write-back, same artifacts. The auditor then runs `improve` (or makes the explicit edit), re-runs `audit` to confirm the verdict change, and commits skill source + Audit Status stamp + audit artifacts together in one path-limited commit. | Verdict.md `## Follow-up State` records `Fixes applied — <skill>:<field> at <commit-sha>`. |
 
-The mode is operator intent, not a CLI flag. Diagnostic-only doctrine has the audit produce evidence and stop. Remediation doctrine has the audit fold into a `read → fix → test → next` Karpathy cycle.
+The mode is operator intent, not a CLI flag. Diagnostic-only doctrine has the audit produce evidence and stop. Remediation doctrine folds that report into the full Skill Audit Loop lifecycle: `Read → Verify → Evaluate → Research → Improve → Use → Evaluate → Grade`.
 
 ### Audit Outputs
 
@@ -527,7 +540,7 @@ A complete audit should produce:
 2. Behavior Gate result
 3. findings list
 4. required fixes
-5. a remediation note. **`audit` stamps the Integrity-layer Audit Status fields into `audit-state.json`** (`last_audited`, `lint_verdict`, `structural_verdict` — and `comprehension_verdict` / `application_verdict` when run with `--graded`). The skill's instructional body and routing contract are untouched; only `improve` (or an explicit auditor edit) mutates those. This matches Part 1 § The Four Operations — the operations write to a specific set of fields in the Audit Status, and `audit` is one of them.
+5. a remediation note. **`audit` stamps only the Integrity-layer Audit Status fields into `audit-state.json`** (`last_audited`, `lint_verdict`, `drift_status`, `structural_verdict`, `truth_verdict`). The skill's instructional body and routing contract are untouched; only `improve` mutates those. `comprehension_verdict` and `application_verdict` are Behavior-Gate fields and are stamped only by `evaluate --mode comprehension|application` or by the full panel loop after a kept candidate has an eval receipt.
 
 ### Gate Model
 
@@ -585,7 +598,7 @@ Required sections:
 
 `Integrity Gate` must be exactly one of: `PASS`, `PASS_WITH_FIXES`, `FAIL`, `UNVERIFIED`.
 
-`Behavior Gate` must report the application-layer state: `APPLICABLE`, `REDUNDANT`, `HARMFUL`, `MIXED`, `FALSE_POSITIVE`, `UNVERIFIED`, or `PROVISIONAL`. Use `UNVERIFIED` with evidence when no application eval was run; use `PROVISIONAL` only for a single-model self-assessment audit that still lacks grader confirmation.
+`Behavior Gate` must report the application-layer state: `APPLICABLE`, `REDUNDANT`, `HARMFUL`, `MIXED`, `FALSE_POSITIVE`, `UNVERIFIED`, or `PROVISIONAL`. Use `UNVERIFIED` with evidence when no application eval was run. Use `PROVISIONAL` only when an actual evaluation path produced a lower-confidence receipt; a diagnostic `audit` self-assessment may be described in the report, but it must not stamp a behavior verdict.
 
 ### `scorecard.md`
 
@@ -775,13 +788,13 @@ Diagnostic audits may score 4 while leaving fixes for later, but only when the r
 # 0. Point the CLI at your skill library if it isn't the cwd (standalone clones):
 #    export SKILL_GRAPH_WORKSPACE=/path/to/your/skills   (or pass --workspace-root where supported)
 skill-graph lint <skill>                                   # 1. schema conformance (Integrity floor)
-skill-graph audit <skill> --graded --grader-cli "<cmd>"   # 2. Integrity Gate -> stamps structural_verdict + truth_verdict (+ graded scorecard dimensions)
-skill-graph evaluate --mode comprehension <skill>/evals/comprehension.json          # 3. comprehension_verdict
-skill-graph evaluate --mode application --application <skill-dir> <skill>/evals/application.json  # 4. application_verdict (the primary quality signal)
-skill-graph improve --skill <skill>                       # 5. Karpathy keep-or-revert fix (only if a verdict is below bar)
-skill-graph drift                                          # 6. truth-source staleness
-skill-graph manifest --validate-only                      # 7. manifest parity (no source<->manifest drift)
-skill-graph status <skill>                                 # 8. read back the four-verdict Audit Status
+skill-graph audit <skill> --graded --grader-cli "<cmd>"   # 2. Verify: Integrity Gate -> stamps structural/truth (+ graded scorecard dimensions)
+skill-graph evaluate --mode comprehension <skill>/evals/comprehension.json          # 3. Evaluate: comprehension_verdict when artifact exists
+skill-graph evaluate --mode application --application <skill-dir> <skill>/evals/application.json  # 4. Evaluate: application_verdict (primary quality signal)
+skill-graph improve --skill <skill>                       # 5. Improve/Use/Evaluate/Grade: candidate change, guardrail, keep-or-revert
+skill-graph drift                                          # 6. Verify: truth-source staleness
+skill-graph manifest --validate-only                      # 7. Verify: manifest parity (no source<->manifest drift)
+skill-graph status <skill>                                 # 8. Grade/read back the four-verdict Audit Status
 # 9. commit the skill + its audit-state.json + audits/<skill>/ path-limited (git commit --only)
 ```
 
@@ -1010,12 +1023,14 @@ Every workspace-only command the numbered steps below use, and what a standalone
     ```
     Comprehension/application verdict tiers (confidence hierarchy — see
     `.claude/rules/version-schema-contract.md` §5–7):
-    - If you ran the dual-run grader (Step 6b): use ITS verdict — `PASS` / `SHALLOW` / `REDUNDANT`
-      for comprehension, `APPLICABLE` / `REDUNDANT` / `HARMFUL` / `MIXED` for application.
-    - If you did NOT run the grader but assessed the skill yourself (single-model runs): record
-      `PROVISIONAL` — a real, lower-confidence single-model result to be confirmed/overturned by the
-      grader later. Do NOT default to UNVERIFIED when you actually assessed it.
-    - `UNVERIFIED` is ONLY for "not assessed at all" (no gradeable artifact, or skill skipped).
+    - If you ran `evaluate --mode comprehension|application`: use the verdict that command stamped
+      or reported — `PASS` / `SHALLOW` / `REDUNDANT` for comprehension, `APPLICABLE` /
+      `REDUNDANT` / `HARMFUL` / `MIXED` / `FALSE_POSITIVE` for application, with `PROVISIONAL`
+      only when the evaluator capped the run.
+    - If you did NOT run the evaluator for a dimension, keep the existing sidecar value or record
+      `UNVERIFIED` with evidence that the dimension was not assessed. A diagnostic audit's
+      self-assessment belongs in `verdict.md` / `scorecard.md`; it is not a behavior-verdict receipt.
+    - `UNVERIFIED` means "not assessed by an eval receipt" for that dimension, not "the audit was bad."
     Use `--status reverted` if the audit's changes were reverted, `--status aborted` if you could not finish.
     Before using `--status completed`, confirm the audit report completion score from Step 7 is at least 4 and no score ceiling below 4 applies. If the run is diagnostic, open findings may remain, but the report must be complete and must name those findings as downstream work. If the run is remediation, unresolved in-scope required actions block `--status completed`.
 

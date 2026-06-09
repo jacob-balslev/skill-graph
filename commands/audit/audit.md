@@ -1,6 +1,6 @@
 ---
 name: audit
-description: "Audit one skill (or a scope) against live repo truth. Reads every field, runs the deterministic + drift + optional graded pipeline, writes verdict fields to the skill's audit-state.json sidecar. No SKILL.md mutations. Replaces the old audit-skill, domain-audit, bidirectional-audit, deep-repo-audit, workspace-audit, skill-audit."
+description: "Audit one skill (or a scope) against live repo truth. Reads every field, runs deterministic lint/drift plus optional qualitative scorecard, and writes only Integrity-Gate fields to audit-state.json. No SKILL.md mutations. Replaces the old audit-skill, domain-audit, bidirectional-audit, deep-repo-audit, workspace-audit, skill-audit."
 argument-hint: "<skill-name> [--graded] [--fix] [--source-first] [--fix-code-too] [--scope skill|cluster|repo|workspace] [--pilot 5]"
 version: 1.0.0
 since: 2026-05-17
@@ -9,9 +9,9 @@ superseded_by: null
 last_changed: 2026-06-07
 ---
 
-# /audit — Read every field, write the verdict
+# /audit — Read every field, write the Integrity verdict
 
-Audit one skill against live repo truth. No mutations to `SKILL.md`; writes the audit fingerprint to the skill's sibling `audit-state.json` sidecar.
+Audit one skill against live repo truth. No mutations to `SKILL.md`; writes the Integrity-Gate audit fingerprint to the skill's sibling `audit-state.json` sidecar. The Skill Audit Loop is the umbrella; lowercase `audit` is the report-only Verify command inside it.
 
 ## Why this audit exists
 
@@ -28,14 +28,14 @@ These fields live in `audit-state.json`; long-form evidence lives in the run dir
 | `drift_status` | always — `OK` / `DRIFT` / `BROKEN` / `STALE` / etc.; rolls up into `truth_verdict` |
 | `structural_verdict` | always — `PASS` / `FAIL` aggregate of `lint_verdict` (form/export-blockers only, never internal-style warnings) |
 | `truth_verdict` | always — `PASS` / `DRIFT` / `BROKEN` / `UNVERIFIED` from drift vs `grounding.truth_sources` (UNVERIFIED when the skill declares no truth sources) |
-| `comprehension_verdict` | only `--graded` — gate 8 recitation check; currently demoted (may stay `UNVERIFIED`, see ADR 0011) |
-| `application_verdict` | only `--graded` and only when the skill has an `application.json` — gate 9 behaviour-change check; this is the quality signal |
+| `comprehension_verdict` | never — written by `evaluate --mode comprehension`, not by `audit` |
+| `application_verdict` | never — written by `evaluate --mode application`, not by `audit` |
 
 ## Usage
 
 ```
 /audit <skill-name>                        # Standard single-skill audit
-/audit <skill-name> --graded               # Adds the 7-dimension LLM grader pass
+/audit <skill-name> --graded               # Adds qualitative scorecard grading; does not stamp behavior verdicts
 /audit <skill-name> --fix                  # Deterministic Integrity-gate shape fix for stale frontmatter/sidecar shape; no LLM
 /audit <skill-name> --dry-run --fix        # Preview the shape fix without writing
 /audit <skill-name> --source-first         # Reads source code BEFORE the skill (prevents anchoring) — was audit:domain-audit
@@ -53,10 +53,10 @@ The binding per-skill contract lives at [`skill-graph/skill-audit-loop/SKILL_AUD
 1. **Deterministic** — `skill-lint.js` (external mandates only — we do not author new internal lint rules to manufacture findings) → writes `lint_verdict` → rolls up into `structural_verdict`
    - **`--fix` (deterministic remediation framework)** — the deterministic repair catalog is currently EMPTY: the v7→v8 shape codemod (`lib/audit/migrate-frontmatter.js`) was retired to git history per `AGENTS.md § Major Version Is a Clean Cut` (it produced the interim `deployment_target` shape that v8's `public` + free-text `scope` replaced, so it could no longer emit a valid current-v8 skill). The framework stays for the next version's catalog; today remaining lint errors route to `improve`/manual. Distinct from `--fix-code-too` (LLM-driven cross-artifact code fix).
 2. **Drift** — `skill-graph-drift.js` against `grounding.truth_sources` → writes `drift_status` → rolls up into `truth_verdict`
-3. **Graded** (only `--graded`) — gate 8 (comprehension) and gate 9 (application, only when `application.json` exists) → write `comprehension_verdict` + `application_verdict`
+3. **Graded** (only `--graded`) — qualitative scorecard grading over metadata, activation, relation, grounding, content, eval-quality, and portability dimensions. This writes findings/verdict/scorecard artifacts only; it does not run comprehension/application eval suites.
 4. **Stamp** — writes `last_audited` to today's ISO date
 
-The single `audit_verdict` field is retired (ADR 0011). The four verdicts are independent: `structural_verdict` (form), `truth_verdict` (drift), `comprehension_verdict` (recitation, demoted), `application_verdict` (behaviour change — the real quality signal). Most skills sit at `UNVERIFIED` on the latter two until an `application.json` is authored.
+The single `audit_verdict` field is retired (ADR 0011). The four verdicts are independent: `structural_verdict` (form), `truth_verdict` (drift), `comprehension_verdict` (recitation, demoted), `application_verdict` (behaviour change — the real quality signal). `audit` owns the first two; `evaluate` owns the latter two. Most skills sit at `UNVERIFIED` on the behavior fields until eval artifacts are authored and run.
 
 Users see one command. Phases are an implementation detail.
 

@@ -1,183 +1,135 @@
 # Skill Audit Loop, Executable Map
 
 > Type: Reference
-> Purpose: connect each doctrine step in the Skill Audit Loop to the actual script that runs it, the files it touches, the verdict fields it writes, and the conditions under which it can be skipped. Surfaces ADR 0009 canonical-source drift visually.
-> Source of truth: [../SKILL_AUDIT_LOOP.md](../skill-audit-loop/SKILL_AUDIT_LOOP.md) (doctrine), [skill-audit-pipeline.md](../../docs/reference/skill-audit-pipeline.md) (pipeline reference), [field-state-matrix.md](./field-state-matrix.md) (which fields are loop-written).
+> Purpose: connect the Skill Audit Loop doctrine to the actual scripts, files, verdict writers, skip rules, and known silent-failure gaps.
+> Source of truth: [`../skill-audit-loop/SKILL_AUDIT_LOOP.md`](../skill-audit-loop/SKILL_AUDIT_LOOP.md) (doctrine), [`../../docs/reference/skill-audit-pipeline.md`](../../docs/reference/skill-audit-pipeline.md) (workspace execution reference), [`field-state-matrix.md`](./field-state-matrix.md) (field ownership).
 
 ## The loop in one sentence
 
-The Skill Audit Loop is **Karpathy's auto-improvement loop** (one editable asset, one scalar metric, one time box, keep-or-revert based on a single measurable signal) applied to skill files, using **Design Thinking**'s "read before changing" framing as the prelude. It is NOT a migration system; the keep-or-revert metric gate is the load-bearing distinction. See [../SKILL_AUDIT_LOOP.md:11](../skill-audit-loop/SKILL_AUDIT_LOOP.md).
+The **Skill Audit Loop** is the umbrella lifecycle:
 
-## The four operations (outer layer)
+```text
+Read → Verify → Evaluate → Research → Improve → Use → Evaluate → Grade
+```
+
+The lowercase `audit` operation is only the report-only **Verify** command inside that lifecycle. It stamps Integrity-Gate state, not behavior verdicts. The Karpathy-inspired part is the constrained keep-or-revert discipline: candidate changes are measured before canonical write-back, applied only on keep, and reverted only on genuine regression.
+
+## The eight lifecycle steps
+
+| Step | What happens | Main executable surface | Writes |
+|---|---|---|---|
+| **Read** | Load the skill, sidecar, evals, related skills, truth sources, prior audit receipts. | Human/agent reads; `source-truth-catalog.js` in workspace drains. | Run-dir evidence only. |
+| **Verify** | Check structural validity, drift, grounding, routing boundaries, privacy, and upstream displacement. | `node bin/skill-graph.js audit <skill> [--graded]`; implementation `lib/audit/skill-audit.js`. | `audit-state.json`: `last_audited`, `lint_verdict`, `drift_status`, `structural_verdict`, `truth_verdict`; run-dir `findings.md` / `verdict.md` / `scorecard.md`. |
+| **Evaluate** | Establish current behavior/baseline when eval artifacts exist. | `node bin/skill-graph.js evaluate --mode comprehension|application ...`; implementation `lib/audit/evaluate-skill.js`. | `eval_score`, `eval_failed_ids`, `freshness`, `comprehension_verdict` or `application_verdict`, `eval_last_run`. |
+| **Research** | Gather repo and official/web evidence for the strongest current teaching. | Per-model prompts in `prompts/skill-audit-loop-improve-pass.md`; panel deps in `lib/audit/skill-audit-loop-live-deps.js`. | Proposal artifacts and novelty memos, not canonical `SKILL.md`. |
+| **Improve** | Produce one candidate enrichment/fix, preserving useful knowledge. | `lib/audit/run-skill-audit-loop-lite.js` or `lib/audit/run-skill-audit-loop.js`; `skill-graph improve` for single-field edits. | Candidate `proposed-SKILL.md` / merged temp skill; canonical `SKILL.md` only later at Grade on keep. |
+| **Use** | Load/apply the candidate skill in the same task/eval shape the skill claims to improve. | `lib/audit/run-bidirectional-eval.js` and application eval runner. | Eval receipt artifacts. |
+| **Evaluate** | Measure candidate behavior under the same contract; invalid/capped/missing evals are inconclusive. | `runBidirectionalEval()` / `evaluate-skill.js`. | Eval receipts and, after keep, sidecar behavior verdicts. |
+| **Grade** | Keep/apply, revert, or defer; stamp only what the evidence earned. | `decideKeepOrRevert()` plus `applyMerge()`; full-loop recording in `recordFullLoop()`. | On keep: canonical `SKILL.md`, `last_changed`, eligible behavior verdict receipts. On revert: no canonical body write and no candidate behavior stamp. |
+
+## The four operations
 
 | Operation | What it does | Edits the body? | Writes which fields |
 |---|---|---|---|
-| **audit** | Read every field, check freshness and validity against repo truth, score graded gates when `--graded`. | No (Audit Status only) | `last_audited`, `structural_verdict`, `truth_verdict`, `comprehension_verdict` (`--graded`), `application_verdict` (`--graded`) |
-| **improve** | Edit one field. One commit. Time-boxed. | Yes | The chosen field + `last_changed` |
-| **evaluate** | Run the eval suite (deterministic + comprehension/application graders). | No (eval/Audit Status only) | `eval_score`, `eval_failed_ids`, `freshness`; `comprehension_verdict` / `application_verdict` when those graders run |
-| **evolve** | Queue-driver over the corpus: analyze → triage → execute → verify, prioritised by Audit Status, score, staleness, and registry facts. | Yes (per skill) | The same `SKILL.md` and `audit-state.json` writes as the operations/actions it composes. |
+| **audit** | Report-only Integrity pass: lint, drift, truth/source verification, optional qualitative scorecard. | No | `last_audited`, `lint_verdict`, `drift_status`, `structural_verdict`, `truth_verdict`. It does **not** stamp behavior verdicts. |
+| **improve** | Edit one field or candidate, time-boxed, then evaluate. | Yes | The chosen field or candidate; `last_changed` only on accepted keep. |
+| **evaluate** | Run comprehension/application eval suites. | No | `eval_score`, `eval_failed_ids`, `freshness`, `comprehension_verdict`, `application_verdict`, `eval_last_run` when the relevant grader runs. |
+| **evolve** | Corpus walker: analyze, triage, execute, verify, checkpoint. | Yes, through `improve` | The same `SKILL.md` and `audit-state.json` writes as the operations/actions it composes. |
 
-The Karpathy keep-or-revert gate applies in `improve`: if `eval_score` does not improve (or regresses below threshold), the commit is reverted automatically. The loop records the failed attempt and moves to the next field. See [../SKILL_AUDIT_LOOP.md:120-137](../skill-audit-loop/SKILL_AUDIT_LOOP.md).
+## `audit` inner pipeline
 
-## The audit pipeline (inner layer of `audit`)
+| # | Phase | Script | Files written | Verdict field | Skip condition |
+|---|---|---|---|---|---|
+| 1 | Structural lint | `lib/audit/skill-audit.js` invoking canonical lint routines | `audit-state.json` | `lint_verdict` -> `structural_verdict` | Always runs. Only external-format/canonical-source violations fail structural verdicts; internal style is advisory. |
+| 2 | Truth / drift | `skill-graph-drift.js` through `skill-audit.js` | `audit-state.json`; run-dir evidence | `drift_status` -> `truth_verdict` | Always runs. Missing hashable truth sources produce explicit uncertainty, not a behavior verdict. |
+| 3 | Qualitative scorecard (`--graded`) | `lib/audit/skill-audit.js` grader path | `findings.md`, `verdict.md`, `scorecard.md` | none beyond Integrity fields | Runs only with `--graded`; grades scorecard dimensions, not eval suites. |
+| 4 | Stamp | `writeSidecarFields()` via `skill-audit.js` | `audit-state.json` | `last_audited`, structural/truth fields | Always runs on successful audit write-back. |
 
-Five phases. Each writes a layer-scoped verdict instead of one aggregate (post-ADR 0011).
+## `evaluate` inner pipeline
 
-| # | Phase | Classification | Script (canonical) | Script (root, legacy) | Files written | Verdict field | Skip condition |
-|---|---|---|---|---|---|---|---|
-| 1 | Structural lint | form / external-mandate | `skill-graph/scripts/skill-lint.js` (245 lines, strict schema gate) | `scripts/skill/skill-lint.js` (560 lines, legacy v6, accepts compatibility values) | Stamps `lint_verdict` in `audit-state.json` through the audit loop | `lint_verdict` → rolled up into `structural_verdict` | Always runs. Only external-mandate violations (Anthropic Agent Skills marketplace shape, required fields, valid YAML) produce `FAIL`. Internal style preferences are warnings only. |
-| 2 | Truth / drift | infrastructure | `skill-graph/scripts/skill-graph-drift.js` | `scripts/skill/skill-evolution-loop.js:281-320` (drift logic) | Stamps `drift_status` in `audit-state.json` when explicitly writing; updates `drift_check.truth_source_hashes` when `--record --apply` is passed | Hashable `drift_status` values can roll up into `truth_verdict`; `UNGROUNDED` means no local truth-source baseline exists | Always runs. Reports `UNGROUNDED` when `grounding.truth_sources` is absent (the skill has nothing hashable to drift). |
-| 3 | Comprehension grader (gate 8) | recitation | `skill-graph/lib/audit/evaluate-skill.js --mode comprehension` | `scripts/skill/evaluate-skill.js --mode comprehension` (still owns the body per ADR 0009 incomplete deprecation) | Run artifacts under `skill-graph/skill-audit-loop/progress/skill-audits/<skill>/runs/<run-dir>/scorecard.md` | `comprehension_verdict` | Runs only under `--graded` AND when `evals/comprehension.json` exists. Demoted in v7: never alone certifies a skill. `SKIPPED_BASELINE_HIGH` is the expected verdict for concepts the foundation model already knows. |
-| 4 | Application grader (gate 9) | behavior | `skill-graph/lib/audit/evaluate-skill.js --mode application` (entry point only; `--application` body still delegates to root per SH-6198) | `scripts/skill/evaluate-skill.js --application` (still owns the body) | Run artifacts under `skill-graph/skill-audit-loop/progress/skill-audits/<skill>/runs/<run-dir>/scorecard.md` | `application_verdict` (the primary quality signal) | Runs only under `--graded` AND when `evals/application.json` exists. Application-eval coverage across the corpus is sparse — see [`SKILL_GRAPH.md § Current State`](../SKILL_GRAPH.md#current-state--single-source-of-truth) for live counts. Until application artifacts are authored at scale, `application_verdict: UNVERIFIED` is the honest default on most skills. |
-| 5 | Stamp | infrastructure | `scripts/skill/skill-audit-claim.js release` (writes terminal ledger line + verdicts) | n/a | Appends to `skill-graph/skill-audit-loop/progress/skill-audits/_ledger.jsonl`, updates `latest` symlink, stamps `last_audited` in `audit-state.json` | `last_audited` | Always runs at the end of a non-aborted audit. |
+| # | Phase | Script | Files written | Verdict field | Skip condition |
+|---|---|---|---|---|---|
+| 1 | Comprehension grader | `node bin/skill-graph.js evaluate --mode comprehension <eval-file>` -> `lib/audit/evaluate-skill.js` | sidecar + eval receipt | `comprehension_verdict`, `eval_score`, `eval_failed_ids`, `freshness` | Requires `evals/comprehension.json`. Missing artifact is explicit `UNVERIFIED`, not success. |
+| 2 | Application grader | `node bin/skill-graph.js evaluate --mode application --application <skill-dir> <eval-file>` -> `lib/audit/evaluate-skill.js` | sidecar + eval receipt | `application_verdict`, `eval_last_run`, `eval_score`, `eval_failed_ids`, `freshness` | Requires `evals/application.json`. `APPLICABLE` requires certifying cross-family evidence; otherwise positive results cap lower. |
+| 3 | Write-back guard | `stampComprehensionVerdict()` / `stampApplicationVerdict()` | `audit-state.json` | relevant behavior verdict | Dry runs, unresolved skill paths, or all-errored runs do not stamp. |
 
-## ADR 0009 drift visible
+## `improve` / panel pipeline
 
-Both columns "Script (canonical)" and "Script (root, legacy)" should converge to one column. Currently they don't.
+| # | Phase | Script | Files written | Keep/revert rule |
+|---|---|---|---|---|
+| 1 | Research + propose | `prompts/skill-audit-loop-improve-pass.md` through live deps | per-model proposal + novelty memo | Proposal only; no canonical mutation. |
+| 2 | Cross-review / revise (panel) | `prompts/skill-audit-loop-cross-review-pass.md`, `prompts/skill-audit-loop-revise-pass.md` | revised proposals + review JSON | Mandatory frontier quorum and convergence required. |
+| 3 | Curate | `curate()` in live deps; anti-loss validators in `run-skill-audit-loop-lite.js` / `run-skill-audit-loop.js` | merged candidate + merge ledger | Every contribution is kept or dropped with a wrong/redundant/harmful reason. |
+| 4 | Use + evaluate candidate | `run-bidirectional-eval.js` | eval receipt | Missing/invalid/capped evals are inconclusive and do not cause revert. |
+| 5 | Grade | `decideKeepOrRevert()` | on keep, canonical `SKILL.md`; on revert, no body write | Revert only `HARMFUL`, `FALSE_POSITIVE`, or a certifying-clean verdict measurably worse than the prior verdict. Flat/non-lift/UNVERIFIED is not a regression. |
+| 6 | Record full loop | `recordFullLoop()` in `run-skill-audit-loop.js` | Integrity sidecar fields always; behavior sidecar fields only after keep + receipt | Revert records an explicit finding and does not stamp candidate behavior onto unchanged canonical skill. |
 
-- Per ADR 0009 (sibling-repo deprecation), `skill-graph/` is the canonical implementation post-2026-05-18.
-- The root copies under `scripts/skill/` are legacy; SH-6198 tracks their deletion or delegation.
-- The `--application` entry point was canonicalized in commit `342a67f`, but the body still delegates to root. See `skill-graph/prompts/skill-audit-loop-single-model.md` Step 6 notes.
-- When the audit pipeline writes to a Audit Status field, **verify which script wrote it** (root vs skill-graph): the legacy root script can still produce non-canonical verdicts.
+## `evolve` pipeline
 
-This duplication is a canonical/version-control issue, not a naming or teachability problem. The intervention is finishing ADR 0009, not renaming.
+`evolve` is not a literal `audit(); improve(); evaluate()` triple. The canonical engine is `lib/audit/skill-evolution-loop.js`:
 
-## The improve pipeline (inner layer of `improve`)
-
-The only operation that mutates the skill body. Karpathy keep-or-revert discipline applies absolutely.
-
-| # | Phase | Classification | Script | Files written | Verdict field | Skip condition |
-|---|---|---|---|---|---|---|
-| 1 | Pick one field | infrastructure | `scripts/skill/skill-evolution-loop.js::understandingField()` selects the empty/missing field; otherwise shortest populated value among `description`, `mental_model`, `purpose`, `boundary`, `analogy`, `misconception` | n/a (in-memory selection) | n/a | Time-boxed: default 20 minutes per field. Beyond that, abort and re-queue. |
-| 2 | Edit the field | behavior | Manual edit OR `--mode <adapter>` (prompt-evolution / design-candidate-discovery / perf / docs) OR `--lens <other-skill>` (apply another skill as audit lens) | SKILL.md (the chosen field only) | `last_changed` | One field, one commit. Larger changes decomposed into a sequence of field-sized improves. |
-| 3 | Auto-test | behavior | `scripts/skill/evaluate-skill.js` (legacy) / `skill-graph/lib/audit/evaluate-skill.js` (canonical entry) | Eval run artifacts under `skill-graph/skill-audit-loop/progress/skill-audits/<skill>/runs/<run-dir>/` | `eval_score`, `eval_failed_ids` | Always runs after edit. |
-| 4 | Keep or revert | behavior | `scripts/skill/skill-evolution-loop.js:568-596` | git revert when `eval_score` regresses | n/a | Always evaluated. Failure recorded in run history; loop moves to next field. |
-| 5 | Stamp | infrastructure | n/a (stamped on edit) | SKILL.md | `last_changed` | Always runs. |
-
-## The evaluate pipeline (inner layer of `evaluate`)
-
-Runs the eval suite declared by the skill. Does NOT mutate body content.
-
-| # | Phase | Classification | Script | Files written | Verdict field | Skip condition |
-|---|---|---|---|---|---|---|
-| 1 | Deterministic evals | recitation | `evaluate-skill.js` runs `evals/<skill>.json` cases | Eval scorecard under run dir | `eval_score` (aggregate 0.0-5.0), `eval_failed_ids` | Runs when `evals/<skill>.json` exists. Skipped silently when absent. |
-| 2 | Comprehension grader | recitation | `evaluate-skill.js --mode comprehension` against `evals/comprehension.json` | Comprehension scorecard | `comprehension_verdict` | Runs when `evals/comprehension.json` exists AND `--graded` is set. |
-| 3 | Application grader | behavior | `evaluate-skill.js --mode application` against `evals/application.json` | Application scorecard | `application_verdict` | Runs when `evals/application.json` exists AND `--graded` is set. |
-| 4 | Stamp | infrastructure | n/a | SKILL.md | `freshness` (today's ISO date) | Always runs at end of evaluate. |
-
-## The evolve pipeline (inner layer of `evolve`)
-
-A thin for-loop over the four operations, priority-ordered by `application_verdict` first, then skill-graph centrality + staleness.
-
-```
-for skill in priority_order(application_verdict first, then graph centrality + last_audited):
-  audit(skill)
-  if structural_verdict in {FAIL, PASS_WITH_FIXES}
-     or truth_verdict in {DRIFT, BROKEN}
-     or application_verdict in {UNVERIFIED, REDUNDANT, HARMFUL, MIXED}:
-    if understanding_field_targetable:
-      improve(skill, field=understanding_field)
-  evaluate(skill)
-  write Audit Status fields back
+```text
+ANALYZE -> TRIAGE -> EXECUTE -> VERIFY -> CHECKPOINT
 ```
 
-Source: [../SKILL_AUDIT_LOOP.md:138-162](../skill-audit-loop/SKILL_AUDIT_LOOP.md).
+EXECUTE delegates to `improve` and `evaluate` where appropriate. Priority reads `application_verdict` first, then centrality and Audit Status staleness. The workspace fork of the old loop remains a compatibility surface until the documented fork-collapse work completes.
 
-**Documented vs implemented divergence (open):** the documented evolve pseudocode branches on structural / truth / comprehension / application failures, but the root impl at `scripts/skill/skill-evolution-loop.js:495-512` only calls `improve` for structural failures or `PASS_WITH_FIXES`. Truth / comprehension / application failures are routed to separate repair paths and not auto-fixed in `evolve`. This is a doctrine-vs-impl gap to track.
+## Silent failure modes to watch
 
-## The artifact family (where things land)
+| Gap | Why it matters | Expected behavior |
+|---|---|---|
+| `audit --graded` overread as Behavior-Gate certification | The command writes qualitative scorecard artifacts, not `comprehension_verdict` / `application_verdict`. | Use `evaluate --mode comprehension|application` for behavior verdicts. |
+| Self-assessment stamped as behavior verdict | A diagnostic audit can make a useful judgment, but it is not an eval receipt. | Put self-assessment in `verdict.md`; keep sidecar behavior `UNVERIFIED` unless `evaluate` ran. |
+| Candidate applied before eval | Canonical source can inherit ungraded changes. | Panel/lite runners eval the candidate copy before `applyMerge()`. |
+| Revert after non-lift | Delta-stripping removes useful curation because the eval was too narrow. | Revert only genuine regression. |
+| Revert stamps candidate verdict | Sidecar would describe a body that was never applied. | On revert, record failed candidate artifact; do not stamp behavior verdicts. |
+| Missing eval artifact treated as pass | The behavior gate silently disappears. | Record `UNVERIFIED` plus finding; absence is inconclusive, not certification. |
+| Invalid/capped eval used for revert | Confidence cap becomes a false regression signal. | Invalid/capped runs defer or keep; never revert. |
+| Advisory panel finding ignored by silence | Width is collected but not dispositioned. | Merge ledger must disposition every relied-on or surfaced contribution. |
+| Detached/background panel run | A hung or killed runner can look successful. | Use foreground + heartbeat viewer + terminal marker; `--fail-on-stall` on monitor paths. |
+| Baseline corpus lint hides new errors | Existing noise can mask the audited skill's regression. | Capture baseline; require focused skill clean and no baseline increase. |
 
-Per `scripts/skill/skill-audit-paths.js` (the single source of truth for run-dir layout).
+## Artifact family
 
-```
+Per `lib/audit/run-layout.js` plus workspace claim helpers:
+
+```text
 skill-graph/skill-audit-loop/progress/skill-audits/
-  _ledger.jsonl                          ← append-only global run record
-  _orphaned/<skill>/                      ← quarantined when skill no longer exists
+  _ledger.jsonl
   <skill>/
     runs/
       <YYYY-MM-DD>T<HHMM>--<op>--<model>--<run-id>/
-        catalog.json     ← source-truth catalog (gate 2 input)
-        research.md      ← repo + external research notes
-        findings.md      ← human-readable narrative of issues found
-        verdict.md       ← short rationale and fix/defer record
-        scorecard.md     ← per-dimension scores when --graded ran
-        _source.json     ← provenance (migrated runs only)
-    history.jsonl                         ← append-only per-skill run record
-    latest -> runs/<newest-run-dir>       ← symlink to most recent run
+        catalog.json
+        research.md
+        findings.md
+        verdict.md
+        scorecard.md
+        merge-ledger.md
+        novelty-memo.md
+    history.jsonl
+    latest -> runs/<newest-run-dir>
 ```
 
-Completion is **ledger-derived, not file-presence-derived.** `build-skill-list.js` reads `_ledger.jsonl` (via `skill-audit-ledger.js::summarizeAll()`) to compute each skill's status. The legacy "scorecard.md exists → completed" heuristic is retained only as a fallback for un-migrated artifacts.
-
-## Lanes (partitioned, attributable dispatch)
-
-From `audits/lanes.json` (schema: `schemas/skill-audit-lanes.schema.json`) — project-canonical per [ADR-0016](adr/0016-operational-data-ownership.md); migrated from the legacy workspace `.opencode/skill-audit-lanes.json` path.
-
-| Lane | Bands | Op | minTier | Max concurrency |
-|---|---|---|---|---|
-| `critical-audit` | critical | audit (graded) | high (opus / gpt-5.5 / gemini-3.1-pro) | 2 |
-| `high-audit` | high | audit (graded) | mid (sonnet / gpt-5.4) | 3 |
-| `bulk-audit` | medium, low | audit | cheap (haiku / gemini-flash / minimax / nemotron) | 4 |
-| `improve` | critical, high | improve | mid | 3 |
-| `bulk-evaluate` | medium, low | evaluate | cheap | 4 |
-| `merge` | all | merge | high | 1 |
-
-The `claim` helper enforces `tierRank(MODEL) >= minTier` and refuses past `maxConcurrency`. Every run is attributable to **actual-model + agent + lane + date**. Stale claims are auto-reaped past their model TTL on `next` / `claim`.
-
-## The version-earned gate
-
-`scripts/skill/check-version-earned.js` mechanically enforces `.claude/rules/version-schema-contract.md`.
-
-| Phase | Classification | Script | Files written | Verdict field | Skip condition |
-|---|---|---|---|---|---|
-| Detect version bump | infrastructure | `check-version-earned.js:201-214` | n/a (read-only) | n/a | Fires only when target `schema_version` or `skill_graph_protocol` > previous. |
-| Verify v6 content present | form | `check-version-earned.js:139-154` | n/a | n/a | Skipped when not bumping to v6+. |
-| Verify v7 content present | form | `check-version-earned.js:178-185` | n/a | n/a | Skipped when not bumping to v7. v7 inherits v6 requirements. |
-| Block commit on miss | external-mandate | `check-version-earned.js:221-290` (nonzero exit) | n/a | n/a | Fail-open on infrastructure errors (gate intentionally errs on allowing commits when state cannot be inspected). |
-
-Activate as a git pre-commit hook with `bash scripts/githooks/install.sh`. Failure mode: hand-bumping a label without the content present.
-
-## Critical-band rule (multi-model required)
-
-Skills in the **critical** importance band (worklist `importanceBand: critical`: high graph centrality, primary routing role, broad reuse) **must** go through the multi-model merge pass (≥2 model AUDIT proposals + Opus/GPT-5.4 curator MERGE per `.opencode/commands/skill-audit-merge-v1.md` and v2 at `skill-audit-multimodel-merge-v2.md`), not a single-model audit.
-
-Empirical justification: the agent-control audit (2026-05-22) showed a single Opus pass certifying drift as "verified accurate" was wrong; only the multi-model union surfaced that the WARNING threshold emits no event (stderr only). One model's verification is one model's blind spot.
-
-Single-model audits remain acceptable for low-centrality skills where a verification miss has limited blast radius.
-
-## Silent failure modes (where the loop can pass while skipping a layer)
-
-1. **A clean lint verdict can be mistaken for a useful skill.** Doctrine rejects this interpretation, but the root linter can still write a passing `lint_verdict` while internal findings remain non-fatal at `scripts/skill/skill-lint.js:33-40` and `scripts/skill/skill-lint.js:490-510`.
-2. **A stub audit can complete without proving behavior.** `skill-graph/lib/audit/skill-audit.js:431-502` creates a verdict with Behavior Gate `UNVERIFIED` and human TODOs. Honest, but easy to overread as "audited" unless the human/graded review replaces the TODO sections.
-3. **Behavior remains `UNVERIFIED` and still satisfies audit-complete** if it is explicit and evidenced. Doctrinally intentional at [../SKILL_AUDIT_LOOP.md:23-32](../skill-audit-loop/SKILL_AUDIT_LOOP.md), but it is also a skip path if reviewers do not inspect the evidence.
-4. **The version-earned gate fail-opens when repository inspection is unavailable** (`scripts/skill/check-version-earned.js:35-40`).
-5. **Claim ownership checks fail open when git metadata is unavailable** (`scripts/skill/skill-audit-claim.js:158-159`, `:173-174`).
-6. **Baseline corpus lint errors are allowed during single-skill preflight.** Per `skill-graph/prompts/skill-audit-loop-single-model.md:51-72`, baseline failures should not stop the run. If the baseline is not captured, new failures can hide in old noise.
-7. **Application certification depends on calibration**, but the code path can still stamp a verdict receipt. The grader says results are advisory until calibrated and should not stamp `APPLICABLE` without a receipt at `skill-graph/lib/audit/graders/application-comparative-grader-prompt.md:77-83`; the evaluator writes `application_verdict` and `eval_last_run` when a mode result is available at `skill-graph/lib/audit/evaluate-skill.js:1442-1508`.
-8. **Completion is ledger-derived**, so artifacts without release can look like progress but not count.
-9. **Export blocks only structural failure, not behavior uncertainty.** Marketplace export at `skill-graph/scripts/export-marketplace-skills.js:314-324` blocks `structural_verdict: FAIL`; behavior `UNVERIFIED` is a quality risk rather than a hard export blocker.
-10. **Metadata is stripped during export.** Per [../SKILL_METADATA_PROTOCOL.md:47-48](../skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md), export-provenance fields are stripped; Health and Understanding fields are stripped per `skill-graph/scripts/export-skill.js:80-100`. Correct for distribution but exported artifacts cannot be treated as audit-preserving source.
+Completion is ledger-derived, not file-presence-derived. A run directory without a release record is evidence, not completion.
 
 ## Quick commands
 
 ```bash
-# Audit a single skill (stub or graded)
+# Report-only Integrity audit
 node bin/skill-graph.js audit <skill-name>
 node bin/skill-graph.js audit <skill-name> --graded --grader-cli "<command>"
 
-# Lint a skill (canonical, feeds structural_verdict)
-node bin/skill-graph.js lint <skill-name>
+# Behavior evaluation
+node bin/skill-graph.js evaluate --mode comprehension skills/<skill-name>/evals/comprehension.json
+node bin/skill-graph.js evaluate --mode application --application skills/<skill-name> skills/<skill-name>/evals/application.json
 
-# Drift sentinel (reports hash evidence for the truth roll-up)
-node bin/skill-graph.js drift
+# Panel loop candidate improvement
+node lib/audit/run-skill-audit-loop.js --skill <slug> --skill-dir ../skills/skills/<subject>/<slug> --cwd .
 
-# Evaluate a skill (writes eval_score + graded verdicts)
-node lib/audit/evaluate-skill.js --mode comprehension skills/<skill-name>/evals/comprehension.json
-node lib/audit/evaluate-skill.js --mode application --application skills/<skill-name> skills/<skill-name>/evals/application.json
-
-# Evolve corpus (analyze → triage → execute → verify by priority)
+# Evolve corpus
 node bin/skill-graph.js evolve --workspace-root <workspace> --skills-dir <workspace>/skills --top 10
 
-# Show Audit Status for a skill at a glance
+# Show Audit Status for a skill
 node lib/audit/skill-status.js <skill-name>
 ```
 
@@ -185,21 +137,15 @@ node lib/audit/skill-status.js <skill-name>
 
 | Cadence | Action |
 |---|---|
-| Every change | Deterministic `audit` runs in lint as part of CI |
-| Daily | `evolve --top 5` walks the five stalest skills |
-| Weekly | `audit --graded` for skills with `last_audited` older than 7 days and `category` in the high-centrality set |
-| Before release | `evolve --workspace-root <workspace> --skills-dir <workspace>/skills --top <N>` |
+| Every change | Deterministic `audit` / lint as part of CI |
+| Daily | `evolve --top 5` walks the stalest/highest-priority skills |
+| Weekly | `audit --graded` for high-centrality skills with stale `last_audited`; `evaluate` only where eval artifacts exist |
+| Before release | `evolve --workspace-root <workspace> --skills-dir <workspace>/skills --top <N>` plus focused behavior evals for release-critical skills |
 
 ## Related
 
-- [../SKILL_AUDIT_LOOP.md](../skill-audit-loop/SKILL_AUDIT_LOOP.md), the doctrine (the why)
-- [../../docs/reference/skill-audit-pipeline.md](../../docs/reference/skill-audit-pipeline.md), the pipeline reference (the what at corpus level)
-- [field-state-matrix.md](./field-state-matrix.md), which fields each script writes
-- [AUTHORING-QUICKSTART.md](./AUTHORING-QUICKSTART.md), the author's view
-- [adr/0009-sibling-repo-deprecation.md](./adr/0009-sibling-repo-deprecation.md), why `skill-graph/` is canonical
-- [adr/0011-split-audit-verdict-into-four-verdicts.md](./adr/0011-split-audit-verdict-into-four-verdicts.md), why four verdicts instead of one
-- [adr/0014-canonical-only-schema-files.md](./adr/0014-canonical-only-schema-files.md), why prior schema versions live in git history only
-- `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`, the active per-skill execution contract (project-owned per ADR 0015; moved 2026-05-25)
-- `.opencode/commands/skill-audit-loop.md`, the queue wrapper
-- `skill-graph/prompts/skill-audit-loop-single-model.md`, the cross-CLI per-skill prompt (v3)
-- `skill-audit-multimodel-merge-v2.md`, the multi-model union-merge protocol
+- [`../skill-audit-loop/SKILL_AUDIT_LOOP.md`](../skill-audit-loop/SKILL_AUDIT_LOOP.md), binding doctrine and runbook
+- [`../../docs/reference/skill-audit-pipeline.md`](../../docs/reference/skill-audit-pipeline.md), workspace execution reference
+- [`field-state-matrix.md`](./field-state-matrix.md), which fields each operation owns
+- [`verdict-semantics.md`](./verdict-semantics.md), behavior verdict semantics and confidence tiers
+- [`skill-audit-multimodel-merge-v2.md`](./skill-audit-multimodel-merge-v2.md), multi-model union-merge protocol

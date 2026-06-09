@@ -1,6 +1,6 @@
 ---
 name: skill-audit-loop
-description: "Run ONE skill through the Skill Audit Loop (multi-model panel: Opus 4.8 + GPT-5.5 mandatory + advisory; full loop = audit + improve + evaluate, eval-guarded keep/revert), commit the improved SKILL.md, then USE that skill on a named project/repo and report findings. Interactive single-skill entry. NOT the autonomous batch queue-worker (.opencode/commands/skill-audit-loop.md)."
+description: "Run ONE skill through the Skill Audit Loop (Read → Verify → Evaluate → Research → Improve → Use → Evaluate → Grade; multi-model panel: Opus 4.8 + GPT-5.5 mandatory + advisory; eval-guarded keep/revert), commit the improved SKILL.md, then USE that skill on a named project/repo and report findings. Interactive single-skill entry. NOT the autonomous batch queue-worker (.opencode/commands/skill-audit-loop.md)."
 argument-hint: "<skill-name> <project-or-repo> [--no-advisory] [--max-rounds N] [--apply-only] [--improve-only] [--act]"
 version: 1.0.0
 since: 2026-06-06

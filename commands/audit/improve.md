@@ -1,6 +1,6 @@
 ---
 name: improve
-description: "Edit one field of a skill, one commit, time-boxed. Auto-tests after the edit and reverts the commit if `eval_score` drops. Karpathy keep-or-revert discipline. Replaces the old improve-skill, auto-improve, skill-fix."
+description: "Edit one field of a skill, one commit, time-boxed. Auto-tests after the edit and reverts only on harmful or measurable regression. Karpathy keep-or-revert discipline. Replaces the old improve-skill, auto-improve, skill-fix."
 argument-hint: "<skill-name> [--field <name>] [--mode rewrite|adapter|content-promote|design|perf|docs] [--lens <other-skill>] [--time-box 20m]"
 version: 1.0.0
 since: 2026-05-17
@@ -11,7 +11,7 @@ last_changed: 2026-05-23
 
 # /improve — One field, one commit, keep or revert
 
-Edit one field of a skill. One commit. Time-boxed. After the edit, `evaluate` runs automatically; if the metric drops, the commit reverts. The lesson is recorded; the field's `last_changed` stamp updates only on accept.
+Edit one field of a skill. One commit. Time-boxed. After the edit, `evaluate` runs automatically; harmful or measurable regression reverts. Flat score, missing eval artifact, or capped/inconclusive eval is not a regression by itself. The lesson is recorded; the field's `last_changed` stamp updates only on accept.
 
 ## What it writes
 
@@ -36,7 +36,7 @@ Edit one field of a skill. One commit. Time-boxed. After the edit, `evaluate` ru
 1. **One field, one commit.** Multi-field changes are sequences of single-field improves.
 2. **Time-boxed.** Default 20 minutes per field; configurable with `--time-box`. Beyond that, abort and re-queue.
 3. **Auto-test.** `improve` calls `evaluate` immediately after the edit.
-4. **Keep or revert.** If `eval_score` did not improve (or regressed below the allowed threshold), the commit reverts. The walker records the failed attempt and moves on.
+4. **Keep or revert.** Revert only when the change made the skill harmful or measurably worse than its prior graded verdict. A flat score, `UNVERIFIED`, missing eval artifact, or "the narrow eval did not credit this enrichment" is kept or deferred, never stripped on non-lift alone.
 5. **Stamp.** `last_changed` only updates when the edit is accepted.
 
 ## Modes
