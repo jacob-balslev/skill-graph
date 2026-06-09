@@ -86,6 +86,44 @@ fi
 # both subprocesses must see the same AGENT_ID). One id per drain process.
 export AGENT_ID="${AGENT_ID:-panel-drain-$(date -u +%Y%m%dT%H%M%SZ)-$$}"
 
+# ── Single-instance lock (silent-failure root cause; SKI-346) ───────────────────────────────
+# Concurrent panel drains contend for the SAME Opus+GPT MAX quota AND the same machine memory:
+# 2 drains x 8 agents = up to 16 live frontier calls -> agents hang, or the OS OOM-kills the
+# node tree. Those kills are then mislabeled "watchdog timeout" by the 143|137 branch below, so
+# the real cause is invisible — the "fails silently" symptom. One drain at a time. The lock is
+# an atomic mkdir (portable; macOS has no flock), owner pid recorded inside; a stale lock whose
+# owner pid is dead is reclaimed. Set PANEL_LOCK_DIR to run an intentionally separate pool.
+LOCK_DIR="${PANEL_LOCK_DIR:-$HOME/.claude/agents/panel-drain.lock}"
+_LOCK_HELD=""
+release_lock() { [ -n "$_LOCK_HELD" ] && rm -rf "$LOCK_DIR" 2>/dev/null; return 0; }
+# Pre-lock peer guard for the transition window: drains started BEFORE this lock existed hold no
+# lockfile, so the mkdir below would wrongly succeed against them. "Does a peer run-panel-loop
+# master exist" is an existence check, not an owned-pid liveness inference (no-ps-for-liveness)
+# — it mirrors the documented manual pre-launch guard. At this point (before any skill) the only
+# run-panel-loop process that is mine is $$; exclude $$ and my direct children defensively.
+if /bin/ps -A -o pid=,ppid=,command= 2>/dev/null \
+     | grep 'run-panel-loop\.sh' | grep -vE 'grep|zsh -c|sh -c' \
+     | awk -v me="$$" '$1 != me && $2 != me {print $1}' | grep -q .; then
+  echo "run-panel-loop: REFUSING — another run-panel-loop process is already running." >&2
+  echo "  Two concurrent panels exhaust the shared Opus+GPT MAX quota -> hangs/OOM kills that get" >&2
+  echo "  mislabeled as watchdog timeouts (silent failure). Stop the other drain first, or set" >&2
+  echo "  PANEL_LOCK_DIR=<dir> to run an intentionally separate pool." >&2
+  exit 75
+fi
+if mkdir "$LOCK_DIR" 2>/dev/null; then
+  _LOCK_HELD=1; echo "$$" > "$LOCK_DIR/pid"
+else
+  _owner=$(cat "$LOCK_DIR/pid" 2>/dev/null)
+  if [ -n "$_owner" ] && kill -0 "$_owner" 2>/dev/null; then
+    echo "run-panel-loop: REFUSING — another panel drain (pid $_owner) holds $LOCK_DIR." >&2
+    exit 75
+  fi
+  echo "run-panel-loop: reclaiming stale lock (owner pid ${_owner:-?} not alive)" >&2
+  rm -rf "$LOCK_DIR" 2>/dev/null
+  if mkdir "$LOCK_DIR" 2>/dev/null; then _LOCK_HELD=1; echo "$$" > "$LOCK_DIR/pid"; fi
+fi
+trap release_lock EXIT INT TERM
+
 mkdir -p "$WORK_ROOT"
 LEDGER="$WORK_ROOT/batch-ledger.jsonl"
 touch "$LEDGER"
@@ -109,13 +147,17 @@ kill_tree() {
 # Per-skill watchdog: hard-kill the enrich tree if it outruns $TIMEOUT. Liveness via OWNED pid.
 WATCHDOG_PID=""
 start_watchdog() {
-  local pid="$1" timeout="$2"
+  local pid="$1" timeout="$2" sentinel="$3"
   (
     local elapsed=0
     while [ "$elapsed" -lt "$timeout" ]; do
       sleep 10; elapsed=$((elapsed + 10))
       kill -0 "$pid" 2>/dev/null || exit 0   # enrich exited on its own — nothing to kill
     done
+    # Mark that the WATCHDOG (not an external SIGKILL/OOM/contention kill) is doing this kill, so
+    # the caller can tell a genuine timeout from an external one (SKI-346 — the unconditional
+    # "watchdog timeout" label that made every kill, including OOM/quota kills, look benign).
+    [ -n "$sentinel" ] && : > "$sentinel"
     if kill -0 "$pid" 2>/dev/null; then kill_tree "$pid"; sleep 5; kill -9 "$pid" 2>/dev/null || true; fi
   ) &
   WATCHDOG_PID=$!
@@ -147,7 +189,9 @@ CODE=0; REL_STATUS="aborted"
 enrich_one_skill() { # $1=slug $2=dir
   local slug="$1" dir="$2"
   local STATUS="$WORK_ROOT/$slug.status.json" RESULT="$WORK_ROOT/$slug.result.json" LOG="$WORK_ROOT/$slug.log"
-  rm -f "$STATUS"
+  local WD_SENTINEL="$WORK_ROOT/$slug.watchdog-fired"
+  rm -f "$STATUS" "$WD_SENTINEL"
+  local T_START; T_START=$(date +%s)
 
   AUDIT_LOOP=1 node "$ENRICH" \
     --skill "$slug" --skill-dir "$dir" --cwd "$SG" \
@@ -155,7 +199,7 @@ enrich_one_skill() { # $1=slug $2=dir
     --status-file "$STATUS" --no-tui \
     >"$RESULT" 2>"$LOG" &
   local ENRICH_PID=$!
-  start_watchdog "$ENRICH_PID" "$TIMEOUT"; local WD="$WATCHDOG_PID"
+  start_watchdog "$ENRICH_PID" "$TIMEOUT" "$WD_SENTINEL"; local WD="$WATCHDOG_PID"
 
   # OPTIONAL statusline complement for this unattended terminal drain (NOT the panel surface — the
   # main-area viewer is watch-panel.js on $STATUS; see header). Kept as a cheap tab-title hint.
@@ -206,8 +250,14 @@ enrich_one_skill() { # $1=slug $2=dir
       ledger "$slug" reverted "eval guardrail"; reverted=$((reverted+1)); REL_STATUS="reverted"
       ;;
     143|137)
-      echo "    $slug — KILLED by watchdog (>${TIMEOUT}s)" >&2
-      ledger "$slug" failed "watchdog timeout ${TIMEOUT}s"; failed=$((failed+1)); REL_STATUS="aborted"
+      local T_ELAPSED=$(( $(date +%s) - T_START ))
+      if [ -f "$WD_SENTINEL" ]; then
+        echo "    $slug — KILLED by watchdog (ran ${T_ELAPSED}s, ceiling ${TIMEOUT}s)" >&2
+        ledger "$slug" failed "watchdog timeout: ran ${T_ELAPSED}s of ${TIMEOUT}s"; failed=$((failed+1)); REL_STATUS="aborted"
+      else
+        echo "    $slug — KILLED by EXTERNAL signal (exit $CODE, ran ${T_ELAPSED}s < ${TIMEOUT}s — NOT a watchdog timeout; likely OOM / quota-contention / manual kill. Check for concurrent drains + memory; see $LOG)" >&2
+        ledger "$slug" failed "external kill exit $CODE after ${T_ELAPSED}s (NOT watchdog — OOM/contention/manual)"; failed=$((failed+1)); REL_STATUS="aborted"
+      fi
       ;;
     *)
       echo "    $slug — FAILED (exit $CODE, see $LOG)" >&2
@@ -248,7 +298,7 @@ drain_worklist() {
     node "$CLAIM" release "$CLAIMED_SLUG" --model skill-audit-loop --status aborted >/dev/null 2>&1 || true
     CLAIMED_SLUG=""
   }
-  trap cleanup_in_flight_claim EXIT INT TERM
+  trap 'cleanup_in_flight_claim; release_lock' EXIT INT TERM
   node "$BUILD_LIST" --write >/dev/null 2>&1 || true
   local LIST="$DEV/.opencode/progress/SKILL_LIST.json"
   mapfile -t SLUGS < <(node -e 'try{const j=require(process.argv[1]);for(const e of (j.worklist||j.skills||[])){if(e.repoScope&&e.repoScope!=="shared")continue;const st=e.status||"pending";if(st==="completed"||st==="done")continue;process.stdout.write(e.skill+"\n")}}catch(e){}' "$LIST" 2>/dev/null)
