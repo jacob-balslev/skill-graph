@@ -29,7 +29,11 @@ function makeDeps(overrides = {}) {
     hashProposal: (p) => (String(p).endsWith('/SKILL.md') || String(p) === 'SKILL.md' || String(p).includes('skills/') ? `h:current:${p}` : `h:merged:${p}`),
     crossReview: () => ({ ok: true, structured: { items: [] } }),
     reviseProposal: ({ ownProposalPath }) => ({ ok: true, proposalPath: ownProposalPath, contentHash: `h:${ownProposalPath}`, changed: false }),
-    curate: () => ({ mergedSkillPath: 'merged-SKILL.md', mergeLedgerPath: 'merge-ledger.json', mergeLedger: { contributions: [{ id: 1, surfaced_by: 'opus', disposition: 'kept' }, { id: 2, surfaced_by: 'codex-current', disposition: 'kept' }] } }),
+    curate: (args) => ({
+      mergedSkillPath: 'merged-SKILL.md',
+      mergeLedgerPath: 'merge-ledger.json',
+      mergeLedger: { contributions: args.proposals.concat(args.advisoryProposals || []).map((p, i) => ({ id: i + 1, surfaced_by: p.model, disposition: 'kept' })) },
+    }),
     prepareEnrichedEval: ({ skillDir }) => ({ evalSkillDir: `${skillDir}/.enriched`, baselineEvalSkillDir: `${skillDir}/.baseline`, cleanup: () => {} }),
     applyMerge: ({ skillDir }) => ({ applied: `${skillDir}/SKILL.md` }),
     evalArtifactExists: () => true,

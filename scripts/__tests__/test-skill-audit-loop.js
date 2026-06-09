@@ -122,7 +122,9 @@ check('advisory death is best-effort: does not collapse quorum, run continues', 
   const r = panel.runConvergence({ skill: 's', skillDir: '/x', proposals, deps, policy: { maxRounds: 3, minRounds: 1, stabilityThreshold: 1.0, quorum: 2 } });
   assert.strictEqual(r.converged, true);
   assert.strictEqual(r.reason, 'stable');
-  assert.strictEqual(proposals.find((p) => p.model === 'minimax').alive, false);
+  const advisory = proposals.find((p) => p.model === 'minimax');
+  assert.strictEqual(advisory.alive, true, 'advisor proposal stays alive for curation');
+  assert.strictEqual(advisory.advisoryFailure.phase, 'review');
 });
 
 check('SKI-211: advisory churn does NOT block convergence — stability is mandatory-only', () => {
@@ -160,7 +162,14 @@ function makeDeps(overrides = {}) {
     hashProposal: (p) => `h:${p}`,
     crossReview: () => ({ ok: true, structured: { items: [] } }),
     reviseProposal: ({ reviserModel, ownProposalPath }) => ({ ok: true, proposalPath: ownProposalPath, contentHash: `h:${ownProposalPath}`, changed: false }),
-    curate: (args) => { calls.curatedWith = args; return { mergedSkillPath: 'SKILL.md', mergeLedgerPath: 'merge-ledger.json', mergeLedger: { contributions: [{ id: 1, surfaced_by: 'opus', disposition: 'kept' }, { id: 2, surfaced_by: 'codex-current', disposition: 'kept' }] } }; },
+    curate: (args) => {
+      calls.curatedWith = args;
+      return {
+        mergedSkillPath: 'SKILL.md',
+        mergeLedgerPath: 'merge-ledger.json',
+        mergeLedger: { contributions: args.proposals.concat(args.advisoryProposals || []).map((p, i) => ({ id: i + 1, surfaced_by: p.model, disposition: 'kept' })) },
+      };
+    },
     prepareEnrichedEval: ({ skillDir }) => ({ evalSkillDir: `${skillDir}/.enriched`, cleanup: () => {} }),
     applyMerge: ({ skillDir }) => { calls.applied += 1; return { applied: `${skillDir}/SKILL.md` }; },
     evalArtifactExists: () => true,
@@ -180,6 +189,7 @@ check('runs mandatory + advisory proposals, converges, curates with advisory+cro
   assert.ok(Array.isArray(deps._calls.curatedWith.crossReview));
   assert.strictEqual(r.merge.anti_loss.ok, true);
   assert.strictEqual(r.merge.mandatory_coverage.ok, true);
+  assert.strictEqual(r.merge.advisory_coverage.ok, true);
   assert.strictEqual(r.eval.synthesized_verdict, 'APPLICABLE');
   assert.strictEqual(r.keep_or_revert.action, 'keep');
   assert.strictEqual(r.applied, true);
@@ -199,6 +209,44 @@ check('ADVISORY propose failure does NOT abort — recorded in advisory_failures
   assert.deepStrictEqual(r.advisory_models_alive, ['gemini']);
   assert.strictEqual(r.advisory_failures.length, 1);
   assert.match(r.advisory_failures[0].error, /minimax timeout/);
+});
+
+check('ADVISORY cross-review failure does NOT drop its proposal from curation', () => {
+  const deps = makeDeps({
+    crossReview: ({ reviewerModel }) => (reviewerModel === 'minimax' ? { ok: false, error: 'review timeout' } : { ok: true, structured: { items: [] } }),
+  });
+  const r = panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: ['minimax'], deps });
+  assert.strictEqual(r.applied, true);
+  assert.deepStrictEqual(deps._calls.curatedWith.advisoryProposals.map((p) => p.model), ['minimax']);
+  assert.strictEqual(r.advisory_failures.length, 1);
+  assert.strictEqual(r.advisory_failures[0].phase, 'review');
+});
+
+check('advisory coverage gap throws when a produced advisor is absent from ledger', () => {
+  const deps = makeDeps({
+    curate: (args) => ({
+      mergedSkillPath: 'SKILL.md',
+      mergeLedgerPath: 'm.json',
+      mergeLedger: { contributions: args.proposals.map((p, i) => ({ id: i + 1, surfaced_by: p.model, disposition: 'kept' })) },
+    }),
+  });
+  assert.throws(() => panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: ['minimax'], deps }), /advisory coverage gap/);
+});
+
+check('round-budget non-convergence aborts before curate/apply', () => {
+  let counter = 0;
+  const deps = makeDeps({
+    reviseProposal: ({ reviserModel, ownProposalPath }) => {
+      counter += 1;
+      return { ok: true, proposalPath: ownProposalPath, contentHash: `${reviserModel}-${counter}`, changed: true };
+    },
+  });
+  assert.throws(
+    () => panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], convergence: { maxRounds: 1, minRounds: 1, stabilityThreshold: 1.0, quorum: 2 }, deps }),
+    /did not converge/,
+  );
+  assert.strictEqual(deps._calls.curatedWith, null);
+  assert.strictEqual(deps._calls.applied, 0);
 });
 
 check('anti-loss violation in the merge throws', () => {
