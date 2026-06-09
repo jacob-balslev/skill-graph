@@ -106,6 +106,41 @@ check('buildCuratePrompt forbids "did not move a score" drops + names ledger pat
   assert.ok(p.includes('/r/l.json'));
   assert.ok(p.includes('UNION'));
 });
+check('model dispatch uses injected model cwd and scratch env, not the claim cwd/env', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'enrich-model-env-'));
+  const modelCwd = path.join(tmp, 'public-skill-graph');
+  const skillDir = path.join(tmp, 'skills', 'demo-skill');
+  const runDir = path.join(tmp, 'skill-audit-loop', 'progress', 'skill-audits', 'demo-skill', 'runs', 'r1');
+  fs.mkdirSync(modelCwd, { recursive: true });
+  fs.mkdirSync(skillDir, { recursive: true });
+  fs.mkdirSync(runDir, { recursive: true });
+  fs.mkdirSync(path.join(tmp, 'prompts'), { recursive: true });
+  fs.writeFileSync(path.join(tmp, 'prompts', 'skill-audit-loop-improve-pass.md'), '```\nENRICH TEMPLATE\n```\n');
+  fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: demo-skill\n---\n# Demo\n');
+  const seen = [];
+  const deps = d.createSkillAuditLoopLiteDeps({
+    skillGraphRoot: tmp,
+    workspaceRoot: tmp,
+    modelCwd,
+    modelEnv: { HOME: '/tmp/model-home', CODEX_HOME: '/tmp/model-home/.codex' },
+    dispatch: ({ cli, args, cwd, env }) => {
+      seen.push({ cli, cwd, home: env && env.HOME, codexHome: env && env.CODEX_HOME });
+      const text = args.join('\n');
+      const pm = text.match(/(\S+\.proposed-SKILL\.md)/);
+      const nm = text.match(/(\S+\.novelty-memo\.md)/);
+      if (pm) fs.writeFileSync(pm[1], '# proposal\n');
+      if (nm) fs.writeFileSync(nm[1], '# memo\n');
+      return '';
+    },
+  });
+  deps.researchAndPropose({ skill: 'demo-skill', skillDir, model: 'codex-current', brief: 'B', artifactsDir: runDir });
+  assert.strictEqual(seen.length, 1);
+  assert.strictEqual(seen[0].cli, 'codex');
+  assert.strictEqual(seen[0].cwd, modelCwd);
+  assert.strictEqual(seen[0].home, '/tmp/model-home');
+  assert.strictEqual(seen[0].codexHome, '/tmp/model-home/.codex');
+  fs.rmSync(tmp, { recursive: true, force: true });
+});
 
 console.log('3. resolveWorkspaceRoot');
 check('defaults to the parent of skillGraphRoot, honors override', () => {
