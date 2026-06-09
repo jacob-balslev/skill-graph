@@ -19,6 +19,12 @@
 // (heartbeat `ts` frozen past --stale → runner hung/dead), and SLOW (an active agent's live
 // elapsed exceeds --slow), so a hung run can never look like a live one.
 //
+// --fail-on-stall turns a STALL into a TERMINAL FAILURE: instead of printing STALL and
+// spinning forever (waiting for a heartbeat that will never come), the viewer prints a
+// FAILED line and exits non-zero (3). Pass it on the Monitor/FALLBACK path so a silent
+// hang surfaces as a loud, terminal failure the orchestrator acts on — the embedded-systems
+// supervisor/watchdog pattern (a heartbeat plus a timeout ACTION, not just a log line).
+//
 // LIVE TIMER: the runner's event loop is FROZEN during a synchronous model dispatch, so its
 // heartbeat (and per-agent elapsed) cannot tick mid-call. The viewer therefore EXTRAPOLATES
 // elapsed from `now - status.ts` (passed to renderCollected as `nowMs`), so the header + any
@@ -27,7 +33,7 @@
 // a periodic liveness tick — never per-second (which would trip the Monitor's flood guard).
 //
 // Usage:
-//   node scripts/watch-panel.js <status-file> [--poll SECS] [--stale SECS] [--slow SECS] [--tick SECS] [--once]
+//   node scripts/watch-panel.js <status-file> [--poll SECS] [--stale SECS] [--slow SECS] [--tick SECS] [--once] [--fail-on-stall]
 
 const fs = require('fs');
 const path = require('path');
@@ -39,7 +45,7 @@ function main(argv) {
   const args = argv.slice();
   const statusFile = args.find((a) => !a.startsWith('--'));
   if (!statusFile) {
-    process.stderr.write('Usage: node scripts/watch-panel.js <status-file> [--poll SECS] [--stale SECS] [--slow SECS] [--tick SECS] [--once]\n');
+    process.stderr.write('Usage: node scripts/watch-panel.js <status-file> [--poll SECS] [--stale SECS] [--slow SECS] [--tick SECS] [--once] [--fail-on-stall]\n');
     process.exit(2);
   }
   const optVal = (name, def) => {
@@ -51,6 +57,10 @@ function main(argv) {
   const slowMs = optVal('slow', 600) * 1000;   // active agent > 10m ⇒ SLOW flag
   const tickMs = optVal('tick', 20) * 1000;    // piped liveness cadence (no per-second spam)
   const once = args.includes('--once');
+  // --fail-on-stall: on a STALL (heartbeat ts frozen past --stale and not complete), exit
+  // non-zero (3) with a FAILED line instead of spinning forever. Turns a silent hang into a
+  // terminal failure a Monitor/orchestrator can act on. Default off (back-compat).
+  const failOnStall = args.includes('--fail-on-stall');
   const tty = Boolean(process.stdout.isTTY);
   const absStatus = path.resolve(statusFile);
 
@@ -102,8 +112,16 @@ function main(argv) {
     // normally, so only flag past --stale, and only once per episode.
     if (st.ts !== lastTs) { lastTs = st.ts; lastTsWall = now; staleFlagged = false; }
     else if (!st.complete && now - lastTsWall >= staleMs && !staleFlagged) {
-      process.stdout.write(`STALL: no heartbeat for ${Math.round((now - lastTsWall) / 1000)}s — runner frozen/dead, check it\n`);
+      const secs = Math.round((now - lastTsWall) / 1000);
+      process.stdout.write(`STALL: no heartbeat for ${secs}s — runner frozen/dead, check it\n`);
       staleFlagged = true;
+      if (failOnStall) {
+        // Terminal failure: the run is hung/dead and is NOT coming back. Make it loud and
+        // non-zero so a Monitor/orchestrator stops waiting and acts. Exit 3 distinguishes a
+        // watchdog-detected stall from the runner's own exits (0 keep / 2 revert / 1 error).
+        process.stdout.write(`FAILED: skill-audit-loop stalled — no heartbeat for ${secs}s (exceeded --stale ${Math.round(staleMs / 1000)}s); runner frozen or dead, not coming back\n`);
+        process.exit(3);
+      }
     }
 
     // SLOW: an active agent has been running longer than --slow (one flag per agent-episode).

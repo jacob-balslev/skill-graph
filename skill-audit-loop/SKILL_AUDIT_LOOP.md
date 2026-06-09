@@ -56,7 +56,7 @@ The loop exists to answer one question about each skill: **does it still teach a
 
 The audit is **not a lint-test factory.** We do not invent arbitrary internal structural checks to manufacture findings, and an empty findings report on a genuinely good skill is a **PASS** — not a failure to find work. `lint_verdict` / `structural_verdict` cover form, schema validity, and external marketplace mandates only — a **floor the skill must clear**, never the target it aims at. Passing lint says the skill is well-formed; it says nothing about whether the skill teaches well.
 
-**Breadth is not a finding.** A skill that deliberately covers a wide, cross-cutting topic is not defective for being broad: declared breadth (a wide `scope` / `description`, or many `relations.boundary` edges) is intent fidelity, not drift, and topic overlap between related skills is recall, not a defect to drive to zero. Never open a finding whose substance is "too broad" / "overlaps too many skills" / "too many boundary edges"; judge each *addition* on correctness, placement, non-contradiction, and organization, never on scope-narrowness. A breadth-related finding is legitimate only when the breadth yields a concrete defect (a wrong claim, a misplaced section, a real routing ambiguity with no disambiguating edge, or self-contradiction). Full statement: [`docs/reference/skill-audit-pipeline.md` § "Breadth is not a finding"](../../docs/reference/skill-audit-pipeline.md) and [`docs/quality-doctrine.md` § "Reading skill-overlap.js output"](../docs/quality-doctrine.md).
+**Breadth is not a finding.** A skill that deliberately covers a wide, cross-cutting topic is not defective for being broad: declared breadth (a wide `scope` / `description`, or many `relations.suppresses` edges) is intent fidelity, not drift, and topic overlap between related skills is recall, not a defect to drive to zero. Never open a finding whose substance is "too broad" / "overlaps too many skills" / "too many suppression edges"; judge each *addition* on correctness, placement, non-contradiction, and organization, never on scope-narrowness. A breadth-related finding is legitimate only when the breadth yields a concrete defect (a wrong claim, a misplaced section, a real routing ambiguity with no disambiguating edge, or self-contradiction). Full statement: [`docs/reference/skill-audit-pipeline.md` § "Breadth is not a finding"](../../docs/reference/skill-audit-pipeline.md) and [`docs/quality-doctrine.md` § "Reading skill-overlap.js output"](../docs/quality-doctrine.md).
 
 ### Two Gates, One Quality Claim
 
@@ -422,12 +422,43 @@ The runner writes a heartbeat `status.json`; the **COLLECTED multi-agent view is
    On a real TTY the runner ALSO pins the collected view as a header itself; piped/background it writes only the heartbeat.
 2. **Watch the collected view (the canonical viewer):**
    ```bash
-   node scripts/watch-panel.js /tmp/panel-<slug>.json
+   node scripts/watch-panel.js /tmp/panel-<slug>.json --fail-on-stall
    ```
-   In a terminal it live-refreshes the collected TUI; piped (or as an in-session background task / Monitor) it prints a collected block per change — so it's watchable **in-session**, not only in a separate terminal. Exits on `COMPLETE`, emits `STALE` if the heartbeat stops changing.
+   In a terminal it live-refreshes the collected TUI; piped (or as an in-session background task / Monitor) it prints a collected block per change — so it's watchable **in-session**, not only in a separate terminal. Exits on `COMPLETE`, emits `STALL` if the heartbeat stops changing. **Pass `--fail-on-stall`** (recommended on the Monitor path) so a frozen heartbeat past `--stale` becomes a TERMINAL `FAILED` line + non-zero exit (3) instead of a viewer spinning forever — a silent hang surfaces as a loud failure the orchestrator acts on.
 3. **(optional) Event signals** — for explicit `HANG`/`STALE`/`COMPLETE` lines via the Claude Code `Monitor` tool: `bash scripts/watch-audit-batch.sh /tmp/panel-<slug>.json --proc run-skill-audit-loop --hb-stale 600 --poll 20`.
 
 Do NOT poll `ps`/the log by hand, and do NOT launch the runner as a blind background task with no viewer attached.
+
+#### Banned launch forms (mechanically enforced)
+
+The runner MUST run VISIBLY in the foreground. These detached / output-masking launch forms are **banned** — a detached run survives invisibly (it can outlive the session in a process namespace foreground tools cannot see, per `~/Development/.claude/rules/no-ps-for-liveness.md`) and produces **false-success reports**:
+
+| Banned form | Why it fails |
+|---|---|
+| `nohup … &` | Detaches the runner; it keeps running unseen and unkillable by normal means. |
+| trailing `&` (backgrounding) | Same — the run is no longer attached to anything you can observe or wait on. |
+| `setsid …` / `… ; disown` | Detaches from the session/job table; liveness becomes unobservable. |
+| `… \| tee log &` | Backgrounded AND the pipe's exit code is `tee`'s `0`, masking the runner's real exit. |
+| `run_in_background` harness task with **no viewer attached** | The worst case: invisible namespace + no heartbeat surface = a stall looks identical to success. |
+
+**This is enforced, not just documented.** A PreToolUse Bash gate — `~/Development/scripts/hooks/audit-loop-launch-gate.py` (registered in `~/Development/.claude/settings.json`) — DENIES any Bash command that launches `run-skill-audit-loop[-lite].js` / `run-bidirectional-{eval,enrich}` with one of the banned forms above. The gate is fail-open (it only ever blocks that narrow banned case) and does NOT touch the legitimate Agent-tool `run_in_background` panel-dispatch path. The doctrine teaches; the hook enforces.
+
+#### Judge the terminal marker, not a printed JSON or a green pipe exit
+
+The runner emits one unambiguous terminal line to **stderr** at the end of every run:
+
+```
+SKILL-AUDIT-LOOP: COMPLETE skill=<slug> keep=<bool> exit=<0|2>     # success (0 keep / 2 revert)
+SKILL-AUDIT-LOOP: FAILED   skill=<slug> exit=1 reason=<msg>        # exception
+```
+
+**Judge the run by THIS marker line — never by the result JSON on stdout** (a detached/piped launch can emit that JSON even when the run was killed) **and never by a piped exit code** (`| tee` masks it). The marker is emitted by the node process itself, so it is the one honest done-signal.
+
+#### Foreground, listen, and act — do not stall
+
+- **Prefer the foreground.** Run the loop harness-tracked (so the harness yields a completion notification) — not as a shell command hidden in the background.
+- **Actively listen to BOTH the script and the session.** Watch the terminal marker, the heartbeat viewer (`--fail-on-stall`), and the harness completion notification.
+- **Flag and act on errors, silent failures, and progress — do not stall.** A `FAILED` marker, a watchdog `FAILED` (exit 3), a non-zero exit, or a stale heartbeat is a signal to surface and act on, not to wait through. Silence is not success.
 
 ## Cadence
 
@@ -447,7 +478,7 @@ The loop does not require a separate issue tracker, dashboard, control plane, or
 - `skill-metadata-protocol/design-rationale.md` — the canonical field list including the Audit Status and flat Understanding fields
 - `schemas/SKILL_METADATA_PROTOCOL_schema.json` — the machine-validated current contract (v8). Prior versions live in git history per [ADR-0014](../docs/adr/0014-canonical-only-schema-files.md) and [AGENTS.md § Major Version Is a Clean Cut](../AGENTS.md) (retrievable via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`); the schema's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier.
 - [ADR 0011](../docs/adr/0011-split-audit-verdict-into-four-verdicts.md) — the `audit_verdict` → four-verdict split (rationale for the Audit Status's four-verdict shape)
-- [ADR 0017](../docs/adr/0017-five-axis-classification-model.md) — the v7→v8 classification model, amended 2026-05-27 (`operation` axis retired, `scope` repurposed to free-text, `deployment_target` introduced as the closed-enum deployment axis, `domain` renamed to `taxonomy_domain`, `project[]` / `repo[]` belonging-entity fields added)
+- [ADR 0017](../docs/adr/0017-five-axis-classification-model.md) — the v7→v8 classification model, amended 2026-05-27 (`operation` axis retired, `deployment_target` replaced by the boolean `public` publishability gate, `scope` repurposed to free-text, `domain` renamed to `taxonomy_domain`, `project[]` / `repo[]` belonging-entity fields added)
 - **Part 2 below** — the per-skill audit checklist (formerly `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 2, deleted in the 2026-05-25 consolidation)
 - **Part 3 below** — the per-skill audit runbook (formerly `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 3, deleted in the 2026-05-25 consolidation)
 
@@ -574,7 +605,8 @@ Required dimension rows:
 - [ ] `version` exists
 - [ ] **v8 classification axes are present and valid:**
    - `subject` is one of the 12-value enum (3 bands, ADR-0020) — `backend-engineering` / `frontend-engineering` / `software-architecture` / `data-engineering` / `agent-ops` / `ai-engineering` / `quality-assurance` / `design` / `reasoning-strategy` / `software-engineering-method` / `knowledge-organization` / `product-domain`.
-   - `deployment_target` is one of the 2-value enum — `portable` (any project) or `project` (one specific project; requires `grounding.subject_matter` and a `project[]` belonging-entity reference).
+   - `public` is a boolean publishability/private-data gate — `true` means publishable/shareable; `false` means private and excluded from public export.
+   - A non-empty `project[]` anchors the skill to one or more projects and requires `grounding` / `grounding.subject_matter`.
    - `scope` is present and free-text (PRD-style label — NOT an enum).
    - `subjects[]` (optional, max 2, primary first) is used only when the skill genuinely spans two browse shelves.
    - `taxonomy_domain` (optional, slash-delimited) is used to subdivide a `subject` that holds many skills.
@@ -598,7 +630,7 @@ Required dimension rows:
 ### 3. Relation quality
 
 - [ ] `relations.related` points to real neighboring skills (`relations.adjacent` is accepted only as a back-compat alias)
-- [ ] `relations.boundary` clearly prevents misuse
+- [ ] `relations.suppresses` clearly prevents misuse (legacy `boundary` alias only for unmigrated skills)
 - [ ] `relations.verify_with` names valid verification partners
 - [ ] `relations.depends_on` is only used where a real dependency exists
 - [ ] relation semantics are not vague or ornamental
@@ -624,7 +656,6 @@ Run this section when the skill is repo-grounded or implementation-aware.
 - [ ] the skill has a clear `## Verification` section (lint-enforced)
 - [ ] the skill contains negative bounds — `## Do NOT Use When` (lint-enforced)
 - [ ] the skill has at least one concrete decision table, checklist, or routing rule
-- [ ] the skill does not contain generic model-native filler
 - [ ] the skill does not contain generic model-native filler
 - [ ] the skill does not claim behavior it cannot verify
 
@@ -671,7 +702,7 @@ Severity: P1
 Surface: frontmatter
 Problem: `type` is not a v8 schema field (rejected by additionalProperties)
 Evidence: `type: capability`
-Required action: remove `type` — v8 classifies by `subject` + `deployment_target`
+Required action: remove `type` — v8 classifies by `subject`, `public`, and free-text `scope`
 ```
 
 ### Completion Rule

@@ -93,7 +93,7 @@ AUDIT_LOOP=1 node /Users/jacobbalslev/Development/skill-graph/lib/audit/run-skil
 # Step 2 — IMMEDIATELY attach the collected-view viewer via the Monitor tool (persistent):
 Monitor (persistent):
   node /Users/jacobbalslev/Development/skill-graph/scripts/watch-panel.js \
-    /tmp/skill-audit-loop/<skill>.status.json --poll 5 --stale 1800
+    /tmp/skill-audit-loop/<skill>.status.json --poll 5 --stale 1800 --fail-on-stall
 ```
 
 This streams every agent's phase/state into the chat as a **scrolling collected block — a new message per change, NOT the pinned/interactive Task panel.** It is a degraded fallback for the unattended-runner case only; the PRIMARY Task panel is the panel whenever the orchestrator can drive `TaskCreate`/`TaskUpdate`. It still satisfies the "run the loop VISIBLY" requirement (`skill-audit-loop/SKILL_AUDIT_LOOP.md` § "Canonical way to run the PANEL loop VISIBLY" — *"do NOT launch the runner as a blind background task with no viewer attached"*): the Monitor viewer IS the attached viewer.
