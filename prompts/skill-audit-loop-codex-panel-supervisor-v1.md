@@ -81,8 +81,15 @@ PRIVATE-CONTENT BOUNDARY (HARD)
   Sales Hub / Printify / Shopify / personal-API / bank / customer data into any artifact.
 
 BOOTSTRAP VARIABLES (set once per wake)
-  AUDIT_AUTOMATION_ID=${AUDIT_AUTOMATION_ID:-skill-audit-loop-nightly}
-  AUDIT_MEMORY="$CODEX_HOME/automations/$AUDIT_AUTOMATION_ID/memory.md"
+  AUDIT_AUTOMATION_ID = this automation's REAL id, exactly as printed in the automation
+    header Codex shows at the top of the wake ("Automation ID: ..."). The header wins
+    over any id restated in the textbox. Never invent, alias, or hand-type a different id.
+  AUDIT_MEMORY = the "Automation memory" path from that same header
+    ($CODEX_HOME/automations/<AUDIT_AUTOMATION_ID>/memory.md). The sandbox only allows
+    memory writes inside THIS automation's own directory — deriving the path from any
+    other id fails with a blocked write (observed 2026-06-10T00:00Z: the textbox said
+    skill-audit-loop-nightly, the automation was skill-audit-loop-3-0, and the
+    end-of-wake memory append was rejected by the sandbox).
   MAX_SKILLS_PER_WAKE=${MAX_SKILLS_PER_WAKE:-3}    # hard cap 5 — raise only if the first
                                                    # runs were clean AND context is healthy
 
@@ -129,8 +136,13 @@ RUN (the driver owns claim -> panel -> eval-guarded apply -> CONTENT commit -> r
 
 STOP CONDITIONS (exit cleanly at the FIRST one; the scheduler continues tomorrow)
 - max-skills reached (the driver prints "max-skills reached ... clean stop").
-- Queue empty / no eligible skills ("nothing to do" is a VALID outcome — say so briefly
-  and let the run auto-archive).
+- Queue empty / no eligible skills — VALID only when the worklist itself is healthy:
+  SKILL_LIST.json has a non-zero worklist[] and the eligible set is genuinely exhausted
+  (entries all completed/claimed/excluded). If the builder writes activeSkills: 0 or an
+  empty worklist[] while skills.manifest.json reports >0 skills, that is a SYSTEM bug
+  (builder/manifest shape drift — the 2026-06-10 "0 eligible skills" incident), NOT an
+  empty queue: report the builder output + the SKILL_LIST summary block in the inbox
+  and EXIT without running the panel.
 - A FAILED marker or non-zero driver exit: stop, include the marker line + the last ~20
   log lines in your report. Do not retry the same skill this wake.
 - Budget / rate / session-window exhaustion (exhausted-lock sleep messages, RateLimitError,

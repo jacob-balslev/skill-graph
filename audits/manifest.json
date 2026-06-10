@@ -32,6 +32,12 @@
           "version": "v1"
         },
         {
+          "id": "opencode-panel-supervisor-v1",
+          "path": "skill-graph/prompts/skill-audit-loop-opencode-panel-supervisor-v1.md",
+          "mode": "interactive-panel-opencode-session",
+          "version": "v1"
+        },
+        {
           "id": "minimal-iteration",
           "path": "skill-graph/prompts/skill-audit-loop-minimal-iteration.md",
           "mode": "interactive-short-batch",
