@@ -40,6 +40,9 @@
  *      (runtimes/agent_runtimes, node/node_version). The schema documents
  *      "when both are present they must match" but JSON Schema cannot express
  *      cross-field equality — lint owns it.
+ *  10. Every `relations.*` target resolves to a known sibling skill in the
+ *      linted roots. Relation targets are graph foreign keys; schema validation
+ *      checks item shape, while lint owns target existence.
  *
  *  ADVISORY (warnings, never fail the run): keywords cap (>10 entries — the
  *      documented v8 anti-stuffing cap, deliberately not a schema maxItems);
@@ -100,6 +103,17 @@ const AUDIT_STATE_SCHEMA = (() => {
 // normalizer canonicalizes the deprecated top-level `boundary` alias to
 // `concept_boundary` (ADR-0018) before lint sees the frontmatter.
 const UNDERSTANDING_FIELDS = ['mental_model', 'purpose', 'concept_boundary', 'analogy', 'misconception'];
+const RELATION_TARGET_KEYS = [
+  'adjacent',
+  'related',
+  'broader',
+  'narrower',
+  'suppresses',
+  'boundary',
+  'disjoint_with',
+  'verify_with',
+  'depends_on',
+];
 
 // Canonical Skill Metadata Protocol identifier shape. Plain Agent Skills export
 // has a stricter hyphen-only/64-char contract; that is enforced by export tools.
@@ -656,6 +670,44 @@ function checkCrossDomainBoundary(fm, subjectRegistry) {
   return warnings;
 }
 
+function relationTargetName(edge) {
+  if (typeof edge === 'string') return edge;
+  if (edge && typeof edge === 'object' && typeof edge.skill === 'string') return edge.skill;
+  return null;
+}
+
+/**
+ * Check 10 — relation target existence.
+ *
+ * JSON Schema validates relation item shape but cannot know which sibling
+ * skills exist in the caller's library. The linter owns that graph-health
+ * invariant: every named relation target must resolve by full skill name or by
+ * the final local name segment in the linted roots.
+ */
+function checkRelationTargetsExist(fm, subjectRegistry) {
+  const errors = [];
+  if (!fm || typeof fm !== 'object' || !fm.relations || typeof fm.relations !== 'object') return errors;
+  if (!subjectRegistry || typeof subjectRegistry.has !== 'function') return errors;
+
+  for (const kind of RELATION_TARGET_KEYS) {
+    const edges = fm.relations[kind];
+    if (!Array.isArray(edges)) continue;
+    for (const edge of edges) {
+      const target = relationTargetName(edge);
+      if (typeof target !== 'string' || target.trim() === '') continue;
+      const normalized = target.trim();
+      const localName = normalized.split(/[/:]/).pop();
+      if (subjectRegistry.has(normalized) || subjectRegistry.has(localName)) continue;
+      errors.push({
+        field: `relations.${kind}`,
+        msg: `relations.${kind}: "${normalized}" does not match any known skill in the linted roots. Add the missing skill, correct the target name, or include the root that contains the target.`,
+      });
+    }
+  }
+
+  return errors;
+}
+
 /**
  * Check 5 — field-purpose comment presence (audit H8, advisory).
  *
@@ -975,6 +1027,7 @@ function lintFile(file, subjectRegistry) {
     ...checkCompatibilityAliasEquality(fm),
     ...checkAuditStateSidecar(file, fm),
     ...checkRequiredBodySections(text),
+    ...checkRelationTargetsExist(fm, subjectRegistry),
   ];
   const warnings = [
     ...checkFieldPurposeComments(text),

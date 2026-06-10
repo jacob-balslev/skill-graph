@@ -382,7 +382,7 @@ Required when `routing_eval: present`. Strongly recommended for any routable ski
 
 #### `relations` (typed edges)
 
-The graph layer. Seven edge types — `related`, `boundary` (⚠ name inverts mechanic — *excludes* the listed skills when this skill wins, does NOT defer to them; see § Relations § `boundary`), `disjoint_with`, `verify_with`, `depends_on`, `broader`, `narrower` — cycle-checked on `depends_on` + `broader` + `narrower`. See § Relations for the full edge contract.
+The graph layer. Seven edge types — `related`, `suppresses` (excludes the listed skills when this skill wins, does NOT defer to them; see § Relations § `suppresses`), `disjoint_with`, `verify_with`, `depends_on`, `broader`, `narrower` — cycle-checked on `depends_on` + `broader` + `narrower`. The legacy alias `boundary` is accepted only for unmigrated skills. See § Relations for the full edge contract.
 
 #### Disambiguation rules (apply in order when choosing `subject` for a new skill)
 
@@ -589,7 +589,7 @@ Seven flat top-level fields that record a skill's audit fingerprint in its sibli
 
 ### Relations
 
-The `relations` block contains typed edges to sibling skills. Schema validation (via `skills.manifest.json` generation and manifest:validate) catches broken targets — the manifest compiler refuses to emit a relation to a skill that does not exist. `skill-lint.js` itself does NOT walk relation targets (that check was removed in the 2026-05-19 lint reduction); rely on `npm run manifest:validate` for the relation-integrity guarantee.
+The `relations` block contains typed edges to sibling skills. JSON Schema validates each relation item's shape; `skill-lint.js` verifies that every named target resolves to a real skill in the linted roots. Manifest generation copies valid relation fields through to the compiled manifest and `manifest:validate` checks the compiled manifest shape.
 
 ```yaml
 relations:
@@ -627,20 +627,20 @@ relations:
 - Routing-layer exclusion guard. Use to assert that this skill owns a use-case exclusively and the listed skills should not co-route when this skill wins the query.
 - Items may be bare skill names or `{ skill, reason }` objects. Reasons are strongly recommended and must use ownership framing ("I own this exclusively over [skill]"), not deference framing ("use [skill] instead").
 - This is a Skill-Graph-specific routing predicate, not formal OWL class disjointness.
-- Same-domain only: see Cross-domain doctrine below.
+- Same-domain only: see Cross-domain suppression doctrine below.
 
-**Cross-domain boundary doctrine — SAME-DOMAIN ONLY.** Codified 2026-05-17 after the Tier C″ empirical sweep across 8 Wave 6 skills:
+**Cross-domain suppression doctrine — SAME-DOMAIN ONLY.** Codified 2026-05-17 after the Tier C″ empirical sweep across 8 Wave 6 skills:
 
-1. `boundary[]` entries should declare SAME-DOMAIN routing exclusions only (same `subject` AND same `taxonomy_domain` sub-tree). Example: `frontend-engineering/rendering` ↔ `frontend-engineering/rendering` is fine; `frontend-engineering/rendering` ↔ `design/component-systems` is not.
-2. Cross-subject or cross-sub-domain routing distinctions belong in `anti_examples` + `relations.related`, NOT in `boundary[]`. The `anti_examples` array preserves routing-visible documentation as wrong-use phrases; `relations.related` signals the semantic adjacency without invoking the score-aware exclusion mechanic.
-3. Empirical justification: removing 16 cross-domain `boundary[]` entries across 8 skills caused **0 top-1 routing changes** on the 30-query baseline; only 3/30 low-confidence unmaskings of legitimate alternatives at score 3 surfaced. The cross-domain entries were performing silent low-confidence exclusion only — exactly the silent-failure risk the doctrine prevents.
+1. `suppresses[]` entries should declare SAME-DOMAIN routing exclusions only (same `subject` AND same `taxonomy_domain` sub-tree). Example: `frontend-engineering/rendering` ↔ `frontend-engineering/rendering` is fine; `frontend-engineering/rendering` ↔ `design/component-systems` is not.
+2. Cross-subject or cross-sub-domain routing distinctions belong in `anti_examples` + `relations.related`, NOT in `suppresses[]`. The `anti_examples` array preserves routing-visible documentation as wrong-use phrases; `relations.related` signals the semantic adjacency without invoking the score-aware exclusion mechanic.
+3. Empirical justification: removing 16 cross-domain legacy `boundary[]` entries across 8 skills caused **0 top-1 routing changes** on the 30-query baseline; only 3/30 low-confidence unmaskings of legitimate alternatives at score 3 surfaced. The cross-domain entries were performing silent low-confidence exclusion only — exactly the silent-failure risk the doctrine prevents.
 
-Authors who introduce a cross-domain `boundary[]` entry must move it to `anti_examples` + `relations.related` instead. `scripts/skill-lint.js` Check 5c warns (advisory) on cross-**subject** boundary declarations — it resolves each `boundary[]` target's `subject` against the corpus and flags any whose subject differs from the source skill's. (It checks the `subject` axis, the high-value case; cross-`taxonomy_domain`-within-subject is not yet flagged.) The warning is advisory, not a build failure; as of the 2026-06-02 implementation it surfaces a large standing backlog of cross-subject boundaries across the corpus that the audit loop drains per-skill (move to `anti_examples` + `relations.related`).
+Authors who introduce a cross-domain `suppresses[]` entry must move it to `anti_examples` + `relations.related` instead. `scripts/skill-lint.js` warns (advisory) on cross-**subject** suppression declarations — it resolves each `suppresses[]` target, or legacy `boundary[]` target, against the corpus and flags any whose subject differs from the source skill's. (It checks the `subject` axis, the high-value case; cross-`taxonomy_domain`-within-subject is not yet flagged.) The warning is advisory, not a build failure; the audit loop drains existing cross-subject suppression backlog per-skill (move to `anti_examples` + `relations.related`).
 
 **`disjoint_with`**
 - Formal class-disjointness assertion. Use only when the two skill concepts are genuinely disjoint in the ontology sense.
 - Items may be bare skill names or `{ skill, reason }` objects.
-- Do not use it as a replacement for routing-layer `boundary`.
+- Do not use it as a replacement for routing-layer `suppresses`.
 
 **`verify_with`**
 - Skills to co-load when verifying claims in this skill. Maps to `prov:wasInformedBy`.

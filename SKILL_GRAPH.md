@@ -251,10 +251,10 @@ flowchart LR
 
 | File | Role |
 |---|---|
-| `scripts/skill-graph-route.js` | Graph-aware selector. Uses every unique Skill Graph field: `relations.depends_on` transitive closure, `relations.verify_with` co-loading, `relations.boundary` anti-ownership exclusion, `eval_state` quality gate, `lifecycle.stale_after_days` staleness annotation, and `project[]` project-fit filtering. Emits per-skill reasons. |
+| `scripts/skill-graph-route.js` | Graph-aware selector. Uses every unique Skill Graph field: `relations.depends_on` transitive closure, `relations.verify_with` co-loading, `relations.suppresses` anti-ownership exclusion (with legacy `boundary` fallback), `eval_state` quality gate, `lifecycle.stale_after_days` staleness annotation, and `project[]` project-fit filtering. Emits per-skill reasons. |
 | `scripts/skill-graph-drift.js` | Drift sentinel. Hashes every `grounding.truth_sources` entry with SHA-256, including line-range and anchor object entries; compares against the recorded `drift_check.truth_source_hashes` baseline; reports DRIFT / BROKEN / STALE / NO_BASELINE. `--record --apply` updates the SKILL.md in place with fresh hashes. |
 
-These tools are the *proof* that Tier 1's schema earns its complexity. If you ever doubt whether `boundary` or `grounding.truth_sources` or `lifecycle` is worth the field count, run these scripts against a real skill library and watch them change routing decisions.
+These tools are the *proof* that Tier 1's schema earns its complexity. If you ever doubt whether `relations.suppresses`, `grounding.truth_sources`, or `lifecycle` is worth the field count, run these scripts against a real skill library and watch them change routing decisions.
 
 ### Drift sentinel — state machine
 
@@ -295,7 +295,7 @@ stateDiagram-v2
 
 > **The question this diagram answers:** "How does `skill-graph-routing-eval.js` decide whether a skill's `routing_eval: present` claim holds?"
 
-This is the rent-proof for the v0.5.0 `examples`, `anti_examples`, and `relations.boundary.{skill, reason}` fields. Without this harness those fields sit unverified in every SKILL.md — the router's retrieval behavior against them is asserted but never checked. With this harness every authored positive prompt and every authored negative prompt produces a concrete routing decision that the manifest can be graded against. `scripts/skill-graph-routing-eval.js` is now the canonical gate for `routing_eval: present`; the earlier per-file lint wrapper was removed with the non-mandatory lint checks.
+This is the rent-proof for the v0.5.0 `examples`, `anti_examples`, and `relations.suppresses.{skill, reason}` fields. Without this harness those fields sit unverified in every SKILL.md — the router's retrieval behavior against them is asserted but never checked. With this harness every authored positive prompt and every authored negative prompt produces a concrete routing decision that the manifest can be graded against. `scripts/skill-graph-routing-eval.js` is now the canonical gate for `routing_eval: present`; the earlier per-file lint wrapper was removed with the non-mandatory lint checks.
 
 ```mermaid
 flowchart LR
@@ -307,7 +307,7 @@ flowchart LR
   Route1["skill-graph-route<br/>top-1 winner"]
   Route2["skill-graph-route<br/>top-1 winner"]
   WinEq{{"winner === S?"}}
-  WinBound{{"winner === S?<br/>winner &isin; S.boundary?<br/>winner === null?"}}
+  WinBound{{"winner === S?<br/>winner &isin; S.suppresses?<br/>winner === null?"}}
   PosPass(["PASS<br/>positive"])
   PosFail(["FAIL<br/>positive"])
   NegPass(["PASS<br/>negative"])
@@ -323,9 +323,9 @@ flowchart LR
   WinEq -->|yes| PosPass
   WinEq -->|no| PosFail
   WinBound -->|winner === S| NegFail
-  WinBound -->|winner &isin; boundary| NegPass
+  WinBound -->|winner &isin; suppresses| NegPass
   WinBound -->|winner === null| Gap
-  WinBound -->|winner &notin; boundary<br/>and non-null| NegFail
+  WinBound -->|winner &notin; suppresses<br/>and non-null| NegFail
 
   classDef start fill:#ecfdf5,stroke:#047857,color:#064e3b
   classDef gate fill:#fce7f3,stroke:#db2777,color:#831843
@@ -342,9 +342,9 @@ flowchart LR
 ```
 
 <!-- Rendered copy for non-Mermaid viewers. Source: docs/diagrams/routing-harness.mmd. Regenerate via: npx @mermaid-js/mermaid-cli -i docs/diagrams/routing-harness.mmd -o docs/images/routing-harness.png -b white --width 1600 -->
-<img src="docs/images/routing-harness.png" alt="Routing harness decision path — per skill, positive examples must route to the skill itself; negative anti-examples must route elsewhere (ideally to a skill named in relations.boundary[]) or nowhere (COVERAGE_GAP, informational)" width="960" />
+<img src="docs/images/routing-harness.png" alt="Routing harness decision path — per skill, positive examples must route to the skill itself; negative anti-examples must route elsewhere (ideally to a skill named in relations.suppresses[]) or nowhere (COVERAGE_GAP, informational)" width="960" />
 
-**Legend.** Green = pass state or loop endpoint. Red = FAIL state — the verdict that keeps `routing_eval: absent`. Pink = decision gate. Blue = work node. Purple-dashed = `COVERAGE_GAP` (not a FAIL — the anti-example correctly avoids the skill but no other skill absorbs it; surfaces a `relations.boundary` gap worth tightening in the next pass). The asymmetry between the positive and negative gates is the whole point: positive cases must uniquely identify the skill (tight gate); negative cases must only avoid the skill (loose gate with boundary confirmation as the quality signal). Lint check 12 refuses `routing_eval: present` when any FAIL terminal is reached; a skill with only PASS + `COVERAGE_GAP` terminals earns `present`.
+**Legend.** Green = pass state or loop endpoint. Red = FAIL state — the verdict that keeps `routing_eval: absent`. Pink = decision gate. Blue = work node. Purple-dashed = `COVERAGE_GAP` (not a FAIL — the anti-example correctly avoids the skill but no other skill absorbs it; surfaces a `relations.suppresses` gap worth tightening in the next pass). The asymmetry between the positive and negative gates is the whole point: positive cases must uniquely identify the skill (tight gate); negative cases must only avoid the skill (loose gate with suppression confirmation as the quality signal). Lint check 12 refuses `routing_eval: present` when any FAIL terminal is reached; a skill with only PASS + `COVERAGE_GAP` terminals earns `present`.
 
 ---
 
@@ -356,7 +356,7 @@ Concrete artifacts that show adopters what "good" looks like. Every specimen is 
 
 | File | Role |
 |---|---|
-| `examples/skill-metadata-template.md` | Self-referential authoring template. Its subject is skill authoring itself. **Demonstrates the v8 classification (`subject` / `public` / `scope`) and the inline field-purpose comment convention** (every authored field carries a comment block above it; strippable `# TEMPLATE NOTE:` lines are clearly distinguished from field-purpose comments that stay in derived skills — see `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`). Also demonstrates object-shaped `compatibility`, `boundary[{skill, reason}]`, and the split between `SKILL.md` frontmatter and sibling `audit-state.json` state. |
+| `examples/skill-metadata-template.md` | Self-referential authoring template. Its subject is skill authoring itself. **Demonstrates the v8 classification (`subject` / `public` / `scope`) and the inline field-purpose comment convention** (every authored field carries a comment block above it; strippable `# TEMPLATE NOTE:` lines are clearly distinguished from field-purpose comments that stay in derived skills — see `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`). Also demonstrates object-shaped `compatibility`, `suppresses[{skill, reason}]`, and the split between `SKILL.md` frontmatter and sibling `audit-state.json` state. |
 | `examples/fixture-skills/` | Four in-repo specimen skills covering distinct shapes: `minimal-capability`, `with-grounding` (full `grounding` block + recorded `truth_source_hashes`), `with-relations`, and `comprehension-full` (populated Understanding fields). |
 | `examples/skills.manifest.sample.json` | Generator-produced sample. Drift-checked against live generator output by `skill-lint.js` check 8. |
 
@@ -392,7 +392,7 @@ Concrete artifacts that show adopters what "good" looks like. Every specimen is 
 
 > **The question this diagram answers:** "How do `relations.*` edges resolve, and why does a dangling target fail confidently?"
 
-The relations graph cuts across all five tiers — declared in Tier 5 SKILL.md frontmatter, checked by Tier 3 tooling, and consumed by Tier 4 routing. Its worst failure mode is silent drift: the router fails *confidently* because a dangling target looks like a valid one. The in-repo `examples/fixture-skills/` set is a **closed reference graph** — `with-relations` exercises four representative relation edge types (`depends_on`, `verify_with`, `related`, and `boundary`) against the other three fixtures, so the fixture checks resolve every target from this directory alone, with no dependency on the sibling `../skills/skills/` canonical library. The full schema also supports `broader`, `narrower`, and `disjoint_with`; tooling accepts `adjacent` only as the deprecated alias of `related`. The diagram reads the authoritative edges from each fixture's frontmatter; it does not duplicate them.
+The relations graph cuts across all five tiers — declared in Tier 5 SKILL.md frontmatter, checked by Tier 3 tooling, and consumed by Tier 4 routing. Its worst failure mode is silent drift: the router fails *confidently* because a dangling target looks like a valid one. The in-repo `examples/fixture-skills/` set is a **closed reference graph** — `with-relations` exercises four representative relation edge types (`depends_on`, `verify_with`, `related`, and `suppresses`) against the other three fixtures, so the fixture checks resolve every target from this directory alone, with no dependency on the sibling `../skills/skills/` canonical library. The full schema also supports `broader`, `narrower`, and `disjoint_with`; tooling accepts `adjacent` only as the deprecated alias of `related`, and `boundary` only as the deprecated alias of `suppresses`. The diagram reads the authoritative edges from each fixture's frontmatter; it does not duplicate them.
 
 > These four are **v8 hermetic test fixtures** (see `examples/fixture-skills/README.md`), not production exemplars — their job is to exercise the schema's conditional-requiredness rules and the `{skill, reason}` relation shape, not to model a realistic skill domain. The full, realistic relations graph lives in the sibling canonical library (`~/Development/skills/`) and is what `scripts/skill-graph-route.js` traverses at request time.
 
@@ -412,8 +412,8 @@ flowchart LR
   %% related — thin, suggested co-reading
   REL ---|related| MIN
 
-  %% boundary — red, anti-ownership
-  REL -. boundary .-x GR
+  %% suppresses — red, anti-ownership
+  REL -. suppresses .-x GR
 
   classDef capability fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
   classDef project stroke-width:3px
@@ -421,9 +421,9 @@ flowchart LR
   class GR project
 ```
 
-**Legend.** All four fixtures are hermetic v8 fixtures; node fill is blue. A thick node stroke marks a project-anchored, private skill (`public: false` + non-empty `project[]`) — only `with-grounding` carries the `grounding` block and recorded `truth_source_hashes`. Edge styles, all declared by `with-relations`: `==>` thick solid = `depends_on` (load-bearing — assumes `minimal-capability` lints clean); `-.->` dashed = `verify_with` (co-load `comprehension-full` for its Understanding fields); `---` thin = `related` (symmetric co-read with `minimal-capability`); `-. boundary .-x` red = `boundary` (anti-ownership — excludes grounding/project-target cases from co-routing when `with-relations` wins).
+**Legend.** All four fixtures are hermetic v8 fixtures; node fill is blue. A thick node stroke marks a project-anchored, private skill (`public: false` + non-empty `project[]`) — only `with-grounding` carries the `grounding` block and recorded `truth_source_hashes`. Edge styles, all declared by `with-relations`: `==>` thick solid = `depends_on` (load-bearing — assumes `minimal-capability` lints clean); `-.->` dashed = `verify_with` (co-load `comprehension-full` for its Understanding fields); `---` thin = `related` (symmetric co-read with `minimal-capability`); `-. suppresses .-x` red = `suppresses` (anti-ownership — excludes grounding/project-target cases from co-routing when `with-relations` wins).
 
-Every edge is verifiable. `node bin/skill-graph.js lint examples/fixture-skills/with-relations` rejects dangling targets; `node scripts/skill-graph-route.js` uses these edges at request time to decide which skill wins, which co-loads via `verify_with` or `depends_on`, and which is excluded via `boundary`.
+Every edge is verifiable. `node scripts/skill-lint.js --path examples/fixture-skills` rejects dangling targets; `node scripts/skill-graph-route.js` uses these edges at request time to decide which skill wins, which co-loads via `verify_with` or `depends_on`, and which is excluded via `suppresses`.
 
 ---
 

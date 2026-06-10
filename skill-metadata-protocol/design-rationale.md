@@ -37,7 +37,7 @@ Skill Graph is the **library-level system** that works with this protocol. It in
 This document is the public source of truth for the Skill Metadata Protocol frontmatter format. Every design decision is in service of a benefit a working developer feels:
 
 - **Keeps a flat author-facing frontmatter format** → you can author skills in plain YAML — no nested syntax to remember, no DSL to learn
-- **Keeps one `SKILL.md` file per skill** → a skill's everything-you-need-to-know lives at one path; no parallel sidecar files to keep in sync
+- **Keeps one agent-facing `SKILL.md` plus one audit sidecar per skill** → authors keep teaching/routing content in `SKILL.md`, while audit/eval/provenance state lives in sibling `audit-state.json` and no longer pollutes the agent-facing contract
 - **Keeps one generated manifest downstream** → consumers read a single deterministic artifact; the manifest is content-addressable and CI-verifiable
 - **Tightens field semantics** → lint catches you when `relations.depends_on` points at a skill that doesn't exist, instead of silently breaking the router at runtime
 - **Adds a small number of high-value fields beyond the SKILL.md base** → typed relations, drift detection, and project scoping become declarative metadata rather than tribal knowledge
@@ -45,7 +45,7 @@ This document is the public source of truth for the Skill Metadata Protocol fron
 
 ### What kind of graph is this?
 
-**In plain English:** Skill Metadata Protocol lets one skill say *"I depend on that one, verify me with this one, and stop routing users here when they really mean that other one."* The relation predicates (`depends_on`, `verify_with`, `boundary`, `adjacent`, `related`, `broader`, `narrower`, `disjoint_with`) are the typed edges that Skill Graph can use to turn a skill collection into a graph an agent can reason over.
+**In plain English:** Skill Metadata Protocol lets one skill say *"I depend on that one, verify me with this one, and stop co-routing that other one when this one owns the query."* The relation predicates (`depends_on`, `verify_with`, `suppresses`, the deprecated `boundary` alias, `adjacent`, `related`, `broader`, `narrower`, `disjoint_with`) are the typed edges that Skill Graph can use to turn a skill collection into a graph an agent can reason over.
 
 Skill Graph is a **property graph with a controlled-vocabulary set of typed predicates**, not an RDF knowledge graph. Nodes are skills; edges are keys inside `relations.*`; node attributes are the 36 canonical authored frontmatter fields. The JSON-LD `@context` at `schemas/skill.context.jsonld` projects the property graph into SKOS / Dublin Core Terms / PROV-O triples for consumers that want RDF semantics, but authoring stays in flat YAML.
 
@@ -261,7 +261,7 @@ The YAML frontmatter uses the current v8 schema, including the flat Understandin
 | | [`comprehension_state`](field-reference.md#comprehension_state) | | `present` \| `absent` |
 | **Understanding** (v6+, flat) | [`mental_model`](field-reference.md#mental_model) | if `comprehension_state: present` | string |
 | | [`purpose`](field-reference.md#purpose) | if `comprehension_state: present` | string |
-| | [`boundary`](field-reference.md#boundary) | if `comprehension_state: present` | string |
+| | [`concept_boundary`](field-reference.md#concept_boundary) | if `comprehension_state: present` | string |
 | | [`analogy`](field-reference.md#analogy) | if `comprehension_state: present` | string |
 | | [`misconception`](field-reference.md#misconception) | if `comprehension_state: present` | string |
 | | [`eval_last_run`](field-reference.md#eval_last_run) | | `{ at, status, runner?, model?, receipt?, receipt_hash? }` |
@@ -272,7 +272,7 @@ The YAML frontmatter uses the current v8 schema, including the flat Understandin
 | | [`anti_examples`](field-reference.md#anti_examples) | | string[] (negative prompts) |
 | | [`project`](field-reference.md#project) | | { handle, role }[] (replaces `workspace_tags`) |
 | | `routing_bundles` _(retired SKI-286 — 0 acting consumer; see manifest-field-mapping.md)_ | | string[] |
-| **Relations** | [`relations`](field-reference.md#relations) | | `{ adjacent, related, broader, narrower, boundary, disjoint_with, verify_with, depends_on }` |
+| **Relations** | [`relations`](field-reference.md#relations) | | `{ adjacent, related, broader, narrower, suppresses, boundary, disjoint_with, verify_with, depends_on }` |
 | **Grounding** | [`grounding`](field-reference.md#grounding) | if non-empty `project[]` | `{ subject_matter, grounding_mode, truth_sources, failure_modes, evidence_priority }` |
 | **Portability & Standards** | [`portability`](field-reference.md#portability) | | `{ readiness, targets }` |
 | | [`license`](field-reference.md#license) | | SPDX identifier |
@@ -321,14 +321,14 @@ The context is the source of truth for cross-vocabulary mapping. The most conseq
 | `relations.related` / `adjacent` | `skos:related` | SKOS | Symmetric associative relation between concepts |
 | `relations.broader` | `skos:broader` | SKOS | Cross-skill generalisation (target is more general) |
 | `relations.narrower` | `skos:narrower` | SKOS | Cross-skill specialisation (target is more specific) |
-| `relations.boundary` | `sg:disjointOwnership` | Skill-Graph custom | Routing-layer asymmetric exclusion — intentionally weaker than OWL class-disjointness (per ADR 0006) |
-| `relations.disjoint_with` | `owl:disjointWith` | OWL | Formal class-theoretic disjointness — distinct from `boundary` (per ADR 0006) |
+| `relations.suppresses` / deprecated `boundary` alias | `sg:disjointOwnership` | Skill-Graph custom | Routing-layer asymmetric exclusion — intentionally weaker than OWL class-disjointness (per ADR 0006 / ADR 0018) |
+| `relations.disjoint_with` | `owl:disjointWith` | OWL | Formal class-theoretic disjointness — distinct from `suppresses` (per ADR 0006 / ADR 0018) |
 | `relations.verify_with` | `prov:wasInformedBy` | PROV-O | Verifier skill informs this skill's claims |
 | `relations.depends_on` | `dcterms:requires` | Dublin Core | Operational prerequisite |
 | `grounding.truth_sources` | `dcterms:source` | Dublin Core | Source resources from which claims are derived |
 | `urn` | `@id` | RFC 8141 + JSON-LD | Globally-unique persistent identifier |
 
-The `boundary` vs `disjoint_with` split is the most semantically subtle entry. Per ADR 0006, `boundary` operates at the **routing layer** (the router uses it as a score-aware exclusion guard when the declaring skill wins or ties — asymmetric, directional) while `disjoint_with` operates at the **ontology layer** (formal class-disjointness — symmetric, reflexive). They are NOT aliases. Treating them as aliases — which ADR 0001 originally proposed — would force consumers to reason about routing claims as if they were ontological claims, which is unsound.
+The `suppresses` vs `disjoint_with` split is the most semantically subtle entry. Per ADR 0006 and ADR 0018, `suppresses` operates at the **routing layer** (the router uses it as a score-aware exclusion guard when the declaring skill wins or ties — asymmetric, directional; legacy `boundary` is the deprecated alias) while `disjoint_with` operates at the **ontology layer** (formal class-disjointness — symmetric, reflexive). They are NOT aliases. Treating them as aliases — which ADR 0001 originally proposed — would force consumers to reason about routing claims as if they were ontological claims, which is unsound.
 
 The `@context` also declares the `owl` namespace (since the v1.1.0 update) so the `disjoint_with` mapping resolves cleanly. The `_adr_anchors` block in the context file explicitly cross-references ADRs 0001, 0002, and 0006 so future maintainers see the reasoning for the split mapping in-tree, not only in commit history.
 

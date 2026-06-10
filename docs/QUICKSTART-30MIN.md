@@ -216,12 +216,12 @@ Expected:
 
 ```
 FAIL skills/post-archive-rebuild/SKILL.md
-  ─ relations.depends_on: "markdown-post-frontmatter-review-typo" does not match any known skill in skills/
+  ─ relations.depends_on: "markdown-post-frontmatter-review-typo" does not match any known skill in the linted roots.
 
 1 file(s) checked, 1 error(s).
 ```
 
-The lint walks every relation predicate (`depends_on`, `verify_with`, `boundary`, `adjacent`, `disjoint_with`) and verifies that every named target resolves to a real sibling skill in `skills/`. This is the contract that catches the most-painful failure mode in real libraries: a skill that *claims* it depends on another, but the other was renamed/deleted/never-shipped, and nothing surfaces the broken edge until an agent tries to load the relation chain at runtime.
+The lint walks every relation predicate (`depends_on`, `verify_with`, `suppresses`, legacy `boundary`, `related`, legacy `adjacent`, `broader`, `narrower`, `disjoint_with`) and verifies that every named target resolves to a real sibling skill in the linted roots. This is the contract that catches the most-painful failure mode in real libraries: a skill that *claims* it depends on another, but the other was renamed/deleted/never-shipped, and nothing surfaces the broken edge until an agent tries to load the relation chain at runtime.
 
 Restore the correct name:
 
@@ -264,7 +264,7 @@ Read the trace as evidence:
 
 - **SELECTED** — the router picked `markdown-post-frontmatter-review` because three keyword tokens matched. You can see exactly *which* keywords matched, so if the wrong skill activates you can fix the keyword list rather than guess.
 - **CO-LOADED** — `post-archive-rebuild` is loaded alongside because it `depends_on: markdown-post-frontmatter-review`. The router respects the graph automatically — you don't have to ask for the dependency.
-- **EXCLUDED** — would appear if any skill named `markdown-post-frontmatter-review` in its `relations.boundary` (anti-routing). Empty here because no boundary fires.
+- **EXCLUDED** — would appear if any skill named `markdown-post-frontmatter-review` in its `relations.suppresses` (anti-routing). Empty here because no suppression edge fires.
 
 ---
 

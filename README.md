@@ -118,7 +118,7 @@ Skill Metadata Protocol makes these questions explicit:
 | What kind of skill is this? | `subject`, `public`, `scope`, `version`, `owner` |
 | Where does it belong? | `subject`, `subjects[]`, `taxonomy_domain`, `project[]` |
 | When should it load? | `description`, `keywords`, `triggers`, `examples`, `anti_examples`, `paths` |
-| What is it near, dependent on, hierarchically related to, formally disjoint from, or not responsible for? | `relations.related`, `relations.depends_on`, `relations.verify_with`, `relations.boundary`, `relations.broader`, `relations.narrower`, `relations.disjoint_with` |
+| What is it near, dependent on, hierarchically related to, formally disjoint from, or not responsible for? | `relations.related`, `relations.depends_on`, `relations.verify_with`, `relations.suppresses`, `relations.broader`, `relations.narrower`, `relations.disjoint_with` |
 | What evidence makes it true? | `grounding.truth_sources`, `grounding.failure_modes`, `grounding.evidence_priority` |
 | Is it current and tested? | `audit-state.json` fields: `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, `eval_last_run`, `lifecycle` |
 | Can it move to another runtime? | `portability`, `compatibility`, `allowed-tools` |
@@ -164,7 +164,7 @@ relations:
     - color-system-design
     - typography-system
     - dark-mode-implementation
-  boundary:
+  suppresses:
     - skill: shopify
       reason: "shopify owns API, integration, and platform behavior; this skill owns product-page UX review"
     - skill: debugging
