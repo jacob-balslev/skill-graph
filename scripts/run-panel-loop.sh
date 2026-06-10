@@ -32,20 +32,32 @@
 # Usage:
 #   run-panel-loop.sh (--worklist [--lane <name>] | --skills-file <path>)
 #                     [--max-rounds N] [--max-skills N] [--no-advisory] [--timeout S]
-#                     [--work-root D] [--dry-run] [--fail-fast-budget]
+#                     [--work-root D] [--dry-run] [--fail-fast-budget] [--degrade-on-budget]
 #
 #   --max-skills N    Stop cleanly (exit 0) after N skills have been processed this run.
 #                     0 (default) = uncapped. Added 2026-06-10T for scheduler-bounded wakes
 #                     (e.g. the nightly Codex automation: target 3 / hard cap 5 per wake) so
 #                     a bounded run exits cleanly instead of dying mid-list.
 #
-#   --fail-fast-budget  When the opus daily exhausted-lock is present (or appears mid-drain),
-#                     STOP cleanly and emit a recoverable BUDGET-PAUSED marker (exit 0) instead
-#                     of busy-waiting in 300s sleeps. For unattended schedulers (Codex/OpenCode
-#                     panel supervisors) where a wake must end promptly and resume next wake —
-#                     never wedge for hours. Default (flag absent) keeps the legacy sleep-wait
-#                     behavior for interactive runs that want to block until budget frees.
-#                     Added 2026-06-10T (SKI-372).
+#   --fail-fast-budget  When all mandatory frontiers are exhausted, or one is exhausted and
+#                     --degrade-on-budget is absent, STOP cleanly and emit a recoverable
+#                     BUDGET-PAUSED marker (exit 0) instead of busy-waiting in 300s sleeps.
+#                     Default (flag absent) keeps the legacy sleep-wait behavior for
+#                     interactive runs that want to block until budget frees.
+#
+#   --degrade-on-budget  If at least one mandatory frontier is available while another has an
+#                     active exhausted-lock, continue in the explicit single-available-frontier
+#                     mode. The runner caps the eval verdict at PROVISIONAL and records that a
+#                     full two-frontier re-grade is required. If every frontier is exhausted,
+#                     the normal fail-fast/sleep behavior still applies. Added for SKI-386.
+#
+#   ENV  PANEL_POOL=<name>  Names the drain pool (default: auto-detected from runtime env —
+#                     opencode/codex/claude, else "default"). DISTINCT pools run in PARALLEL on
+#                     DIFFERENT skills (the shared per-skill claim store dedups them); the SAME pool
+#                     is single-instance. Each runtime supervisor passes its own PANEL_POOL so the
+#                     two supervisors stop mutually excluding. PANEL_LOCK_DIR (full path) still
+#                     overrides everything. Two parallel pools double Opus+GPT MAX rate pressure —
+#                     run both with --fail-fast-budget --degrade-on-budget to absorb it gracefully.
 #
 # Exit-code contract of run-skill-audit-loop.js (consumed below):
 #   0 = enrichment KEPT/applied  ->  commit SKILL.md (+ audit-state.json); release status=completed
@@ -71,6 +83,7 @@ LANE=""
 MAX_ROUNDS=2
 MAX_SKILLS=0                           # --max-skills: 0 = uncapped; N = clean stop after N processed
 FAIL_FAST_BUDGET=0                     # --fail-fast-budget: 1 = clean BUDGET-PAUSED stop vs legacy sleep-wait (SKI-372)
+DEGRADE_ON_BUDGET=0                    # --degrade-on-budget: 1 = single-available-frontier PROVISIONAL-capped mode (SKI-386)
 ADV_FLAG=""                            # empty => full advisory panel (the chosen default)
 DRY_FLAG=""                            # --dry-run: pass through to enrich AND skip the CONTENT commit
 TIMEOUT=5400                           # per-skill watchdog ceiling (s); ~90m, generous over ~68m observed
@@ -84,6 +97,7 @@ while [ $# -gt 0 ]; do
     --max-rounds)  MAX_ROUNDS="$2";  shift 2 ;;
     --max-skills)  MAX_SKILLS="$2"; shift 2 ;;
     --fail-fast-budget) FAIL_FAST_BUDGET=1; shift ;;
+    --degrade-on-budget) DEGRADE_ON_BUDGET=1; shift ;;
     --no-advisory) ADV_FLAG="--no-advisory"; shift ;;
     --timeout)     TIMEOUT="$2"; shift 2 ;;
     --dry-run)     DRY_FLAG="--dry-run"; shift ;;
@@ -118,24 +132,29 @@ export AGENT_ID="${AGENT_ID:-panel-drain-$(date -u +%Y%m%dT%H%M%SZ)-$$}"
 # automations always start workspace-write). Both supervisors used to override PANEL_LOCK_DIR to
 # exactly this path; that override is now unnecessary (the default IS the path) — PANEL_LOCK_DIR
 # remains the knob for an intentionally separate pool.
-LOCK_DIR="${PANEL_LOCK_DIR:-$SG/skill-audit-loop/progress/panel-drain.lock}"
+# PANEL_POOL names the drain pool. Distinct pools run in PARALLEL on DIFFERENT skills (the shared
+# per-skill claim store dedups them — a skill one pool lead-claims is skipped by the other). Same
+# pool = single-instance (the atomic mkdir lock below refuses a second drain). Each runtime supervisor
+# passes its own PANEL_POOL (claude / opencode / codex) so the two supervisors no longer mutually
+# exclude; auto-detect from runtime env is the fallback when PANEL_POOL is unset. An explicit
+# PANEL_LOCK_DIR (full path) still overrides everything (intentionally separate pool / custom path).
+detect_pool() {
+  if [ -n "${PANEL_POOL:-}" ]; then echo "$PANEL_POOL"; return; fi
+  if [ -n "${OPENCODE_SESSION_ID:-}${OPENCODE:-}" ]; then echo "opencode"; return; fi
+  if [ -n "${CODEX_THREAD_ID:-}${CODEX_SANDBOX:-}" ]; then echo "codex"; return; fi
+  if [ -n "${CLAUDE_SESSION_ID:-}${CLAUDECODE:-}${CLAUDE_CODE:-}" ]; then echo "claude"; return; fi
+  echo "default"
+}
+POOL="$(detect_pool)"
+LOCK_DIR="${PANEL_LOCK_DIR:-$SG/skill-audit-loop/progress/panel-drain-${POOL}.lock}"
 mkdir -p "$(dirname "$LOCK_DIR")" 2>/dev/null || true   # ensure the gitignored scratch parent exists
 _LOCK_HELD=""
 release_lock() { [ -n "$_LOCK_HELD" ] && rm -rf "$LOCK_DIR" 2>/dev/null; return 0; }
-# Pre-lock peer guard for the transition window: drains started BEFORE this lock existed hold no
-# lockfile, so the mkdir below would wrongly succeed against them. "Does a peer run-panel-loop
-# master exist" is an existence check, not an owned-pid liveness inference (no-ps-for-liveness)
-# — it mirrors the documented manual pre-launch guard. At this point (before any skill) the only
-# run-panel-loop process that is mine is $$; exclude $$ and my direct children defensively.
-if /bin/ps -A -o pid=,ppid=,command= 2>/dev/null \
-     | grep 'run-panel-loop\.sh' | grep -vE 'grep|zsh -c|sh -c' \
-     | awk -v me="$$" '$1 != me && $2 != me {print $1}' | grep -q .; then
-  echo "run-panel-loop: REFUSING — another run-panel-loop process is already running." >&2
-  echo "  Two concurrent panels exhaust the shared Opus+GPT MAX quota -> hangs/OOM kills that get" >&2
-  echo "  mislabeled as watchdog timeouts (silent failure). Stop the other drain first, or set" >&2
-  echo "  PANEL_LOCK_DIR=<dir> to run an intentionally separate pool." >&2
-  exit 75
-fi
+# NO `ps` peer guard. The previous unconditional "refuse if any run-panel-loop.sh process exists"
+# guard (a) BLOCKED legitimate parallel pools (Claude + OpenCode are both run-panel-loop.sh), and
+# (b) is unreliable cross-runtime: a sandboxed peer's pid is invisible to this process's `ps`
+# (no-ps-for-liveness). The per-pool atomic mkdir lock below is the correct primitive — it refuses a
+# second SAME-pool drain and reclaims a stale lock by its OWNED pid, while letting DIFFERENT pools run.
 if mkdir "$LOCK_DIR" 2>/dev/null; then
   _LOCK_HELD=1; echo "$$" > "$LOCK_DIR/pid"
 else
@@ -189,18 +208,62 @@ start_watchdog() {
   WATCHDOG_PID=$!
 }
 
-# Best-effort budget gate: only the exhausted-lock fast path for the mandatory frontier (opus).
-# Avoids false pauses (Opus on MAX has high limits); a real daily-exhaustion lock pauses the drain.
-# SKI-372: read the lock as JSON via readFileSync+JSON.parse, NOT require() — budget-monitor.js
-# writes it as JSON.stringify({date, canonical, used, limit, written_at}) to a `.lock` file, and
-# `require()` of a non-.js/.json extension parses the content as JavaScript and THROWS on the
-# JSON (`Unexpected token ':'`), so the old require() form could never read `.date` — the gate
-# silently never fired. Now it reads the lock content correctly.
-budget_blocked() {
-  local lock="$HOME/.claude/agents/exhausted-opus.lock"
-  [ -f "$lock" ] || return 1
-  local d; d=$(node -e 'try{const fs=require("fs");const o=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));process.stdout.write(String(o.date||""))}catch(e){}' "$lock" 2>/dev/null)
-  [ "$d" = "$(date -u +%Y-%m-%d)" ]
+# Best-effort budget gate for the mandatory frontier set. The Node helper is the source of truth
+# for exhausted-lock aliases and current-day lock semantics; the shell only decides whether to
+# stop, wait, or pass the explicit single-available-frontier degraded-mode flag to the runner.
+ENRICH_FRONTIER_ARGS=()
+frontier_budget_json() {
+  node - "$SG" <<'NODE'
+const sg = process.argv[2];
+const { frontierAvailability } = require(`${sg}/lib/audit/panel-budget`);
+const { FRONTIER_PAIR } = require(`${sg}/lib/audit-shared/model-provider`);
+process.stdout.write(JSON.stringify(frontierAvailability({ models: FRONTIER_PAIR })));
+NODE
+}
+json_available_csv() {
+  node -e 'const j=JSON.parse(process.argv[1]); process.stdout.write((j.available||[]).join(","));' "$1"
+}
+json_exhausted_csv() {
+  node -e 'const j=JSON.parse(process.argv[1]); process.stdout.write((j.exhausted||[]).map(e=>e.model).join(","));' "$1"
+}
+configure_frontier_budget() {
+  ENRICH_FRONTIER_ARGS=()
+  local j available exhausted
+  j=$(frontier_budget_json 2>/dev/null) || { echo "run-panel-loop: warning: frontier budget check failed; continuing with default two-frontier runner" >&2; return 0; }
+  available=$(json_available_csv "$j" 2>/dev/null || true)
+  exhausted=$(json_exhausted_csv "$j" 2>/dev/null || true)
+  if [ -z "$available" ]; then
+    if [ "$FAIL_FAST_BUDGET" -eq 1 ]; then
+      echo "run-panel-loop: BUDGET-PAUSED — all mandatory frontiers exhausted (${exhausted:-unknown}); clean stop (recoverable, not a failure)" >&2
+      return 1
+    fi
+    while :; do
+      echo "run-panel-loop: all mandatory frontiers exhausted (${exhausted:-unknown}) — sleeping 300s" >&2
+      sleep 300
+      j=$(frontier_budget_json 2>/dev/null) || return 0
+      available=$(json_available_csv "$j" 2>/dev/null || true)
+      exhausted=$(json_exhausted_csv "$j" 2>/dev/null || true)
+      [ -n "$available" ] && break
+    done
+  fi
+  if [ -n "$exhausted" ]; then
+    if [ "$DEGRADE_ON_BUDGET" -eq 1 ]; then
+      ENRICH_FRONTIER_ARGS=(--degrade-on-budget)
+      echo "run-panel-loop: DEGRADED-FRONTIER — available=${available:-none} exhausted=$exhausted; PROVISIONAL-capped; full two-frontier re-grade required" >&2
+      return 0
+    fi
+    if [ "$FAIL_FAST_BUDGET" -eq 1 ]; then
+      echo "run-panel-loop: BUDGET-PAUSED — mandatory frontier exhausted ($exhausted); clean stop after current checkpoint; pass --degrade-on-budget to continue with ${available:-the available frontier} (PROVISIONAL-capped)" >&2
+      return 1
+    fi
+    while [ -n "$exhausted" ]; do
+      echo "run-panel-loop: mandatory frontier budget exhausted ($exhausted) — sleeping 300s" >&2
+      sleep 300
+      j=$(frontier_budget_json 2>/dev/null) || return 0
+      exhausted=$(json_exhausted_csv "$j" 2>/dev/null || true)
+    done
+  fi
+  return 0
 }
 
 # Best-effort steering: pause_after_current / stop honored when loop-steering is present.
@@ -226,7 +289,7 @@ enrich_one_skill() { # $1=slug $2=dir
 
   AUDIT_LOOP=1 node "$ENRICH" \
     --skill "$slug" --skill-dir "$dir" --cwd "$SG" \
-    --max-rounds "$MAX_ROUNDS" $ADV_FLAG $DRY_FLAG \
+    --max-rounds "$MAX_ROUNDS" $ADV_FLAG $DRY_FLAG "${ENRICH_FRONTIER_ARGS[@]}" \
     --status-file "$STATUS" --no-tui \
     >"$RESULT" 2>"$LOG" &
   local ENRICH_PID=$!
@@ -260,11 +323,11 @@ enrich_one_skill() { # $1=slug $2=dir
       [ -f "$dir/audit-state.json" ] && paths+=("$dir/audit-state.json")
       local MSG="$WORK_ROOT/$slug.commit-msg.txt"
       local adv_alive; adv_alive=$(node -e 'try{console.log((require(process.argv[1]).advisory_models_alive||[]).join(", ")||"none")}catch(e){console.log("n/a")}' "$RESULT" 2>/dev/null || echo n/a)
+      local frontier_label; frontier_label=$(node -e 'try{const r=require(process.argv[1]);const m=(r.mandatory_models||[]).join(", ")||"n/a";if(r.degraded_frontier&&r.degraded_frontier.enabled){console.log(`single-available-frontier ${m} (PROVISIONAL-capped; re-grade required)`)}else{console.log(`multi-frontier panel ${m}`)}}catch(e){console.log("multi-frontier panel")}' "$RESULT" 2>/dev/null || echo "multi-frontier panel")
       {
-        printf 'content(%s): skill-audit-loop — Opus 4.8 + GPT-5.5 + advisory (eval-guarded keep)\n\n' "$slug"
+        printf 'content(%s): skill-audit-loop — %s (eval-guarded keep)\n\n' "$slug" "$frontier_label"
         printf 'Enriched via the multi-agent panel loop (run-panel-loop drain).\n'
         printf 'Eval guardrail verdict: KEEP. Advisory alive: %s.\n\n' "$adv_alive"
-        printf 'Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>\n'
       } > "$MSG"
       git -C "$SKILLS_REPO" add -- "${paths[@]}" 2>/dev/null
       if AUDIT_LOOP=1 git -C "$SKILLS_REPO" commit --only -F "$MSG" -- "${paths[@]}" >>"$LOG" 2>&1; then
@@ -308,7 +371,7 @@ resolve_dir() { find "$SKILLS_REPO/skills" -type d -name "$1" -not -path '*/node
 # `content(<slug>): skill-audit-loop` commit (resume-safe), claim for cross-process dedup, and
 # refresh the worklist after each skill so a restart's snapshot excludes what just completed.
 drain_worklist() {
-  echo "run-panel-loop: WORKLIST drain · advisory=$([ -z "$ADV_FLAG" ] && echo full-panel || echo floor-only) · timeout=${TIMEOUT}s · agent=$AGENT_ID" >&2
+  echo "run-panel-loop: WORKLIST drain · pool=$POOL · advisory=$([ -z "$ADV_FLAG" ] && echo full-panel || echo floor-only) · timeout=${TIMEOUT}s · agent=$AGENT_ID" >&2
   # Self-heal (startup): clear panel per-model SLOT lock FILES orphaned by a previously KILLED
   # run. Historically the panel claimed FIXED per-model owners, so a killed run's held slot
   # refused EVERY future skill's claim (verified 2026-06-06: an orphaned api-design slot failed
@@ -341,15 +404,9 @@ drain_worklist() {
       echo "run-panel-loop: max-skills reached ($processed/$MAX_SKILLS) — clean stop" >&2; break
     fi
     if steering_says_stop; then echo "run-panel-loop: steering pause/stop — exiting" >&2; break; fi
-    if budget_blocked; then
-      if [ "$FAIL_FAST_BUDGET" -eq 1 ]; then
-        # SKI-372: recoverable BUDGET-PAUSED marker + clean stop (exit 0 via the normal summary),
-        # NOT an infinite 300s busy-wait. The queue is paused, not drained — resume next wake.
-        echo "run-panel-loop: BUDGET-PAUSED — opus daily exhausted-lock present; clean stop after ${processed} processed skill(s); resume next wake (recoverable, not a failure)" >&2
-        break
-      fi
-      # Legacy interactive behavior (flag absent): block until the daily lock clears.
-      while budget_blocked; do echo "run-panel-loop: opus daily budget exhausted — sleeping 300s" >&2; sleep 300; done
+    if ! configure_frontier_budget; then
+      echo "run-panel-loop: clean stop after ${processed} processed skill(s); resume next wake (recoverable, not a failure)" >&2
+      break
     fi
 
     if git -C "$SKILLS_REPO" log -1 --grep="content(${slug}): skill-audit-loop" --format=%h 2>/dev/null | grep -q .; then
@@ -364,7 +421,11 @@ drain_worklist() {
       enrich_one_skill "$slug" "$dir"
       echo "run-panel-loop: DRY preview complete (1 skill)" >&2; return
     fi
-    if ! node "$CLAIM" claim "$slug" --model skill-audit-loop --op audit >/dev/null 2>&1; then
+    # Claim the LEAD lock (--lead) so `next`/`list` — which consult the bare-slug lead key — see this
+    # skill as in-flight and a parallel drain (other runtime) skips it. --ttl-min covers the watchdog
+    # ceiling + 60m margin so the claim is NOT reaped mid-run (the old --model slot took the wrong key
+    # AND defaulted to a 60m TTL < the ~68–90m run). --model is kept for honest ledger/run-dir attribution.
+    if ! node "$CLAIM" claim "$slug" --lead --model skill-audit-loop --op audit --ttl-min "$(( TIMEOUT/60 + 60 ))" >/dev/null 2>&1; then
       echo "[$nn/$TOTAL] $slug — claim race (held by another agent), skipping" >&2; continue
     fi
     CLAIMED_SLUG="$slug"   # SKI-234: track the in-flight slug for the interrupt trap
@@ -394,6 +455,10 @@ drain_file() {
     i=$((i+1))
     if [ "$MAX_SKILLS" -gt 0 ] && [ "$processed" -ge "$MAX_SKILLS" ]; then
       echo "run-panel-loop: max-skills reached ($processed/$MAX_SKILLS) — clean stop" >&2; break
+    fi
+    if ! configure_frontier_budget; then
+      echo "run-panel-loop: clean stop after ${processed} processed skill(s); resume next wake (recoverable, not a failure)" >&2
+      break
     fi
     if done_already "$slug"; then echo "[$i/$TOTAL] $slug — already done (local ledger), skipping" >&2; skipped=$((skipped+1)); continue; fi
     local dir; dir=$(resolve_dir "$slug")

@@ -55,7 +55,15 @@ function main(argv) {
     return i >= 0 && args[i + 1] ? Number(args[i + 1]) : def;
   };
   const pollMs = optVal('poll', 1) * 1000;   // 1s → smooth live timer on a TTY
-  const staleMs = optVal('stale', 900) * 1000; // ts frozen > 15m ⇒ hang (above the longest dispatch)
+  // ts frozen > 45m ⇒ hang. MUST exceed the longest SINGLE blocking dispatch, because the
+  // synchronous model-call dispatch cannot tick the heartbeat mid-call: a frontier call runs up to
+  // SKILL_ENRICH_CLI_TIMEOUT_MS (30m, skill-audit-loop-lite-deps.js) and an advisory call up to
+  // advisoryTimeoutMs (20m). The prior 900s (15m) default was BELOW those, so a healthy-but-quiet
+  // long call tripped a FALSE stall (the 2026-06-10 deepseek-flash false-abort: the drain was alive,
+  // blocked in a 20m advisory call). 2700s matches the driver's own bridge (run-panel-loop.sh --stale
+  // 2700) and leaves margin over the 30m ceiling. A genuinely hung advisory is dropped by the engine
+  // at its own 20m timeout (the run then resumes heartbeating) — long before this watchdog fires.
+  const staleMs = optVal('stale', 2700) * 1000;
   const slowMs = optVal('slow', 600) * 1000;   // active agent > 10m ⇒ SLOW flag
   // Periodic piped "liveness tick" is OFF by default: on a Claude Code Monitor every emitted
   // line becomes a chat message, so a per-N-second timer line floods the conversation. Opt in

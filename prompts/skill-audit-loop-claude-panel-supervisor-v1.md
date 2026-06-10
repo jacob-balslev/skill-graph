@@ -15,9 +15,9 @@
 - Use this from Claude Code (the harness you are reading this in, or a `claude -p` headless run)
   to push the next few worklist skills through the FULL multi-model Skill Audit Loop, then stop.
 - Prefer the **Codex** or **OpenCode** supervisor when **Claude/Opus is rate-limited** — those
-  runtimes drive the panel without spending the Opus quota the supervisor itself needs (see
-  § Rate-limit resilience below; full independence requires the single-available-frontier engine
-  mode, tracked separately).
+  runtimes drive the panel without spending the Opus quota the supervisor itself needs. The driver
+  now supports an explicit single-available-frontier degraded mode for those runs (see
+  § Rate-limit resilience below).
 - Use `skill-audit-loop-single-model.md` when no multi-model panel is wanted.
 
 ## Operator Summary
@@ -72,25 +72,32 @@ PREFLIGHT (before ANY paid dispatch; report-and-exit on failure)
 2. Panel execution preflight on the first eligible skill (with --auth-probe so a logged-out child
    CLI is caught BEFORE any paid dispatch — recommended; it makes one cheap per-CLI no-op):
      node lib/audit/run-skill-audit-loop.js --skill <first-slug> --skill-dir <its dir> \
-       --cwd skill-graph --preflight-only --auth-probe
-   (run from ~/Development/skill-graph). Healthy shape: both mandatory CLIs available, no mandatory
-   budget locks, every mandatory CLI's auth.<cli>.ok: true, and EITHER an active OS fence OR
-   model-cli-home scratch + public_workspace.active. Any mandatory failure (incl. a failed auth
-   probe) -> report the preflight JSON (the `auth` block names the CLI + its re-auth hint) and EXIT.
-   NEVER fall back to auditing single-model.
+       --cwd skill-graph --preflight-only --auth-probe --degrade-on-budget
+   (run from ~/Development/skill-graph). Healthy shape: the configured mandatory CLIs available,
+   no budget locks for those configured frontiers, every configured mandatory CLI's auth.<cli>.ok:
+   true, and EITHER an active OS fence OR model-cli-home scratch + public_workspace.active. Any
+   configured mandatory failure (incl. a failed auth probe) -> report the preflight JSON (the
+   `auth` block names the CLI + its re-auth hint) and EXIT. Do not run the old single-model audit
+   fallback.
 
 RUN (dispatch the driver in the BACKGROUND — never foreground; the Bash tool's 10-min max would
 kill a ~68-min skill). One driver call per skill; the claim/ledger carries state between calls.
   Dispatch via run_in_background: true (NOT a foreground Bash call):
      cd ~/Development/skill-graph && \
-     bash scripts/run-panel-loop.sh --worklist --fail-fast-budget --max-skills 1 --timeout 5400
-  - --fail-fast-budget: if the opus daily exhausted-lock is present (wake start or mid-drain) the
-    driver emits a recoverable `run-panel-loop: BUDGET-PAUSED` marker and exits 0 cleanly instead
-    of busy-waiting. (SKI-372)
-  - No PANEL_LOCK_DIR override is needed (SKI-374): the default lock lives at
-    skill-graph/skill-audit-loop/progress/panel-drain.lock — the SAME default the Codex and
-    OpenCode supervisors use, so all three runtimes mutually exclude (one panel drain at a time;
-    two concurrent panels exhaust the shared frontier quota and fail as fake watchdog timeouts).
+     PANEL_POOL=claude bash scripts/run-panel-loop.sh --worklist --fail-fast-budget --degrade-on-budget --max-skills 1 --timeout 5400
+  - --fail-fast-budget plus --degrade-on-budget: if one mandatory frontier is exhausted, the
+    driver continues with the available frontier, caps the result at PROVISIONAL, and records that
+    a full two-frontier re-grade is required. If every frontier is exhausted, the driver emits a
+    recoverable `run-panel-loop: BUDGET-PAUSED` marker and exits 0 cleanly instead of busy-waiting.
+    (SKI-386 / SKI-372)
+  - PANEL_POOL=claude puts THIS runtime in its own drain pool, so it runs in PARALLEL with the
+    OpenCode (PANEL_POOL=opencode) and Codex (PANEL_POOL=codex) supervisors on DIFFERENT skills.
+    The shared per-skill claim store dedups them: this drain lead-claims a skill (a long-lease LEAD
+    lock that `next` consults), and the other pools' drains skip it and take the next eligible skill.
+    Do NOT set PANEL_LOCK_DIR (that would override the pool). Within the claude pool the drain is
+    still single-instance (don't launch two claude-pool drains). Two parallel pools double the
+    Opus+GPT MAX rate pressure — --fail-fast-budget --degrade-on-budget (above) absorbs it: a
+    rate-limited frontier degrades to PROVISIONAL rather than hanging. (SKI-coordination, 2026-06-10)
   - Optional: pass --advisory-timeout-ms N downstream to extend long advisory research past the
     20-min default (SKI-375); --no-advisory for a fast floor-only run.
   - JUDGE THE DRIVER by the harness completion notification + the runner's terminal markers:
@@ -103,9 +110,10 @@ kill a ~68-min skill). One driver call per skill; the claim/ledger carries state
 
 STOP CONDITIONS (exit cleanly at the FIRST one; resume next session)
 - max-skills reached (driver prints "max-skills reached ... clean stop").
-- BUDGET-PAUSED marker (opus exhausted) -> report "recoverable — resume next session". With Opus
-  rate-limited, hand the loop to the Codex or OpenCode supervisor (they do not spend the Opus
-  quota to supervise) rather than retrying here. Never busy-wait through a multi-hour window.
+- BUDGET-PAUSED marker (all mandatory frontiers exhausted) -> report "recoverable — resume next
+  session". With only Opus rate-limited, prefer handing the loop to the Codex or OpenCode
+  supervisor; they can run the explicit PROVISIONAL-capped single-available-frontier path without
+  spending Opus quota to supervise. Never busy-wait through a multi-hour window.
 - Queue empty / no eligible skills — VALID only when SKILL_LIST.json has a non-zero worklist[] and
   the eligible set is genuinely exhausted; an empty worklist[] while the manifest reports >0 skills
   is a SYSTEM bug (the "0 eligible skills" incident), NOT an empty queue — report it and EXIT.
@@ -121,12 +129,8 @@ REPORT (end of session)
 
 ## Rate-limit resilience (Opus rate-limited)
 
-Today the panel's certifying core is the two-frontier pair `FRONTIER_PAIR = ['opus', 'codex-current']`
-with `quorum: 2` and a **bidirectional** Opus⇄GPT eval — so when Opus is rate-limited the panel
-BUDGET-PAUSEs (via `--fail-fast-budget`) or aborts (quorum < 2). That blocks Codex/OpenCode runs too,
-not just Claude. Running the loop with GPT (codex) as the SOLE available frontier — capped at a
-`PROVISIONAL` verdict (a single-frontier result is valid lower-confidence evidence per
-`.claude/rules/version-schema-contract.md`; `codex-current` is a top-tier frontier, so this is NOT a
-`no-lesser-models` violation) and reconciled to the dual-certified verdict when Opus returns — is a
-SEPARATE engine feature (single-available-frontier degraded mode). Until it lands, a Claude/Opus
-rate-limit pauses the panel on every runtime. Tracked as its own SYSTEM task.
+The panel's certifying core is still the two-frontier pair `FRONTIER_PAIR = ['opus', 'codex-current']`
+with a **bidirectional** Opus⇄GPT eval. When Opus is rate-limited, `--degrade-on-budget` lets the
+driver run GPT (`codex-current`) as the sole available frontier, cap the result at `PROVISIONAL`,
+and record `regrade_required` until Opus returns for the full two-frontier re-grade. This keeps
+Codex/OpenCode drains moving without pretending a one-frontier run is certified.

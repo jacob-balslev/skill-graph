@@ -96,10 +96,12 @@ PREFLIGHT (before ANY paid dispatch; report-and-exit on failure)
    lib/audit/run-skill-audit-loop.js --preflight-only, bash scripts/run-panel-loop.sh).
    If bash, git, the model CLIs, or temp-dir writes are DENIED, report that and EXIT —
    do not work around a denied permission.
-1. Budget: the driver now owns the opus daily exhausted-lock check — pass --fail-fast-budget
-   (in the RUN block below) and it cleanly stops with a recoverable `BUDGET-PAUSED` marker
-   (exit 0) at session start OR mid-drain, instead of the old 300s busy-wait. No
-   prompt-level lock guard is needed (SKI-372).
+1. Budget: the driver owns the mandatory-frontier exhausted-lock check — pass --fail-fast-budget
+   plus --degrade-on-budget (in the RUN block below). If one frontier is exhausted, the driver
+   continues with the available frontier, caps the result at PROVISIONAL, and records that a full
+   two-frontier re-grade is required. If every frontier is exhausted, it emits a recoverable
+   `BUDGET-PAUSED` marker (exit 0) instead of the old 300s busy-wait. No prompt-level lock guard
+   is needed (SKI-386 / SKI-372).
 2. Worklist freshness + zero-tripwire:
      cd ~/Development && node scripts/skill/build-skill-list.js --write --fail-on-empty
    Exit 3 = ZERO-TRIPWIRE: the worklist is empty while the manifest has skills — a SYSTEM
@@ -110,11 +112,13 @@ PREFLIGHT (before ANY paid dispatch; report-and-exit on failure)
 3. Panel execution preflight on the first eligible skill (add --auth-probe to also verify each
    child CLI is logged in BEFORE any paid dispatch — recommended for an unattended session):
      cd ~/Development/skill-graph && node lib/audit/run-skill-audit-loop.js \
-       --skill <first-slug> --skill-dir <its dir> --cwd . --preflight-only --auth-probe
-   Both mandatory CLIs must be available with no mandatory budget locks, and (with --auth-probe)
-   every mandatory CLI's `auth.<cli>.ok: true`. Any mandatory failure (incl. a failed auth probe)
-   -> report the preflight JSON and EXIT. NEVER fall back to auditing single-model, and NEVER
-   substitute a weaker model for a mandatory frontier slot.
+       --skill <first-slug> --skill-dir <its dir> --cwd . --preflight-only --auth-probe \
+       --degrade-on-budget
+   The configured mandatory CLIs must be available with no budget locks for those configured
+   frontiers, and (with --auth-probe) every configured mandatory CLI's `auth.<cli>.ok: true`.
+   Any configured mandatory failure (incl. a failed auth probe) -> report the preflight JSON and
+   EXIT. Do not run the old single-model audit fallback, and never substitute a weaker model for
+   a mandatory frontier slot.
    NOTE: WITHOUT --auth-probe the preflight proves only binaries + writable scratch homes (a
    logged-out child CLI then surfaces as that model's dispatch failing mid-run). WITH --auth-probe
    (SKI-376) it ALSO proves authenticated dispatch via a cheap per-CLI no-op (opencode `auth list`;
@@ -127,8 +131,9 @@ pre-fix them by hand)
 Invoke the driver ONCE PER SKILL, in a fresh bash call each time, up to
 MAX_SKILLS_PER_SESSION times (stop early at any stop condition):
   cd ~/Development/skill-graph && \
+  PANEL_POOL=opencode \
   OPENCODE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS=5400000 \
-  bash scripts/run-panel-loop.sh --worklist --fail-fast-budget --max-skills 1 --timeout 5400
+  bash scripts/run-panel-loop.sh --worklist --fail-fast-budget --degrade-on-budget --max-skills 1 --timeout 5400
 - OPENCODE BASH-TOOL TIMEOUT (verified 2026-06-10, SKI-378 — OpenCode 1.16.2): the bash tool's
   DEFAULT per-call timeout is **120000ms (2 minutes)**, raised by the env var
   `OPENCODE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS` (there is NO `opencode.json` key for it in 1.16.2 —
@@ -148,11 +153,14 @@ MAX_SKILLS_PER_SESSION times (stop early at any stop condition):
 - One driver call per skill bounds every bash call at the driver's own 90-minute per-skill watchdog;
   the claim/ledger system carries state between calls, so a killed or timed-out call never strands the
   drain (it releases the in-flight claim on exit).
-- No PANEL_LOCK_DIR override is needed (SKI-374): the driver's DEFAULT lock now lives at
-  skill-graph/skill-audit-loop/progress/panel-drain.lock — the SAME default the Codex
-  automation supervisor uses, so the two runtimes still mutually exclude (one panel drain at a
-  time; two concurrent panels exhaust the shared frontier quota and fail as fake watchdog
-  timeouts). Set PANEL_LOCK_DIR only for an intentionally separate pool.
+- PANEL_POOL=opencode puts THIS runtime in its OWN drain pool, so it runs in PARALLEL with the
+  Claude (PANEL_POOL=claude) and Codex (PANEL_POOL=codex) supervisors on DIFFERENT skills. The
+  shared per-skill claim store dedups them: a skill one pool lead-claims (a long-lease LEAD lock
+  that `next` consults) is skipped by the other pools' drains, which take the next eligible skill.
+  Do NOT set PANEL_LOCK_DIR (it overrides the pool). Within the opencode pool the drain is still
+  single-instance. Two parallel pools double the Opus+GPT MAX rate pressure —
+  --fail-fast-budget --degrade-on-budget (above) absorbs it: a rate-limited frontier degrades to
+  PROVISIONAL rather than hanging. (SKI-coordination, 2026-06-10)
 - Timing expectation: a panel skill runs up to 90 minutes, but INDIVIDUAL model calls
   inside it cap earlier — ~30 min per mandatory-frontier call (SKILL_ENRICH_CLI_TIMEOUT_MS
   default) and ~20 min per advisory call. A single timed-out advisory call is a
@@ -176,10 +184,11 @@ STOP CONDITIONS (exit cleanly at the FIRST one; the next session continues from 
   (entries all completed/claimed/excluded). Otherwise see ZERO-TRIPWIRE above.
 - A FAILED marker or non-zero driver exit: stop, include the marker line + the last ~20
   log lines in your report. Do not retry the same skill this session.
-- Budget / rate / session-window exhaustion: with --fail-fast-budget the driver emits a
-  `run-panel-loop: BUDGET-PAUSED` marker and exits 0 cleanly when the opus daily lock is
-  present (session start or mid-drain) — report "recoverable — resume next session". Other
-  exhaustion signals (RateLimitError, "session limit") stop the same way. Never busy-wait.
+- Budget / rate / session-window exhaustion: with --fail-fast-budget plus --degrade-on-budget,
+  one exhausted frontier becomes a PROVISIONAL-capped single-available-frontier run; all
+  frontiers exhausted becomes a `run-panel-loop: BUDGET-PAUSED` marker and clean exit 0 —
+  report "recoverable — resume next session". Other exhaustion signals (RateLimitError,
+  "session limit") stop the same way. Never busy-wait.
 - Context check AFTER EACH completed skill: continue to the next driver call only if you
   can positively confirm context is still healthy (the OpenCode UI shows usage; if you
   cannot observe it, assume it is NOT healthy after 2 skills and stop). On the GitHub
@@ -205,8 +214,9 @@ WHAT YOU NEVER DO
   in the final summary, not patched).
 - Never rebuild the skill inventory, re-verify schema versions corpus-wide, or re-check
   per-skill file presence by hand — SKILL_LIST.{md,json} + the driver's preflight own that.
-- Never substitute a weaker model for a mandatory frontier slot, and never run the panel
-  with one mandatory CLI missing.
+- Never substitute a weaker model for a mandatory frontier slot. A one-frontier run is allowed
+  only through the explicit single-available-frontier degraded path, and it must stay
+  PROVISIONAL-capped with `regrade_required`.
 ```
 
 ## Why this prompt exists
