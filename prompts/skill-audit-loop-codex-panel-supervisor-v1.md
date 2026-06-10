@@ -121,10 +121,10 @@ SANDBOX + PANEL PREFLIGHT (before ANY paid dispatch; report-and-exit on failure)
    NOTE: the probe + the panel preflight prove reachability, binaries, and writable scratch
    homes — NOT authenticated model dispatch. A logged-out child CLI surfaces as that
    model's dispatch failing during the run; report it, never re-auth interactively.
-2. Budget fast-exit (the driver otherwise SLEEPS in 300s loops while the lock exists —
-   wrong shape for a wake):
-     [ -f "$HOME/.claude/agents/exhausted-opus.lock" ] && \
-       { echo "opus budget lock present — stop; resume next wake"; exit 0; }
+2. Budget: the driver now owns the opus daily exhausted-lock check — pass
+   --fail-fast-budget (in the RUN block below) and it cleanly stops with a recoverable
+   `BUDGET-PAUSED` marker (exit 0) at wake start OR mid-drain, instead of the old 300s
+   busy-wait. No prompt-level lock guard is needed (SKI-372).
 3. Worklist freshness + zero-tripwire:
      cd ~/Development && node scripts/skill/build-skill-list.js --write --fail-on-empty
    Exit 3 = ZERO-TRIPWIRE: the worklist is empty while the manifest has skills — a SYSTEM
@@ -147,7 +147,7 @@ SANDBOX + PANEL PREFLIGHT (before ANY paid dispatch; report-and-exit on failure)
 RUN (the driver owns claim -> panel -> eval-guarded apply -> CONTENT commit -> release)
   cd ~/Development/skill-graph && \
   PANEL_LOCK_DIR="$HOME/Development/skill-graph/skill-audit-loop/progress/panel-drain.lock" \
-  bash scripts/run-panel-loop.sh --worklist \
+  bash scripts/run-panel-loop.sh --worklist --fail-fast-budget \
     --max-skills "${MAX_SKILLS_PER_WAKE:-1}" --timeout 5400
 - PANEL_LOCK_DIR is REQUIRED under the Codex workspace-write sandbox: the driver's default
   single-instance lock lives at $HOME/.claude/agents/panel-drain.lock, which is OUTSIDE the
@@ -183,8 +183,10 @@ STOP CONDITIONS (exit cleanly at the FIRST one; the scheduler continues tomorrow
   and EXIT without running the panel.
 - A FAILED marker or non-zero driver exit: stop, include the marker line + the last ~20
   log lines in your report. Do not retry the same skill this wake.
-- Budget / rate / session-window exhaustion (exhausted-lock sleep messages, RateLimitError,
-  "session limit"): stop and report "recoverable — resume next wake". Never busy-wait
+- Budget / rate / session-window exhaustion: with --fail-fast-budget the driver emits a
+  `run-panel-loop: BUDGET-PAUSED` marker and exits 0 cleanly when the opus daily lock is
+  present (wake start or mid-drain) — report "recoverable — resume next wake". Other
+  exhaustion signals (RateLimitError, "session limit") stop the same way. Never busy-wait
   through a multi-hour window.
 - Context roughly 80% used, or a steering pause (loop-steering.json).
 

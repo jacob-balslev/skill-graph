@@ -32,12 +32,20 @@
 # Usage:
 #   run-panel-loop.sh (--worklist [--lane <name>] | --skills-file <path>)
 #                     [--max-rounds N] [--max-skills N] [--no-advisory] [--timeout S]
-#                     [--work-root D] [--dry-run]
+#                     [--work-root D] [--dry-run] [--fail-fast-budget]
 #
 #   --max-skills N    Stop cleanly (exit 0) after N skills have been processed this run.
 #                     0 (default) = uncapped. Added 2026-06-10T for scheduler-bounded wakes
 #                     (e.g. the nightly Codex automation: target 3 / hard cap 5 per wake) so
 #                     a bounded run exits cleanly instead of dying mid-list.
+#
+#   --fail-fast-budget  When the opus daily exhausted-lock is present (or appears mid-drain),
+#                     STOP cleanly and emit a recoverable BUDGET-PAUSED marker (exit 0) instead
+#                     of busy-waiting in 300s sleeps. For unattended schedulers (Codex/OpenCode
+#                     panel supervisors) where a wake must end promptly and resume next wake —
+#                     never wedge for hours. Default (flag absent) keeps the legacy sleep-wait
+#                     behavior for interactive runs that want to block until budget frees.
+#                     Added 2026-06-10T (SKI-372).
 #
 # Exit-code contract of run-skill-audit-loop.js (consumed below):
 #   0 = enrichment KEPT/applied  ->  commit SKILL.md (+ audit-state.json); release status=completed
@@ -62,6 +70,7 @@ WORKLIST=0
 LANE=""
 MAX_ROUNDS=2
 MAX_SKILLS=0                           # --max-skills: 0 = uncapped; N = clean stop after N processed
+FAIL_FAST_BUDGET=0                     # --fail-fast-budget: 1 = clean BUDGET-PAUSED stop vs legacy sleep-wait (SKI-372)
 ADV_FLAG=""                            # empty => full advisory panel (the chosen default)
 DRY_FLAG=""                            # --dry-run: pass through to enrich AND skip the CONTENT commit
 TIMEOUT=5400                           # per-skill watchdog ceiling (s); ~90m, generous over ~68m observed
@@ -74,6 +83,7 @@ while [ $# -gt 0 ]; do
     --skills-file) SKILLS_FILE="$2"; shift 2 ;;
     --max-rounds)  MAX_ROUNDS="$2";  shift 2 ;;
     --max-skills)  MAX_SKILLS="$2"; shift 2 ;;
+    --fail-fast-budget) FAIL_FAST_BUDGET=1; shift ;;
     --no-advisory) ADV_FLAG="--no-advisory"; shift ;;
     --timeout)     TIMEOUT="$2"; shift 2 ;;
     --dry-run)     DRY_FLAG="--dry-run"; shift ;;
@@ -173,10 +183,15 @@ start_watchdog() {
 
 # Best-effort budget gate: only the exhausted-lock fast path for the mandatory frontier (opus).
 # Avoids false pauses (Opus on MAX has high limits); a real daily-exhaustion lock pauses the drain.
+# SKI-372: read the lock as JSON via readFileSync+JSON.parse, NOT require() — budget-monitor.js
+# writes it as JSON.stringify({date, canonical, used, limit, written_at}) to a `.lock` file, and
+# `require()` of a non-.js/.json extension parses the content as JavaScript and THROWS on the
+# JSON (`Unexpected token ':'`), so the old require() form could never read `.date` — the gate
+# silently never fired. Now it reads the lock content correctly.
 budget_blocked() {
   local lock="$HOME/.claude/agents/exhausted-opus.lock"
   [ -f "$lock" ] || return 1
-  local d; d=$(node -e 'try{process.stdout.write((require(process.argv[1]).date)||"")}catch(e){}' "$lock" 2>/dev/null)
+  local d; d=$(node -e 'try{const fs=require("fs");const o=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));process.stdout.write(String(o.date||""))}catch(e){}' "$lock" 2>/dev/null)
   [ "$d" = "$(date -u +%Y-%m-%d)" ]
 }
 
@@ -318,7 +333,16 @@ drain_worklist() {
       echo "run-panel-loop: max-skills reached ($processed/$MAX_SKILLS) — clean stop" >&2; break
     fi
     if steering_says_stop; then echo "run-panel-loop: steering pause/stop — exiting" >&2; break; fi
-    while budget_blocked; do echo "run-panel-loop: opus daily budget exhausted — sleeping 300s" >&2; sleep 300; done
+    if budget_blocked; then
+      if [ "$FAIL_FAST_BUDGET" -eq 1 ]; then
+        # SKI-372: recoverable BUDGET-PAUSED marker + clean stop (exit 0 via the normal summary),
+        # NOT an infinite 300s busy-wait. The queue is paused, not drained — resume next wake.
+        echo "run-panel-loop: BUDGET-PAUSED — opus daily exhausted-lock present; clean stop after ${processed} processed skill(s); resume next wake (recoverable, not a failure)" >&2
+        break
+      fi
+      # Legacy interactive behavior (flag absent): block until the daily lock clears.
+      while budget_blocked; do echo "run-panel-loop: opus daily budget exhausted — sleeping 300s" >&2; sleep 300; done
+    fi
 
     if git -C "$SKILLS_REPO" log -1 --grep="content(${slug}): skill-audit-loop" --format=%h 2>/dev/null | grep -q .; then
       echo "[$nn/$TOTAL] $slug — already skill-audit-looped (git), skipping" >&2; skipped=$((skipped+1)); continue

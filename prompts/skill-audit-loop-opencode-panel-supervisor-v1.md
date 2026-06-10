@@ -96,9 +96,10 @@ PREFLIGHT (before ANY paid dispatch; report-and-exit on failure)
    lib/audit/run-skill-audit-loop.js --preflight-only, bash scripts/run-panel-loop.sh).
    If bash, git, the model CLIs, or temp-dir writes are DENIED, report that and EXIT —
    do not work around a denied permission.
-1. Budget fast-exit (the driver otherwise SLEEPS in 300s loops while the lock exists):
-     [ -f "$HOME/.claude/agents/exhausted-opus.lock" ] && \
-       { echo "opus budget lock present — stop; resume next session"; exit 0; }
+1. Budget: the driver now owns the opus daily exhausted-lock check — pass --fail-fast-budget
+   (in the RUN block below) and it cleanly stops with a recoverable `BUDGET-PAUSED` marker
+   (exit 0) at session start OR mid-drain, instead of the old 300s busy-wait. No
+   prompt-level lock guard is needed (SKI-372).
 2. Worklist freshness + zero-tripwire:
      cd ~/Development && node scripts/skill/build-skill-list.js --write --fail-on-empty
    Exit 3 = ZERO-TRIPWIRE: the worklist is empty while the manifest has skills — a SYSTEM
@@ -123,7 +124,7 @@ Invoke the driver ONCE PER SKILL, in a fresh bash call each time, up to
 MAX_SKILLS_PER_SESSION times (stop early at any stop condition):
   cd ~/Development/skill-graph && \
   PANEL_LOCK_DIR="$HOME/Development/skill-graph/skill-audit-loop/progress/panel-drain.lock" \
-  bash scripts/run-panel-loop.sh --worklist --max-skills 1 --timeout 5400
+  bash scripts/run-panel-loop.sh --worklist --fail-fast-budget --max-skills 1 --timeout 5400
 - One driver call per skill bounds every bash call at the driver's own 90-minute
   per-skill watchdog; the claim/ledger system carries state between calls, so a killed
   or timed-out call never strands the drain.
@@ -154,8 +155,10 @@ STOP CONDITIONS (exit cleanly at the FIRST one; the next session continues from 
   (entries all completed/claimed/excluded). Otherwise see ZERO-TRIPWIRE above.
 - A FAILED marker or non-zero driver exit: stop, include the marker line + the last ~20
   log lines in your report. Do not retry the same skill this session.
-- Budget / rate / session-window exhaustion (exhausted-lock sleep messages, RateLimitError,
-  "session limit"): stop and report "recoverable — resume next session". Never busy-wait.
+- Budget / rate / session-window exhaustion: with --fail-fast-budget the driver emits a
+  `run-panel-loop: BUDGET-PAUSED` marker and exits 0 cleanly when the opus daily lock is
+  present (session start or mid-drain) — report "recoverable — resume next session". Other
+  exhaustion signals (RateLimitError, "session limit") stop the same way. Never busy-wait.
 - Context check AFTER EACH completed skill: continue to the next driver call only if you
   can positively confirm context is still healthy (the OpenCode UI shows usage; if you
   cannot observe it, assume it is NOT healthy after 2 skills and stop). On the GitHub
