@@ -127,10 +127,27 @@ pre-fix them by hand)
 Invoke the driver ONCE PER SKILL, in a fresh bash call each time, up to
 MAX_SKILLS_PER_SESSION times (stop early at any stop condition):
   cd ~/Development/skill-graph && \
+  OPENCODE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS=5400000 \
   bash scripts/run-panel-loop.sh --worklist --fail-fast-budget --max-skills 1 --timeout 5400
-- One driver call per skill bounds every bash call at the driver's own 90-minute
-  per-skill watchdog; the claim/ledger system carries state between calls, so a killed
-  or timed-out call never strands the drain.
+- OPENCODE BASH-TOOL TIMEOUT (verified 2026-06-10, SKI-378 — OpenCode 1.16.2): the bash tool's
+  DEFAULT per-call timeout is **120000ms (2 minutes)**, raised by the env var
+  `OPENCODE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS` (there is NO `opencode.json` key for it in 1.16.2 —
+  the requested `tool.timeout`/`timeout_ms` config is unimplemented). A panel skill runs ~68 min, so
+  WITHOUT the env var above the driver call is killed at 2 min — long before the skill finishes. The
+  prefix raises it to 5400000ms (90 min) to match the driver's own `--timeout 5400` watchdog.
+  **UNVERIFIED RISK (opencode#25509):** a SEPARATE AI-SDK `streamText` `stepMs=120000` hard cap was
+  reported to wrap the ENTIRE tool step (so it could kill a >2 min bash call even with the env var
+  set; `experimental.mcp_timeout` does NOT help — the outer AI SDK fires first). It was filed against
+  v1.14.31 and marked closed without a confirmed fix. Before trusting a long single-bash-call drain on
+  this OpenCode version, EMPIRICALLY CONFIRM it: in an opencode session run
+  `OPENCODE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS=300000 bash -c 'sleep 150 && echo SURVIVED'` — if it
+  prints SURVIVED the streamText cap is gone; if it dies near ~120s, the single-long-bash-call model is
+  unworkable here and the driver must be backgrounded with a `watch-panel.js --status-file` watch
+  instead (the Codex automation runtime is not affected — it runs the driver as a host process, not an
+  AI-SDK tool step).
+- One driver call per skill bounds every bash call at the driver's own 90-minute per-skill watchdog;
+  the claim/ledger system carries state between calls, so a killed or timed-out call never strands the
+  drain (it releases the in-flight claim on exit).
 - No PANEL_LOCK_DIR override is needed (SKI-374): the driver's DEFAULT lock now lives at
   skill-graph/skill-audit-loop/progress/panel-drain.lock — the SAME default the Codex
   automation supervisor uses, so the two runtimes still mutually exclude (one panel drain at a
