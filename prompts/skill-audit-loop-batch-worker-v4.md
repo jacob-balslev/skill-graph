@@ -45,7 +45,7 @@ Read, in this order:
 Load relevant project skills and universalSkills before execution. At minimum, load the audit/quality set named by the single-model prompt plus any universalSkills returned by local skill routing/injection tooling. Read the actual SKILL.md files directly.
 
 Single-model rule (RULE 0):
-- Run as YOURSELF — the ONE model executing this prompt (Opus, Codex/GPT-5.5, Gemini, or Sonnet). This v4 wrapper is model-agnostic (per the header + § Codex note); do NOT pin a specific model. (For Codex cron specifically, prefer `skill-audit-loop-codex-autonomous-v5.md`.)
+- Run as YOURSELF — the ONE model executing this prompt (Opus, Codex, Gemini, or Sonnet). This v4 wrapper is model-agnostic (per the header + § Codex note); do NOT pin a specific model. (For Codex cron specifically, prefer `skill-audit-loop-codex-autonomous-v5.md`.)
 - Do not spawn, consult, delegate to, or grade with any other model.
 - Do not use the multi-model merge flow.
 - The single-model prompt is the INNER per-skill contract. The queue wrapper is the OUTER batch contract.
