@@ -6,9 +6,15 @@
  * This module is the SINGLE SOURCE OF TRUTH for `PRIVACY_PATTERNS` and the
  * scan logic. It is consumed by:
  *
- *   L2 — export-marketplace-skills.js  (export-time gate)
+ *   L2 — export-marketplace-skills.js  (export-time gate, fails closed)
  *   L3 — skills/hooks/pre-push         (pre-push hook in the public skills repo)
- *   L4 — .github/workflows/privacy-scan.yml  (CI gate — SH-6325)
+ *
+ * NOTE (corrected 2026-06-10): an earlier comment listed a fourth layer,
+ * `.github/workflows/privacy-scan.yml` (SH-6325) — that workflow file does NOT
+ * exist in the repo (the only workflows are `publish.yml` and
+ * `skill-graph-lint.yml`). There is no standalone privacy-scan CI job; the
+ * operative enforcement is the L2 export-time gate (fails closed) plus the L3
+ * pre-push hook in the public skills repo.
  *
  * Architecture: ADR 0012 "Internal Skill Library Separation: Defense-in-Depth Gate"
  * (skill-graph/docs/adr/0012-internal-skill-library-separation.md)
