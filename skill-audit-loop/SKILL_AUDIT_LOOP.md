@@ -863,7 +863,7 @@ Every workspace-only command the numbered steps below use, and what a standalone
 | `scripts/skill/skill-lint.js <skill>` (Steps 2, 8, 11) | `skill-graph lint <skill>` (or `node scripts/skill-lint.js <skill>` — canonical, note **no** `skill/` subdir) | Same lint gate, bundled path. |
 | `scripts/skill/source-truth-catalog.js --deep` (Step 2/3) | `skill-graph drift` for truth-source staleness; read `grounding.truth_sources` and the cited files directly for the deep code probe. | The deep code-body catalog is workspace-only; `drift` covers the staleness signal an npm consumer needs. |
 | `scripts/skill/skill-test-runner.js --skill <skill>` (Steps 3, 8) | Run the skill's cited key-file tests directly (the test commands named in the skill body / `grounding`). | The runner is a workspace convenience wrapper; the underlying tests are in the consumer's own repo. |
-| `scripts/skill/skill-census.js --json [--write-manifest --write-docs]` (Steps 8–9) | `skill-graph status <skill>` (per-skill Audit Status) · `node scripts/generate-manifest.js` (manifest) · `node scripts/build-status-doc.js` (corpus status). Concept-card presence is enforced by `skill-graph audit` / `skill-graph lint`. | Census is a corpus-wide roll-up; the bundled CLIs cover the per-skill + manifest + status pieces a consumer needs. |
+| `scripts/skill/skill-census.js --json [--write-docs]` (Steps 8–9) | `skill-graph status <skill>` (per-skill Audit Status) · `node scripts/generate-manifest.js` (manifest — census no longer writes it, SKI-371) · `node scripts/build-status-doc.js` (corpus status). Concept-card presence is enforced by `skill-graph audit` / `skill-graph lint`. | Census is a corpus-wide roll-up of the index docs; the bundled CLIs cover the per-skill + manifest + status pieces a consumer needs. |
 | `scripts/skill/build-skill-list.js --write` (Step 9) | **Skip.** The worklist is the drain queue; a solo consumer audits the skill they chose. | Worklist ranking is drain orchestration. |
 | `scripts/skill/evaluate-skill.js` (Step 7) | `skill-graph evaluate --mode comprehension <skill>/evals/comprehension.json` · `skill-graph evaluate --mode application --application <skill-dir> <skill>/evals/application.json` | Wraps the canonical `lib/audit/evaluate-skill.js`; stamps `comprehension_verdict` / `application_verdict`. |
 | `scripts/loop/loop-checkpoint.js advance\|update` (Steps 9, 11) | **Skip.** Loop checkpoint/steering is batch-runner telemetry. | No loop to checkpoint in a single-skill run. |
@@ -1009,9 +1009,9 @@ Every workspace-only command the numbered steps below use, and what a standalone
    | Audit report completion score | `1`-`5`, with every applied score ceiling named |
 
 8. **Verify** (fixed checklist, every skill):
-   - `node scripts/skill/skill-census.js --json --write-manifest --write-docs`
+   - `node scripts/skill/skill-census.js --json --write-docs`  (SKILL-INDEX.md + docs/SKILL-REGISTRY.md only — census no longer writes the manifest, SKI-371)
    - `node scripts/skill/skill-lint.js`
-   - `node scripts/skill/build-skill-list.js --write`
+   - `node scripts/skill/build-skill-list.js --refresh-manifest --write`  (regenerates skills.manifest.json via generate-manifest.js + the worklist)
    - `node scripts/skill/skill-test-runner.js --skill <skill-slug> --json` (re-run if code was fixed)
    - If skill/eval files changed: formatting check on changed files
    - If runtime code changed: `npx pnpm run test` (scoped) + ESLint on changed files

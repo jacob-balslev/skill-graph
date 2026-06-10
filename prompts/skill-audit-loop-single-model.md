@@ -147,9 +147,11 @@ VERIFY
             # (environmental false positives, see PREFLIGHT). Re-run `skill-lint.js | tail -3`
             # and confirm corpus errors <= BASELINE_ERRORS captured in Step 4. If your claimed
             # skill is clean AND you did not add errors, the structural gate PASSES.
-     node scripts/skill/skill-census.js --write-manifest --write-docs  # <slug> must be CLEAN
-            # (the only census error/warning lines that matter are YOUR skill's; pre-existing
-            #  ones for other skills are not yours to fix in this commit)
+     node scripts/skill/skill-census.js --write-docs  # <slug> must be CLEAN (index docs only)
+            # (census no longer writes skills.manifest.json — SKI-371; regenerate the manifest
+            #  with `node scripts/skill/build-skill-list.js --refresh-manifest`. The only census
+            #  error/warning lines that matter are YOUR skill's; pre-existing ones for other
+            #  skills are not yours to fix in this commit)
      node --test <skill key-file tests>  (or skill-test-runner)        # all pass
    Compare eval_score before/after when an eval exists — the merged skill must not regress it.
    Revert only harmful or measurable regression. A flat score, missing eval artifact, capped run,
@@ -261,9 +263,10 @@ the runner must not depend on a clean baseline to function.)
 **The verify/commit gotchas (confirmed in a live agent-loop-infra audit, 2026-05-22):**
 - `drift_status: current` is INVALID — census only accepts the canonical enum (OK/DRIFT/BROKEN/
   STALE/NO_BASELINE/EXTERNAL_UNHASHED/UNKNOWN).
-- `skill-census --write-manifest --write-docs` regenerates aggregates from the WHOLE working tree,
-  picking up parallel sessions' edits — so the manifest/REGISTRY/SKILL-INDEX diff is dominated by
-  other skills. Commit only your skill's files; let a clean full regeneration own the aggregates.
+- `skill-census --write-docs` (REGISTRY/SKILL-INDEX) and `build-skill-list --refresh-manifest`
+  (skills.manifest.json — census no longer writes it, SKI-371) regenerate aggregates from the WHOLE
+  working tree, picking up parallel sessions' edits — so the manifest/REGISTRY/SKILL-INDEX diff is
+  dominated by other skills. Commit only your skill's files; let a clean full regeneration own the aggregates.
 - A script that rewrites a large JSON can silently reformat the whole file; always confirm the
   diff is localized before staging.
 - The claim lock is pid-bound; `release` across process boundaries needs `reap --ttl-min 0`.
