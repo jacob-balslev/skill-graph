@@ -86,3 +86,10 @@ The runtime layer answers "how does this skill execute?" The author/audit-time l
 - [`docs/quality-doctrine.md`](quality-doctrine.md) — what "improve" means in this discipline.
 - [`docs/adr/0009-sibling-repo-deprecation.md`](adr/0009-sibling-repo-deprecation.md) — why the protocol, audit, and CLI live in one repo now.
 - [Karpathy autoresearch](https://github.com/karpathy/autoresearch) — the keep-or-revert loop applied to LLM training scripts that Skill Graph borrows for skill libraries.
+
+## External validation (prior art, 2026)
+
+Two 2026 benchmarks independently validate the premises Skill Graph is built on:
+
+- **[SkillsBench](https://www.skillsbench.ai/)** ([arXiv 2602.12670](https://arxiv.org/abs/2602.12670)) — across 86 tasks / 11 domains / 7,308 trajectories, **curated** skills raise pass rate by **+16.2pp on average** (up to +51.9pp), while **self-generated** skills give no benefit ("models cannot reliably author the procedural knowledge they benefit from consuming"). This is the empirical case for the Skill Audit Loop's curate-and-grade discipline over auto-generation, and for the [quality doctrine](quality-doctrine.md)'s "improve = curate, never auto-author."
+- **[SkillTester](https://arxiv.org/abs/2603.28815)** ([skilltester.ai](https://skilltester.ai)) — evaluates skills via **paired baseline-vs-with-skill execution**, normalizing to a utility score plus a security score and a three-level security status. That paired-delta method is exactly the `application_verdict` methodology Skill Graph already deploys (see [`verdict-semantics.md`](verdict-semantics.md)) — Skill Graph's four-verdict Audit Status predates and generalizes it, and its utility+security split mirrors Skill Graph's Integrity/Behavior gates plus the release-time `security:scan`.
