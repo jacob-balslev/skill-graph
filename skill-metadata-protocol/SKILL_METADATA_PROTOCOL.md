@@ -51,9 +51,9 @@ This document is the top-level public contract for the two-file Skill Metadata P
 2. **Every authored skill declares the two required classification axes:** `subject` (closed 12-value enum) and `public` (boolean — the publishability / private-data gate: `true` = safe for the public skills.sh release, `false` = carries private API keys / personal / customer / internal-operational data and must not be published).
 3. **`scope` is a required free-text statement** of what the skill teaches and what it does not. It is not an enum and never carries publishability values — that role belongs to `public`.
 4. **A project-anchored skill (non-empty `project[]`) must declare a `grounding` block**, and that block names what it is grounded in via `grounding.subject_matter`. (Publishability — `public` — is an independent axis: a skill is private because it carries private data, not because it is project-coupled.)
-5. **Subdivide and affiliate with the current fields:** `taxonomy_domain` (slash-delimited) subdivides a crowded `subject`; `project[]` / `repo[]` carry belonging-entity references (and `project[]` presence is what triggers the `grounding` requirement).
-6. **The canonical library is authored in the flat protocol-native encoding;** the exporter *generates* the Agent-Skills-compatible nested encoding for the public release, and the normalizer reads both shapes so every deterministic tool sees one logical contract while the corpus migrates flat.
-7. **`relations.boundary: [X]` means "exclude X from co-routing when this skill wins."** Write the reason as ownership ("I own this exclusively over X"), never as deference ("use X instead").
+5. **Subdivide and affiliate with the current fields:** `taxonomy_domain` (slash-delimited) subdivides a crowded `subject`; `project[]` (frontmatter) and `repo[]` (sidecar-owned per ADR-0019) carry belonging-entity references (and `project[]` presence is what triggers the `grounding` requirement).
+6. **The canonical library is authored in the Agent-Skills-compatible nested `metadata:` encoding;** the protocol also documents the flat encoding for direct adopters, and the normalizer reads both shapes so every deterministic tool sees one logical contract while the corpus migrates field names.
+7. **`relations.suppresses: [X]` means "exclude X from co-routing when this skill wins."** Write the reason as ownership ("I own this exclusively over X"), never as deference ("use X instead"). Legacy `relations.boundary` means the same thing and is accepted only for unmigrated skills.
 8. **Version labels are earned by content, never bumped for convenience.** Advancing `schema_version` (or any `vN`) without doing the migration that version represents is fake conformance.
 9. **Audit Status fields are owned by the audit and evaluation tooling.** Never hand-stamp `application_verdict: APPLICABLE` (or any proof field) without an eval receipt.
 10. **Public exports must not leak repo-private paths, project secrets, PII, or internal-only doctrine.**
@@ -203,7 +203,7 @@ Required in `SKILL.md` frontmatter:
 | Field | Type | Purpose |
 |---|---|---|
 | `name` | string | Stable identifier. Used for routing and `relations.*` targets. |
-| `description` | string | Short description of what the skill is about. Activation signals belong to `keywords`/`triggers`/`examples`/`anti_examples`; boundary semantics belong to `relations.boundary` (⚠ name inverts mechanic — it *excludes* the listed skills when this skill wins; see § Relations § `boundary`). |
+| `description` | string | Short description of what the skill is about. Activation signals belong to `keywords`/`triggers`/`examples`/`anti_examples`; exclusion semantics belong to `relations.suppresses` (legacy `relations.boundary` is a deprecated alias; see § Relations § `suppresses`). |
 | `subject` | enum (12 closed values) | Primary classification — the competency the skill teaches. One of: `backend-engineering`, `frontend-engineering`, `software-architecture`, `data-engineering`, `agent-ops`, `ai-engineering`, `quality-assurance`, `design`, `reasoning-strategy`, `software-engineering-method`, `knowledge-organization`, `product-domain`. See § Classification. |
 | `public` | boolean | Publishability / private-data gate. `true` = safe for the public skills.sh release; `false` = carries private API keys / personal / customer / internal-operational data and must not be published. The single switch the marketplace exporter filters on. Project anchoring is a separate axis (`project[]`). See § Classification. |
 | `scope` | string | PRD-style free-text statement of what the skill teaches and what it does not. Not an enum. |
@@ -241,14 +241,12 @@ license         # SPDX identifier (e.g. MIT, Apache-2.0)
 keywords        # string[] — recommended semantic phrases for discovery; max 10
 triggers        # string[] — exact match activation phrases
 relations       # typed edges to sibling skills
-                # ⚠ relations.boundary is INVERSE to its name — it EXCLUDES the
-                # listed skills from co-routing when THIS skill wins (it does
-                # NOT defer to them). Write reason text as ownership
-                # ("I own this exclusively over X"), never deference
-                # ("use X instead"). Canonical name is relations.suppresses
-                # (ADR-0018, SYSTEM half landed); relations.boundary is the
-                # deprecated alias the router falls back to. See § Relations
-                # § `suppresses` for the full WARNING and rationale.
+                # relations.suppresses EXCLUDES the listed skills from co-routing
+                # when THIS skill wins (it does NOT defer to them). Write reason
+                # text as ownership ("I own this exclusively over X"), never
+                # deference ("use X instead"). relations.boundary is the deprecated
+                # alias the router falls back to. See § Relations § `suppresses`
+                # for the full warning and rationale.
 ```
 
 ### Optional (enrichment)
@@ -263,7 +261,7 @@ paths           # glob[] — code surfaces this skill governs
 examples        # string[] — positive activation prompts
 anti_examples   # string[] — negative activation prompts (wrong-skill training)
 project         # { handle, role }[] — projects this skill belongs to (replaces the removed `workspace_tags`)
-repo            # { handle, url }[] — repos this skill is anchored to
+                # NOTE: the companion `repo` ({ handle, url }[]) is SIDECAR-owned (audit-state.json, ADR-0019), not frontmatter
 portability     # { readiness, targets }
 lifecycle       # { stale_after_days, review_cadence }
 runtime_telemetry  # { feedback_source, metrics }
@@ -285,7 +283,9 @@ structural_verdict      # PASS | PASS_WITH_FIXES | FAIL | UNVERIFIED (form roll-
 truth_verdict           # PASS | DRIFT | BROKEN | UNVERIFIED (truth roll-up, gates 3-6)
 comprehension_verdict   # PASS | SHALLOW | REDUNDANT | UNVERIFIED | PROVISIONAL | SKIPPED_BASELINE_HIGH | NA
                         # (gate 8 — cheap smoke test only, never alone certifying)
-application_verdict     # APPLICABLE | REDUNDANT | HARMFUL | MIXED | FALSE_POSITIVE | UNVERIFIED | PROVISIONAL
+application_verdict     # APPLICABLE | PROVISIONAL | NOT_DISCRIMINATED_CEILING |
+                        # EQUIVALENT_ON_FRONTIER | REDUNDANT | HARMFUL | MIXED |
+                        # FALSE_POSITIVE | UNVERIFIED
                         # (gate 9, primary quality signal — a skill is only behaviorally certified
                         #  when this verdict is APPLICABLE)
 eval_score              # number 0.0–5.0 — latest aggregate eval grade
@@ -309,10 +309,10 @@ allowed-tools   # space-separated tool allowlist
 - Other skills reference this skill using the `name` value in their `relations.*` arrays.
 
 **`description`**
-- The routing contract, not a summary. Write for the router, not for a human reader.
-- Lead with a trigger clause: `"Use when…"` or `"Activates for…"`.
-- Include an explicit negative boundary: `"Do NOT use for…"`.
-- Keep this focused on routing. The `## Coverage` section inside the body carries the full scope detail.
+- An about-statement, not a routing contract (doctrinal change 2026-05-27, commit `f88603d`, per owner feedback). Keep it short and topical: what the skill is about.
+- Activation, trigger, and exclusion semantics belong to the dedicated fields built for them: `keywords`/`triggers` for activation signals, `examples`/`anti_examples` for prompt-level coverage, `relations.suppresses` for routing-layer exclusion edges.
+- The `## Coverage` section inside the body carries the full scope detail; the frontmatter `scope` field carries the PRD-style teaches/does-not statement.
+- Corpus note: many skills still carry the pre-2026-05-27 `"Use when… Do NOT use for…"` routing-contract shape — that is CONTENT-mode migration backlog the audit loop drains per-skill, not current authoring guidance.
 
 **`version`**
 - Semver format: `x.y.z`. Bumped when the skill's instructional content changes.
@@ -428,7 +428,7 @@ The graph layer. Seven edge types — `related`, `boundary` (⚠ name inverts me
 **`drift_check`** (in `audit-state.json`)
 - Object with `last_verified` (ISO date, required) and `truth_source_hashes` (optional).
 - `last_verified`: when the skill was last verified against its truth sources.
-- `truth_source_hashes`: a map of normalized truth-source key -> SHA-256 hex digest at the time of last verification. Keys are `path` for whole-file sources, `path#Lstart-Lend` for line ranges, and `path#anchor` for anchor-only sources. Computed by `node scripts/skill-graph-drift.js --record --apply <skill-dir>` for local truth sources. The drift sentinel (`skill-graph drift`) reports `DRIFT` when a live hash differs from the recorded hash, `BROKEN` when a local truth source file is missing, `STALE` when today exceeds `last_verified + lifecycle.stale_after_days`, `NO_BASELINE` when local truth sources are declared but no hashes are recorded, and `EXTERNAL_UNHASHED` when a URL truth source is valid but is not fetched by the zero-dependency sentinel.
+- `truth_source_hashes`: a map of normalized truth-source key -> SHA-256 hex digest at the time of last verification. Keys are `path` for whole-file sources, `path#Lstart-Lend` for line ranges, and `path#anchor` for anchor-only sources. Computed by `node scripts/skill-graph-drift.js --record --apply <skill-dir>` for local truth sources. The drift sentinel (`skill-graph drift`) reports `DRIFT` when a live hash differs from the recorded hash, `BROKEN` when a local truth source file is missing, `STALE` when today exceeds `last_verified + lifecycle.stale_after_days`, `NO_BASELINE` when local truth sources are declared but no hashes are recorded, and `EXTERNAL_UNHASHED` when a URL truth source is valid but was not fetched on this run. URL fetching is **opt-in**, not impossible: `node scripts/skill-graph-drift.js --fetch-external <skill-dir>` (curl-backed) fetches and hashes URL truth sources, so portable skills grounded entirely on external specs can record and verify URL baselines too — the default run stays network-free and reports `EXTERNAL_UNHASHED` as informational.
 
 **`lifecycle`**
 - Optional object: `{ stale_after_days, review_cadence }`.
@@ -533,9 +533,9 @@ Seven flat top-level fields that record a skill's audit fingerprint in its sibli
 
 **`application_verdict`** — **the primary quality signal**
 - Application-layer verdict (gate 9: behavioral change on real artifacts).
-- Enum: `APPLICABLE` | `REDUNDANT` | `HARMFUL` | `MIXED` | `FALSE_POSITIVE` | `UNVERIFIED` | `PROVISIONAL`.
+- Enum: `APPLICABLE` | `PROVISIONAL` | `NOT_DISCRIMINATED_CEILING` | `EQUIVALENT_ON_FRONTIER` | `REDUNDANT` | `HARMFUL` | `MIXED` | `FALSE_POSITIVE` | `UNVERIFIED`.
 - Written by the application grader on `evals/application.json`. A skill is only behaviorally certified when this is `APPLICABLE`.
-- `PROVISIONAL` records a single-model self-assessment audit that found useful behavior but has not passed the independent application grader. Default `UNVERIFIED` means no application assessment has run.
+- `PROVISIONAL` records a lower-confidence evaluation receipt that found useful behavior but has not passed the independent application grader. `NOT_DISCRIMINATED_CEILING` means baseline saturation made the eval inconclusive; `EQUIVALENT_ON_FRONTIER` means no marginal lift for the measured frontier model on that case set. Default `UNVERIFIED` means no application assessment has run.
 
 **`eval_score`**
 - Latest aggregate eval grade on a 0.0–5.0 scale.
@@ -577,11 +577,11 @@ Seven flat top-level fields that record a skill's audit fingerprint in its sibli
 
 **`anti_examples`**
 - Negative-class activation examples — realistic prompts that look related but a DIFFERENT skill should handle.
-- Pair with `relations.boundary` only when the target is same-domain and this skill owns the query; otherwise use `relations.related` plus the `anti_examples` text.
+- Pair with `relations.suppresses` only when the target is same-domain and this skill owns the query; otherwise use `relations.related` plus the `anti_examples` text. Legacy `relations.boundary` is accepted for unmigrated skills only.
 
-**`project`** / **`repo`** (belonging-entity references — replace the removed `workspace_tags`)
-- `project`: array of `{ handle, role }` objects identifying which projects this skill belongs to (`role` suggested values: `source-of-truth`, `consumer`, `mirror`).
-- `repo`: array of `{ handle, url }` objects identifying which repos this skill is anchored to.
+**`project`** (belonging-entity reference — replaces the removed `workspace_tags`)
+- `project`: array of `{ handle, role }` objects identifying which projects this skill belongs to (`role` suggested values: `source-of-truth`, `consumer`, `mirror`). Frontmatter-owned; non-empty `project[]` is what triggers the `grounding` requirement.
+- The companion `repo` field (array of `{ handle, url }` repo references) is **sidecar-owned, not frontmatter** — it moved to `audit-state.json` in the ADR-0019 split as a belonging-entity/provenance reference; the frontmatter schema rejects it via `additionalProperties: false`. See `schemas/skill-audit-state.schema.json`.
 - Absent means the skill is ambient (applies across all projects).
 - A workspace config at `.skill-graph/config.json` can map literal project handles to semantic tag sets.
 
@@ -613,7 +613,7 @@ relations:
 
 **`suppresses`** (preferred) / `boundary` (deprecated alias) — the routing-layer field, distinct from the top-level Understanding `boundary` field
 
-> **The verb matches the mechanic.** Per [ADR-0018](../docs/adr/0018-relations-boundary-semantic-inversion.md), the routing-exclusion edge was renamed `boundary` → `suppresses` because the old name read as deference while the runtime mechanic is exclusion. **The SYSTEM half landed** (2026-06-07): the schema accepts `relations.suppresses`, the router/manifest/exporter/lint read `suppresses` first and fall back to the deprecated `boundary` alias, and the JSON-LD context maps both to `sg:disjointOwnership`. The CONTENT half — renaming the alias in the ~113 corpus skills still carrying `boundary` — drains through the audit loop per-skill (a CONTENT-mode task tracks it). The companion Understanding-field rename `boundary` → `concept_boundary` **also landed** (SYSTEM half): the schema's canonical Understanding field is `concept_boundary` with top-level `boundary` retained only as the DEPRECATED alias, `skill-lint.js` requires `concept_boundary`, and `parse-frontmatter.js` normalizes the deprecated top-level `boundary` → `concept_boundary`. Its CONTENT half — the corpus rename — drains through the same per-skill audit loop.
+> **The verb matches the mechanic.** Per [ADR-0018](../docs/adr/0018-relations-boundary-semantic-inversion.md), the routing-exclusion edge was renamed `boundary` → `suppresses` because the old name read as deference while the runtime mechanic is exclusion. **The SYSTEM half landed** (2026-06-07): the schema accepts `relations.suppresses`, the router/manifest/exporter/lint read `suppresses` first and fall back to the deprecated `boundary` alias, and the JSON-LD context maps both to `sg:disjointOwnership`. The CONTENT half — renaming the alias in the ~113 corpus skills still carrying `boundary` — drains through the audit loop per-skill (a CONTENT-mode task tracks it). **Removal condition (measurable, for every deprecated/legacy alias the schema still accepts):** when an alias's corpus usage reaches 0, one SYSTEM commit deletes it from the schema — live per-alias usage counts are in [`docs/status.generated.md § Deprecated-alias drain`](../docs/status.generated.md); the drain is never an open-ended "compatibility window." The companion Understanding-field rename `boundary` → `concept_boundary` **also landed** (SYSTEM half): the schema's canonical Understanding field is `concept_boundary` with top-level `boundary` retained only as the DEPRECATED alias, `skill-lint.js` requires `concept_boundary`, and `parse-frontmatter.js` normalizes the deprecated top-level `boundary` → `concept_boundary`. Its CONTENT half — the corpus rename — drains through the same per-skill audit loop.
 >
 > New skills MUST author `relations.suppresses`. `suppresses: [skill-B]` means "**exclude skill-B from co-routing results when this skill wins.**" Always write `reason` text that reflects ownership ("I own this exclusively over skill-B"), never deference ("use skill-B instead"), because the latter will mislead the next author — skill-B is suppressed by this entry, not promoted.
 >
@@ -691,10 +691,10 @@ grounding:
 - `targets`: array of export targets. Only `skill-md` is valid today.
 
 **`urn`**
-- Optional in v3; required in v4.
+- Optional; **sidecar-owned** (`audit-state.json`) since the ADR-0019 split — registry identity is a provenance concern, not agent-facing frontmatter. See `schemas/skill-audit-state.schema.json`.
 - Format: `urn:skill:<repo-slug>:<skill-name>`. Example: `urn:skill:skill-graph:debugging`.
-- The `<skill-name>` segment must equal the `name` field exactly.
-- Consumers treat the URN as the stable identity across repos and federated registries.
+- The `<skill-name>` segment must equal the frontmatter `name` field exactly.
+- Consumers treat the URN as the stable identity across repos and federated registries; the frontmatter `name` is the display-layer handle.
 
 **`license`**
 - SPDX identifier (e.g. `MIT`, `Apache-2.0`).
@@ -722,7 +722,7 @@ grounding:
 
 ```
 name, description, subject, subjects, public, scope,
-taxonomy_domain, project, repo, stability, superseded_by, license,
+taxonomy_domain, project, stability, superseded_by, license,
 compatibility, allowed-tools, triggers, keywords, examples,
 anti_examples, paths, relations, grounding,
 # Understanding fields — author these when comprehension_state: present
@@ -778,13 +778,13 @@ The manifest schema is at `schemas/manifest.schema.json`. For the complete autho
 
 The contract enforces the following invariants. Any change to the schema or tooling that violates these invariants is a breaking change requiring a `schema_version` bump.
 
-1. **One file, one skill.** Each skill lives in one `SKILL.md`. No split-source format. No per-environment variants.
+1. **Two files, one skill (ADR-0019).** Each skill is one `SKILL.md` (agent-facing frontmatter + body) plus one sibling `audit-state.json` sidecar (audit/eval/provenance state), joined by the manifest compiler. No other split-source format. No per-environment variants.
 2. **One manifest.** All skills aggregate into one `skills.manifest.json`. No closed/open split manifest.
 3. **No private-only fields.** Every field in the schema is part of the public contract. There are no fields reserved for specific organisations or runtime environments.
 4. **No second runtime model.** The same frontmatter shape serves local development, CI, and federated registry export. Export to plain `SKILL.md` is a transform (`scripts/export-skill.js`), not a separate authoring format.
 5. **Strict schema.** `additionalProperties: false` on both the skill and manifest schemas. Unknown fields fail lint rather than being silently ignored.
 6. **Additive evolution only within a version.** New optional fields, new enum values that extend (not replace) an existing enum, and new lint warnings are non-breaking. Renamed fields, removed fields, retyped fields, tightened required-ness, and removed enum values require a `schema_version` bump.
-7. **Migration tooling ships with every breaking change.** The v3 bump ships `scripts/migrate-skill-v2-to-v3.js`; the v4 bump ships `scripts/migrate-skill-v3-to-v4.js`. Future bumps follow the same pattern.
+7. **Migration tooling accompanies every breaking change — and is then retired.** Per [ADR-0014](../docs/adr/0014-canonical-only-schema-files.md) and `AGENTS.md § Major Version Is a Clean Cut`, a version-bump codemod runs once against the corpus and is deleted to git history; codemods are never kept on disk as permanent tooling. The version-agnostic shape normalizer (`scripts/normalize-skill-field-shape.js`, Decision B 2026-05-31) is the only standing migration infrastructure.
 
 ---
 

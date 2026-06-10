@@ -7,7 +7,7 @@
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld) (frontmatter fields only — the sidecar is not exported/RDF'd).
 > **Two-file split:** per [ADR-0019](../docs/adr/0019-audit-state-sidecar-separation.md), agent-facing fields live in `SKILL.md` frontmatter; audit/eval/provenance fields live in the `audit-state.json` sidecar.
 
-Schema version: **8** · Total fields: **54**
+Schema version: **8** · Total fields: **55**
 
 ---
 
@@ -33,7 +33,7 @@ Stable display-layer skill identifier. Lowercase kebab-case; allows `/` and `:` 
 
 **Type:** string
 
-A short description of what the skill is about. Activation, trigger, and boundary semantics belong to the dedicated fields built for them: `keywords` and `triggers` for activation signals, `examples` and `anti_examples` for prompt-level coverage, and `relations.boundary` for routing-layer exclusion edges. Keep `description` descriptive, not prescriptive. No protocol length cap.
+A short description of what the skill is about. Activation, trigger, and exclusion semantics belong to the dedicated fields built for them: `keywords` and `triggers` for activation signals, `examples` and `anti_examples` for prompt-level coverage, and `relations.suppresses` for routing-layer exclusion edges. Keep `description` descriptive, not prescriptive. No protocol length cap.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#description`](field-reference.md#description)
 
@@ -75,7 +75,7 @@ Ordered subject array for polyhierarchy. First entry is the primary and must mat
 
 **Type:** string
 
-PRD-style free-text scope statement — what this skill teaches and what it does not. Mirrors the body `## Coverage` plus `## Do NOT Use When` sections at the frontmatter level for fast scanning. Required. NOT an enum: the deployment-targeting role moved to `deployment_target` (with the `workspace` value removed). See the ADR-0017 amendment of 2026-05-27.
+PRD-style free-text scope statement — what this skill teaches and what it does not. Mirrors the body `## Coverage` plus `## Do NOT Use When` sections at the frontmatter level for fast scanning. Required. NOT an enum: publishability moved to the boolean `public` gate, project anchoring moved to `project[]`, and the old `workspace` scope enum value was removed. See the ADR-0017 amendment of 2026-05-27.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#scope`](field-reference.md#scope)
 
@@ -140,7 +140,7 @@ Things commonly confused with the concept but that are NOT it. Express each diff
 
 **Type:** string
 
-DEPRECATED alias of `concept_boundary` (renamed per ADR-0018 to remove the token collision with the routing edge `relations.boundary`/`relations.suppresses`). Retained ONLY for skills not yet migrated; the normalizer presents it as `concept_boundary` and `concept_boundary` wins when both are present. New skills MUST author `concept_boundary`. Structural removal of this alias is CONTENT-mode work the audit loop drains per-skill.
+DEPRECATED alias of `concept_boundary` (renamed per ADR-0018 to remove the token collision with the routing edge `relations.suppresses` / legacy `relations.boundary`). Retained ONLY for skills not yet migrated; the normalizer presents it as `concept_boundary` and `concept_boundary` wins when both are present. New skills MUST author `concept_boundary`. Structural removal of this alias is CONTENT-mode work the audit loop drains per-skill.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#boundary`](field-reference.md#boundary)
 
@@ -258,7 +258,7 @@ Positive-class activation examples — realistic user prompts the skill SHOULD a
 
 **Type:** array of string
 
-Negative-class activation examples — realistic user prompts that look topically related but a DIFFERENT skill should handle. Used as hard-negative training signal. Pair with `relations.boundary` to name the skill that should activate instead. Groups under `activation.anti_examples` in the manifest.
+Negative-class activation examples — realistic user prompts that look topically related but a DIFFERENT skill should handle. Used as hard-negative training signal. Pair with `relations.suppresses` to name the skill that should activate instead; legacy `relations.boundary` is read only for unmigrated skills. Groups under `activation.anti_examples` in the manifest.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#anti_examples`](field-reference.md#anti_examples)
 
@@ -317,7 +317,7 @@ Records what the skill is grounded against — the truth sources, the grounding 
 
 ## Audit-state sidecar fields (`audit-state.json`)
 
-> Source schema: `schemas/skill-audit-state.schema.json`. Field count: **28** · Required: **7**.
+> Source schema: `schemas/skill-audit-state.schema.json`. Field count: **29** · Required: **7**.
 
 ---
 
@@ -340,6 +340,18 @@ Skill content version (semver). Bumps when the SKILL.md body or contract changes
 **Pattern:** `^[0-9]+\.[0-9]+\.[0-9]+$`
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#version`](field-reference.md#version)
+
+---
+
+### `skill_graph_protocol` *(optional)*
+
+**Type:** string
+
+Optional content-label claim — the protocol version whose SUBSTANTIVE content bar this skill's body and metadata have actually earned (e.g. `Skill Metadata Protocol v8`). Distinct from `schema_version` (the mechanical shape integer a codemod can bump): the content label is earned only when the version's semantic content — classification, free-text scope, Understanding fields, gradeable eval artifacts, audited verdicts — is present and reviewed per `AGENTS.md § Version Labels Are Earned, Not Bumped`. History: this token previously existed ONLY as export-provenance frontmatter that `parse-frontmatter.js::normalizeFrontmatter()` strips, leaving the doctrine governed by human discipline alone; making it a first-class sidecar field (2026-06-10) gives the earned-not-bumped rule a deterministic, schema-validated surface the audit loop and status tooling can read. Written by the audit loop when a content migration completes — never advanced by find-replace.
+
+**Pattern:** `^Skill Metadata Protocol v[0-9]+(\.[0-9]+)*$`
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#skill_graph_protocol`](field-reference.md#skill_graph_protocol)
 
 ---
 
@@ -506,9 +518,9 @@ Comprehension-layer verdict produced by gate 8 (the comprehension grader on `eva
 
 ### `application_verdict` *(optional)*
 
-**Type:** `APPLICABLE` | `REDUNDANT` | `HARMFUL` | `MIXED` | `FALSE_POSITIVE` | `UNVERIFIED` | `PROVISIONAL`
+**Type:** `APPLICABLE` | `REDUNDANT` | `NOT_DISCRIMINATED_CEILING` | `EQUIVALENT_ON_FRONTIER` | `HARMFUL` | `MIXED` | `FALSE_POSITIVE` | `UNVERIFIED` | `PROVISIONAL`
 
-Application-layer verdict produced by gate 9 (the application grader on `evals/application.json`). `APPLICABLE` (loading the skill changes agent behavior on real artifacts in the expected direction — flags, fixes, generative trajectory), `REDUNDANT` (no behavioral delta — agent behaves the same with or without the skill loaded), `HARMFUL` (negative delta — agent makes worse decisions with the skill loaded; SkillsBench arXiv 2602.12670 found 19% of evaluated skills exhibit this), `MIXED` (delta varies across cases — some applicable, some redundant or false-positive), `FALSE_POSITIVE` (skill over-triggers — applies on cases where its expertise does not apply), `UNVERIFIED` (no application assessment has run), `PROVISIONAL` (single-model self-assessment audit found useful behavior but the independent application grader has not confirmed it). This is the aggregate-quality field: a skill is only behaviorally certified when this verdict is `APPLICABLE`. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
+Application-layer verdict produced by gate 9 (the application grader on `evals/application.json`). `APPLICABLE` (loading the skill changes agent behavior on real artifacts in the expected direction — flags, fixes, generative trajectory), `NOT_DISCRIMINATED_CEILING` (baseline saturated on the real cases, so the eval had no measurement headroom; inconclusive, not a deprecation signal), `EQUIVALENT_ON_FRONTIER` (baseline had measurement headroom but the skill produced no marginal lift for the measured frontier model on this case set), `REDUNDANT` (legacy no-delta bucket retained for old receipts; new runner output should prefer the two scoped no-lift values), `HARMFUL` (negative delta — agent makes worse decisions with the skill loaded; SkillsBench arXiv 2602.12670 found 19% of evaluated skills exhibit this), `MIXED` (delta varies across cases — some applicable, some equivalent, or false-positive), `FALSE_POSITIVE` (skill over-triggers — applies on cases where its expertise does not apply), `UNVERIFIED` (no application assessment has run), `PROVISIONAL` (single-model self-assessment audit found useful behavior but the independent application grader has not confirmed it). This is the aggregate-quality field: a skill is only behaviorally certified when this verdict is `APPLICABLE`. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#application_verdict`](field-reference.md#application_verdict)
 

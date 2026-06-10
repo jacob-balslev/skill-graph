@@ -78,7 +78,7 @@ The three layers above describe **roles**; this table is the operational counter
 |---|---|---|---|
 | `audit` (Integrity Gate, no flags) | skill source + truth_sources | `last_audited`, `lint_verdict`, `structural_verdict`, `truth_verdict` | `audits/<skill>/{findings,verdict,scorecard}.md` |
 | `audit --graded` | + grader CLI | (no new sidecar verdicts — same Integrity-Gate fields as `audit`) | graded qualitative scorecard rows for the seven dimensions. Does NOT stamp `comprehension_verdict` / `application_verdict` — those come from `evaluate --mode` (rows below). |
-| `evaluate --mode comprehension` | `evals/comprehension.json` | `eval_score`, `eval_failed_ids`, `freshness`, `comprehension_verdict` | grader receipt under `eval-history/` |
+| `evaluate --mode comprehension` | `evals/comprehension.json` | `eval_score`, `eval_failed_ids`, `freshness`, `comprehension_verdict` | grader receipt appended to the resolved log dir (`lib/audit/log-paths.js`: `SKILL_GRAPH_LOG_DIR` env → monorepo `agent-orchestration/logs/` → standalone `.skill-graph/logs/`) — one contract, layout-dependent location |
 | `evaluate --mode application` | `evals/application.json` + skill body | `eval_score`, `eval_failed_ids`, `freshness`, `application_verdict` | grader receipt + before/after diff |
 | `improve --field <name>` | skill body, last `evaluate` result | `last_changed`, possibly `eval_score` (post-keep) | commit + revert log when `eval_score` drops |
 | `evolve --top N` | Audit Status priority queue | (delegates to audit/improve/evaluate per cycle) | per-cycle aggregate under `audits/_state/` |
@@ -539,7 +539,7 @@ For non-trivial new skills, write a short spec and plan first as described in `C
 - Start from `examples/skill-metadata-template.md`.
 - Put each skill in `skills/<skill-name>/SKILL.md`.
 - Keep `name:` lowercase and aligned with the parent directory.
-- Write `description:` as a routing contract: clear positive trigger plus explicit negative boundary.
+- Write `description:` as a short, topical about-statement — what the skill is about (doctrinal change 2026-05-27, commit `f88603d`). Activation signals belong in `keywords`/`triggers`/`examples`/`anti_examples`; routing-exclusion edges in `relations.suppresses`.
 - Pick `subject` honestly: one of the twelve closed values (`backend-engineering`, `frontend-engineering`, `software-architecture`, `data-engineering`, `agent-ops`, `ai-engineering`, `quality-assurance`, `design`, `reasoning-strategy`, `software-engineering-method`, `knowledge-organization`, `product-domain`) — see ADR-0020.
 - Pick `public` honestly: `true` (safe to publish) or `false` (carries private data — fail-safe default). Write `scope` as a free-text PRD-style statement of what the skill teaches.
 - Add `grounding` for project-anchored skills (non-empty `project[]`).
@@ -690,7 +690,7 @@ The audit-evidence honesty gate is **wired into `npm run verify`** as of 2026-05
 
 | Gate | Command | What it catches |
 |---|---|---|
-| **Audit-evidence consistency** | `npm run audit-manifest:check` (or `node scripts/check-audit-manifest.js`) — also runs inside `npm run verify` | Verdict run-records that claim a graded behavior verdict without the backing artifact: a graded `comprehension_verdict` without `evals/comprehension.json`, OR (as of SH-6548, 2026-05-31) a high-stakes graded `application_verdict` (APPLICABLE/MIXED/HARMFUL) without `evals/application.json`. Honest downgrade of the SKILL.md verdict to UNVERIFIED resolves either. A run-record for a skill that no longer exists in the library is stale junk — delete it rather than treating it as a live failure. |
+| **Audit-evidence consistency** | `npm run audit-manifest:check` (or `node scripts/check-audit-manifest.js`) — also runs inside `npm run verify` | Verdict run-records that claim a graded behavior verdict without the backing artifact: a graded `comprehension_verdict` without `evals/comprehension.json`, OR any non-`UNVERIFIED` `application_verdict` without `evals/application.json`. Honest downgrade of the sidecar verdict to UNVERIFIED resolves either. A run-record for a skill that no longer exists in the library is stale junk — delete it rather than treating it as a live failure. |
 
 Useful focused checks:
 

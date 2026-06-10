@@ -33,6 +33,12 @@
       "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
       "description": "Skill content version (semver). Bumps when the SKILL.md body or contract changes meaningfully. Distinct from `schema_version` (the contract shape). Used by `relations.depends_on` for `min_version` constraints. Governance/provenance — moved to the sidecar in ADR-0019. Optional in the sidecar (the only currently-required audit field NOT carried into the sidecar `required` set)."
     },
+    "skill_graph_protocol": {
+      "type": "string",
+      "pattern": "^Skill Metadata Protocol v[0-9]+(\\.[0-9]+)*$",
+      "description": "Optional content-label claim — the protocol version whose SUBSTANTIVE content bar this skill's body and metadata have actually earned (e.g. `Skill Metadata Protocol v8`). Distinct from `schema_version` (the mechanical shape integer a codemod can bump): the content label is earned only when the version's semantic content — classification, free-text scope, Understanding fields, gradeable eval artifacts, audited verdicts — is present and reviewed per `AGENTS.md § Version Labels Are Earned, Not Bumped`. History: this token previously existed ONLY as export-provenance frontmatter that `parse-frontmatter.js::normalizeFrontmatter()` strips, leaving the doctrine governed by human discipline alone; making it a first-class sidecar field (2026-06-10) gives the earned-not-bumped rule a deterministic, schema-validated surface the audit loop and status tooling can read. Written by the audit loop when a content migration completes — never advanced by find-replace.",
+      "examples": ["Skill Metadata Protocol v8"]
+    },
     "urn": {
       "type": "string",
       "pattern": "^urn:skill:[a-z0-9][a-z0-9-]*:[a-z0-9][a-z0-9-/:]*$",
@@ -175,13 +181,15 @@
       "enum": [
         "APPLICABLE",
         "REDUNDANT",
+        "NOT_DISCRIMINATED_CEILING",
+        "EQUIVALENT_ON_FRONTIER",
         "HARMFUL",
         "MIXED",
         "FALSE_POSITIVE",
         "UNVERIFIED",
         "PROVISIONAL"
       ],
-      "description": "Application-layer verdict produced by gate 9 (the application grader on `evals/application.json`). `APPLICABLE` (loading the skill changes agent behavior on real artifacts in the expected direction — flags, fixes, generative trajectory), `REDUNDANT` (no behavioral delta — agent behaves the same with or without the skill loaded), `HARMFUL` (negative delta — agent makes worse decisions with the skill loaded; SkillsBench arXiv 2602.12670 found 19% of evaluated skills exhibit this), `MIXED` (delta varies across cases — some applicable, some redundant or false-positive), `FALSE_POSITIVE` (skill over-triggers — applies on cases where its expertise does not apply), `UNVERIFIED` (no application assessment has run), `PROVISIONAL` (single-model self-assessment audit found useful behavior but the independent application grader has not confirmed it). This is the aggregate-quality field: a skill is only behaviorally certified when this verdict is `APPLICABLE`. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md."
+      "description": "Application-layer verdict produced by gate 9 (the application grader on `evals/application.json`). `APPLICABLE` (loading the skill changes agent behavior on real artifacts in the expected direction — flags, fixes, generative trajectory), `NOT_DISCRIMINATED_CEILING` (baseline saturated on the real cases, so the eval had no measurement headroom; inconclusive, not a deprecation signal), `EQUIVALENT_ON_FRONTIER` (baseline had measurement headroom but the skill produced no marginal lift for the measured frontier model on this case set), `REDUNDANT` (legacy no-delta bucket retained for old receipts; new runner output should prefer the two scoped no-lift values), `HARMFUL` (negative delta — agent makes worse decisions with the skill loaded; SkillsBench arXiv 2602.12670 found 19% of evaluated skills exhibit this), `MIXED` (delta varies across cases — some applicable, some equivalent, or false-positive), `FALSE_POSITIVE` (skill over-triggers — applies on cases where its expertise does not apply), `UNVERIFIED` (no application assessment has run), `PROVISIONAL` (single-model self-assessment audit found useful behavior but the independent application grader has not confirmed it). This is the aggregate-quality field: a skill is only behaviorally certified when this verdict is `APPLICABLE`. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md."
     },
     "lint_verdict": {
       "type": "string",

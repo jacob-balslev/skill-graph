@@ -43,6 +43,28 @@ schema_version: 8
 
 ---
 
+## `skill_graph_protocol`
+
+**Purpose.** Optional sidecar (`audit-state.json`) content-label claim — the protocol version whose **substantive content bar** the skill has actually earned, as distinct from `schema_version` (the mechanical shape integer a codemod can bump). The pair makes the "Version Labels Are Earned, Not Bumped" doctrine (`AGENTS.md`) deterministically checkable: a skill whose `schema_version` is ahead of its content label is honestly recording "shape migrated, content not yet."
+
+**Rules.**
+- Format: `Skill Metadata Protocol v<N>` (pattern-validated). Example: `Skill Metadata Protocol v8`.
+- Written by the audit loop when a content migration completes — the version's semantic content (classification, free-text `scope`, Understanding fields, gradeable eval artifacts, audited verdicts) must be present and reviewed before the label advances.
+- **Never advanced by find-replace / codemod.** A bulk label bump with no content change is fake conformance.
+- A label *behind* `schema_version` is honest drift, not an error — fix it by doing the content migration through `/audit:*`, then advancing the label.
+- History: this token previously existed only as export-provenance frontmatter that `normalizeFrontmatter()` strips (leaving the doctrine governed by human discipline alone); it became a first-class sidecar field on 2026-06-10 so audit-loop and status tooling can read it. The export pipeline may still emit its own provenance copy in exported frontmatter; the sidecar value is the checkable source.
+
+**Example.**
+```json
+{ "schema_version": 8, "skill_graph_protocol": "Skill Metadata Protocol v8" }
+```
+
+**When to use.** Stamp (via the audit loop) whenever a skill completes the content migration for a protocol version.
+
+**When NOT to use.** Never hand-author it to "catch a skill up" — that is the exact doc-lie the field exists to prevent.
+
+---
+
 ## `urn`
 
 **Purpose.** Globally-unique persistent identifier for the skill. Unlocks FAIR Findability (Wilkinson et al. 2016) across repos and federated registries. `name` is the display-layer handle; `urn` is the stable identity consumers should cite. See ADR 0004 for the full rationale.
@@ -105,12 +127,12 @@ Activation, trigger, and boundary semantics belong to the dedicated fields built
 | Realistic prompts the skill should activate for | `examples` |
 | Near-miss prompts that should activate a different skill | `anti_examples` |
 | File-surface activation | `paths` |
-| Routing-layer exclusion edges to other skills | `relations.boundary` |
+| Routing-layer exclusion edges to other skills | `relations.suppresses` (`boundary` legacy alias) |
 | Project-affiliation filter | `project` |
 
 **Rules.**
 - Describe what the skill is about. Keep it short and topical.
-- Do not pack routing prescriptions ("Use when…", "Do NOT use for…") into this field — those duplicate `examples` / `anti_examples` / `relations.boundary` in a less machine-readable form.
+- Do not pack routing prescriptions ("Use when…", "Do NOT use for…") into this field — those duplicate `examples` / `anti_examples` / `relations.suppresses` in a less machine-readable form.
 - Do not repeat the `## Coverage` section body here.
 
 **Example.**
@@ -401,7 +423,7 @@ reviewed_at: "2026-05-12"
 - Object with one required sub-field and one optional sub-field.
 - `last_verified`: ISO 8601 date string (`YYYY-MM-DD`).
 - `truth_source_hashes`: optional map of normalized truth-source key -> SHA-256 hex digest.
-- Keys must match the normalized form produced from `grounding.truth_sources`: `path` for whole-file sources, `path#Lstart-Lend` for line ranges, and `path#anchor` for anchor-only sources. The drift sentinel (`scripts/skill-graph-drift.js`) reports DRIFT when any live hash differs from the recorded hash, BROKEN when a local truth source is missing, STALE when the lifecycle window is exceeded, NO_BASELINE when `truth_source_hashes` is absent but local truth sources are declared, and EXTERNAL_UNHASHED when a URL truth source is valid but not fetched by the zero-dependency sentinel.
+- Keys must match the normalized form produced from `grounding.truth_sources`: `path` for whole-file sources, `path#Lstart-Lend` for line ranges, and `path#anchor` for anchor-only sources. The drift sentinel (`scripts/skill-graph-drift.js`) reports DRIFT when any live hash differs from the recorded hash, BROKEN when a local truth source is missing, STALE when the lifecycle window is exceeded, NO_BASELINE when `truth_source_hashes` is absent but local truth sources are declared, and EXTERNAL_UNHASHED when a URL truth source is valid but was not fetched on this run (URL fetching is opt-in via `--fetch-external`, curl-backed; the default run stays network-free).
 - For ambient/portable skills (no `project[]`) with no external truth sources, `drift_check.last_verified` equals `freshness` and `truth_source_hashes` is omitted.
 - Record hashes with `node scripts/skill-graph-drift.js --record --apply <skill-path>`; preview without `--apply`.
 - A `drift_check.last_verified` date significantly older than `freshness` is a warning sign that editorial updates have outpaced verification.
@@ -554,12 +576,14 @@ comprehension_verdict: SKIPPED_BASELINE_HIGH
 | Value | Meaning |
 |---|---|
 | `APPLICABLE` | Loading the skill changes agent behavior on real artifacts in the expected direction — correct flags, correct fixes, correct generative trajectory |
-| `REDUNDANT` | No behavioral delta — the agent behaves identically with or without the skill loaded |
+| `PROVISIONAL` | Lower-confidence evaluation receipt found useful behavior but the independent application grader has not confirmed it |
+| `NOT_DISCRIMINATED_CEILING` | Baseline saturated on the real cases, so the eval had no measurement headroom; inconclusive, not a deprecation signal |
+| `EQUIVALENT_ON_FRONTIER` | Baseline had measurement headroom but the skill produced no marginal lift for the measured frontier model on this case set |
+| `REDUNDANT` | Legacy no-delta bucket retained for old receipts; new runner output should prefer the two scoped no-lift values above |
 | `HARMFUL` | Negative delta — the agent makes worse decisions with the skill loaded. SkillsBench (arXiv 2602.12670) found 19% of evaluated skills exhibit this; the v7 schema makes this verdict surfaceable |
 | `MIXED` | Verdict varies across cases — some applicable, some redundant or false-positive |
 | `FALSE_POSITIVE` | The skill over-triggers — applies on cases where its expertise does not apply |
 | `UNVERIFIED` | Default for the v6→v7 corpus migration — no application audit has run on this skill yet |
-| `PROVISIONAL` | single-model self-assessment audit found useful behavior but the independent application grader has not confirmed it |
 
 **Rules.**
 - Optional. Defaults to `UNVERIFIED` when absent.
@@ -741,14 +765,14 @@ eval_state: passing
 - `present` implies the eval artifacts include routing or trigger assertions, not just content quality.
 - Most starter skills default to `absent` — routing coverage is a deeper authoring step.
 
-**Enforcement.** `routing_eval: present` is a verifiable claim. The harness at `scripts/skill-graph-routing-eval.js` runs every `examples[]` entry through `skill-graph-route.js` and asserts the skill wins; runs every `anti_examples[]` entry and asserts the winner is NOT this skill AND (if non-null) is named in `relations.boundary[]`. A skill that declares `present` must satisfy two harness gates:
+**Enforcement.** `routing_eval: present` is a verifiable claim. The harness at `scripts/skill-graph-routing-eval.js` runs every `examples[]` entry through `skill-graph-route.js` and asserts the skill wins; runs every `anti_examples[]` entry and asserts the winner is NOT this skill AND (if non-null) is named in `relations.suppresses[]` (or the legacy `boundary[]` alias). A skill that declares `present` must satisfy two harness gates:
 
 1. Both `examples` and `anti_examples` are populated — the harness needs prompts to evaluate.
 2. Running `node scripts/skill-graph-routing-eval.js --skill <name>` returns verdict `PASS` for the skill.
 
 A skill whose harness run contains any `FAIL` case cannot honestly claim `present`; the routing-eval output surfaces each failing prompt with the router's actual decision. A `COVERAGE_GAP` verdict (the anti-example correctly avoids this skill but no other skill absorbs it) is informational and does not block `present` — the anti-example did its job; the coverage-gap signal is for the next authoring iteration. Prefer `absent` until the harness agrees — honesty over green checkmarks.
 
-**Current status of the starter library.** As of the `[Unreleased]` entry, all eight starters declare `routing_eval: present` and pass the harness 8-of-8 (verified by `node scripts/skill-graph-routing-eval.js --only-asserted`). Each starter's `examples[]` activate the skill correctly and each `anti_examples[]` route to the appropriate boundary owner. The route flips `present` were earned by tightening keywords, splitting `examples` from `anti_examples`, and populating `relations.boundary[]` with explicit same-domain exclusion targets. New skills should default to `absent` until the harness agrees — honesty over green checkmarks remains the rule.
+**Current status of the starter library.** As of the `[Unreleased]` entry, all eight starters declare `routing_eval: present` and pass the harness 8-of-8 (verified by `node scripts/skill-graph-routing-eval.js --only-asserted`). Each starter's `examples[]` activate the skill correctly and each `anti_examples[]` route to the appropriate boundary owner. The route flips `present` were earned by tightening keywords, splitting `examples` from `anti_examples`, and populating `relations.suppresses[]` with explicit same-domain exclusion targets. New skills should default to `absent` until the harness agrees — honesty over green checkmarks remains the rule.
 
 **Example (preferred — production starters).**
 ```yaml
@@ -828,7 +852,7 @@ purpose: "It prevents persistence shape from smuggling in a false domain model."
 
 ## `concept_boundary`
 
-**Purpose.** An explicit statement of what the concept is **not** — adjacent concepts the agent might confuse it with. Canonical name as of ADR-0018, renamed from the top-level Understanding field `boundary` so the token no longer collides with the routing edge `relations.boundary` / `relations.suppresses`.
+**Purpose.** An explicit statement of what the concept is **not** — adjacent concepts the agent might confuse it with. Canonical name as of ADR-0018, renamed from the top-level Understanding field `boundary` so the token no longer collides with the routing edge `relations.suppresses` and its legacy `relations.boundary` alias.
 
 **Rules.**
 - Optional. String.
@@ -845,7 +869,7 @@ concept_boundary: "It is not database tuning, UI information architecture, or AP
 
 ## `boundary`
 
-**Purpose.** DEPRECATED alias of `concept_boundary` (renamed per ADR-0018 to remove the token collision with `relations.boundary`). Retained only for skills not yet migrated; the normalizer presents it as `concept_boundary`, and `concept_boundary` wins when both are present. New skills author `concept_boundary`.
+**Purpose.** DEPRECATED alias of `concept_boundary` (renamed per ADR-0018 to remove the token collision with `relations.suppresses` / legacy `relations.boundary`). Retained only for skills not yet migrated; the normalizer presents it as `concept_boundary`, and `concept_boundary` wins when both are present. New skills author `concept_boundary`.
 
 **Rules.**
 - Optional. String. Do not author in new skills — use `concept_boundary`.
@@ -1056,7 +1080,7 @@ examples:
 
 **Rules.**
 - Optional array of strings.
-- Pair with `relations.boundary` — every `anti_examples` entry should correspond to a concrete other skill the router should route to. Name that skill in `relations.boundary` with an object-form `{skill, reason}` explaining why it owns that territory.
+- Pair with `relations.suppresses` — every `anti_examples` entry should correspond to a concrete other skill the router should route to. Name that skill in `relations.suppresses` with an object-form `{skill, reason}` explaining why this skill owns its territory over that target. Legacy `relations.boundary` is accepted for unmigrated skills only.
 - Do not dump generic off-topic prompts here — this is not a blocklist. Use it only for near-misses the router keeps getting wrong.
 - Groups under `activation.anti_examples` in the manifest projection.
 
@@ -1290,9 +1314,9 @@ disallowed-tools: AskUserQuestion
 **Purpose.** Graph semantics between skills. Each key in the `relations` object describes a different type of relationship. Together they form the edges of the skill graph.
 
 **Rules.**
-- Object with up to seven optional edge keys: `related` (preferred) / `adjacent` (deprecated alias), `broader`, `narrower`, `boundary`, `disjoint_with`, `verify_with`, `depends_on` — plus one optional non-edge composition key, `io_contract` (see below).
-- Every edge target must be the `name` of an existing skill. Use graph/manifest review and routing audits to catch dangling targets across all seven edge keys; `scripts/skill-lint.js` validates schema shape, not graph existence.
-- Relations are directional from the skill that declares them (A `depends_on` B means A depends on B, not the reverse). `related` is symmetric by SKOS convention; `boundary` is asymmetric (A `boundary: B` does not imply B `boundary: A`).
+- Object with up to eight optional edge keys: `related` (preferred) / `adjacent` (deprecated alias), `broader`, `narrower`, `suppresses` (preferred) / `boundary` (deprecated alias), `disjoint_with`, `verify_with`, `depends_on` — plus one optional non-edge composition key, `io_contract` (see below).
+- Every edge target must be the `name` of an existing skill. Use graph/manifest review and routing audits to catch dangling targets across all eight edge keys; `scripts/skill-lint.js` validates schema shape, not graph existence.
+- Relations are directional from the skill that declares them (A `depends_on` B means A depends on B, not the reverse). `related` is symmetric by SKOS convention; `suppresses` is asymmetric (A `suppresses: B` does not imply B `suppresses: A`).
 
 **Allowed keys.**
 
@@ -1302,8 +1326,9 @@ disallowed-tools: AskUserQuestion
 | `adjacent` *(deprecated alias of `related`)* | v3.0 name; still valid in v3.x. Lint warns. Removed in v4. | string | `skos:related` |
 | `broader` *(v3.1)* | Cross-skill generalisation — target is more general than this skill. Triggers Stage 4b parent recall in `scripts/skill-graph-route.js`. | string | `skos:broader` |
 | `narrower` *(v3.1)* | Cross-skill specialisation — target is more specific than this skill. Inverse of `broader`; not used to drive co-load (a parent match should not pull in arbitrary children). | string | `skos:narrower` |
-| `boundary` *(canonical, ADR 0006)* | Routing-layer score-aware exclusion guard — skills this skill suppresses from co-routing when this skill wins or ties. Not a defer-to-target pointer. | string OR `{skill, reason}` | `sg:disjointOwnership` |
-| `disjoint_with` *(v3.1, separate orthogonal relation per ADR 0006)* | Optional formal OWL class-disjointness assertion. Use only when authors genuinely want to claim that no entity can simultaneously be an instance of both classes. Rare; most authors only need `boundary`. | string OR `{skill, reason}` | `owl:disjointWith` |
+| `suppresses` *(canonical, ADR 0018)* | Routing-layer score-aware exclusion guard — skills this skill suppresses from co-routing when this skill wins or ties. Not a defer-to-target pointer. | string OR `{skill, reason}` | `sg:disjointOwnership` |
+| `boundary` *(deprecated alias of `suppresses`)* | Legacy v3.1 name retained for unmigrated skills. Same mechanic and item shape as `suppresses`; new skills author `suppresses`. | string OR `{skill, reason}` | `sg:disjointOwnership` |
+| `disjoint_with` *(v3.1, separate orthogonal relation per ADR 0006)* | Optional formal OWL class-disjointness assertion. Use only when authors genuinely want to claim that no entity can simultaneously be an instance of both classes. Rare; most authors only need `suppresses`. | string OR `{skill, reason}` | `owl:disjointWith` |
 | `verify_with` | Skills that should be co-loaded for verification or that provide cross-checks | string | `prov:wasInformedBy` |
 | `depends_on` | Explicit dependency — this skill requires the target conceptually or operationally | string OR `{skill, min_version}` | `dcterms:requires` |
 | `io_contract` *(optional, non-edge)* | Machine-checkable composition contract — abstract artifact TYPES this skill consumes/produces. The builder derives `depends_on` edges from output→input compatibility (no LLM). | `{inputs: [token], outputs: [token]}` | — |
@@ -1315,31 +1340,31 @@ disallowed-tools: AskUserQuestion
 - `node scripts/skill/check-io-composition.js` (`npm run check:io-composition`) flags two failures: **broken chains** (an authored `depends_on` target whose outputs satisfy none of the dependent's inputs) and **cycles** (Tarjan SCC on the depends_on subgraph). Exit 1 on either.
 - The field is fully optional and forces no corpus migration: a skill without `io_contract` contributes no derived edges and is never flagged.
 
-**Boundary vs disjoint_with — the ADR 0006 split.** ADR 0001 originally proposed renaming `boundary` to `disjoint_with` and treating them as aliases. ADR 0006 reverses that: the two predicates operate at different semantic layers and the schema keeps them distinct.
+**Suppresses vs disjoint_with — the ADR 0006 / ADR 0018 split.** ADR 0001 originally proposed renaming `boundary` to `disjoint_with` and treating them as aliases. ADR 0006 reversed that: the two predicates operate at different semantic layers and the schema keeps them distinct. ADR 0018 then renamed the everyday routing predicate from `boundary` to `suppresses` because the field's mechanic is exclusion, not deference.
 
-- `boundary` is a **routing-layer exclusion guard**. When skill A wins a query, skills listed in A's `boundary[]` are excluded from co-routing results (if A outscores them). The field name implies "defer to B" but the mechanic is "exclude B when A wins" — write reason text that reflects ownership ("I own this exclusively over B"), not deference ("use B instead"). Asymmetric; `reason` is strongly recommended; the canonical name for the everyday use case. See the WARNING callout in `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Relations § boundary`.
+- `suppresses` is a **routing-layer exclusion guard**. When skill A wins a query, skills listed in A's `suppresses[]` are excluded from co-routing results (if A outscores them). The mechanic is "exclude B when A wins" — write reason text that reflects ownership ("I own this exclusively over B"), not deference ("use B instead"). Asymmetric; `reason` is strongly recommended; this is the canonical name for the everyday use case. The legacy `boundary` alias is read only for unmigrated skills. See `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Relations § suppresses`.
 - `disjoint_with` is a **formal class-theory** claim. A and B name disjoint conceptual classes; no entity can simultaneously be an instance of both. Maps to OWL `owl:disjointWith` for RDF consumers that reason about class membership. Rare in practice — most skill libraries never need this.
 
-If you are unsure which to use, you want `boundary`. Use `disjoint_with` only when you have an explicit reason to make a formal ontological claim that survives the JSON-LD projection into OWL.
+If you are unsure which to use, you want `suppresses`. Use `disjoint_with` only when you have an explicit reason to make a formal ontological claim that survives the JSON-LD projection into OWL.
 
 **Glossary.** See `docs/glossary.md § Relation predicates` for the formal definitions of each predicate. The JSON-LD `@context` at `schemas/skill.context.jsonld` projects these predicates to their W3C equivalents for RDF consumers.
 
-**Item shapes in v3.** `boundary`, `disjoint_with`, and `depends_on` accept both the bare-string form (v2-compatible) and the enriched object form (v3 addition). The bare form remains valid — upgrade item-by-item when a reason or version constraint is real.
+**Item shapes in v3.** `suppresses`, the deprecated alias `boundary`, `disjoint_with`, and `depends_on` accept both the bare-string form (v2-compatible) and the enriched object form (v3 addition). The bare form remains valid — upgrade item-by-item when a reason or version constraint is real.
 
-- `boundary` and `disjoint_with` objects carry a `reason` string. The reason is what makes the relation self-documenting: `"fulfillment owns order state transitions; this skill only reads them"` beats `"fulfillment"` alone.
+- `suppresses` and `disjoint_with` objects carry a `reason` string. The reason is what makes the relation self-documenting: `"fulfillment owns order state transitions; this skill only reads them"` beats `"fulfillment"` alone.
 - `depends_on` objects carry a `min_version` semver constraint. Useful when a skill depends on a specific version of another skill's contract.
 - `related`, `broader`, `narrower`, `verify_with` are bare-string only — they carry no additional metadata.
 
 **When to use `broader`.** `broader` is cross-skill generalisation — use it when the target is a more general concept but this skill has its own standalone identity. Example: `react-best-practices` has `broader: [frontend]` because it specialises frontend knowledge, but `react-best-practices` remains a coherent skill even if the `frontend` skill were deleted.
 
-**Example (v3.1, SKOS-aligned preferred names + ADR 0006 boundary canonical).**
+**Example (v3.1, SKOS-aligned preferred names + ADR 0018 suppresses canonical).**
 ```yaml
 relations:
   related:
     - webhook-integration
   broader:
     - integration
-  boundary:
+  suppresses:
     - skill: fulfillment
       reason: "fulfillment owns order state transitions; this skill only reads them"
     - skill: shipping
@@ -1357,12 +1382,12 @@ relations:
       - webhook-subscription
 ```
 
-**Example (back-compat — `adjacent` still validates with a deprecation warning).**
+**Example (back-compat — `adjacent` and `boundary` still validate with deprecation warnings).**
 ```yaml
 relations:
   adjacent:                                   # warns: rename to `related`
     - webhook-integration
-  boundary:                                   # canonical (no warning per ADR 0006)
+  boundary:                                   # warns: rename to `suppresses`
     - skill: fulfillment
       reason: "fulfillment owns order state transitions; this skill only reads them"
   verify_with:
@@ -1374,7 +1399,7 @@ relations:
 **Example (rare — formal OWL class-disjointness assertion).**
 ```yaml
 relations:
-  boundary:                                   # routing-layer (everyday)
+  suppresses:                                 # routing-layer (everyday)
     - skill: error-tracking
       reason: "error-tracking owns observability surface; this skill is for prevention"
   disjoint_with:                              # formal class-theory (rare)
@@ -1382,11 +1407,11 @@ relations:
       reason: "Physical-security and information-security are disjoint conceptual classes by design"
 ```
 
-**When to use.** Populate `related` and `boundary` for any skill that has clearly related or clearly excluded neighbours. Populate `broader` when the target is a more general standalone skill (router uses this for parent recall). Populate `depends_on` when the skill cannot function without another skill's concepts. Populate `verify_with` when a co-loaded skill improves verification quality. Populate `disjoint_with` only for explicit OWL-class-disjointness needs.
+**When to use.** Populate `related` and `suppresses` for any skill that has clearly related or clearly excluded neighbours. Populate `broader` when the target is a more general standalone skill (router uses this for parent recall). Populate `depends_on` when the skill cannot function without another skill's concepts. Populate `verify_with` when a co-loaded skill improves verification quality. Populate `disjoint_with` only for explicit OWL-class-disjointness needs.
 
-**When to use object form.** Use `{skill, reason}` whenever a `boundary` or `disjoint_with` entry's rationale isn't obvious from the skill name alone. Use `{skill, min_version}` when a dependency's contract has versioned — without the constraint, a future update to the target skill can silently break this skill's claims.
+**When to use object form.** Use `{skill, reason}` whenever a `suppresses` or `disjoint_with` entry's rationale isn't obvious from the skill name alone. Use `{skill, min_version}` when a dependency's contract has versioned — without the constraint, a future update to the target skill can silently break this skill's claims.
 
-**When NOT to use.** Do not use `related` as a dumping ground for loosely related skills — keep it to the 2–4 most meaningful connections. Do not declare the same target under both `adjacent` and `related` (lint warns). Do not fabricate `min_version` values — if you don't know the constraint, omit it. Do not use `disjoint_with` as a more emphatic `boundary`; the OWL semantics are real and reaching for them changes how RDF consumers reason about your skill graph.
+**When NOT to use.** Do not use `related` as a dumping ground for loosely related skills — keep it to the 2–4 most meaningful connections. Do not declare the same target under both `adjacent` and `related` (lint warns). Do not fabricate `min_version` values — if you don't know the constraint, omit it. Do not use `disjoint_with` as a more emphatic `suppresses`; the OWL semantics are real and reaching for them changes how RDF consumers reason about your skill graph.
 
 ---
 

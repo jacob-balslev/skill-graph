@@ -87,14 +87,14 @@ The Integrity Gate is required before release because broken metadata poisons th
 Mapping the loop onto Google's MLOps maturity model (Level 0 manual → Level 1 pipeline automation with continuous training → Level 2 CI/CD for the pipeline itself). **The two gates are at different maturity tiers for different reasons — do not bundle them as "both at L0":**
 
 - **Integrity Gate ≈ Level 1 (runner + write-back both complete).** `lint`, `manifest:validate`, `routing-eval`, `export:verify-skill-md`, `overlap`, and unit tests run deterministically corpus-wide in CI. Verdict write-back is wired post-F14 (commit `fbdf598`, 2026-05-25): `audit` now lands `last_audited`, `lint_verdict`, `structural_verdict`, and `truth_verdict` onto the skill's Audit Status. A `truth_verdict: PASS` is earned by the audit roll-up; a standalone drift result of `UNGROUNDED` only says no declared local truth-source baseline was available, so any PASS without hash coverage needs explicit human/graded truth evidence in the audit artifact. As of 2026-05-26, the gate is operationally complete — pending only a corpus-wide first-run sweep to advance every skill from `UNVERIFIED` to its real verdict.
-- **Behavior Gate runner ≈ Level 1; Behavior Gate eval *data* ≈ Level 0.** This is the key asymmetry the prior framing hid. The runner — `evaluate-skill.js` — IS wired to write `comprehension_verdict` and `application_verdict` to the Audit Status (`evaluate-skill.js:1443-1508`, uses `updateFrontmatterField`). What's missing is eval **coverage**: comprehension artifacts exist for only a minority of skills, and application artifacts are just beginning as worked, externally-anchored specimens. Authoring the missing eval artifacts is the L0→L1 lift, not building the runner. Verify live coverage with `find ~/Development/skills/skills -path '*/evals/comprehension.json' -o -path '*/evals/application.json'`.
+- **Behavior Gate runner ≈ Level 1; Behavior Gate eval *data* ≈ Level 0.** This is the key asymmetry the prior framing hid. The runner — `evaluate-skill.js` — is wired to write `comprehension_verdict` and `application_verdict` to the Audit Status sidecar (`audit-state.json`). What's missing is eval **coverage**: comprehension artifacts exist for only a minority of skills, and application artifacts are just beginning as worked, externally-anchored specimens. Authoring the missing eval artifacts is the L0→L1 lift, not building the runner. Verify live coverage with `find ~/Development/skills/skills -path '*/evals/comprehension.json' -o -path '*/evals/application.json'`.
 
 This distinction matters operationally:
 
 - **Integrity work today** = run the corpus-wide first sweep; the next `evolve` run lands real verdicts on every skill.
 - **Behavior work today** = author eval data per skill; runner is ready and waits on the data.
 
-`application_verdict: UNVERIFIED` is still the correct default and must never be stamped to `APPLICABLE` without an `eval_last_run` receipt. The path to Level 1 for the Behavior Gate is the ~290 eval artifacts plus at least one application grader wired into CI (tracked standalone in SH-6138). See the gate-9 design notes in `docs/research/design-review-best-practices-2026-05-21.md § 3` (LLM-as-judge: boolean per-criterion checklist, CoT, calibrate to >85% human agreement, never stamp without a receipt).
+`application_verdict: UNVERIFIED` is still the correct default and must never be stamped to `APPLICABLE` without an `eval_last_run` receipt. The path to Level 1 for the Behavior Gate is the ~290 eval artifacts plus at least one application grader wired into CI (tracked standalone in SH-6138). A no-lift result is recorded as scoped evidence (`NOT_DISCRIMINATED_CEILING` when baseline saturated, `EQUIVALENT_ON_FRONTIER` when there was headroom but no measured frontier-model lift); it is not a removal instruction. See the gate-9 design notes in `docs/research/design-review-best-practices-2026-05-21.md § 3` (LLM-as-judge: boolean per-criterion checklist, CoT, calibrate to >85% human agreement, never stamp without a receipt).
 
 ## The Four Operations
 
@@ -171,7 +171,7 @@ The receipt records both directions' resolved models, the execution profile + `p
 
 Per skill, the panel runs five phases:
 
-1. **Independent research + proposal (PARALLEL).** Opus 4.8 + GPT-5.5 (**MANDATORY**) AND every enabled free agent (**ADVISORY** — `ADVISORY_MODELS`: gemini, minimax, deepseek-flash, mimo, gemini-flash) each does its OWN research (repo + web) and produces its OWN curation proposal. Width comes from many independent searches. OpenCode Zen descriptors for nemotron and big-pickle remain resolvable for explicit probes, but they are not auto-dispatched until they return bounded, usable output reliably.
+1. **Independent research + proposal (PARALLEL by design; the current orchestrator DISPATCHES SEQUENTIALLY — agents run one-at-a-time and the heartbeat ticks at phase boundaries; true in-process parallel dispatch is the tracked follow-up in § Status).** Opus 4.8 + GPT-5.5 (**MANDATORY**) AND every enabled free agent (**ADVISORY** — `ADVISORY_MODELS`: gemini, minimax, deepseek-flash, mimo, gemini-flash) each does its OWN research (repo + web) and produces its OWN curation proposal. Width comes from many independent searches. OpenCode Zen descriptors for nemotron and big-pickle remain resolvable for explicit probes, but they are not auto-dispatched until they return bounded, usable output reliably.
 2. **Cross-review, ITERATE TO CONVERGENCE.** Every agent reviews every other agent's proposal and emits keep/wrong/missing feedback; each agent then revises its proposal in light of the feedback addressed to it; repeat until the **mandatory** proposals stabilize (**hash-authoritative** — a revision "changed" iff its content hash differs, regardless of self-report; advisory churn is excluded from the stability fraction per SKI-211) or the round budget (`maxRounds`, default 3) is hit.
 3. **Synthesis (frontier curator).** A frontier model (rotated to differ from the convener) union-merges the two MANDATORY proposals under **STRICT anti-loss** (`validateAntiLoss`) + **mandatory-coverage** (`validateMandatoryCoverage` — every mandatory proposal must appear in the ledger, kept or dropped-with-reason). It **MUST examine and disposition every advisory cross-review finding** — each advisory keep/wrong/missing signal is recorded in the merge-ledger as `incorporated` / `deferred-to-eval` / `rejected`, each **with a reason**. Discretion is over *whether to fold a finding in*, NOT over *whether to consider it*: **silence is not permission to ignore** an advisory finding. A frontier model makes every keep/drop call (advisory never auto-merges; `no-lesser-models-for-quality` § "Width before verdict").
 3.1. **Mandatory verification gate (frontier verify-then-decide).** Before eval, **each mandatory frontier model (Opus + GPT-5.5) independently verifies the merged skill**: (a) is my own proposal correctly represented / not silently dropped? (b) does any advisory signal in the merge-ledger contradict or extend my domain judgment, and was it dispositioned honestly? (c) is any surfaced *claim* (advisory's or the other frontier's) load-bearing without reproduced evidence? A claim a model relies on is verified **bidirectionally** — Opus checks GPT's, GPT checks Opus's, both check advisory's — by re-running the command / reading the `file:line`, never on authority. If either frontier flags a gap, the curator revises (merge-ledger updated) and re-verifies; repeat until both approve (usually 1 round, max 2). This is a ~2-minute verification pass, NOT a re-propose. Only verified content proceeds to eval.
@@ -285,7 +285,7 @@ This is deterministic plumbing. The user runs `audit <skill>`; the internal pipe
 - `eval_failed_ids` — list of failed case IDs, empty when clean
 - `freshness` — today's ISO date
 
-When `evals/comprehension.json` exists, the comprehension grader (`evaluate-skill.js --mode comprehension`) runs against the five flat Understanding fields (`mental_model`, `purpose`, `concept_boundary`, `analogy`, `misconception`) — or against the legacy `concept.*` block for v5 skills not yet migrated — and writes `comprehension_verdict`. When an `evals/application.json` exists, the application grader (`evaluate-skill.js --mode application`) checks behavior change on real artifacts and writes `application_verdict`, the loop's primary quality signal.
+When `evals/comprehension.json` exists, the comprehension grader (`evaluate-skill.js --mode comprehension`) runs against the five flat Understanding fields (`mental_model`, `purpose`, `concept_boundary`, `analogy`, `misconception`) — or against the legacy `concept.*` block for v5 skills not yet migrated — and writes `comprehension_verdict`. When an `evals/application.json` exists, the application grader (`evaluate-skill.js --mode application`) runs baseline and with-skill arms on real artifacts, records pointwise score provenance, uses the blind pairwise grader by default for the trial verdict, and writes `application_verdict`, the loop's primary quality signal.
 
 > **The two eval files are different schemas — do not interchange them.** `comprehension.json` uses `evals[]` and the `criticality` enum `critical/high/medium/low`; `application.json` uses `cases[]` and the enum `critical/high/normal/low` (**`normal`, not `medium`** — `check-application-evals.js` rejects `medium`). Side-by-side shapes + the two enums: [`docs/comprehension-eval-spec.md`](../docs/comprehension-eval-spec.md) and [`docs/application-eval-spec.md`](../docs/application-eval-spec.md). Earning `application_verdict: APPLICABLE` requires a **cross-family certifying run** (`--certifying` + differing `--generator-family`/`--grader-family`); omitting it silently caps at `PROVISIONAL`. Copy-paste recipe: [`docs/application-eval-spec.md` § Copy-paste certifying run](../docs/application-eval-spec.md#copy-paste-certifying-run-earns-applicable).
 
@@ -598,7 +598,7 @@ Required sections:
 
 `Integrity Gate` must be exactly one of: `PASS`, `PASS_WITH_FIXES`, `FAIL`, `UNVERIFIED`.
 
-`Behavior Gate` must report the application-layer state: `APPLICABLE`, `REDUNDANT`, `HARMFUL`, `MIXED`, `FALSE_POSITIVE`, `UNVERIFIED`, or `PROVISIONAL`. Use `UNVERIFIED` with evidence when no application eval was run. Use `PROVISIONAL` only when an actual evaluation path produced a lower-confidence receipt; a diagnostic `audit` self-assessment may be described in the report, but it must not stamp a behavior verdict.
+`Behavior Gate` must report the application-layer state: `APPLICABLE`, `PROVISIONAL`, `NOT_DISCRIMINATED_CEILING`, `EQUIVALENT_ON_FRONTIER`, `REDUNDANT`, `HARMFUL`, `MIXED`, `FALSE_POSITIVE`, or `UNVERIFIED`. Use `UNVERIFIED` with evidence when no application eval was run. Use `PROVISIONAL` only when an actual evaluation path produced a lower-confidence receipt; a diagnostic `audit` self-assessment may be described in the report, but it must not stamp a behavior verdict.
 
 ### `scorecard.md`
 
@@ -620,12 +620,12 @@ Required dimension rows:
 
 ### Canonical Checklist
 
-### 1. Frontmatter validity
+### 1. Frontmatter validity (`SKILL.md`)
 
-- [ ] `schema_version` exists and equals `8`. Do not author `7`; the live schema rejects v7 and prior contracts live in git history — see `schemas/SKILL_METADATA_PROTOCOL_schema.json`.
+> **Two files per skill (ADR-0019).** This section checks the agent-facing `SKILL.md` frontmatter only; the audit/eval/provenance fields (`schema_version`, `version`, `owner`, `freshness`, `drift_check`, the Evaluation Status triple) moved to the `audit-state.json` sidecar and are checked in § 1b below. Flagging them as "missing from frontmatter" on a correctly-migrated v8 skill is a category error.
+
 - [ ] `name` exists and matches the intended skill identifier
-- [ ] `description` exists and is specific enough to route from
-- [ ] `version` exists
+- [ ] `description` exists and is a specific, topical about-statement
 - [ ] **v8 classification axes are present and valid:**
    - `subject` is one of the 12-value enum (3 bands, ADR-0020) — `backend-engineering` / `frontend-engineering` / `software-architecture` / `data-engineering` / `agent-ops` / `ai-engineering` / `quality-assurance` / `design` / `reasoning-strategy` / `software-engineering-method` / `knowledge-organization` / `product-domain`.
    - `public` is a boolean publishability/private-data gate — `true` means publishable/shareable; `false` means private and excluded from public export.
@@ -635,20 +635,27 @@ Required dimension rows:
    - `taxonomy_domain` (optional, slash-delimited) is used to subdivide a `subject` that holds many skills.
    - See `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Classification` and [ADR-0017](../docs/adr/0017-five-axis-classification-model.md) (and its 2026-05-27 amendment).
 - [ ] If the skill still carries fields that no longer exist in the live schema (e.g. v7 classification fields `type`, `category`, `categories`, `secondary_categories`, `primaryCategory`, `layerPrimary`, `routingRole`, `family`, `layer`, `archetype`; the initial v8 `operation` axis retired 2026-05-27; `eval_status`; `workspace_tags`; the retired scope-enum values `reference`/`codebase`/`workspace`; the legacy field name `domain` — renamed to `taxonomy_domain` in the 2026-05-27 amendment): file a CONTENT finding to migrate the skill through `/audit:improve`. The live schema rejects these via `additionalProperties: false`.
+- [ ] **Inline field-purpose comments present** above each authored field per the convention in `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Inline field comments`. Strippable forms (`# TEMPLATE NOTE:` lines and `> **TEMPLATE NOTE:**` body blockquotes) are ABSENT from the production skill: `grep -n "TEMPLATE NOTE" <SKILL.md>` must return zero hits. Field-purpose comments (no `TEMPLATE NOTE:` prefix) are PRESENT and survive verification: `grep -c "^\s*#" <SKILL.md>` should be ≥ the field count, not zero.
+
+### 1b. Sidecar validity (`audit-state.json` — ADR-0019)
+
+- [ ] the sidecar exists at the skill-folder root (sibling of `SKILL.md`); a skill claiming any audit/eval state without one is drift
+- [ ] `schema_version` exists and equals `8`. Do not author `7`; the live schema rejects v7 and prior contracts live in git history — see `schemas/skill-audit-state.schema.json`.
 - [ ] `owner` exists
 - [ ] `freshness` exists
 - [ ] `drift_check` exists as an object with `last_verified`
-- [ ] `eval_artifacts`, `eval_state`, `routing_eval` all exist (orthogonal triple — shipped in schema_version 2 under SH-5784, retained through v8)
-- [ ] **Inline field-purpose comments present** above each authored field per the convention in `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Inline field comments`. Strippable forms (`# TEMPLATE NOTE:` lines and `> **TEMPLATE NOTE:**` body blockquotes) are ABSENT from the production skill: `grep -n "TEMPLATE NOTE" <SKILL.md>` must return zero hits. Field-purpose comments (no `TEMPLATE NOTE:` prefix) are PRESENT and survive verification: `grep -c "^\s*#" <SKILL.md>` should be ≥ the field count, not zero.
+- [ ] `eval_artifacts`, `eval_state`, `routing_eval` all exist (orthogonal Evaluation Status triple — shipped in schema_version 2 under SH-5784, retained through v8)
+- [ ] `version` (semver content revision) present when the content revision is tracked — optional, the only audit field not in the sidecar `required` set
+- [ ] Audit Status verdict fields, when present, use the canonical enums (`docs/verdict-semantics.md`) and are loop-stamped, never hand-authored
 
 ### 2. Activation quality
 
-- [ ] `description` names real trigger scenarios
+- [ ] `description` is a short, topical about-statement (per the 2026-05-27 doctrine, commit `f88603d`: activation semantics live in the dedicated activation fields, not in `description`)
 - [ ] `keywords` are not empty for routable skills
 - [ ] `triggers` are present when label-based routing is intended
+- [ ] `examples` / `anti_examples` cover the obvious user language the skill should — and should not — activate for
 - [ ] `paths` are present when file-based activation is useful
 - [ ] activation terms are specific, not generic filler
-- [ ] description does not under-trigger obvious user language
 
 ### 3. Relation quality
 
@@ -935,6 +942,7 @@ Every workspace-only command the numbered steps below use, and what a standalone
    - If missing or under-specified, treat as drift and author in Step 5.
 
 5. **Fix drift** in skill/evals. If you find a real repo bug, fix that too. Test failures and security flags are code bugs, not skill drift.
+   - **Refresh stale field-purpose comments.** When `skill-lint.js` warns that a field-purpose comment teaches a retired contract (`deployment_target`, `workspace_tags`, `operation`, `eval_status`, or a stale "pending ADR-0018" claim), rewrite the comment from the current `skill-metadata-protocol/field-reference.md` in this same pass. Field-purpose comments stay in production skills, so a stale one actively mis-teaches every cold-start reader at the point of contact — refreshing them is part of fixing drift, not optional polish.
    - If Step 4b flagged a missing or partial "Concept of the skill": author it now. Reference `skills/shopify/SKILL.md` lines 92–106 for the exact format. Place it immediately after the frontmatter's closing `---`, before `# <Title>`, and before every other section including Coverage and `## Philosophy of the skill`. Word budget: ~150–250 is a guideline, NOT a limit — never trim or pad a clear card to hit a count. **`## Philosophy of the skill` is about the philosophy BEHIND the skill** — the underlying methodological stance, principles, or opinionated worldview the skill embodies. `## Concept of the skill` is about the universal subject. Never copy text between the two sections. (Heading-rename lineage — `## Concept Card` → `## Concept of the skill`, `## Philosophy` → `## Philosophy of the skill` — is recorded in `skill-graph/CHANGELOG.md`.)
    - If Step 4c flagged a missing or insufficient `evals/comprehension.json`: author it now. Use an existing `skills/<name>/evals/comprehension.json` file or `docs/comprehension-eval-spec.md` as the shape reference. Minimum 5 evals covering at least 5 rubric dimensions. Every eval has: `id`, `dimension` (one of `definition|mental_model|purpose|boundary|taxonomy|analogy|application|misconception`), `prompt`, `substance`, `calibration`, `truth_mode`, `skill_type`, and `criticality`.
 
@@ -957,7 +965,7 @@ Every workspace-only command the numbered steps below use, and what a standalone
         --comprehension \
         skills/<skill-slug>/evals/comprehension.json
       ```
-   - The grader writes to `agent-orchestration/logs/comprehension-history.jsonl` and prints a per-eval `primary[<dim>]: baseline → with_skill (delta)` line plus the run summary.
+   - The grader appends its receipt to `comprehension-history.jsonl` in the resolved log dir and prints a per-eval `primary[<dim>]: baseline → with_skill (delta)` line plus the run summary. The log dir is one contract with a layout-dependent location (`lib/audit/log-paths.js`): `SKILL_GRAPH_LOG_DIR` env override → monorepo `agent-orchestration/logs/` → standalone `.skill-graph/logs/`. The workspace path named in the steps below is the monorepo resolution; a standalone `@skill-graph/cli` consumer gets a local `.skill-graph/logs/` receipt home automatically.
    - **`evaluate-skill.js` exits non-zero if any case errored.** A run that exits 0 is the only valid signal of a complete grading pass; if it exits 1, fix the grader output and re-run before reading scores.
    - Read the run summary printed to stdout AND the last run's entries for this skill in the history log. Both report the new fields: `avg_primary_baseline`, `avg_primary_with_skill`, `primary_delta_avg`, `avg_baseline_score_ratio`, `avg_with_skill_score_ratio`.
    - **Pass bar (per skill, 2026-04-09 recalibration):**
@@ -1025,6 +1033,7 @@ Every workspace-only command the numbered steps below use, and what a standalone
     `.claude/rules/version-schema-contract.md` §5–7):
     - If you ran `evaluate --mode comprehension|application`: use the verdict that command stamped
       or reported — `PASS` / `SHALLOW` / `REDUNDANT` for comprehension, `APPLICABLE` /
+      `PROVISIONAL` / `NOT_DISCRIMINATED_CEILING` / `EQUIVALENT_ON_FRONTIER` /
       `REDUNDANT` / `HARMFUL` / `MIXED` / `FALSE_POSITIVE` for application, with `PROVISIONAL`
       only when the evaluator capped the run.
     - If you did NOT run the evaluator for a dimension, keep the existing sidecar value or record
@@ -1042,10 +1051,14 @@ Every workspace-only command the numbered steps below use, and what a standalone
     skills/<skill-slug>/evals/comprehension.json              (if authored, edited, or audited)
     skills/<skill-slug>/evals/application.json                (if authored, edited, or audited)
     agent-orchestration/logs/comprehension-history.jsonl      (always — grader output)
-    skill-graph/skill-audit-loop/progress/skill-audits/<skill-slug>/   (run dir + history.jsonl + latest, written by release; gitignored — relocated 2026-06-07T from .opencode/progress/skill-audits per ADR-0016 #3)
-    skill-graph/skill-audit-loop/progress/skill-audits/_ledger.jsonl  (the run ledger — terminal line appended by release in Step 10; gitignored scratch)
     skills/_meta/REGISTRY.md                                  (census regenerated)
     skills/_meta/REGISTRY.json                                (census regenerated)
+    ```
+
+    Written by Steps 10–11 but **NOT committed** (gitignored scratch — do not list these in the commit; their durability is the ledger/run-dir contract, not git):
+    ```
+    skill-graph/skill-audit-loop/progress/skill-audits/<skill-slug>/   (run dir + history.jsonl + latest, written by release; relocated 2026-06-07T from .opencode/progress/skill-audits per ADR-0016 #3)
+    skill-graph/skill-audit-loop/progress/skill-audits/_ledger.jsonl   (the run ledger — terminal line appended by release in Step 10)
     ```
 
     Commit message template:
