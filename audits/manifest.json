@@ -50,6 +50,22 @@
           "version": "1.0"
         }
       ],
+      "phase_prompts": [
+        { "id": "improve-pass",      "path": "skill-graph/prompts/skill-audit-loop-improve-pass.md",      "phase": "1-propose",       "role": "Per-model ENRICH/propose pass (research repo+web, write proposal + novelty memo, no commit). Dispatched by lib/audit/propose-one.js." },
+        { "id": "cross-review-pass", "path": "skill-graph/prompts/skill-audit-loop-cross-review-pass.md", "phase": "2-cross-review", "role": "Per-model cross-review pass (keep/wrong/missing JSON over every other proposal). Dispatched by lib/audit/cross-review-one.js." },
+        { "id": "revise-pass",       "path": "skill-graph/prompts/skill-audit-loop-revise-pass.md",       "phase": "2-revise",        "role": "Per-model revise pass (revise own proposal in light of feedback; hash-authoritative convergence). Dispatched by lib/audit/revise-one.js." },
+        { "id": "verify-pass",       "path": "skill-graph/prompts/skill-audit-loop-verify-pass.md",       "phase": "3.1-verify",      "role": "Per-mandatory-frontier verify pass (own-contribution coverage + advisory-disposition honesty + reproduced evidence on load-bearing claims). Dispatched by lib/audit/verify-one.js." }
+      ],
+      "commands": [
+        { "id": "audit",            "path": "skill-graph/commands/audit/audit.md" },
+        { "id": "improve",          "path": "skill-graph/commands/audit/improve.md" },
+        { "id": "evaluate",         "path": "skill-graph/commands/audit/evaluate.md" },
+        { "id": "evolve",           "path": "skill-graph/commands/audit/evolve.md" },
+        { "id": "discover",         "path": "skill-graph/commands/audit/discover.md" },
+        { "id": "merge",            "path": "skill-graph/commands/audit/merge.md" },
+        { "id": "skill-audit-loop", "path": "skill-graph/commands/audit/skill-audit-loop.md" }
+      ],
+      "execution_modules_note": "The per-model dispatch primitives (lib/audit/{propose,cross-review,revise,curate,verify}-one.js) are CODE, not prompts, and are intentionally NOT indexed here — this manifest indexes protocols, runner + phase prompts, command bodies, and required run artifacts. The primitives are covered by the package unit tests (test:unit).",
       "required_artifacts_per_skill": [
         { "name": "catalog.json",       "required": true, "when": "always" },
         { "name": "research.md",        "required": true, "when": "always" },
@@ -70,8 +86,9 @@
       "aliases": [
         {
           "from": ".opencode/skill-audit-lanes.json",
+          "from_deleted": true,
           "to": "skill-graph/audits/lanes.json",
-          "notes": "Lane configuration relocated to project-owned path per ADR-0016 surface #1 (2026-05-25). Consumer scripts/skill/skill-audit-claim.js reads the new path first with a fallback window."
+          "notes": "Lane configuration relocated to project-owned path per ADR-0016 surface #1 (2026-05-25). The legacy .opencode/skill-audit-lanes.json was DELETED (git history is the archive per delete-dont-archive.md); this is a historical relocation record, so from_deleted:true tells the path-integrity check to skip from-existence and validate only the to target. Consumer scripts/skill/skill-audit-claim.js reads the new path."
         },
         {
           "from": ".opencode/commands/skill-audit-merge-v1.md",
@@ -80,18 +97,43 @@
         },
         {
           "from": ".claude/commands/audit/audit.md",
-          "to": "skill-graph/prompts/skill-audit-loop-single-model.md",
-          "notes": "Claude Code slash-command resolver."
+          "to": "skill-graph/commands/audit/audit.md",
+          "notes": "Claude Code slash-command resolver (thin shim). Defers to the canonical command body, which defers to SKILL_AUDIT_LOOP.md Part 3. (Corrected 2026-06-10T: previously pointed at skill-audit-loop-single-model.md, a routing chain that no longer exists — the shim actually resolves to the command body.)"
+        },
+        {
+          "from": ".claude/commands/audit/improve.md",
+          "to": "skill-graph/commands/audit/improve.md",
+          "notes": "Claude Code slash-command resolver (thin shim)."
+        },
+        {
+          "from": ".claude/commands/audit/evaluate.md",
+          "to": "skill-graph/commands/audit/evaluate.md",
+          "notes": "Claude Code slash-command resolver (thin shim)."
+        },
+        {
+          "from": ".claude/commands/audit/evolve.md",
+          "to": "skill-graph/commands/audit/evolve.md",
+          "notes": "Claude Code slash-command resolver (thin shim). The shim frontmatter marks it deprecated (superseded_by: skill-audit-loop)."
+        },
+        {
+          "from": ".claude/commands/audit/discover.md",
+          "to": "skill-graph/commands/audit/discover.md",
+          "notes": "Claude Code slash-command resolver (thin shim)."
+        },
+        {
+          "from": ".claude/commands/audit/merge.md",
+          "to": "skill-graph/commands/audit/merge.md",
+          "notes": "Claude Code slash-command resolver (thin shim)."
         },
         {
           "from": ".opencode/commands/audit-skill.md",
-          "to": "skill-graph/prompts/skill-audit-loop-single-model.md",
-          "notes": "OpenCode slash-command resolver."
+          "to": "skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md",
+          "notes": "OpenCode slash-command resolver. Thin pointer that @imports the Part 3 runbook and lists the four single-model runner prompts (single-model/codex-autonomous-v5/batch-worker-v4/minimal-iteration). (Corrected 2026-06-10T: previously pointed at a single prompt.)"
         },
         {
           "from": ".opencode/commands/skill-audit-loop.md",
-          "to": "skill-graph/prompts/skill-audit-loop-codex-autonomous-v5.md",
-          "notes": "OpenCode queue wrapper / launcher."
+          "to": "skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md",
+          "notes": "OpenCode queue wrapper / launcher — a verbatim-consumed loop prompt (run-loop-sweep.sh 'prompt'-type) that OWNS its own queue selection, checkpoints, and continuation logic and defers the per-skill contract to Part 3. (Corrected 2026-06-10T: previously pointed at codex-autonomous-v5.md, a different contract.)"
         },
         {
           "from": "prompts/audits/skill-audit-loop-single-model.md",

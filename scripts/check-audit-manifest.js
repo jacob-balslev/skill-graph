@@ -46,16 +46,18 @@ const GRADED_COMPREHENSION_VERDICTS = new Set([
   'PROVISIONAL', 'PASS', 'SHALLOW', 'REDUNDANT',
 ]);
 
-// Application graded set (per schemas/SKILL_METADATA_PROTOCOL_schema.json:274-285 + ADR 0011): the
-// high-stakes graded application verdicts. As of SH-6548 (2026-05-31) this set is
-// ENFORCED, not merely informational — a per-run verdict claiming one of these
-// requires skills/<name>/evals/application.json on disk (symmetric to the
-// comprehension-artifact gate). The wider graded set (PROVISIONAL/REDUNDANT/
-// FALSE_POSITIVE) is the documented next expansion (docs/verdict-semantics.md
-// § Application graded set). Do not mix these values into
-// GRADED_COMPREHENSION_VERDICTS; that was the bug fixed on 2026-05-25.
+// Application graded set: every non-UNVERIFIED application verdict claims an
+// application assessment ran and therefore requires skills/<name>/evals/application.json
+// on disk (symmetric to the comprehension-artifact gate). Do not mix these values
+// into GRADED_COMPREHENSION_VERDICTS; that was the bug fixed on 2026-05-25.
 const GRADED_APPLICATION_VERDICTS = new Set([
-  'APPLICABLE', 'MIXED', 'HARMFUL',
+  'APPLICABLE', 'PROVISIONAL', 'NOT_DISCRIMINATED_CEILING',
+  'EQUIVALENT_ON_FRONTIER', 'REDUNDANT', 'MIXED', 'HARMFUL', 'FALSE_POSITIVE',
+]);
+
+const APPLICATION_ONLY_VERDICTS = new Set([
+  'APPLICABLE', 'NOT_DISCRIMINATED_CEILING', 'EQUIVALENT_ON_FRONTIER',
+  'MIXED', 'HARMFUL', 'FALSE_POSITIVE',
 ]);
 
 function parseArgs(argv) {
@@ -83,6 +85,57 @@ function loadManifest() {
     process.exit(2);
   }
   return JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'));
+}
+
+// The skills-with-health manifest is a SEPARATE generated file (skills.manifest.json
+// at the workspace root) — NOT audits/manifest.json (which indexes protocols/runners
+// and has no `.skills` key). The HARMFUL/PROVISIONAL application_verdict scan below
+// reads THIS file. Reading `.skills` off audits/manifest.json left the HARMFUL gate
+// silently inert (it always saw an empty array) — fixed 2026-06-10T.
+function loadSkillsManifest(workspace) {
+  const p = path.join(workspace, 'skills.manifest.json');
+  if (!fs.existsSync(p)) return { skills: [], source: null, present: false };
+  try {
+    const m = JSON.parse(fs.readFileSync(p, 'utf8'));
+    return { skills: Array.isArray(m.skills) ? m.skills : [], source: p, present: true };
+  } catch (err) {
+    return { skills: [], source: p, present: false, error: String(err.message || err) };
+  }
+}
+
+// Assert every path the manifest INDEXES (runner / phase-prompt / command body, and
+// both ends of each alias) actually exists on disk. Without this the index can drift
+// silently — stale alias targets and unregistered prompts (the exact failures this
+// guard was added to catch, 2026-06-10T). Repo-relative paths (skill-graph/...) always
+// resolve and are HARD failures when missing; workspace-relative paths
+// (.claude/.opencode/prompts/audits/...) are validated only when the monorepo workspace
+// is present (a standalone @skill-graph/cli clone has no .claude tree), mirroring the
+// graceful-skip pattern in check-routing-config.js.
+function validateManifestPaths(manifest, workspace) {
+  const monorepo = fs.existsSync(path.join(workspace, '.claude'));
+  const entries = [];
+  for (const proto of (manifest.protocols || [])) {
+    for (const r of (proto.runners || [])) entries.push({ kind: 'runner', id: r.id, p: r.path });
+    for (const r of (proto.phase_prompts || [])) entries.push({ kind: 'phase_prompt', id: r.id, p: r.path });
+    for (const c of (proto.commands || [])) entries.push({ kind: 'command', id: c.id, p: c.path });
+    for (const a of (proto.aliases || [])) {
+      // A relocation record (from_deleted:true) intentionally points its `from` at a
+      // legacy path that was deleted to git history — validate only its `to` target.
+      if (a.from && !a.from_deleted) entries.push({ kind: 'alias.from', id: a.from, p: a.from });
+      if (a.to) entries.push({ kind: 'alias.to', id: `${a.from} -> ${a.to}`, p: a.to });
+    }
+  }
+  const failures = [];
+  const skipped = [];
+  for (const e of entries) {
+    if (!e.p) continue;
+    const isRepoPath = e.p.startsWith('skill-graph/');
+    const abs = path.join(workspace, e.p);
+    if (fs.existsSync(abs)) continue;
+    if (isRepoPath || monorepo) failures.push({ ...e, abs });
+    else skipped.push({ ...e, reason: 'workspace path absent in standalone clone' });
+  }
+  return { failures, skipped, monorepo };
 }
 
 // Parse a verdict.md and return:
@@ -219,6 +272,7 @@ function resolveApplicationPath(workspace, skill) {
 function main() {
   const args = parseArgs(process.argv.slice(2));
   const manifest = loadManifest();
+  const manifestPaths = validateManifestPaths(manifest, args.workspace);
   // Run-root relocated 2026-06-07T from <ws>/.opencode/progress/skill-audits to
   // <ws>/skill-graph/skill-audit-loop/progress/skill-audits per the ADR-0016 surface #3
   // supersession. The run-layout substructure (<skill>/runs/<run-id>/...) underneath is unchanged.
@@ -249,7 +303,7 @@ function main() {
       // schema (schemas/SKILL_METADATA_PROTOCOL_schema.json:261-285) keeps the two enums disjoint;
       // surfacing this here catches the parser/author error before it propagates
       // into SKILL.md frontmatter.
-      const comprehensionEnumLeak = verdicts.comprehension && GRADED_APPLICATION_VERDICTS.has(verdicts.comprehension);
+      const comprehensionEnumLeak = verdicts.comprehension && APPLICATION_ONLY_VERDICTS.has(verdicts.comprehension);
 
       // Read the current durable Audit Status — if it has been honestly downgraded
       // to UNVERIFIED, treat the historical per-run claim as resolved-via-downgrade
@@ -261,11 +315,8 @@ function main() {
 
       // SH-6548: symmetric application-artifact enforcement (was informational).
       // A per-run verdict claiming a high-stakes graded application verdict
-      // (APPLICABLE/MIXED/HARMFUL) must have skills/<name>/evals/application.json
-      // on disk — same honest-downgrade escape hatch as comprehension. The wider
-      // graded set (PROVISIONAL/REDUNDANT/FALSE_POSITIVE) is the documented next
-      // expansion (docs/verdict-semantics.md § Application graded set); enforcing
-      // it here would require those records to ship artifacts first.
+      // (anything except UNVERIFIED) must have skills/<name>/evals/application.json
+      // on disk — same honest-downgrade escape hatch as comprehension.
       const claimsGradedApplication = verdicts.application && GRADED_APPLICATION_VERDICTS.has(verdicts.application);
       const appResolved = claimsGradedApplication ? resolveApplicationPath(args.workspace, skill) : null;
       const applicationExists = appResolved ? appResolved.exists : null;
@@ -304,7 +355,7 @@ function main() {
       if (claimsGradedApplication && !applicationExists && !currentAppIsHonestlyDowngraded) {
         failures.push({
           ...entry,
-          reason: `Verdict claims application=${verdicts.application} but ${applicationPath} does not exist on disk, AND the current Audit Status (application_verdict=${health.application_verdict || 'unknown'}, source=${health.source || 'missing'}) has not been honestly downgraded out of the graded set. A high-stakes graded application_verdict (APPLICABLE/MIXED/HARMFUL) is the primary quality signal and requires a gradeable evals/application.json. Either author the application.json (and re-run the assessment) or downgrade the audit-state verdict to UNVERIFIED — the verifier respects honest downgrade as the resolution path.`,
+          reason: `Verdict claims application=${verdicts.application} but ${applicationPath} does not exist on disk, AND the current Audit Status (application_verdict=${health.application_verdict || 'unknown'}, source=${health.source || 'missing'}) has not been honestly downgraded out of the graded set. Any graded application_verdict (anything except UNVERIFIED) is the primary behavior-gate signal and requires a gradeable evals/application.json. Either author the application.json (and re-run the assessment) or downgrade the audit-state verdict to UNVERIFIED — the verifier respects honest downgrade as the resolution path.`,
         });
       }
     }
@@ -315,7 +366,9 @@ function main() {
   // loud, not buried in a generic facet. PROVISIONAL is real single-model
   // signal awaiting dual-run confirmation; previously invisible because the
   // verifier collapsed it into the broader graded-set check.
-  const manifestSkills = Array.isArray(manifest.skills) ? manifest.skills : [];
+  // Read the skills-with-health manifest (skills.manifest.json), NOT audits/manifest.json.
+  const skillsManifest = loadSkillsManifest(args.workspace);
+  const manifestSkills = skillsManifest.skills;
   const harmful_skills = [];
   const provisional_skills = [];
   for (const entry of manifestSkills) {
@@ -334,6 +387,10 @@ function main() {
       failures: failures.length,
       failures_detail: failures,
       checks_detail: checks,
+      manifest_path_failures: manifestPaths.failures,
+      manifest_path_skipped: manifestPaths.skipped,
+      skills_manifest_source: skillsManifest.source,
+      skills_manifest_present: skillsManifest.present,
       harmful_skills,
       provisional_skills,
     }, null, 2) + '\n');
@@ -342,9 +399,12 @@ function main() {
     if (failures.length === 0) {
       console.log('[check-audit-manifest] OK — every graded verdict has its gradeable artifact on disk.');
     } else {
-      console.log(`[check-audit-manifest] FAIL — ${failures.length} verdict(s) claim graded comprehension without the artifact:`);
+      console.log(`[check-audit-manifest] FAIL — ${failures.length} verdict(s) claim a graded behavior verdict without the matching artifact:`);
       for (const f of failures) {
-        console.log(`  ${f.skill}/${f.runId}: comprehension=${f.comprehension_verdict}, missing ${path.relative(args.workspace, f.comprehension_json_path)}`);
+        const missing = f.application_json_exists === false
+          ? `application=${f.application_verdict}, missing ${path.relative(args.workspace, f.application_json_path)}`
+          : `comprehension=${f.comprehension_verdict}, missing ${path.relative(args.workspace, f.comprehension_json_path)}`;
+        console.log(`  ${f.skill}/${f.runId}: ${missing}`);
       }
     }
     // Surface HARMFUL loudly even when failures.length === 0 — these are
@@ -356,9 +416,24 @@ function main() {
     if (provisional_skills.length > 0) {
       console.log(`[check-audit-manifest] PROVISIONAL — ${provisional_skills.length} skill(s) carry single-model application_verdict awaiting dual-run grader confirmation.`);
     }
+    if (!skillsManifest.present) {
+      console.log('[check-audit-manifest] NOTE — skills.manifest.json not found at workspace root; HARMFUL/PROVISIONAL health scan skipped (standalone clone).');
+    }
+    // Manifest path-integrity (stale aliases / unregistered prompts drift guard).
+    if (manifestPaths.failures.length > 0) {
+      console.log(`[check-audit-manifest] FAIL — ${manifestPaths.failures.length} manifest path(s) do not exist on disk:`);
+      for (const f of manifestPaths.failures) {
+        console.log(`  [${f.kind}] ${f.id}: ${f.p}`);
+      }
+    } else {
+      console.log('[check-audit-manifest] OK — every manifest runner/phase-prompt/command/alias path exists on disk.');
+    }
+    if (manifestPaths.skipped.length > 0) {
+      console.log(`[check-audit-manifest] (${manifestPaths.skipped.length} workspace path(s) skipped — standalone clone, no .claude tree.)`);
+    }
   }
 
-  process.exit(failures.length > 0 ? 1 : 0);
+  process.exit((failures.length > 0 || manifestPaths.failures.length > 0) ? 1 : 0);
 }
 
 try {
