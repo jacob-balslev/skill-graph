@@ -30,6 +30,23 @@
  *      Skill-content sections only; no audit/eval/provenance section is required
  *      (that state lives in the audit-state.json sidecar). Added 2026-06-08,
  *      reversing the 2026-05-19 "body structure is author judgment" stance.
+ *      Since 2026-06-10 each present required section must also carry SUBSTANTIVE
+ *      content (a heading over an empty body is the same defect as a missing
+ *      section wearing a heading).
+ *   8. `scope` is non-blank when present (the schema requires the field but,
+ *      without a contract-tightening minLength, accepts an empty string — lint
+ *      owns the non-blank gate, mirroring the `description` check).
+ *   9. `compatibility` legacy/preferred alias pairs match when both are present
+ *      (runtimes/agent_runtimes, node/node_version). The schema documents
+ *      "when both are present they must match" but JSON Schema cannot express
+ *      cross-field equality — lint owns it.
+ *
+ *  ADVISORY (warnings, never fail the run): keywords cap (>10 entries — the
+ *      documented v8 anti-stuffing cap, deliberately not a schema maxItems);
+ *      retired tokens in field-purpose comments (a comment that still TEACHES a
+ *      retired field or carries a stale "pending ADR-0018" claim mis-teaches
+ *      cold-start readers at the point of contact — the corpus refresh is
+ *      CONTENT-mode audit-loop work; this is its deterministic detector).
  *
  * Exit 0 on success, 1 on any failure.
  *
@@ -403,6 +420,107 @@ function checkDescription(fm) {
 }
 
 /**
+ * Check 8 — `scope` field non-blank.
+ * The schema requires `scope` but accepts an empty string (adding minLength
+ * would be a contract tightening per Design Constraint 6), so lint owns the
+ * non-blank gate, mirroring checkDescription. Presence and type errors are
+ * checkSchema's job — this only catches present-but-blank.
+ */
+function checkScope(fm) {
+  if (typeof fm.scope !== 'string') return []; // checkSchema owns presence + type
+  if (fm.scope.trim().length === 0) {
+    return [{ field: 'scope', msg: '`scope` must be non-empty — a PRD-style statement of what the skill teaches and what it does not (SKILL_METADATA_PROTOCOL.md § scope)' }];
+  }
+  return [];
+}
+
+/**
+ * Check 9 — compatibility alias-pair equality.
+ * The schema documents "when both are present they must match" for the
+ * legacy/preferred alias pairs (runtimes/agent_runtimes, node/node_version)
+ * but JSON Schema cannot express cross-field equality — lint owns it.
+ */
+function checkCompatibilityAliasEquality(fm) {
+  const errors = [];
+  const compat = fm && fm.compatibility;
+  if (!compat || typeof compat !== 'object' || Array.isArray(compat)) return errors;
+  const pairs = [
+    ['runtimes', 'agent_runtimes'],
+    ['node', 'node_version'],
+  ];
+  for (const [legacy, preferred] of pairs) {
+    if (compat[legacy] === undefined || compat[preferred] === undefined) continue;
+    if (JSON.stringify(compat[legacy]) !== JSON.stringify(compat[preferred])) {
+      errors.push({
+        field: `compatibility.${preferred}`,
+        msg: `\`compatibility.${legacy}\` and \`compatibility.${preferred}\` are both present but differ — the alias pair must match (schemas/SKILL_METADATA_PROTOCOL_schema.json § compatibility). Author one of them, or make them identical.`,
+      });
+    }
+  }
+  return errors;
+}
+
+/**
+ * Advisory — keywords cap (>10).
+ * The documented v8 cap is max 10 (SKILL_METADATA_PROTOCOL.md § keywords,
+ * anti-stuffing). The schema deliberately carries no maxItems (a tightening of
+ * the published contract per Design Constraint 6), so lint owns the cap as an
+ * ADVISORY warning. Keyword overlap ACROSS skills is recall, never a defect —
+ * this warns only on per-skill stuffing past the documented cap.
+ */
+function checkKeywordsCap(fm) {
+  if (!Array.isArray(fm.keywords) || fm.keywords.length <= 10) return [];
+  return [{
+    field: 'keywords',
+    severity: 'warn',
+    msg: `\`keywords\` has ${fm.keywords.length} entries — the documented v8 cap is 10 (anti-stuffing; SKILL_METADATA_PROTOCOL.md § keywords). Keep the highest-signal phrases; move prompt-shaped phrases to examples[].`,
+  }];
+}
+
+/**
+ * Advisory — retired tokens in field-purpose comments.
+ * Field-purpose comments STAY in production skills (SKILL_METADATA_PROTOCOL.md
+ * § Inline field comments), so a comment that still TEACHES a retired field —
+ * or carries a stale "pending ADR-0018" claim for a rename that landed —
+ * actively mis-teaches every cold-start reader at the point of contact. The
+ * corpus refresh itself is CONTENT-mode audit-loop work; this warning is its
+ * deterministic detector. Patterns are scoped to comment lines that DEFINE the
+ * retired field (`# <field>:`) so historical mentions ("replaced the retired
+ * deployment_target enum") do not false-positive.
+ */
+const RETIRED_COMMENT_TOKENS = [
+  { pattern: /^#\s*deployment_target\s*:/, label: '`deployment_target` (retired — replaced by the boolean `public` gate; ADR-0017 amendment)' },
+  { pattern: /^#\s*workspace_tags\s*:/, label: '`workspace_tags` (removed — replaced by `project[]`)' },
+  { pattern: /^#\s*eval_status\s*:/, label: '`eval_status` (retired — replaced by the Evaluation Status triple)' },
+  { pattern: /^#\s*operation\s*:/, label: '`operation` (retired 2026-05-27; ADR-0017 amendment)' },
+  { pattern: /pending ADR-0018/, label: '"pending ADR-0018" (stale — the ADR-0018 renames LANDED; `relations.suppresses` and `concept_boundary` are canonical)' },
+];
+
+function checkRetiredTokensInComments(sourceText) {
+  const warnings = [];
+  if (typeof sourceText !== 'string' || !sourceText.startsWith('---\n')) return warnings;
+  const lines = sourceText.split('\n');
+  const fmEnd = lines.indexOf('---', 1);
+  if (fmEnd < 0) return warnings;
+  const found = new Map();
+  for (let i = 1; i < fmEnd; i++) {
+    const trimmed = lines[i].trim();
+    if (!trimmed.startsWith('#')) continue;
+    for (const { pattern, label } of RETIRED_COMMENT_TOKENS) {
+      if (pattern.test(trimmed) && !found.has(label)) found.set(label, i + 1);
+    }
+  }
+  for (const [label, line] of found) {
+    warnings.push({
+      field: 'frontmatter',
+      severity: 'warn',
+      msg: `field-purpose comment (line ${line}) teaches a retired contract: ${label}. Stale comments mis-teach at the point of contact — refresh from skill-metadata-protocol/field-reference.md on the next /audit:improve pass.`,
+    });
+  }
+  return warnings;
+}
+
+/**
  * Check 3 — parent directory matches `name`.
  * Skill Metadata Protocol expects the skill directory to match the final
  * segment of the local skill name.
@@ -442,16 +560,16 @@ function checkSubjectsPrimaryMatchesSubject(fm) {
 }
 
 /**
- * Check 5b — relations.boundary reason-text orientation (audit M4, advisory).
+ * Check 5b — relations.suppresses reason-text orientation (audit M4, advisory).
  *
- * skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Relations § boundary carries a WARNING that
- * the field NAME reads "defer to them" but the MECHANIC is "exclude them
- * when I win" — and recommends ownership reason-text ("I own X over them"),
- * not deference ("use that-skill for X"). Authors who write the inverted
- * phrasing produce semantically wrong relations that still validate.
+ * skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Relations says this
+ * predicate is an ownership exclusion ("exclude them when I win") and
+ * recommends ownership reason-text ("I own X over them"), not deference
+ * ("use that-skill for X"). Authors who write the inverted phrasing produce
+ * semantically wrong relations that still validate.
  *
- * This check inspects each `relations.boundary[].reason` string for
- * deference phrases and warns when found. The advisory warning lets the
+ * This check inspects each `relations.suppresses[].reason` string (or legacy
+ * `boundary[].reason`) for deference phrases and warns when found. The advisory warning lets the
  * author rephrase before the inverted reason ships.
  */
 function checkBoundaryReasonText(fm) {
@@ -481,9 +599,9 @@ function checkBoundaryReasonText(fm) {
     for (const pattern of INVERTED_PATTERNS) {
       if (pattern.test(reason)) {
         warnings.push({
-          field: 'relations.boundary',
+          field: 'relations.suppresses',
           severity: 'warn',
-          msg: `boundary reason reads as deference ("${reason.slice(0, 80)}${reason.length > 80 ? '…' : ''}") — recommend ownership phrasing ("I own X over ${edge.skill || 'the listed skill'}"). The boundary mechanic excludes the listed skill from co-routing when this skill wins; deference wording inverts the intent. See skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Relations § boundary WARNING.`,
+          msg: `suppresses reason reads as deference ("${reason.slice(0, 80)}${reason.length > 80 ? '…' : ''}") — recommend ownership phrasing ("I own X over ${edge.skill || 'the listed skill'}"). The suppresses mechanic excludes the listed skill from co-routing when this skill wins; deference wording inverts the intent. See skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Relations § suppresses.`,
         });
         break;
       }
@@ -494,12 +612,12 @@ function checkBoundaryReasonText(fm) {
 }
 
 /**
- * Check 5c — cross-domain relations.boundary (advisory).
+ * Check 5c — cross-domain relations.suppresses (advisory).
  *
- * Per skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Relations: a boundary edge is a
+ * Per skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Relations: a suppresses edge is a
  * SAME-DOMAIN routing-exclusion guard — when THIS skill wins a query the listed
  * sibling is suppressed from co-routing, which only makes sense between skills
- * that compete on the same browse shelf (same `subject`). A boundary pointing at
+ * that compete on the same browse shelf (same `subject`). A suppresses edge pointing at
  * a DIFFERENT subject is almost always a mis-modeled cross-domain distinction
  * that belongs in `anti_examples` + `relations.related`, not as an exclusion
  * guard. Warns when the target's subject is known and differs from this skill's
@@ -529,9 +647,9 @@ function checkCrossDomainBoundary(fm, subjectRegistry) {
     if (!targetSubject) continue; // target outside linted roots — cannot judge domain
     if (targetSubject !== sourceSubject) {
       warnings.push({
-        field: 'relations.boundary',
+        field: 'relations.suppresses',
         severity: 'warn',
-        msg: `cross-domain boundary: "${targetName}" is in subject "${targetSubject}", but a boundary edge is a SAME-DOMAIN routing-exclusion guard (this skill's subject is "${sourceSubject}"). A cross-domain distinction belongs in anti_examples + relations.related, not a boundary exclusion. See skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Relations.`,
+        msg: `cross-domain suppresses: "${targetName}" is in subject "${targetSubject}", but a suppresses edge is a SAME-DOMAIN routing-exclusion guard (this skill's subject is "${sourceSubject}"). A cross-domain distinction belongs in anti_examples + relations.related, not a suppression edge. See skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Relations.`,
       });
     }
   }
@@ -625,7 +743,7 @@ function parseArgs(args) {
     } else if (a === '--json') {
       parsed.jsonOut = true;
     } else if (a === '--strict') {
-      parsed.strict = true; // retained for CLI compatibility; no warnings exist today.
+      parsed.strict = true; // retained for CLI compatibility; advisory warnings do not fail the run.
     } else if (a === '--path') {
       if (args[i + 1]) parsed.rootArgs.push(args[++i]);
     } else if (a.startsWith('--path=')) {
@@ -790,6 +908,30 @@ function checkRequiredBodySections(text) {
       });
     }
   }
+  // Non-emptiness (2026-06-10): a present required heading with no substantive
+  // content under it is the same defect as a missing section wearing a heading.
+  // Live specimen that motivated the check: a `## Concept of the skill` whose
+  // entire body was a stray `|` (block-scalar paste artifact) — it passed the
+  // presence gate while teaching nothing. "Substantive" = at least one content
+  // line with two or more consecutive word characters before the next heading.
+  const allHeadingIdx = [];
+  for (let i = 0; i < lines.length; i++) {
+    if (/^#{1,6}\s/.test(lines[i])) allHeadingIdx.push(i);
+  }
+  for (const sec of REQUIRED_SKILL_BODY_SECTIONS) {
+    const ln = headingLine.get(sec.heading);
+    if (ln === undefined) continue; // missing — already errored above
+    const startIdx = ln - 1; // headingLine is 1-based
+    const nextHeadingIdx = allHeadingIdx.find(idx => idx > startIdx);
+    const content = lines.slice(startIdx + 1, nextHeadingIdx === undefined ? lines.length : nextHeadingIdx);
+    const substantive = content.some(line => /\w{2,}/.test(line));
+    if (!substantive) {
+      errors.push({
+        field: `## ${sec.heading}`,
+        msg: `required skill-content section \`## ${sec.heading}\` is present but EMPTY — a heading with no substantive content under it teaches nothing. Author the section (CONTENT-mode work via /audit:improve when fixing an existing skill).`,
+      });
+    }
+  }
   // `## Concept of the skill` must lead: appear before every other present
   // required section.
   const conceptLn = headingLine.get('Concept of the skill');
@@ -827,8 +969,10 @@ function lintFile(file, subjectRegistry) {
     ...checkSchema(fm),
     ...checkName(fm),
     ...checkDescription(fm),
+    ...checkScope(fm),
     ...checkParentDirMatchesName(file, fm),
     ...checkSubjectsPrimaryMatchesSubject(fm),
+    ...checkCompatibilityAliasEquality(fm),
     ...checkAuditStateSidecar(file, fm),
     ...checkRequiredBodySections(text),
   ];
@@ -836,6 +980,8 @@ function lintFile(file, subjectRegistry) {
     ...checkFieldPurposeComments(text),
     ...checkBoundaryReasonText(fm),
     ...checkCrossDomainBoundary(fm, subjectRegistry),
+    ...checkKeywordsCap(fm),
+    ...checkRetiredTokensInComments(text),
   ];
 
   return {
