@@ -272,7 +272,13 @@ function resolveApplicationPath(workspace, skill) {
 function main() {
   const args = parseArgs(process.argv.slice(2));
   const manifest = loadManifest();
-  const manifestPaths = validateManifestPaths(manifest, args.workspace);
+  // The manifest is ALWAYS loaded from the real REPO_ROOT, so its indexed paths
+  // (runner/phase-prompt/command/alias) are relative to the REAL workspace (parent of
+  // REPO_ROOT) — NOT args.workspace, which the caller may override to a hermetic temp dir
+  // to scope only the run-dir/skills walk. Resolving manifest paths against the override
+  // would falsely report every skill-graph/... path missing (regression caught by
+  // test-application-artifact-enforcement, which runs the gate with --workspace <temp>).
+  const manifestPaths = validateManifestPaths(manifest, WORKSPACE_DEFAULT);
   // Run-root relocated 2026-06-07T from <ws>/.opencode/progress/skill-audits to
   // <ws>/skill-graph/skill-audit-loop/progress/skill-audits per the ADR-0016 surface #3
   // supersession. The run-layout substructure (<skill>/runs/<run-id>/...) underneath is unchanged.

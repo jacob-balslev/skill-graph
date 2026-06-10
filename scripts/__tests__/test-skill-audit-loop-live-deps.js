@@ -69,7 +69,7 @@ check('sandboxed reviser captures the emitted document (preamble stripped) and r
   fs.writeFileSync(path.join(root, 'prompts', 'skill-audit-loop-revise-pass.md'), '# revise template stub\n');
   const skillDir = path.join(root, 'skills', 's');
   fs.mkdirSync(skillDir, { recursive: true });
-  fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: s\n---\n# s\nbody\n');
+  fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: s\npublic: true\n---\n# s\nbody\n');
   const runDir = path.join(root, '.opencode', 'progress', 'agenttool', 's', 'minimax');
   fs.mkdirSync(runDir, { recursive: true });
   const ownProposalPath = path.join(runDir, 's.minimax.proposed-SKILL.md');
@@ -145,7 +145,7 @@ check('advisory propose retries once when stdout is not a document and second at
   fs.writeFileSync(path.join(root, 'prompts', 'skill-audit-loop-improve-pass.md'), '# improve template stub\n');
   const skillDir = path.join(root, 'skills', 's');
   fs.mkdirSync(skillDir, { recursive: true });
-  fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: s\n---\n# s\nbody\n');
+  fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: s\npublic: true\n---\n# s\nbody\n');
   const validDoc = `---\nname: s\ndescription: retry test\n---\n# s\n\n${'## Section\n\nValid skill body. '.repeat(40)}`;
   let calls = 0;
   const deps = live.createSkillAuditLoopDeps({

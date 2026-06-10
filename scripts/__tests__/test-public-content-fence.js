@@ -6,6 +6,8 @@
 
 const assert = require('assert');
 const path = require('path');
+const fs = require('fs');
+const os = require('os');
 const f = require('../../lib/audit/public-content-fence');
 
 let passed = 0;
@@ -83,6 +85,36 @@ check('the audit-artifacts root is IN scope; a sibling private tree is NOT', () 
 });
 check('requires skillGraphRoot', () => {
   assert.throws(() => f.defaultPublicRoots({}), /skillGraphRoot is required/);
+});
+
+console.log('4. D2 publishability gate — multi-model/advisory external lane refuses private skills');
+check('isSkillPublishable: true only for affirmative public:true, fail-safe otherwise', () => {
+  assert.strictEqual(f.isSkillPublishable({ public: true }), true);
+  assert.strictEqual(f.isSkillPublishable({ public: false }), false);
+  assert.strictEqual(f.isSkillPublishable({}), false);            // missing ⇒ fail-closed
+  assert.strictEqual(f.isSkillPublishable(null), false);
+  // legacy/repo-coupled private markers exclude even if public:true is (mis)set
+  assert.strictEqual(f.isSkillPublishable({ public: true, deployment_target: 'project' }), false);
+  assert.strictEqual(f.isSkillPublishable({ public: true, scope: 'operational' }), false);
+  assert.strictEqual(f.isSkillPublishable({ public: true, grounding: { grounding_mode: 'repo_internal' } }), false);
+});
+check('assertSkillPublishableForExternalLane: passes public:true, throws on private/missing/unreadable', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'd2-gate-'));
+  const pub = path.join(tmp, 'pub'); fs.mkdirSync(pub);
+  fs.writeFileSync(path.join(pub, 'SKILL.md'), '---\nname: pub\npublic: true\n---\n# ok\n');
+  assert.strictEqual(f.assertSkillPublishableForExternalLane(pub, { label: 'test' }), true);
+
+  const priv = path.join(tmp, 'priv'); fs.mkdirSync(priv);
+  fs.writeFileSync(path.join(priv, 'SKILL.md'), '---\nname: priv\nmetadata:\n  public: false\n---\n# secret\n');
+  assert.throws(() => f.assertSkillPublishableForExternalLane(priv, { label: 'test' }), /NOT publishable.*single-model lane/s);
+
+  const missing = path.join(tmp, 'missing'); fs.mkdirSync(missing);
+  fs.writeFileSync(path.join(missing, 'SKILL.md'), '---\nname: missing\n---\n# no public field\n');
+  assert.throws(() => f.assertSkillPublishableForExternalLane(missing, {}), /NOT publishable/); // fail-safe
+
+  const noFile = path.join(tmp, 'nofile'); fs.mkdirSync(noFile);
+  assert.throws(() => f.assertSkillPublishableForExternalLane(noFile, {}), /cannot read.*Fail-closed/s);
+  fs.rmSync(tmp, { recursive: true, force: true });
 });
 
 console.log(`\nResults: ${passed} passed, 0 failed`);

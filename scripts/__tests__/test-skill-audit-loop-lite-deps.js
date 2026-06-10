@@ -120,7 +120,7 @@ check('model dispatch uses injected model cwd and scratch env, not the claim cwd
   fs.mkdirSync(runDir, { recursive: true });
   fs.mkdirSync(path.join(tmp, 'prompts'), { recursive: true });
   fs.writeFileSync(path.join(tmp, 'prompts', 'skill-audit-loop-improve-pass.md'), '```\nENRICH TEMPLATE\n```\n');
-  fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: demo-skill\n---\n# Demo\n');
+  fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: demo-skill\npublic: true\n---\n# Demo\n');
   const seen = [];
   const deps = d.createSkillAuditLoopLiteDeps({
     skillGraphRoot: tmp,
@@ -194,7 +194,7 @@ check('claimSlot claims --op audit per model; curate claims --op merge with a di
   const skill = 'demo-skill';
   const skillDir = path.join(tmp, 'skills', skill);
   fs.mkdirSync(skillDir, { recursive: true });
-  fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: demo-skill\n---\n# Demo\n');
+  fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: demo-skill\npublic: true\n---\n# Demo\n');
   // The live researchAndPropose loads the enrich-pass template from <root>/prompts/.
   fs.mkdirSync(path.join(tmp, 'prompts'), { recursive: true });
   fs.writeFileSync(path.join(tmp, 'prompts', 'skill-audit-loop-improve-pass.md'), '```\nENRICH TEMPLATE\n```\n');
