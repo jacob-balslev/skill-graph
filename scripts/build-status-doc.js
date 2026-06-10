@@ -166,6 +166,91 @@ function readDisplacementCoverage() {
   return { checked, total: skillFiles.length };
 }
 
+// Count corpus usage of the deprecated/legacy frontmatter aliases the live
+// schema still accepts for unmigrated skills. The clean-cut doctrine
+// (AGENTS.md § Major Version Is a Clean Cut) bans permanent deprecated-alias
+// surfaces, and each alias's removal condition is: corpus usage reaches 0 →
+// one SYSTEM commit deletes the alias from the schema. This counter makes the
+// drain measurable instead of open-ended. Counts read the RAW (un-normalized)
+// frontmatter — the normalizer would canonicalize the aliases away — and a
+// file counts once per alias whether the alias appears flat or inside the
+// nested `metadata:` encoding.
+function readAliasDrain() {
+  let skillFiles;
+  try {
+    skillFiles = collectSkillFiles();
+  } catch {
+    return null;
+  }
+  if (!Array.isArray(skillFiles) || skillFiles.length === 0) return null;
+
+  const { parseFrontmatter } = require('./lib/parse-frontmatter');
+  const counts = {
+    relations_boundary: 0,      // deprecated alias of relations.suppresses (ADR-0018)
+    relations_adjacent: 0,      // deprecated alias of relations.related
+    understanding_boundary: 0,  // deprecated top-level alias of concept_boundary (ADR-0018)
+    compatibility_runtimes: 0,  // legacy alias of compatibility.agent_runtimes
+    compatibility_node: 0,      // legacy alias of compatibility.node_version
+  };
+
+  const asObject = value => {
+    if (typeof value === 'string') {
+      try { return JSON.parse(value); } catch { return null; }
+    }
+    return (value && typeof value === 'object') ? value : null;
+  };
+
+  for (const entry of skillFiles) {
+    const file = entry.filePath || entry;
+    let fm;
+    try {
+      fm = parseFrontmatter(fs.readFileSync(file, 'utf8'));
+    } catch { continue; }
+    if (!fm) continue;
+    const meta = (fm.metadata && typeof fm.metadata === 'object') ? fm.metadata : {};
+
+    const relCandidates = [fm.relations, meta.relations].map(asObject).filter(Boolean);
+    if (relCandidates.some(rel => rel.boundary !== undefined)) counts.relations_boundary += 1;
+    if (relCandidates.some(rel => rel.adjacent !== undefined)) counts.relations_adjacent += 1;
+
+    const topBoundary = fm.boundary !== undefined ? fm.boundary : meta.boundary;
+    if (typeof topBoundary === 'string') counts.understanding_boundary += 1;
+
+    const compatCandidates = [fm.compatibility, meta.compatibility].map(asObject).filter(c => c && !Array.isArray(c));
+    if (compatCandidates.some(compat => compat.runtimes !== undefined)) counts.compatibility_runtimes += 1;
+    if (compatCandidates.some(compat => compat.node !== undefined)) counts.compatibility_node += 1;
+  }
+  return { counts, total: skillFiles.length };
+}
+
+// Render the deprecated-alias drain table. Each row is a deprecated/legacy
+// alias the schema still accepts; the removal condition is mechanical.
+function renderAliasDrainSection(aliasDrain) {
+  if (!aliasDrain) {
+    return `## Deprecated-alias drain
+
+> _Corpus not reachable — alias usage counts unavailable._
+
+`;
+  }
+  const { counts, total } = aliasDrain;
+  const row = (alias, canonical, count) =>
+    `| \`${alias}\` | \`${canonical}\` | \`${count}\` / \`${total}\` | ${count === 0 ? '**READY TO DELETE** — remove the alias from the schema in a SYSTEM commit' : 'CONTENT drain in progress (per-skill via `/audit:*`)'} |`;
+  return `## Deprecated-alias drain
+
+> The live schema accepts these deprecated/legacy aliases only for unmigrated skills. **Removal condition (per \`AGENTS.md § Major Version Is a Clean Cut\`): when an alias's corpus usage reaches 0, one SYSTEM commit deletes it from the schema.** The per-skill rename is CONTENT-mode audit-loop work; this table makes the drain measurable instead of open-ended.
+
+| Deprecated alias | Canonical | Corpus usage | State |
+|---|---|---|---|
+${row('relations.boundary', 'relations.suppresses', counts.relations_boundary)}
+${row('relations.adjacent', 'relations.related', counts.relations_adjacent)}
+${row('boundary (top-level Understanding)', 'concept_boundary', counts.understanding_boundary)}
+${row('compatibility.runtimes', 'compatibility.agent_runtimes', counts.compatibility_runtimes)}
+${row('compatibility.node', 'compatibility.node_version', counts.compatibility_node)}
+
+`;
+}
+
 // Render the Audit Health section from the manifest summary's verdict facets.
 // Per ADR-0011 § Addendum 2026-05-27, the doctrine is eligibility ≠ assessment ≠
 // certification. The three sub-tables below render exactly that split so a
@@ -250,7 +335,9 @@ Comprehension carve-out (per ADR-0011 § Addendum 2026-05-20):
 |---|---|
 | **APPLICABLE** (certified useful) | \`${certifiedUseful}\` |
 | PROVISIONAL (single-model APPLICABLE-equivalent) | \`${get(apps, 'PROVISIONAL')}\` |
-| REDUNDANT (no behavioral delta) | \`${get(apps, 'REDUNDANT')}\` |
+| NOT_DISCRIMINATED_CEILING (baseline saturated; inconclusive) | \`${get(apps, 'NOT_DISCRIMINATED_CEILING')}\` |
+| EQUIVALENT_ON_FRONTIER (no marginal frontier lift) | \`${get(apps, 'EQUIVALENT_ON_FRONTIER')}\` |
+| REDUNDANT (legacy no-delta bucket) | \`${get(apps, 'REDUNDANT')}\` |
 | MIXED (delta varies by case) | \`${get(apps, 'MIXED')}\` |
 | FALSE_POSITIVE (skill over-triggers) | \`${get(apps, 'FALSE_POSITIVE')}\` |
 | HARMFUL (makes agents worse) | \`${harmful}\` |
@@ -260,7 +347,7 @@ Comprehension carve-out (per ADR-0011 § Addendum 2026-05-20):
 }
 
 function renderMarkdown(state) {
-  const { pkg, schema_version, skill_count, checks, generated_at, mirror_status, summary, displacement } = state;
+  const { pkg, schema_version, skill_count, checks, generated_at, mirror_status, summary, displacement, alias_drain } = state;
   const displacementValue = displacement
     ? `\`${displacement.checked}\` / \`${displacement.total}\` (${displacement.total ? Math.round((displacement.checked / displacement.total) * 100) : 0}%)`
     : '`—` _(corpus not reachable)_';
@@ -298,7 +385,7 @@ function renderMarkdown(state) {
 |---|---|---|---|
 ${checks.map(checkRow).join('\n')}
 
-${renderAuditHealthSection(summary, skill_count)}## How to refresh
+${renderAuditHealthSection(summary, skill_count)}${renderAliasDrainSection(alias_drain)}## How to refresh
 
 \`\`\`bash
 node scripts/build-status-doc.js
@@ -341,6 +428,7 @@ function main() {
   const summary = readManifestSummary();
   const mirror_status = readMirrorStatus();
   const displacement = readDisplacementCoverage();
+  const alias_drain = readAliasDrain();
   const generated_at = new Date().toISOString();
 
   const checks = opts.skipChecks ? [] : [
@@ -356,7 +444,7 @@ function main() {
     // committed for the 15 graded-comprehension claims.
   ];
 
-  const state = { pkg, schema_version, skill_count, summary, mirror_status, displacement, generated_at, checks };
+  const state = { pkg, schema_version, skill_count, summary, mirror_status, displacement, alias_drain, generated_at, checks };
   const markdown = renderMarkdown(state);
 
   if (opts.stdout) {

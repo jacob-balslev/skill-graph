@@ -1,6 +1,6 @@
 # Skill Graph — Generated Status
 
-> **Generated:** 2026-06-08T12:16:23.249Z
+> **Generated:** 2026-06-10T00:04:32.982Z
 > **Generator:** `node scripts/build-status-doc.js` (regenerate; never hand-edit)
 >
 > This file is the single-source-of-truth status snapshot for the project's
@@ -17,18 +17,18 @@
 | Node engine | `>=20.0.0` | `package.json` |
 | Active schema version | `v8` | `schemas/skill-audit-state.schema.json` (moved from frontmatter schema per ADR-0019) |
 | Skill count (manifest) | `171` | `skills.manifest.json` |
-| Upstream-displacement coverage | `24` / `171` (14%) | skills with a `references/upstream-*.md` artifact (per `skill-audit-loop/SKILL_AUDIT_LOOP.md` § 6-displacement) |
+| Upstream-displacement coverage | `27` / `183` (15%) | skills with a `references/upstream-*.md` artifact (per `skill-audit-loop/SKILL_AUDIT_LOOP.md` § 6-displacement) |
 | Mirror status | docs-only mirrors per ADR 0009 (2026-05-18) | `docs/adr/0009-sibling-repo-deprecation.md` |
 
 ## Checks
 
 | Check | Status | Duration | Last line |
 |---|---|---|---|
-| check-markdown-links | ✅ PASS | 280 ms | OK   markdown links (1323 file(s)) |
-| check-protocol-consistency | ✅ PASS | 116 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
-| check-doc-drift | ✅ PASS | 159 ms | OK   doc drift sentinel: 80 active doc(s) scanned against schema v8 |
-| check-mirror-freeze | ✅ PASS | 44 ms | OK   mirror freeze: 20 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
-| marketplace-export-check | ✅ PASS | 193 ms | PROJECTION TRUNCATED for writing-humanizer: tail truncated from 503 to 465 chars to fit 1024 limit |
+| check-markdown-links | ✅ PASS | 312 ms | OK   markdown links (1327 file(s)) |
+| check-protocol-consistency | ✅ PASS | 125 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
+| check-doc-drift | ✅ PASS | 202 ms | OK   doc drift sentinel: 81 active doc(s) scanned against schema v8 |
+| check-mirror-freeze | ✅ PASS | 50 ms | OK   mirror freeze: 20 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
+| marketplace-export-check | ❌ FAIL | 205 ms | FAIL missing exported skill three-horizons |
 
 ## Audit Health
 
@@ -74,11 +74,25 @@ Comprehension carve-out (per ADR-0011 § Addendum 2026-05-20):
 |---|---|
 | **APPLICABLE** (certified useful) | `0` |
 | PROVISIONAL (single-model APPLICABLE-equivalent) | `8` |
-| REDUNDANT (no behavioral delta) | `2` |
+| NOT_DISCRIMINATED_CEILING (baseline saturated; inconclusive) | `0` |
+| EQUIVALENT_ON_FRONTIER (no marginal frontier lift) | `0` |
+| REDUNDANT (legacy no-delta bucket) | `2` |
 | MIXED (delta varies by case) | `0` |
 | FALSE_POSITIVE (skill over-triggers) | `0` |
 | HARMFUL (makes agents worse) | `0` |
 | UNVERIFIED (no assessment) | `161` |
+
+## Deprecated-alias drain
+
+> The live schema accepts these deprecated/legacy aliases only for unmigrated skills. **Removal condition (per `AGENTS.md § Major Version Is a Clean Cut`): when an alias's corpus usage reaches 0, one SYSTEM commit deletes it from the schema.** The per-skill rename is CONTENT-mode audit-loop work; this table makes the drain measurable instead of open-ended.
+
+| Deprecated alias | Canonical | Corpus usage | State |
+|---|---|---|---|
+| `relations.boundary` | `relations.suppresses` | `20` / `183` | CONTENT drain in progress (per-skill via `/audit:*`) |
+| `relations.adjacent` | `relations.related` | `0` / `183` | **READY TO DELETE** — remove the alias from the schema in a SYSTEM commit |
+| `boundary (top-level Understanding)` | `concept_boundary` | `0` / `183` | **READY TO DELETE** — remove the alias from the schema in a SYSTEM commit |
+| `compatibility.runtimes` | `compatibility.agent_runtimes` | `0` / `183` | **READY TO DELETE** — remove the alias from the schema in a SYSTEM commit |
+| `compatibility.node` | `compatibility.node_version` | `0` / `183` | **READY TO DELETE** — remove the alias from the schema in a SYSTEM commit |
 
 ## How to refresh
 
