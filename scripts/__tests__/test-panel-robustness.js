@@ -221,13 +221,33 @@ check('a TRANSIENT revise failure on a mandatory cell retries and the run comple
     sleepMs: () => {},
     reviseProposal: ({ reviserModel, ownProposalPath }) => {
       calls[reviserModel] = (calls[reviserModel] || 0) + 1;
-      if (reviserModel === 'codex-current' && calls[reviserModel] === 1) return { ok: false, error: 'rate limit hit mid-revise' };
+      // genuinely transient blip ('timeout') — rate-limit/session-limit texts are BUDGET
+      // class since 2026-06-10T and raise RateLimitError instead (next test).
+      if (reviserModel === 'codex-current' && calls[reviserModel] === 1) return { ok: false, error: 'timeout hit mid-revise' };
       return { ok: true, proposalPath: ownProposalPath, contentHash: `h:${ownProposalPath}`, changed: false };
     },
   });
   const r = panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/skills/s', cwd: '/x/skill-graph', advisoryModels: [], deps });
   assert.strictEqual(r.applied, true, 'a transient revise blip that recovers does not collapse quorum');
   assert.ok(calls['codex-current'] >= 2, 'codex revise was retried (≥2 calls)');
+});
+check('a BUDGET (rate-limit / session-window) failure on a mandatory cell mid-convergence raises recoverable RateLimitError, never inline-retries or collapses quorum', () => {
+  const calls = {};
+  const deps = makeDeps({
+    sleepMs: () => {},
+    reviseProposal: ({ reviserModel, ownProposalPath }) => {
+      calls[reviserModel] = (calls[reviserModel] || 0) + 1;
+      // the live 2026-06-10T incident text shape
+      if (reviserModel === 'codex-current') return { ok: false, error: "You've hit your session limit · resets 4:40am" };
+      return { ok: true, proposalPath: ownProposalPath, contentHash: `h:${ownProposalPath}`, changed: false };
+    },
+  });
+  let err = null;
+  try { panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/skills/s', cwd: '/x/skill-graph', advisoryModels: [], deps }); }
+  catch (e) { err = e; }
+  assert.ok(err instanceof RateLimitError, 'session-window exhaustion raises RateLimitError (checkpoint + resume)');
+  assert.strictEqual(err.recoverable, true);
+  assert.strictEqual(calls['codex-current'], 1, 'no inline retry on a BUDGET failure — retrying burns the budget harder');
 });
 
 console.log(`\n${passed} passed`);

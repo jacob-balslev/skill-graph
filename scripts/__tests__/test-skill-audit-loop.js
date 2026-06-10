@@ -300,4 +300,67 @@ check('requires skill/skillDir/cwd, 2-model mandatory, and injected deps', () =>
   assert.throws(() => panel.runSkillAuditLoop({ skill: 's', skillDir: '/x', cwd: '/x', advisoryModels: [], deps: {} }), /must be a function/);
 });
 
+// ── 4. Phase 3.1 mandatory verification gate (2026-06-10T) ──
+console.log('4. Phase 3.1 verify gate');
+
+check('verify is DEFERRED (recorded, not silently RUN) when no verifyMerge dep is injected', () => {
+  const deps = makeDeps();
+  const r = panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], deps });
+  assert.strictEqual(r.verify.status, 'DEFERRED');
+  assert.strictEqual(r.verify.rounds, 0);
+  assert.strictEqual(r.applied, true); // curate-only composition still keeps + applies
+});
+
+check('both frontiers approve => verify RUN, 1 round, proceeds to eval + apply', () => {
+  const verified = [];
+  const deps = makeDeps({
+    verifyMerge: ({ verifierModel }) => { verified.push(verifierModel); return { ok: true, approved: true, gaps: [], parse_ok: true }; },
+  });
+  const r = panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], deps });
+  assert.strictEqual(r.verify.status, 'RUN');
+  assert.strictEqual(r.verify.rounds, 1);
+  assert.deepStrictEqual(verified.sort(), ['codex-current', 'opus']);
+  assert.strictEqual(r.verify.approvals.opus, true);
+  assert.strictEqual(r.verify.approvals['codex-current'], true);
+  assert.strictEqual(r.applied, true);
+});
+
+check('round-1 gap => curator revision + re-verify approves in round 2 (curate called twice)', () => {
+  let curateCalls = 0;
+  let verifyCalls = 0;
+  const deps = makeDeps({
+    curate: (args) => {
+      curateCalls += 1;
+      return {
+        mergedSkillPath: 'SKILL.md',
+        mergeLedgerPath: 'merge-ledger.json',
+        mergeLedger: { contributions: args.proposals.concat(args.advisoryProposals || []).map((p, i) => ({ id: i + 1, surfaced_by: p.model, disposition: 'kept' })) },
+      };
+    },
+    verifyMerge: () => {
+      verifyCalls += 1;
+      // round 1: both verifiers flag a gap (calls 1-2); round 2: both approve (calls 3-4)
+      if (verifyCalls <= 2) return { ok: true, approved: false, gaps: [{ kind: 'unevidenced-claim', item: 'claim X lacks evidence', evidence: 'f.js:1', required_action: 'drop or evidence it' }], parse_ok: true };
+      return { ok: true, approved: true, gaps: [], parse_ok: true };
+    },
+  });
+  const r = panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], deps });
+  assert.strictEqual(r.verify.status, 'RUN');
+  assert.strictEqual(r.verify.rounds, 2);
+  assert.strictEqual(curateCalls, 2); // initial curate + one verify revision
+  assert.strictEqual(r.verify.gaps.length, 2); // the two round-1 gaps stay on the record
+  assert.strictEqual(r.applied, true);
+});
+
+check('approval never reached after max verify rounds => throws, nothing applied', () => {
+  const deps = makeDeps({
+    verifyMerge: () => ({ ok: true, approved: false, gaps: [{ kind: 'own-coverage', item: 'my contribution dropped silently', evidence: 'ledger', required_action: 'restore it' }], parse_ok: true }),
+  });
+  assert.throws(
+    () => panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], deps }),
+    /phase 3\.1 verification failed/,
+  );
+  assert.strictEqual(deps._calls.applied, 0);
+});
+
 console.log(`\nResults: ${passed} passed, 0 failed`);

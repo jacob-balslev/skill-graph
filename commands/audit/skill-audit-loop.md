@@ -73,7 +73,10 @@ Underneath the panel, dispatch each model's per-phase work however the run is st
 | 1 · propose | `lib/audit/propose-one.js` | one `Agent` subagent per model (Opus native `claude`; GPT a `sonnet` wrapper running `codex`; each advisory a `sonnet` wrapper) |
 | 2 · cross-review → revise/converge | `lib/audit/cross-review-one.js` + `lib/audit/revise-one.js` | one subagent per model per round |
 | 3 · curate (synthesis) | `lib/audit/curate-one.js` | one frontier curator subagent |
+| 3.1 · verify (mandatory gate) | `lib/audit/verify-one.js` (added 2026-06-10T) | one subagent per mandatory frontier; gaps → curator revision + re-verify (max 2 rounds); unverified content never proceeds to eval |
 | 4 · eval + 5 · apply | (orchestrator) | the SESSION reads each on-disk `result.json` (never the wrapper subagent's free-text report, which is unreliable) and runs the eval guardrail + apply-on-keep |
+
+In-session observability + ledger (2026-06-10T): pass `--status-file <run-dir>/status.json` to EVERY primitive — each cell upserts its live state into the shared heartbeat (`lib/audit/panel-status-file.js`), so `node skill-graph/scripts/watch-panel.js <file>` (attached via the `Monitor` tool) observes the in-session run exactly like the monolithic runner. The primitives deliberately bypass the claim system, so an in-session run leaves NO `_ledger.jsonl` trace — when draining the shared worklist, the orchestrator MUST `skill-audit-claim.js claim` before and `release` after the run so the ledger and worklist stay truthful; for a one-off named skill the claim is optional.
 
 The orchestrator reads each `result.json` between phases and reflects every phase/model transition into the Task panel with `TaskUpdate`. The Agent-tool subagents are the execution layer underneath; the pinned Task panel — not the subagent `↑/↓ · Enter to view` list — is the panel the user watches. (Dispatch contract: `skill-audit-loop/SKILL_AUDIT_LOOP.md` § "In-session Agent-tool dispatch".)
 
