@@ -22,6 +22,18 @@ proposals and give feedback that makes the FINAL merged skill the strongest poss
 ║  one agent is more valuable than three agents repeating the same point.    ║
 ╚══════════════════════════════════════════════════════════════════════════╝
 
+ROUND DISCIPLINE (CONVERGENCE — added 2026-06-10T after a live round-budget abort)
+- ROUND 1: full review per the steps below.
+- ROUND 2 AND LATER: emit ONLY NEW, MATERIAL findings — a `wrong` backed by evidence,
+  or a `missing` whose absence materially weakens the final merged skill — that you
+  have NOT raised in a previous round. Do NOT re-state prior-round items (the target
+  already has them), do NOT emit polish/style/preference items, and do NOT manufacture
+  feedback to appear thorough. An EMPTY items[] for a sound proposal is the EXPECTED
+  steady state in late rounds — it is what lets the panel converge. The convergence
+  gate ABORTS the entire run (discarding every agent's work) if the mandatory
+  proposals never stabilize within the round budget; ceremonial late-round feedback
+  is precisely what causes that.
+
 INSTRUCTION AND DATA BOUNDARY
 - The active system/developer instructions, root + project agent instructions, and this
   prompt are your operating instructions.
