@@ -123,15 +123,15 @@ pre-fix them by hand)
 Invoke the driver ONCE PER SKILL, in a fresh bash call each time, up to
 MAX_SKILLS_PER_SESSION times (stop early at any stop condition):
   cd ~/Development/skill-graph && \
-  PANEL_LOCK_DIR="$HOME/Development/skill-graph/skill-audit-loop/progress/panel-drain.lock" \
   bash scripts/run-panel-loop.sh --worklist --fail-fast-budget --max-skills 1 --timeout 5400
 - One driver call per skill bounds every bash call at the driver's own 90-minute
   per-skill watchdog; the claim/ledger system carries state between calls, so a killed
   or timed-out call never strands the drain.
-- PANEL_LOCK_DIR must be EXACTLY this path — it is the SAME lock dir the Codex
-  automation supervisor uses, so the two runtimes mutually exclude (one panel drain at a
-  time; two concurrent panels exhaust the shared frontier quota and fail as fake
-  watchdog timeouts).
+- No PANEL_LOCK_DIR override is needed (SKI-374): the driver's DEFAULT lock now lives at
+  skill-graph/skill-audit-loop/progress/panel-drain.lock — the SAME default the Codex
+  automation supervisor uses, so the two runtimes still mutually exclude (one panel drain at a
+  time; two concurrent panels exhaust the shared frontier quota and fail as fake watchdog
+  timeouts). Set PANEL_LOCK_DIR only for an intentionally separate pool.
 - Timing expectation: a panel skill runs up to 90 minutes, but INDIVIDUAL model calls
   inside it cap earlier — ~30 min per mandatory-frontier call (SKILL_ENRICH_CLI_TIMEOUT_MS
   default) and ~20 min per advisory call. A single timed-out advisory call is a

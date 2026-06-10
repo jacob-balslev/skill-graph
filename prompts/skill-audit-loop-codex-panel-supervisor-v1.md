@@ -146,15 +146,15 @@ SANDBOX + PANEL PREFLIGHT (before ANY paid dispatch; report-and-exit on failure)
 
 RUN (the driver owns claim -> panel -> eval-guarded apply -> CONTENT commit -> release)
   cd ~/Development/skill-graph && \
-  PANEL_LOCK_DIR="$HOME/Development/skill-graph/skill-audit-loop/progress/panel-drain.lock" \
   bash scripts/run-panel-loop.sh --worklist --fail-fast-budget \
     --max-skills "${MAX_SKILLS_PER_WAKE:-1}" --timeout 5400
-- PANEL_LOCK_DIR is REQUIRED under the Codex workspace-write sandbox: the driver's default
-  single-instance lock lives at $HOME/.claude/agents/panel-drain.lock, which is OUTSIDE the
-  writable roots (workspace + temp) — the mkdir fails and the run aborts as if another
-  drain held the lock. The workspace path above is gitignored scratch INSIDE the writable
-  workspace; the OpenCode supervisor uses the SAME path so the two runtimes still mutually
-  exclude (one panel drain at a time, shared Opus+GPT quota).
+- No PANEL_LOCK_DIR override is needed (SKI-374): the driver's DEFAULT single-instance lock now
+  lives at skill-graph/skill-audit-loop/progress/panel-drain.lock — gitignored scratch INSIDE
+  the writable workspace, so it works under the Codex workspace-write sandbox out of the box (the
+  old default $HOME/.claude/agents/panel-drain.lock was OUTSIDE the writable roots and its mkdir
+  failed). The OpenCode supervisor uses the SAME default path, so the two runtimes still mutually
+  exclude (one panel drain at a time, shared Opus+GPT quota). Set PANEL_LOCK_DIR only to run an
+  intentionally separate pool.
 - The inline "${MAX_SKILLS_PER_WAKE:-1}" default is deliberate: each shell call is a fresh
   shell, and an unset variable expanding to an empty --max-skills value silently UNCAPS
   the drain.

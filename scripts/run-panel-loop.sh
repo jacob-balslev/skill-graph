@@ -111,7 +111,15 @@ export AGENT_ID="${AGENT_ID:-panel-drain-$(date -u +%Y%m%dT%H%M%SZ)-$$}"
 # the real cause is invisible — the "fails silently" symptom. One drain at a time. The lock is
 # an atomic mkdir (portable; macOS has no flock), owner pid recorded inside; a stale lock whose
 # owner pid is dead is reclaimed. Set PANEL_LOCK_DIR to run an intentionally separate pool.
-LOCK_DIR="${PANEL_LOCK_DIR:-$HOME/.claude/agents/panel-drain.lock}"
+# SKI-374: the DEFAULT lives in workspace scratch (gitignored, INSIDE the writable workspace) so
+# the lock works under the Codex workspace-write sandbox out of the box — the old default
+# $HOME/.claude/agents/panel-drain.lock is OUTSIDE the sandbox's writable roots (workspace+temp),
+# so its mkdir failed and the run aborted as if another drain held the lock (openai/codex#15310,
+# automations always start workspace-write). Both supervisors used to override PANEL_LOCK_DIR to
+# exactly this path; that override is now unnecessary (the default IS the path) — PANEL_LOCK_DIR
+# remains the knob for an intentionally separate pool.
+LOCK_DIR="${PANEL_LOCK_DIR:-$SG/skill-audit-loop/progress/panel-drain.lock}"
+mkdir -p "$(dirname "$LOCK_DIR")" 2>/dev/null || true   # ensure the gitignored scratch parent exists
 _LOCK_HELD=""
 release_lock() { [ -n "$_LOCK_HELD" ] && rm -rf "$LOCK_DIR" 2>/dev/null; return 0; }
 # Pre-lock peer guard for the transition window: drains started BEFORE this lock existed hold no
