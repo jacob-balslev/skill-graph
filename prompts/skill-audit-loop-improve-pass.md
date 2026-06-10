@@ -1,4 +1,8 @@
-# Skill Audit Loop — Per-Model ENRICH Pass
+# Skill Audit Loop — Per-Model Propose / ENRICH Pass (`improve-pass`)
+
+<!-- Registered id: `improve-pass` (audits/manifest.json § phase_prompts, dispatched by
+     lib/audit/propose-one.js). "ENRICH Pass" is the prose name for this Phase-1 propose pass;
+     the file + manifest id is `improve-pass`. -->
 
 > Portable across the two frontier models — the registry roles `opus` and `codex-current`.
 > This is the **per-model enrich pass** the bidirectional enrich orchestrator

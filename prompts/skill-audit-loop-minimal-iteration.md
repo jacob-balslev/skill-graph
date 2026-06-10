@@ -117,17 +117,19 @@ any other model. The multi-model merge flow is separate and not for this prompt.
     - Re-run source-truth-catalog.js after source changes
     - git diff --check on the exact changed paths
 
-11. Commit path-limited in the repo that owns the files (skill-graph/ has its own .git):
-    git commit --only -F /tmp/msg -- skills/<slug>/SKILL.md \
-      skills/<slug>/evals/comprehension.json \
-      skill-graph/skill-audit-loop/progress/skill-audits/<slug>/...
-    Do NOT use `git add -A`. Do NOT sweep aggregate regenerations dominated by other sessions.
-
-12. Release claim and rebuild worklist:
+11. Release claim and rebuild worklist FIRST — BEFORE the commit (per SKI-204, so the
+    terminal ledger line + the `latest` symlink are captured INSIDE the commit; every other
+    runner releases-before-commit for this reason):
     node scripts/skill/skill-audit-claim.js release <slug> --status completed \
       --structural PASS --truth PASS --comprehension <COMPREHENSION_VERDICT> --application <APPLICATION_VERDICT>
     Use behavior verdict values only from actual evaluate receipts; if no evaluator ran for a
     dimension, preserve the prior sidecar value when known, otherwise use UNVERIFIED and explain it.
+
+12. Commit path-limited in the repo that owns the files (skill-graph/ has its own .git):
+    git commit --only -F /tmp/msg -- skills/<slug>/SKILL.md \
+      skills/<slug>/evals/comprehension.json \
+      skill-graph/skill-audit-loop/progress/skill-audits/<slug>/...
+    Do NOT use `git add -A`. Do NOT sweep aggregate regenerations dominated by other sessions.
     node scripts/skill/build-skill-list.js --write
 
 13. Repeat from step 5 unless a stop condition is met:

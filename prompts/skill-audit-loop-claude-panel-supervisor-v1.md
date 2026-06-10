@@ -84,7 +84,10 @@ RUN (dispatch the driver in the BACKGROUND — never foreground; the Bash tool's
 kill a ~68-min skill). One driver call per skill; the claim/ledger carries state between calls.
   Dispatch via run_in_background: true (NOT a foreground Bash call):
      cd ~/Development/skill-graph && \
-     PANEL_POOL=claude bash scripts/run-panel-loop.sh --worklist --fail-fast-budget --degrade-on-budget --max-skills 1 --timeout 5400
+     PANEL_POOL=claude bash scripts/run-panel-loop.sh --worklist --fail-fast-budget --degrade-on-budget --max-skills "${MAX_SKILLS_PER_WAKE:-1}" --timeout 5400
+  - The inline "${MAX_SKILLS_PER_WAKE:-1}" default (matching the Codex supervisor) is deliberate:
+    this is a fresh shell, and an UNSET variable expanding to an empty --max-skills value would
+    silently UNCAP the drain. The `:-1` guard makes an unset var resolve to 1 (default; hard cap 5).
   - --fail-fast-budget plus --degrade-on-budget: if one mandatory frontier is exhausted, the
     driver continues with the available frontier, caps the result at PROVISIONAL, and records that
     a full two-frontier re-grade is required. If every frontier is exhausted, the driver emits a

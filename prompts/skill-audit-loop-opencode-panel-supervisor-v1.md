@@ -197,6 +197,22 @@ STOP CONDITIONS (exit cleanly at the FIRST one; the next session continues from 
   cost may not apply, but still stop before context quality degrades.
 - A steering pause (loop-steering.json).
 
+POST-RUN VERIFICATION (after each attempted skill, before reporting success — parity with the Claude/Codex supervisors)
+- From the driver output, find the per-skill result JSON + log. If the terminal marker is
+  COMPLETE and keep=true, verify ALL of the following before reporting success:
+  1. The result JSON says `applied: true` and names the mandatory/advisory models that ran.
+  2. v8 readiness preflight passes:
+       cd ~/Development/skill-graph && node scripts/skill-audit-preflight.js <slug> --for v8 --json
+     Treat `operations.v8.ok: true` as the transition evidence; if false, report ABORTED/incomplete
+     with the exact missing fields — do not claim the skill is fully updated.
+  3. The CONTENT commit exists in ~/Development/skills:
+       git -C ~/Development/skills log -1 --grep="content(<slug>): skill-audit-loop" --format=%H
+     Report the SHA; if none after a KEEP, report "KEEP but commit missing" and stop.
+  4. The skill was used through the loop's Use/Evaluate/Grade path: cite the eval guardrail receipt
+     or `loop_record` from the result JSON.
+- COMPLETE with keep=false ⇒ report REVERTED (no v8-transition claim). FAILED / non-zero exit ⇒
+  report ABORTED with the marker + the tail. (The driver's DRAIN DONE summary remains the headline.)
+
 REPORT CONTRACT (the session's final message — make signal explicit)
 - One line per skill attempted: <slug> · KEEP/REVERT/ABORTED · advisory alive <list> ·
   commit <sha|none>.
