@@ -116,6 +116,28 @@ check('assertBudget throwing BudgetExhaustedError propagates as the recoverable 
   assert.ok(err instanceof BudgetExhaustedError);
   assert.strictEqual(err.recoverable, true);
 });
+check('degraded mode with codex-current only never checks the exhausted opus budget gate', () => {
+  const checked = [];
+  const deps = makeDeps({
+    assertBudget: ({ model }) => {
+      checked.push(model);
+      if (model === 'opus') throw new BudgetExhaustedError('opus budget out', { model: 'opus' });
+    },
+  });
+  const r = panel.runSkillAuditLoop({
+    skill: 's',
+    skillDir: '/x/s',
+    cwd: '/x',
+    mandatoryModels: ['codex-current'],
+    advisoryModels: [],
+    degradedFrontier: { enabled: true, reason: 'single_frontier:opus_budget_exhausted', missingFrontiers: ['opus'] },
+    deps,
+  });
+  assert.deepStrictEqual(checked, ['codex-current']);
+  assert.strictEqual(r.applied, true);
+  assert.strictEqual(r.eval.synthesized_verdict, 'PROVISIONAL');
+  assert.strictEqual(r.degraded_frontier.regrade_required, true);
+});
 
 console.log('3. F2 — explicit eval-absent recording');
 check('missing eval artifact => eval_status ABSENT + eval_certified false, still keep+apply', () => {
@@ -128,9 +150,17 @@ check('missing eval artifact => eval_status ABSENT + eval_certified false, still
   assert.strictEqual(r.keep_or_revert.action, 'keep');
   assert.strictEqual(r.applied, true);
 });
-check('eval ran + APPLICABLE => eval_status RUN + eval_certified true', () => {
-  const r = panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/skills/s', cwd: '/x/skill-graph', advisoryModels: [], deps: makeDeps() });
+check('eval ran + APPLICABLE + verify RAN => eval_status RUN + eval_certified true', () => {
+  // B4 (2026-06-10): certification now REQUIRES the Phase 3.1 verify gate to have RUN — a
+  // DEFERRED verify (no verifyMerge dep) can no longer certify. Inject a passing verifyMerge
+  // (the legitimate certifying path; production always wires it).
+  const r = panel.runSkillAuditLoop({
+    skill: 's', skillDir: '/x/skills/s', cwd: '/x/skill-graph', advisoryModels: [],
+    deps: makeDeps({ verifyMerge: () => ({ ok: true, approved: true, gaps: [], parse_ok: true }) }),
+  });
   assert.strictEqual(r.eval_status, 'RUN');
+  assert.strictEqual(r.verify.status, 'RUN');
+  assert.deepStrictEqual(r.certifying_blocked, []);
   assert.strictEqual(r.eval_certified, true);
 });
 

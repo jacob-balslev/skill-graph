@@ -233,7 +233,7 @@ check('advisory coverage gap throws when a produced advisor is absent from ledge
   assert.throws(() => panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: ['minimax'], deps }), /advisory coverage gap/);
 });
 
-check('round-budget non-convergence aborts before curate/apply', () => {
+check('B2: round-budget non-convergence curates-from-last-stable + marks NON-CERTIFYING (no abort, no discard)', () => {
   let counter = 0;
   const deps = makeDeps({
     reviseProposal: ({ reviserModel, ownProposalPath }) => {
@@ -241,12 +241,17 @@ check('round-budget non-convergence aborts before curate/apply', () => {
       return { ok: true, proposalPath: ownProposalPath, contentHash: `${reviserModel}-${counter}`, changed: true };
     },
   });
-  assert.throws(
-    () => panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], convergence: { maxRounds: 1, minRounds: 1, stabilityThreshold: 1.0, quorum: 2 }, deps }),
-    (err) => err instanceof panel.NonConvergenceError && /did not converge/.test(err.message),
-  );
-  assert.strictEqual(deps._calls.curatedWith, null);
-  assert.strictEqual(deps._calls.applied, 0);
+  // maxRounds:1 with an always-changing reviser ⇒ mandatory never stabilizes ⇒ non-converged.
+  const r = panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], convergence: { maxRounds: 1, minRounds: 1, stabilityThreshold: 1.0, quorum: 2 }, deps });
+  // Knowledge is PRESERVED: the run curated from the last stable mandatory proposals
+  // (no NonConvergenceError, no discard).
+  assert.notStrictEqual(deps._calls.curatedWith, null);
+  assert.strictEqual(r.convergence.converged, false);
+  // …but it is NON-CERTIFYING: certifying_blocked names the non-converged reason and
+  // eval_certified is false even though makeDeps' eval returns a certifying APPLICABLE.
+  assert.ok(Array.isArray(r.certifying_blocked) && r.certifying_blocked.some((x) => /non-converged/.test(x)),
+    `certifying_blocked should name non-converged; got ${JSON.stringify(r.certifying_blocked)}`);
+  assert.strictEqual(r.eval_certified, false);
 });
 
 check('ADVISORY budget exhaustion skips that advisor without aborting', () => {
@@ -294,9 +299,34 @@ check('HARMFUL eval => revert, does NOT apply', () => {
   assert.strictEqual(r.applied, false);
 });
 
-check('requires skill/skillDir/cwd, 2-model mandatory, and injected deps', () => {
+check('single-available-frontier degraded mode uses quorum=1 and PROVISIONAL-capped eval', () => {
+  const deps = makeDeps();
+  const r = panel.runSkillAuditLoop({
+    skill: 's',
+    skillDir: '/x/s',
+    cwd: '/x',
+    mandatoryModels: ['codex-current'],
+    advisoryModels: [],
+    degradedFrontier: { enabled: true, reason: 'single_frontier:opus_budget_exhausted', missingFrontiers: ['opus'] },
+    deps,
+  });
+  assert.deepStrictEqual(deps._calls.mandatoryProposals, ['codex-current']);
+  assert.strictEqual(deps._calls.curatedWith.proposals.length, 1);
+  assert.strictEqual(r.convergence.policy.quorum, 1);
+  assert.strictEqual(r.degraded_frontier.enabled, true);
+  assert.deepStrictEqual(r.degraded_frontier.available, ['codex-current']);
+  assert.strictEqual(r.eval.reconciliation, 'single-frontier-provisional');
+  assert.strictEqual(r.eval.synthesized_verdict, 'PROVISIONAL');
+  assert.strictEqual(r.eval.regrade_required, true);
+  assert.strictEqual(r.eval_certified, false);
+  assert.strictEqual(r.keep_or_revert.action, 'keep');
+  assert.strictEqual(r.applied, true);
+});
+
+check('requires skill/skillDir/cwd, 2-model mandatory unless degraded, and injected deps', () => {
   assert.throws(() => panel.runSkillAuditLoop({ deps: {} }), /skill, skillDir, and cwd are required/);
-  assert.throws(() => panel.runSkillAuditLoop({ skill: 's', skillDir: '/x', cwd: '/x', mandatoryModels: ['opus'], deps: {} }), /2-element array/);
+  assert.throws(() => panel.runSkillAuditLoop({ skill: 's', skillDir: '/x', cwd: '/x', mandatoryModels: ['opus'], deps: {} }), /2-element array unless degradedFrontier\.enabled/);
+  assert.throws(() => panel.runSkillAuditLoop({ skill: 's', skillDir: '/x', cwd: '/x', mandatoryModels: ['opus', 'codex-current'], degradedFrontier: { enabled: true }, deps: {} }), /exactly one available mandatory model/);
   assert.throws(() => panel.runSkillAuditLoop({ skill: 's', skillDir: '/x', cwd: '/x', advisoryModels: [], deps: {} }), /must be a function/);
 });
 

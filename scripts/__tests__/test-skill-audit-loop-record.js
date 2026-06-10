@@ -70,6 +70,12 @@ check('keep, missing evals: behavior verdicts UNVERIFIED with explicit findings'
   assert.strictEqual(out.recorded.integrity, 'stamped');
   assert.strictEqual(out.recorded.application_verdict, 'UNVERIFIED');
   assert.strictEqual(out.recorded.comprehension_verdict, 'UNVERIFIED');
+  // D1 regression guard: the honest downgrade must be WRITTEN to the sidecar, not merely
+  // recorded locally. The bug this catches: a kept (CHANGED) body keeping a stale prior
+  // APPLICABLE because UNVERIFIED was set on `recorded` but never persisted via writeSidecarFields.
+  const w = merged(d.writes);
+  assert.strictEqual(w.application_verdict, 'UNVERIFIED', 'application_verdict UNVERIFIED WRITTEN to sidecar on keep+missing-eval');
+  assert.strictEqual(w.comprehension_verdict, 'UNVERIFIED', 'comprehension_verdict UNVERIFIED WRITTEN to sidecar on keep+missing-eval');
   assert.ok(out.findings.some((f) => /application\.json/.test(f)), 'finding names missing application.json');
   assert.ok(out.findings.some((f) => /comprehension\.json/.test(f)), 'finding names missing comprehension.json');
   // no behavior gate spawned (no comprehension.json), no application stamp
