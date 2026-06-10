@@ -48,10 +48,20 @@ assert(
   'APPLICATION_VERDICT_ENUM is an array',
 );
 
-const EXPECTED_ENUM = ['APPLICABLE', 'REDUNDANT', 'HARMFUL', 'MIXED', 'FALSE_POSITIVE', 'UNVERIFIED'];
+const EXPECTED_ENUM = [
+  'APPLICABLE',
+  'REDUNDANT',
+  'NOT_DISCRIMINATED_CEILING',
+  'EQUIVALENT_ON_FRONTIER',
+  'HARMFUL',
+  'MIXED',
+  'FALSE_POSITIVE',
+  'UNVERIFIED',
+  'PROVISIONAL',
+];
 assert(
   EXPECTED_ENUM.every((v) => APPLICATION_VERDICT_ENUM.includes(v)),
-  'Enum contains all six schema values',
+  'Enum contains all schema values',
   `Missing: ${EXPECTED_ENUM.filter((v) => !APPLICATION_VERDICT_ENUM.includes(v)).join(', ')}`,
 );
 
@@ -69,6 +79,8 @@ process.stdout.write('\n2. normalizeApplicationVerdict()\n');
 const LOWERCASE_CASES = [
   ['applicable', 'APPLICABLE'],
   ['redundant', 'REDUNDANT'],
+  ['not_discriminated_ceiling', 'NOT_DISCRIMINATED_CEILING'],
+  ['equivalent_on_frontier', 'EQUIVALENT_ON_FRONTIER'],
   ['harmful', 'HARMFUL'],
   ['mixed', 'MIXED'],
   ['false_positive', 'FALSE_POSITIVE'],
@@ -117,6 +129,8 @@ const RECEIPT = {
   at: '2026-05-22T10:00:00.000Z',
   status: 'pass',
   runner: 'node skill-graph/lib/audit/evaluate-skill.js --mode application',
+  receipt: 'skill-graph/audits/test-skill/application-receipt.json',
+  receipt_hash: 'a'.repeat(64),
 };
 
 // 3a. Insert into frontmatter that has no eval_last_run
@@ -143,6 +157,18 @@ assert(
 assert(
   updated3a.includes('  runner: "node skill-graph/lib/audit/evaluate-skill.js --mode application"'),
   '3a. runner field is present',
+);
+assert(
+  updated3a.includes('  receipt: "skill-graph/audits/test-skill/application-receipt.json"'),
+  '3a. receipt field is present',
+);
+assert(
+  updated3a.includes(`  receipt_hash: "${'a'.repeat(64)}"`),
+  '3a. receipt_hash field is present',
+);
+assert(
+  !updated3a.includes('  artifact:'),
+  '3a. legacy artifact field is not written',
 );
 
 // 3b. Replace existing eval_last_run block
@@ -237,6 +263,9 @@ const fakeResult = {
   dryRun: false,
   aggregate_verdict: 'applicable',
   certification_tier: 'certifying',
+  skillName: 'test-skill',
+  resolved_generator_model: 'claude-opus-4-8-20260601',
+  resolved_grader_model: 'gpt-5.5-20260601',
   total: 3,
   errors: 0,
 };
@@ -245,8 +274,13 @@ const fakeResult = {
 const sidecarPath = path.join(tmpDir, 'audit-state.json');
 const readSidecar = () => (fs.existsSync(sidecarPath) ? JSON.parse(fs.readFileSync(sidecarPath, 'utf8')) : null);
 const resetState = () => { fs.writeFileSync(skillMdPath, SKILL_MD_CONTENT); if (fs.existsSync(sidecarPath)) fs.rmSync(sidecarPath); };
+function writeApplicationReceipt(dir, result, skillName = 'test-skill') {
+  const receiptPath = path.join(dir, `receipt-${Math.random().toString(16).slice(2)}.json`);
+  fs.writeFileSync(receiptPath, JSON.stringify({ mode: 'application', skillName, ...result }, null, 2));
+  return receiptPath;
+}
 
-stampApplicationVerdict(evalFilePath, fakeResult, false);
+stampApplicationVerdict(evalFilePath, fakeResult, false, { artifactPath: writeApplicationReceipt(tmpDir, fakeResult) });
 
 const sc4a = readSidecar();
 assert(
@@ -261,6 +295,11 @@ assert(
 assert(
   sc4a && sc4a.eval_last_run && sc4a.eval_last_run.status === 'pass',
   '4a. eval_last_run.status: pass for APPLICABLE',
+);
+assert(
+  sc4a && sc4a.eval_last_run && typeof sc4a.eval_last_run.receipt === 'string' && /^[a-f0-9]{64}$/.test(sc4a.eval_last_run.receipt_hash || ''),
+  '4a. eval_last_run carries receipt path + sha256 hash',
+  `eval_last_run: ${JSON.stringify(sc4a && sc4a.eval_last_run)}`,
 );
 assert(
   fs.readFileSync(skillMdPath, 'utf8') === SKILL_MD_CONTENT,
@@ -301,7 +340,10 @@ try {
 
 // 4f. Harmful verdict gets status: fail
 resetState();
-stampApplicationVerdict(evalFilePath, { dryRun: false, aggregate_verdict: 'harmful', total: 3, errors: 0 }, false);
+{
+  const result = { dryRun: false, aggregate_verdict: 'harmful', skillName: 'test-skill', total: 3, errors: 0 };
+  stampApplicationVerdict(evalFilePath, result, false, { artifactPath: writeApplicationReceipt(tmpDir, result) });
+}
 const sc4f = readSidecar();
 assert(
   sc4f && sc4f.application_verdict === 'HARMFUL',
@@ -314,7 +356,10 @@ assert(
 
 // 4g. Mixed verdict gets status: mixed
 resetState();
-stampApplicationVerdict(evalFilePath, { dryRun: false, aggregate_verdict: 'mixed', total: 3, errors: 0 }, false);
+{
+  const result = { dryRun: false, aggregate_verdict: 'mixed', skillName: 'test-skill', total: 3, errors: 0 };
+  stampApplicationVerdict(evalFilePath, result, false, { artifactPath: writeApplicationReceipt(tmpDir, result) });
+}
 const sc4g = readSidecar();
 assert(
   sc4g && sc4g.application_verdict === 'MIXED',
@@ -323,6 +368,14 @@ assert(
 assert(
   sc4g && sc4g.eval_last_run && sc4g.eval_last_run.status === 'mixed',
   '4g. MIXED gets eval_last_run.status: mixed',
+);
+
+// 4h. Real write-back without a durable receipt is refused.
+resetState();
+stampApplicationVerdict(evalFilePath, { dryRun: false, aggregate_verdict: 'harmful', skillName: 'test-skill', total: 3, errors: 0 }, false);
+assert(
+  readSidecar() === null,
+  '4h. write-back without artifactPath refuses to stamp',
 );
 
 // Cleanup
@@ -364,13 +417,19 @@ const evalFile5 = path.join(evalsDir5, 'application.json');
 fs.writeFileSync(skillMd5, SKILL_MD_METADATA_NESTED);
 fs.writeFileSync(evalFile5, JSON.stringify({ skill: 'test-skill-canonical', cases: [] }));
 
-stampApplicationVerdict(evalFile5, {
-  dryRun: false,
-  aggregate_verdict: 'applicable',
-  certification_tier: 'certifying', // APPLICABLE requires a cross-family certifying run (SH-6624)
-  total: 3,
-  errors: 0,
-}, false);
+{
+  const result = {
+    dryRun: false,
+    aggregate_verdict: 'applicable',
+    certification_tier: 'certifying', // APPLICABLE requires a cross-family certifying run (SH-6624)
+    skillName: 'test-skill-canonical',
+    resolved_generator_model: 'claude-opus-4-8-20260601',
+    resolved_grader_model: 'gpt-5.5-20260601',
+    total: 3,
+    errors: 0,
+  };
+  stampApplicationVerdict(evalFile5, result, false, { artifactPath: writeApplicationReceipt(tmpDir5, result, 'test-skill-canonical') });
+}
 
 // ADR-0019: the verdict lands in the sidecar; the SKILL.md frontmatter (even
 // the nested metadata: format) is left entirely untouched. The SH-6302

@@ -61,11 +61,15 @@ check('proposalPaths + mergePaths follow the enrich-pass naming', () => {
   assert.strictEqual(mp.mergedSkillPath, path.join('/run', 'debugging.merged-SKILL.md'));
   assert.strictEqual(mp.mergeLedgerPath, path.join('/run', 'debugging.merge-ledger.json'));
 });
-check('cliForModel routes codex-current/gpt to codex, opus to claude', () => {
+check('cliForModel routes through the model registry', () => {
   assert.strictEqual(d.cliForModel('codex-current'), 'codex');
   assert.strictEqual(d.cliForModel('gpt-5.4'), 'codex');
   assert.strictEqual(d.cliForModel('opus'), 'claude');
   assert.strictEqual(d.cliForModel('sonnet'), 'claude');
+  assert.strictEqual(d.cliForModel('minimax'), 'opencode');
+  assert.strictEqual(d.cliForModel('deepseek-flash'), 'opencode');
+  assert.strictEqual(d.cliForModel('mimo'), 'opencode');
+  assert.strictEqual(d.cliForModel('gemini'), 'gemini');
 });
 check('claude enrich args are write-capable (bypassPermissions)', () => {
   const a = d.buildClaudeEnrichArgs('PROMPT', { model: 'opus' });

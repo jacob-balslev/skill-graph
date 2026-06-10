@@ -243,10 +243,29 @@ check('round-budget non-convergence aborts before curate/apply', () => {
   });
   assert.throws(
     () => panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], convergence: { maxRounds: 1, minRounds: 1, stabilityThreshold: 1.0, quorum: 2 }, deps }),
-    /did not converge/,
+    (err) => err instanceof panel.NonConvergenceError && /did not converge/.test(err.message),
   );
   assert.strictEqual(deps._calls.curatedWith, null);
   assert.strictEqual(deps._calls.applied, 0);
+});
+
+check('ADVISORY budget exhaustion skips that advisor without aborting', () => {
+  const deps = makeDeps({
+    assertBudget: ({ model }) => {
+      if (model === 'minimax') {
+        const err = new Error('budget window exhausted');
+        err.code = 'BUDGET_EXHAUSTED';
+        throw err;
+      }
+    },
+  });
+  const r = panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: ['minimax', 'gemini'], deps });
+  assert.strictEqual(r.applied, true);
+  assert.deepStrictEqual(deps._calls.advisoryProposals, ['gemini']);
+  assert.deepStrictEqual(r.advisory_models_alive, ['gemini']);
+  assert.strictEqual(r.advisory_failures.length, 1);
+  assert.strictEqual(r.advisory_failures[0].phase, 'budget');
+  assert.strictEqual(r.advisory_failures[0].failure_reason, 'budget-exhausted');
 });
 
 check('anti-loss violation in the merge throws', () => {

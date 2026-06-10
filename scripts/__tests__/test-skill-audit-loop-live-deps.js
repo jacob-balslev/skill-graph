@@ -132,5 +132,41 @@ check('a substantial no-frontmatter doc still passes via the heading fallback', 
 check('a short prose plan passes neither path', () => {
   assert.strictEqual(live.looksLikeSkillDoc('Here is my plan: do X then Y.'), false);
 });
+check('extractEnrichedDoc unwraps an embedded fenced SKILL.md after a preamble', () => {
+  const doc = `---\nname: fenced-skill\n---\n# fenced\n${'body '.repeat(120)}`;
+  const extracted = live.extractEnrichedDoc(`Here is the file:\n\n\`\`\`markdown\n${doc}\n\`\`\`\n\nDone.`);
+  assert.strictEqual(extracted, doc.trim());
+});
+
+console.log('SKI-302. advisory propose retry — one strict retry for no-document output');
+check('advisory propose retries once when stdout is not a document and second attempt is valid', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'panel-retry-'));
+  fs.mkdirSync(path.join(root, 'prompts'), { recursive: true });
+  fs.writeFileSync(path.join(root, 'prompts', 'skill-audit-loop-improve-pass.md'), '# improve template stub\n');
+  const skillDir = path.join(root, 'skills', 's');
+  fs.mkdirSync(skillDir, { recursive: true });
+  fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: s\n---\n# s\nbody\n');
+  const validDoc = `---\nname: s\ndescription: retry test\n---\n# s\n\n${'## Section\n\nValid skill body. '.repeat(40)}`;
+  let calls = 0;
+  const deps = live.createSkillAuditLoopDeps({
+    skillGraphRoot: root,
+    advisoryDispatch: () => {
+      calls += 1;
+      return calls === 1
+        ? { ok: true, stdout: 'I will produce the document next.', stderr: '' }
+        : { ok: true, stdout: validDoc, stderr: '' };
+    },
+  });
+  const runDir = path.join(root, '.opencode', 'progress', 'agenttool', 's', 'minimax');
+  fs.mkdirSync(runDir, { recursive: true });
+  const r = deps.researchAndProposeAdvisory({ skill: 's', skillDir, model: 'minimax', brief: 'b', artifactsDir: runDir });
+  assert.strictEqual(r.ok, true);
+  assert.strictEqual(r.via, 'stdout-capture-retry');
+  assert.strictEqual(calls, 2);
+  assert.ok(fs.readFileSync(r.proposalPath, 'utf8').startsWith('---\nname: s'));
+  assert.ok(fs.existsSync(path.join(runDir, 's.minimax.dispatch.log')));
+  assert.ok(fs.existsSync(path.join(runDir, 's.minimax.dispatch.retry.log')));
+  fs.rmSync(root, { recursive: true, force: true });
+});
 
 console.log(`\nResults: ${passed} passed, 0 failed`);

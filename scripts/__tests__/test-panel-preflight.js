@@ -84,4 +84,31 @@ check('modelCliStateDir resolves codex home and XDG opencode data', () => {
   assert.strictEqual(modelCliStateDir('opencode', env), '/tmp/data/opencode');
 });
 
+check('advisory CLI list uses registry backends instead of falling through to claude', () => {
+  const ws = fs.mkdtempSync(path.join(os.tmpdir(), 'preflight-advisory-'));
+  const sg = path.join(ws, 'skill-graph');
+  const skillDir = path.join(ws, 'skills', 'skills', 'quality-assurance', 'a11y');
+  const home = path.join(ws, 'home');
+  fs.mkdirSync(skillDir, { recursive: true });
+  fs.mkdirSync(sg, { recursive: true });
+  fs.mkdirSync(path.join(home, '.codex'), { recursive: true });
+  fs.mkdirSync(path.join(home, '.claude'), { recursive: true });
+  fs.mkdirSync(path.join(home, '.gemini'), { recursive: true });
+  fs.mkdirSync(path.join(home, '.local', 'share', 'opencode'), { recursive: true });
+  const result = runPanelPreflight({
+    skillGraphRoot: sg,
+    workspaceRoot: ws,
+    skillDir,
+    mandatoryModels: ['opus', 'codex-current'],
+    advisoryModels: ['minimax', 'gemini'],
+    env: { HOME: home, CODEX_HOME: path.join(home, '.codex') },
+    osFenceSupported: true,
+    publicWorkspace: { active: false },
+    spawn: fakeSpawn(['claude', 'codex', 'opencode', 'gemini']),
+  });
+  assert.strictEqual(result.ok, true);
+  assert.deepStrictEqual(result.advisory_clis.sort(), ['gemini', 'opencode']);
+  fs.rmSync(ws, { recursive: true, force: true });
+});
+
 console.log(`\nResults: ${passed} passed, 0 failed`);
