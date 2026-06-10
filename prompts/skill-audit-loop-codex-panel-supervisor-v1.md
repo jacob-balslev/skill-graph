@@ -84,14 +84,22 @@ BOOTSTRAP VARIABLES (set once per wake)
   AUDIT_AUTOMATION_ID = this automation's REAL id, exactly as printed in the automation
     header Codex shows at the top of the wake ("Automation ID: ..."). The header wins
     over any id restated in the textbox. Never invent, alias, or hand-type a different id.
-  AUDIT_MEMORY = the "Automation memory" path from that same header
-    ($CODEX_HOME/automations/<AUDIT_AUTOMATION_ID>/memory.md). The sandbox only allows
-    memory writes inside THIS automation's own directory — deriving the path from any
-    other id fails with a blocked write (observed 2026-06-10T00:00Z: the textbox said
-    skill-audit-loop-nightly, the automation was skill-audit-loop-3-0, and the
-    end-of-wake memory append was rejected by the sandbox).
-  MAX_SKILLS_PER_WAKE=${MAX_SKILLS_PER_WAKE:-3}    # hard cap 5 — raise only if the first
-                                                   # runs were clean AND context is healthy
+  AUDIT_MEMORY = the LITERAL "Automation memory:" path from that same header, used as
+    printed. Do NOT derive it from $CODEX_HOME — that env var is routinely EMPTY in the
+    wake's shell (verified first-hand 2026-06-10; the default home is ~/.codex but the
+    header path is the only authoritative source). The sandbox only allows memory writes
+    inside THIS automation's own directory — a path built from any other id fails with a
+    blocked write (observed 2026-06-10T00:00Z: the textbox said skill-audit-loop-nightly,
+    the automation was skill-audit-loop-3-0, and the memory append was rejected).
+  MAX_SKILLS_PER_WAKE — default 1 (hard cap 5). One bounded skill slice per wake: a panel
+    skill can take up to the 90-minute watchdog, and a multi-hour single foreground shell
+    call is the wrong shape for an automation wake. Raise beyond 1 only after a full wake
+    has completed cleanly within the runtime's limits; the scheduler + the resumable
+    claim/ledger system make per-wake slices safe — the queue drains across wakes.
+    Because each shell call is a FRESH shell, never rely on a variable exported in an
+    earlier step: the RUN command below embeds the default inline
+    ("${MAX_SKILLS_PER_WAKE:-1}"), so an unset variable can never expand to an empty
+    --max-skills value (which would silently UNCAP the drain).
 
 READ ORDER (small and fixed — deliberately NOT "all documentation")
 1. ~/Development/SKILL-SYSTEM-CHEAT-SHEET.md            (1 page, the 3 layers)
@@ -102,18 +110,33 @@ READ ORDER (small and fixed — deliberately NOT "all documentation")
 4. $AUDIT_MEMORY if it exists (prior wakes' outcomes; do not re-derive)
 
 SANDBOX + PANEL PREFLIGHT (before ANY paid dispatch; report-and-exit on failure)
-1. Network probe (workspace-write blocks network unless configured):
-     curl -sI --max-time 10 https://api.anthropic.com >/dev/null && echo NET-OK || echo NET-BLOCKED
+1. Network probe — the panel dispatches FOUR provider CLIs, so probe all four endpoints
+   (workspace-write blocks network unless configured):
+     for url in https://api.anthropic.com https://chatgpt.com \
+                https://generativelanguage.googleapis.com https://api.githubcopilot.com; do
+       curl -sI --max-time 10 "$url" >/dev/null || { echo "NET-BLOCKED: $url"; exit 1; }
+     done; echo NET-OK
    NET-BLOCKED -> report "sandbox has no network: set [sandbox_workspace_write]
    network_access=true in ~/.codex/config.toml" and EXIT. Do not run the panel.
-2. Worklist freshness:  cd ~/Development && node scripts/skill/build-skill-list.js --write
-   (add --refresh-manifest when the builder warns skills.manifest.json is stale AND the sandbox
-   can write the workspace; sandboxed wakes proceed on the last good manifest — the warning is
-   informational, not a stop condition).
+   NOTE: the probe + the panel preflight prove reachability, binaries, and writable scratch
+   homes — NOT authenticated model dispatch. A logged-out child CLI surfaces as that
+   model's dispatch failing during the run; report it, never re-auth interactively.
+2. Budget fast-exit (the driver otherwise SLEEPS in 300s loops while the lock exists —
+   wrong shape for a wake):
+     [ -f "$HOME/.claude/agents/exhausted-opus.lock" ] && \
+       { echo "opus budget lock present — stop; resume next wake"; exit 0; }
+3. Worklist freshness + zero-tripwire:
+     cd ~/Development && node scripts/skill/build-skill-list.js --write --fail-on-empty
+   Exit 3 = ZERO-TRIPWIRE: the worklist is empty while the manifest has skills — a SYSTEM
+   bug (builder/manifest shape drift, the 2026-06-10 incident), NOT an empty queue. Report
+   the builder stderr and EXIT without running the panel. (Add --refresh-manifest when the
+   builder warns skills.manifest.json is stale AND the sandbox can write the workspace;
+   sandboxed wakes proceed on the last good manifest — the staleness warning alone is
+   informational, not a stop condition.)
    The written ~/Development/.opencode/progress/SKILL_LIST.md (JSON twin: SKILL_LIST.json) is the
    canonical skill-state inventory — every skill with its queue position, four verdicts (S·T·C·A),
    eval state, and last_audited. Read it; NEVER rebuild a skill inventory ad hoc.
-3. Panel execution preflight on the first eligible skill:
+4. Panel execution preflight on the first eligible skill:
      cd ~/Development/skill-graph && node lib/audit/run-skill-audit-loop.js \
        --skill <first-slug> --skill-dir <its dir> --cwd . --preflight-only
    Required healthy shape in a Codex desktop session: both mandatory CLIs available, no
@@ -122,8 +145,23 @@ SANDBOX + PANEL PREFLIGHT (before ANY paid dispatch; report-and-exit on failure)
    report the preflight JSON and EXIT. NEVER fall back to auditing single-model.
 
 RUN (the driver owns claim -> panel -> eval-guarded apply -> CONTENT commit -> release)
-  cd ~/Development/skill-graph && bash scripts/run-panel-loop.sh --worklist \
-    --max-skills "$MAX_SKILLS_PER_WAKE"
+  cd ~/Development/skill-graph && \
+  PANEL_LOCK_DIR="$HOME/Development/skill-graph/skill-audit-loop/progress/panel-drain.lock" \
+  bash scripts/run-panel-loop.sh --worklist \
+    --max-skills "${MAX_SKILLS_PER_WAKE:-1}" --timeout 5400
+- PANEL_LOCK_DIR is REQUIRED under the Codex workspace-write sandbox: the driver's default
+  single-instance lock lives at $HOME/.claude/agents/panel-drain.lock, which is OUTSIDE the
+  writable roots (workspace + temp) — the mkdir fails and the run aborts as if another
+  drain held the lock. The workspace path above is gitignored scratch INSIDE the writable
+  workspace; the OpenCode supervisor uses the SAME path so the two runtimes still mutually
+  exclude (one panel drain at a time, shared Opus+GPT quota).
+- The inline "${MAX_SKILLS_PER_WAKE:-1}" default is deliberate: each shell call is a fresh
+  shell, and an unset variable expanding to an empty --max-skills value silently UNCAPS
+  the drain.
+- Timing expectation: a panel skill runs up to the 90-minute watchdog (--timeout 5400),
+  but INDIVIDUAL model calls inside it cap earlier — ~30 min per mandatory-frontier call
+  (SKILL_ENRICH_CLI_TIMEOUT_MS default) and ~20 min per advisory call. A single timed-out
+  advisory call is a degraded-but-valid panel; a timed-out mandatory call fails the skill.
 - Full advisory panel is the default (do not pass --no-advisory unless this wake is
   explicitly a fast floor-only run).
 - Watch the driver's stderr per-skill lines and the runner's terminal markers:
@@ -155,8 +193,12 @@ REPORT CONTRACT (this is what lands in the Codex inbox — make signal explicit)
   commit <sha|none>.
 - The driver's final DRAIN DONE summary line, verbatim.
 - Any FAILED/STALL evidence (marker + log tail).
+- SIZE CAP: the inbox report stays under ~2,000 words; at most ~20 log-tail lines per
+  failed skill. Always include the full log/run-root PATHS so the complete receipt is
+  one click away — paths scale, pasted logs don't.
 - Completeness claim: "Attempted N skills, completed M, stop reason: <X>."
-- Append the same summary (+ timestamp, run-root path) to $AUDIT_MEMORY.
+- Append the same summary (+ timestamp, run-root path) to AUDIT_MEMORY (the literal
+  header path from BOOTSTRAP).
 
 WHAT YOU NEVER DO
 - Never hand-edit a SKILL.md or audit-state.json (the driver's loop owns CONTENT writes).

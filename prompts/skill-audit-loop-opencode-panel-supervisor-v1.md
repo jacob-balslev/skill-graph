@@ -67,8 +67,13 @@ PRIVATE-CONTENT BOUNDARY (HARD)
   Sales Hub / Printify / Shopify / personal-API / bank / customer data into any artifact.
 
 BOOTSTRAP VARIABLES (set once per session)
-  MAX_SKILLS_PER_SESSION=${MAX_SKILLS_PER_SESSION:-3}   # hard cap 5 — raise only if prior
-                                                        # sessions were clean AND context is healthy
+  MAX_SKILLS_PER_SESSION — default 3 (hard cap 5). The RUN section below invokes the
+    driver ONCE PER SKILL (--max-skills 1 per bash call), up to this many times: each
+    bash call is then bounded by the driver's own 90-minute per-skill watchdog, so no
+    unverified shell-tool timeout can kill a multi-skill drain mid-flight, and the
+    claim/ledger system resumes cleanly between calls. Because each bash call is a fresh
+    shell, the RUN command embeds defaults inline — never rely on a variable exported in
+    an earlier step (an empty --max-skills value silently UNCAPS the drain).
 
 READ ORDER (small and fixed — deliberately NOT "all documentation"; the old prompt's
 "read everything first" burned a third of the context before the first skill)
@@ -84,24 +89,52 @@ READ ORDER (small and fixed — deliberately NOT "all documentation"; the old pr
    all already answered by this file + the per-skill preflight the driver runs.
 
 PREFLIGHT (before ANY paid dispatch; report-and-exit on failure)
-1. Worklist freshness:  cd ~/Development && node scripts/skill/build-skill-list.js --write
-   (add --refresh-manifest when the builder warns skills.manifest.json is stale).
-   ZERO-TRIPWIRE: if the builder writes activeSkills: 0 or an empty worklist[] while
-   skills.manifest.json reports >0 skills, that is a SYSTEM bug (builder/manifest shape
-   drift — the 2026-06-10 "0 eligible skills" incident), NOT an empty queue: report the
-   builder output + the SKILL_LIST summary block and EXIT without running the panel.
-2. Panel execution preflight on the first eligible skill:
+0. Permissions: this session needs bash (long-running), git commit in
+   ~/Development/skills, spawning the model CLIs (claude/codex/gemini/opencode), and
+   network. If OpenCode prompts for permission, approve only the concrete command
+   prefixes used in this prompt (node scripts/skill/build-skill-list.js, node
+   lib/audit/run-skill-audit-loop.js --preflight-only, bash scripts/run-panel-loop.sh).
+   If bash, git, the model CLIs, or temp-dir writes are DENIED, report that and EXIT —
+   do not work around a denied permission.
+1. Budget fast-exit (the driver otherwise SLEEPS in 300s loops while the lock exists):
+     [ -f "$HOME/.claude/agents/exhausted-opus.lock" ] && \
+       { echo "opus budget lock present — stop; resume next session"; exit 0; }
+2. Worklist freshness + zero-tripwire:
+     cd ~/Development && node scripts/skill/build-skill-list.js --write --fail-on-empty
+   Exit 3 = ZERO-TRIPWIRE: the worklist is empty while the manifest has skills — a SYSTEM
+   bug (builder/manifest shape drift, the 2026-06-10 "0 eligible skills" incident), NOT an
+   empty queue: report the builder stderr + the SKILL_LIST summary block and EXIT without
+   running the panel. (Add --refresh-manifest when the builder warns skills.manifest.json
+   is stale.)
+3. Panel execution preflight on the first eligible skill:
      cd ~/Development/skill-graph && node lib/audit/run-skill-audit-loop.js \
        --skill <first-slug> --skill-dir <its dir> --cwd . --preflight-only
    Both mandatory CLIs must be available with no mandatory budget locks. Any mandatory
    failure -> report the preflight JSON and EXIT. NEVER fall back to auditing
    single-model, and NEVER substitute a weaker model for a mandatory frontier slot.
+   NOTE: the preflight proves binaries and writable scratch homes, NOT authenticated
+   model dispatch — a logged-out child CLI surfaces as that model's dispatch failing
+   during the run; report it, never re-auth interactively mid-drain.
 
 RUN (the driver owns claim -> panel -> eval-guarded apply -> CONTENT commit -> release;
 skills with missing per-skill files are scaffolded/handled by the loop itself — do not
 pre-fix them by hand)
-  cd ~/Development/skill-graph && bash scripts/run-panel-loop.sh --worklist \
-    --max-skills "$MAX_SKILLS_PER_SESSION"
+Invoke the driver ONCE PER SKILL, in a fresh bash call each time, up to
+MAX_SKILLS_PER_SESSION times (stop early at any stop condition):
+  cd ~/Development/skill-graph && \
+  PANEL_LOCK_DIR="$HOME/Development/skill-graph/skill-audit-loop/progress/panel-drain.lock" \
+  bash scripts/run-panel-loop.sh --worklist --max-skills 1 --timeout 5400
+- One driver call per skill bounds every bash call at the driver's own 90-minute
+  per-skill watchdog; the claim/ledger system carries state between calls, so a killed
+  or timed-out call never strands the drain.
+- PANEL_LOCK_DIR must be EXACTLY this path — it is the SAME lock dir the Codex
+  automation supervisor uses, so the two runtimes mutually exclude (one panel drain at a
+  time; two concurrent panels exhaust the shared frontier quota and fail as fake
+  watchdog timeouts).
+- Timing expectation: a panel skill runs up to 90 minutes, but INDIVIDUAL model calls
+  inside it cap earlier — ~30 min per mandatory-frontier call (SKILL_ENRICH_CLI_TIMEOUT_MS
+  default) and ~20 min per advisory call. A single timed-out advisory call is a
+  degraded-but-valid panel; a timed-out mandatory call fails the skill.
 - Full advisory panel is the default (do not pass --no-advisory unless this session is
   explicitly a fast floor-only run).
 - Watch the driver's stderr per-skill lines and the runner's terminal markers:
@@ -113,8 +146,9 @@ pre-fix them by hand)
   nohup, no trailing &, no detached background task.
 
 STOP CONDITIONS (exit cleanly at the FIRST one; the next session continues from the ledger)
-- max-skills reached (the driver prints "max-skills reached ... clean stop"). "Till the
-  list is empty" is NOT a valid mode — uncapped drains die mid-list and waste the tail.
+- MAX_SKILLS_PER_SESSION driver calls completed (each call processes 1 skill and prints
+  its own "max-skills reached ... clean stop"). "Till the list is empty" is NOT a valid
+  mode — uncapped drains die mid-list and waste the tail.
 - Queue empty / no eligible skills — VALID only when the worklist itself is healthy:
   SKILL_LIST.json has a non-zero worklist[] and the eligible set is genuinely exhausted
   (entries all completed/claimed/excluded). Otherwise see ZERO-TRIPWIRE above.
@@ -122,14 +156,22 @@ STOP CONDITIONS (exit cleanly at the FIRST one; the next session continues from 
   log lines in your report. Do not retry the same skill this session.
 - Budget / rate / session-window exhaustion (exhausted-lock sleep messages, RateLimitError,
   "session limit"): stop and report "recoverable — resume next session". Never busy-wait.
-- Context roughly 70% used (OpenCode compaction on the Copilot provider costs premium
-  requests — stop BEFORE compaction triggers), or a steering pause (loop-steering.json).
+- Context check AFTER EACH completed skill: continue to the next driver call only if you
+  can positively confirm context is still healthy (the OpenCode UI shows usage; if you
+  cannot observe it, assume it is NOT healthy after 2 skills and stop). On the GitHub
+  Copilot provider NEVER compact — compaction costs premium requests; end the session and
+  let the next session resume from the ledger. On other providers the premium-request
+  cost may not apply, but still stop before context quality degrades.
+- A steering pause (loop-steering.json).
 
 REPORT CONTRACT (the session's final message — make signal explicit)
 - One line per skill attempted: <slug> · KEEP/REVERT/ABORTED · advisory alive <list> ·
   commit <sha|none>.
 - The driver's final DRAIN DONE summary line, verbatim.
 - Any FAILED/STALL evidence (marker + log tail).
+- SIZE CAP: the final report stays under ~2,000 words; at most ~20 log-tail lines per
+  failed skill. Always include the full log/run-root PATHS so the complete receipt is
+  one click away — paths scale, pasted logs don't.
 - Completeness claim: "Attempted N skills, completed M, stop reason: <X>."
 
 WHAT YOU NEVER DO
