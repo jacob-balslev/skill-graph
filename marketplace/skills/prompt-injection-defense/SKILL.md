@@ -4,22 +4,22 @@ description: "Use when reasoning about systems that pass untrusted content to a 
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"related\":[\"type-safety\",\"http-semantics\",\"tool-call-flow\",\"api-design\",\"owasp-security\",\"security-fundamentals\",\"guardrails\",\"agent-eval-design\",\"prompt-craft\"],\"suppresses\":[\"tool-call-flow\",\"agent-eval-design\",\"prompt-craft\"],\"verify_with\":[\"api-design\",\"tool-call-flow\",\"guardrails\",\"owasp-security\"]}"
   subject: ai-engineering
   scope: "Reasoning about prompt-injection defense for systems that pass untrusted content to language models: data-vs-instruction collapse, direct and indirect injection, exfiltration, action-trigger attacks, untrusted content surfaces, and defense-in-depth through capability constraint, origin tracking, separated planning/execution, human approval, and least authority. Portable across LLM-integrated products and agent architectures. Excludes model jailbreaking/policy bypass, general API security, non-LLM input validation, and ordinary tool-call protocol design."
+  public: "true"
   taxonomy_domain: quality/security
   stability: experimental
   keywords: "[\"prompt injection defense\",\"indirect prompt injection\",\"LLM01\",\"untrusted content\",\"RAG injection\",\"tool authority\",\"data exfiltration\",\"content origin\",\"human approval\",\"least privilege\"]"
   triggers: "[\"prompt injection risk\",\"indirect prompt injection\",\"untrusted content in model context\",\"model followed instructions from retrieved content\",\"can the model exfiltrate data via a tool call\"]"
   examples: "[\"review a RAG pipeline for indirect prompt injection where retrieved documents can override developer instructions\",\"design a prompt-injection-defense boundary between a planning agent and an execution agent so untrusted content cannot trigger destructive tool calls\",\"explain why prompt-injection content filters that block one attack phrase do not stop indirect injection\",\"decide prompt-injection-safe tool authority for an agent reading untrusted email attachments before human confirmation\"]"
   anti_examples: "[\"design the JSON shape of a tool call parameter schema for an assistant\",\"write a reusable prompt template to make a model follow developer instructions\",\"design an eval suite to measure jailbreak refusal behavior\"]"
-  relations: "{\"related\":[\"tool-call-flow\",\"http-semantics\",\"type-safety\",\"api-design\",\"owasp-security\",\"security-fundamentals\",\"guardrails\",\"agent-eval-design\",\"prompt-craft\"],\"boundary\":[{\"skill\":\"tool-call-flow\",\"reason\":\"tool-call-flow owns the protocol cycle by which a model invokes a tool; this skill owns the security property the cycle must preserve when any message carries untrusted content.\"},{\"skill\":\"prompt-craft\",\"reason\":\"prompt-craft owns authoring reusable prompts and instruction examples; this skill owns the system security boundary when untrusted content can influence a model.\"},{\"skill\":\"agent-eval-design\",\"reason\":\"agent-eval-design owns eval rubrics and grader cases; this skill owns the defense design being evaluated.\"}],\"verify_with\":[\"api-design\",\"tool-call-flow\",\"guardrails\",\"owasp-security\"]}"
   grounding: "{\"subject_matter\":\"Portable prompt-injection threat modeling and defense-in-depth for LLM-integrated systems and agents\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://genai.owasp.org/llmrisk/llm01-prompt-injection/\",\"https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html\",\"https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks\",\"https://csrc.nist.gov/pubs/ai/100/2/e2025/final\",\"https://www.ncsc.gov.uk/blog-post/prompt-injection-is-not-sql-injection\",\"https://arxiv.org/abs/2302.12173\",\"../skills/skills/ai-engineering/prompt-injection-defense/references/prompt-injection-defense-2026-06-07.md\"],\"failure_modes\":[\"treating_prompt_injection_as_a_model_bug_fixed_by_prompt_wording\",\"confusing_jailbreak_policy_bypass_with_agent_action_exfiltration_risk\",\"trusting_rag_tool_results_attachments_or_subagent_output_as_instructions\",\"allowing_untrusted_content_and_high_impact_tools_in_the_same_turn\",\"relying_on_content_filters_without_capability_constraint_or_human_approval\",\"rendering_model_output_with_unrestricted_external_image_or_link_targets\",\"letting_human_approval_dialog_text_be_derived_from_untrusted_model_output\"],\"evidence_priority\":\"equal\"}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "Prompt injection defense is to LLM-integrated systems what blast walls are to fuel depots — you cannot prevent the fuel from being flammable (the structural property), so you do not try; you build the walls so that an ignition contains itself, the radius is bounded, and the rest of the depot survives. The walls are the architectural defense; the model's susceptibility is the fuel's flammability — a property of its physics, not a bug to fix."
   misconception: "|"
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/ai-engineering/prompt-injection-defense/SKILL.md
@@ -27,12 +27,19 @@ metadata:
 
 # Prompt-Injection Defense
 
+## Concept of the skill
+
+Data-vs-directive collapse: every token in the LLM context window contributes to next-token prediction, and the model has NO reliable mechanism to distinguish "directives from the application developer" from "directives in a document the application happens to have loaded." Four-cell threat matrix: direct injection (attacker is the user) / indirect injection (attacker controls retrieved content the agent reads) / action-trigger (attack causes the agent to invoke a destructive tool) / exfiltration (attack causes the agent to leak data via a tool call or rendered output). Every input surface is a potential vector: user input, RAG retrieval, tool result, attached document, multimodal content, subagent output. Defense is architectural containment — a layered stack from weak (input filtering, system-prompt warnings) to strong (capability constraint, dual-LLM pattern, planning/execution separation, human-in-the-loop, principle of least authority).
+
+Replaces "build a smarter fence around the model" with "engineer the system so the model's mistakes do not matter." Without this framing, every defense attempt focuses on the model itself — patching the model, improving the system prompt, blocklisting attack strings — and produces partial reductions in attack success rate that never reach zero, because the vulnerability is structural to how transformer-based language models consume their input, not a bug to fix. The discipline accepts the vulnerability and contains its blast radius via architecture: capability constraint, origin tracking, dual-LLM pattern, planning/execution separation, human-in-the-loop confirmation for irreversible actions, principle of least authority on the tools the agent can call. The model can be tricked; the runtime must not be.
+
+Distinct from security-fundamentals, which owns the general security framing (threat modeling, Saltzer-Schroeder principles, authn/authz, defense in depth, OWASP Top 10) — prompt-injection-defense is the LLM-specific specialization (prompt injection is OWASP LLM01, one row in the LLM Top 10). Distinct from tool-call-flow, which owns the protocol cycle by which a model invokes a tool (request/response shape, error handling, parallel calls) — prompt-injection-defense owns the security property that cycle must preserve when any message carries untrusted content. Distinct from guardrails, which owns model behavior policy and refusal boundaries — prompt-injection-defense owns the threat where untrusted content gets the model to perform actions it was not supposed to take. Distinct from owasp-security, which owns SQL injection, XSS, CSRF, and general application hardening — prompt-injection-defense owns the threat that arrives over correct HTTP and is still harmful because the model interprets it as a command. Prompt injection defense is to LLM-integrated systems what blast walls are to fuel depots — you cannot prevent the fuel from being flammable (the structural property), so you do not try; you build the walls so that an ignition contains itself, the radius is bounded, and the rest of the depot survives. The walls are the architectural defense; the model's susceptibility is the fuel's flammability — a property of its physics, not a bug to fix. The wrong mental model is that prompt injection is a bug in the model that better training, better system prompts, or content filters will fix. It is not. It is a structural property of how transformer-based language models consume their context: every token contributes to next-token prediction, and the model has no reliable mechanism to distinguish "directives from the application developer" from "directives in a document." A content filter that blocks one canonical attack phrase does not stop the broader class — paraphrasing, encoding, indirection, multimodal carriers, and the underlying structural property all combine to make the attack a moving target. The defenses that work are architectural (limit what tools the model exposed to untrusted content can call, separate planning from execution, require human confirmation for irreversible actions), not behavioral.
+
 ## Coverage
 
 The architectural discipline of defending language-model-integrated systems against the attack class in which untrusted content causes the model to follow attacker-controlled directives. Covers the data-vs-directive collapse that makes this attack structural rather than incidental, the direct/indirect/action-trigger/exfiltration taxonomy, the injection surfaces (user input, RAG retrieval, tool result, attached document, multimodal image content, subagent output), why content filters and improved system prompts do not solve the class, and the defense-in-depth measures that do (capability constraint, origin tracking, dual-LLM pattern, planning/execution separation, human-in-the-loop confirmation, principle of least authority).
 
-## Philosophy
-
+## Philosophy of the skill
 This attack class is not a bug. It is a property of how transformer-based language models consume their context. Every token in the context window contributes to the next-token prediction, and the model has no reliable mechanism to distinguish "directives from the application developer" from "directives written by an attacker in a document the application happens to have loaded." Treating it as a bug to fix — by patching the model or improving the system prompt — buys partial reductions in attack success rate but never reaches zero.
 
 The discipline of defense, therefore, is not to eliminate the vulnerability. It is to ensure that successful compromise does not translate to consequential action. The model can be tricked; the runtime must not be. The defenses that work are architectural: limit what tools the model exposed to untrusted content can call, separate the agent that reads untrusted content from the agent (or code) that takes action, require human confirmation for high-impact operations regardless of model intent, and track the provenance of every byte in the context window so that low-trust content cannot route to high-authority execution paths.
@@ -152,6 +159,7 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `ai-engineering`
+- Public: `true`
 - Domain: `quality/security`
 - Scope: Reasoning about prompt-injection defense for systems that pass untrusted content to language models: data-vs-instruction collapse, direct and indirect injection, exfiltration, action-trigger attacks, untrusted content surfaces, and defense-in-depth through capability constraint, origin tracking, separated planning/execution, human approval, and least authority. Portable across LLM-integrated products and agent architectures. Excludes model jailbreaking/policy bypass, general API security, non-LLM input validation, and ordinary tool-call protocol design.
 
@@ -166,13 +174,10 @@ After applying this skill, verify:
 - design the JSON shape of a tool call parameter schema for an assistant
 - write a reusable prompt template to make a model follow developer instructions
 - design an eval suite to measure jailbreak refusal behavior
-- Owned by `tool-call-flow`: the protocol cycle by which a model invokes a tool
-- Owned by `prompt-craft`: authoring reusable prompts and instruction examples
-- Owned by `agent-eval-design`: eval rubrics and grader cases
 
 **Related skills**
 - Verify with: `api-design`, `tool-call-flow`, `guardrails`, `owasp-security`
-- Related: `tool-call-flow`, `http-semantics`, `type-safety`, `api-design`, `owasp-security`, `security-fundamentals`, `guardrails`, `agent-eval-design`, `prompt-craft`
+- Related: `type-safety`, `http-semantics`, `tool-call-flow`, `api-design`, `owasp-security`, `security-fundamentals`, `guardrails`, `agent-eval-design`, `prompt-craft`
 
 **Concept**
 - Mental model: |

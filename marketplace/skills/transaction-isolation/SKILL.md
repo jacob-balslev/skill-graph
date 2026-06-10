@@ -4,36 +4,21 @@ description: "Use when reasoning about the I in ACID — the isolation level a d
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"cap-theorem-tradeoffs\",\"data-modeling\",\"acid-fundamentals\",\"query-optimization\",\"indexing-strategy\"],\"suppresses\":[\"acid-fundamentals\"],\"verify_with\":[\"query-optimization\",\"acid-fundamentals\",\"replication-patterns\"]}"
   subject: backend-engineering
+  public: "true"
+  scope: "Use when reasoning about the I in ACID — the isolation level a database provides between concurrent transactions: the five SQL-standard levels (read uncommitted, read committed, repeatable read, serializable) plus snapshot isolation; the anomalies each level admits (dirty reads, non-repeatable reads, phantom reads, write skew, lost updates); the Berenson et al. 1995 critique that exposed the standard's looseness; the difference between locking-based and MVCC-based isolation; Postgres's Serializable Snapshot Isolation (SSI) as one rigorous implementation; how to choose an isolation level for a workload by enumerating the anomalies the workload cannot tolerate. Do NOT use for the broader ACID frame (use acid-fundamentals), distributed-replica consistency (use cap-theorem-tradeoffs), query performance tuning (use query-optimization), or schema design (use data-modeling)."
   taxonomy_domain: engineering/data
-  owner: skill-graph-maintainer
-  freshness: "2026-05-16"
-  drift_check: "{\"last_verified\":\"2026-05-16\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"isolation level\",\"read committed\",\"repeatable read\",\"serializable\",\"snapshot isolation\",\"SSI\",\"MVCC\",\"dirty read\",\"non-repeatable read\",\"phantom read\"]"
   triggers: "[\"what isolation level do we need\",\"is read committed enough\",\"what's write skew\",\"MVCC vs locking\",\"Postgres serializable vs MySQL serializable\"]"
   examples: "[\"choose an isolation level for a workload that has concurrent balance-decrement operations\",\"diagnose a data-correctness bug caused by an anomaly the chosen isolation level permits\",\"explain the difference between snapshot isolation and full serializability\",\"decide whether to use SELECT FOR UPDATE or upgrade isolation level\"]"
   anti_examples: "[\"explain the four ACID properties (use acid-fundamentals)\",\"reason about distributed-replica consistency under partition (use cap-theorem-tradeoffs)\",\"tune a slow query (use query-optimization)\"]"
-  relations: "{\"related\":[\"acid-fundamentals\",\"cap-theorem-tradeoffs\",\"data-modeling\",\"query-optimization\"],\"boundary\":[{\"skill\":\"acid-fundamentals\",\"reason\":\"acid-fundamentals owns the four-property ACID frame as a whole; this skill owns the I axis specifically — the choice and semantics of isolation levels as a tunable. The two compose: acid-fundamentals names isolation as one of four guarantees; this skill makes the I axis operational.\"}],\"verify_with\":[\"acid-fundamentals\",\"query-optimization\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "An isolation level is to a database what a confidentiality regime is to a research lab — Read Uncommitted is the open whiteboard (anyone can read anyone's half-finished work); Read Committed is the rule that you only photograph your colleague's notebook after they have signed each page; Repeatable Read is a sealed envelope (you read once, you keep reading the same thing for the duration); Serializable is a locked vault (you take exclusive custody, others queue); Snapshot Isolation is a private photocopy (you read from your photocopy, others read from theirs, and only at commit time do the photocopies have to agree on the world they were taken from)."
   misconception: "|"
-  concept: "{\"definition\":\"Transaction isolation is the property — and the configurable choice — that determines whether concurrent transactions appear to execute serially or are permitted to observe each other's intermediate effects. The SQL standard defines four isolation levels (read uncommitted, read committed, repeatable read, serializable) by enumerating the anomalies each level may or may not permit (dirty reads, non-repeatable reads, phantom reads). Snapshot isolation, ubiquitous in modern MVCC databases, is a fifth practical level that the standard did not define. Stronger isolation eliminates more anomalies at the cost of concurrency (more transactions block or retry); weaker isolation admits anomalies that the application must handle, either by tolerating them, by upgrading the isolation level, or by using explicit locking. The discipline is choosing the isolation level by *naming the anomalies the application cannot tolerate*, not by reflex.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/transaction-isolation/SKILL.md
@@ -41,12 +26,19 @@ metadata:
 
 # Transaction Isolation
 
+## Concept of the skill
+
+Transaction isolation is the I axis of ACID — the property and operational choice that determines what concurrent transactions can observe of each other's intermediate effects. The SQL standard defines four levels by enumerating the *anomalies* each may or may not permit: Read Uncommitted (dirty reads allowed), Read Committed (no dirty reads), Repeatable Read (no dirty reads or non-repeatable reads), Serializable (no anomalies). Snapshot Isolation (SI) is a fifth practical level the standard did not define — ubiquitous in MVCC databases — that prevents most anomalies but still admits *write skew* and the read-only-transaction anomaly. The anomaly catalog: *dirty read* (uncommitted data visible), *non-repeatable read* (same row, different values within transaction), *phantom read* (same range query, different result set), *lost update* (read-modify-write race), *write skew* (two transactions act on a snapshot and jointly violate an invariant), *read-only-transaction anomaly*.
+
+Replaces reflex isolation choices ("default to serializable for safety," "default to read committed for performance") with named, workload-aware vulnerability analysis. Solves the problem that the SQL standard's levels are loosely defined (Berenson et al. 1995 critique), the level names are not universal across databases, and the workload's vulnerability to specific anomalies determines the required level — and most teams don't enumerate that vulnerability before choosing. The choice procedure: (1) enumerate the workload's anomaly vulnerabilities per transaction class (a balance-decrement is vulnerable to lost updates; a doctor-on-call check is vulnerable to write skew; a cross-table report is vulnerable to non-repeatable reads if consistency matters); (2) find the lowest level that prevents the named anomalies; (3) verify the specific database's implementation actually prevents what the standard says it should; (4) add explicit locking (`SELECT FOR UPDATE`, advisory locks, optimistic-concurrency tokens) where targeted correctness is needed without raising the whole transaction's isolation level; (5) handle the retry-required failure modes higher isolation introduces (SSI commit-time aborts, serialization errors at RR).
+
+Distinct from acid-fundamentals, which owns the four-property ACID frame as a whole — acid-fundamentals names isolation as one of four guarantees; this skill makes the I axis operational by enumerating levels and anomalies. The two compose. Distinct from cap-theorem-tradeoffs, which owns distributed-replica agreement — CAP's C is the cross-replica consistency property; this skill's I is the single-cluster transaction-isolation property; the two C/I letters concern different layers of the system. Distinct from query-optimization, which owns the performance dimension of query execution — sometimes a slow query is slow because of lock contention from isolation, and the disciplines intersect on those cases (slow under concurrency, fast solo → suspect locking). Distinct from data-modeling, which owns schema and access-pattern design (this skill owns the concurrency-correctness contract under whichever schema is chosen). Distinct from replication-patterns, which owns multi-node copying — sometimes interacts with isolation when reads from replicas have different freshness guarantees, but the in-cluster isolation question is separate. Distinct from cross-transaction coordination (sagas, distributed locks), which is a different problem at a layer above. An isolation level is to a database what a confidentiality regime is to a research lab — Read Uncommitted is the open whiteboard (anyone can read anyone's half-finished work); Read Committed is the rule that you only photograph your colleague's notebook after they have signed each page; Repeatable Read is a sealed envelope (you read once, you keep reading the same thing for the duration); Serializable is a locked vault (you take exclusive custody, others queue); Snapshot Isolation is a private photocopy (you read from your photocopy, others read from theirs, and only at commit time do the photocopies have to agree on the world they were taken from). The wrong mental model is that the SQL standard's level names mean the same thing across databases, and that "we run at serializable" is a complete description of the system's behavior. They are not, and it is not. Postgres at serializable uses SSI with commit-time aborts that the application must catch and retry — the retry logic is part of the contract. MySQL InnoDB at "repeatable read" uses gap locks to prevent phantoms, giving a different anomaly profile than the standard's repeatable read. SQL Server's RCSI turns read committed into snapshot-flavored read committed. Oracle's "serializable" is snapshot isolation with consistency checks — not the same as Postgres SSI. A second misconception: that snapshot isolation is "almost serializable" and safe enough for most workloads. SI admits *write skew* — two transactions read overlapping data and write disjoint updates that jointly violate an invariant the application depended on. Doctors-on-call schedules, balance-sum constraints across rows, uniqueness invariants across a set, and "at least one of these rows must be X" invariants are all SI-vulnerable. A third: that "raise the isolation level to be safe" is free — higher isolation introduces new failure modes (SSI aborts, serialization errors) that the application must handle, not zero failure modes. The discipline is to *name the anomalies the workload cannot tolerate* and choose accordingly, not to default to a familiar level and hope.
+
 ## Coverage
 
 The I axis of ACID — the property and operational choice that determines what concurrent transactions can observe of each other. Covers the five practical levels (read uncommitted, read committed, repeatable read, snapshot isolation, serializable), the anomalies each admits (dirty reads, non-repeatable reads, phantom reads, lost updates, write skew, read-only-transaction anomalies), the Berenson et al. (1995) critique that exposed the SQL standard's looseness, the two dominant implementation mechanisms (two-phase locking and MVCC), Postgres's Serializable Snapshot Isolation (SSI), and the choice procedure: enumerate the anomalies the workload cannot tolerate, choose the lowest level that prevents them.
 
-## Philosophy
-
+## Philosophy of the skill
 Isolation is the most-mis-defaulted and most-mis-understood part of ACID. The standard's level names are not universal across databases; the level the team thinks they're running may not be the one the database actually provides; the workload's vulnerability to specific anomalies determines the required level — and most teams don't enumerate that vulnerability before choosing.
 
 The discipline is to make the choice explicit, per transaction, against a named anomaly set. "Default to serializable for safety" is over-conservative; "default to read committed for performance" is under-safe; "this workload has invariants across rows that are vulnerable to write skew under SI, so this transaction runs at serializable" is the discipline.
@@ -131,7 +123,9 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `backend-engineering`
+- Public: `true`
 - Domain: `engineering/data`
+- Scope: Use when reasoning about the I in ACID — the isolation level a database provides between concurrent transactions: the five SQL-standard levels (read uncommitted, read committed, repeatable read, serializable) plus snapshot isolation; the anomalies each level admits (dirty reads, non-repeatable reads, phantom reads, write skew, lost updates); the Berenson et al. 1995 critique that exposed the standard's looseness; the difference between locking-based and MVCC-based isolation; Postgres's Serializable Snapshot Isolation (SSI) as one rigorous implementation; how to choose an isolation level for a workload by enumerating the anomalies the workload cannot tolerate. Do NOT use for the broader ACID frame (use acid-fundamentals), distributed-replica consistency (use cap-theorem-tradeoffs), query performance tuning (use query-optimization), or schema design (use data-modeling).
 
 **When to use**
 - choose an isolation level for a workload that has concurrent balance-decrement operations
@@ -144,11 +138,10 @@ After applying this skill, verify:
 - explain the four ACID properties (use acid-fundamentals)
 - reason about distributed-replica consistency under partition (use cap-theorem-tradeoffs)
 - tune a slow query (use query-optimization)
-- Owned by `acid-fundamentals`: the four-property ACID frame as a whole
 
 **Related skills**
-- Verify with: `acid-fundamentals`, `query-optimization`
-- Related: `acid-fundamentals`, `cap-theorem-tradeoffs`, `data-modeling`, `query-optimization`
+- Verify with: `query-optimization`, `acid-fundamentals`, `replication-patterns`
+- Related: `cap-theorem-tradeoffs`, `data-modeling`, `acid-fundamentals`, `query-optimization`, `indexing-strategy`
 
 **Concept**
 - Mental model: |

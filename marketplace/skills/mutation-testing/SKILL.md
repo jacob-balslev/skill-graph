@@ -4,36 +4,21 @@ description: "Use when reasoning about mutation testing as a behavioral signal o
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"eval-driven-development\",\"test-coverage-strategy\",\"test-driven-development\",\"testing-strategy\"],\"suppresses\":[\"test-coverage-strategy\",\"testing-strategy\",\"test-driven-development\"],\"verify_with\":[\"test-coverage-strategy\",\"testing-strategy\"]}"
   subject: quality-assurance
+  public: "true"
+  scope: "Use when reasoning about mutation testing as a behavioral signal of test-suite quality: the mutant-operator vocabulary (replace operator, negate condition, flip Boolean, remove statement, alter constant), the mutation-score metric (killed mutants / total non-equivalent mutants), why mutation testing is a stronger signal than code coverage (coverage measures execution; mutation measures whether the tests would catch a defect), the equivalent-mutant problem (mutants that produce no observable behavior change despite syntactic difference), selective and incremental mutation strategies that make the technique practical for large codebases (PIT, Stryker), and the relationship between mutation testing and TDD. Do NOT use for the structural signal of how much code tests reach (use test-coverage-strategy), the construction of test doubles (use test-doubles-design), the strategic question of what to test at which level (use testing-strategy), or generic fault injection at runtime (use chaos-engineering)."
   taxonomy_domain: quality/testing
-  owner: skill-graph-maintainer
-  freshness: "2026-05-16"
-  drift_check: "{\"last_verified\":\"2026-05-16\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"mutation testing\",\"mutation score\",\"mutant\",\"mutant operator\",\"PIT\",\"Stryker\",\"DeMillo\",\"equivalent mutant\",\"killed mutant\",\"selective mutation\"]"
   triggers: "[\"how do we know the tests actually verify anything\",\"high coverage but bugs still slip through\",\"what is mutation testing\",\"is the test suite good or just thorough\",\"PIT vs Stryker\"]"
   examples: "[\"explain why a 90% coverage codebase might have a 40% mutation score and what that means\",\"decide whether to run mutation testing on a critical financial module\",\"diagnose surviving mutants in a calculation function and identify the missing assertion\",\"design a CI pipeline that runs incremental mutation testing only on changed code\"]"
   anti_examples: "[\"measure how much code the test suite executes (use test-coverage-strategy)\",\"design test doubles for an integration test (use test-doubles-design)\",\"inject failures into a running distributed system (use chaos-engineering)\"]"
-  relations: "{\"related\":[\"test-coverage-strategy\",\"test-driven-development\",\"testing-strategy\",\"eval-driven-development\"],\"boundary\":[{\"skill\":\"test-coverage-strategy\",\"reason\":\"test-coverage-strategy owns the structural signal of which code the test suite reaches; mutation-testing owns the behavioral signal of whether the test suite would catch a defect at that code location. The two compose: coverage is a necessary precondition for mutation testing to apply (an uncovered mutant trivially survives); mutation is the next layer of test-quality signal.\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the strategic question of what to test at which level; this skill owns one measurement of how good the tests at any level actually are.\"},{\"skill\":\"test-driven-development\",\"reason\":\"TDD produces tests with high behavioral specificity as a side effect; mutation testing is one way to measure whether that specificity is in fact present in a given test suite.\"}],\"verify_with\":[\"test-coverage-strategy\",\"testing-strategy\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "Mutation testing is to a test suite what a fire drill is to a building's evacuation plan — you do not measure preparedness by counting how many exits exist (coverage), you measure it by deliberately staging a fire and watching whether anyone notices in time (mutation kill rate). An exit that nobody walks through during the drill is not really an exit, regardless of how prominently it is signposted."
   misconception: "|"
-  concept: "{\"definition\":\"Mutation testing is a behavioral test-suite quality measurement in which the production code is automatically modified by small, syntactically-valid changes (mutants) and the test suite is run against each modified version. If the test suite fails on a mutant, the mutant is 'killed' — the tests caught the change. If the test suite still passes, the mutant 'survived' — the tests did not catch the change, which means the tests do not actually verify the behavior at that code location. The mutation score is the ratio of killed mutants to total (excluding equivalent mutants, which produce no observable behavior change despite the syntactic modification). Unlike code coverage, which measures whether the tests *reach* a piece of code, mutation testing measures whether the tests *verify* it.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/mutation-testing/SKILL.md
@@ -41,12 +26,19 @@ metadata:
 
 # Mutation Testing
 
+## Concept of the skill
+
+Mutation testing is the behavioral signal of test-suite quality. The tool automatically modifies the production code by small, syntactically-valid changes called *mutants* — replace `<` with `<=`, negate a condition, flip a Boolean, alter a constant from 42 to 43, delete a statement, swap a return value for null, no-op a void method call — and runs the test suite against each modified version. If the tests fail on a mutant, the mutant is *killed* — the tests caught the change. If the tests still pass, the mutant *survived* — the tests do not actually verify the behavior at that code location, even if coverage said they reached it. The *mutation score* is killed / (total − equivalent mutants), where *equivalent mutants* are syntactic changes that produce no observable behavior difference (5-15% noise typical).
+
+Replaces coverage-as-quality-signal with a direct behavioral verification signal. Solves the problem that high code coverage is a weak indicator of test effectiveness — Inozemtseva & Holmes (2014) showed coverage is *not* strongly correlated with test-suite effectiveness, which is why teams routinely ship coverage-90% codebases with bugs slipping through. Coverage asks "did the tests *reach* this line?"; mutation asks "would the tests *catch a defect* here?" — the second question is closer to what we care about, and the answer is more specific: each survived mutant is a directly addressable test-suite gap with a known location and a known kind of defect (off-by-one, condition negation, sign error, missing return assertion). Just et al. (2014) validated that mutation score correlates with real fault-detection rate, making it a meaningful proxy where coverage falls short.
+
+Distinct from test-coverage-strategy, which owns the *structural* signal of which code the test suite reaches — coverage is a necessary precondition for mutation testing to apply (an uncovered mutant trivially survives because no test runs on it); coverage is the floor, mutation is the next layer. The two compose into a mature test-quality strategy: coverage as floor, mutation as verification. Distinct from test-doubles-design, which owns the construction of mocks/stubs/fakes/spies — this skill measures whether tests built with them actually verify behavior. Distinct from testing-strategy, which owns level choices (unit/integration/e2e) — mutation is a measurement applied at any level. Distinct from chaos-engineering, which is runtime fault injection into a deployed system — mutation is build-time source-code mutation. Distinct from fuzz-testing, which varies *inputs* to find crashes — mutation varies the *program* to find untested behaviors. Distinct from test-driven-development, which produces tests with high behavioral specificity as a side effect — mutation testing is one way to measure whether that specificity is actually present. Mutation testing is to a test suite what a fire drill is to a building's evacuation plan — you do not measure preparedness by counting how many exits exist (coverage), you measure it by deliberately staging a fire and watching whether anyone notices in time (mutation kill rate). An exit that nobody walks through during the drill is not really an exit, regardless of how prominently it is signposted. The wrong mental model is that the mutation score is a target to engineer toward — a number to push up the way teams push up coverage, with hard merge-gates on it. It is not. The discipline is not in maximizing the score; it is in *reading the survived-mutant list*. Each survivor is one of four things: (1) a *real test gap* — the mutant alters observable behavior and no test catches it; action: write the missing test; (2) an *equivalent mutant* — the syntactic change has no observable effect; action: mark as equivalent and exclude; (3) an *intentional non-test* — the code is intentionally unverified (defensive check, log message, debug path); action: annotate, consider whether the policy should change; (4) *off-scope code* — generated, vendor, scaffolding; action: exclude from analysis. Treating the score as a hard merge-gate without classifying survivors produces Goodharted tests engineered to satisfy the metric without verifying meaningful behavior, plus team frustration from equivalent-mutant noise (5-15%) being misread as real defect signal. The survival's *kind* (which operator caused which survivor) is part of the diagnostic, not just the count.
+
 ## Coverage
 
 The behavioral test-suite quality measurement that introduces small syntactically-valid modifications (mutants) to production code and checks whether the test suite distinguishes the mutant from the original. Covers the mutant-operator vocabulary (arithmetic, relational, conditional, logical, constant, statement deletion, return value, method call removal), the kill-or-survive primitive, the mutation score metric, the equivalent-mutant problem and detection heuristics, selective mutation (Offutt et al.'s subset), execution strategies (full / incremental / bytecode / distributed), the modern tooling ecosystem (PIT, Stryker, mutmut, etc.), and the strategic distinction between mutation score as a target (anti-pattern) and the survived-mutant list as a to-do (correct use).
 
-## Philosophy
-
+## Philosophy of the skill
 Mutation testing inverts the coverage question. Coverage asks: did the test reach this line? Mutation asks: would the test catch a defect at this line? The second question is closer to what we actually care about, and the answer is more specific: each survived mutant is a directly addressable test-suite gap with a known location and a known kind of defect.
 
 The discipline is not in maximizing the score; it is in reading the survived-mutant list. Each survivor is either a real gap (the test suite does not verify this behavior — write the test), an equivalent mutant (the syntactic change has no observable effect — exclude it), or an intentional non-test (defensive check, log string, debug path — note it as intentional). Working through the list with this classification produces a stronger test suite without engineering tests to satisfy the metric.
@@ -145,7 +137,9 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `quality-assurance`
+- Public: `true`
 - Domain: `quality/testing`
+- Scope: Use when reasoning about mutation testing as a behavioral signal of test-suite quality: the mutant-operator vocabulary (replace operator, negate condition, flip Boolean, remove statement, alter constant), the mutation-score metric (killed mutants / total non-equivalent mutants), why mutation testing is a stronger signal than code coverage (coverage measures execution; mutation measures whether the tests would catch a defect), the equivalent-mutant problem (mutants that produce no observable behavior change despite syntactic difference), selective and incremental mutation strategies that make the technique practical for large codebases (PIT, Stryker), and the relationship between mutation testing and TDD. Do NOT use for the structural signal of how much code tests reach (use test-coverage-strategy), the construction of test doubles (use test-doubles-design), the strategic question of what to test at which level (use testing-strategy), or generic fault injection at runtime (use chaos-engineering).
 
 **When to use**
 - explain why a 90% coverage codebase might have a 40% mutation score and what that means
@@ -158,13 +152,10 @@ After applying this skill, verify:
 - measure how much code the test suite executes (use test-coverage-strategy)
 - design test doubles for an integration test (use test-doubles-design)
 - inject failures into a running distributed system (use chaos-engineering)
-- Owned by `test-coverage-strategy`: the structural signal of which code the test suite reaches
-- Owned by `testing-strategy`: the strategic question of what to test at which level
-- Owned by `test-driven-development`
 
 **Related skills**
 - Verify with: `test-coverage-strategy`, `testing-strategy`
-- Related: `test-coverage-strategy`, `test-driven-development`, `testing-strategy`, `eval-driven-development`
+- Related: `eval-driven-development`, `test-coverage-strategy`, `test-driven-development`, `testing-strategy`
 
 **Concept**
 - Mental model: |

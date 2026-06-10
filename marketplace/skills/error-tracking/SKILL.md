@@ -5,40 +5,28 @@ license: MIT
 compatibility: "Tracker-agnostic. The patterns target any exception-reporting SDK with a `captureException` / `captureMessage` / `addBreadcrumb` shape — Sentry, Rollbar, Bugsnag, Honeybadger, Datadog Errors, Application Insights. Examples are framed in React + Next.js because that is the most common surface; analogous primitives exist in Vue (`errorCaptured`), Svelte (error stores), Remix (`ErrorBoundary`), Nuxt (`error.vue`), and any framework with framework-level error hooks."
 allowed-tools: Read Grep Bash Edit
 metadata:
-  schema_version: "8"
-  version: "1.1.0"
+  relations: "{\"related\":[\"refactor\",\"debugging\",\"owasp-security\",\"a11y\",\"code-review\",\"testing-strategy\"],\"suppresses\":[\"a11y\",\"owasp-security\"],\"verify_with\":[\"code-review\",\"testing-strategy\",\"error-boundary\"]}"
   subject: quality-assurance
   scope: "Designing and extending an application exception-reporting pipeline — error-boundary placement, tracker-SDK wrappers, sanitized reporting calls, environment gating, PII-free user context, breadcrumbs, and per-layer reporting verification across component, route, global, and manual capture surfaces (central reportError/reportMessage patterns). Portable across any application stack; principle-grounded, not repo-bound. Excludes the user-facing error UX (a11y and interaction skills), chasing a single captured error (debugging), and broad privacy/retention policy (owasp-security)."
+  public: "true"
   taxonomy_domain: engineering/observability
-  owner: skill-graph-maintainer
-  freshness: "2026-05-18"
-  drift_check: "{\"last_verified\":\"2026-05-18\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"error tracking\",\"exception reporting\",\"error reporting\",\"error boundary\",\"React ErrorBoundary\",\"route error boundary\",\"global error boundary\",\"error tracker SDK\",\"Sentry integration\",\"captureException wrapper\"]"
   examples: "[\"set up exception reporting for a new React + Next.js application\",\"add a route-level error boundary that recovers gracefully and still reports\",\"the error tracker is showing customer emails in event payloads — fix the PII leak\",\"wrap captureException in a centralized reporter that adds environment gating\",\"audit the error pipeline — confirm every layer eventually reaches the tracker\",\"decide where error boundaries should live: component, section, route, or app-global\",\"implement PII sanitization for error payloads before they hit the tracker SDK\",\"set user context (internal id, org id, role) on errors without sending email or name\"]"
   anti_examples: "[\"design accessible error-message copy and recovery UI for the 404 page\",\"the boundary fired but the tracker shows no event — root-cause it\",\"explain our error-tracking architecture in the contributor docs\",\"review this AI-generated error handler for correctness\",\"decide if the new error path needs an integration regression test\",\"design our overall PII storage and retention policy across the system\",\"refactor the error-helper module for clarity\"]"
-  relations: "{\"boundary\":[{\"skill\":\"owasp-security\",\"reason\":\"owasp-security owns the cross-cutting PII and credential-handling policy; error-tracking owns the request-time sanitization that error payloads pass through before leaving the application\"},{\"skill\":\"a11y\",\"reason\":\"a11y owns the user-visible error UX (message copy, focus management, screen-reader announcements); error-tracking owns the engineering pipeline behind the error boundary\"}],\"related\":[\"debugging\",\"owasp-security\",\"a11y\",\"code-review\",\"testing-strategy\",\"refactor\"],\"verify_with\":[\"code-review\",\"testing-strategy\"]}"
   grounding: "{\"subject_matter\":\"Application exception-reporting pipeline design across boundaries, tracker wrappers, sanitization, user context, breadcrumbs, and environment gates\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://nextjs.org/docs/app/getting-started/error-handling\",\"https://docs.sentry.io/platforms/javascript/configuration/environments/\",\"https://docs.sentry.io/platforms/javascript/guides/koa/data-management/data-collected/\",\"https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html\"],\"failure_modes\":[\"route_fallback_renders_recovery_ui_but_never_reports\",\"manual_async_error_path_logs_locally_only\",\"payload_or_breadcrumb_leaks_pii_or_secrets\",\"tracker_sdk_imported_directly_at_many_call_sites\",\"user_context_uses_email_name_phone_or_ip_instead_of_internal_ids\",\"test_environment_bypasses_sanitization_wrapper\"],\"evidence_priority\":\"equal\"}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: UNVERIFIED
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/error-tracking/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Error Tracking
+
+## Concept of the skill
+
+Designing and extending an application exception-reporting pipeline — error-boundary placement, tracker-SDK wrappers, sanitized reporting calls, environment gating, PII-free user context, breadcrumbs, and per-layer reporting verification across component, route, global, and manual capture surfaces (central reportError/reportMessage patterns).
 
 ## Coverage
 
@@ -51,8 +39,7 @@ metadata:
 - Diagnostic discipline: the question *"does this layer actually report, or does it only log?"* — most route-level fallbacks log locally and never reach the tracker unless wired up explicitly
 - Catastrophic-failure path: app-global handler bypasses the wrapper and goes straight to the SDK because the wrapper itself may have failed
 
-## Philosophy
-
+## Philosophy of the skill
 Most production applications develop an error-tracking architecture by accident, one try/catch at a time. The accumulated result is unprincipled: some errors reach the tracker with full PII, some are silently swallowed, some are double-reported (once by the boundary, once by the catch), and the dev-prod gating is per-call instead of central. The first time someone has to audit it — usually after a customer reports their email appearing in a third-party error dashboard — the cost of repair is enormous because every call site has to be revisited.
 
 The discipline is to *centralize*. Application code never imports the tracker SDK directly; it imports a thin wrapper module. The wrapper owns three concerns: sanitization, environment gating, and signature stability. Sanitization runs on every payload before any external call. Environment gating decides whether the call goes to a local logger or to the tracker SDK. Signature stability means the wrapper's API does not change when the underlying tracker is swapped — application code is insulated from vendor decisions.
@@ -292,6 +279,7 @@ This public skill does not bundle a runnable eval artifact. The Skill Graph tool
 
 **Classification**
 - Subject: `quality-assurance`
+- Public: `true`
 - Domain: `engineering/observability`
 - Scope: Designing and extending an application exception-reporting pipeline — error-boundary placement, tracker-SDK wrappers, sanitized reporting calls, environment gating, PII-free user context, breadcrumbs, and per-layer reporting verification across component, route, global, and manual capture surfaces (central reportError/reportMessage patterns). Portable across any application stack; principle-grounded, not repo-bound. Excludes the user-facing error UX (a11y and interaction skills), chasing a single captured error (debugging), and broad privacy/retention policy (owasp-security).
 
@@ -313,12 +301,10 @@ This public skill does not bundle a runnable eval artifact. The Skill Graph tool
 - decide if the new error path needs an integration regression test
 - design our overall PII storage and retention policy across the system
 - refactor the error-helper module for clarity
-- Owned by `owasp-security`: the cross-cutting PII and credential-handling policy
-- Owned by `a11y`: the user-visible error UX (message copy, focus management, screen-reader announcements)
 
 **Related skills**
-- Verify with: `code-review`, `testing-strategy`
-- Related: `debugging`, `owasp-security`, `a11y`, `code-review`, `testing-strategy`, `refactor`
+- Verify with: `code-review`, `testing-strategy`, `error-boundary`
+- Related: `refactor`, `debugging`, `owasp-security`, `a11y`, `code-review`, `testing-strategy`
 
 **Grounding**
 - Mode: `universal`

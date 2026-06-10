@@ -4,37 +4,21 @@ description: "Use when reasoning about the protocol-level cycle by which a langu
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"agent-engineering\",\"api-design\",\"type-safety\",\"client-server-boundary\",\"tool-call-strategy\"],\"suppresses\":[\"tool-call-strategy\"],\"verify_with\":[\"agent-eval-design\",\"tool-call-strategy\"]}"
   subject: ai-engineering
   scope: "The protocol-level cycle by which a language model uses external tools — the four phases (declaration, request, execution, continuation), the message-history state model tying them together, the structural differences between vendor protocols (Anthropic tool-use, OpenAI function-calling, MCP) and how they compose, parallel vs sequential calls, in-cycle error handling and retries, and the model-produces-intent / runtime-executes-intent separation. Portable across any tool-using LLM runtime; principle-grounded, not repo-bound. Excludes the decision of when and how many tool calls to make (tool-call-strategy), agent-system architecture and coordination (agent-engineering), prompt wording (prompt-craft), and designing evals for tool-use behavior (agent-eval-design)."
+  public: "true"
   taxonomy_domain: agent/protocol
-  owner: skill-graph-maintainer
-  freshness: "2026-05-15"
-  drift_check: "{\"last_verified\":\"2026-05-15\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"tool call\",\"tool use\",\"function calling\",\"MCP\",\"Model Context Protocol\",\"tool result\",\"parallel tool calls\",\"tool schema\",\"JSON Schema\",\"assistant turn\"]"
   triggers: "[\"how does tool calling actually work\",\"what's the message shape for a tool result\",\"MCP vs function calling vs Anthropic tools\",\"can the model call tools in parallel\",\"where do tool errors live in the message history\"]"
   examples: "[\"design the message-shape contract between a model and a tool runtime\",\"explain why a tool result must be appended to the message history before the next assistant turn\",\"decide whether to expose a capability as a tool, an MCP server, or an inline API\",\"diagnose why a model keeps re-calling the same tool with the same arguments\"]"
   anti_examples: "[\"decide whether to call a tool or write a script (use tool-call-strategy)\",\"choose a multi-agent coordination pattern (use agent-engineering)\",\"design an eval suite that tests tool-call correctness (use agent-eval-design)\"]"
-  relations: "{\"related\":[\"tool-call-strategy\",\"agent-engineering\",\"api-design\",\"type-safety\",\"client-server-boundary\"],\"boundary\":[{\"skill\":\"tool-call-strategy\",\"reason\":\"tool-call-strategy owns the decision of when, how many, and which tools to call (token cost, redundancy, parallelization, decision gate). tool-call-flow owns the protocol-level cycle that makes any call possible. The two compose: strategy decides what to do; flow describes the mechanism that carries it out.\"}],\"verify_with\":[\"tool-call-strategy\",\"agent-eval-design\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "A tool-call flow is to a language model what a procurement system is to an executive — the executive does not personally drive to the supplier; they sign a typed purchase order, the procurement department validates the order, executes it, and returns the receipt with whatever was delivered or with a documented reason it could not be. The executive's signature is intent; the department's stamp is authorization; the receipt is the only state of the cycle that survives, and the next decision is made against that record."
   misconception: "|"
-  concept: "{\"definition\":\"A tool-call flow is the multi-turn protocol by which a language model uses external capabilities. It has four phases — declaration (the runtime tells the model which tools exist and their parameter schemas), request (the model emits a structured tool-call message specifying tool name and arguments), execution (the runtime invokes the underlying capability and produces a result), continuation (the runtime appends the result to the message history and re-prompts the model, which either continues with another tool call or produces a final answer). The state of the cycle lives in the message history; the model is stateless across calls.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/ai-engineering/tool-call-flow/SKILL.md
@@ -42,12 +26,19 @@ metadata:
 
 # Tool-Call Flow
 
+## Concept of the skill
+
+A tool-call flow is the multi-turn protocol by which a language model uses external capabilities. *Four phases* identical across every vendor protocol: (1) *Declaration* — runtime tells the model which tools exist and their JSON-Schema parameter spec; (2) *Request* — model emits an assistant message with one or more tool-call blocks (or a final-answer message ending the cycle); (3) *Execution* — runtime invokes the underlying capability with the supplied arguments; (4) *Continuation* — runtime appends the result to the message history, paired with the request by ID, and re-prompts the model, which either continues with another tool call or produces a final answer. The cycle ends when the model emits an assistant message *without* tool-call blocks.
+
+Replaces *fused planning-and-execution* (model executes code directly) with the *separation of planning from execution* (model produces structured intent; runtime carries it out). Solves the problem that fusion gives the model unaudited access to side effects, while separation makes the system *auditable* (every call is a message in the history; logs can replay full cycles), *composable* (any tool with a JSON-Schema input can be plugged in; vendors are interchangeable with a translation layer), and *recoverable* (failures are tool-result messages with error content, not exceptions that break the loop). The separation is not a workaround for current model capabilities; it is a deliberate design choice that places side-effect discipline, schema validation, dispatch policy, timeout/retry/rate-limit policy, parallelism limits, and audit/persistence on the runtime side, leaving the model with only the planning (which tool, which arguments, when to stop). A practitioner who understands the cycle can move between Anthropic, OpenAI, MCP, and Gemini at the cost of a translation layer; a practitioner who understands only one vendor's encoding cannot.
+
+Distinct from tool-call-strategy, which owns the decision of *when, how many, and which* tools to call (token cost, redundancy, parallelization, decision gate) — this skill owns the protocol-level cycle that makes any call possible. The two compose: strategy decides what to do; flow describes the mechanism that carries it out. Distinct from agent-engineering, which owns multi-agent and multi-step system architecture (orchestrator/worker, consensus, sequential chains) — this skill is one cycle inside a *single* agent. Distinct from api-design, which owns the external API surface that tools may wrap — this skill owns the *model-facing contract* (how the tool is declared to the model, how the result is encoded back). Distinct from client-server-boundary, which owns the bundler serialization frontier — this skill is an *analogous frontier* between a language model (planner) and a runtime (executor); the discipline of explicit serialization is identical but the trust direction differs. Distinct from agent-eval-design (eval suites that test tool-call correctness; that skill measures what this skill describes) and from prompt-craft (the wording of the declaration's `description` field, which is a prompt fragment rather than documentation). A tool-call flow is to a language model what a procurement system is to an executive — the executive does not personally drive to the supplier; they sign a typed purchase order, the procurement department validates the order, executes it, and returns the receipt with whatever was delivered or with a documented reason it could not be. The executive's signature is intent; the department's stamp is authorization; the receipt is the only state of the cycle that survives, and the next decision is made against that record. The wrong mental model is that the model "calls a function" the way a programming language does — that the tool-call is a direct invocation with stack semantics, exceptions propagating, and shared memory. It is not. The model emits a *structured message*; the runtime parses, validates, dispatches, and replies with another structured message. All failures — schema mismatch, tool exception, timeout, permission denied, unknown tool — are encoded as *tool-result messages with an error field*, never as out-of-band exceptions that break the loop. The model sees the error in its next turn and can choose: retry with corrected arguments, try a different tool, abandon the goal, or surface the failure to the user with context. Adjacent misconceptions: that the runtime can hold hidden state the model can use later (no — message history is the only state; anything the model needs in turn N+1 must be visible in the messages by turn N); that parallel tool calls can be dependent (they cannot — parallel calls all execute against the same pre-result state; dependent calls must be sequential); that side-effecting tools are safe by default (they are not — the model does not enforce side-effect discipline; the runtime must gate destructive actions via confirmation, dry-run mode, or allow-list, and side-effecting tools have explicit gating); and that the four-phase cycle is vendor-specific (it is not — Anthropic, OpenAI, MCP, Gemini all implement the same cycle with different message encodings; the cycle is the *concept*, the encoding is the *syntax*, and conflating them produces brittle code that breaks when the vendor changes).
+
 ## Coverage
 
 The protocol-level cycle by which a language model uses external capabilities. Covers the four phases (declaration, request, execution, continuation), the message-history state model that ties them together, the structural differences between vendor protocols (Anthropic tool-use, OpenAI function-calling, Model Context Protocol, Gemini function calling), parallel tool calls, streaming tool calls, the runtime's role as orchestrator, error encoding inside the cycle, and the boundary between model-side intent and runtime-side execution.
 
-## Philosophy
-
+## Philosophy of the skill
 A tool-call flow is the smallest unit of agentic capability. Strip away orchestration patterns, multi-agent coordination, evaluation harnesses — what remains is a single language model alternating turns with a runtime that executes capabilities on its behalf. Understanding this cycle precisely is the foundation for understanding everything that builds on it.
 
 The cycle's defining property is the separation of planning from execution. The model produces structured intent; the runtime carries it out. This separation is not a workaround for current model capabilities; it is a deliberate design choice that makes the system auditable, composable, and recoverable. A system that fuses the two — by letting the model execute code directly, or by letting the runtime make decisions — gains expressiveness and loses every benefit the separation provides.
@@ -263,6 +254,7 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `ai-engineering`
+- Public: `true`
 - Domain: `agent/protocol`
 - Scope: The protocol-level cycle by which a language model uses external tools — the four phases (declaration, request, execution, continuation), the message-history state model tying them together, the structural differences between vendor protocols (Anthropic tool-use, OpenAI function-calling, MCP) and how they compose, parallel vs sequential calls, in-cycle error handling and retries, and the model-produces-intent / runtime-executes-intent separation. Portable across any tool-using LLM runtime; principle-grounded, not repo-bound. Excludes the decision of when and how many tool calls to make (tool-call-strategy), agent-system architecture and coordination (agent-engineering), prompt wording (prompt-craft), and designing evals for tool-use behavior (agent-eval-design).
 
@@ -277,11 +269,10 @@ After applying this skill, verify:
 - decide whether to call a tool or write a script (use tool-call-strategy)
 - choose a multi-agent coordination pattern (use agent-engineering)
 - design an eval suite that tests tool-call correctness (use agent-eval-design)
-- Owned by `tool-call-strategy`: the decision of when, how many, and which tools to call (token cost, redundancy, parallelization, decision gate)
 
 **Related skills**
-- Verify with: `tool-call-strategy`, `agent-eval-design`
-- Related: `tool-call-strategy`, `agent-engineering`, `api-design`, `type-safety`, `client-server-boundary`
+- Verify with: `agent-eval-design`, `tool-call-strategy`
+- Related: `agent-engineering`, `api-design`, `type-safety`, `client-server-boundary`, `tool-call-strategy`
 
 **Concept**
 - Mental model: |

@@ -5,40 +5,22 @@ license: MIT
 compatibility: "Markdown, decision memos, strategy analysis, product bets, risk tradeoffs"
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"evaluation\",\"bayesian-reasoning\",\"second-order-thinking\",\"prioritization\",\"constraint-awareness\"],\"suppresses\":[\"bayesian-reasoning\",\"second-order-thinking\"],\"verify_with\":[\"constraint-awareness\",\"methodical\",\"epistemic-grounding\"]}"
   subject: reasoning-strategy
+  public: "true"
+  scope: "Use when choosing among actions under quantified uncertainty by enumerating outcomes, assigning probabilities, valuing each outcome in one shared unit, computing probability-weighted value, testing sensitivity, and checking downside constraints before recommending. Covers expected value, expected utility, expected monetary value, payoff tables, break-even probability, value of information, and risk-of-ruin constraints. Do NOT use for updating probabilities from evidence (use bayesian-reasoning), broad mixed-criteria backlog ranking (use prioritization), or tracing consequences before outcomes are modeled (use second-order-thinking)."
   taxonomy_domain: foundations/decision-quality
-  owner: skill-graph-maintainer
-  freshness: "2026-05-27"
-  drift_check: "{\"last_verified\":\"2026-05-27\",\"truth_source_hashes\":{\"skills/skills/meta-methods/expected-value/references/expected-value-sources.md\":\"06c13a11c9ee43cce442d9d4fc079054c1fbbab4ca2fbcb0a0e244d4ac19a2e7\",\"skills/skills/meta-methods/expected-value/references/upstream-displacement-2026-05-27.md\":\"6408903a99d80484f747b4d275ea634199f191322f1fb18d5352603f10ffde67\"}}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: present
-  comprehension_state: present
   stability: stable
-  keywords: "[\"expected value\",\"EV\",\"expected utility\",\"expected monetary value\",\"probability weighted\",\"decision under uncertainty\",\"payoffs\",\"outcome probability\",\"sensitivity analysis\",\"break-even probability\"]"
+  keywords: "[\"expected value\",\"three options\",\"recommend one\",\"expected utility\",\"expected monetary value\",\"probability weighted\",\"probabilities and payoffs\",\"outcome probability\",\"downside constraints\",\"break-even probability\"]"
   triggers: "[\"expected-value\",\"probability-weighted-decision\",\"ev-decision\"]"
   examples: "[\"Calculate the expected value of these three options and recommend one.\",\"This experiment has outcome probabilities and payoffs; calculate expected value and decide whether to run it.\",\"Find the break-even probability for this product bet.\",\"The expected value is positive but the downside is severe; how should we decide?\"]"
   anti_examples: "[\"Update these probabilities after new customer evidence.\",\"Prioritize this backlog with RICE using reach, impact, confidence, and effort.\",\"Trace the second- and third-order consequences before we model outcomes.\"]"
-  relations: "{\"boundary\":[{\"skill\":\"bayesian-reasoning\",\"reason\":\"expected-value owns action comparison after probabilities are accepted; bayesian-reasoning owns updating those probabilities from evidence\"},{\"skill\":\"prioritization\",\"reason\":\"expected-value owns quantified probability-weighted payoff; prioritization owns broad mixed-criteria ranking when values or probabilities are not modeled\"},{\"skill\":\"second-order-thinking\",\"reason\":\"expected-value owns weighing modeled outcomes; second-order-thinking owns expanding consequence chains before outcome probabilities exist\"}],\"related\":[\"bayesian-reasoning\",\"second-order-thinking\",\"prioritization\",\"constraint-awareness\",\"evaluation\"],\"verify_with\":[\"methodical\",\"epistemic-grounding\",\"constraint-awareness\"]}"
-  grounding: "{\"subject_matter\":\"Expected value as a portable probability-weighted decision method\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://plato.stanford.edu/entries/rationality-normative-utility/\",\"https://plato.stanford.edu/entries/decision-theory/\",\"skills/skills/meta-methods/expected-value/references/expected-value-sources.md\",\"skills/skills/meta-methods/expected-value/references/upstream-displacement-2026-05-27.md\"],\"failure_modes\":[\"probability_sum_error\",\"mixing_units_across_outcomes\",\"payoff_without_cost\",\"average_case_hides_ruin\",\"fake_precision\",\"ignoring_sensitivity\",\"treating_expected_value_as_probability_update\"],\"evidence_priority\":\"general_knowledge_first\"}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  grounding: "{\"subject_matter\":\"Expected value as a portable probability-weighted decision method\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://plato.stanford.edu/entries/rationality-normative-utility/\",\"https://plato.stanford.edu/entries/decision-theory/\",\"skills/skills/reasoning-strategy/expected-value/references/expected-value-sources.md\",\"skills/skills/reasoning-strategy/expected-value/references/upstream-displacement-2026-05-27.md\"],\"failure_modes\":[\"probability_sum_error\",\"mixing_units_across_outcomes\",\"payoff_without_cost\",\"average_case_hides_ruin\",\"fake_precision\",\"ignoring_sensitivity\",\"treating_expected_value_as_probability_update\"],\"evidence_priority\":\"general_knowledge_first\"}"
   mental_model: "Expected value is a weighted average over possible futures. The primitives are actions, mutually exclusive outcomes, probabilities conditional on each action, values or utilities in one shared unit, costs, constraints, and sensitivity ranges. For each action, multiply each outcome value by its probability, sum the products, subtract costs, and compare the resulting expectation against alternatives inside the feasible set."
   purpose: "This skill prevents agents from choosing by best-case story, worst-case fear, or unweighted option lists when probabilities and payoffs are already available. It replaces intuition-only recommendations with an explicit probability-weighted comparison, plus sensitivity checks that show which assumptions drive the decision."
+  concept_boundary: "Expected value chooses among actions once probabilities and values are accepted or can be reasonably estimated. It does not update probabilities from evidence, trace unmodeled downstream consequences, run broad backlog scoring with qualitative criteria, or perform domain-specific valuation work. Those tools may feed the outcome model, but this skill owns probability-weighted action comparison."
   analogy: "Expected value is like a scale that weighs every possible future by both its size and its chance of happening, then subtracts the cost of putting that future on the scale."
   misconception: "The common mistake is treating expected value as the outcome to expect in a single trial. Expected value is a long-run or portfolio guide; a positive average can still be vetoed by ruin risk, hard constraints, non-repeatability, or made-up inputs."
-  last_changed: "2026-05-27"
-  last_audited: "2026-05-28"
-  structural_verdict: PASS
-  truth_verdict: BROKEN
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  lint_verdict: PASS
-  drift_status: EXTERNAL_UNHASHED
-  public: "true"
-  concept_boundary: "Expected value chooses among actions once probabilities and values are accepted or can be reasonably estimated. It does not update probabilities from evidence, trace unmodeled downstream consequences, run broad backlog scoring with qualitative criteria, or perform domain-specific valuation work. Those tools may feed the outcome model, but this skill owns probability-weighted action comparison."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/expected-value/SKILL.md
@@ -320,7 +302,9 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `reasoning-strategy`
+- Public: `true`
 - Domain: `foundations/decision-quality`
+- Scope: Use when choosing among actions under quantified uncertainty by enumerating outcomes, assigning probabilities, valuing each outcome in one shared unit, computing probability-weighted value, testing sensitivity, and checking downside constraints before recommending. Covers expected value, expected utility, expected monetary value, payoff tables, break-even probability, value of information, and risk-of-ruin constraints. Do NOT use for updating probabilities from evidence (use bayesian-reasoning), broad mixed-criteria backlog ranking (use prioritization), or tracing consequences before outcomes are modeled (use second-order-thinking).
 
 **When to use**
 - Calculate the expected value of these three options and recommend one.
@@ -333,13 +317,10 @@ After applying this skill, verify:
 - Update these probabilities after new customer evidence.
 - Prioritize this backlog with RICE using reach, impact, confidence, and effort.
 - Trace the second- and third-order consequences before we model outcomes.
-- Owned by `bayesian-reasoning`: action comparison after probabilities are accepted
-- Owned by `prioritization`: quantified probability-weighted payoff
-- Owned by `second-order-thinking`: weighing modeled outcomes
 
 **Related skills**
-- Verify with: `methodical`, `epistemic-grounding`, `constraint-awareness`
-- Related: `bayesian-reasoning`, `second-order-thinking`, `prioritization`, `constraint-awareness`, `evaluation`
+- Verify with: `constraint-awareness`, `methodical`, `epistemic-grounding`
+- Related: `evaluation`, `bayesian-reasoning`, `second-order-thinking`, `prioritization`, `constraint-awareness`
 
 **Concept**
 - Mental model: Expected value is a weighted average over possible futures. The primitives are actions, mutually exclusive outcomes, probabilities conditional on each action, values or utilities in one shared unit, costs, constraints, and sensitivity ranges. For each action, multiply each outcome value by its probability, sum the products, subtract costs, and compare the resulting expectation against alternatives inside the feasible set.
@@ -349,9 +330,9 @@ After applying this skill, verify:
 
 **Grounding**
 - Mode: `universal`
-- Truth sources: `https://plato.stanford.edu/entries/rationality-normative-utility/`, `https://plato.stanford.edu/entries/decision-theory/`, `skills/skills/meta-methods/expected-value/references/expected-value-sources.md`, `skills/skills/meta-methods/expected-value/references/upstream-displacement-2026-05-27.md`
+- Truth sources: `https://plato.stanford.edu/entries/rationality-normative-utility/`, `https://plato.stanford.edu/entries/decision-theory/`, `skills/skills/reasoning-strategy/expected-value/references/expected-value-sources.md`, `skills/skills/reasoning-strategy/expected-value/references/upstream-displacement-2026-05-27.md`
 
 **Keywords**
-- `expected value`, `EV`, `expected utility`, `expected monetary value`, `probability weighted`, `decision under uncertainty`, `payoffs`, `outcome probability`, `sensitivity analysis`, `break-even probability`
+- `expected value`, `three options`, `recommend one`, `expected utility`, `expected monetary value`, `probability weighted`, `probabilities and payoffs`, `outcome probability`, `downside constraints`, `break-even probability`
 
 <!-- skill-graph-context:end -->

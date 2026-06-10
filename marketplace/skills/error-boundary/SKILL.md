@@ -4,18 +4,10 @@ description: "Use when designing or reviewing React error boundaries: what an er
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: frontend-engineering
+  public: "true"
   scope: "Designing and reviewing React error boundaries — what a boundary catches (rendering, lifecycle, constructor errors) and what it does not (event-handler, async, SSR, in-boundary errors), why React still requires class components for boundaries, placement by granularity (page/feature/leaf), pairing with Suspense, the reset-and-recover pattern (resetKeys, error.reset), the Next.js error.tsx route-segment convention, and integration with error reporting. Covers React 18+ and Next.js App Router; portable across React codebases; principle-grounded, not repo-bound. Excludes Suspense boundary placement (suspense-patterns), general async error-handling and validation, backend error contracts (api-design), and observability infrastructure (error-tracking)."
   taxonomy_domain: engineering/frontend
-  owner: skill-graph-maintainer
-  freshness: "2026-05-16"
-  drift_check: "{\"last_verified\":\"2026-05-16\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"React Error Boundary\",\"componentDidCatch\",\"getDerivedStateFromError\",\"react-error-boundary library\",\"Next.js error.tsx\",\"global-error.tsx\",\"error boundary granularity\",\"resetKeys\",\"error boundary with Suspense\",\"caught render error\"]"
   triggers: "[\"my error boundary isn't catching errors\",\"do I need an error boundary here\",\"why does the whole page crash on one component error\",\"how do I recover from a caught error\",\"error.tsx vs global-error.tsx\",\"why doesn't this catch async errors\"]"
@@ -24,17 +16,9 @@ metadata:
   relations: "{\"related\":[\"suspense-patterns\",\"hooks-patterns\",\"error-tracking\",\"server-components-design\"],\"boundary\":[{\"skill\":\"suspense-patterns\",\"reason\":\"suspense-patterns owns the loading-state boundary mechanism; error-boundary owns the failure-state boundary mechanism. They pair in the canonical ErrorBoundary→Suspense→Component nesting but are distinct primitives that catch different signals (thrown Error vs thrown Promise).\"},{\"skill\":\"hooks-patterns\",\"reason\":\"hooks-patterns covers component-internal logic discipline; error-boundary is a tree-level mechanism that handles failures from anywhere in its descendant subtree. Class-component requirement of error boundaries is the one place hooks discipline does not apply.\"}],\"verify_with\":[\"code-review\",\"error-tracking\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "An error boundary is to React's component tree what a circuit breaker is to a building's electrical system — when a fault occurs in one circuit, the breaker for THAT circuit trips, isolating the fault so the rest of the building keeps running, while sub-panels still healthy on other circuits keep lights and outlets working. A single master breaker would protect against fault propagation but at the cost of darkening everything; the right granularity is one breaker per useful zone."
   misconception: "|"
-  concept: "{\"definition\":\"An error boundary is a React component that catches JavaScript errors thrown anywhere in its descendant tree during rendering, in lifecycle methods, and in constructors — and renders a fallback UI instead of unmounting the broken subtree to the root. As of React 19 it must still be implemented as a class component using getDerivedStateFromError and/or componentDidCatch; function components cannot themselves be error boundaries (they can render one and provide its fallback). React's design choice: failure in a subtree should not require crashing the whole tree, but the boundary itself must be a stable component above the failure point.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/error-boundary/SKILL.md
@@ -43,11 +27,15 @@ metadata:
 
 # Error Boundary
 
+## Concept of the skill
+
+An error boundary is React's recovery primitive for render-time failure: a component — still class-only as of React 19, because its defining methods (`static getDerivedStateFromError`, `componentDidCatch`) have no hooks equivalent — that catches JavaScript errors thrown anywhere in its descendant tree during rendering, lifecycle methods, and constructors, and renders a fallback UI instead of letting the throw unmount the broken subtree all the way to the root. It is a *tree-level* mechanism scoped by where you place it: a boundary near the page root catches everything but replaces the whole page on any error, while a boundary around a single widget catches only that widget's failure and lets the rest keep working — so placement is a granularity decision driven by failure-blast-radius, choosing the smallest scope where the fallback is still meaningful. Its defining limitation is the call-stack rule: it catches only what is thrown *inside React's call stack during render or lifecycle*, never event-handler throws, async/`setTimeout`/Promise rejections, SSR errors, or errors in the boundary itself — those must be caught locally and surfaced into render via `setState` to reach a boundary. It pairs with Suspense (a distinct primitive that catches thrown *Promises* rather than thrown *Errors*) and, to stay honest, must report every caught error to external observability so a fallback is the user-facing recovery and the developer-facing alarm rather than silent UI degradation.
+
 ## Coverage
 
 The discipline of placing and configuring React error boundaries: precisely what the boundary catches (rendering errors, lifecycle method errors, constructor errors) and what it provably cannot catch (event handler errors, async/setTimeout/Promise errors, server-side rendering errors before React 18.5, errors thrown by the boundary itself), why React 19 still requires class-component implementation, the boundary-placement granularity tradeoff (page / feature / leaf), the canonical Suspense+ErrorBoundary nesting and why their order matters, the reset-and-recover pattern via `resetKeys` / `FallbackComponent`, the Next.js App Router conventions (`error.tsx`, `global-error.tsx`), and how to wire boundaries to external error reporting so caught errors do not become silent UI degradation.
 
-## Philosophy
+## Philosophy of the skill
 
 Before React 16, an error thrown during render had nowhere to go. React's reconciler would catch it, log it, and continue trying to render — usually producing a corrupted or blank tree. The component model assumed that render functions don't throw, and the runtime had no recovery primitive when they did. The result was either total app crash or partial blank screens with no signal that anything had broken.
 
@@ -270,6 +258,7 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `frontend-engineering`
+- Public: `true`
 - Domain: `engineering/frontend`
 - Scope: Designing and reviewing React error boundaries — what a boundary catches (rendering, lifecycle, constructor errors) and what it does not (event-handler, async, SSR, in-boundary errors), why React still requires class components for boundaries, placement by granularity (page/feature/leaf), pairing with Suspense, the reset-and-recover pattern (resetKeys, error.reset), the Next.js error.tsx route-segment convention, and integration with error reporting. Covers React 18+ and Next.js App Router; portable across React codebases; principle-grounded, not repo-bound. Excludes Suspense boundary placement (suspense-patterns), general async error-handling and validation, backend error contracts (api-design), and observability infrastructure (error-tracking).
 

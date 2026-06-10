@@ -5,31 +5,15 @@ license: MIT
 compatibility: Runtime-agnostic. The intake-triage / loop / drift / handoff discipline applies to any LLM-coding harness regardless of context window size or compaction implementation.
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"prompt-craft\",\"tool-call-strategy\",\"context-engineering\",\"context-graph\",\"summarization\"],\"suppresses\":[\"context-engineering\",\"context-graph\",\"context-window\"],\"verify_with\":[\"context-engineering\"]}"
   subject: agent-ops
   scope: "Deciding what to load into an active agent session, recovering from context drift, preparing compaction or restart, distilling raw inputs into a working summary, and writing a resumable handoff — intake triage, the six-step context-management loop, working-set shaping, evidence-first loading, drift signals, anti-drift rules, compaction-ready handoffs, and selective rebuild after context loss. Portable across any agent session; principle-grounded, not repo-bound. Excludes token math (context-window), prompt wording (prompt-craft), persistent memory curation, and multi-graph context architecture (context-graph)."
+  public: "true"
   taxonomy_domain: agent/context
-  owner: skill-graph-maintainer
-  freshness: "2026-05-06"
-  drift_check: "{\"last_verified\":\"2026-05-06\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"context management\",\"working set discipline\",\"intake triage four buckets\",\"context drift recovery\",\"context management loop\",\"compaction-ready handoff\",\"distill raw inputs\",\"one active hypothesis\",\"selective context rebuild\",\"lost-thread recovery\"]"
   examples: "[\"the session feels noisy and I'm re-reading the same files — what discipline pulls it back?\",\"the agent keeps citing assumptions that were already disproven — how do I clear them out?\",\"I'm about to compact — what do I need to preserve so the next session resumes correctly?\",\"the thread is lost; what's the recipe for rebuilding only what's needed instead of warming up everything?\",\"I have a 300-line error log and a 600-line component file in context — how do I distill them?\",\"the active question changed three times this session — how do I prevent the old context from steering the new one?\",\"this conversation has 40K tokens of evidence; what should the working set actually contain?\"]"
   anti_examples: "[\"calculate the per-zone token budget for the 200K context window\",\"improve this prompt template for the grader\",\"curate the persistent memory index file\",\"design the multi-graph architecture for skills + docs + memory\",\"review this AI-generated PR for correctness\",\"why is this skill not routing — fix the keyword config\"]"
-  relations: "{\"boundary\":[{\"skill\":\"context-graph\",\"reason\":\"context-graph maps the static topology — what skills, docs, memory, scripts exist and how they connect; context-management is the live working-set discipline inside one running session\"},{\"skill\":\"context-engineering\",\"reason\":\"context-engineering is the system-level design (injector quality, failure metrics); context-management is the per-session operating discipline within that system\"}],\"related\":[\"context-engineering\",\"context-graph\",\"tool-call-strategy\",\"prompt-craft\"],\"verify_with\":[\"context-engineering\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/context-management/SKILL.md
@@ -38,12 +22,15 @@ metadata:
 
 # Context Management
 
+## Concept of the skill
+
+Deciding what to load into an active agent session, recovering from context drift, preparing compaction or restart, distilling raw inputs into a working summary, and writing a resumable handoff — intake triage, the six-step context-management loop, working-set shaping, evidence-first loading, drift signals, anti-drift rules, compaction-ready handoffs, and selective rebuild after context loss.
+
 ## Coverage
 
 The working discipline that controls what enters, stays in, and exits an active agent session. Intake triage that sorts every candidate context source into a four-bucket classification (must-have / useful soon / durable background / noise) before any large file is read. The six-step context-management loop: state the active question in one sentence, name the minimum evidence needed to answer it, load the cheapest sources first (index → search → narrow file slice), collapse confirmed facts into a checkpoint, drop disproven assumptions from the active thread, re-check whether the question changed before reading more. Working-set shaping rules — what to keep active vs what to push out — and the distillation pattern that converts a 300-line log into a 2-line summary, a whole file into a function name plus slice plus invariant, a long conversation into current-state-blocker-next-step. Drift detection signals (re-reading the same file, ideas changing every turn, search-space unbounded, the agent forgetting what was proven) and the anti-drift rules (one active hypothesis at a time, one primary question, one verification target). The compaction-ready handoff format with five required fields (task / question / proven facts / rejected paths / next step) and the under-thirty-seconds resume test. The selective-rebuild recipe for recovering after the thread is lost.
 
-## Philosophy
-
+## Philosophy of the skill
 Context management is the practical layer between _having_ the right information available somewhere in the workspace and _having_ it active in the agent at the right moment. The goal is _not_ to load more context — it is to keep the smallest working set that still lets the agent act correctly. Without this discipline, agents speculate from stale assumptions, re-read files they already processed, and lose the decision trail at the moment of compaction. Every context slot occupied by noise is a slot unavailable for the evidence that would actually resolve the current question.
 
 The hardest part is not what to load. It is _what to drop_. Disproven hypotheses, raw logs after the key pattern is extracted, full files after the needed lines are identified, alternative hypotheses that have already been falsified — all of these continue to occupy context until they are _deliberately_ removed. The working set is what the agent is actively reasoning over, not everything it has ever seen.
@@ -203,6 +190,7 @@ Do not "warm up" by re-reading everything. Recovery is a _selective_ rebuild, no
 
 **Classification**
 - Subject: `agent-ops`
+- Public: `true`
 - Domain: `agent/context`
 - Scope: Deciding what to load into an active agent session, recovering from context drift, preparing compaction or restart, distilling raw inputs into a working summary, and writing a resumable handoff — intake triage, the six-step context-management loop, working-set shaping, evidence-first loading, drift signals, anti-drift rules, compaction-ready handoffs, and selective rebuild after context loss. Portable across any agent session; principle-grounded, not repo-bound. Excludes token math (context-window), prompt wording (prompt-craft), persistent memory curation, and multi-graph context architecture (context-graph).
 
@@ -222,12 +210,10 @@ Do not "warm up" by re-reading everything. Recovery is a _selective_ rebuild, no
 - design the multi-graph architecture for skills + docs + memory
 - review this AI-generated PR for correctness
 - why is this skill not routing — fix the keyword config
-- Owned by `context-graph`
-- Owned by `context-engineering`
 
 **Related skills**
 - Verify with: `context-engineering`
-- Related: `context-engineering`, `context-graph`, `tool-call-strategy`, `prompt-craft`
+- Related: `prompt-craft`, `tool-call-strategy`, `context-engineering`, `context-graph`, `summarization`
 
 **Keywords**
 - `context management`, `working set discipline`, `intake triage four buckets`, `context drift recovery`, `context management loop`, `compaction-ready handoff`, `distill raw inputs`, `one active hypothesis`, `selective context rebuild`, `lost-thread recovery`

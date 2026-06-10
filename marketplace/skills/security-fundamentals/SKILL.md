@@ -4,8 +4,10 @@ description: "Use when reasoning about baseline application-security properties:
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"related\":[\"webhook-integration\",\"code-review\",\"http-semantics\",\"error-tracking\",\"guardrails\",\"owasp-security\",\"type-safety\",\"api-design\",\"prompt-injection-defense\"],\"verify_with\":[\"owasp-security\",\"type-safety\",\"api-design\",\"prompt-injection-defense\"]}"
   subject: quality-assurance
   scope: "Teaching the portable design discipline behind secure applications: threat modeling, assets/adversaries/trust boundaries, Saltzer and Schroeder principles, input-validation placement, authentication vs authorization, secret classification, least privilege, secure defaults, defense in depth, and blast-radius reduction. Applies before and during feature/API/route/data-flow design when the question is whether a system can safely handle data, identity, and authority under hostile input and partial failure. Excludes OWASP-category deep code review (owasp-security), LLM-specific prompt/context/tool injection (prompt-injection-defense), vendor webhook signing/retry mechanics (webhook-integration), implementation of cryptographic primitives or KMS/envelope-encryption mechanics (vendor/library docs), legal/compliance artifacts, and organizational security training."
+  public: "true"
   taxonomy_domain: quality/security
   grounding: "{\"subject_matter\":\"Portable application-security fundamentals: threat modeling, trust boundaries, secure design principles, input validation, identity, authorization, least privilege, and defense in depth\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://www.cs.virginia.edu/~evans/cs551/saltzer/\",\"https://owasp.org/Top10/2021/\",\"https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html\",\"https://pages.nist.gov/800-63-4/sp800-63b.html\",\"https://www.cisa.gov/sites/default/files/2023-06/principles_approaches_for_security-by-design-default_508c.pdf\",\"https://owasp.org/www-project-top-10-for-large-language-model-applications/\"],\"failure_modes\":[\"Treating security as a checklist of controls rather than a property of trust boundaries\",\"Conflating authentication with authorization and checking permissions only at session establishment\",\"Relying on client-side validation or type annotations instead of server-side boundary parsing\",\"Routing OWASP-category deep code review to the broad fundamentals skill instead of owasp-security\",\"Routing LLM instruction-channel attacks to classical application-security review instead of prompt-injection-defense\",\"Referencing non-existent skill ids for compliance, scanner configuration, or credential-encryption implementation\"],\"evidence_priority\":\"general_knowledge_first\"}"
   stability: experimental
@@ -13,13 +15,11 @@ metadata:
   triggers: "[\"is this secure\",\"where should validation happen\",\"authentication vs authorization\",\"what could go wrong here\",\"threat model\",\"OWASP\",\"do I need to check permissions here\"]"
   examples: "[\"audit a route handler for authn, authz, and input validation\",\"decide where to validate inbound data when the same shape comes in through multiple endpoints\",\"decide whether a piece of data is a secret, a credential, or non-sensitive — and what handling each requires\",\"produce a threat model for a new feature before any code is written\"]"
   anti_examples: "[\"implement HMAC verification for a Shopify webhook (use webhook-integration)\",\"audit code against OWASP Top 10 categories (use owasp-security)\",\"configure a specific SAST or dependency scanner (use the scanner docs, then owasp-security for review)\",\"choose an envelope-encryption/KMS implementation for stored credentials (use vendor/KMS/library docs)\",\"respond to a GDPR data-subject-access request (use legal/compliance docs)\",\"defend an LLM agent against prompt injection (use prompt-injection-defense)\"]"
-  relations: "{\"related\":[\"owasp-security\",\"type-safety\",\"api-design\",\"http-semantics\",\"prompt-injection-defense\",\"webhook-integration\",\"error-tracking\",\"guardrails\",\"code-review\"],\"verify_with\":[\"owasp-security\",\"type-safety\",\"api-design\",\"prompt-injection-defense\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "Security fundamentals is to a software system what structural engineering is to a building — load-bearing walls, fire egress, electrical isolation, foundation depth are not features added after the building works; they are properties of the design from the first sketch, and retrofitting them costs ten times more and produces worse results than designing them in. A building that survives an earthquake does so because of decisions made at the structural-engineering stage, not because of decorations added later."
   misconception: "|"
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/security-fundamentals/SKILL.md
@@ -49,8 +49,7 @@ metadata:
 
 The cross-cutting design principles, threat-modeling discipline, and recurring vulnerability classes that determine whether a system can safely handle data, identity, and authority under adversarial conditions. Covers the foundational discipline upstream of any specific vulnerability or tool: Shostack's four threat-modeling questions, Saltzer and Schroeder's eight design principles (1975), trust boundaries, the authentication/authorization distinction, input validation as a boundary discipline, defense in depth, least privilege, and the OWASP Top 10 as a working enumeration of recurring failure classes. Does NOT cover the implementation of specific cryptographic primitives, the configuration of specific scanners, the regulatory artifacts of compliance regimes, the LLM-specific specialization to prompt injection, or the organizational/social side of security.
 
-## Philosophy
-
+## Philosophy of the skill
 Security is a property of the design, not a feature added after the system works. The cost of designing security in is small; the cost of retrofitting it is order-of-magnitude larger and produces worse results. The discipline of security fundamentals is the discipline of paying these costs early — at the threat-modeling stage, at the trust-boundary stage, at the authentication-design stage — before the system has accumulated the structural debt that makes retrofitting expensive.
 
 The discipline does not promise prevention of attacks. Any non-trivial system will be attacked; some attacks will succeed. The goal is to make attacks expensive, slow, traceable, and limited in blast radius. Every design choice is evaluated by what it costs the defender vs what it costs the attacker. Secure-by-default choices cost the defender slightly more code upfront but cost the attacker a working exploit; opt-in security features cost the defender nothing upfront but cost the attacker very little when the developer inevitably forgets. The discipline is the deliberate placement of costs on the attacker rather than the defender.
@@ -179,6 +178,7 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `quality-assurance`
+- Public: `true`
 - Domain: `quality/security`
 - Scope: Teaching the portable design discipline behind secure applications: threat modeling, assets/adversaries/trust boundaries, Saltzer and Schroeder principles, input-validation placement, authentication vs authorization, secret classification, least privilege, secure defaults, defense in depth, and blast-radius reduction. Applies before and during feature/API/route/data-flow design when the question is whether a system can safely handle data, identity, and authority under hostile input and partial failure. Excludes OWASP-category deep code review (owasp-security), LLM-specific prompt/context/tool injection (prompt-injection-defense), vendor webhook signing/retry mechanics (webhook-integration), implementation of cryptographic primitives or KMS/envelope-encryption mechanics (vendor/library docs), legal/compliance artifacts, and organizational security training.
 
@@ -199,7 +199,7 @@ After applying this skill, verify:
 
 **Related skills**
 - Verify with: `owasp-security`, `type-safety`, `api-design`, `prompt-injection-defense`
-- Related: `owasp-security`, `type-safety`, `api-design`, `http-semantics`, `prompt-injection-defense`, `webhook-integration`, `error-tracking`, `guardrails`, `code-review`
+- Related: `webhook-integration`, `code-review`, `http-semantics`, `error-tracking`, `guardrails`, `owasp-security`, `type-safety`, `api-design`, `prompt-injection-defense`
 
 **Concept**
 - Mental model: |

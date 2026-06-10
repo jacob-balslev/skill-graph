@@ -5,31 +5,15 @@ license: MIT
 compatibility: "Runtime-agnostic. The four-tier classification, target-content rule, and Identify/Confirm/Verify sequence apply to any agent harness with tool execution — Claude Code, OpenCode, Cursor, Aider, Copilot Workspace, custom MCP-based agents, or any LLM with shell access."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"version-control\",\"debugging\",\"code-review\",\"testing-strategy\",\"owasp-security\"],\"verify_with\":[\"owasp-security\",\"guardrails\"]}"
   subject: ai-engineering
   scope: "Classifying the intent of an operation BEFORE any tool call that could modify state, touch sensitive targets, rewrite history, install dependencies, publish packages, or expose credentials — sorting into Passive/Read, Reconnaissance, Modification, or Destructive/Irreversible by operation type plus target sensitivity, then running Identify / Confirm / Verify before action. Portable across any agent with tool access; principle-grounded, not repo-bound. Excludes deciding what code to write, executing already-classified work, reactive post-execution guardrails, and defining upstream governance policy."
+  public: "true"
   taxonomy_domain: ai-engineering/safety
-  owner: skill-graph-maintainer
-  freshness: "2026-05-06"
-  drift_check: "{\"last_verified\":\"2026-05-06\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"intent recognition\",\"pre-execution risk classification\",\"four tier action taxonomy\",\"passive read reconnaissance modification destructive\",\"identify confirm verify sequence\",\"destructive operation classification\",\"credential read is reconnaissance\",\"git reset hard is destructive\",\"force push is destructive\",\"lockfile install is high impact\"]"
   examples: "[\"the agent is about to run `git reset --hard` — what tier is this and what's the safer alternative?\",\"is reading the `.env` file a Passive operation since nothing mutates?\",\"I'm about to install a new package — what tier does that fit and why?\",\"force-push to main looks like 'just a push' — should I classify it as Modification?\",\"before running `DELETE FROM orders WHERE …`, what's the verification sequence?\",\"the agent classified everything as Modification because there's no exception for credentials\",\"what trigger phrases should activate this skill in our harness?\"]"
   anti_examples: "[\"design the deterministic safety hook that blocks destructive commands\",\"decide whether to use a switch or a chain of ifs\",\"actually execute the migration after we've classified the risk\",\"scan this repo for OWASP top 10 vulnerabilities\",\"review this AI-generated PR for correctness\",\"the loop is stalling — what's the steering signal\"]"
-  relations: "{\"related\":[\"owasp-security\",\"version-control\",\"debugging\",\"code-review\",\"testing-strategy\"],\"verify_with\":[\"owasp-security\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/ai-engineering/intent-recognition/SKILL.md
@@ -38,12 +22,15 @@ metadata:
 
 # Intent Recognition
 
+## Concept of the skill
+
+Classifying the intent of an operation BEFORE any tool call that could modify state, touch sensitive targets, rewrite history, install dependencies, publish packages, or expose credentials — sorting into Passive/Read, Reconnaissance, Modification, or Destructive/Irreversible by operation type plus target sensitivity, then running Identify / Confirm / Verify before action.
+
 ## Coverage
 
 Pre-execution action classification for any agent that can call tools with side effects. Defines four tiers — Passive/Read, Reconnaissance, Modification, Destructive/Irreversible — with the operation-and-target rule that determines tier (the target's sensitivity can elevate the tier above what the operation alone implies; reading a `.env` file is Reconnaissance even though no state changes). Specifies the three-step verification sequence (Identify the action and its tier, Confirm the rationale against the active plan, Verify whether a non-destructive alternative exists) that runs before any tier-3 or tier-4 action fires. Names the trigger phrases that should activate the skill. Catalogs the anti-patterns: classifying credential reads as Passive, treating package installs as Passive, skipping classification for familiar commands, classifying force-push as Modification, proceeding with Destructive actions without checking alternatives.
 
-## Philosophy
-
+## Philosophy of the skill
 Agents execute tool calls at machine speed with no undo. Without an explicit pre-execution classification step, `git reset --hard` runs with the same ease as `cat README.md`. The cost of a single misclassified destructive action — wiped uncommitted work, dropped database, force-pushed branch — exceeds the cost of _every_ classification step the agent will ever run. The math is simple: classification is cheap, regret is expensive.
 
 The most subtle failure mode is _target-content elevation_. Reading a file is a Passive operation in the abstract. Reading a `.env` file is Reconnaissance because the _target_ is sensitive — credentials, connection strings, API keys. The tier comes from the combination of operation _and_ target, not the operation alone. A classifier that looks only at the verb misses half the risk surface.
@@ -165,6 +152,7 @@ These triggers are deliberately broad. False positives (classifying a Passive ac
 
 **Classification**
 - Subject: `ai-engineering`
+- Public: `true`
 - Domain: `ai-engineering/safety`
 - Scope: Classifying the intent of an operation BEFORE any tool call that could modify state, touch sensitive targets, rewrite history, install dependencies, publish packages, or expose credentials — sorting into Passive/Read, Reconnaissance, Modification, or Destructive/Irreversible by operation type plus target sensitivity, then running Identify / Confirm / Verify before action. Portable across any agent with tool access; principle-grounded, not repo-bound. Excludes deciding what code to write, executing already-classified work, reactive post-execution guardrails, and defining upstream governance policy.
 
@@ -186,8 +174,8 @@ These triggers are deliberately broad. False positives (classifying a Passive ac
 - the loop is stalling — what's the steering signal
 
 **Related skills**
-- Verify with: `owasp-security`
-- Related: `owasp-security`, `version-control`, `debugging`, `code-review`, `testing-strategy`
+- Verify with: `owasp-security`, `guardrails`
+- Related: `version-control`, `debugging`, `code-review`, `testing-strategy`, `owasp-security`
 
 **Keywords**
 - `intent recognition`, `pre-execution risk classification`, `four tier action taxonomy`, `passive read reconnaissance modification destructive`, `identify confirm verify sequence`, `destructive operation classification`, `credential read is reconnaissance`, `git reset hard is destructive`, `force push is destructive`, `lockfile install is high impact`

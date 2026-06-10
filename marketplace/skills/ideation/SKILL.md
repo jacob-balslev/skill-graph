@@ -3,29 +3,20 @@ name: ideation
 description: "Use when generating a wide range of solution concepts before converging on a direction, running structured idea-generation sessions, breaking out of solution fixation, or moving from divergent to convergent selection with explicit criteria. Do NOT use for collaborative engineering domain discovery (event-storming), solo deep technical design, or making final go/no-go investment decisions — those require different methods. Do NOT use for Decide whether to invest in this feature for the next quarter. Do NOT use for Model the bounded contexts for the order-fulfillment domain. Do NOT use for Write the production code for the selected concept."
 license: CC-BY-4.0
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: design
+  public: "true"
   scope: "Generating a wide range of solution concepts before converging — running structured idea-generation sessions, breaking out of solution fixation, and moving from divergent to convergent selection with explicit criteria. Portable across any design or product effort; principle-grounded, not repo-bound. Excludes collaborative engineering domain discovery (event-storming), solo deep technical design, and final go/no-go investment decisions."
-  owner: skill-graph-maintainer
-  freshness: "2026-05-12"
-  drift_check: "{\"last_verified\":\"2026-05-12\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"crazy 8s\",\"brainstorming\",\"SCAMPER\",\"worst possible idea\",\"headlines from the future\",\"dot voting\",\"NUF test\",\"divergent thinking\",\"convergent thinking\",\"ideation workshop\"]"
   triggers: "[\"brainstorm\",\"ideation session\",\"crazy 8s\",\"generate concepts\",\"narrow down ideas\"]"
   examples: "[\"Run a crazy-8s round on this how-might-we statement and produce a divergent set.\",\"Apply SCAMPER to this existing feature to generate variant concepts.\",\"Use dot voting and an impact/effort matrix to converge on three concepts to prototype.\",\"Help me set up a worst-possible-idea round to break the team out of solution fixation.\"]"
   anti_examples: "[\"Decide whether to invest in this feature for the next quarter.\",\"Model the bounded contexts for the order-fulfillment domain.\",\"Write the production code for the selected concept.\"]"
   relations: "{\"related\":[\"problem-framing\",\"prototyping\",\"design-thinking\",\"event-storming\",\"conceptual-modeling\"]}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
+  mental_model: "|"
+  purpose: "|"
+  concept_boundary: "|"
+  analogy: "Ideation is to a solution like casting a wide net then sorting the catch — the net is thrown deliberately wide with no inspection mid-haul (divergent), and only once it is on deck does anyone decide which fish to keep against rules agreed before the boat left port (convergent); inspecting each fish as it is caught would only slow the haul and shrink it."
+  misconception: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/ideation/SKILL.md
@@ -34,6 +25,10 @@ metadata:
 
 # Ideation
 
+## Concept of the skill
+
+Ideation is the disciplined practice of producing a wide range of solution concepts in response to a well-framed problem and then converging on a subset worth pursuing — treating generation and judgment as two separable activities that must not run at the same time. Its core claim is counterintuitive: quantity precedes quality, because judging an idea costs cognitive effort and judgment running in parallel with generation suppresses generation. So the practice splits into a **divergent mode** (Crazy 8s, brainwriting, SCAMPER, worst-possible-idea, headlines-from-the-future, analogous inspiration) that floods the field while withholding all evaluation, and a **convergent mode** (dot voting, the NUF test, impact/effort 2x2, weighted decision matrices, assumption-testing prioritization) that prunes the field against criteria named in writing before voting starts. The facilitation mechanics — enforced silence during divergent rounds, strict time-boxing, "yes-and" over "yes-but", evaluative discussion deferred to the convergent phase — exist to keep the two halves apart. Done well, the divergent round spreads the field past the obvious first three ideas every competitor has also had, and the convergent round prunes intelligently because the field is large enough that pruning is meaningful and the choice is defensible rather than political.
+
 ## Coverage
 Ideation covers the techniques that produce many concept variants in response to a well-framed problem, then converge on a subset worth pursuing. The practice has two distinct halves and treats them as separable activities. **Divergent techniques** include **Crazy 8s** (eight sketches in eight minutes, popularized by Google Ventures' Design Sprint), **brainwriting** (silent written generation that bypasses dominant voices), **SCAMPER** (Substitute / Combine / Adapt / Modify / Put-to-another-use / Eliminate / Reverse — Bob Eberle's adaptation of Alex Osborn's checklist), **worst-possible-idea** (deliberately bad concepts to disinhibit and reveal hidden assumptions), **headlines-from-the-future** (write the press release for the launched product), and **analogous inspiration** (how do other domains solve adjacent problems).
 
@@ -41,7 +36,7 @@ Ideation covers the techniques that produce many concept variants in response to
 
 The skill includes the **facilitation mechanics** that keep the two halves separate: enforcing silence during divergent rounds so no idea is judged before it lands, time-boxing strictly so quantity is prioritized over polish, withholding feedback ("yes-and" rather than "yes-but"), and only opening evaluative discussion in the convergent phase. This separation is the single most-cited determinant of brainstorming productivity in the literature (going back to Osborn 1953, with the criticism / refinements from Diehl & Stroebe and others incorporated via brainwriting variants).
 
-## Philosophy
+## Philosophy of the skill
 Ideation is built on a counterintuitive claim: that quantity precedes quality. The case is empirical and structural — judging an idea costs cognitive effort, and judgment running in parallel with generation suppresses generation. Teams that judge as they ideate produce fewer ideas, and the ideas they produce skew toward the safe middle of the distribution. By splitting the modes, divergent rounds produce a wider range, and convergent rounds can then prune intelligently because the field is large enough that pruning is meaningful.
 
 The discipline is sceptical of "good enough" early ideas. The first three ideas a team generates are usually the obvious ones — the ones any competitor has also considered. The interesting ideas live in the second half of a forced-quantity round, where the obvious is exhausted and the team is pushed into less-trodden territory. Worst-possible-idea exercises serve the same function from the other direction: by deliberately violating norms, they expose which norms were holding the design back.
@@ -68,6 +63,7 @@ The discipline is sceptical of "good enough" early ideas. The first three ideas 
 
 **Classification**
 - Subject: `design`
+- Public: `true`
 - Scope: Generating a wide range of solution concepts before converging — running structured idea-generation sessions, breaking out of solution fixation, and moving from divergent to convergent selection with explicit criteria. Portable across any design or product effort; principle-grounded, not repo-bound. Excludes collaborative engineering domain discovery (event-storming), solo deep technical design, and final go/no-go investment decisions.
 
 **When to use**
@@ -84,6 +80,12 @@ The discipline is sceptical of "good enough" early ideas. The first three ideas 
 
 **Related skills**
 - Related: `problem-framing`, `prototyping`, `design-thinking`, `event-storming`, `conceptual-modeling`
+
+**Concept**
+- Mental model: |
+- Purpose: |
+- Analogy: Ideation is to a solution like casting a wide net then sorting the catch — the net is thrown deliberately wide with no inspection mid-haul (divergent), and only once it is on deck does anyone decide which fish to keep against rules agreed before the boat left port (convergent); inspecting each fish as it is caught would only slow the haul and shrink it.
+- Common misconception: |
 
 **Keywords**
 - `crazy 8s`, `brainstorming`, `SCAMPER`, `worst possible idea`, `headlines from the future`, `dot voting`, `NUF test`, `divergent thinking`, `convergent thinking`, `ideation workshop`

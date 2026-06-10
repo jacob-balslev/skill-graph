@@ -3,29 +3,20 @@ name: prototyping
 description: "Use when building an artifact whose purpose is to answer a specific question — paper sketch, wireframe, clickable mockup, wizard-of-oz, role-play, service prototype, or code spike — at the lowest fidelity sufficient to produce that learning. Do NOT use for production-grade component construction, design-system contribution, or building the actual ship-ready feature — those are design-module-composition and engineering implementation. Do NOT use for Build the production React component for the new dashboard widget. Do NOT use for Add this component to the design system library. Do NOT use for Write the migration script for the production database."
 license: CC-BY-4.0
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: design
+  public: "true"
   scope: "Building an artifact whose purpose is to answer a specific question — paper sketch, wireframe, clickable mockup, wizard-of-oz, role-play, service prototype, or code spike — at the lowest fidelity sufficient to produce that learning. Portable across any design effort; principle-grounded, not repo-bound. Excludes production-grade component construction (design-module-composition), design-system contribution, and building the ship-ready feature (engineering implementation)."
-  owner: skill-graph-maintainer
-  freshness: "2026-05-12"
-  drift_check: "{\"last_verified\":\"2026-05-12\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"paper prototype\",\"low fidelity prototype\",\"clickable prototype\",\"wizard of oz\",\"role play prototype\",\"service prototype\",\"code spike\",\"learning goal\",\"fidelity matching\",\"throwaway prototype\"]"
   triggers: "[\"prototype this\",\"wizard of oz\",\"paper prototype\",\"clickable mockup\",\"what fidelity\"]"
   examples: "[\"Pick the right fidelity for a prototype that tests whether users will trust an AI-suggested category.\",\"Plan a wizard-of-oz study where a human acts as the recommendation engine.\",\"Sketch a role-play prototype for a service-desk interaction before any UI is built.\",\"Decide between a paper prototype and a Figma clickable for this onboarding test.\"]"
   anti_examples: "[\"Build the production React component for the new dashboard widget.\",\"Add this component to the design system library.\",\"Write the migration script for the production database.\"]"
   relations: "{\"related\":[\"ideation\",\"usability-testing\",\"design-thinking\"],\"boundary\":[{\"skill\":\"design-module-composition\",\"reason\":\"design-module-composition produces durable design-system components meant to ship and be reused. prototyping produces disposable artifacts whose only purpose is learning — different lifecycle, different quality bar, different audience.\"},{\"skill\":\"interaction-patterns\",\"reason\":\"interaction-patterns is a reference catalog of established UI behaviors. prototyping is the activity of building a thing to test a question — it may use interaction patterns but is not itself a pattern library.\"}]}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
+  mental_model: "|"
+  purpose: "|"
+  concept_boundary: "|"
+  analogy: "A prototype is to a product what a wind-tunnel model is to an aircraft — a deliberately cheap, deliberately disposable stand-in built to answer one question (does this wing shape generate lift?) at the lowest fidelity that gives a trustworthy answer; nobody flies the wind-tunnel model, and its whole value is the data it produces before the expensive real thing is committed."
+  misconception: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/prototyping/SKILL.md
@@ -33,6 +24,10 @@ metadata:
 ---
 
 # Prototyping
+
+## Concept of the skill
+
+Prototyping is the practice of building an artifact whose only purpose is to answer a specific, written-down question — and building it at the lowest fidelity that can credibly produce that answer. A prototype is not an early draft of the product; it is an instrument. The work begins with a learning goal contract: one or two questions the prototype exists to answer, plus a definition of what evidence would count as an answer in either direction. From there the central judgment is fidelity matching — choosing a rung on the ladder (paper sketch → wireframe → clickable mockup → wizard-of-oz → role-play/bodystorming → service prototype → code spike) that can answer the question without paying for fidelity the question doesn't require. Paper can answer "is this flow understandable?" but not "is this typography readable?"; a clickable can answer "do users find the primary action?" but not "does this feel fast under load?"; only a code spike can answer a true scaling question. The artifact is disposable by design: its value is the learning, not the thing, and a prototype that produces a clear "this concept doesn't work" has succeeded — that finding came at the price of a prototype rather than a launched feature. The discipline rejects polishing before showing, because polish signals finality, makes stakeholders evaluate fit-and-finish instead of concept, and makes users reluctant to criticize.
 
 ## Coverage
 Prototyping covers the practice of constructing artifacts whose primary purpose is to **answer a question** the team has written down. The fidelity ladder runs from **paper sketches** (fastest, cheapest, best for early flow and concept testing) through **wireframes**, **clickable prototypes** (Figma, Framer, similar), **wizard-of-oz** prototypes (a human secretly performs the function the system will eventually automate — Kelley 1984), **role-play / bodystorming** (the team physically acts out a service interaction), **service prototypes** (props and staged environments for service-design questions), and up to **code spikes** (throwaway working code that answers a feasibility question).
@@ -43,7 +38,7 @@ A complementary skill is **the learning goal contract**: every prototype begins 
 
 The practice also covers **sacrificial concepts** — deliberately rough or extreme prototypes whose purpose is to provoke a reaction, not to be defended. IDEO and the Stanford d.school both teach using disposable artifacts to draw out user preferences that would not surface in abstract conversation.
 
-## Philosophy
+## Philosophy of the skill
 Prototyping rejects the instinct to polish before showing. Polish signals finality; polish makes stakeholders evaluate fit-and-finish instead of concept; polish makes users reluctant to criticize. A rougher prototype invites honest reaction. The famous IDEO maxim "if a picture is worth a thousand words, a prototype is worth a thousand meetings" captures the substitution effect — but only if the prototype is cheap enough that a team can build three and throw two away.
 
 The discipline insists prototypes are means, not ends. A successful prototype is one that produced a clear answer, even if the answer is "this concept doesn't work" — perhaps especially then, because that finding came at the price of a prototype rather than a launched feature. Teams that judge prototypes by their visual quality have inverted the value system; teams that judge them by what was learned have it right.
@@ -70,6 +65,7 @@ The discipline insists prototypes are means, not ends. A successful prototype is
 
 **Classification**
 - Subject: `design`
+- Public: `true`
 - Scope: Building an artifact whose purpose is to answer a specific question — paper sketch, wireframe, clickable mockup, wizard-of-oz, role-play, service prototype, or code spike — at the lowest fidelity sufficient to produce that learning. Portable across any design effort; principle-grounded, not repo-bound. Excludes production-grade component construction (design-module-composition), design-system contribution, and building the ship-ready feature (engineering implementation).
 
 **When to use**
@@ -88,6 +84,12 @@ The discipline insists prototypes are means, not ends. A successful prototype is
 
 **Related skills**
 - Related: `ideation`, `usability-testing`, `design-thinking`
+
+**Concept**
+- Mental model: |
+- Purpose: |
+- Analogy: A prototype is to a product what a wind-tunnel model is to an aircraft — a deliberately cheap, deliberately disposable stand-in built to answer one question (does this wing shape generate lift?) at the lowest fidelity that gives a trustworthy answer; nobody flies the wind-tunnel model, and its whole value is the data it produces before the expensive real thing is committed.
+- Common misconception: |
 
 **Keywords**
 - `paper prototype`, `low fidelity prototype`, `clickable prototype`, `wizard of oz`, `role play prototype`, `service prototype`, `code spike`, `learning goal`, `fidelity matching`, `throwaway prototype`

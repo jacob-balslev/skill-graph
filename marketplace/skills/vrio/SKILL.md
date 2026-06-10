@@ -5,22 +5,22 @@ license: MIT
 compatibility: "Markdown, strategic analysis, resource-based view analysis, capability audits, competitive advantage reviews, strategy memos"
 allowed-tools: Read Grep WebSearch WebFetch
 metadata:
-  relations: "{\"boundary\":[\"porters-five-forces\",\"swot-tows\",\"seven-powers\",\"bcg-matrix\",\"ansoff-matrix\",\"expected-value\"]}"
+  relations: "{\"related\":[\"playing-to-win\",\"blue-ocean-strategy\",\"swot-tows\",\"porters-five-forces\",\"seven-powers\",\"bcg-matrix\",\"ansoff-matrix\",\"expected-value\",\"epistemic-grounding\",\"methodology\"],\"suppresses\":[\"porters-five-forces\",\"seven-powers\",\"expected-value\",\"swot-tows\",\"bcg-matrix\",\"ansoff-matrix\"],\"verify_with\":[\"epistemic-grounding\",\"methodology\",\"expected-value\"]}"
   subject: reasoning-strategy
   scope: "VRIO resource-based competitive-advantage analysis for organizations, business units, products, programs, teams, and acquisition targets: inventory resources and capabilities, test each one sequentially for value, rarity, cost of imitation, and organizational support, map the competitive implication from disadvantage through sustained advantage, identify inimitability mechanisms and organization gaps, decide what to invest in, protect, build, partner for, or stop over-claiming, and route to broader strategy, industry, portfolio, or valuation methods when the resource test is not enough. Excludes external industry profit-pressure diagnosis, generic SWOT/TOWS factor inventory, Seven Powers moat-source classification, BCG portfolio allocation, Ansoff product-market growth paths, OKR execution tracking, and standalone financial valuation."
+  public: "true"
   taxonomy_domain: foundations/strategy
   stability: stable
-  keywords: "[\"VRIO\",\"VRIO framework\",\"resource-based view\",\"resource based view\",\"valuable rare inimitable organized\",\"sustained competitive advantage\",\"strategic resources\",\"capabilities audit\",\"organization to capture value\",\"costly to imitate\"]"
+  keywords: "[\"VRIO\",\"VRIO framework\",\"resource-based view\",\"value rarity imitation cost organization\",\"culture moat\",\"valuable rare inimitable organized\",\"sustained competitive advantage\",\"strategic resources\",\"capabilities audit\",\"costly to imitate\"]"
   triggers: "[\"vrio\",\"vrio-framework\",\"resource-based-view\",\"resource-capability-audit\"]"
   examples: "[\"Use VRIO to assess whether our brand, data assets, partnerships, and operating process are real competitive advantages.\",\"Build a VRIO table for these capabilities and classify which are parity, temporary advantage, or sustained advantage.\",\"Review this claim that our culture is a moat using value, rarity, imitation cost, and organization.\",\"Evaluate an acquisition target's resources with the resource-based view and tell me which advantages are durable.\",\"Help me separate ordinary strengths from resources that are valuable, rare, costly to imitate, and supported by the organization.\"]"
   anti_examples: "[\"Analyze buyer power, supplier power, substitutes, entrants, and rivalry for this industry.\",\"Turn strengths, weaknesses, opportunities, and threats into TOWS strategy options.\",\"Classify this company's moat using scale economies, switching costs, network economies, branding, counter-positioning, cornered resource, or process power.\",\"Classify our products as stars, cash cows, question marks, or dogs.\",\"Classify growth ideas as market penetration, market development, product development, or diversification.\"]"
   grounding: "{\"subject_matter\":\"VRIO and resource-based view analysis as a portable strategy framework for assessing resources and capabilities\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://journals.sagepub.com/doi/10.1177/014920639101700108\",\"https://journals.aom.org/doi/10.5465/ame.1995.9512032192\",\"https://jaybarney.org/wp-content/uploads/2022/06/6-Looking-Inside-for-Competitive-Advantage-Barney-AOME-1995.pdf\",\"skills/skills/reasoning-strategy/vrio/references/vrio-sources.md\",\"skills/skills/reasoning-strategy/vrio/references/upstream-displacement-2026-06-06.md\"],\"failure_modes\":[\"ordinary_strength_mislabeled_as_sustained_advantage\",\"resource_or_capability_left_undefined\",\"value_test_not_tied_to_opportunities_or_threats\",\"rarity_asserted_without_competitor_comparison\",\"inimitability_claim_made_without_mechanism\",\"organization_gap_ignored\",\"vrio_confused_with_external_industry_analysis\",\"moat_taxonomy_confused_with_resource_level_test\"],\"evidence_priority\":\"general_knowledge_first\"}"
   mental_model: "VRIO is a sequential resource test. The primitives are an actor, a defined resource or capability, a relevant competitive context, the value test, the rarity test, the cost-of-imitation test, the organization-to-capture-value test, competitive implication, evidence, and action. A resource that is not valuable creates disadvantage; one that is valuable but common creates parity; one that is valuable and rare but easy to imitate creates temporary advantage; one that is valuable, rare, and costly to imitate but not supported by the organization is under-exploited; one that passes all four tests can support sustained competitive advantage."
   purpose: "This skill prevents agents from treating every strength, asset, capability, brand claim, data set, process, culture, or partnership as a moat. It forces the agent to define the resource precisely, prove it matters, compare competitor access, explain why imitation is costly, test whether the organization captures the value, and state the competitive implication and next action."
+  concept_boundary: "VRIO is for internal resources and capabilities. It is not Porter's Five Forces industry-structure analysis, SWOT/TOWS factor inventory, Seven Powers moat-source taxonomy, BCG portfolio allocation, Ansoff growth direction, PESTEL macro scanning, OKR execution management, or financial valuation. Those methods may feed or follow VRIO, but they do not replace the sequential resource test."
   analogy: "VRIO is like a security checkpoint for claimed advantages: each resource must clear value, rarity, imitation cost, and organizational support before it can be treated as durable."
   misconception: "The common mistake is treating VRIO as a list of flattering strengths. VRIO is a falsification test: a no at any stage changes the competitive implication and usually changes the recommended action."
-  public: "true"
-  concept_boundary: "VRIO is for internal resources and capabilities. It is not Porter's Five Forces industry-structure analysis, SWOT/TOWS factor inventory, Seven Powers moat-source taxonomy, BCG portfolio allocation, Ansoff growth direction, PESTEL macro scanning, OKR execution management, or financial valuation. Those methods may feed or follow VRIO, but they do not replace the sequential resource test."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/vrio/SKILL.md
@@ -237,8 +237,15 @@ Next method:
 - The output does not replace Five Forces, SWOT/TOWS, Seven Powers, BCG, Ansoff, or Expected Value when those mechanisms own the remaining question.
 - Examples remain synthetic, public, or aggregate and avoid private business data.
 
-## Do NOT Use When
+## Verification
 
+After applying this skill, verify:
+
+- [ ] The task matches the declared scope, coverage, or positive examples.
+- [ ] The response follows this skill's workflow or checks instead of generic advice.
+- [ ] The exclusions in `## Do NOT Use When` do not point to a better skill.
+
+## Do NOT Use When
 Use another method when the user's actual question is:
 
 | User need | Use instead |
@@ -258,6 +265,7 @@ Use another method when the user's actual question is:
 
 **Classification**
 - Subject: `reasoning-strategy`
+- Public: `true`
 - Domain: `foundations/strategy`
 - Scope: VRIO resource-based competitive-advantage analysis for organizations, business units, products, programs, teams, and acquisition targets: inventory resources and capabilities, test each one sequentially for value, rarity, cost of imitation, and organizational support, map the competitive implication from disadvantage through sustained advantage, identify inimitability mechanisms and organization gaps, decide what to invest in, protect, build, partner for, or stop over-claiming, and route to broader strategy, industry, portfolio, or valuation methods when the resource test is not enough. Excludes external industry profit-pressure diagnosis, generic SWOT/TOWS factor inventory, Seven Powers moat-source classification, BCG portfolio allocation, Ansoff product-market growth paths, OKR execution tracking, and standalone financial valuation.
 
@@ -276,6 +284,10 @@ Use another method when the user's actual question is:
 - Classify our products as stars, cash cows, question marks, or dogs.
 - Classify growth ideas as market penetration, market development, product development, or diversification.
 
+**Related skills**
+- Verify with: `epistemic-grounding`, `methodology`, `expected-value`
+- Related: `playing-to-win`, `blue-ocean-strategy`, `swot-tows`, `porters-five-forces`, `seven-powers`, `bcg-matrix`, `ansoff-matrix`, `expected-value`, `epistemic-grounding`, `methodology`
+
 **Concept**
 - Mental model: VRIO is a sequential resource test. The primitives are an actor, a defined resource or capability, a relevant competitive context, the value test, the rarity test, the cost-of-imitation test, the organization-to-capture-value test, competitive implication, evidence, and action. A resource that is not valuable creates disadvantage; one that is valuable but common creates parity; one that is valuable and rare but easy to imitate creates temporary advantage; one that is valuable, rare, and costly to imitate but not supported by the organization is under-exploited; one that passes all four tests can support sustained competitive advantage.
 - Purpose: This skill prevents agents from treating every strength, asset, capability, brand claim, data set, process, culture, or partnership as a moat. It forces the agent to define the resource precisely, prove it matters, compare competitor access, explain why imitation is costly, test whether the organization captures the value, and state the competitive implication and next action.
@@ -287,6 +299,6 @@ Use another method when the user's actual question is:
 - Truth sources: `https://journals.sagepub.com/doi/10.1177/014920639101700108`, `https://journals.aom.org/doi/10.5465/ame.1995.9512032192`, `https://jaybarney.org/wp-content/uploads/2022/06/6-Looking-Inside-for-Competitive-Advantage-Barney-AOME-1995.pdf`, `skills/skills/reasoning-strategy/vrio/references/vrio-sources.md`, `skills/skills/reasoning-strategy/vrio/references/upstream-displacement-2026-06-06.md`
 
 **Keywords**
-- `VRIO`, `VRIO framework`, `resource-based view`, `resource based view`, `valuable rare inimitable organized`, `sustained competitive advantage`, `strategic resources`, `capabilities audit`, `organization to capture value`, `costly to imitate`
+- `VRIO`, `VRIO framework`, `resource-based view`, `value rarity imitation cost organization`, `culture moat`, `valuable rare inimitable organized`, `sustained competitive advantage`, `strategic resources`, `capabilities audit`, `costly to imitate`
 
 <!-- skill-graph-context:end -->

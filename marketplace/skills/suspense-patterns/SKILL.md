@@ -5,6 +5,7 @@ license: MIT
 allowed-tools: Read Grep
 metadata:
   subject: frontend-engineering
+  public: "true"
   scope: "Portable React Suspense design discipline for placing loading boundaries, coordinating reveal order, pairing loading and error states, avoiding data-fetch waterfalls, deciding when transitions keep existing UI visible, and applying Next.js App Router route-segment loading conventions. Applies to React 18+ and React 19-style `use` Promise unwrapping in Client Components. Excludes general rendering-strategy choice (rendering-models), Server Component ownership decisions (server-components-design), hook primitive mechanics (hooks-patterns), and non-React streaming protocols (streaming-architecture)."
   taxonomy_domain: engineering/frontend
   stability: experimental
@@ -15,10 +16,9 @@ metadata:
   relations: "{\"related\":[\"server-components-design\",\"hooks-patterns\",\"streaming-architecture\",\"rendering-models\"],\"boundary\":[{\"skill\":\"server-components-design\",\"reason\":\"server-components-design owns the discipline of which work runs on the server side of the RSC boundary; suspense-patterns owns the orthogonal discipline of where to place Suspense boundaries within a tree (RSC or Client).\"},{\"skill\":\"hooks-patterns\",\"reason\":\"hooks-patterns covers state, effects, and the closure model on Client Components; suspense-patterns covers the boundary-level loading-state model that operates on whole subtrees.\"}],\"verify_with\":[\"code-review\",\"rendering-models\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "Suspense boundaries are to React's component tree what a restaurant's seating policy is to a multi-course meal — the policy decides whether courses arrive together (boundary around the whole meal, everyone waits for the slowest dish) or course-by-course (boundary per dish, each appears when ready). The component (the kitchen) just signals 'this course needs more time'; the boundary (the maître d') decides who waits for what and what placeholder shows in the meantime."
   misconception: "|"
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/suspense-patterns/SKILL.md
@@ -46,7 +46,7 @@ metadata:
 
 The discipline of placing and pairing Suspense boundaries: how a Suspense boundary catches a suspended descendant and renders a fallback, how boundary *placement* determines what waits for what, how Suspense composes with error boundaries (and why they cannot be the same component), how `useTransition`, `startTransition`, and `useDeferredValue` change the boundary's behavior on updates, how Suspense for code splitting (`React.lazy`) and Suspense for data fetching share the same boundary mechanism, and how Next.js App Router's segment-level loading file is a route-level Suspense convention. The skill covers React 18+ semantics throughout and the React 19 `use` hook that lets Client Components unwrap Promises directly.
 
-## Philosophy
+## Philosophy of the skill
 
 The classic React loading-state pattern was conditional rendering: each component owned an `isLoading` flag, returned a spinner or skeleton, and re-rendered when its data resolved. That pattern is local and imperative. It puts every component in the position of deciding *how* to communicate "I'm waiting" and *where* in its render output the placeholder goes. It does not compose; two sibling components loading in parallel produce two independent spinners with no coordinated layout.
 
@@ -303,6 +303,7 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `frontend-engineering`
+- Public: `true`
 - Domain: `engineering/frontend`
 - Scope: Portable React Suspense design discipline for placing loading boundaries, coordinating reveal order, pairing loading and error states, avoiding data-fetch waterfalls, deciding when transitions keep existing UI visible, and applying Next.js App Router route-segment loading conventions. Applies to React 18+ and React 19-style `use` Promise unwrapping in Client Components. Excludes general rendering-strategy choice (rendering-models), Server Component ownership decisions (server-components-design), hook primitive mechanics (hooks-patterns), and non-React streaming protocols (streaming-architecture).
 

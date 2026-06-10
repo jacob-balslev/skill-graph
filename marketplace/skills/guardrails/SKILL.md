@@ -5,42 +5,31 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "8"
-  version: "1.2.0"
+  relations: "{\"related\":[\"version-control\",\"database-migration\",\"intent-recognition\",\"code-review\",\"cognitive-load-theory\"],\"verify_with\":[\"intent-recognition\",\"code-review\",\"prompt-craft\"]}"
   subject: ai-engineering
+  public: "true"
+  scope: "Use when planning or executing agent/tool operations that touch protected files, credentials, destructive git commands, destructive SQL, PII, secrets, deployments, package publication, or irreversible system mutations. Covers proactive safety policy, tool-call tripwires, blocking vs advisory enforcement, secret-exposure prevention, and excessive-agency containment. Do NOT use for application input validation, routine git workflow design, migration authoring, or general code correctness review (use `code-review`, `version-control`, or `database-migration`)."
   taxonomy_domain: quality/safety
-  owner: skill-graph-maintainer
-  freshness: "2026-05-18"
-  drift_check: "{\"last_verified\":\"2026-05-18\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"guardrails\",\"tool guardrails\",\"tripwire\",\"safety gate\",\"force push\",\"secret detection\",\"destructive action\",\"protected files\",\"circuit breaker\",\"excessive agency\"]"
   triggers: "[\"guardrails-skill\",\"tool-guardrails\",\"tripwire-skill\",\"agent-safety-guardrails\"]"
-  relations: "{\"related\":[\"intent-recognition\",\"version-control\",\"database-migration\",\"code-review\"],\"verify_with\":[\"intent-recognition\",\"code-review\"]}"
   grounding: "{\"subject_matter\":\"Agent and tool-call safety guardrails for destructive operations, secret exposure prevention, excessive-agency containment, and irreversible system mutations\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://openai.github.io/openai-agents-python/guardrails/\",\"https://owasp.org/www-project-top-10-for-large-language-model-applications/\",\"https://www.nist.gov/itl/ai-risk-management-framework\",\"https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf\",\"https://docs.github.com/en/code-security/how-tos/secure-your-secrets/detect-secret-leaks\"],\"failure_modes\":[\"tool_call_runs_before_guardrail_completes\",\"agent_level_guardrail_misses_delegated_tool_call\",\"secret_pattern_committed_or_echoed\",\"force_push_or_hard_reset_destroys_work\",\"unbounded_sql_mutation_reaches_live_database\",\"excessive_agency_allows_unchecked_real_world_action\",\"guardrail_bypass_treated_as_normal_override\"],\"evidence_priority\":\"equal\"}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: UNVERIFIED
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/ai-engineering/guardrails/SKILL.md
 ---
 # Guardrails
 
+## Concept of the skill
+
+Use when planning or executing agent/tool operations that touch protected files, credentials, destructive git commands, destructive SQL, PII, secrets, deployments, package publication, or irreversible system mutations.
+
+
 ## Coverage
 
 This skill covers the portable guardrail discipline for agents and tool-using assistants: proactive action classification, reactive tripwires, input/output/tool-call guardrail placement, blocking vs advisory enforcement, protected-file and secret-exposure detection, destructive git and SQL patterns, deployment/package-publication gates, excessive-agency containment, and the verification protocol for high-risk operations.
 
-## Philosophy
-
+## Philosophy of the skill
 Agents with broad tool access will eventually approach dangerous operations -- not from malice, but from inference errors, ambiguous instructions, or optimistic assumptions about reversibility. Guardrails exist to make irreversible actions harder to reach than safe alternatives. "Allowed" is not the same as "safe": an agent may be authorized to edit a repo and still need a hard stop before it writes a secret, force-pushes main, drops a production table, or publishes a package.
 
 The core distinction is placement. A pre-action classifier asks "what kind of operation is this?" A guardrail asks "should this exact input, output, or tool call be blocked, escalated, or logged?" Modern agent frameworks expose input guardrails, output guardrails, and tool guardrails at different workflow boundaries; high-risk side effects require checks around the tool invocation itself, not only around the first user message or final answer.
@@ -161,14 +150,16 @@ Guardrails for tool-using agents must cover LLM-specific risks as well as classi
 
 **Classification**
 - Subject: `ai-engineering`
+- Public: `true`
 - Domain: `quality/safety`
+- Scope: Use when planning or executing agent/tool operations that touch protected files, credentials, destructive git commands, destructive SQL, PII, secrets, deployments, package publication, or irreversible system mutations. Covers proactive safety policy, tool-call tripwires, blocking vs advisory enforcement, secret-exposure prevention, and excessive-agency containment. Do NOT use for application input validation, routine git workflow design, migration authoring, or general code correctness review (use `code-review`, `version-control`, or `database-migration`).
 
 **When to use**
 - Triggers: `guardrails-skill`, `tool-guardrails`, `tripwire-skill`, `agent-safety-guardrails`
 
 **Related skills**
-- Verify with: `intent-recognition`, `code-review`
-- Related: `intent-recognition`, `version-control`, `database-migration`, `code-review`
+- Verify with: `intent-recognition`, `code-review`, `prompt-craft`
+- Related: `version-control`, `database-migration`, `intent-recognition`, `code-review`, `cognitive-load-theory`
 
 **Grounding**
 - Mode: `hybrid`

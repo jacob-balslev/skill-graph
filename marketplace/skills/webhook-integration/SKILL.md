@@ -5,31 +5,16 @@ license: MIT
 compatibility: "Provider-agnostic. Examples reference HMAC-SHA256 (the dominant scheme), SDK-style verification helpers (Stripe-style, where the provider ships a library that takes raw body + header + secret), and round-trip verification APIs (PayPal-style, where the receiver POSTs the event back to the provider for validation). Substitute each provider's specific header names, hashing algorithm, and retry-status-code contract from their docs."
 allowed-tools: Read Grep Bash Edit
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"debugging\",\"owasp-security\",\"refactor\",\"testing-strategy\",\"code-review\",\"event-contract-design\"],\"verify_with\":[\"testing-strategy\",\"code-review\",\"cron-scheduling\"]}"
   subject: backend-engineering
+  public: "true"
+  scope: "Use when implementing or reviewing an inbound webhook handler for any third-party provider - verifying signatures, deduplicating retries, choosing the right HTTP status code for retry vs no-retry, persisting raw payloads before canonical mapping, and quarantining unverifiable events. Covers signature schemes, idempotency patterns, provider retry contracts, raw-then-canonical pipelines, quarantine, secret rotation, and PII-capture timing. Do NOT use for outbound webhook publishing (use `event-contract-design`), general background-job orchestration, or chasing a webhook handler that has already failed in production (use `debugging`)."
   subjects: "[\"backend-engineering\",\"product-domain\"]"
   taxonomy_domain: integrations/webhooks
-  owner: skill-graph-maintainer
-  freshness: "2026-05-06"
-  drift_check: "{\"last_verified\":\"2026-05-06\"}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"webhook handler\",\"webhook signature\",\"webhook signature verification\",\"HMAC webhook\",\"timing-safe comparison\",\"duplicate webhook delivery\",\"webhook idempotency\",\"idempotency key\",\"webhook retry\",\"retry contract\"]"
   examples: "[\"implement signature verification for a new third-party webhook handler\",\"the same webhook event is being processed twice — fix the idempotency\",\"should I return 200 or 500 when a webhook handler hits a database error?\",\"the provider keeps retrying a webhook we already accepted — what's wrong with our 200 path?\",\"design a quarantine path for webhooks that fail signature verification\",\"extract a stable idempotency key from this provider's webhook payload\",\"reject all webhook deliveries with an invalid HMAC, log them for audit\",\"the provider deletes customer data 30 days after order — how do I capture PII safely on first delivery?\"]"
   anti_examples: "[\"design our outbound webhook product (we want to deliver events to customers)\",\"the production webhook is failing — find the root cause\",\"explain our webhook patterns in the contributor docs\",\"review this AI-generated webhook handler for correctness\",\"refactor the webhook handler helpers for clarity\",\"decide whether this webhook needs an integration test\",\"design the secret-rotation policy for our integration credentials\"]"
-  relations: "{\"related\":[\"testing-strategy\",\"debugging\",\"owasp-security\",\"code-review\",\"event-contract-design\",\"refactor\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/webhook-integration/SKILL.md
@@ -38,6 +23,10 @@ metadata:
 ---
 
 # Webhook Integration
+
+## Concept of the skill
+
+Use when implementing or reviewing an inbound webhook handler for any third-party provider - verifying signatures, deduplicating retries, choosing the right HTTP status code for retry vs no-retry, persisting raw payloads before canonical mapping, and quarantining unverifiable events.
 
 ## Coverage
 
@@ -50,8 +39,7 @@ metadata:
 - Webhook handler skeleton: the standard ordering of verify → parse → dedupe → process → respond, and why each step must precede the next
 - Secret rotation hooks: the handler-side support for accepting both old and new secrets during a rotation window, without owning the rotation policy itself
 
-## Philosophy
-
+## Philosophy of the skill
 Webhooks are the primary real-time data ingestion channel for any application that integrates with third-party providers. When a webhook handler is wrong, the failure mode is *silent data loss* — events arrive, the handler returns the wrong status code, the provider stops retrying, and the data is gone with no error in your logs. There is no "exception thrown" symptom. The discipline is to treat the handler as a contract negotiation: the provider's retry policy is law, the signature scheme is law, and the handler's job is to honour both *exactly*, not approximately.
 
 The dominant misconception is that REST conventions ("4xx for client error, 5xx for server error") apply uniformly. They do not. Several major providers interpret *any* 4xx as "your endpoint is permanently broken, stop retrying" — including a `409 Conflict` returned for a duplicate delivery, which is the natural REST-ish response. The result: returning a "semantically correct" 409 for a duplicate Stripe-style or HMAC-style webhook ends the retry loop on the *first* duplicate and silently drops every subsequent attempt. The right response for a duplicate is `200 OK` (with a body indicating it was already processed) — telling the provider "we have it, you can stop." For a transient database error, the right response is `500` — telling the provider "retry me." Neither is the REST default.
@@ -361,7 +349,9 @@ This skill ships a comprehension-eval artifact at [`examples/evals/webhook-integ
 
 **Classification**
 - Subject: `backend-engineering` (also: `product-domain`)
+- Public: `true`
 - Domain: `integrations/webhooks`
+- Scope: Use when implementing or reviewing an inbound webhook handler for any third-party provider - verifying signatures, deduplicating retries, choosing the right HTTP status code for retry vs no-retry, persisting raw payloads before canonical mapping, and quarantining unverifiable events. Covers signature schemes, idempotency patterns, provider retry contracts, raw-then-canonical pipelines, quarantine, secret rotation, and PII-capture timing. Do NOT use for outbound webhook publishing (use `event-contract-design`), general background-job orchestration, or chasing a webhook handler that has already failed in production (use `debugging`).
 
 **When to use**
 - implement signature verification for a new third-party webhook handler
@@ -383,8 +373,8 @@ This skill ships a comprehension-eval artifact at [`examples/evals/webhook-integ
 - design the secret-rotation policy for our integration credentials
 
 **Related skills**
-- Verify with: `testing-strategy`, `code-review`
-- Related: `testing-strategy`, `debugging`, `owasp-security`, `code-review`, `event-contract-design`, `refactor`
+- Verify with: `testing-strategy`, `code-review`, `cron-scheduling`
+- Related: `debugging`, `owasp-security`, `refactor`, `testing-strategy`, `code-review`, `event-contract-design`
 
 **Keywords**
 - `webhook handler`, `webhook signature`, `webhook signature verification`, `HMAC webhook`, `timing-safe comparison`, `duplicate webhook delivery`, `webhook idempotency`, `idempotency key`, `webhook retry`, `retry contract`

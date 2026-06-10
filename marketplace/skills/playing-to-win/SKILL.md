@@ -5,37 +5,21 @@ license: MIT
 compatibility: "Markdown, strategy memos, product strategy, executive decision-making"
 allowed-tools: Read Grep
 metadata:
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"prioritization\",\"constraint-awareness\",\"framework-fit-analysis\",\"methodology\",\"bcg-matrix\"],\"verify_with\":[\"methodology\",\"epistemic-grounding\",\"seven-powers\"]}"
   subject: reasoning-strategy
+  public: "true"
+  scope: "Use when turning a vague business strategy, product strategy, market-entry decision, or initiative plan into an integrated Playing to Win strategy cascade: winning aspiration, where to play, how to win, must-have capabilities, and management systems. Covers Lafley/Martin choice-making, fit across the five choices, trade-off pressure, reverse tests, capability-system alignment, and the difference between strategy and planning. Do NOT use for competitive-industry structure analysis (use a five-forces skill when available), generic backlog scoring (use prioritization), or broad process-gate design (use methodology)."
   taxonomy_domain: foundations/strategy
-  owner: skill-graph-maintainer
-  freshness: "2026-05-26"
-  drift_check: "{\"last_verified\":\"2026-05-26\",\"truth_source_hashes\":{\"skills/meta-methods/playing-to-win/references/playing-to-win-sources.md\":\"893c99345dc9ee846548ff71f3b1cea07bdf5286c3ab10429705f9b139cb4599\",\"skills/meta-methods/playing-to-win/references/upstream-displacement-2026-05-26.md\":\"c47197db5053b744d57abd323670098df4f555171a0ad9d5324adf259b445403\"}}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: stable
   keywords: "[\"playing to win\",\"strategy cascade\",\"strategic choice cascade\",\"winning aspiration\",\"where to play\",\"how to win\",\"strategy choices\",\"capability system\",\"management systems\",\"lafley martin\"]"
   examples: "[\"turn this vague growth plan into a Playing to Win cascade\",\"we need a product strategy for a narrow segment; help choose where to play and how to win\",\"our strategy doc has goals and initiatives but no trade-offs; apply Lafley/Martin\",\"pressure-test whether these capabilities actually support our how-to-win choice\",\"rewrite this market-entry plan as winning aspiration, where to play, how to win, capabilities, and systems\"]"
   anti_examples: "[\"analyze whether this industry has attractive supplier power and threat of substitutes\",\"score these ten backlog items by impact and effort\",\"design a quality gate process for this multi-step implementation\",\"write OKRs for this strategy after it has already been chosen\"]"
-  relations: "{\"related\":[\"constraint-awareness\",\"methodology\",\"framework-fit-analysis\",\"prioritization\"],\"verify_with\":[\"methodology\",\"epistemic-grounding\"]}"
   grounding: "{\"subject_matter\":\"Playing to Win strategy cascade by A.G. Lafley and Roger L. Martin\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://hbr.org/books/playing-to-win\",\"https://hbr.org/webinar/2013/04/a-playbook-for-winning\",\"https://www-2.rotman.utoronto.ca/insightshub/strategy-value-creation/playing-to-win-how-strategy-re\",\"skills/meta-methods/playing-to-win/references/playing-to-win-sources.md\",\"skills/meta-methods/playing-to-win/references/upstream-displacement-2026-05-26.md\"],\"failure_modes\":[\"goal_list_without_choice\",\"where_to_play_too_broad\",\"how_to_win_not_differentiated\",\"capabilities_not_tied_to_advantage\",\"management_systems_missing\",\"cascade_choices_do_not_reinforce\",\"strategy_confused_with_planning\"],\"evidence_priority\":\"general_knowledge_first\"}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   mental_model: "Playing to Win treats strategy as five mutually reinforcing choices, not as a plan, goal list, or analysis deck. The primitives are a winning aspiration, a chosen playing field, a differentiated way to win there, the capabilities required to deliver that advantage, and the management systems that build and sustain those capabilities. The cascade works only when the answers fit together and force trade-offs."
   purpose: "This skill prevents agents from producing strategy-shaped prose that lacks choices. It replaces broad aspirations, market summaries, and initiative lists with an explicit cascade that says what the organization will do, what it will not do, why it can win in the chosen arena, and what must be true operationally for the choice to work."
+  concept_boundary: "Playing to Win is for strategy formulation and choice integration. It is not Porter's Five Forces industry-structure diagnosis, Seven Powers moat taxonomy, OKR execution tracking, generic prioritization, scenario planning, or full financial valuation. Those tools may feed or follow the cascade, but they do not replace the five integrated choices."
   analogy: "A strategy cascade is like designing a bridge from both banks at once: the aspiration and market choice define one side, the advantage and capability system define the other, and the bridge fails if the pieces do not meet in the middle."
   misconception: "The common mistake is filling the five boxes independently. The cascade is not a worksheet; changing one answer should force a re-check of the others, because an aspiration with no winnable arena is hope and a how-to-win with no supporting capabilities is fantasy."
-  structural_verdict: PASS
-  truth_verdict: UNVERIFIED
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  public: "true"
-  concept_boundary: "Playing to Win is for strategy formulation and choice integration. It is not Porter's Five Forces industry-structure diagnosis, Seven Powers moat taxonomy, OKR execution tracking, generic prioritization, scenario planning, or full financial valuation. Those tools may feed or follow the cascade, but they do not replace the five integrated choices."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/playing-to-win/SKILL.md
@@ -43,6 +27,10 @@ metadata:
 ---
 
 # Playing to Win
+
+## Concept of the skill
+
+Playing to Win treats strategy as five mutually reinforcing choices, not as a plan, goal list, or analysis deck.
 
 ## Concept Card
 
@@ -73,8 +61,7 @@ This skill teaches agents to:
 7. Pressure-test fit across all five choices.
 8. Surface trade-offs, no-go choices, and assumptions that must be true.
 
-## Philosophy
-
+## Philosophy of the skill
 Playing to Win is useful because it makes strategy expensive in the right place: choice. A vague strategy feels easy because it refuses trade-offs. A real strategy creates tension. It chooses one arena over another, one advantage logic over another, one capability system over another, and one management rhythm over another.
 
 The cascade is not a guarantee that the strategy is correct. It is a forcing function that makes the strategy inspectable. Once the choices are explicit, an agent can ask whether they fit, whether they are feasible, whether competitors can copy them, and what evidence would change the decision.
@@ -256,13 +243,19 @@ Before finishing, verify:
 - `references/playing-to-win-sources.md`
 - `references/upstream-displacement-2026-05-26.md`
 
+## Do NOT Use When
+
+Use another skill when the task falls outside the declared `scope`, matches an `anti_examples` prompt, or is owned by a more specific related skill.
+
 ## Skill Graph context
 
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
 - Subject: `reasoning-strategy`
+- Public: `true`
 - Domain: `foundations/strategy`
+- Scope: Use when turning a vague business strategy, product strategy, market-entry decision, or initiative plan into an integrated Playing to Win strategy cascade: winning aspiration, where to play, how to win, must-have capabilities, and management systems. Covers Lafley/Martin choice-making, fit across the five choices, trade-off pressure, reverse tests, capability-system alignment, and the difference between strategy and planning. Do NOT use for competitive-industry structure analysis (use a five-forces skill when available), generic backlog scoring (use prioritization), or broad process-gate design (use methodology).
 
 **When to use**
 - turn this vague growth plan into a Playing to Win cascade
@@ -278,8 +271,8 @@ Before finishing, verify:
 - write OKRs for this strategy after it has already been chosen
 
 **Related skills**
-- Verify with: `methodology`, `epistemic-grounding`
-- Related: `constraint-awareness`, `methodology`, `framework-fit-analysis`, `prioritization`
+- Verify with: `methodology`, `epistemic-grounding`, `seven-powers`
+- Related: `prioritization`, `constraint-awareness`, `framework-fit-analysis`, `methodology`, `bcg-matrix`
 
 **Concept**
 - Mental model: Playing to Win treats strategy as five mutually reinforcing choices, not as a plan, goal list, or analysis deck. The primitives are a winning aspiration, a chosen playing field, a differentiated way to win there, the capabilities required to deliver that advantage, and the management systems that build and sustain those capabilities. The cascade works only when the answers fit together and force trade-offs.

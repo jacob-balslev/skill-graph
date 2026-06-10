@@ -5,32 +5,16 @@ license: MIT
 compatibility: "Portable observability modeling discipline for applications, integrations, jobs, queues, APIs, and agent workflows."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"system-interface-contracts\",\"testing-strategy\",\"error-tracking\",\"performance-engineering\",\"event-contract-design\",\"debugging\",\"semantics\"],\"verify_with\":[\"error-tracking\",\"debugging\",\"performance-budgets\"]}"
   subject: data-engineering
   subjects: "[\"data-engineering\",\"quality-assurance\"]"
   scope: "Designing telemetry semantics before or during implementation — logs, metrics, traces, events, spans, attributes, correlation IDs, SLOs, alert signals, and the diagnostic questions telemetry must answer. Portable across any instrumented system; principle-grounded, not repo-bound. Excludes domain/business event contracts (event-contract-design), configuring an error tracker alone (error-tracking), performance optimization (performance-engineering), and debugging a current incident (debugging)."
+  public: "true"
   taxonomy_domain: engineering/observability
-  owner: skill-graph-maintainer
-  freshness: "2026-05-11"
-  drift_check: "{\"last_verified\":\"2026-05-11\"}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"observability modeling\",\"telemetry design\",\"logs metrics traces\",\"SLO\",\"spans\",\"correlation id\",\"diagnostic events\",\"alert design\",\"instrumentation model\"]"
   examples: "[\"design telemetry for this ingestion pipeline so failures can be diagnosed later\",\"which logs, metrics, spans, and correlation IDs should this interface contract require?\",\"model observability for a background job before adding alerts\",\"turn these diagnostic questions into events and metrics\"]"
   anti_examples: "[\"set up Sentry error tracking for this app\",\"profile and optimize a slow endpoint\",\"debug the current production incident\",\"write application tests for this feature\"]"
-  relations: "{\"related\":[\"error-tracking\",\"performance-engineering\",\"system-interface-contracts\",\"event-contract-design\",\"debugging\",\"testing-strategy\"],\"verify_with\":[\"error-tracking\",\"debugging\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/data-engineering/observability-modeling/SKILL.md
@@ -39,12 +23,15 @@ metadata:
 
 # Observability Modeling
 
+## Concept of the skill
+
+Designing telemetry semantics before or during implementation — logs, metrics, traces, events, spans, attributes, correlation IDs, SLOs, alert signals, and the diagnostic questions telemetry must answer.
+
 ## Coverage
 
 Design telemetry semantics that make systems diagnosable. Covers diagnostic questions, logs, metrics, traces, spans, events, attributes, correlation IDs, SLOs, alert signals, cardinality, privacy, sampling, and contract-level observability requirements.
 
-## Philosophy
-
+## Philosophy of the skill
 Observability starts with questions, not tools. "Can we answer why this order failed to sync?" is a better design input than "add logs." Tool setup without a telemetry model produces noisy data and weak diagnosis.
 
 Instrument boundaries, state changes, and decisions. Avoid high-cardinality or sensitive fields unless the operational value justifies the risk.
@@ -89,6 +76,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/observability
 
 **Classification**
 - Subject: `data-engineering` (also: `quality-assurance`)
+- Public: `true`
 - Domain: `engineering/observability`
 - Scope: Designing telemetry semantics before or during implementation — logs, metrics, traces, events, spans, attributes, correlation IDs, SLOs, alert signals, and the diagnostic questions telemetry must answer. Portable across any instrumented system; principle-grounded, not repo-bound. Excludes domain/business event contracts (event-contract-design), configuring an error tracker alone (error-tracking), performance optimization (performance-engineering), and debugging a current incident (debugging).
 
@@ -105,8 +93,8 @@ This skill ships a comprehension-eval artifact at [`examples/evals/observability
 - write application tests for this feature
 
 **Related skills**
-- Verify with: `error-tracking`, `debugging`
-- Related: `error-tracking`, `performance-engineering`, `system-interface-contracts`, `event-contract-design`, `debugging`, `testing-strategy`
+- Verify with: `error-tracking`, `debugging`, `performance-budgets`
+- Related: `system-interface-contracts`, `testing-strategy`, `error-tracking`, `performance-engineering`, `event-contract-design`, `debugging`, `semantics`
 
 **Keywords**
 - `observability modeling`, `telemetry design`, `logs metrics traces`, `SLO`, `spans`, `correlation id`, `diagnostic events`, `alert design`, `instrumentation model`

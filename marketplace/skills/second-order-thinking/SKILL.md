@@ -4,37 +4,21 @@ description: "Use when a decision, intervention, policy, product change, metric 
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
-  version: "1.0.0"
+  relations: "{\"related\":[\"first-principles-thinking\",\"pattern-recognition\",\"constraint-awareness\",\"inversion\",\"mental-models\"],\"suppresses\":[\"inversion\"],\"verify_with\":[\"mental-models\",\"epistemic-grounding\"]}"
   subject: reasoning-strategy
+  public: "true"
+  scope: "Use when a decision, intervention, policy, product change, metric target, or system fix needs analysis beyond the immediate effect: ask what happens next, how actors respond, what incentives change, and what delayed or compounding consequences follow. Covers consequence chains, time horizons, stakeholder reactions, feedback loops, second- and third-order effects, and guardrail design. Do NOT use for reversing a goal to find failure paths (use inversion), decomposing assumptions to primitives (use first-principles-thinking), recurring issue clustering (use pattern-recognition), or system leverage-level diagnosis (use meadows-leverage-points when available)."
   taxonomy_domain: foundations/reasoning
-  owner: skill-graph-maintainer
-  freshness: "2026-05-21"
-  drift_check: "{\"last_verified\":\"2026-05-21\"}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"second-order thinking\",\"second order effects\",\"downstream consequences\",\"and then what\",\"unintended consequences\",\"delayed effects\",\"feedback loops\",\"incentive response\",\"compounding effects\",\"time horizon analysis\"]"
   triggers: "[\"and then what\",\"what are the second-order effects\",\"what happens next\",\"think through downstream consequences\",\"what incentives does this change\"]"
   examples: "[\"If we add a usage cap, what happens next for users, support, and revenue?\",\"This metric target looks good immediately. What second-order effects could make it harmful?\",\"Before changing the review process, think through how agents and reviewers will respond.\",\"What delayed effects will this cost-cutting decision create?\"]"
   anti_examples: "[\"Invert this plan and list how to make it fail.\",\"Break this strategy into irreducible premises.\",\"The same issue appears in many files; cluster the pattern.\",\"Find the highest leverage point in this system.\"]"
-  relations: "{\"related\":[\"inversion\",\"first-principles-thinking\",\"mental-models\",\"constraint-awareness\",\"pattern-recognition\"],\"verify_with\":[\"epistemic-grounding\",\"mental-models\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "Second-order thinking is like playing chess beyond the current move: the obvious move matters less than the position it creates after everyone else responds."
   misconception: "|"
-  portability: "{\"readiness\":\"declared\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/second-order-thinking/SKILL.md
@@ -59,6 +43,14 @@ metadata:
 
 # Second-Order Thinking
 
+## Concept of the skill
+
+Second-order thinking has four primitives: intervention, immediate effect, response, and later effect. The intervention changes some local condition. The immediate effect is the visible first result. Responses are how people, systems, incentives, competitors, users, or feedback loops react to that result. Later effects are the delayed, compounded, displaced, or equilibrium-shifting consequences that follow. The core question is always "and then what?" repeated across time horizons and affected actors.
+
+Replaces first-effect satisfaction with consequence-chain reasoning. Many decisions look correct at the first order: a metric rises, a cost falls, a queue shrinks, a process speeds up. The trouble appears later when incentives adapt, hidden work moves elsewhere, users change behavior, quality decays, or a feedback loop amplifies the side effect. Second-order thinking forces the later effects into the decision before the first-order win is accepted.
+
+Distinct from inversion, which reverses the goal or claim to find failure paths; second-order thinking follows a proposed action forward through time and response. Distinct from first-principles thinking, which strips inherited assumptions to primitives; second-order thinking assumes an intervention exists and asks what it causes next. Distinct from pattern-recognition, which clusters repeated observed issues; second-order thinking anticipates new downstream effects before recurrence is visible. Distinct from leverage-point analysis, which diagnoses the level of system intervention; second-order thinking traces consequence chains regardless of leverage level. Second-order thinking is like playing chess beyond the current move: the obvious move matters less than the position it creates after everyone else responds. The common misconception is that second-order thinking means listing every imaginable consequence. It does not. The discipline is selective: trace plausible, material, causally connected effects across actors and time. A giant list of remote hypotheticals is not better thinking; it is noise unless each effect follows from a named mechanism.
+
 ## Coverage
 
 Second-order thinking covers downstream consequence analysis for decisions, interventions, product changes, policies, processes, metrics, and system fixes. It includes first-, second-, and third-order effect mapping; time horizon checks; actor response modeling; incentive analysis; feedback-loop detection; displacement of costs or risks; and guardrail design for delayed effects.
@@ -71,8 +63,7 @@ Use this skill when the question sounds like:
 - "Could this first-order improvement create a second-order problem?"
 - "What does this look like in ten days, ten months, or after repeated use?"
 
-## Philosophy
-
+## Philosophy of the skill
 The first effect is usually the easiest to see and the easiest to reward. A rule reduces one metric, a feature increases one conversion, a shortcut saves one hour, a price change increases one month's revenue. If the decision stops there, the system gets to respond unseen.
 
 Second-order thinking treats the visible first result as only the first move. Users adapt. Teams route around rules. Costs move to another queue. Quality decays after the shortcut compounds. A metric becomes a target and stops representing the value it was chosen to proxy.
@@ -245,7 +236,9 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `reasoning-strategy`
+- Public: `true`
 - Domain: `foundations/reasoning`
+- Scope: Use when a decision, intervention, policy, product change, metric target, or system fix needs analysis beyond the immediate effect: ask what happens next, how actors respond, what incentives change, and what delayed or compounding consequences follow. Covers consequence chains, time horizons, stakeholder reactions, feedback loops, second- and third-order effects, and guardrail design. Do NOT use for reversing a goal to find failure paths (use inversion), decomposing assumptions to primitives (use first-principles-thinking), recurring issue clustering (use pattern-recognition), or system leverage-level diagnosis (use meadows-leverage-points when available).
 
 **When to use**
 - If we add a usage cap, what happens next for users, support, and revenue?
@@ -261,8 +254,8 @@ After applying this skill, verify:
 - Find the highest leverage point in this system.
 
 **Related skills**
-- Verify with: `epistemic-grounding`, `mental-models`
-- Related: `inversion`, `first-principles-thinking`, `mental-models`, `constraint-awareness`, `pattern-recognition`
+- Verify with: `mental-models`, `epistemic-grounding`
+- Related: `first-principles-thinking`, `pattern-recognition`, `constraint-awareness`, `inversion`, `mental-models`
 
 **Concept**
 - Mental model: |

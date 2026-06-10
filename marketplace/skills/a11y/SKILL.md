@@ -1,6 +1,6 @@
 ---
 name: a11y
-description: "Use when building or reviewing interactive UI, forms, navigation, or dynamic content. Covers semantic HTML, keyboard access, focus management, labeling, state-change announcement, and reduced-motion / high-contrast preferences. Do NOT use for color-palette creation, visual branding, feedback-state staging, or prose reading-level accessibility - those belong to `visual-design-foundations`, `interaction-feedback`, and documentation respectively. Do NOT use for rewrite this error message at a 6th-grade reading level. Do NOT use for clean up this accessibility code without changing how it behaves. Do NOT use for generic code-quality cleanup and language/idiom hygiene (use best-practice)."
+description: "Use when building or reviewing interactive UI, forms, navigation, or dynamic content. Covers semantic HTML, keyboard access, focus management, labeling, state-change announcement, and reduced-motion / high-contrast preferences. Do NOT use for color-palette creation, visual branding, feedback-state staging, or prose reading-level accessibility - those belong to `visual-design-foundations`, `interaction-feedback`, and documentation respectively. Do NOT use for rewrite this error message at a 6th-grade reading level. Do NOT use for clean up this accessibility code without changing how it behaves."
 license: MIT
 compatibility: "Markdown, Git, any web stack"
 allowed-tools: Read Grep
@@ -11,37 +11,32 @@ paths:
   - "!**/dist/**"
   - "!**/node_modules/**"
 metadata:
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"interaction-patterns\",\"form-ux-architecture\",\"interaction-feedback\",\"design-system-architecture\",\"refactor\",\"diagnosis\",\"linguistics\",\"visual-design-foundations\"],\"suppresses\":[\"best-practice\"],\"verify_with\":[\"testing-strategy\",\"interaction-feedback\",\"visual-design-foundations\"]}"
   subject: quality-assurance
+  public: "true"
+  scope: "Teaches implementation-level accessibility checks for interactive web UI: semantic HTML, keyboard operation, focus management, programmatic names, state-change announcements, and reduced-motion / high-contrast preferences. Excludes visual branding, color-palette creation, prose reading-level edits, and behavior-preserving cleanup that does not change assistive-technology behavior."
   taxonomy_domain: quality/accessibility
-  owner: skill-graph-maintainer
-  freshness: "2026-04-18"
-  drift_check: "{\"last_verified\":\"2026-04-18\"}"
-  eval_artifacts: present
-  eval_state: passing
-  routing_eval: present
   stability: experimental
   keywords: "[\"screen reader\",\"announce\",\"validation state\",\"form labels\",\"assistive tech\",\"ARIA roles\",\"keyboard support\",\"arrow key\",\"navigation\",\"focus return\"]"
   triggers: "[\"a11y-skill\"]"
   examples: "[\"this modal is keyboard-trapped — users can't Escape to close it\",\"screen reader doesn't announce when the form validation state changes\",\"add proper labels to these form fields so assistive tech can read them\",\"review this dropdown menu for arrow-key navigation and focus return\"]"
   anti_examples: "[\"rewrite this error message at a 6th-grade reading level\",\"clean up this accessibility code without changing how it behaves\"]"
-  relations: "{\"boundary\":[{\"skill\":\"best-practice\",\"reason\":\"best-practice owns generic code-quality cleanup and language/idiom hygiene; a11y owns assistive-tech behavior. Phrases like 'clean up this accessibility code without changing behavior' are best-practice refactor activities, not a11y semantic work — best-practice is named here so the router excludes it from a11y's positive scope.\"}],\"related\":[\"interaction-patterns\",\"form-ux-architecture\",\"interaction-feedback\",\"design-system-architecture\",\"refactor\",\"diagnosis\",\"linguistics\",\"visual-design-foundations\"],\"verify_with\":[\"testing-strategy\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  public: "true"
+  mental_model: "Accessible interaction is the relationship between semantic primitives, keyboard behavior, focus movement, programmatic names, state announcement, and user preferences. Native elements carry much of that relationship by default; custom widgets must explicitly recreate the expected role, name, state, focus, and keyboard contract. Visual appearance is only one output of the component, while assistive technology reads the semantic and state model that the markup and ARIA expose."
+  purpose: "Prevents interactive UI from shipping as visually usable but unavailable to keyboard and assistive-technology users. The skill moves accessibility decisions into implementation review: choose the right primitive first, preserve keyboard operation, make focus predictable, expose labels and state changes programmatically, and verify user-preference handling before the component is considered done."
+  concept_boundary: "Not visual-design-foundations: color and visual hierarchy only enter this skill when contrast or user preferences affect perceivability. Not interaction-feedback: feedback timing and emotional tone are adjacent, but this skill owns whether dynamic state is programmatically announced. Not microcopy or linguistics: reading level and wording quality are separate unless the text is part of an accessible name, description, or error relationship. Not refactor: behavior-preserving cleanup is outside scope unless it changes semantic, focus, keyboard, or announcement behavior."
+  analogy: "Accessible UI is like a building with visible signs and usable ramps: the path has to work through the structure, not just look finished from the street."
+  misconception: "The common mistake is treating accessibility as ARIA tags or a post-build audit. ARIA can help only when it matches real keyboard and state behavior, and an audit cannot recover the lost leverage of choosing the correct native primitive and focus model early."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/a11y/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Accessibility
+
+## Concept of the skill
+
+Accessibility for interactive UI means the component exposes the same operable structure to keyboard users and assistive technology that sighted pointer users see visually. The skill checks whether the implementation chose semantic primitives, preserved keyboard operation, controlled focus, provided programmatic names and descriptions, announced dynamic state, and respected user preferences.
 
 ## Coverage
 
@@ -52,7 +47,7 @@ metadata:
 - State and change announcement: communicating dynamic updates (loading, errors, success) to assistive technology
 - Reduced-motion and high-contrast preferences: respecting user settings that affect interaction perception
 
-## Philosophy
+## Philosophy of the skill
 
 Accessible interaction is structural, not cosmetic. It is decided by the primitive you picked, the focus order you wrote, and the label that ships or doesn't — not by the audit that runs after. Teams that treat accessibility as a finishing pass pay for it twice: once in remediation work that was cheaper to avoid, and again when assistive-technology users hit the failure and bounce. The correct default is to build with those users in scope from the first commit, not after the first lawsuit.
 
@@ -100,7 +95,9 @@ This skill ships a comprehension-eval artifact at [`examples/evals/a11y.json`](h
 
 **Classification**
 - Subject: `quality-assurance`
+- Public: `true`
 - Domain: `quality/accessibility`
+- Scope: Teaches implementation-level accessibility checks for interactive web UI: semantic HTML, keyboard operation, focus management, programmatic names, state-change announcements, and reduced-motion / high-contrast preferences. Excludes visual branding, color-palette creation, prose reading-level edits, and behavior-preserving cleanup that does not change assistive-technology behavior.
 
 **When to use**
 - this modal is keyboard-trapped — users can't Escape to close it
@@ -112,11 +109,16 @@ This skill ships a comprehension-eval artifact at [`examples/evals/a11y.json`](h
 **Not for**
 - rewrite this error message at a 6th-grade reading level
 - clean up this accessibility code without changing how it behaves
-- Owned by `best-practice`: generic code-quality cleanup and language/idiom hygiene
 
 **Related skills**
-- Verify with: `testing-strategy`
+- Verify with: `testing-strategy`, `interaction-feedback`, `visual-design-foundations`
 - Related: `interaction-patterns`, `form-ux-architecture`, `interaction-feedback`, `design-system-architecture`, `refactor`, `diagnosis`, `linguistics`, `visual-design-foundations`
+
+**Concept**
+- Mental model: Accessible interaction is the relationship between semantic primitives, keyboard behavior, focus movement, programmatic names, state announcement, and user preferences. Native elements carry much of that relationship by default; custom widgets must explicitly recreate the expected role, name, state, focus, and keyboard contract. Visual appearance is only one output of the component, while assistive technology reads the semantic and state model that the markup and ARIA expose.
+- Purpose: Prevents interactive UI from shipping as visually usable but unavailable to keyboard and assistive-technology users. The skill moves accessibility decisions into implementation review: choose the right primitive first, preserve keyboard operation, make focus predictable, expose labels and state changes programmatically, and verify user-preference handling before the component is considered done.
+- Analogy: Accessible UI is like a building with visible signs and usable ramps: the path has to work through the structure, not just look finished from the street.
+- Common misconception: The common mistake is treating accessibility as ARIA tags or a post-build audit. ARIA can help only when it matches real keyboard and state behavior, and an audit cannot recover the lost leverage of choosing the correct native primitive and focus model early.
 
 **Keywords**
 - `screen reader`, `announce`, `validation state`, `form labels`, `assistive tech`, `ARIA roles`, `keyboard support`, `arrow key`, `navigation`, `focus return`

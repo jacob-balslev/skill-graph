@@ -1,53 +1,44 @@
 ---
 name: indexing-strategy
-description: "Use when designing indexes for a relational or NoSQL database: the index-as-precomputed-search-structure mental model, the catalog of structures (B-tree, hash, bitmap, GIN/GiST, BRIN, LSM-tree), the matching of structures to access patterns (equality, range, prefix, contains, geospatial), composite indexes and column order, covering indexes, partial / filtered indexes, the maintenance cost of every index (write amplification, storage, lock impact), and the rules for when to add an index, when not to, and when to drop one. Do NOT use for tuning a slow query (use query-optimization), choosing isolation levels (use transaction-isolation), schema design (use data-modeling), or distributed-data partitioning (use sharding-strategy). Do NOT use for how the database changes shape over time (use schema-evolution)."
+description: "Use when designing indexes for a relational or NoSQL database: the index-as-precomputed-search-structure mental model, the catalog of structures (B-tree, hash, bitmap, GIN/GiST, BRIN, LSM-tree), the matching of structures to access patterns (equality, range, prefix, contains, geospatial), composite indexes and column order, covering indexes, partial / filtered indexes, the maintenance cost of every index (write amplification, storage, lock impact), and the rules for when to add an index, when not to, and when to drop one. Do NOT use for tuning a slow query (use query-optimization), choosing isolation levels (use transaction-isolation), schema design (use data-modeling), or distributed-data partitioning (use sharding-strategy)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"transaction-isolation\",\"query-optimization\",\"data-modeling\",\"schema-evolution\",\"connection-pooling\"],\"suppresses\":[\"query-optimization\",\"schema-evolution\",\"sharding-strategy\"],\"verify_with\":[\"data-modeling\",\"query-optimization\",\"database-migration\"]}"
   subject: data-engineering
+  public: "true"
+  scope: "Use when designing indexes for a relational or NoSQL database: the index-as-precomputed-search-structure mental model, the catalog of structures (B-tree, hash, bitmap, GIN/GiST, BRIN, LSM-tree), the matching of structures to access patterns (equality, range, prefix, contains, geospatial), composite indexes and column order, covering indexes, partial / filtered indexes, the maintenance cost of every index (write amplification, storage, lock impact), and the rules for when to add an index, when not to, and when to drop one. Do NOT use for tuning a slow query (use query-optimization), choosing isolation levels (use transaction-isolation), schema design (use data-modeling), or distributed-data partitioning (use sharding-strategy)."
   taxonomy_domain: engineering/data
-  owner: skill-graph-maintainer
-  freshness: "2026-05-16"
-  drift_check: "{\"last_verified\":\"2026-05-16\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"indexing\",\"index\",\"B-tree\",\"hash index\",\"bitmap index\",\"GIN\",\"GiST\",\"BRIN\",\"LSM\",\"composite index\"]"
   triggers: "[\"should I add an index\",\"which columns to index\",\"B-tree vs hash\",\"is this index being used\",\"composite index column order\"]"
   examples: "[\"design indexes for a table with high-volume reads on user_id and date-range queries\",\"decide between a B-tree index and a partial index for a small subset of rows\",\"diagnose a query that ignores an existing index — likely a selectivity or type-coercion issue\",\"explain why adding a sixth index to a write-heavy table is usually wrong\"]"
   anti_examples: "[\"diagnose why this specific query is slow (use query-optimization)\",\"choose a database schema (use data-modeling)\",\"decide how to partition data across nodes (use sharding-strategy)\"]"
-  relations: "{\"related\":[\"query-optimization\",\"data-modeling\",\"schema-evolution\",\"transaction-isolation\"],\"boundary\":[{\"skill\":\"query-optimization\",\"reason\":\"query-optimization owns the diagnosis and tuning of specific slow queries; this skill owns the *design* of which indexes the database has. The two compose: query-optimization diagnoses; this skill is one of the responses.\"},{\"skill\":\"schema-evolution\",\"reason\":\"schema-evolution owns how the database changes shape over time; this skill owns the indexes that must change with it. Adding or removing an index is itself a schema change.\"}],\"verify_with\":[\"query-optimization\",\"data-modeling\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "An index is to a database what the back-of-the-book index is to a reference manual — you do not flip through every page to find every mention of 'Postgres'; you go to the I section, find the page numbers, and jump. Adding an index for every word in the book is technically possible and obviously wrong; the printer would still have to update every index every time the text changed, and the book would now spend most of its pages on indexes rather than content."
   misconception: "|"
-  concept: "{\"definition\":\"Indexing strategy is the discipline of designing auxiliary data structures that let the database find rows quickly without scanning every row. An index is a precomputed lookup structure (B-tree, hash, bitmap, inverted index, LSM-tree, BRIN, GiST, GIN) that maps one or more column values to the rows containing those values. Every index speeds up some queries (those whose WHERE / JOIN / ORDER BY clauses match the index's structure) and slows down every write (the index must be updated on every INSERT, UPDATE that touches indexed columns, and DELETE). The strategic question is not 'which columns deserve an index' considered in isolation; it is the *whole-database* trade-off between read speed and write cost, given the actual access patterns the workload produces.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/data-engineering/indexing-strategy/SKILL.md
-  skill_graph_export_description_projection: boundary
 ---
 
 # Indexing Strategy
+
+## Concept of the skill
+
+Indexing is the design of auxiliary search structures (precomputed lookups) that let the database find rows without scanning every row. Every index maps column values to row locations through a chosen structure: *B-tree* (the right default; serves equality, range, prefix-match, and ORDER BY; flexible across most patterns), *hash* (equality only; no range), *bitmap* (low-cardinality columns in data warehouses; AND-combinations efficient), *GIN* (inverted index for arrays/JSON/full-text — many keys per row), *GiST / R-tree* (geospatial, range overlaps), *BRIN* (small summary indexes for naturally-ordered append-only data — timestamps), *LSM-tree* (write-optimized point-write workloads — Cassandra, RocksDB). Composite indexes on `(A, B, C)` serve queries with leading-column prefixes: `WHERE A`, `WHERE A AND B`, `WHERE A AND C` (uses A prefix, skips B in scan), `ORDER BY A, B, C`; but not `WHERE B` or `WHERE C` alone. Column-order rule: most-selective and most-filtered first. Covering indexes (INCLUDE clause) avoid the row-fetch step. Partial / filtered indexes target a small subset (e.g., `WHERE status = 'pending'`); expression indexes index `f(col)`.
+
+Replaces full-table scans with structure-aware lookups. Solves the problem that without indexes, finding a few rows in millions requires reading every row. But every index speeds up *some* queries (those whose WHERE / JOIN / ORDER BY clauses match the index's structure) and slows down *every* write (the index must be updated on every INSERT, on every UPDATE touching indexed columns, and on every DELETE). The strategic question is not "which columns deserve an index" considered in isolation; it is the whole-database trade-off between read speed and write cost given the workload's actual access patterns. Sub-purposes: structure-pattern matching (B-tree for ordered, GIN for contains, BRIN for naturally-ordered, LSM for write-heavy), partial indexes for selective subsets, covering indexes for read-hot queries where row fetch is the bottleneck, expression indexes for computed access patterns.
+
+Distinct from query-optimization, which owns the diagnosis and tuning of specific slow queries — query-optimization diagnoses; this skill is one of the responses (others: rewrite, ANALYZE, schema change, materialized view, accept cost). A team that adds an index before reading EXPLAIN ANALYZE is guessing. Distinct from data-modeling, which owns the schema and access patterns — the schema determines what indexes *can* exist; the access patterns determine which *should*. Distinct from schema-evolution, which owns how the schema changes over time — adding or dropping an index is itself a schema change, but the discipline of *which* indexes to have is in this skill. Distinct from transaction-isolation (concurrency correctness) and from sharding-strategy (cross-node partitioning); both can interact with indexing — cross-shard secondary indexes are a separate, harder problem — but they answer different questions. Distinct from storage / OS-level I/O tuning, which is a layer below indexing. An index is to a database what the back-of-the-book index is to a reference manual — you do not flip through every page to find every mention of 'Postgres'; you go to the I section, find the page numbers, and jump. Adding an index for every word in the book is technically possible and obviously wrong; the printer would still have to update every index every time the text changed, and the book would now spend most of its pages on indexes rather than content. The wrong mental model is that the answer to a slow query is always "add an index," and that the answer to a high-write-load table is to have all the read-relevant indexes anyway because reads matter more. Neither is correct. Adding an index without reading EXPLAIN ANALYZE is guessing — sometimes the existing index isn't being used because of a type coercion, a function on the column, a poor cardinality estimate, or low selectivity; the right response is *not* a new index but the underlying diagnosis. And every index has a per-write cost; write-heavy tables (audit logs, event streams, append-only tables) should have minimal indexes — primary key only, occasionally one more. A third misconception: that B-tree is always the right structure. It is the default and serves most patterns, but GIN, GiST, BRIN, and LSM serve specific patterns far better; defaulting to B-tree on geospatial, full-text, JSON-contains, or naturally-ordered timestamp data is leaving structural fit on the floor. A fourth: that an index that "exists" is being used — EXPLAIN ANALYZE is required to confirm; the planner may ignore an index for many reasons, and an unused index is pure cost (storage, write amplification, planner overhead) with no benefit.
 
 ## Coverage
 
 The discipline of designing auxiliary data structures that let the database find rows quickly without scanning every row. Covers the structure catalog (B-tree, hash, bitmap, GIN, GiST, BRIN, LSM-tree) and the access patterns each matches, composite indexes and column-order rules, covering indexes and INCLUDE clauses, partial / filtered indexes, expression indexes, the maintenance cost of every index (storage, write amplification, lock impact, planner overhead), and the strategic question of treating the index set as an optimized portfolio rather than a per-column checklist.
 
-## Philosophy
-
+## Philosophy of the skill
 Indexes are a write/read trade. Every index speeds up some queries and slows down every write. The strategic discipline is not "which columns deserve an index" considered in isolation; it is the whole-database trade-off between read speed and write cost, given the workload's actual access patterns.
 
 The wrong default is "add an index for every column ever filtered on." The wrong response to a slow query is always "add an index." The right discipline is to count the queries that would benefit, count the writes that would pay the cost, and check whether the index is actually used by the planner before keeping it.
@@ -142,7 +133,9 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `data-engineering`
+- Public: `true`
 - Domain: `engineering/data`
+- Scope: Use when designing indexes for a relational or NoSQL database: the index-as-precomputed-search-structure mental model, the catalog of structures (B-tree, hash, bitmap, GIN/GiST, BRIN, LSM-tree), the matching of structures to access patterns (equality, range, prefix, contains, geospatial), composite indexes and column order, covering indexes, partial / filtered indexes, the maintenance cost of every index (write amplification, storage, lock impact), and the rules for when to add an index, when not to, and when to drop one. Do NOT use for tuning a slow query (use query-optimization), choosing isolation levels (use transaction-isolation), schema design (use data-modeling), or distributed-data partitioning (use sharding-strategy).
 
 **When to use**
 - design indexes for a table with high-volume reads on user_id and date-range queries
@@ -155,12 +148,10 @@ After applying this skill, verify:
 - diagnose why this specific query is slow (use query-optimization)
 - choose a database schema (use data-modeling)
 - decide how to partition data across nodes (use sharding-strategy)
-- Owned by `query-optimization`: the diagnosis and tuning of specific slow queries
-- Owned by `schema-evolution`: how the database changes shape over time
 
 **Related skills**
-- Verify with: `query-optimization`, `data-modeling`
-- Related: `query-optimization`, `data-modeling`, `schema-evolution`, `transaction-isolation`
+- Verify with: `data-modeling`, `query-optimization`, `database-migration`
+- Related: `transaction-isolation`, `query-optimization`, `data-modeling`, `schema-evolution`, `connection-pooling`
 
 **Concept**
 - Mental model: |

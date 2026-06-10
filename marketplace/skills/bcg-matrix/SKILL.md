@@ -5,9 +5,10 @@ license: MIT
 compatibility: "Markdown, portfolio reviews, business-unit strategy, product portfolio analysis, resource allocation memos, investment prioritization"
 allowed-tools: Read Grep WebSearch WebFetch
 metadata:
-  relations: "{\"boundary\":[\"ansoff-matrix\",\"swot-tows\",\"pestel\",\"porters-five-forces\",\"seven-powers\",\"expected-value\"]}"
+  relations: "{\"related\":[\"playing-to-win\",\"prioritization\",\"ansoff-matrix\",\"swot-tows\",\"pestel\",\"porters-five-forces\",\"seven-powers\",\"expected-value\",\"epistemic-grounding\",\"methodology\"],\"suppresses\":[\"ansoff-matrix\",\"expected-value\",\"swot-tows\",\"pestel\",\"porters-five-forces\",\"seven-powers\"],\"verify_with\":[\"epistemic-grounding\",\"methodology\",\"expected-value\"]}"
   subject: reasoning-strategy
   scope: "BCG Growth-Share Matrix portfolio analysis for products, brands, business units, programs, and investment candidates: define comparable portfolio units and market boundaries, choose market-growth and relative-market-share measures, classify units as stars, cash cows, question marks, or dogs/pets, interpret cash generation and investment implications, challenge the assumptions behind share and growth, and route to valuation, competitive analysis, or integrated strategy when a quadrant label is not enough. Excludes Ansoff product-market growth-path framing, PESTEL macro-environment scanning, Porter's Five Forces industry profit-pressure diagnosis, SWOT/TOWS situational option generation, Seven Powers moat-source classification, OKR execution tracking, and standalone financial valuation."
+  public: "true"
   taxonomy_domain: foundations/strategy
   stability: stable
   keywords: "[\"BCG Matrix\",\"growth-share matrix\",\"Boston Matrix\",\"product portfolio matrix\",\"stars cash cows\",\"question marks dogs\",\"relative market share\",\"market growth\",\"portfolio allocation\",\"business unit portfolio\"]"
@@ -17,10 +18,9 @@ metadata:
   grounding: "{\"subject_matter\":\"BCG Growth-Share Matrix as a portable portfolio analysis and resource-allocation framework\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://www.bcg.com/about/overview/our-history/growth-share-matrix\",\"https://www.bcg.com/publications/1970/strategy-the-product-portfolio\",\"https://www.bcg.com/ja-jp/publications/2014/growth-share-matrix-bcg-classics-revisited\",\"skills/skills/reasoning-strategy/bcg-matrix/references/bcg-matrix-sources.md\",\"skills/skills/reasoning-strategy/bcg-matrix/references/upstream-displacement-2026-06-05.md\"],\"failure_modes\":[\"portfolio_unit_left_undefined\",\"market_boundary_or_growth_metric_left_implicit\",\"absolute_market_share_confused_with_relative_market_share\",\"quadrant_label_treated_as_final_recommendation\",\"cash_flow_logic_ignored\",\"modern_market_share_assumption_not_challenged\",\"product_market_growth_confused_with_portfolio_allocation\",\"financial_value_claim_made_without_valuation_method\"],\"evidence_priority\":\"general_knowledge_first\"}"
   mental_model: "The BCG Growth-Share Matrix is a two-axis portfolio map. The primitives are a portfolio owner, comparable portfolio units, a defined market boundary, a market-growth measure, a relative-market-share measure, four quadrants, cash generation, cash needs, investment posture, timing, and strategic assumptions. High growth indicates markets where leadership may need funding or experimentation; high relative share indicates stronger competitive position and potential cash generation. Stars are high growth and high share, cash cows are low growth and high share, question marks are high growth and low share, and dogs or pets are low growth and low share. The matrix frames allocation tradeoffs, but it does not prove attractiveness, valuation, or strategic fit by itself."
   purpose: "This skill prevents agents from talking about portfolios as undifferentiated lists of products or business units. It forces each unit to declare the market it is measured against, the growth and relative-share evidence, the cash-flow implication, the investment or harvest question, and the downstream analysis needed before a real allocation decision."
+  concept_boundary: "The BCG Growth-Share Matrix is for portfolio allocation by market growth and relative market share. It is not Ansoff product-market growth direction, SWOT/TOWS factor crossing, PESTEL macro scanning, Five Forces industry-structure diagnosis, Seven Powers moat taxonomy, OKR execution management, or financial valuation. Those methods may feed or follow a BCG Matrix, but they do not replace its portfolio cash-flow logic."
   analogy: "The BCG Matrix is like a funding map for a garden: some plots are mature and throw off seeds, some are promising and need water, some are experiments, and some may not justify more space."
   misconception: "The common mistake is treating quadrant labels as automatic commands: invest in every star, milk every cash cow, fund every question mark, and divest every dog. The labels are hypotheses about cash needs and strategic posture. The agent still has to verify market definition, share measurement, growth durability, profitability, capability fit, and whether valuation or competitive analysis changes the decision."
-  public: "true"
-  concept_boundary: "The BCG Growth-Share Matrix is for portfolio allocation by market growth and relative market share. It is not Ansoff product-market growth direction, SWOT/TOWS factor crossing, PESTEL macro scanning, Five Forces industry-structure diagnosis, Seven Powers moat taxonomy, OKR execution management, or financial valuation. Those methods may feed or follow a BCG Matrix, but they do not replace its portfolio cash-flow logic."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/bcg-matrix/SKILL.md
@@ -218,8 +218,15 @@ Recommended correction:
 - The output routes valuation, industry structure, macro environment, or product-market growth questions to the appropriate method.
 - Examples remain synthetic, public, or aggregate and avoid private business data.
 
-## Do NOT Use When
+## Verification
 
+After applying this skill, verify:
+
+- [ ] The task matches the declared scope, coverage, or positive examples.
+- [ ] The response follows this skill's workflow or checks instead of generic advice.
+- [ ] The exclusions in `## Do NOT Use When` do not point to a better skill.
+
+## Do NOT Use When
 Use another method when the user's actual question is:
 
 | User need | Use instead |
@@ -238,6 +245,7 @@ Use another method when the user's actual question is:
 
 **Classification**
 - Subject: `reasoning-strategy`
+- Public: `true`
 - Domain: `foundations/strategy`
 - Scope: BCG Growth-Share Matrix portfolio analysis for products, brands, business units, programs, and investment candidates: define comparable portfolio units and market boundaries, choose market-growth and relative-market-share measures, classify units as stars, cash cows, question marks, or dogs/pets, interpret cash generation and investment implications, challenge the assumptions behind share and growth, and route to valuation, competitive analysis, or integrated strategy when a quadrant label is not enough. Excludes Ansoff product-market growth-path framing, PESTEL macro-environment scanning, Porter's Five Forces industry profit-pressure diagnosis, SWOT/TOWS situational option generation, Seven Powers moat-source classification, OKR execution tracking, and standalone financial valuation.
 
@@ -255,6 +263,10 @@ Use another method when the user's actual question is:
 - Analyze supplier power, buyer power, entrants, substitutes, and rivalry.
 - Turn strengths, weaknesses, opportunities, and threats into SO, WO, ST, and WT options.
 - Classify this company's durable moat using scale economies, switching costs, network economies, branding, cornered resource, counter-positioning, or process power.
+
+**Related skills**
+- Verify with: `epistemic-grounding`, `methodology`, `expected-value`
+- Related: `playing-to-win`, `prioritization`, `ansoff-matrix`, `swot-tows`, `pestel`, `porters-five-forces`, `seven-powers`, `expected-value`, `epistemic-grounding`, `methodology`
 
 **Concept**
 - Mental model: The BCG Growth-Share Matrix is a two-axis portfolio map. The primitives are a portfolio owner, comparable portfolio units, a defined market boundary, a market-growth measure, a relative-market-share measure, four quadrants, cash generation, cash needs, investment posture, timing, and strategic assumptions. High growth indicates markets where leadership may need funding or experimentation; high relative share indicates stronger competitive position and potential cash generation. Stars are high growth and high share, cash cows are low growth and high share, question marks are high growth and low share, and dogs or pets are low growth and low share. The matrix frames allocation tradeoffs, but it does not prove attractiveness, valuation, or strategic fit by itself.

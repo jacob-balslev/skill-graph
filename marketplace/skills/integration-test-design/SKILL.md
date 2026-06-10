@@ -4,36 +4,21 @@ description: "Use when designing tests that verify the interaction between two o
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"test-driven-development\",\"testing-strategy\",\"test-doubles-design\",\"e2e-test-design\",\"contract-testing\"],\"suppresses\":[\"e2e-test-design\",\"testing-strategy\",\"contract-testing\",\"test-doubles-design\"],\"verify_with\":[\"testing-strategy\",\"e2e-test-design\"]}"
   subject: quality-assurance
+  public: "true"
+  scope: "Use when designing tests that verify the interaction between two or more units of a system — modules, services, layers, processes: the scope-and-boundary primitives that distinguish integration from unit and e2e tests, the test-pyramid (Cohn 2009) and test-trophy (Dodds) frameworks for how much integration testing belongs in the suite, the real-vs-faked-collaborator decision per dependency, the test-data lifecycle (per-test setup, transaction rollback, container reset), the difference between sociable-unit tests, integration tests, and contract tests, and the failure modes (over-broad scope that mimics e2e, over-narrow scope that mimics unit, shared mutable state that produces flakes). Do NOT use for testing one unit in isolation (use testing-strategy + test-doubles-design), full user-journey testing (use e2e-test-design), consumer-driven contract verification (use contract-testing), or test-suite quality measurement (use mutation-testing)."
   taxonomy_domain: quality/testing
-  owner: skill-graph-maintainer
-  freshness: "2026-05-16"
-  drift_check: "{\"last_verified\":\"2026-05-16\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"integration test\",\"integration testing\",\"test pyramid\",\"test trophy\",\"sociable test\",\"test data setup\",\"test transaction rollback\",\"test containers\",\"testcontainers\",\"boundary test\"]"
   triggers: "[\"should this be a unit or integration test\",\"the integration test is flaky\",\"test pyramid vs test trophy\",\"real database in tests\",\"test data setup is taking over\"]"
   examples: "[\"design an integration test for the order service that exercises real database and real message bus\",\"decide which dependencies to fake and which to use real in an integration test\",\"diagnose a flaky integration test — likely shared mutable state across tests\",\"explain why the test pyramid and test trophy disagree on integration test count\"]"
   anti_examples: "[\"test a single function in isolation (use testing-strategy + test-doubles-design)\",\"test a full user journey through the UI (use e2e-test-design)\",\"verify a consumer-driven contract against a provider (use contract-testing)\"]"
-  relations: "{\"related\":[\"testing-strategy\",\"test-doubles-design\",\"test-driven-development\",\"e2e-test-design\",\"contract-testing\"],\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the strategic question of how much of each test level to invest in; this skill owns the design of integration-level tests specifically.\"},{\"skill\":\"test-doubles-design\",\"reason\":\"test-doubles-design owns the construction of mocks/stubs/fakes; this skill owns the per-dependency real-vs-faked decision in integration scope. Integration tests use real collaborators where practical and fakes only at true external boundaries.\"},{\"skill\":\"e2e-test-design\",\"reason\":\"e2e-test-design owns user-journey-scope tests that exercise the full stack including UI; this skill owns scope below that — interaction of units inside the system, often without UI.\"},{\"skill\":\"contract-testing\",\"reason\":\"contract-testing owns consumer-driven contract verification between services; this skill owns the in-system interaction of modules. Contract tests verify the *interface*; integration tests verify the *implementation through* the interface.\"}],\"verify_with\":[\"testing-strategy\",\"e2e-test-design\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "An integration test is to a software system what a fire-suppression drill in a specific corridor is to the whole building's safety plan — you are not testing whether each sprinkler head works in isolation (unit), nor whether everyone evacuates the entire building in fifteen minutes (e2e), you are testing whether the smoke detector in *this corridor* triggers the alarm panel which triggers the sprinkler which actually wets *that carpet*; the test's identity is the named boundary, and changing the named boundary changes the test's identity."
   misconception: "|"
-  concept: "{\"definition\":\"Integration test design is the discipline of designing tests that verify the interaction of two or more units of a system — modules within a process, services across processes, layers within an architecture — to catch defects that emerge only at the boundaries between those units. The unit of judgment is the *boundary*: whether type-mapped, serialized, transactional, contract-bound, or simply called across a function boundary, the integration test's value is exercising the *real* interaction between the parts rather than the *mocked* interaction a unit test would exercise. The scope choice — which units are real, which are faked, which are out of scope — is the central design decision and the source of most fragile integration test suites: too narrow and the test is a unit test in disguise; too broad and the test is an end-to-end test in disguise; in between, the test is what its name says.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/integration-test-design/SKILL.md
@@ -41,12 +26,19 @@ metadata:
 
 # Integration-Test Design
 
+## Concept of the skill
+
+Integration test design verifies the interaction between two or more units of a system — modules within a process, services across processes, layers within an architecture — to catch defects that emerge only at the boundaries between those units. The five primitives are: *boundary* (module-to-module, layer-to-layer, service-to-database, service-to-message-bus, service-to-third-party, service-to-service), *scope* (which collaborators are real, which are faked, which are out of scope), *real-vs-faked-collaborator decision per dependency* (real where the boundary's failure modes are integration-bug-finders — database, message bus, cache; faked where the realness adds cost without proportional defect-detection — paid third-party APIs, email/SMS providers), *test-data lifecycle* (full reset, transaction rollback per test, container reset, shared snapshot with no-mutation discipline), and *pyramid-vs-trophy framing* (Cohn 2009: many unit, fewer integration, fewest e2e; Dodds 2018: many integration, fewer unit, fewer e2e, static-analysis stem — integration-heavy when modern tooling makes integration cheap).
+
+Replaces "comprehensive unit tests covering each unit in isolation" as the sole verification strategy with deliberate seam-verification. Solves the problem that a test suite of comprehensive unit tests has verified each unit but *not the system* — the seams are unverified, and most production failures happen at seams (database transaction boundaries, message-bus delivery semantics, third-party API contract changes, configuration drift between environments). Modern testing infrastructure has shifted integration-test cost down enough that the test trophy framing (integration-heavy suite) has gained ground on the pyramid (unit-heavy suite); the right ratio for any given codebase depends on which suite costs are real (slow tests in CI) and which are surmountable with infrastructure (containerized dependencies, transaction rollback, parallelization).
+
+Distinct from testing-strategy, which owns the strategic ratio question (how much of each level) — this skill owns the design of integration-level tests specifically. Distinct from test-doubles-design, which owns the construction of mocks/stubs/fakes as constructs — this skill owns the per-dependency real-vs-faked decision in integration scope (integration tests use real where practical, fakes only at true external boundaries; mocking the database in an "integration test" is the most common scope failure). Distinct from e2e-test-design, which owns user-journey-scope tests through the full stack including UI — this skill owns the scope *below* that, interaction of units inside the system, often without UI. Distinct from contract-testing, which owns consumer-driven contract verification between services — contract tests verify the *interface*; integration tests verify the *implementation through* the interface; the two compose, one does not replace the other. Distinct from mutation-testing, which is a test-suite quality measurement applied at any level — this skill is the design of integration-level tests themselves. Distinct from snapshot-testing, which is a capture-and-compare technique applicable inside any test level. An integration test is to a software system what a fire-suppression drill in a specific corridor is to the whole building's safety plan — you are not testing whether each sprinkler head works in isolation (unit), nor whether everyone evacuates the entire building in fifteen minutes (e2e), you are testing whether the smoke detector in *this corridor* triggers the alarm panel which triggers the sprinkler which actually wets *that carpet*; the test's identity is the named boundary, and changing the named boundary changes the test's identity. The wrong mental model is that an integration test is "a unit test with more stuff in it" or "an e2e test with the UI removed." It is neither. Scope failures are the dominant source of fragile integration suites. Too narrow (mocks at the actual boundary): the "integration test" is a unit test in disguise and misses the integration bugs the technique exists to catch — type misalignment, serialization edges, transaction-boundary errors are all invisible because the mock returns whatever the test author imagined the real dependency returns. Too broad (real everything including UI and unrelated services): the "integration test" is an e2e test in disguise and pays the e2e cost (slow, flaky, hard to debug) without the focused integration-test cost-benefit ratio. The discipline's central decision is *scope* — name it explicitly for each test, decide real-vs-faked per dependency on first-principles cost-benefit (is the bug class at this boundary specific to the real dependency? then real; is the real dependency unavailable, costly, or destructive? then faked), choose the test-data lifecycle pattern deliberately (transaction rollback is the default; container reset for the minority where rollback doesn't work). A persistent flake is a bug in the test design — shared mutable state, ordering dependency, time-of-day dependency, race condition — not a property to accept.
+
 ## Coverage
 
 The discipline of designing tests that verify the interaction between two or more units of a system — modules within a process, services across processes, layers within an architecture, services across organizational boundaries — to catch defects that emerge only at the boundaries. Covers the five primitives (boundary, scope, real-vs-faked-collaborator, test-data lifecycle, pyramid-or-trophy framing), the boundary-type taxonomy (module-to-module, layer-to-layer, service-to-database, service-to-message-bus, service-to-third-party, service-to-service), the test-data lifecycle patterns (full reset, transaction rollback, container reset, shared snapshot), and the pyramid (Cohn 2009) vs trophy (Dodds 2018) framings for how much integration testing the suite should contain. Includes Testcontainers and similar infrastructure as the modern enabler that makes integration testing cheap enough to do well.
 
-## Philosophy
-
+## Philosophy of the skill
 Integration tests verify the parts of a system that no individual unit can verify alone. The bugs they catch — type misalignment, serialization edge cases, transaction boundary errors, configuration mismatches, contract drift, ordering and concurrency issues — live at the boundaries between units. A test suite of comprehensive unit tests and zero integration tests has verified each unit and not the system; the seams are unverified.
 
 The discipline's central design decision is *scope*: for each test, which collaborators are real (exercised in their integration-bug-finding form) and which are faked (replaced because their realness adds cost without proportional defect-detection). The scope determines the test's identity. Too narrow (mocks at the boundary): the "integration test" is a unit test in disguise and misses the integration bugs. Too broad (real everything, including UI): the "integration test" is an e2e test in disguise and pays the e2e cost.
@@ -144,7 +136,9 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `quality-assurance`
+- Public: `true`
 - Domain: `quality/testing`
+- Scope: Use when designing tests that verify the interaction between two or more units of a system — modules, services, layers, processes: the scope-and-boundary primitives that distinguish integration from unit and e2e tests, the test-pyramid (Cohn 2009) and test-trophy (Dodds) frameworks for how much integration testing belongs in the suite, the real-vs-faked-collaborator decision per dependency, the test-data lifecycle (per-test setup, transaction rollback, container reset), the difference between sociable-unit tests, integration tests, and contract tests, and the failure modes (over-broad scope that mimics e2e, over-narrow scope that mimics unit, shared mutable state that produces flakes). Do NOT use for testing one unit in isolation (use testing-strategy + test-doubles-design), full user-journey testing (use e2e-test-design), consumer-driven contract verification (use contract-testing), or test-suite quality measurement (use mutation-testing).
 
 **When to use**
 - design an integration test for the order service that exercises real database and real message bus
@@ -157,14 +151,10 @@ After applying this skill, verify:
 - test a single function in isolation (use testing-strategy + test-doubles-design)
 - test a full user journey through the UI (use e2e-test-design)
 - verify a consumer-driven contract against a provider (use contract-testing)
-- Owned by `testing-strategy`: the strategic question of how much of each test level to invest in
-- Owned by `test-doubles-design`: the construction of mocks/stubs/fakes
-- Owned by `e2e-test-design`: user-journey-scope tests
-- Owned by `contract-testing`: consumer-driven contract verification between services
 
 **Related skills**
 - Verify with: `testing-strategy`, `e2e-test-design`
-- Related: `testing-strategy`, `test-doubles-design`, `test-driven-development`, `e2e-test-design`, `contract-testing`
+- Related: `test-driven-development`, `testing-strategy`, `test-doubles-design`, `e2e-test-design`, `contract-testing`
 
 **Concept**
 - Mental model: |

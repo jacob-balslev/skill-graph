@@ -4,36 +4,21 @@ description: "Use when reasoning about the four ACID properties of database tran
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
-  version: "1.1.0"
+  relations: "{\"related\":[\"replication-patterns\",\"data-modeling\",\"transaction-isolation\",\"cap-theorem-tradeoffs\",\"schema-evolution\"],\"suppresses\":[\"transaction-isolation\"],\"verify_with\":[\"transaction-isolation\",\"cap-theorem-tradeoffs\"]}"
   subject: backend-engineering
+  public: "true"
+  scope: "Use when reasoning about the four ACID properties of database transactions — Atomicity, Consistency, Isolation, Durability — as foundational concepts beneath any transactional system: what each property formally guarantees, the difference between the property the database claims and the property the application gets (depending on isolation level, replication mode, and configuration), the relationship between ACID and BASE (the alternative model in many NoSQL systems), why 'C' is the most contested letter (database consistency vs application invariants), and the historical record (Härder & Reuter 1983, the Gray-Reuter transaction model, Gray's Turing lecture). Do NOT use for choosing isolation levels for a specific workload (use transaction-isolation), distributed-system CAP tradeoffs (use cap-theorem-tradeoffs), database query design (use query-optimization), or zero-downtime migration mechanics (use database-migration)."
   taxonomy_domain: engineering/data
-  owner: skill-graph-maintainer
-  freshness: "2026-05-21"
-  drift_check: "{\"last_verified\":\"2026-05-16\"}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"ACID\",\"atomicity\",\"consistency\",\"isolation\",\"durability\",\"transaction\",\"BASE\",\"Härder Reuter\",\"Gray transaction model\",\"transactional guarantee\"]"
   triggers: "[\"is this database ACID\",\"what does consistency mean\",\"ACID vs BASE\",\"is my transaction atomic\",\"what's the durability guarantee\"]"
   examples: "[\"explain what ACID guarantees a database does and does not provide to the application\",\"decide whether ACID or BASE is the right model for a new system\",\"diagnose a data-loss incident — likely a durability or atomicity failure\",\"explain why the 'C' in ACID is not the same as application consistency\"]"
   anti_examples: "[\"choose an isolation level for a workload (use transaction-isolation)\",\"reason about availability vs consistency in a distributed system (use cap-theorem-tradeoffs)\",\"design a database schema (use data-modeling)\"]"
-  relations: "{\"related\":[\"transaction-isolation\",\"cap-theorem-tradeoffs\",\"data-modeling\",\"replication-patterns\"],\"boundary\":[{\"skill\":\"transaction-isolation\",\"reason\":\"transaction-isolation owns the choice and semantics of isolation levels (read uncommitted, read committed, repeatable read, serializable, snapshot) — the 'I' of ACID specifically as a tunable. This skill owns ACID as the four-property foundational frame; transaction-isolation owns one of the four in operational depth.\"}],\"verify_with\":[\"transaction-isolation\",\"cap-theorem-tradeoffs\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "ACID is to a database transaction what the four corners of a legal contract are to an agreement — Atomicity is the signing block (all parties sign together or no contract exists), Consistency is the boilerplate clauses (every clause must be satisfied for the contract to be valid), Isolation is the negotiating-room rule (other negotiations cannot read your draft until both sides initial each page), and Durability is the safe in the law office (once signed, the contract survives the office burning down)."
   misconception: "|"
-  concept: "{\"definition\":\"ACID is the acronym for four properties that a database transaction either provides or does not provide, defining the contract between the database and the application using it: Atomicity (the transaction either entirely happens or entirely does not — there is no partial state visible after a failure), Consistency (the transaction takes the database from one valid state to another valid state per the database's defined integrity constraints), Isolation (concurrent transactions do not see each other's intermediate states; each transaction observes the database as if it were the only transaction), Durability (once the transaction commits, its effects survive any subsequent failure including power loss). The four properties were codified by Härder and Reuter (1983) based on Jim Gray's earlier transaction model and have become the foundational vocabulary for relational and many NoSQL database systems. The strategic value of the ACID frame is that it names the four orthogonal guarantees the application can rely on, so that when a database advertises 'ACID compliance' or claims to relax some property, the conversation has precise vocabulary.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/acid-fundamentals/SKILL.md
@@ -42,12 +27,19 @@ metadata:
 
 # ACID Fundamentals
 
+## Concept of the skill
+
+ACID is the precise vocabulary the database industry uses to describe transactional guarantees, codified by Härder & Reuter (1983) on Gray's transaction model. Four *orthogonal* axes: *Atomicity* (all-or-nothing per transaction; no partial state visible after failure — implemented via write-ahead logging + rollback/redo), *Consistency* (database integrity constraints satisfied — foreign keys, NOT NULL, unique indexes, CHECK constraints, triggers), *Isolation* (concurrent transactions appear serialized — locking, MVCC, Serializable Snapshot Isolation), *Durability* (committed effects survive failure — synchronous WAL flush, replication to durable storage). The four-letter frame is not a one-dimensional rating; it is a vector — a system can be atomic without being isolated, durable without being CAP-consistent, ACID-consistent (constraints satisfied) without being CAP-consistent (replicas agree).
+
+Replaces vague claims about transactional behavior with precise vocabulary. Before ACID, database claims were imprecise ("we're safe"); after Härder & Reuter's 1983 formalization, the system's behavior on each of four orthogonal axes is the conversation. Solves the problem that a database advertising "ACID compliance" can configure any of the four properties to weaker forms — synchronous_commit off (D weakened), weaker isolation modes in engines that permit dirty reads or other anomalies (I weakened), async replication (D-across-replicas weakened), constraints disabled (C weakened) — and the application doesn't know what it actually gets. The strategic value: when a system claims ACID or relaxes some property, the conversation has precise vocabulary. The BASE alternative (Pritchett 2008) names a different point in the trade space (Basically Available, Soft state, Eventually consistent) for systems that trade strong guarantees for throughput and availability under partition; most production architectures use both, picking per component (transactional cores ACID; high-throughput non-transactional caches and streams BASE).
+
+Distinct from transaction-isolation, which owns the choice and semantics of isolation levels — the I axis in operational depth. This skill owns ACID as the four-property foundational frame; transaction-isolation owns one of the four axes in depth. Distinct from cap-theorem-tradeoffs, which owns the distributed-system frame — CAP's C (replica agreement) is *not* ACID's C (constraint satisfaction); this skill owns the single-system transactional frame; cap-theorem-tradeoffs owns the distributed frame; conflating them is the most common misconception in the space. Distinct from replication-patterns, which owns the patterns for keeping multiple replicas in agreement — replication is the operational layer above single-node ACID, and often relaxes some ACID properties (most notably durability and isolation in async modes). Distinct from data-modeling, which owns schema design and entity structure (this skill owns the runtime guarantee semantics that any data model relies on). Distinct from database-migration (zero-downtime mechanics) and cross-transaction coordination (sagas, two-phase commit — ACID is per-transaction; cross-transaction atomicity is a different problem at a different layer). ACID is to a database transaction what the four corners of a legal contract are to an agreement — Atomicity is the signing block (all parties sign together or no contract exists), Consistency is the boilerplate clauses (every clause must be satisfied for the contract to be valid), Isolation is the negotiating-room rule (other negotiations cannot read your draft until both sides initial each page), and Durability is the safe in the law office (once signed, the contract survives the office burning down). The wrong mental model is that ACID is a binary property a database "has" or doesn't — that "Postgres is ACID" is a complete description of the system's behavior. It is not. Each property is *configuration-graded*, and the default configuration may not give the property the team thinks it does. `synchronous_commit = off` trades durability for write throughput — last few committed transactions can be lost on crash. Some engines' read-uncommitted mode allows dirty reads; PostgreSQL maps read uncommitted to read committed, which is exactly why engine-specific documentation matters. Async replication makes the primary the only durable copy. Disabled constraints make C the application's problem, not the database's. ACID-compliance is a marketing claim until the *configuration* is named. A second misconception: that ACID's C and CAP's C are the same. They are not — ACID-C is database-constraint satisfaction (FK resolves; NOT NULL holds); CAP-C is replica agreement (all replicas return the same value). A system can be ACID-C and CAP-inconsistent (constraints hold; replicas disagree), or CAP-C and ACID-inconsistent (replicas agree; foreign key violated). Using "consistency" without qualifier in design discussions produces confused decisions. A third: that ACID solves cross-transaction coordination — it does not; sagas, two-phase commit, and outbox patterns are a separate problem at a layer above per-transaction guarantees.
+
 ## Coverage
 
 The four foundational transactional properties — Atomicity, Consistency, Isolation, Durability — that define the contract between a database and the application using it. Covers what each property formally guarantees, the implementation mechanisms underneath each (write-ahead logging for atomicity; locking and MVCC for isolation; constraint checking for consistency; synchronous storage flush for durability), the configuration-dependent strength of each property, the BASE alternative model for systems that trade ACID guarantees for availability, the C-of-ACID vs C-of-CAP distinction that is the most-frequently-confused concept in the space, and the historical record from Gray's transaction model through Härder & Reuter's 1983 formalization.
 
-## Philosophy
-
+## Philosophy of the skill
 ACID is the precise vocabulary the database industry uses to describe transactional guarantees. Before ACID, claims were vague; after ACID, a system's behavior on each of four orthogonal axes is the conversation. The strategic value of the frame is *not* the acronym itself but the discipline of asking, for any database in any configuration, what each property actually guarantees and what the application can rely on.
 
 The frame's defining property is that it names four *orthogonal* axes. A system can be atomic without being isolated; it can be durable without being consistent in the CAP sense; it can be consistent (database constraints satisfied) without being consistent across replicas. The four-letter frame is not a one-dimensional rating; it is a vector.
@@ -140,7 +132,9 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `backend-engineering`
+- Public: `true`
 - Domain: `engineering/data`
+- Scope: Use when reasoning about the four ACID properties of database transactions — Atomicity, Consistency, Isolation, Durability — as foundational concepts beneath any transactional system: what each property formally guarantees, the difference between the property the database claims and the property the application gets (depending on isolation level, replication mode, and configuration), the relationship between ACID and BASE (the alternative model in many NoSQL systems), why 'C' is the most contested letter (database consistency vs application invariants), and the historical record (Härder & Reuter 1983, the Gray-Reuter transaction model, Gray's Turing lecture). Do NOT use for choosing isolation levels for a specific workload (use transaction-isolation), distributed-system CAP tradeoffs (use cap-theorem-tradeoffs), database query design (use query-optimization), or zero-downtime migration mechanics (use database-migration).
 
 **When to use**
 - explain what ACID guarantees a database does and does not provide to the application
@@ -153,11 +147,10 @@ After applying this skill, verify:
 - choose an isolation level for a workload (use transaction-isolation)
 - reason about availability vs consistency in a distributed system (use cap-theorem-tradeoffs)
 - design a database schema (use data-modeling)
-- Owned by `transaction-isolation`
 
 **Related skills**
 - Verify with: `transaction-isolation`, `cap-theorem-tradeoffs`
-- Related: `transaction-isolation`, `cap-theorem-tradeoffs`, `data-modeling`, `replication-patterns`
+- Related: `replication-patterns`, `data-modeling`, `transaction-isolation`, `cap-theorem-tradeoffs`, `schema-evolution`
 
 **Concept**
 - Mental model: |

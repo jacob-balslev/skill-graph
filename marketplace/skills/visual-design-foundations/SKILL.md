@@ -2,33 +2,22 @@
 name: visual-design-foundations
 description: "Use when designing or auditing visual craft: color palette, typography, spacing, elevation, rhythm, density, visual hierarchy, brand fit, contrast intent, and motion feel. Do NOT use for sign-system meaning (use `semiotics`), token/component architecture (use `design-system-architecture`), responsive structure (use `layout-composition`), or accessibility compliance (use `a11y`). Do NOT use for what does this icon or badge color communicate to users? Do NOT use for define semantic tokens and component variants. Do NOT use for decide the responsive section order and breakpoint behavior. Do NOT use for verify WCAG contrast, focus order, and screen-reader behavior. Do NOT use for what visual signs mean (use semiotics). Do NOT use for responsive structure (use layout-composition)."
 license: MIT
-compatibility: "Portable visual-design guidance for product UI, dashboards, docs, marketing-adjacent product surfaces, and design-system consumers. Does not replace brand-specific guidelines."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: design
+  public: "true"
+  scope: "Designing and auditing the visual craft of an interface surface — palette direction, type scale, spacing rhythm, density, elevation, borders, contrast intent, visual weight, hierarchy, motion feel, and brand fit — at foundation level, including knowing when a concern should be split off to a deeper color, typography, or motion skill. Portable across product UI, dashboards, docs, marketing-adjacent product surfaces, and design-system consumers; principle-grounded, not repo-bound, and does not replace brand-specific guidelines. Excludes sign-system meaning (semiotics), token/component architecture and governance (design-system-architecture), responsive structure and breakpoints (layout-composition), and accessibility compliance (a11y)."
   taxonomy_domain: design/visual
-  owner: skill-graph-maintainer
-  freshness: "2026-05-11"
-  drift_check: "{\"last_verified\":\"2026-05-11\"}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"visual-design\",\"visual craft\",\"palette direction\",\"typography direction\",\"spatial rhythm\",\"density rules\",\"elevation treatment\",\"motion feel\",\"brand fit\"]"
   examples: "[\"pick a visual direction for this dashboard without changing the task structure\",\"audit color, typography, spacing, and hierarchy for this product page\",\"this UI feels flat and hard to scan - improve the visual hierarchy\",\"choose a restrained palette and type scale for an internal admin tool\"]"
   anti_examples: "[\"what does this icon or badge color communicate to users?\",\"define semantic tokens and component variants\",\"decide the responsive section order and breakpoint behavior\",\"verify WCAG contrast, focus order, and screen-reader behavior\"]"
   relations: "{\"boundary\":[{\"skill\":\"semiotics\",\"reason\":\"semiotics owns what visual signs mean; visual-design-foundations owns the craft choices that shape the surface\"},{\"skill\":\"layout-composition\",\"reason\":\"layout-composition owns responsive structure; visual-design-foundations owns palette, typography, rhythm, density, and polish\"}],\"related\":[\"semiotics\",\"design-system-architecture\",\"layout-composition\",\"microcopy\",\"a11y\"],\"verify_with\":[\"a11y\",\"semiotics\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
+  mental_model: "|"
+  purpose: "|"
+  concept_boundary: "|"
+  analogy: "Visual design foundations is the interior-design layer of a building, not the structural engineering — it chooses the palette, lighting, spacing, and materials that make a room legible and set its tone, but it defers the load-bearing structure (layout), the building code (a11y), the signage meaning (semiotics), and the building-systems contracts (design-system-architecture) to the disciplines that own them."
+  misconception: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/visual-design-foundations/SKILL.md
@@ -37,11 +26,15 @@ metadata:
 
 # Visual Design Foundations
 
+## Concept of the skill
+
+Visual design foundations is the discipline of shaping an interface's visual craft — palette, type, spacing rhythm, density, elevation, hierarchy, contrast intent, motion feel, and brand fit — so that the surface's structure becomes legible rather than merely decorated. Its central premise is that visual design is not a coat of paint applied after the layout is done; it is the layer through which priority, grouping, affordance, and tone are made visible, so a user can scan and act without reading every label. The craft works through a small set of primitives chosen *by role before raw value*: palette roles (surface, text, accent, success/warning/danger/info, disabled) before specific colors, type roles (page title, section heading, control label, body, metadata, numeric emphasis) before specific sizes, and spacing/density rules tuned to repeated real use rather than a single screenshot — with elevation, border, and background reserved for clarifying grouping and affordance instead of adding noise. Crucially, it is a *foundation* skill by design: it owns the broad craft choices but explicitly hands off anything that needs formal color math, font-loading engineering, token governance, sign-meaning analysis, or accessibility compliance to the skills that own those contracts, and it cross-checks its decisions against `semiotics` and `a11y` before treating them as done.
+
 ## Coverage
 
 Design and audit visual craft for interface surfaces. Covers palette direction, type scale, spacing rhythm, hierarchy, density, elevation, borders, contrast intent, visual weight, motion feel, brand fit, and when a visual system should be split into deeper color, typography, or motion skills.
 
-## Philosophy
+## Philosophy of the skill
 
 Visual design is not decoration after structure; it is how the structure becomes legible. Good visual craft makes priority, grouping, affordance, and tone visible without asking the user to parse every label.
 
@@ -59,7 +52,7 @@ Keep this skill at foundation level. If the task needs formal color math, font-l
 
 ## Evals
 
-This skill ships a comprehension-eval artifact at [`examples/evals/visual-design-foundations.json`](https://github.com/jacob-balslev/skill-graph/blob/main/examples/evals/visual-design-foundations.json). The checklist below is the authoring gate for visual-design decisions; the eval file is the grader surface.
+This skill ships comprehension and application eval artifacts in its sibling `evals/` directory (`evals/comprehension.json`, `evals/application.json`). The checklist in `## Verification` below is the authoring gate for visual-design decisions; the eval files are the grader surface.
 
 ## Verification
 
@@ -87,7 +80,9 @@ This skill ships a comprehension-eval artifact at [`examples/evals/visual-design
 
 **Classification**
 - Subject: `design`
+- Public: `true`
 - Domain: `design/visual`
+- Scope: Designing and auditing the visual craft of an interface surface — palette direction, type scale, spacing rhythm, density, elevation, borders, contrast intent, visual weight, hierarchy, motion feel, and brand fit — at foundation level, including knowing when a concern should be split off to a deeper color, typography, or motion skill. Portable across product UI, dashboards, docs, marketing-adjacent product surfaces, and design-system consumers; principle-grounded, not repo-bound, and does not replace brand-specific guidelines. Excludes sign-system meaning (semiotics), token/component architecture and governance (design-system-architecture), responsive structure and breakpoints (layout-composition), and accessibility compliance (a11y).
 
 **When to use**
 - pick a visual direction for this dashboard without changing the task structure
@@ -106,6 +101,12 @@ This skill ships a comprehension-eval artifact at [`examples/evals/visual-design
 **Related skills**
 - Verify with: `a11y`, `semiotics`
 - Related: `semiotics`, `design-system-architecture`, `layout-composition`, `microcopy`, `a11y`
+
+**Concept**
+- Mental model: |
+- Purpose: |
+- Analogy: Visual design foundations is the interior-design layer of a building, not the structural engineering — it chooses the palette, lighting, spacing, and materials that make a room legible and set its tone, but it defers the load-bearing structure (layout), the building code (a11y), the signage meaning (semiotics), and the building-systems contracts (design-system-architecture) to the disciplines that own them.
+- Common misconception: |
 
 **Keywords**
 - `visual-design`, `visual craft`, `palette direction`, `typography direction`, `spatial rhythm`, `density rules`, `elevation treatment`, `motion feel`, `brand fit`

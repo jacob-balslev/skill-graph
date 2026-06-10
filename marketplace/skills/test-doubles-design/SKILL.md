@@ -4,36 +4,21 @@ description: "Use when designing or reviewing test doubles — the stand-in obje
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"api-design\",\"type-safety\",\"testing-strategy\",\"test-driven-development\",\"refactor\"],\"suppresses\":[\"test-driven-development\",\"testing-strategy\"],\"verify_with\":[\"refactor\",\"test-driven-development\"]}"
   subject: quality-assurance
+  public: "true"
+  scope: "Use when designing or reviewing test doubles — the stand-in objects that replace real collaborators in a test: the five-kind taxonomy (dummy, stub, spy, fake, mock) from Meszaros's xUnit Test Patterns, the difference between state verification (Detroit-school, classicist) and interaction verification (London-school, mockist) and how it determines which doubles fit, the cost of doubles (fragility, false confidence, divergence from real behavior), the role of fakes as the under-used middle ground, the verify_with relationship to test-driven-development, and the heuristics for when to use a real collaborator instead of any double. Do NOT use for choosing test levels or what to test (use testing-strategy), the design discipline of writing tests first (use test-driven-development), specific mocking-library API choice (library docs), or general production stubs and feature flags (use feature-gating or domain-specific skills)."
   taxonomy_domain: quality/testing
-  owner: skill-graph-maintainer
-  freshness: "2026-05-16"
-  drift_check: "{\"last_verified\":\"2026-05-16\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"test double\",\"mock\",\"stub\",\"spy\",\"fake\",\"dummy\",\"test isolation\",\"interaction verification\",\"state verification\",\"mockist\"]"
   triggers: "[\"should this be a mock or a stub\",\"are we using mocks correctly\",\"the test is brittle when I refactor\",\"do we need a fake here\",\"is this test really testing anything\"]"
   examples: "[\"decide between a mock, a stub, and a fake for a database collaborator in a test\",\"explain why over-mocking produces fragile tests that change with every refactor\",\"diagnose a passing test that mirrors the implementation rather than specifying behavior\",\"design an in-memory fake for a repository interface that supports both classicist tests and integration tests\"]"
   anti_examples: "[\"decide which test levels (unit/integration/e2e) the project should invest in (use testing-strategy)\",\"set up a production feature flag (use feature-gating)\",\"configure a specific mocking library — Jest, Sinon, Mockito (library docs)\"]"
-  relations: "{\"related\":[\"testing-strategy\",\"test-driven-development\",\"refactor\",\"api-design\",\"type-safety\"],\"boundary\":[{\"skill\":\"test-driven-development\",\"reason\":\"test-driven-development owns the design discipline of writing the test before the production code; this skill owns the design of the stand-in objects those tests use. The two compose: TDD prescribes the rhythm; test-doubles-design prescribes the stand-ins.\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the strategic question of what to test at which level; this skill owns the tactical construction of the stand-ins that make a given test possible.\"}],\"verify_with\":[\"test-driven-development\",\"refactor\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "A test double is to a unit under test what a Hollywood stunt-double is to a leading actor — the stunt-double looks like the actor enough that the camera believes the scene, performs the dangerous part the actor cannot or should not perform (slow networks, paid APIs, real emails), but is not the actor. The director's job is choosing the right kind of stunt-double for the scene: a dummy stands in the back of the shot (placeholder); a stub recites canned lines from off-camera (canned answers); a spy records which lines were spoken (call recording); a mock has a script that *fails the take* if the actor deviates (rigid interaction verification); a fake is a body-double trained to actually perform the action in a controlled way (working in-memory substitute). Casting mocks where a fake would do produces takes that pass when the stunt is performed exactly as written and fail catastrophically when the actor improvises a better line."
   misconception: "|"
-  concept: "{\"definition\":\"A test double is a stand-in object that replaces a real collaborator in a test so the test can run without the collaborator's real behavior. The term, from Meszaros's *xUnit Test Patterns*, generalizes a family of stand-ins — dummies, stubs, spies, fakes, and mocks — each defined by what the test expects of it. Doubles exist because real collaborators are often unavailable (external services), nondeterministic (time, network, randomness), slow (databases, file systems), expensive (paid APIs), or have side effects unacceptable in a test (sending email, charging cards). The discipline of test-doubles design is choosing the right kind of double for each test's purpose, recognizing that the choice determines what the test actually verifies — state or interaction — and what the test will reveal under refactoring.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/test-doubles-design/SKILL.md
@@ -43,12 +28,19 @@ metadata:
 
 # Test-Doubles Design
 
+## Concept of the skill
+
+A test double is a *stand-in object that replaces a real collaborator in a test* so the test can run without the collaborator's real behavior. The term, from Meszaros's *xUnit Test Patterns* (2007), generalizes a family of stand-ins each defined by what the test expects of it: *dummy* (placeholder; never actually used; verifies nothing; for parameter slots the test path doesn't touch), *stub* (returns canned answers to calls; verifies state after the action; low fragility under refactor — only the canned answer matters), *spy* (stub + records calls received; verifies state and post-hoc which calls happened; medium fragility — call-shape changes break the spy assertion), *mock* (pre-programmed with expected calls; the double *itself* fails on deviation; verifies interaction built into the double; *high* fragility under refactor because call-shape changes break the test directly), *fake* (working implementation of the interface with production-unsuitable shortcuts — in-memory DB, deterministic clock, recorded HTTP responses; verifies state end-to-end through the fake; low fragility because behavior is verified through a working substitute).
+
+Replaces "real collaborator everywhere or test cannot run" with controllable stand-ins that make tests fast, isolated, deterministic, and free of side effects — but with each lie a place where the test's belief about the collaborator may diverge from reality. The discipline of test-doubles design is *choosing lies whose costs are worth the tests they enable*, and recognizing that the choice of *what kind* of lie shapes what the test actually verifies. Sub-purpose: surface the *under-acknowledged construct* of fakes — discourse is dominated by mocks (most distinctive, natural fit for interaction verification), but fakes (working implementations with shortcuts) often produce more robust tests with less long-term maintenance cost; a test suite that uses fakes for collaborators admitting in-memory stand-ins (databases via SQLite/H2, clocks via deterministic stubs, HTTP clients via recorded responders) and reserves mocks for true behavioral verification is usually better-aged than the equivalent mock-heavy suite. The *sociable-vs-solitary* trade-off: real collaborators (pure functions, value objects, in-process domain logic) should always be used real; databases and message buses are increasingly real-via-containerized-CI; only at true external boundaries (paid APIs, email/SMS providers) should fakes or stubs replace the real thing.
+
+Distinct from test-driven-development, which owns the design discipline of writing the test before the production code — this skill owns the design of the stand-in objects those tests use; the two compose (TDD prescribes the rhythm; this skill prescribes the stand-ins). Distinct from testing-strategy, which owns the strategic question of what to test at which level — this skill owns the tactical construction of the stand-ins that make a given test possible. Distinct from refactor, which owns behavior-preserving structural change — this skill owns the doubles whose *over-use* produces refactor-fragile tests; the two are read together when a test suite resists refactoring. Distinct from api-design, which owns the design of an interface as a *production* contract — this skill owns the doubles that exercise that interface in *tests*; when test doubles drive interface decisions (London-school TDD), the two overlap heavily. Distinct from feature-gating (production runtime alternatives — this skill is about test-harness behavior) and from specific mocking-library API choice (Jest, Sinon, Mockito — library docs). A test double is to a unit under test what a Hollywood stunt-double is to a leading actor — the stunt-double looks like the actor enough that the camera believes the scene, performs the dangerous part the actor cannot or should not perform (slow networks, paid APIs, real emails), but is not the actor. The director's job is choosing the right kind of stunt-double for the scene: a dummy stands in the back of the shot (placeholder); a stub recites canned lines from off-camera (canned answers); a spy records which lines were spoken (call recording); a mock has a script that *fails the take* if the actor deviates (rigid interaction verification); a fake is a body-double trained to actually perform the action in a controlled way (working in-memory substitute). Casting mocks where a fake would do produces takes that pass when the stunt is performed exactly as written and fail catastrophically when the actor improvises a better line. The wrong mental model is that *all stand-ins are "mocks"* and the choice is just which mocking library to use. They are not — there are *five distinct kinds*, each verifying something different, and the term "mock" used loosely (when the construct is really a stub or spy) is dialect, not the precise sense. Adjacent misconceptions: that *more mocking is better isolation* (it is not — mock-heavy test suites are refactor-fragile; tests pin call shapes that the next refactor will break, producing tests that fail even when the production code still produces correct behavior — the canonical mockist failure mode); that *fakes are exotic* (they are not — they are the under-used middle ground for collaborators admitting in-memory stand-ins: in-memory database fakes via SQLite/H2, deterministic clock fakes, recorded HTTP responders, in-memory FS fakes; production-grade test suites use fakes for databases/clocks/HTTP and reserve mocks for true interaction verification); that *mocking a database is fine* (it is not — database interaction should use an in-memory DB fake, a containerized real DB in CI via Testcontainers, or a contract test layer; mocking the database removes the precise boundary the test was for); that *the school being practiced (London/Detroit/hybrid) doesn't matter* (it does — the school determines whether the test suite is interaction-heavy or state-heavy, mock-rich or mock-sparse, refactor-resistant or refactor-fragile; a practitioner who has not chosen has chosen *by accident*, and the mock-to-fake ratio in the test suite reveals which they chose without knowing); and that *strict mocking pinning exact call sequences is a default* (it is not — strict mocks should be used only where the contract is *genuinely about the call sequence*, which is rare; default to relaxed verification of presence and arguments, and complement mock-isolated unit tests with contract tests, integration tests, or production observability to close the gap between mocks and real collaborator behavior).
+
 ## Coverage
 
 The discipline of choosing and constructing the stand-in objects that replace real collaborators in tests. Covers the five-kind taxonomy (dummy, stub, spy, mock, fake) from Meszaros's *xUnit Test Patterns*, the state-vs-interaction verification distinction that determines which kinds fit which tests, the solitary-vs-sociable test-shape trade-off, the under-use of fakes as the robust middle ground, the cost ledger of every double (divergence, maintenance, false confidence, fragility), and the heuristics for when to use a real collaborator instead of any double. Includes the connection to London/Detroit-school TDD and to the api-design surface that doubles often pressure.
 
-## Philosophy
-
+## Philosophy of the skill
 A test double is a small lie the test tells the unit under test. The lie is useful — it makes the test fast, isolated, deterministic, and free of side effects — but every lie is also a place where the test's belief about the collaborator may diverge from the collaborator's actual behavior. The discipline of test-doubles design is choosing lies whose costs are worth the tests they enable, and recognizing that the choice of *what kind* of lie shapes what the test actually verifies.
 
 The biggest design decision in test-doubles work is whether the test is verifying state ("after this action, the system looks like this") or interaction ("during this action, these calls were made to collaborators"). The choice is not a matter of preference; it determines the test suite's character, its fragility under refactoring, and its connection to the production design. London-school TDD favors interaction; Detroit-school favors state. Most working test suites mix both, and most working test suites have not chosen the mix consciously.
@@ -133,7 +125,9 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `quality-assurance`
+- Public: `true`
 - Domain: `quality/testing`
+- Scope: Use when designing or reviewing test doubles — the stand-in objects that replace real collaborators in a test: the five-kind taxonomy (dummy, stub, spy, fake, mock) from Meszaros's xUnit Test Patterns, the difference between state verification (Detroit-school, classicist) and interaction verification (London-school, mockist) and how it determines which doubles fit, the cost of doubles (fragility, false confidence, divergence from real behavior), the role of fakes as the under-used middle ground, the verify_with relationship to test-driven-development, and the heuristics for when to use a real collaborator instead of any double. Do NOT use for choosing test levels or what to test (use testing-strategy), the design discipline of writing tests first (use test-driven-development), specific mocking-library API choice (library docs), or general production stubs and feature flags (use feature-gating or domain-specific skills).
 
 **When to use**
 - decide between a mock, a stub, and a fake for a database collaborator in a test
@@ -146,12 +140,10 @@ After applying this skill, verify:
 - decide which test levels (unit/integration/e2e) the project should invest in (use testing-strategy)
 - set up a production feature flag (use feature-gating)
 - configure a specific mocking library — Jest, Sinon, Mockito (library docs)
-- Owned by `test-driven-development`: the design discipline of writing the test before the production code
-- Owned by `testing-strategy`: the strategic question of what to test at which level
 
 **Related skills**
-- Verify with: `test-driven-development`, `refactor`
-- Related: `testing-strategy`, `test-driven-development`, `refactor`, `api-design`, `type-safety`
+- Verify with: `refactor`, `test-driven-development`
+- Related: `api-design`, `type-safety`, `testing-strategy`, `test-driven-development`, `refactor`
 
 **Concept**
 - Mental model: |

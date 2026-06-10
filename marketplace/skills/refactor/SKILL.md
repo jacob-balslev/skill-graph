@@ -5,30 +5,15 @@ license: MIT
 compatibility: "Markdown, Git, any codebase"
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"semantics\",\"tool-call-flow\",\"generative-ui\",\"context-graph\",\"error-boundary\",\"performance-testing\"],\"suppresses\":[\"debugging\"],\"verify_with\":[\"testing-strategy\",\"test-driven-development\",\"test-doubles-design\"],\"depends_on\":[\"testing-strategy\"]}"
   subject: software-engineering-method
   scope: "Behavior-preserving restructuring of existing code — extracting functions, reducing duplication, renaming for clarity, splitting modules, and tightening structure, with every change verified against before/after behavior so external contracts stay identical. Portable across any language or codebase; principle-grounded, not repo-bound. Excludes bug investigation and root-cause isolation (debugging, diagnosis), adding new product behavior (feature implementation), and documentation authoring (doc-updater) even when the docs describe the refactored code."
-  owner: skill-graph-maintainer
-  freshness: "2026-04-18"
-  drift_check: "{\"last_verified\":\"2026-04-18\"}"
-  eval_artifacts: present
-  eval_state: passing
-  routing_eval: present
+  public: "true"
   stability: experimental
-  keywords: "[\"refactor\",\"cleanup\",\"simplify\",\"extract function\",\"reduce duplication\",\"clean this up\",\"simplify this\",\"rename this\",\"split this file\",\"too long function\",\"decompose function\",\"decompose this\",\"duplicated logic\",\"duplicated validation\",\"extract duplicated\",\"behavior preserving\",\"keep tests green\"]"
+  keywords: "[\"refactor\",\"cleanup\",\"extract function\",\"reduce duplication\",\"rename module\",\"rename for clarity\",\"split this file\",\"decompose function\",\"duplicated logic\",\"behavior preserving\"]"
   triggers: "[\"refactor-skill\"]"
   examples: "[\"this 600-line function is hard to reason about — decompose it while keeping tests green\",\"extract the duplicated validation logic from these three handlers into a helper\",\"rename this module from `utils` to something that describes what it actually does\",\"split this file by responsibility; no behavior changes, tests must still pass\"]"
   anti_examples: "[\"the test is failing after my edit — what did I break?\",\"write an architecture note explaining this pattern for new team members\",\"reproduce why this function retries three times on transient network errors\"]"
-  relations: "{\"boundary\":[{\"skill\":\"debugging\",\"reason\":\"debugging chases an observed failure; refactor runs only with a green test suite and preserves behavior\"}],\"verify_with\":[\"testing-strategy\"],\"depends_on\":[{\"skill\":\"testing-strategy\",\"min_version\":\"^1.0.0\"}],\"related\":[\"tool-call-flow\",\"generative-ui\",\"context-graph\",\"error-boundary\",\"performance-testing\",\"semantics\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-engineering-method/refactor/SKILL.md
@@ -36,6 +21,10 @@ metadata:
 ---
 
 # Refactor
+
+## Concept of the skill
+
+Behavior-preserving restructuring of existing code — extracting functions, reducing duplication, renaming for clarity, splitting modules, and tightening structure, with every change verified against before/after behavior so external contracts stay identical.
 
 ## Coverage
 
@@ -46,8 +35,7 @@ metadata:
 - Structure improvements: reorganizing file and module boundaries when the current layout obscures intent
 - Verification before and after: running the same behavioral checks on both sides of the change
 
-## Philosophy
-
+## Philosophy of the skill
 Refactoring pays off only when the shape of the code has diverged from the shape of the problem. Before that point it is risk without reward — every move invites a regression, and "cleaner" is a preference, not a justification. The honest test for a legitimate refactor is not "this feels better" but "the next concrete change will be materially easier because of this one." If you cannot name the next change, stop — you are rearranging, not refactoring, and the safest rearrangement is none.
 
 ## Workflow
@@ -93,6 +81,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/refactor.json
 
 **Classification**
 - Subject: `software-engineering-method`
+- Public: `true`
 - Scope: Behavior-preserving restructuring of existing code — extracting functions, reducing duplication, renaming for clarity, splitting modules, and tightening structure, with every change verified against before/after behavior so external contracts stay identical. Portable across any language or codebase; principle-grounded, not repo-bound. Excludes bug investigation and root-cause isolation (debugging, diagnosis), adding new product behavior (feature implementation), and documentation authoring (doc-updater) even when the docs describe the refactored code.
 
 **When to use**
@@ -106,14 +95,13 @@ This skill ships a comprehension-eval artifact at [`examples/evals/refactor.json
 - the test is failing after my edit — what did I break?
 - write an architecture note explaining this pattern for new team members
 - reproduce why this function retries three times on transient network errors
-- Owned by `debugging`
 
 **Related skills**
 - Depends on: `testing-strategy`
-- Verify with: `testing-strategy`
-- Related: `tool-call-flow`, `generative-ui`, `context-graph`, `error-boundary`, `performance-testing`, `semantics`
+- Verify with: `testing-strategy`, `test-driven-development`, `test-doubles-design`
+- Related: `semantics`, `tool-call-flow`, `generative-ui`, `context-graph`, `error-boundary`, `performance-testing`
 
 **Keywords**
-- `refactor`, `cleanup`, `simplify`, `extract function`, `reduce duplication`, `clean this up`, `simplify this`, `rename this`, `split this file`, `too long function`, `decompose function`, `decompose this`, `duplicated logic`, `duplicated validation`, `extract duplicated`, `behavior preserving`, `keep tests green`
+- `refactor`, `cleanup`, `extract function`, `reduce duplication`, `rename module`, `rename for clarity`, `split this file`, `decompose function`, `duplicated logic`, `behavior preserving`
 
 <!-- skill-graph-context:end -->

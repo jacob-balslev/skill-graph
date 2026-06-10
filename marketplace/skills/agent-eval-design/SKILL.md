@@ -1,30 +1,30 @@
 ---
 name: agent-eval-design
-description: "Use when designing evaluations for AI agents, skills, routers, prompts, tool-use policies, or multi-step workflows: task sets, rubrics, graders, hard negatives, regression cases, traces, and acceptance thresholds. Do NOT use for application test planning (use `testing-strategy`), skill-library health tooling (use `skill-infrastructure`), or live debugging of a failed run (use `debugging`). Do NOT use for score this completed agent task against acceptance criteria and residual risk. Do NOT use for extract grounded project knowledge from these source files. Do NOT use for harden an LLM system against prompt injection from untrusted webpage content. Do NOT use for the iterative change process (use eval-driven-development)."
+description: "Use when designing evaluations for AI agents, skills, routers, prompts, tool-use policies, or multi-step workflows: task sets, rubrics, graders, hard negatives, regression cases, traces, and acceptance thresholds. Do NOT use for application test planning (use `testing-strategy`), skill-library health tooling (use `skill-infrastructure`), or live debugging of a failed run (use `debugging`). Do NOT use for score this completed agent task against acceptance criteria and residual risk. Do NOT use for extract grounded project knowledge from these source files. Do NOT use for harden an LLM system against prompt injection from untrusted webpage content."
 license: MIT
 compatibility: "Portable eval-design discipline for agent workflows, skill routers, prompt systems, and tool-use policies."
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"related\":[\"debugging\",\"context-engineering\",\"code-review\",\"evaluation\",\"eval-driven-development\",\"skill-router\",\"testing-strategy\",\"skill-infrastructure\",\"project-knowledge-extraction\",\"prompt-injection-defense\"],\"suppresses\":[\"evaluation\",\"eval-driven-development\",\"prompt-injection-defense\",\"project-knowledge-extraction\"],\"verify_with\":[\"skill-infrastructure\",\"epistemic-grounding\",\"evaluation\",\"testing-strategy\"]}"
   subject: ai-engineering
   scope: "Designing behavioral evaluations for AI agents, skills, routers, prompts, tool-use policies, and multi-step workflows: task sets, rubrics, graders, hard negatives, regression cases, traces, and acceptance thresholds. Portable across agentic systems and skill libraries. Excludes application-code test planning, skill-library health tooling, live failure debugging, and code-diff review."
+  public: "true"
   taxonomy_domain: ai-engineering/evaluation
   grounding: "{\"subject_matter\":\"Portable agent-evaluation design: eval task sets, rubrics, graders, trajectories, tool-use criteria, hard negatives, regression cases, thresholds, and maintenance\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://platform.openai.com/docs/guides/evals\",\"https://platform.openai.com/docs/guides/graders/\",\"https://github.com/openai/evals\",\"https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents\",\"https://google.github.io/adk-docs/evaluate/\",\"https://google.github.io/adk-docs/evaluate/criteria/\"],\"failure_modes\":[\"Eval suite contains only easy positives and misses hard negatives\",\"Rubric criteria are subjective and not observable from output, trace, or artifact\",\"Trajectory/tool-use behavior is graded only by final answer quality\",\"Model grader is accepted without calibration or spot-checks\",\"Thresholds are set from desired green rate instead of risk\",\"Agent eval design confused with application test planning, final artifact evaluation, or live debugging\"],\"evidence_priority\":\"equal\"}"
   stability: experimental
-  keywords: "[\"agent eval\",\"AI eval design\",\"skill routing eval\",\"eval rubric\",\"hard negatives\",\"grader design\",\"regression eval\",\"trace evaluation\",\"acceptance threshold\",\"prompt eval\"]"
+  keywords: "[\"agent eval\",\"agent-eval rubric\",\"rubric and grader\",\"AI eval design\",\"skill routing eval\",\"eval rubric\",\"hard negatives\",\"grader design\",\"trace evaluation\",\"acceptance threshold\"]"
   triggers: "[\"agent-eval-design\",\"agent eval design\",\"design an agent eval\",\"eval rubric design\",\"hard negative evals\"]"
   examples: "[\"design an agent eval set for whether this skill routes correctly against near-miss prompts\",\"create an agent-eval rubric and grader for grounded project-knowledge extraction outputs\",\"what hard negatives, trace checks, and thresholds should test this router before we mark routing_eval present?\"]"
   anti_examples: "[\"score this completed agent task against acceptance criteria and residual risk\",\"extract grounded project knowledge from these source files\",\"harden an LLM system against prompt injection from untrusted webpage content\"]"
-  relations: "{\"boundary\":[{\"skill\":\"evaluation\",\"reason\":\"evaluation scores a concrete completed artifact against request, evidence, and residual risk; agent-eval-design designs reusable eval suites, graders, thresholds, and hard negatives before or around behavior changes.\"},{\"skill\":\"eval-driven-development\",\"reason\":\"eval-driven-development owns the iterative change process that runs eval suites as gates; agent-eval-design owns designing the suite and grader contract itself.\"},{\"skill\":\"project-knowledge-extraction\",\"reason\":\"project-knowledge-extraction performs grounded extraction from source files; agent-eval-design designs how to evaluate that extraction behavior.\"},{\"skill\":\"prompt-injection-defense\",\"reason\":\"prompt-injection-defense designs defenses against instruction-channel attacks; agent-eval-design designs eval cases that measure whether those defenses hold.\"}],\"related\":[\"evaluation\",\"eval-driven-development\",\"skill-router\",\"context-engineering\",\"testing-strategy\",\"skill-infrastructure\",\"debugging\",\"code-review\",\"project-knowledge-extraction\",\"prompt-injection-defense\"],\"verify_with\":[\"evaluation\",\"testing-strategy\",\"skill-infrastructure\",\"epistemic-grounding\"]}"
   mental_model: "Agent eval design starts with a behavior claim and turns it into a repeatable experiment: task inputs, harness, observable output and trajectory evidence, grader, thresholds, and a regression loop. The design is only useful when it can falsify the claim with hard negatives, prior failures, and cases where the final answer looks plausible but the trace or artifact violates the contract."
   purpose: "Agent behavior changes when prompts, models, tools, context, retrieval, policies, or orchestration change. Agent eval design prevents teams from discovering those regressions in production by making expected behavior, failure boundaries, and release thresholds executable before changes ship."
+  concept_boundary: "This skill designs reusable eval suites, graders, thresholds, hard negatives, and regression cases. It does not score one completed deliverable against evidence (evaluation), run eval suites as an iterative release process (eval-driven-development), choose product test levels (testing-strategy), operate skill-library health tooling (skill-infrastructure), investigate one failed run (debugging), extract project knowledge (project-knowledge-extraction), or design prompt-injection mitigations (prompt-injection-defense)."
   analogy: "Agent eval design is a flight simulator: it creates repeatable weather, failures, and landing criteria before trusting the pilot in production airspace."
   misconception: "The common mistake is treating a few happy-path prompts and an uncalibrated LLM judge as an eval suite. Real agent evals include hard negatives, trajectory checks, observable criteria, grader calibration, risk-based thresholds, and regression cases from actual failures."
-  public: "true"
-  concept_boundary: "This skill designs reusable eval suites, graders, thresholds, hard negatives, and regression cases. It does not score one completed deliverable against evidence (evaluation), run eval suites as an iterative release process (eval-driven-development), choose product test levels (testing-strategy), operate skill-library health tooling (skill-infrastructure), investigate one failed run (debugging), extract project knowledge (project-knowledge-extraction), or design prompt-injection mitigations (prompt-injection-defense)."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/ai-engineering/agent-eval-design/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Agent Eval Design
@@ -49,8 +49,7 @@ metadata:
 
 Design evaluations for agent behavior, skill routing, prompt systems, tool-use policies, and multi-step workflows. Covers task selection, expected behavior, rubrics, graders, hard negatives, trace capture, regression cases, thresholds, coverage, and eval maintenance.
 
-## Philosophy
-
+## Philosophy of the skill
 Agent evals are behavioral contracts. They should measure whether the agent does the right thing under realistic ambiguity, not whether it can parrot the happy path.
 
 The highest-value cases are hard negatives and prior failures. A routing eval with only obvious positives gives false confidence.
@@ -134,6 +133,7 @@ An agent eval needs both outcome and process evidence. Final-answer quality matt
 
 **Classification**
 - Subject: `ai-engineering`
+- Public: `true`
 - Domain: `ai-engineering/evaluation`
 - Scope: Designing behavioral evaluations for AI agents, skills, routers, prompts, tool-use policies, and multi-step workflows: task sets, rubrics, graders, hard negatives, regression cases, traces, and acceptance thresholds. Portable across agentic systems and skill libraries. Excludes application-code test planning, skill-library health tooling, live failure debugging, and code-diff review.
 
@@ -147,14 +147,10 @@ An agent eval needs both outcome and process evidence. Final-answer quality matt
 - score this completed agent task against acceptance criteria and residual risk
 - extract grounded project knowledge from these source files
 - harden an LLM system against prompt injection from untrusted webpage content
-- Owned by `evaluation`
-- Owned by `eval-driven-development`: the iterative change process
-- Owned by `project-knowledge-extraction`
-- Owned by `prompt-injection-defense`
 
 **Related skills**
-- Verify with: `evaluation`, `testing-strategy`, `skill-infrastructure`, `epistemic-grounding`
-- Related: `evaluation`, `eval-driven-development`, `skill-router`, `context-engineering`, `testing-strategy`, `skill-infrastructure`, `debugging`, `code-review`, `project-knowledge-extraction`, `prompt-injection-defense`
+- Verify with: `skill-infrastructure`, `epistemic-grounding`, `evaluation`, `testing-strategy`
+- Related: `debugging`, `context-engineering`, `code-review`, `evaluation`, `eval-driven-development`, `skill-router`, `testing-strategy`, `skill-infrastructure`, `project-knowledge-extraction`, `prompt-injection-defense`
 
 **Concept**
 - Mental model: Agent eval design starts with a behavior claim and turns it into a repeatable experiment: task inputs, harness, observable output and trajectory evidence, grader, thresholds, and a regression loop. The design is only useful when it can falsify the claim with hard negatives, prior failures, and cases where the final answer looks plausible but the trace or artifact violates the contract.
@@ -167,6 +163,6 @@ An agent eval needs both outcome and process evidence. Final-answer quality matt
 - Truth sources: `https://platform.openai.com/docs/guides/evals`, `https://platform.openai.com/docs/guides/graders/`, `https://github.com/openai/evals`, `https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents`, `https://google.github.io/adk-docs/evaluate/`, `https://google.github.io/adk-docs/evaluate/criteria/`
 
 **Keywords**
-- `agent eval`, `AI eval design`, `skill routing eval`, `eval rubric`, `hard negatives`, `grader design`, `regression eval`, `trace evaluation`, `acceptance threshold`, `prompt eval`
+- `agent eval`, `agent-eval rubric`, `rubric and grader`, `AI eval design`, `skill routing eval`, `eval rubric`, `hard negatives`, `grader design`, `trace evaluation`, `acceptance threshold`
 
 <!-- skill-graph-context:end -->

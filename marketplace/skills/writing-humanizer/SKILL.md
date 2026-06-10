@@ -2,41 +2,23 @@
 name: writing-humanizer
 description: "Use when writing or editing human-readable prose such as docs, PRs, issues, release notes, errors, UI copy, commits, tooltips, or support replies, especially when text sounds robotic, padded, monotonous, or overly formal. Covers AI-tell removal, active voice, hedging reduction, readability diagnosis, sentence rhythm, vocabulary variety, tone mapping, paragraph rhythm, bullets-vs-prose choice, and the 5-step humanization workflow. Do NOT use for documentation routing/type selection, code-identifier naming, or in-product UI-text pattern catalogs. Do NOT use for decide kebab-case vs camelCase for this new database column. Do NOT use for draft the marketing headline for the pricing page with strong persuasion. Do NOT use for restructure this doc into a tutorial format with progressive disclosure. Do NOT use for rewrite this UI button label so it names the actual action instead of saying Submit. Do NOT use for rename this React component across all call-sites in the repo. Do NOT use for audit this WCAG 2."
 license: MIT
-compatibility: "Stack-agnostic prose-humanization rules. The AI-tell catalog, voice-conversion decision tree, readability formulas, sentence-rhythm patterns, tone-mapping table, and responsible prose-fingerprint guidance apply to any human-readable text in any product domain — substitute the equivalents from your own audience and brand voice."
 allowed-tools: Read Grep Edit
 metadata:
-  schema_version: "8"
-  version: "1.1.0"
   subject: design
+  public: "true"
   scope: "Writing and editing human-readable prose — docs, PRs, issues, release notes, errors, UI copy, commits, tooltips, support replies — especially when text sounds robotic, padded, monotonous, or overly formal: AI-tell removal, active voice, hedging reduction, readability diagnosis, sentence rhythm, vocabulary variety, tone mapping, paragraph rhythm, the bullets-vs-prose choice, and the 5-step humanization workflow. Portable across any written communication; principle-grounded, not repo-bound. Excludes documentation routing/type selection, code-identifier naming, and in-product UI-text pattern catalogs (microcopy)."
   taxonomy_domain: design/content
-  owner: skill-graph-maintainer
-  freshness: "2026-05-18"
-  drift_check: "{\"last_verified\":\"2026-05-18\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"AI-tell detection\",\"AI-tell removal\",\"prose humanization\",\"passive-to-active voice\",\"hedging-pattern removal\",\"readability scoring diagnosis\",\"sentence-rhythm pattern\",\"3-beat sentence variety\",\"hook-body-landing paragraph\",\"tone mapping framework\"]"
+  triggers: "[\"humanize this text\",\"sounds AI-generated\",\"strip the AI tells\",\"make this read like a human wrote it\",\"this prose is robotic\"]"
   examples: "[\"this PR description sounds AI-generated — strip the tells and rewrite it concisely\",\"rewrite this onboarding paragraph in the active voice with shorter average sentence length\",\"audit this release-notes draft for Tier 1 AI tells (delve, leverage, comprehensive, testament)\",\"this paragraph starts every sentence with The dashboard — rotate the openers and vary the rhythm\",\"humanize this error-message body so it stops sounding like a corporate FAQ\",\"drop the hollow intensifiers and over-qualification from this tooltip\",\"the docs team flagged this prose as robotic — apply the 5-step humanization workflow\"]"
   anti_examples: "[\"decide kebab-case vs camelCase for this new database column\",\"draft the marketing headline for the pricing page with strong persuasion\",\"restructure this doc into a tutorial format with progressive disclosure\",\"rewrite this UI button label so it names the actual action instead of saying Submit\",\"rename this React component across all call-sites in the repo\",\"audit this WCAG 2.2 contrast violation on the dashboard\"]"
   relations: "{\"boundary\":[{\"skill\":\"microcopy\",\"reason\":\"microcopy owns the specific in-product UX-text patterns (button labels, empty-state structure, tooltip rules, dialog rules, toast rules); writing-humanizer owns AI-tell removal and prose-rhythm rules across any human-readable text including but not limited to UI — the same 'rewrite this for humans' prompt routes by whether the surface is a specific UI pattern or any other prose\"}],\"related\":[\"linguistics\",\"microcopy\",\"semantics\"],\"verify_with\":[\"linguistics\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  mental_model: "Writing humanization is prose-quality repair, not authorship laundering. The useful primitives are AI tells (predictable filler, hedging, passive voice, hollow intensifiers), readability signals (sentence length, paragraph density, jargon load), rhythm signals (opening-word variety, sentence-length variance, paragraph cadence), audience register, and evidence specificity. The workflow moves through those primitives in order: remove tells, clarify actors, improve readability, vary rhythm, then calibrate tone to the surface. Detector-related concepts such as perplexity and burstiness are treated as rough diagnostic signals, not proof of authorship."
-  purpose: "This skill exists because agent-written prose often carries visible artifacts of the model distribution: generic verbs, over-polished transitions, low-specificity claims, uniform paragraph shape, and needless hedging. Those artifacts make docs, PRs, UI copy, and support text feel less trustworthy even when the facts are correct. The skill replaces \\\"make it sound human\\\" as a vague style request with a repeatable edit pass that improves clarity, reader trust, and surface-appropriate tone while preserving technical accuracy."
+  mental_model: "|"
+  purpose: "|"
+  concept_boundary: "|"
   analogy: "Writing humanization is like audio mastering: the recording may already contain the right notes, but mastering removes hiss, balances loudness, and restores dynamics so a listener can trust what they hear."
-  misconception: "The wrong mental model is that humanizing means adding slang, contractions, typos, or random sentence fragments until a detector score changes. That treats the detector as the audience. The real audience is the reader. Good humanization preserves truth, sharpens specificity, varies rhythm where it helps, and refuses edits that make the text less clear or less honest."
-  concept: "{\"definition\":\"Writing humanization is the discipline of turning robotic or AI-patterned prose into clear, direct, reader-trustworthy text while preserving truth and intent.\",\"mental_model\":\"Writing humanization is prose-quality repair, not authorship laundering. Its primitives are AI tells, readability signals, rhythm signals, audience register, evidence specificity, and detector-limit awareness.\",\"purpose\":\"The skill replaces vague requests to make writing sound human with a repeatable edit pass that improves clarity, specificity, rhythm, and trust across docs, PRs, UI-adjacent prose, and support text.\",\"boundary\":\"It does not prove authorship, promise detector-proof output, bypass review processes, design persuasive marketing, choose documentation structure, or own specialized UI microcopy patterns.\",\"taxonomy\":\"Design/content skill adjacent to linguistics, microcopy, and semantics; distinct from copywriting and documentation architecture.\",\"analogy\":\"Writing humanization is like audio mastering: the recording may already contain the right notes, but mastering removes hiss, balances loudness, and restores dynamics so a listener can trust what they hear.\",\"misconception\":\"Humanizing is not adding slang, contractions, typos, or random fragments until a detector score changes; the reader, not the detector, is the audience.\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "This skill does not prove whether text was written by a human or an AI, and it must not promise detector-proof output. AI-writing detectors are probabilistic and can produce false positives, especially on short, polished, or non-native-English text. Use this skill to make prose clearer, more specific, and less robotic; do not use it to misrepresent authorship, bypass academic or compliance review, design brand persuasion, choose documentation structure, or write specialized UI microcopy patterns."
+  misconception: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/writing-humanizer/SKILL.md
@@ -45,6 +27,10 @@ metadata:
 ---
 
 # Writing Humanizer
+
+## Concept of the skill
+
+Writing humanization is the discipline of turning robotic or AI-patterned prose into clear, direct, reader-trustworthy text while preserving truth and intent — prose-quality repair, not authorship laundering. It works on a fixed set of primitives: **AI tells** (predictable filler, hedging, passive voice, hollow intensifiers), **readability signals** (sentence length, paragraph density, jargon load), **rhythm signals** (opening-word variety, sentence-length variance, paragraph cadence), **audience register**, and **evidence specificity**. The skill replaces "make it sound human" as a vague style request with a repeatable five-step edit pass — Tell Scan, Readability Check, Structural Rewrite, Rhythm Pass, Voice Calibration — that moves through those primitives in order: remove the tells, clarify who the actor is, improve readability, vary the rhythm, then calibrate tone to the surface (an API doc, an error message, a release note, a commit). Detector-style signals such as perplexity and burstiness are treated as rough diagnostic clues, never as proof of authorship and never as the target; the reader, not the detector, is the audience. The non-negotiable constraint is honesty: every edit must keep the text at least as clear and as accurate as it was, and the skill refuses to misrepresent authorship or promise detector-proof output.
 
 ## Coverage
 
@@ -61,7 +47,7 @@ The full pipeline for transforming AI-generated or robotic text into clear, huma
 - **Anti-patterns** — over-qualification, repetitive transitions, the enumeration trap, hollow intensifiers
 - **The 5-step humanization workflow** — Tell Scan, Readability Check, Structural Rewrite, Rhythm Pass, Voice Calibration
 
-## Philosophy
+## Philosophy of the skill
 
 AI-generated text has consistent, detectable failure modes: excessive hedging, passive voice, hollow superlatives, monotonous sentence structure, and vocabulary that signals machine authorship. Left unchecked, these patterns erode trust with human readers, invite detector flags or editorial pushback, and produce text that is longer and less clear than necessary. Every agent in a system produces text that humans read, and every piece of that text reflects on the product.
 
@@ -428,6 +414,7 @@ Before finalizing any humanized text, confirm:
 
 **Classification**
 - Subject: `design`
+- Public: `true`
 - Domain: `design/content`
 - Scope: Writing and editing human-readable prose — docs, PRs, issues, release notes, errors, UI copy, commits, tooltips, support replies — especially when text sounds robotic, padded, monotonous, or overly formal: AI-tell removal, active voice, hedging reduction, readability diagnosis, sentence rhythm, vocabulary variety, tone mapping, paragraph rhythm, the bullets-vs-prose choice, and the 5-step humanization workflow. Portable across any written communication; principle-grounded, not repo-bound. Excludes documentation routing/type selection, code-identifier naming, and in-product UI-text pattern catalogs (microcopy).
 
@@ -439,6 +426,7 @@ Before finalizing any humanized text, confirm:
 - humanize this error-message body so it stops sounding like a corporate FAQ
 - drop the hollow intensifiers and over-qualification from this tooltip
 - the docs team flagged this prose as robotic — apply the 5-step humanization workflow
+- Triggers: `humanize this text`, `sounds AI-generated`, `strip the AI tells`, `make this read like a human wrote it`, `this prose is robotic`
 
 **Not for**
 - decide kebab-case vs camelCase for this new database column
@@ -454,10 +442,10 @@ Before finalizing any humanized text, confirm:
 - Related: `linguistics`, `microcopy`, `semantics`
 
 **Concept**
-- Mental model: Writing humanization is prose-quality repair, not authorship laundering. The useful primitives are AI tells (predictable filler, hedging, passive voice, hollow intensifiers), readability signals (sentence length, paragraph density, jargon load), rhythm signals (opening-word variety, sentence-length variance, paragraph cadence), audience register, and evidence specificity. The workflow moves through those primitives in order: remove tells, clarify actors, improve readability, vary rhythm, then calibrate tone to the surface. Detector-related concepts such as perplexity and burstiness are treated as rough diagnostic signals, not proof of authorship.
-- Purpose: This skill exists because agent-written prose often carries visible artifacts of the model distribution: generic verbs, over-polished transitions, low-specificity claims, uniform paragraph shape, and needless hedging. Those artifacts make docs, PRs, UI copy, and support text feel less trustworthy even when the facts are correct. The skill replaces \"make it sound human\" as a vague style request with a repeatable edit pass that improves clarity, reader trust, and surface-appropriate tone while preserving technical accuracy.
+- Mental model: |
+- Purpose: |
 - Analogy: Writing humanization is like audio mastering: the recording may already contain the right notes, but mastering removes hiss, balances loudness, and restores dynamics so a listener can trust what they hear.
-- Common misconception: The wrong mental model is that humanizing means adding slang, contractions, typos, or random sentence fragments until a detector score changes. That treats the detector as the audience. The real audience is the reader. Good humanization preserves truth, sharpens specificity, varies rhythm where it helps, and refuses edits that make the text less clear or less honest.
+- Common misconception: |
 
 **Keywords**
 - `AI-tell detection`, `AI-tell removal`, `prose humanization`, `passive-to-active voice`, `hedging-pattern removal`, `readability scoring diagnosis`, `sentence-rhythm pattern`, `3-beat sentence variety`, `hook-body-landing paragraph`, `tone mapping framework`

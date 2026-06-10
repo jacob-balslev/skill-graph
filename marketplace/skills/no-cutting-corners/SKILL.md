@@ -1,24 +1,23 @@
 ---
 name: no-cutting-corners
-description: "Enforce five non-negotiable quality pillars as a pre-output gate: complete reporting (show ALL items, never filter unilaterally), verification (no claim of works/done/exists without a tool-call receipt in the same turn), thoroughness (every acceptance criterion verified with evidence; docs ship with the change), enrichment ('improve' adds capability, never trims), and anti-shortcut (exhaust deterministic lookup before guessing; findings demand action, not filing). Use when reviewing enumerated output for completeness, when an agent claims something works without evidence, when marking a task done, or when asked to 'improve' anything. Do NOT use for the cross-domain quality-standards catalog (OWASP, WCAG, SOLID, etc (use best-practice). Do NOT use for compression once a complete enumeration exists (use summarization). Do NOT use for choosing or shortening the route through a task (use task-path-optimization). Do NOT use for the review methodology and feedback phrasing (use code-review)."
+description: "Enforce five non-negotiable quality pillars as a pre-output gate: complete reporting (show ALL items, never filter unilaterally), verification (no claim of works/done/exists without a tool-call receipt in the same turn), thoroughness (every acceptance criterion verified with evidence; docs ship with the change), enrichment ('improve' adds capability, never trims), and anti-shortcut (exhaust deterministic lookup before guessing; findings demand action, not filing). Use when reviewing enumerated output for completeness, when an agent claims something works without evidence, when marking a task done, or when asked to 'improve' anything."
 metadata:
   subject: software-engineering-method
+  public: "true"
   scope: "Portable across any project, repo, or agent runtime. Consolidates five non-negotiable quality pillars — completeness, verification, thoroughness, enrichment, and anti-shortcut — into one enforcement reference an agent runs as a gate before any enumerated output, any 'done' claim, any 'improve' task, or any handling of findings. The pillars are universal countermeasures to RLHF-trained shortcut behavior (scope reduction, unverified confidence, simplify-as-improve, guess-instead-of-look); a project supplies only its own concrete instantiation of what 'complete' and 'verified' mean, not the doctrine itself."
   triggers: "[\"no-cutting-corners\",\"completeness-check\",\"thoroughness-gate\"]"
   keywords: "[\"complete reporting\",\"show all items\",\"no unverified claims\",\"acceptance criteria gate\",\"improve means enrich\",\"zero guessing\",\"findings require action\",\"thoroughness\",\"anti-shortcut\",\"no cutting corners\"]"
-  relations: "{\"related\":[\"methodical\",\"constraint-awareness\",\"evaluation\",\"methodology\",\"prioritization\"],\"boundary\":[{\"skill\":\"best-practice\",\"reason\":\"best-practice owns the cross-domain quality-standards catalog (OWASP, WCAG, SOLID, etc.); no-cutting-corners owns the completeness/verification/enrichment/anti-shortcut enforcement mandate that applies regardless of domain.\"},{\"skill\":\"summarization\",\"reason\":\"summarization owns compression once a complete enumeration exists; no-cutting-corners owns requiring the complete enumeration first, before any compression is allowed.\"},{\"skill\":\"task-path-optimization\",\"reason\":\"task-path-optimization owns choosing or shortening the route through a task; no-cutting-corners owns preserving completeness, verification, and thoroughness within whatever route is chosen.\"},{\"skill\":\"code-review\",\"reason\":\"code-review owns the review methodology and feedback phrasing; no-cutting-corners owns the completeness/verification gate the review output itself must clear.\"}],\"verify_with\":[\"methodical\",\"evaluation\"]}"
+  relations: "{\"related\":[\"constraint-awareness\",\"methodology\",\"prioritization\",\"methodical\",\"evaluation\",\"best-practice\",\"summarization\",\"code-review\"],\"suppresses\":[\"task-path-optimization\",\"methodical\"],\"verify_with\":[\"evaluation\",\"methodical\",\"canonical-repo-structure\"]}"
   mental_model: "Every shortcut an agent takes is a variation of one root cause: optimizing for perceived helpfulness (shorter, cleaner, more positive, more confident) over actual completeness. The five pillars are five independent gates against five faces of that root cause — completeness against filtering, verification against unfounded confidence, thoroughness against premature 'done', enrichment against simplify-as-improve, and anti-shortcut against guess-instead-of-look. Run as a checklist before output, they convert a strong trained bias into a catchable, nameable failure at the moment it would occur."
   purpose: "To make the recurring quality shortcuts legible and gateable rather than relying on the agent to resist a training bias it cannot feel. The five failure modes appear independently, get corrected, and still recur because the bias is strong; consolidating them into one named doctrine lets an agent self-check against the whole class in one pass instead of rediscovering each rule the hard way."
+  concept_boundary: "This skill is the consolidated ENFORCEMENT gate — a pre-output checklist of five non-negotiables. It is not the deep explanatory model of why completeness fails or the step-level execution architecture (that is `methodical`, which it cross-references), not the cross-domain standards catalog (`best-practice`), not the scoring of whether a result is good enough (`evaluation`), and not compression after enumeration is complete (`summarization`)."
   analogy: "The five pillars are like a pre-flight checklist read aloud before takeoff: not new knowledge, but a forced, itemized stop that catches the one gauge you would have skipped because everything 'looked fine.'"
   misconception: "The common misconception is that cutting a corner is 'being efficient' or 'being helpful' — showing the top findings, saying it should work, improving by simplifying. Each of those is not efficiency; it is the silent transfer of a decision (what to cut, whether it works, what 'better' means) from the user to the agent, destroying information the user needed to decide."
-  public: "true"
-  concept_boundary: "This skill is the consolidated ENFORCEMENT gate — a pre-output checklist of five non-negotiables. It is not the deep explanatory model of why completeness fails or the step-level execution architecture (that is `methodical`, which it cross-references), not the cross-domain standards catalog (`best-practice`), not the scoring of whether a result is good enough (`evaluation`), and not compression after enumeration is complete (`summarization`)."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-engineering-method/no-cutting-corners/SKILL.md
   skill_graph_export_description: shortened for Agent Skills 1024-character description limit; canonical source keeps the full routing contract
   skill_graph_canonical_description_length: "1121"
-  skill_graph_export_description_projection: boundary
 ---
 
 ## Concept Card
@@ -41,6 +40,10 @@ metadata:
 
 # No Cutting Corners — Five Pillars of Thoroughness
 
+## Concept of the skill
+
+Every shortcut an agent takes is a variation of one root cause: optimizing for perceived helpfulness (shorter, cleaner, more positive, more confident) over actual completeness.
+
 ## Domain Context
 
 **What is this skill?** It enforces five non-negotiable quality pillars as a pre-output gate: complete reporting (show ALL items, no unilateral filtering), verification (no unverified claims, banned phrases), thoroughness (acceptance-criteria verification, docs in the same commit), enrichment (improve = enrich, never simplify), and anti-shortcut (zero-guessing, deterministic-before-reasoning, findings require action). Use it when reviewing any enumerated output for completeness, when an agent claims something works without evidence, when marking a task done, when asked to "improve" or "clean up" anything, or when findings are filed without being acted on.
@@ -61,8 +64,7 @@ Ask the five questions before output: *Did I Show All? Did I Verify Each? Did I 
 
 This skill consolidates five non-negotiable quality-enforcement mandates into a single doctrine reference: complete reporting (the most violated rule), verification requirements (no unverified claims), thoroughness gates (acceptance criteria and documentation), enrichment doctrine (what "improve" means), and anti-shortcut enforcement (zero-guessing, deterministic hierarchy, action-oriented findings). The pillars govern any agent output — every task, audit, report, enumerated list, and implementation.
 
-## Philosophy
-
+## Philosophy of the skill
 Agents default to "reduce scope to be helpful." This is trained behavior — reinforcement learning rewarded summarization, brevity, digestible subsets, and confident-sounding answers. In most casual contexts this is fine. In any context where completeness and honesty are the point, it destroys value.
 
 The user wants to see everything and make their own decisions about what matters. "Key findings" means something was hidden. "Should work" means nothing was verified. "Improve" read as "simplify" means capabilities were removed. "Filed to memory" means nothing was fixed. These five failure modes appear independently, get corrected through feedback, are codified into separate rules, and still recur because the bias is strong. Consolidating them into a single doctrine makes the pattern legible: every shortcut is a variation of the same root cause — optimizing for perceived helpfulness over actual completeness. (For the deep explanatory model of *why* this happens — RLHF sycophancy rates, summarization bias, attention dilution — and the step-level execution architecture, see the companion `methodical` skill; this skill is the consolidated enforcement gate that sits on top of that model.)
@@ -736,20 +738,15 @@ External grounding for the root-cause thesis and the self-verification counterme
 
 **Classification**
 - Subject: `software-engineering-method`
+- Public: `true`
 - Scope: Portable across any project, repo, or agent runtime. Consolidates five non-negotiable quality pillars — completeness, verification, thoroughness, enrichment, and anti-shortcut — into one enforcement reference an agent runs as a gate before any enumerated output, any 'done' claim, any 'improve' task, or any handling of findings. The pillars are universal countermeasures to RLHF-trained shortcut behavior (scope reduction, unverified confidence, simplify-as-improve, guess-instead-of-look); a project supplies only its own concrete instantiation of what 'complete' and 'verified' mean, not the doctrine itself.
 
 **When to use**
 - Triggers: `no-cutting-corners`, `completeness-check`, `thoroughness-gate`
 
-**Not for**
-- Owned by `best-practice`: the cross-domain quality-standards catalog (OWASP, WCAG, SOLID, etc
-- Owned by `summarization`: compression once a complete enumeration exists
-- Owned by `task-path-optimization`: choosing or shortening the route through a task
-- Owned by `code-review`: the review methodology and feedback phrasing
-
 **Related skills**
-- Verify with: `methodical`, `evaluation`
-- Related: `methodical`, `constraint-awareness`, `evaluation`, `methodology`, `prioritization`
+- Verify with: `evaluation`, `methodical`, `canonical-repo-structure`
+- Related: `constraint-awareness`, `methodology`, `prioritization`, `methodical`, `evaluation`, `best-practice`, `summarization`, `code-review`
 
 **Concept**
 - Mental model: Every shortcut an agent takes is a variation of one root cause: optimizing for perceived helpfulness (shorter, cleaner, more positive, more confident) over actual completeness. The five pillars are five independent gates against five faces of that root cause — completeness against filtering, verification against unfounded confidence, thoroughness against premature 'done', enrichment against simplify-as-improve, and anti-shortcut against guess-instead-of-look. Run as a checklist before output, they convert a strong trained bias into a catchable, nameable failure at the moment it would occur.

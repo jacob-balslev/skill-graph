@@ -5,44 +5,25 @@ license: MIT
 compatibility: "Markdown, strategy memos, market-entry analysis, product strategy, innovation strategy"
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: reasoning-strategy
+  public: "true"
   scope: "Blue Ocean Strategy for market-creating strategy work: diagnose the current value curve, reconstruct market boundaries, target noncustomers, design eliminate/reduce/raise/create moves, and test utility-price-cost-adoption viability. Excludes Five Forces industry-pressure diagnosis, Seven Powers moat taxonomy, generic positioning copy, and OKR execution tracking."
   taxonomy_domain: foundations/strategy
-  owner: skill-graph-maintainer
-  freshness: "2026-05-28"
-  drift_check: "{\"last_verified\":\"2026-05-28\",\"truth_source_hashes\":{\"skills/skills/meta-methods/blue-ocean-strategy/references/blue-ocean-strategy-sources.md\":\"d985a1d7003dfa0fe468e437471846ce86950cba32db2b53d5f6e9c717a37290\",\"skills/skills/meta-methods/blue-ocean-strategy/references/upstream-displacement-2026-05-28.md\":\"a7818b1441ec7e01974d3b2da1b0af130dd32306c1c4d015d9c246964a4992ee\"}}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
-  stability: stable
+  stability: experimental
   keywords: "[\"blue ocean strategy\",\"value innovation\",\"strategy canvas\",\"four actions framework\",\"ERRC grid\",\"eliminate reduce raise create\",\"six paths framework\",\"buyer utility map\",\"three tiers of noncustomers\",\"uncontested market space\"]"
   examples: "[\"apply Blue Ocean Strategy to this crowded market\",\"build a strategy canvas and ERRC grid for our product category\",\"how can we create new demand instead of competing feature-for-feature?\",\"use the six paths framework to find market boundary reconstruction options\",\"pressure-test whether this idea is real value innovation or just differentiation\"]"
   anti_examples: "[\"analyze supplier power, buyer power, entrants, substitutes, and rivalry in this industry\",\"classify which durable moat this company has using Seven Powers\",\"turn this company strategy into aspiration, where to play, how to win, capabilities, and systems\",\"rank these roadmap initiatives by impact and effort\"]"
-  relations: "{\"boundary\":[{\"skill\":\"porters-five-forces\",\"reason\":\"blue-ocean-strategy owns value-curve redesign and market-boundary reconstruction when the task is to create new demand rather than diagnose existing industry profit pressure\"},{\"skill\":\"seven-powers\",\"reason\":\"blue-ocean-strategy owns market-creating value innovation; seven-powers should not co-route when the task is not durable firm-level power classification\"},{\"skill\":\"playing-to-win\",\"reason\":\"blue-ocean-strategy owns Blue Ocean tools such as the strategy canvas, ERRC grid, noncustomers, and utility-price-cost adoption tests; playing-to-win should not co-route when the task is specifically value-innovation design\"},{\"skill\":\"prioritization\",\"reason\":\"blue-ocean-strategy owns strategic value-curve choices before an initiative list exists; prioritization should not co-route when the task is market-creating strategy design\"}],\"related\":[\"playing-to-win\",\"porters-five-forces\",\"seven-powers\",\"framework-fit-analysis\",\"constraint-awareness\"],\"verify_with\":[\"epistemic-grounding\",\"methodology\"]}"
+  relations: "{\"related\":[\"framework-fit-analysis\",\"constraint-awareness\",\"playing-to-win\",\"porters-five-forces\",\"seven-powers\",\"prioritization\"],\"suppresses\":[\"porters-five-forces\",\"seven-powers\",\"playing-to-win\"],\"verify_with\":[\"epistemic-grounding\",\"methodology\"]}"
   grounding: "{\"subject_matter\":\"Blue Ocean Strategy by W. Chan Kim and Renee Mauborgne\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://www.blueoceanstrategy.com/what-is-blue-ocean-strategy/\",\"https://www.blueoceanstrategy.com/tools/value-innovation/\",\"https://www.blueoceanstrategy.com/tools/strategy-canvas/\",\"https://www.blueoceanstrategy.com/tools/four-actions-framework/\",\"https://www.blueoceanstrategy.com/tools/errc-grid/\",\"https://www.blueoceanstrategy.com/tools/six-paths-framework/\",\"https://www.blueoceanstrategy.com/tools/buyer-utility-map/\",\"https://www.blueoceanstrategy.com/tools/three-tiers-of-noncustomers/\",\"skills/skills/meta-methods/blue-ocean-strategy/references/blue-ocean-strategy-sources.md\",\"skills/skills/meta-methods/blue-ocean-strategy/references/upstream-displacement-2026-05-28.md\"],\"failure_modes\":[\"competitor_benchmarking_disguised_as_blue_ocean\",\"differentiation_without_cost_logic\",\"low_cost_without_buyer_utility\",\"ERRC_grid_lists_actions_without_new_value_curve\",\"current_customers_only_no_noncustomers\",\"six_paths_used_as_brainstorming_without_boundary_reconstruction\",\"commercial_viability_not_tested\"],\"evidence_priority\":\"general_knowledge_first\"}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  comprehension_state: present
   mental_model: "Blue Ocean Strategy treats strategy as reconstruction of demand and value, not as winning a head-to-head fight inside fixed industry boundaries. The primitives are the current strategic profile, factors of competition, buyer utility, price, cost, adoption hurdles, noncustomers, alternative markets, and the eliminate/reduce/raise/create choices that produce a new value curve. A valid blue ocean move lifts buyer value and lowers or changes cost logic enough to open new demand."
   purpose: "This skill prevents agents from calling ordinary differentiation, feature bundling, or low-price competition a blue ocean. It forces the work through the strategy canvas, boundary reconstruction, noncustomer insight, the Four Actions Framework, ERRC grid, and commercial viability checks so the answer shows how the move creates new demand rather than merely performing better on the old industry's factors."
+  concept_boundary: "Blue Ocean Strategy is for designing value innovation and new market space. It is not Porter's Five Forces industry-structure diagnosis, Seven Powers moat-source classification, Playing to Win integrated strategy-cascade formulation, generic positioning, OKR execution design, or backlog prioritization. Those methods may feed or follow the work, but they do not replace value-curve reconstruction."
   analogy: Blue Ocean Strategy is like redrawing a game board so new players want to enter and old scoring rules stop deciding the winner.
   misconception: "The common mistake is treating Blue Ocean Strategy as creative differentiation or an instruction to avoid competitors. The method is stricter: it must reconstruct buyer value, reduce or eliminate costly old factors, create or raise factors that unlock demand, and pass utility, price, cost, and adoption tests."
-  structural_verdict: PASS
-  truth_verdict: BROKEN
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  drift_status: EXTERNAL_UNHASHED
-  public: "true"
-  concept_boundary: "Blue Ocean Strategy is for designing value innovation and new market space. It is not Porter's Five Forces industry-structure diagnosis, Seven Powers moat-source classification, Playing to Win integrated strategy-cascade formulation, generic positioning, OKR execution design, or backlog prioritization. Those methods may feed or follow the work, but they do not replace value-curve reconstruction."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/blue-ocean-strategy/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
-  skill_graph_export_description_projection_truncated: "true"
+  skill_graph_export_description_projection: anti_examples
 ---
 
 ## Concept of the skill
@@ -262,12 +243,17 @@ Before finishing, verify:
 - `references/blue-ocean-strategy-sources.md`
 - `references/upstream-displacement-2026-05-28.md`
 
+## Do NOT Use When
+
+Use another skill when the task falls outside the declared `scope`, matches an `anti_examples` prompt, or is owned by a more specific related skill.
+
 ## Skill Graph context
 
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
 - Subject: `reasoning-strategy`
+- Public: `true`
 - Domain: `foundations/strategy`
 - Scope: Blue Ocean Strategy for market-creating strategy work: diagnose the current value curve, reconstruct market boundaries, target noncustomers, design eliminate/reduce/raise/create moves, and test utility-price-cost-adoption viability. Excludes Five Forces industry-pressure diagnosis, Seven Powers moat taxonomy, generic positioning copy, and OKR execution tracking.
 
@@ -283,14 +269,10 @@ Before finishing, verify:
 - classify which durable moat this company has using Seven Powers
 - turn this company strategy into aspiration, where to play, how to win, capabilities, and systems
 - rank these roadmap initiatives by impact and effort
-- Owned by `porters-five-forces`: value-curve redesign and market-boundary reconstruction
-- Owned by `seven-powers`: market-creating value innovation
-- Owned by `playing-to-win`: Blue Ocean tools such as the strategy canvas, ERRC grid, noncustomers, and utility-price-cost adoption tests
-- Owned by `prioritization`: strategic value-curve choices before an initiative list exists
 
 **Related skills**
 - Verify with: `epistemic-grounding`, `methodology`
-- Related: `playing-to-win`, `porters-five-forces`, `seven-powers`, `framework-fit-analysis`, `constraint-awareness`
+- Related: `framework-fit-analysis`, `constraint-awareness`, `playing-to-win`, `porters-five-forces`, `seven-powers`, `prioritization`
 
 **Concept**
 - Mental model: Blue Ocean Strategy treats strategy as reconstruction of demand and value, not as winning a head-to-head fight inside fixed industry boundaries. The primitives are the current strategic profile, factors of competition, buyer utility, price, cost, adoption hurdles, noncustomers, alternative markets, and the eliminate/reduce/raise/create choices that produce a new value curve. A valid blue ocean move lifts buyer value and lowers or changes cost logic enough to open new demand.

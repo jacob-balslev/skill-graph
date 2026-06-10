@@ -1,43 +1,31 @@
 ---
 name: system-interface-contracts
-description: "Use when defining or reviewing contracts between systems, modules, services, agents, jobs, events, APIs, or teams: ownership, inputs, outputs, invariants, compatibility, errors, idempotency, and versioning. Do NOT use for REST resource design alone (use `api-design`), async event contract detail (use `event-contract-design`), database schemas (use `data-modeling`), or post-failure debugging (use `debugging`). Do NOT use for design the REST endpoints, status codes, and pagination. Do NOT use for create database tables and constraints. Do NOT use for investigate why this existing integration is failing in production. Do NOT use for write an ADR after the interface decision has already been accepted. Do NOT use for asynchronous event envelopes, schemas, topics, and compatibility (use event-contract-design). Do NOT use for stored data structure (use data-modeling)."
+description: "Use when defining or reviewing contracts between systems, modules, services, agents, jobs, events, APIs, or teams: ownership, inputs, outputs, invariants, compatibility, errors, idempotency, and versioning. Do NOT use for REST resource design alone (use `api-design`), async event contract detail (use `event-contract-design`), database schemas (use `data-modeling`), or post-failure debugging (use `debugging`). Do NOT use for design the REST endpoints, status codes, and pagination. Do NOT use for create database tables and constraints. Do NOT use for investigate why this existing integration is failing in production. Do NOT use for write an ADR after the interface decision has already been accepted."
 license: MIT
 compatibility: "Portable contract-design discipline across code modules, services, queues, APIs, webhooks, jobs, and agent interfaces."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"event-storming\",\"debugging\",\"bounded-context-mapping\",\"api-design\",\"event-contract-design\",\"state-machine-modeling\"],\"suppresses\":[\"event-contract-design\",\"architecture-decision-records\",\"data-modeling\"],\"verify_with\":[\"testing-strategy\",\"code-review\",\"bounded-context-mapping\"]}"
   subject: software-architecture
   scope: "Designing and reviewing cross-boundary interface contracts across modules, services, jobs, APIs, event producers/consumers, webhooks, data engineering surfaces, and AI agents/tools. Owns the stable promise at the boundary: parties, semantics, data shape, invariants, failure behavior, idempotency, security/trust, operational SLOs, compatibility, deploy choreography, observability, and verification. Excludes detailed HTTP resource design, async event envelope/topic design, persistence schema design, root-cause debugging, and ADR recording after the contract decision is accepted."
+  public: "true"
   taxonomy_domain: architecture/contracts
-  owner: skill-graph-maintainer
-  freshness: "2026-05-11"
-  drift_check: "{\"last_verified\":\"2026-05-11\"}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"interface contract\",\"system boundary\",\"contract design\",\"compatibility contract\",\"input output invariant\",\"event schema\",\"module boundary\",\"idempotency contract\",\"versioning contract\",\"error contract\"]"
   examples: "[\"define the contract between the ingestion job and the dashboard view layer\",\"what invariants must this event producer and consumer share?\",\"review this module boundary for missing ownership and compatibility rules\",\"we need an interface contract before several agents implement opposite sides of the boundary\"]"
   anti_examples: "[\"design the REST endpoints, status codes, and pagination\",\"create database tables and constraints\",\"investigate why this existing integration is failing in production\",\"write an ADR after the interface decision has already been accepted\"]"
-  relations: "{\"boundary\":[{\"skill\":\"event-contract-design\",\"reason\":\"event-contract-design owns asynchronous event envelopes, schemas, topics, and compatibility; system-interface-contracts owns the broader boundary discipline\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling owns stored data structure; system-interface-contracts owns producer/consumer expectations and compatibility\"},{\"skill\":\"architecture-decision-records\",\"reason\":\"architecture-decision-records records the adopted contract decision; this skill designs the contract\"}],\"related\":[\"bounded-context-mapping\",\"api-design\",\"event-storming\",\"event-contract-design\",\"state-machine-modeling\",\"debugging\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
-  grounding: "{\"subject_matter\":\"Portable cross-boundary system interface contract design\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://spec.openapis.org/oas/v3.2.0.html\",\"https://www.asyncapi.com/docs/reference/specification/v3.1.0\",\"https://github.com/cloudevents/spec\",\"https://modelcontextprotocol.io/specification/2025-06-18/basic/index\",\"https://modelcontextprotocol.io/specification/2025-06-18/server/tools\",\"https://google-a2a.github.io/A2A/specification/\",\"https://platform.openai.com/docs/guides/structured-outputs\",\"https://docs.pact.io/\",\"https://www.rfc-editor.org/rfc/rfc9457\",\"https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/\",\"https://protobuf.dev/best-practices/dos-donts/\",\"https://google.aip.dev/180\",\"https://json-schema.org/draft/2020-12\",\"https://semver.org/\",\"https://www.rfc-editor.org/rfc/rfc2119\",\"https://sre.google/sre-book/service-level-objectives/\",\"https://www.rfc-editor.org/rfc/rfc9413\",\"https://docs.confluent.io/platform/current/schema-registry/fundamentals/schema-evolution.html\",\"https://martinfowler.com/articles/consumerDrivenContracts.html\",\"https://martinfowler.com/bliki/TolerantReader.html\",\"https://www.hyrumslaw.com/\",\"https://github.com/bitol-io/open-data-contract-standard\"],\"failure_modes\":[\"boundary_parties_not_named\",\"schema_confused_with_behavioral_contract\",\"compatibility_direction_unspecified\",\"semantic_break_labeled_additive\",\"idempotency_window_omitted\",\"expired_draft_treated_as_ratified_idempotency_standard\",\"slo_or_freshness_promise_omitted\",\"error_shape_human_only\",\"tool_contract_lacks_permissions_or_output_schema\",\"consumer_contract_not_verified_before_deploy\",\"external_contract_churn_leaks_internal_domain\",\"observability_cannot_detect_contract_violation\"],\"evidence_priority\":\"public_source_plus_local_skill_context\"}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
+  grounding: "{\"subject_matter\":\"Portable cross-boundary system interface contract design\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://spec.openapis.org/oas/v3.2.0.html\",\"https://www.asyncapi.com/docs/reference/specification/v3.1.0\",\"https://github.com/cloudevents/spec\",\"https://modelcontextprotocol.io/specification/2025-06-18/basic/index\",\"https://modelcontextprotocol.io/specification/2025-06-18/server/tools\",\"https://google-a2a.github.io/A2A/specification/\",\"https://platform.openai.com/docs/guides/structured-outputs\",\"https://docs.pact.io/\",\"https://www.rfc-editor.org/rfc/rfc9457\",\"https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/\",\"https://protobuf.dev/best-practices/dos-donts/\",\"https://google.aip.dev/180\",\"https://json-schema.org/draft/2020-12\",\"https://semver.org/\",\"https://www.rfc-editor.org/rfc/rfc2119\",\"https://sre.google/sre-book/service-level-objectives/\",\"https://www.rfc-editor.org/rfc/rfc9413\",\"https://docs.confluent.io/platform/current/schema-registry/fundamentals/schema-evolution.html\",\"https://martinfowler.com/articles/consumerDrivenContracts.html\",\"https://martinfowler.com/bliki/TolerantReader.html\",\"https://www.hyrumslaw.com/\",\"https://github.com/bitol-io/open-data-contract-standard\"],\"failure_modes\":[\"boundary_parties_not_named\",\"schema_confused_with_behavioral_contract\",\"compatibility_direction_unspecified\",\"semantic_break_labeled_additive\",\"idempotency_window_omitted\",\"expired_draft_treated_as_ratified_idempotency_standard\",\"slo_or_freshness_promise_omitted\",\"error_shape_human_only\",\"tool_contract_lacks_permissions_or_output_schema\",\"consumer_contract_not_verified_before_deploy\",\"external_contract_churn_leaks_internal_domain\",\"observability_cannot_detect_contract_violation\"],\"evidence_priority\":\"general_knowledge_first\"}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-architecture/system-interface-contracts/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # System Interface Contracts
+
+## Concept of the skill
+
+Designing and reviewing cross-boundary interface contracts across modules, services, jobs, APIs, event producers/consumers, webhooks, data engineering surfaces, and AI agents/tools.
 
 ## Concept of the Skill
 
@@ -70,8 +58,7 @@ Design and audit contracts across boundaries: modules, services, event producers
 - **Verification:** schema validation, consumer-driven contract tests, provider verification, positive and negative fixtures, compatibility checks, and production monitors.
 - **Agent-facing contracts:** tool schemas, output schemas, side-effect declarations, confirmation requirements, permissions, result formats, and machine-actionable errors for agents and orchestrators.
 
-## Philosophy
-
+## Philosophy of the skill
 A boundary without a contract is a rumor. The implementation may work today because both sides accidentally agree, but the first independent change exposes the missing contract.
 
 Contracts should be specific enough to protect both sides from drift and small enough that teams can keep them true. The contract is not the implementation. It is the stable promise at the boundary.
@@ -291,6 +278,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/system-interf
 
 **Classification**
 - Subject: `software-architecture`
+- Public: `true`
 - Domain: `architecture/contracts`
 - Scope: Designing and reviewing cross-boundary interface contracts across modules, services, jobs, APIs, event producers/consumers, webhooks, data engineering surfaces, and AI agents/tools. Owns the stable promise at the boundary: parties, semantics, data shape, invariants, failure behavior, idempotency, security/trust, operational SLOs, compatibility, deploy choreography, observability, and verification. Excludes detailed HTTP resource design, async event envelope/topic design, persistence schema design, root-cause debugging, and ADR recording after the contract decision is accepted.
 
@@ -305,13 +293,10 @@ This skill ships a comprehension-eval artifact at [`examples/evals/system-interf
 - create database tables and constraints
 - investigate why this existing integration is failing in production
 - write an ADR after the interface decision has already been accepted
-- Owned by `event-contract-design`: asynchronous event envelopes, schemas, topics, and compatibility
-- Owned by `data-modeling`: stored data structure
-- Owned by `architecture-decision-records`
 
 **Related skills**
-- Verify with: `testing-strategy`, `code-review`
-- Related: `bounded-context-mapping`, `api-design`, `event-storming`, `event-contract-design`, `state-machine-modeling`, `debugging`
+- Verify with: `testing-strategy`, `code-review`, `bounded-context-mapping`
+- Related: `event-storming`, `debugging`, `bounded-context-mapping`, `api-design`, `event-contract-design`, `state-machine-modeling`
 
 **Grounding**
 - Mode: `universal`

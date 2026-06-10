@@ -5,34 +5,24 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"version-control\"],\"suppresses\":[\"version-control\"]}"
   subject: software-engineering-method
+  public: "true"
+  scope: "Use when serializing merges across multiple agent branches, resolving conflicts between agent outputs, or cleaning stale task branches. Covers atomic locking, idempotency checks, non-fast-forward handling, and worktree cleanup. Do NOT use for ordinary git operations outside an agent merge queue (use `version-control`)."
   taxonomy_domain: engineering/git
-  owner: skill-graph-maintainer
-  freshness: "2026-04-01"
-  drift_check: "{\"last_verified\":\"2026-04-01\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"merge queue\",\"atomic lock\",\"idempotency\",\"no-ff merge\",\"worktree cleanup\",\"agent branch\",\"master merge\"]"
   triggers: "[\"merge-queue\",\"agent-merge\"]"
-  relations: "{\"related\":[\"version-control\"],\"boundary\":[\"version-control\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-engineering-method/merge-queue/SKILL.md
 ---
 # Merge Queue (Serialized Commit Control)
+
+## Concept of the skill
+
+Use when serializing merges across multiple agent branches, resolving conflicts between agent outputs, or cleaning stale task branches.
+
 
 ## Domain Context
 
@@ -58,8 +48,7 @@ Atomic merge locking (`merge.lock`), branch idempotency checks, `--no-ff` (non-f
 
 > The "Gatekeeper" for the master branch. Prevents agents from causing race conditions during the final commit phase.
 
-## Philosophy
-
+## Philosophy of the skill
 Merge queues exist to protect the main branch from concurrent merge failures. When multiple agents modify overlapping code simultaneously, merging them independently creates a false sense of safety — each agent's work may pass CI alone but break when combined. A merge queue serializes merges, ensuring every commit is tested against the current state of main plus all queued predecessors before pushing. The result is a main branch that is always in a known-good state, with clear task-level history preserved via non-fast-forward commits. This prevents both silent conflicts (where two agents unwittingly overwrite each other's work) and long debugging sessions trying to untangle which merge introduced a regression.
 
 ## 1. The Merge Protocol
@@ -120,7 +109,9 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `software-engineering-method`
+- Public: `true`
 - Domain: `engineering/git`
+- Scope: Use when serializing merges across multiple agent branches, resolving conflicts between agent outputs, or cleaning stale task branches. Covers atomic locking, idempotency checks, non-fast-forward handling, and worktree cleanup. Do NOT use for ordinary git operations outside an agent merge queue (use `version-control`).
 
 **When to use**
 - Triggers: `merge-queue`, `agent-merge`

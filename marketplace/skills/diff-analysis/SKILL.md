@@ -5,34 +5,24 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"version-control\",\"semantics\"],\"suppresses\":[\"code-review\"],\"verify_with\":[\"refactor\",\"snapshot-testing\"]}"
   subject: quality-assurance
+  public: "true"
+  scope: "Use when analyzing `git diff`, reviewing a patch before commit, or explaining what a changeset does. Covers unified diff anatomy, hunk interpretation, semantic-vs-formatting separation, blast-radius tracing, hidden-risk scanning, and intent-vs-diff comparison. Do NOT use for full code-review verdicts (use `code-review`), git workflow decisions (use `version-control`), or visual diffs."
   taxonomy_domain: quality/doctrine
-  owner: skill-graph-maintainer
-  freshness: "2026-03-28"
-  drift_check: "{\"last_verified\":\"2026-03-28\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"git diff\",\"unified diff\",\"patch analysis\",\"changeset review\",\"diff analysis\",\"read a diff\"]"
   triggers: "[\"diff-skill\"]"
-  relations: "{\"related\":[\"semantics\",\"version-control\"],\"boundary\":[\"code-review\"],\"verify_with\":[\"refactor\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/diff-analysis/SKILL.md
 ---
 # Diff Analysis
+
+## Concept of the skill
+
+Use when analyzing `git diff`, reviewing a patch before commit, or explaining what a changeset does.
+
 
 ## Domain Context
 
@@ -48,8 +38,7 @@ metadata:
 
 This skill covers reading and interpreting unified diffs and patches: the anatomy of `diff --git` output, hunk-by-hunk semantic extraction, file-level change classification (rename, mechanical rewrite, local logic edit, contract edit, test-only edit), separating signal from formatting noise, blast radius estimation for changed contracts and types, intent-vs-diff mismatch detection, and writing concise behavior-focused diff summaries. Does not cover full code review verdicts, git workflow/branching decisions, or visual/pixel comparison.
 
-## Philosophy
-
+## Philosophy of the skill
 Agents that skim diffs miss hidden behavior changes buried in formatting churn. A one-line guard removal inside a 300-line reformat can silently widen access. This skill exists because agents need a repeatable reading discipline -- structure first, meaning second, risk last -- instead of narrating every added and removed line equally. Without it, agents produce line-by-line restatements that miss the semantic delta and say "looks safe" without naming the blast radius.
 
 A diff is not just a list of changed lines. It is a compact representation of intent, scope, and risk. This skill helps agents read a patch accurately, separate real behavior changes from noise, and turn raw hunks into useful conclusions.
@@ -214,14 +203,16 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `quality-assurance`
+- Public: `true`
 - Domain: `quality/doctrine`
+- Scope: Use when analyzing `git diff`, reviewing a patch before commit, or explaining what a changeset does. Covers unified diff anatomy, hunk interpretation, semantic-vs-formatting separation, blast-radius tracing, hidden-risk scanning, and intent-vs-diff comparison. Do NOT use for full code-review verdicts (use `code-review`), git workflow decisions (use `version-control`), or visual diffs.
 
 **When to use**
 - Triggers: `diff-skill`
 
 **Related skills**
-- Verify with: `refactor`
-- Related: `semantics`, `version-control`
+- Verify with: `refactor`, `snapshot-testing`
+- Related: `version-control`, `semantics`
 
 **Keywords**
 - `git diff`, `unified diff`, `patch analysis`, `changeset review`, `diff analysis`, `read a diff`

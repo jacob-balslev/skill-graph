@@ -3,28 +3,21 @@ name: theme-system-design
 description: "Use when designing a theme system — design tokens, semantic token layering, CSS custom property strategy, runtime theme switching, and theme contract guarantees. Do NOT use for one-off color choices, brand-only palette work, or framework-specific styling-library configuration. Do NOT use for Choose the exact hex value for the brand's primary blue. Do NOT use for Configure Tailwind's content array and purge settings. Do NOT use for Implement the dark mode toggle interaction."
 license: CC-BY-4.0
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: frontend-engineering
-  owner: skill-graph-maintainer
-  freshness: "2026-05-12"
-  drift_check: "{\"last_verified\":\"2026-05-12\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
+  public: "true"
+  scope: "Designing a theme system — a tiered token contract (reference → system/semantic → component), CSS custom property delivery, runtime theme switching (persistence, pre-paint application, propagation), and additive-vs-breaking theme contract guarantees. Portable across web design systems; principle-grounded, not repo-bound. Excludes one-off color choices, palette/brand-value design, dark-mode platform detection, and styling-library runtime configuration."
+  taxonomy_domain: engineering/frontend
   stability: experimental
   keywords: "[\"theme token contract\",\"theme semantic layer\",\"theme variables\",\"css custom properties\",\"runtime theme switching\",\"token tiers\",\"theme contract\",\"design tokens community group\",\"theme parity\",\"token naming\"]"
   triggers: "[\"theme system\",\"design tokens\",\"theme switching\",\"css variables for theming\",\"token architecture\"]"
   examples: "[\"Design a three-tier token system (reference → system → component) for a multi-brand product\",\"Add a third theme to an existing two-theme system without breaking the component contracts\",\"Move from hard-coded colors to CSS custom properties with runtime switching\"]"
   anti_examples: "[\"Choose the exact hex value for the brand's primary blue\",\"Configure Tailwind's content array and purge settings\",\"Implement the dark mode toggle interaction\"]"
-  relations: "{\"related\":[\"color-system-design\",\"design-system-architecture\",\"visual-design-foundations\",\"dark-mode-implementation\"]}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
+  relations: "{\"related\":[\"color-system-design\",\"design-system-architecture\",\"visual-design-foundations\",\"dark-mode-implementation\",\"typography-system\"]}"
+  mental_model: "|"
+  purpose: "|"
+  concept_boundary: "|"
+  analogy: "A theme system is to a product's appearance what a translation layer is to a multilingual app — components speak in stable intent words (\\\"surface\\\", \\\"danger\\\"), and the active theme is the dictionary that resolves each word to a concrete value, so swapping the dictionary repaints everything without rewriting a single component's vocabulary."
+  misconception: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/theme-system-design/SKILL.md
@@ -32,6 +25,10 @@ metadata:
 ---
 
 # Theme System Design
+
+## Concept of the skill
+
+A theme system is a contract between design decisions and component code, structured as named tokens arranged in tiers so that appearance can change without touching the components that render it. Its core mechanism is **indirection**: components consume intent-named tokens (a "surface" color, a "primary text" color), and a theme supplies the mapping from those intent names to concrete values. The mainstream model uses three tiers — reference tokens (raw values like `blue.500 = #1E66F5`), system or semantic tokens (intent-named like `color.background.surface`), and component tokens (component-specific overrides like `button.primary.background`) — with components allowed to read only the system and component tiers. On the web the runtime delivery vehicle is CSS custom properties scoped to a selector (`:root` for the default, `[data-theme="dark"]` for alternates), which cascade and inherit so that overriding a subtree's theme is a single attribute change. Runtime switching adds three operational concerns — persisting the choice, applying it before first paint to avoid a flash, and propagating it to components that read theme imperatively. What the system buys is that three different rates of change (rarely-changing brand values, occasionally-changing theme assignments, continuously-changing components) each get their own surface to evolve on, so a theme swap repaints the whole product, a new theme is just a new set of system-token values, and a removed token fails loudly at build time instead of silently at runtime.
 
 ## Coverage
 A theme system is a contract between design decisions and component code, expressed as named tokens that components consume and themes resolve. The mainstream model uses three tiers — reference tokens (raw values: blue.500 = #1E66F5), system or semantic tokens (intent-named: color.background.surface, color.text.primary), and component tokens (component-specific overrides: button.primary.background). Components consume system and component tokens only; themes provide reference-token-to-system-token mappings. This indirection is what allows a single theme swap to repaint the whole product without component edits.
@@ -42,7 +39,7 @@ Runtime switching has three operational pieces: persistence (localStorage or a c
 
 Theme contracts make additive changes safe and breaking changes visible. Adding a new system token is safe; renaming or removing one is a breaking change requiring a deprecation cycle. Components that read tokens by exact name should not be expected to handle missing tokens gracefully — a missing token resolves to the CSS variable's fallback value (or invalid, depending on the property), which is rarely what's wanted in production.
 
-## Philosophy
+## Philosophy of the skill
 The indirection earns its complexity by separating two rates of change: brand decisions change rarely, theme assignments (which brand color means "danger") change occasionally, and components change continuously. A flat token system collapses these into one rate and forces every component to know about every brand value. The three-tier model gives each rate of change its own surface to evolve on.
 
 Semantic names beat descriptive names. color.background.surface tells a component author what to use; color.gray.100 forces them to know that gray.100 happens to be the surface color today and changes meaning when the theme flips. The discipline is to resist convenience names that leak appearance into the contract.
@@ -69,6 +66,9 @@ Semantic names beat descriptive names. color.background.surface tells a componen
 
 **Classification**
 - Subject: `frontend-engineering`
+- Public: `true`
+- Domain: `engineering/frontend`
+- Scope: Designing a theme system — a tiered token contract (reference → system/semantic → component), CSS custom property delivery, runtime theme switching (persistence, pre-paint application, propagation), and additive-vs-breaking theme contract guarantees. Portable across web design systems; principle-grounded, not repo-bound. Excludes one-off color choices, palette/brand-value design, dark-mode platform detection, and styling-library runtime configuration.
 
 **When to use**
 - Design a three-tier token system (reference → system → component) for a multi-brand product
@@ -82,7 +82,13 @@ Semantic names beat descriptive names. color.background.surface tells a componen
 - Implement the dark mode toggle interaction
 
 **Related skills**
-- Related: `color-system-design`, `design-system-architecture`, `visual-design-foundations`, `dark-mode-implementation`
+- Related: `color-system-design`, `design-system-architecture`, `visual-design-foundations`, `dark-mode-implementation`, `typography-system`
+
+**Concept**
+- Mental model: |
+- Purpose: |
+- Analogy: A theme system is to a product's appearance what a translation layer is to a multilingual app — components speak in stable intent words (\"surface\", \"danger\"), and the active theme is the dictionary that resolves each word to a concrete value, so swapping the dictionary repaints everything without rewriting a single component's vocabulary.
+- Common misconception: |
 
 **Keywords**
 - `theme token contract`, `theme semantic layer`, `theme variables`, `css custom properties`, `runtime theme switching`, `token tiers`, `theme contract`, `design tokens community group`, `theme parity`, `token naming`

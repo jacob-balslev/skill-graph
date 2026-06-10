@@ -5,21 +5,21 @@ license: MIT
 compatibility: "Provider-agnostic; principles apply across Claude, GPT, Gemini, and open-weight models. Layer mapping varies by harness (Claude Code, OpenCode, Cursor, Continue, Aider) but the five-layer abstraction holds."
 allowed-tools: Read Grep Bash Edit
 metadata:
+  relations: "{\"related\":[\"prompt-craft\",\"skill-router\",\"context-window\",\"tool-call-strategy\",\"agent-engineering\"],\"suppresses\":[\"skill-router\",\"skill-scaffold\"],\"verify_with\":[\"code-review\",\"epistemic-grounding\"]}"
   subject: agent-ops
   scope: "Designing what information reaches an LLM agent before it reasons — system prompt, persistent memory, always-loaded rules, injected skills, and user prompt — and diagnosing wrong answers despite clear instructions. Covers the four context failure modes (missing, stale, wrong, overwhelming), the five-layer context stack, four context-quality metrics (injection precision/recall, utilization, freshness), the Frequent Intentional Compaction protocol, subagent delegation for context-heavy work, and the failure-mode decision tree. Portable across any agent runtime; principle-grounded, not repo-bound. Excludes prompt wording (prompt-craft), authoring a new SKILL.md (skill-scaffold), and which skill the router activates (skill-router)."
+  public: "true"
   taxonomy_domain: agent/context
   stability: experimental
   keywords: "[\"context engineering\",\"context failure\",\"agent context\",\"context quality\",\"context design\",\"missing context\",\"stale context\",\"wrong context\",\"overwhelming context\",\"context window\"]"
   examples: "[\"the agent ignored the instruction and used the wrong query helper — was the right skill loaded?\",\"we keep getting generic answers from the agent even though the skill has the answer — what's wrong?\",\"I want to design which skills get injected for which prompts — where do I start?\",\"the agent's quality drops in long sessions — when should I compact?\",\"diagnose this agent failure: it had the file open but produced wrong output anyway\",\"we have 200 skills and the agent picks the wrong ones — fix the injection\",\"should I read this 5K-line file directly or delegate to a subagent?\",\"audit our context pipeline — what's loaded when, and is any of it stale?\"]"
   anti_examples: "[\"improve this prompt's wording to get better outputs\",\"scaffold a new SKILL.md for our team's deploy procedure\",\"the router picked the wrong skill for this query — debug it\",\"review this AI-generated PR for correctness\",\"write a doc explaining our agent system to a new joiner\",\"investigate why production crashed at 3am\"]"
-  relations: "{\"boundary\":[{\"skill\":\"skill-scaffold\",\"reason\":\"skill-scaffold authors the structure of a single SKILL.md file; context-engineering decides which skills should exist, get loaded, and reach the model in the first place\"},{\"skill\":\"skill-router\",\"reason\":\"skill-router is the runtime mechanism that selects skills for a query; context-engineering is the design discipline behind the entire context stack the router operates within\"}],\"related\":[\"prompt-craft\",\"skill-router\"],\"verify_with\":[\"code-review\"]}"
   grounding: "{\"subject_matter\":\"Context engineering for LLM agents\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents\",\"https://platform.claude.com/docs/en/build-with-claude/context-windows\",\"https://platform.claude.com/cookbook/tool-use-context-engineering-context-engineering-tools\",\"https://www.ibm.com/think/topics/context-engineering\",\"https://arxiv.org/abs/2510.26493\"],\"failure_modes\":[\"context_window_treated_as_unlimited\",\"prompt_wording_treated_as_context_design\",\"retrieval_dump_replaces_selection\",\"tool_results_accumulate_without_clearing\",\"stale_memory_overrides_current_evidence\"],\"evidence_priority\":\"equal\"}"
   mental_model: "Context engineering is the discipline of compiling the smallest sufficient, highest-signal working set for an LLM at each step: instructions, memory, retrieved facts, tool outputs, examples, conversation history, and task metadata. The primitives are selection, structure, sequencing, compaction, freshness, provenance, and isolation. More context is not automatically better; every token either supports the next decision or competes with the signal the model should attend to."
   purpose: "This skill exists because many agent failures look like reasoning failures but come from a bad informational environment: the right fact was absent, stale memory won over current evidence, irrelevant retrieval buried the signal, or raw tool output accumulated after its value expired. It gives teams a way to design and debug the context pipeline instead of endlessly rewriting prompts."
+  concept_boundary: "This skill does not write the wording of a single prompt, author a new SKILL.md, or decide the router result for one query. It also does not promise that context engineering fixes every model error. Use it when the failure or design question concerns what information reaches the model, how it is structured, when it is refreshed, and what should be withheld, summarized, delegated, or cleared."
   analogy: "Context engineering is like packing a surgical tray: success depends less on owning every possible instrument and more on putting the right clean tools in the right order before the operation starts."
   misconception: "The common mistake is treating context engineering as prompt stuffing: retrieve everything, paste every rule, keep every tool result, and hope the model sorts it out. That creates context pollution. Good context engineering is selective, source-aware, time-aware, and willing to remove information once it no longer helps."
-  public: "true"
-  concept_boundary: "This skill does not write the wording of a single prompt, author a new SKILL.md, or decide the router result for one query. It also does not promise that context engineering fixes every model error. Use it when the failure or design question concerns what information reaches the model, how it is structured, when it is refreshed, and what should be withheld, summarized, delegated, or cleared."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/context-engineering/SKILL.md
@@ -28,6 +28,10 @@ metadata:
 ---
 
 # Context Engineering
+
+## Concept of the skill
+
+Context engineering is the discipline of compiling the smallest sufficient, highest-signal working set for an LLM at each step: instructions, memory, retrieved facts, tool outputs, examples, conversation history, and task metadata.
 
 ## Coverage
 
@@ -41,8 +45,7 @@ metadata:
 - Debugging decision tree: how to diagnose any agent failure by walking from missing-context through overwhelming-context before blaming the model
 - The verification checklist: gates a context-engineering review must pass before declaring the pipeline healthy
 
-## Philosophy
-
+## Philosophy of the skill
 The model is a reasoning engine that reasons over whatever is in its context window. If the context is wrong, the reasoning is correct but the conclusion is wrong. This means most agent failures are context failures, not model failures.
 
 Without this discipline, teams blame the model for mistakes caused by missing keywords, stale skill content, or an overwhelmed window. Context engineering provides the diagnostic framework to identify *why* an agent produced a wrong answer and the design principles to prevent recurrence. It treats the context window as a deliberate design surface — not a dumping ground — so that the model's native reasoning produces the correct output without heroic prompting.
@@ -359,6 +362,7 @@ Use this checklist when designing a new skill, debugging a failure, or auditing 
 
 **Classification**
 - Subject: `agent-ops`
+- Public: `true`
 - Domain: `agent/context`
 - Scope: Designing what information reaches an LLM agent before it reasons — system prompt, persistent memory, always-loaded rules, injected skills, and user prompt — and diagnosing wrong answers despite clear instructions. Covers the four context failure modes (missing, stale, wrong, overwhelming), the five-layer context stack, four context-quality metrics (injection precision/recall, utilization, freshness), the Frequent Intentional Compaction protocol, subagent delegation for context-heavy work, and the failure-mode decision tree. Portable across any agent runtime; principle-grounded, not repo-bound. Excludes prompt wording (prompt-craft), authoring a new SKILL.md (skill-scaffold), and which skill the router activates (skill-router).
 
@@ -379,12 +383,10 @@ Use this checklist when designing a new skill, debugging a failure, or auditing 
 - review this AI-generated PR for correctness
 - write a doc explaining our agent system to a new joiner
 - investigate why production crashed at 3am
-- Owned by `skill-scaffold`
-- Owned by `skill-router`
 
 **Related skills**
-- Verify with: `code-review`
-- Related: `prompt-craft`, `skill-router`
+- Verify with: `code-review`, `epistemic-grounding`
+- Related: `prompt-craft`, `skill-router`, `context-window`, `tool-call-strategy`, `agent-engineering`
 
 **Concept**
 - Mental model: Context engineering is the discipline of compiling the smallest sufficient, highest-signal working set for an LLM at each step: instructions, memory, retrieved facts, tool outputs, examples, conversation history, and task metadata. The primitives are selection, structure, sequencing, compaction, freshness, provenance, and isolation. More context is not automatically better; every token either supports the next decision or competes with the signal the model should attend to.

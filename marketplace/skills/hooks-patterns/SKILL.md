@@ -5,6 +5,7 @@ license: MIT
 allowed-tools: Read Grep
 metadata:
   subject: frontend-engineering
+  public: "true"
   scope: "React Hooks as a discipline — when a render is the right shape for state, why the Rules of Hooks exist as a compile-time invariant, how the dependency array encodes a closure/rerender contract, when useEffect is the wrong primitive, derived vs stored state, when to extract a custom hook, and when memoization (useMemo, useCallback) is a footgun. Covers React 18+ (automatic batching, concurrent rendering); portable across React codebases; principle-grounded, not repo-bound. Excludes general React rendering models (rendering-models), the client/server boundary (client-server-boundary), component composition (component-architecture), and application-wide state location (state-management)."
   taxonomy_domain: engineering/frontend
   stability: experimental
@@ -13,13 +14,11 @@ metadata:
   examples: "[\"review a React Hooks useEffect whose dependency array is missing a variable and decide whether to add it, hoist the value, use an Effect Event, or remove the effect\",\"decide whether a React Hooks derived value should live in useState plus useEffect or simply be computed during render\",\"explain why the Rules of Hooks are a call-order invariant, not just a convention\",\"audit a React component for unnecessary useMemo, useCallback, and memo wrappers after React Compiler adoption\"]"
   anti_examples: "[\"choose between Server Components and Client Components for a new page\",\"decide where app state lives across server, client UI, URL, and persistent storage\",\"pick between SSR, SSG, ISR, streaming, and client rendering for a route\",\"design Suspense boundaries, loading fallbacks, and streamed data fetching for a page\"]"
   relations: "{\"related\":[\"rendering-models\",\"client-server-boundary\",\"component-architecture\",\"state-management\",\"suspense-patterns\",\"server-components-design\",\"server-actions-design\",\"performance-engineering\"],\"boundary\":[{\"skill\":\"state-management\",\"reason\":\"state-management owns where state lives across the application; hooks-patterns owns the in-component discipline of expressing client state with hook primitives.\"},{\"skill\":\"client-server-boundary\",\"reason\":\"client-server-boundary owns serialization and use-client/use-server placement; hooks-patterns owns hook rules once code is on the client side.\"},{\"skill\":\"rendering-models\",\"reason\":\"rendering-models owns SSR, SSG, ISR, streaming, request-time, and client rendering choices; hooks-patterns owns hook semantics inside interactive React components.\"},{\"skill\":\"suspense-patterns\",\"reason\":\"suspense-patterns owns boundary and fallback design for async UI; hooks-patterns owns lower-level hook dependencies, effects, memoization, and custom-hook extraction.\"}],\"verify_with\":[\"code-review\",\"testing-strategy\",\"performance-engineering\"]}"
-  grounding: "{\"subject_matter\":\"Portable React Hooks semantics and patterns for client components\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://react.dev/reference/rules/rules-of-hooks\",\"https://react.dev/reference/eslint-plugin-react-hooks/lints/exhaustive-deps\",\"https://react.dev/learn/you-might-not-need-an-effect\",\"https://react.dev/learn/reusing-logic-with-custom-hooks\",\"https://react.dev/reference/react/useEffectEvent\",\"https://react.dev/reference/react/useMemo\",\"https://react.dev/reference/react/useCallback\",\"https://react.dev/reference/react/memo\",\"https://github.com/reactwg/react-18/discussions/21\",\"../skills/skills/frontend-engineering/hooks-patterns/references/hooks-patterns-2026-06-07.md\"],\"failure_modes\":[\"useEffect_treated_as_general_when_x_changes_primitive\",\"derived_state_stored_and_resynchronized\",\"dependency_array_lies_about_closure_inputs\",\"memoization_used_without_profiler_or_memoized_consumer\",\"custom_hook_extracted_without_reuse_or_name\",\"react_19_effect_event_and_compiler_guidance_ignored\"],\"evidence_priority\":\"equal\"}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "Hooks are to function components what stack frames are to function calls — they let a function remember things across calls without breaking referential transparency from the outside, by tracking state in a slot array indexed by call order, and the Rules of Hooks are the same kind of invariant as 'do not goto into the middle of a stack frame': violating them produces undefined behavior masked by garbage collection rather than visible crashes."
   misconception: "|"
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/hooks-patterns/SKILL.md
@@ -29,11 +28,15 @@ metadata:
 
 # Hooks Patterns
 
+## Concept of the skill
+
+React Hooks are the discipline of treating `useState`, `useEffect`, `useMemo`, `useCallback`, `useRef`, and their kin not as a generic toolkit but as primitives with precise semantics, all resting on one mechanism: React identifies hooks by **call order**, matching the first hook call in a render to slot 0 of the component's fiber, the second to slot 1, and so on. Every "rule" of hooks falls out of preserving that order — the Rules of Hooks (top-level only, React-functions only) exist to keep slot indices stable across renders; dependency arrays exist because each callback captures a closure over the render that created it, so a missing or reference-unstable dependency is a stale-closure or over-firing bug; `useEffect` exists to *synchronize with systems React does not own* (DOM, network, timers, third-party widgets), not to compute derived state that belongs in render; custom hooks exist to *reuse or name* stateful logic, not to shorten a long component; and `useMemo`/`useCallback`/`memo` stabilize referential identity only when a memoized consumer or a provably-expensive computation makes that worthwhile. React 18/19 semantics — automatic batching, interruptible concurrent rendering, Strict Mode double-invocation, Effect Events, and the React Compiler's automatic memoization — change the calculus around effects and manual memoization but never the underlying call-order invariant. The skill's posture at every hook call is one question: *what invariant am I expressing, and what is the cheapest primitive that expresses it?*
+
 ## Coverage
 
 The discipline of using React Hooks correctly: why the Rules of Hooks are a call-order invariant rather than a convention, how the dependency array encodes a contract between a closure and the next render, when `useEffect` is the wrong primitive (and what the right one is), the difference between *derived* values and *stored* values, the three legitimate reasons to extract a custom hook, when `useMemo`, `useCallback`, and `memo` actually prevent rerenders and when they merely add overhead, and the React 18/19 semantics that change the calculus: automatic batching, concurrent rendering, Strict Mode effect stress checks, Effect Events, and React Compiler.
 
-## Philosophy
+## Philosophy of the skill
 
 A React component is a function from props and state to a description of UI. Hooks are the primitives that let the function remember things across calls without breaking referential transparency from the outside — to the calling renderer, each render is a fresh function call producing fresh output; to the component, `useState` returns "the same" state across renders.
 
@@ -209,6 +212,7 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `frontend-engineering`
+- Public: `true`
 - Domain: `engineering/frontend`
 - Scope: React Hooks as a discipline — when a render is the right shape for state, why the Rules of Hooks exist as a compile-time invariant, how the dependency array encodes a closure/rerender contract, when useEffect is the wrong primitive, derived vs stored state, when to extract a custom hook, and when memoization (useMemo, useCallback) is a footgun. Covers React 18+ (automatic batching, concurrent rendering); portable across React codebases; principle-grounded, not repo-bound. Excludes general React rendering models (rendering-models), the client/server boundary (client-server-boundary), component composition (component-architecture), and application-wide state location (state-management).
 
@@ -238,10 +242,6 @@ After applying this skill, verify:
 - Purpose: |
 - Analogy: Hooks are to function components what stack frames are to function calls — they let a function remember things across calls without breaking referential transparency from the outside, by tracking state in a slot array indexed by call order, and the Rules of Hooks are the same kind of invariant as 'do not goto into the middle of a stack frame': violating them produces undefined behavior masked by garbage collection rather than visible crashes.
 - Common misconception: |
-
-**Grounding**
-- Mode: `universal`
-- Truth sources: `https://react.dev/reference/rules/rules-of-hooks`, `https://react.dev/reference/eslint-plugin-react-hooks/lints/exhaustive-deps`, `https://react.dev/learn/you-might-not-need-an-effect`, `https://react.dev/learn/reusing-logic-with-custom-hooks`, `https://react.dev/reference/react/useEffectEvent`, `https://react.dev/reference/react/useMemo`, `https://react.dev/reference/react/useCallback`, `https://react.dev/reference/react/memo`, `https://github.com/reactwg/react-18/discussions/21`, `../skills/skills/frontend-engineering/hooks-patterns/references/hooks-patterns-2026-06-07.md`
 
 **Keywords**
 - `React Hooks`, `Rules of Hooks`, `useEffect dependencies`, `exhaustive deps`, `useEffectEvent`, `custom hooks`, `derived state`, `stale closure`, `useMemo useCallback`, `React Compiler`

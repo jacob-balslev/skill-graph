@@ -5,38 +5,21 @@ license: MIT
 compatibility: "Portable technology-selection discipline for application frameworks, libraries, SDKs, platforms, runtimes, data stores, UI kits, and agent tooling."
 allowed-tools: Read Grep WebSearch WebFetch
 metadata:
-  schema_version: "8"
-  version: "1.1.0"
+  relations: "{\"related\":[\"performance-engineering\",\"owasp-security\",\"refactor\",\"agent-engineering\",\"architecture-decision-records\",\"dependency-architecture\"],\"suppresses\":[\"dependency-architecture\",\"architecture-decision-records\"],\"verify_with\":[\"architecture-decision-records\",\"dependency-architecture\",\"seven-powers\"]}"
   subject: software-architecture
   scope: "Choosing, replacing, or justifying a framework, library, SDK, runtime, database, UI kit, agent tool, or platform by fit — weighing requirement fit, hard constraints, quality attributes, team capability, evidence strength, ecosystem maturity, maintenance health, integration and migration cost, performance envelope, operability, security posture, supply-chain posture, AI/codegen readiness, lock-in, reversibility, and exit cost. Portable across any technology-selection decision; principle-grounded, not repo-bound. Excludes routine dependency hygiene (dependency-architecture), documenting an already-accepted decision (architecture-decision-records), and framework-specific implementation work."
+  public: "true"
   taxonomy_domain: architecture/technology-selection
-  owner: skill-graph-maintainer
-  freshness: "2026-06-07"
-  drift_check: "{\"last_verified\":\"2026-06-07\"}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"framework fit\",\"technology selection\",\"trade study\",\"library choice\",\"SDK evaluation\",\"platform evaluation\",\"build vs buy\",\"migration cost\",\"exit cost\",\"vendor lock-in\"]"
   examples: "[\"should we use Next.js server actions, route handlers, or a separate API service for this workflow?\",\"evaluate whether adding this charting library is worth it under bundle, accessibility, maintenance, and exit constraints\",\"compare Supabase, Firebase, and custom Postgres for this project under real constraints\",\"we want to replace this framework - what fit analysis should happen before an ADR?\",\"should we standardize on Codex, Claude Code, OpenCode, or a custom agent harness for this team?\"]"
   anti_examples: "[\"audit installed packages for duplication and supply-chain risk\",\"write the ADR after we chose the framework\",\"implement this feature in the framework we already selected\",\"profile a slow page and optimize bottlenecks\",\"design the full production lifecycle of a multi-agent system after the platform is chosen\"]"
-  relations: "{\"boundary\":[{\"skill\":\"dependency-architecture\",\"reason\":\"dependency-architecture governs dependency graph shape and package boundaries; framework-fit-analysis evaluates a candidate technology decision before or during adoption\"},{\"skill\":\"architecture-decision-records\",\"reason\":\"architecture-decision-records records accepted decisions; framework-fit-analysis compares options before acceptance\"}],\"related\":[\"architecture-decision-records\",\"dependency-architecture\",\"performance-engineering\",\"owasp-security\",\"refactor\",\"agent-engineering\"],\"verify_with\":[\"architecture-decision-records\",\"dependency-architecture\"]}"
   grounding: "{\"subject_matter\":\"Technology fit analysis and trade-study discipline for selecting frameworks, libraries, SDKs, runtimes, databases, platforms, UI kits, and AI agent tools\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://www.thoughtworks.com/radar\",\"https://www.thoughtworks.com/en-us/insights/blog/build-your-own-technology-radar\",\"https://www.sei.cmu.edu/library/architecture-tradeoff-analysis-method-collection/\",\"https://www.nasa.gov/reference/6-8-decision-analysis/\",\"https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html\",\"https://learn.microsoft.com/en-us/azure/well-architected/\",\"https://docs.cloud.google.com/architecture/framework\",\"https://openssf.org/scorecard/\",\"https://slsa.dev/spec/v1.2/\",\"https://docs.npmjs.com/trusted-publishers/\",\"https://help.openai.com/en/articles/11369540-getting-started-with-codex\",\"https://openai.com/index/running-codex-safely/\",\"https://code.claude.com/docs/en/sub-agents\",\"https://opencode.ai/docs/agents/\"],\"failure_modes\":[\"popularity_treated_as_fit\",\"hype_gravity\",\"resume_driven_development\",\"sunk_cost_inertia\",\"fake_precision_weighted_matrix\",\"status_quo_omitted\",\"hard_constraint_scored_instead_of_gated\",\"vendor_claim_not_tested\",\"ecosystem_health_not_checked\",\"maintenance_health_base_rate_ignored\",\"migration_exit_cost_ignored\",\"ai_migration_labor_confused_with_data_exit_cost\",\"ai_codegen_velocity_treated_as_primary_fit\",\"reversibility_misclassified\",\"agent_tool_permissions_not_evaluated\",\"decision_recorded_without_reversibility\"],\"evidence_priority\":\"general_knowledge_first\"}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":120,\"review_cadence\":\"quarterly\"}"
-  comprehension_state: present
   mental_model: "Framework fit analysis is a trade study under constraints. The primitives are the job to be done, hard gates, candidate options, quality attributes, evidence, uncertainty, adoption posture, migration path, operating ownership, and reversibility. The output is not a universal winner; it is the option whose known tradeoffs are acceptable for this context and whose unknowns have an explicit plan."
   purpose: "This skill prevents durable technology choices from being made by hype, local preference, star count, or a vendor demo. It gives agents a repeatable way to compare options, test risky claims, surface uncertainty, and hand a decision-ready brief to an ADR."
+  concept_boundary: "This skill owns pre-decision and replacement fit analysis. It does not own package graph hygiene after a technology is accepted, writing the ADR after the decision, measuring and optimizing a live bottleneck, security deep review, refactoring code, or implementing inside an already chosen framework."
   analogy: "Framework fit analysis is like selecting a bridge design for a specific crossing: load, ground, traffic, maintenance crew, budget, weather, and future removal matter more than which bridge is famous."
   misconception: "The common mistake is treating a comparison table as the decision. A table can organize evidence, but fit comes from gates, tradeoffs, uncertainty, probes, and consequences; a high score cannot rescue an option that violates a hard constraint or creates unacceptable exit cost."
-  structural_verdict: PASS
-  truth_verdict: UNVERIFIED
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "This skill owns pre-decision and replacement fit analysis. It does not own package graph hygiene after a technology is accepted, writing the ADR after the decision, measuring and optimizing a live bottleneck, security deep review, refactoring code, or implementing inside an already chosen framework."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-architecture/framework-fit-analysis/SKILL.md
@@ -44,6 +27,10 @@ metadata:
 ---
 
 # Framework Fit Analysis
+
+## Concept of the skill
+
+Framework fit analysis is a trade study under constraints. The primitives are the job to be done, hard gates, candidate options, quality attributes, evidence, uncertainty, adoption posture, migration path, operating ownership, and reversibility.
 
 ## Concept Of The Skill
 
@@ -70,8 +57,7 @@ Evaluate technology fit before adoption, replacement, or standardization. The ou
 - **Agent-tooling fit:** permissions, sandboxing, auditability, tool access, data controls, model/provider portability, plugin/MCP attack surface, skills/subagent support, cost controls, and review gates for coding agents or agent platforms.
 - **Decision handoff:** a recommendation with consequences and uncertainty, ready for `architecture-decision-records` when durable.
 
-## Philosophy
-
+## Philosophy of the skill
 Technology choice is context-dependent. "Best" without constraints is marketing. A good fit analysis makes tradeoffs explicit enough that a team can accept the costs knowingly.
 
 Do not confuse popularity with fit. Popularity can indicate ecosystem depth, hiring supply, and community support; it can also hide herd behavior, churn, security exposure, or a poor match for the team's operating model. Treat popularity as one evidence point, never as the decision.
@@ -327,6 +313,7 @@ The `grounding.truth_sources` URLs in this skill are *reference grounding* — t
 
 **Classification**
 - Subject: `software-architecture`
+- Public: `true`
 - Domain: `architecture/technology-selection`
 - Scope: Choosing, replacing, or justifying a framework, library, SDK, runtime, database, UI kit, agent tool, or platform by fit — weighing requirement fit, hard constraints, quality attributes, team capability, evidence strength, ecosystem maturity, maintenance health, integration and migration cost, performance envelope, operability, security posture, supply-chain posture, AI/codegen readiness, lock-in, reversibility, and exit cost. Portable across any technology-selection decision; principle-grounded, not repo-bound. Excludes routine dependency hygiene (dependency-architecture), documenting an already-accepted decision (architecture-decision-records), and framework-specific implementation work.
 
@@ -343,12 +330,10 @@ The `grounding.truth_sources` URLs in this skill are *reference grounding* — t
 - implement this feature in the framework we already selected
 - profile a slow page and optimize bottlenecks
 - design the full production lifecycle of a multi-agent system after the platform is chosen
-- Owned by `dependency-architecture`
-- Owned by `architecture-decision-records`
 
 **Related skills**
-- Verify with: `architecture-decision-records`, `dependency-architecture`
-- Related: `architecture-decision-records`, `dependency-architecture`, `performance-engineering`, `owasp-security`, `refactor`, `agent-engineering`
+- Verify with: `architecture-decision-records`, `dependency-architecture`, `seven-powers`
+- Related: `performance-engineering`, `owasp-security`, `refactor`, `agent-engineering`, `architecture-decision-records`, `dependency-architecture`
 
 **Concept**
 - Mental model: Framework fit analysis is a trade study under constraints. The primitives are the job to be done, hard gates, candidate options, quality attributes, evidence, uncertainty, adoption posture, migration path, operating ownership, and reversibility. The output is not a universal winner; it is the option whose known tradeoffs are acceptable for this context and whose unknowns have an explicit plan.

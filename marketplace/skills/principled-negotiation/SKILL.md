@@ -5,48 +5,26 @@ license: MIT
 compatibility: "Markdown, negotiation briefs, deal memos, conflict-resolution plans, vendor/customer negotiations"
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"expected-value\",\"epistemic-grounding\",\"constraint-awareness\",\"playing-to-win\",\"positioning\",\"methodology\",\"microcopy\"],\"suppresses\":[\"expected-value\",\"playing-to-win\",\"positioning\"],\"verify_with\":[\"epistemic-grounding\",\"constraint-awareness\",\"expected-value\"]}"
   subject: reasoning-strategy
   scope: "Principled negotiation and BATNA methodology for preparing and conducting negotiations: map parties and issues, separate relationship from substance, convert positions into interests, create option packages, use objective criteria, compare offers to BATNA/reservation value/ZOPA, and choose accept, improve, pause, or walk away. Excludes persuasion copy, legal advice, crisis/hostage negotiation, broad business strategy, and one-party decision scoring without counterparties."
+  public: "true"
   taxonomy_domain: foundations/negotiation
-  owner: skill-graph-maintainer
-  freshness: "2026-05-31"
-  drift_check: "{\"last_verified\":\"2026-05-31\",\"truth_source_hashes\":{\"skills/skills/meta-methods/principled-negotiation/references/principled-negotiation-sources.md\":\"6d20878869a2ac16e2eefc2d54778122928fefa394f504c63b73ed6219dded19\",\"skills/skills/meta-methods/principled-negotiation/references/upstream-displacement-2026-05-31.md\":\"7485bd2819a4d145659cb03d197fa4002c6f24cb89775ae4e99b33c298f949e4\"}}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
   stability: stable
   keywords: "[\"principled negotiation\",\"BATNA\",\"best alternative to a negotiated agreement\",\"Getting to Yes\",\"interest based bargaining\",\"negotiation on the merits\",\"objective criteria\",\"reservation value\",\"ZOPA\",\"mutual gain\"]"
   triggers: "[\"principled-negotiation\",\"batna\",\"getting-to-yes\"]"
   examples: "[\"Prepare a BATNA-based negotiation brief for this vendor renewal.\",\"Turn these fixed demands into interests, options, and objective criteria.\",\"Pressure-test whether we should accept this offer or walk away.\",\"Use principled negotiation to plan this salary discussion.\",\"Find the ZOPA and reservation values in this negotiation scenario.\"]"
   anti_examples: "[\"Write persuasive landing-page copy for this offer.\",\"Analyze rivalry, supplier power, buyer power, entrants, and substitutes.\",\"Choose our winning aspiration, where to play, and how to win.\",\"Rank these initiatives by expected value and downside risk.\",\"Give legal advice on whether this contract clause is enforceable.\"]"
-  relations: "{\"boundary\":[{\"skill\":\"expected-value\",\"reason\":\"principled-negotiation owns counterparties, BATNA, objective criteria, and deal-package design; expected-value owns one-party action choice under quantified uncertainty\"},{\"skill\":\"playing-to-win\",\"reason\":\"principled-negotiation owns deal-table preparation and agreement quality; playing-to-win owns integrated strategy choices before negotiation begins\"},{\"skill\":\"positioning\",\"reason\":\"principled-negotiation owns bargaining process and agreement evaluation; positioning owns buyer-facing market context and differentiated value\"},{\"skill\":\"radical-candor\",\"reason\":\"principled-negotiation owns structured bargaining across interests and alternatives; radical-candor owns management feedback conversations, not deal-table agreement design\"},{\"skill\":\"methodology\",\"reason\":\"principled-negotiation owns one specific negotiation method; methodology owns broad process-design and quality-gate selection\"}],\"related\":[\"expected-value\",\"epistemic-grounding\",\"constraint-awareness\",\"playing-to-win\",\"positioning\",\"methodology\"],\"verify_with\":[\"epistemic-grounding\",\"constraint-awareness\",\"expected-value\"]}"
   grounding: "{\"subject_matter\":\"Principled negotiation, BATNA, and interest-based bargaining from Getting to Yes and Harvard Program on Negotiation materials\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://www.pon.harvard.edu/daily/negotiation-skills-daily/principled-negotiation-focus-interests-create-value/\",\"https://www.pon.harvard.edu/daily/batna/translate-your-batna-to-the-current-deal/\",\"https://www.pon.harvard.edu/daily/batna/best-alternative-to-a-negotiated-agreement-beyond-the-basics/\",\"skills/skills/meta-methods/principled-negotiation/references/principled-negotiation-sources.md\",\"skills/skills/meta-methods/principled-negotiation/references/upstream-displacement-2026-05-31.md\"],\"failure_modes\":[\"positions_treated_as_interests\",\"agreement_pursued_below_batna\",\"relationship_issues_mixed_with_substance\",\"options_generated_after_commitment\",\"objective_criteria_missing_or_self_serving\",\"reservation_value_or_zopa_undefined\",\"fake_win_win_without_walkaway_discipline\",\"legal_or_hr_advice_overclaimed\"],\"evidence_priority\":\"general_knowledge_first\"}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  comprehension_state: present
   mental_model: "Principled negotiation treats agreement as joint problem solving under walkaway discipline. The primitives are parties, issues, relationship concerns, positions, underlying interests, options for mutual gain, objective criteria, BATNAs, reservation values, and the zone of possible agreement. The method separates people from substantive problems, expands value before dividing it, and accepts only agreements that beat the relevant BATNA."
   purpose: "This skill prevents agents from treating negotiation as either hardball demands or friendly concession. It forces preparation around interests, alternatives, standards, option packages, and walkaway thresholds so the agent can improve the negotiation without recommending a bad deal just because an agreement is available."
+  concept_boundary: "Principled negotiation is for preparing and conducting negotiations with counterparties. It is not generic persuasion, legal advice, crisis negotiation, compensation-policy design, competitive strategy formulation, product positioning, or one-party expected-value analysis. Those methods may inform a negotiation, but they do not replace interest-based bargaining and BATNA comparison."
   analogy: Principled negotiation is like designing a bridge both sides can cross while keeping a mapped exit road in case the bridge would lead somewhere worse than leaving.
   misconception: "The common mistake is thinking principled negotiation means being nice, compromising, or always reaching agreement. The method is cooperative about problem solving and firm about standards and BATNA; walking away from a worse-than-BATNA deal is success, not failure."
-  structural_verdict: PASS
-  truth_verdict: UNVERIFIED
-  comprehension_verdict: SKIPPED_BASELINE_HIGH
-  application_verdict: UNVERIFIED
-  last_changed: "2026-05-31"
-  last_audited: "2026-05-31"
-  lint_verdict: PASS
-  drift_status: EXTERNAL_UNHASHED
-  eval_score: "4.38"
-  eval_failed_ids: "[]"
-  public: "true"
-  concept_boundary: "Principled negotiation is for preparing and conducting negotiations with counterparties. It is not generic persuasion, legal advice, crisis negotiation, compensation-policy design, competitive strategy formulation, product positioning, or one-party expected-value analysis. Those methods may inform a negotiation, but they do not replace interest-based bargaining and BATNA comparison."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/principled-negotiation/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
-  skill_graph_export_description_projection_truncated: "true"
+  skill_graph_export_description_projection: anti_examples
 ---
 
 ## Concept of the skill
@@ -298,6 +276,7 @@ Before finalizing a negotiation answer, check:
 
 **Classification**
 - Subject: `reasoning-strategy`
+- Public: `true`
 - Domain: `foundations/negotiation`
 - Scope: Principled negotiation and BATNA methodology for preparing and conducting negotiations: map parties and issues, separate relationship from substance, convert positions into interests, create option packages, use objective criteria, compare offers to BATNA/reservation value/ZOPA, and choose accept, improve, pause, or walk away. Excludes persuasion copy, legal advice, crisis/hostage negotiation, broad business strategy, and one-party decision scoring without counterparties.
 
@@ -315,15 +294,10 @@ Before finalizing a negotiation answer, check:
 - Choose our winning aspiration, where to play, and how to win.
 - Rank these initiatives by expected value and downside risk.
 - Give legal advice on whether this contract clause is enforceable.
-- Owned by `expected-value`: counterparties, BATNA, objective criteria, and deal-package design
-- Owned by `playing-to-win`: deal-table preparation and agreement quality
-- Owned by `positioning`: bargaining process and agreement evaluation
-- Owned by `radical-candor`: structured bargaining across interests and alternatives
-- Owned by `methodology`: one specific negotiation method
 
 **Related skills**
 - Verify with: `epistemic-grounding`, `constraint-awareness`, `expected-value`
-- Related: `expected-value`, `epistemic-grounding`, `constraint-awareness`, `playing-to-win`, `positioning`, `methodology`
+- Related: `expected-value`, `epistemic-grounding`, `constraint-awareness`, `playing-to-win`, `positioning`, `methodology`, `microcopy`
 
 **Concept**
 - Mental model: Principled negotiation treats agreement as joint problem solving under walkaway discipline. The primitives are parties, issues, relationship concerns, positions, underlying interests, options for mutual gain, objective criteria, BATNAs, reservation values, and the zone of possible agreement. The method separates people from substantive problems, expands value before dividing it, and accepts only agreements that beat the relevant BATNA.

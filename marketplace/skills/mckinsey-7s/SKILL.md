@@ -5,9 +5,10 @@ license: MIT
 compatibility: "Markdown, organization-design reviews, transformation diagnostics, operating-model reviews, strategy memos, change-readiness assessments"
 allowed-tools: Read Grep WebSearch WebFetch
 metadata:
-  relations: "{\"boundary\":[\"porters-five-forces\",\"value-chain-analysis\",\"vrio\",\"swot-tows\",\"okrs\",\"playing-to-win\"]}"
+  relations: "{\"related\":[\"playing-to-win\",\"okrs\",\"swot-tows\",\"value-chain-analysis\",\"vrio\",\"porters-five-forces\",\"epistemic-grounding\",\"methodology\"],\"suppresses\":[\"porters-five-forces\",\"okrs\",\"swot-tows\",\"value-chain-analysis\",\"vrio\",\"playing-to-win\"],\"verify_with\":[\"epistemic-grounding\",\"methodology\",\"okrs\"]}"
   subject: reasoning-strategy
   scope: "McKinsey 7S organizational-alignment analysis for teams, business units, organizations, transformations, operating-model changes, post-merger integration, strategy execution, and change-readiness reviews: map shared values, strategy, structure, systems, style, staff, and skills; test how the elements reinforce or conflict; identify alignment gaps; prioritize root-cause interventions; and convert the diagnosis into change actions and monitoring signals. Excludes external industry analysis, activity-level value-chain economics, resource-based durable-advantage testing, broad SWOT/TOWS option generation, OKR goal-setting as the primary task, standalone culture advice, and generic change-management slogans."
+  public: "true"
   taxonomy_domain: foundations/strategy
   stability: stable
   keywords: "[\"McKinsey 7S\",\"7S framework\",\"7S alignment\",\"organization alignment\",\"organizational effectiveness\",\"organization design\",\"reorganization\",\"post-merger integration\",\"operating model alignment\",\"strategy execution gap\"]"
@@ -17,10 +18,9 @@ metadata:
   grounding: "{\"subject_matter\":\"McKinsey 7S as a portable organizational-alignment and change-readiness framework\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/enduring-ideas-the-7-s-framework\",\"https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/a-new-operating-model-for-a-new-world\",\"https://www.sciencedirect.com/science/article/pii/0007681380900270\",\"skills/skills/reasoning-strategy/mckinsey-7s/references/mckinsey-7s-sources.md\",\"skills/skills/reasoning-strategy/mckinsey-7s/references/upstream-displacement-2026-06-08.md\"],\"failure_modes\":[\"seven_s_reduced_to_org_chart_redesign\",\"shared_values_treated_as_generic_values_statement\",\"elements_listed_without_interdependency_analysis\",\"strategy_execution_gap_blamed_on_people_without_system_evidence\",\"hard_elements_overweighted_while_style_staff_skills_are_ignored\",\"culture_advice_given_without_linking_to_strategy_systems_and_structure\",\"modern_operating_model_refresh_ignored_when_user_asks_for_current_mckinsey_design\",\"private_employee_or_customer_data_used_in_examples_or_evals\"],\"evidence_priority\":\"general_knowledge_first\"}"
   mental_model: "McKinsey 7S is an organization-alignment map. The primitives are an actor, a target strategy or change, seven interdependent elements, a current-state description for each element, a target-state description for each element, element-to-element fit, contradictions, root causes, interventions, owners, and monitoring signals. Shared values sit at the center because they shape the other six elements; strategy, structure, systems, style, staff, and skills must reinforce one another for the organization to execute change. The agent diagnoses the system, not one box."
   purpose: "This skill prevents agents from treating a reorg, strategy rollout, culture program, or transformation as a single-lever problem. It forces the agent to test whether strategy, reporting lines, work systems, leadership style, people model, capabilities, and shared values fit together before recommending action."
+  concept_boundary: "McKinsey 7S is for internal organization alignment and change-readiness diagnosis. It is not Porter's Five Forces external industry analysis, Value Chain activity-level economics, VRIO resource/capability durability testing, SWOT/TOWS option generation, OKR goal-setting, standalone culture coaching, or modern operating-model redesign under McKinsey's 2025 Organize to Value system unless the user explicitly asks for the newer McKinsey model."
   analogy: "McKinsey 7S is like tuning a seven-string instrument: changing one string changes the harmony, and a performance problem may come from the relationship among strings rather than from one string alone."
   misconception: "The common mistake is treating 7S as a checklist of seven headings or as an org-chart tool. The framework's point is interdependence: structure alone is not the organization, and a change in one element usually fails unless the other elements are adjusted to support it."
-  public: "true"
-  concept_boundary: "McKinsey 7S is for internal organization alignment and change-readiness diagnosis. It is not Porter's Five Forces external industry analysis, Value Chain activity-level economics, VRIO resource/capability durability testing, SWOT/TOWS option generation, OKR goal-setting, standalone culture coaching, or modern operating-model redesign under McKinsey's 2025 Organize to Value system unless the user explicitly asks for the newer McKinsey model."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/mckinsey-7s/SKILL.md
@@ -252,6 +252,7 @@ Before presenting a 7S output, check:
 
 **Classification**
 - Subject: `reasoning-strategy`
+- Public: `true`
 - Domain: `foundations/strategy`
 - Scope: McKinsey 7S organizational-alignment analysis for teams, business units, organizations, transformations, operating-model changes, post-merger integration, strategy execution, and change-readiness reviews: map shared values, strategy, structure, systems, style, staff, and skills; test how the elements reinforce or conflict; identify alignment gaps; prioritize root-cause interventions; and convert the diagnosis into change actions and monitoring signals. Excludes external industry analysis, activity-level value-chain economics, resource-based durable-advantage testing, broad SWOT/TOWS option generation, OKR goal-setting as the primary task, standalone culture advice, and generic change-management slogans.
 
@@ -269,6 +270,10 @@ Before presenting a 7S output, check:
 - Use VRIO to test whether our data, brand, and process are durable advantages.
 - Turn strengths, weaknesses, opportunities, and threats into TOWS strategy options.
 - Write OKRs for this quarter and define measurable key results.
+
+**Related skills**
+- Verify with: `epistemic-grounding`, `methodology`, `okrs`
+- Related: `playing-to-win`, `okrs`, `swot-tows`, `value-chain-analysis`, `vrio`, `porters-five-forces`, `epistemic-grounding`, `methodology`
 
 **Concept**
 - Mental model: McKinsey 7S is an organization-alignment map. The primitives are an actor, a target strategy or change, seven interdependent elements, a current-state description for each element, a target-state description for each element, element-to-element fit, contradictions, root causes, interventions, owners, and monitoring signals. Shared values sit at the center because they shape the other six elements; strategy, structure, systems, style, staff, and skills must reinforce one another for the organization to execute change. The agent diagnoses the system, not one box.

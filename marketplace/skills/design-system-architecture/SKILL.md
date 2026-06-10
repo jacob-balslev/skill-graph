@@ -2,34 +2,22 @@
 name: design-system-architecture
 description: "Use when designing or auditing a design system's architecture: token taxonomy, semantic tokens, component APIs, theming, accessibility contracts, documentation, governance, and migration strategy. Do NOT use for information hierarchy and navigation (use `information-architecture`), page-specific layout (use `layout-composition`), visual craft direction (use `visual-design-foundations`), sentence-level UI copy (use `microcopy`), or accessibility-only audits (use `a11y`). Do NOT use for organize pages, nav, sitemap, and wayfinding. Do NOT use for rewrite the empty-state text and tooltip labels. Do NOT use for add aria-labels and keyboard behavior to this component. Do NOT use for draft an architecture note explaining why we chose Postgres over DynamoDB."
 license: MIT
-compatibility: "Portable design-system architecture guidance for web and app component systems, token systems, and multi-theme UI libraries."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: frontend-engineering
+  public: "true"
   scope: "Designing and auditing a design system's architecture — token taxonomy, semantic tokens, component APIs, theming, accessibility contracts, documentation, governance, and migration strategy. Portable across any design system; principle-grounded, not repo-bound. Excludes information hierarchy and navigation (information-architecture), page-specific layout (layout-composition), visual craft direction (visual-design-foundations), sentence-level UI copy (microcopy), and accessibility-only audits (a11y)."
   taxonomy_domain: design/system
-  owner: skill-graph-maintainer
-  freshness: "2026-05-11"
-  drift_check: "{\"last_verified\":\"2026-05-11\"}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"design tokens\",\"semantic tokens\",\"component API\",\"theming\",\"component library\",\"token taxonomy\",\"design system migration\",\"design system audit\",\"component library audit\",\"token drift\"]"
   examples: "[\"define semantic tokens so charts, status colors, and surfaces do not hardcode raw colors\",\"audit this component library for API consistency and token drift\",\"design the theming architecture before adding dark mode\",\"how should we migrate old CSS variables to canonical design-system tokens?\"]"
   anti_examples: "[\"organize pages, nav, sitemap, and wayfinding\",\"rewrite the empty-state text and tooltip labels\",\"add aria-labels and keyboard behavior to this component\",\"draft an architecture note explaining why we chose Postgres over DynamoDB\"]"
-  relations: "{\"related\":[\"a11y\",\"microcopy\",\"information-architecture\",\"semantics\",\"layout-composition\",\"visual-design-foundations\",\"interaction-patterns\",\"refactor\"],\"verify_with\":[\"a11y\",\"code-review\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
+  relations: "{\"related\":[\"component-architecture\",\"layout-composition\",\"visual-design-foundations\",\"interaction-patterns\",\"microcopy\",\"refactor\",\"a11y\",\"information-architecture\",\"semantics\"],\"verify_with\":[\"a11y\",\"code-review\",\"component-architecture\"]}"
+  mental_model: "|"
+  purpose: "|"
+  concept_boundary: "|"
+  analogy: "A design system architecture is to product UI what a building code plus a kit of standardized parts is to construction — it does not draw any single floor plan (the page layout) or pick the paint colors (the visual values); it defines the load-bearing vocabulary (semantic tokens), the certified components and how they connect (component contracts), and the rules every builder must follow (governance), so any team can assemble a sound, consistent building without re-engineering the joists each time."
+  misconception: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/design-system-architecture/SKILL.md
@@ -38,11 +26,15 @@ metadata:
 
 # Design System Architecture
 
+## Concept of the skill
+
+A design system architecture is the discipline of turning recurring UI decisions into a governed, layered vocabulary so that building a screen becomes composition from durable parts rather than a fresh round of local choices. It has three layers and a rule layer. **Raw tokens** hold the literal brand values — a palette, a spacing ramp, a type scale. **Semantic tokens** name product meaning (surface, danger, primary-action, text-muted) and point at raw tokens, so the meaning of a token is stable while the value behind it can change per theme. **Component contracts** define each reusable piece — its purpose, props and slots, states, accessibility behavior, and composition rules — and consume only semantic tokens, never raw values. Over all three sits **governance**: forbidden local overrides, deprecation and migration paths, documentation that shows expected use and anti-use, and drift detection between code and design intent. The architecture's job is to encode decisions once and make them reusable and enforceable, so that color, spacing, state, theming, and accessibility are answered by the system instead of re-decided on every screen — and a theme change or token rename propagates through the semantic layer without rewriting components.
+
 ## Coverage
 
 Design and audit reusable UI systems. Covers token taxonomy, semantic vs raw tokens, component APIs, variants, slots, theming, accessibility contracts, responsive behavior, documentation, governance, migration, and drift detection between code and design intent.
 
-## Philosophy
+## Philosophy of the skill
 
 A design system is a product architecture layer, not a style pile. Tokens and components should encode durable decisions so product work becomes faster and more consistent. If every screen still makes local choices for color, spacing, state, and behavior, the design system is only decorative.
 
@@ -57,10 +49,6 @@ Optimize for clear constraints. A system with too many escape hatches is not fle
 5. Mark forbidden local overrides and migration paths.
 6. Add docs examples that show expected use and anti-use.
 7. Verify real screens can be built without one-off styling.
-
-## Evals
-
-This skill ships a comprehension-eval artifact at [`examples/evals/design-system-architecture.json`](https://github.com/jacob-balslev/skill-graph/blob/main/examples/evals/design-system-architecture.json). The checklist below is the authoring gate for design-system architecture decisions; the eval file is the grader surface.
 
 ## Verification
 
@@ -90,6 +78,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/design-system
 
 **Classification**
 - Subject: `frontend-engineering`
+- Public: `true`
 - Domain: `design/system`
 - Scope: Designing and auditing a design system's architecture — token taxonomy, semantic tokens, component APIs, theming, accessibility contracts, documentation, governance, and migration strategy. Portable across any design system; principle-grounded, not repo-bound. Excludes information hierarchy and navigation (information-architecture), page-specific layout (layout-composition), visual craft direction (visual-design-foundations), sentence-level UI copy (microcopy), and accessibility-only audits (a11y).
 
@@ -106,8 +95,14 @@ This skill ships a comprehension-eval artifact at [`examples/evals/design-system
 - draft an architecture note explaining why we chose Postgres over DynamoDB
 
 **Related skills**
-- Verify with: `a11y`, `code-review`
-- Related: `a11y`, `microcopy`, `information-architecture`, `semantics`, `layout-composition`, `visual-design-foundations`, `interaction-patterns`, `refactor`
+- Verify with: `a11y`, `code-review`, `component-architecture`
+- Related: `component-architecture`, `layout-composition`, `visual-design-foundations`, `interaction-patterns`, `microcopy`, `refactor`, `a11y`, `information-architecture`, `semantics`
+
+**Concept**
+- Mental model: |
+- Purpose: |
+- Analogy: A design system architecture is to product UI what a building code plus a kit of standardized parts is to construction — it does not draw any single floor plan (the page layout) or pick the paint colors (the visual values); it defines the load-bearing vocabulary (semantic tokens), the certified components and how they connect (component contracts), and the rules every builder must follow (governance), so any team can assemble a sound, consistent building without re-engineering the joists each time.
+- Common misconception: |
 
 **Keywords**
 - `design tokens`, `semantic tokens`, `component API`, `theming`, `component library`, `token taxonomy`, `design system migration`, `design system audit`, `component library audit`, `token drift`

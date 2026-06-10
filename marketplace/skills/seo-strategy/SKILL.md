@@ -5,35 +5,25 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"keywords\",\"content-monitor\",\"etsy\"]}"
   subject: quality-assurance
+  public: "true"
+  scope: "SEO implementation strategy for building pages that rank -- covering content strategy, programmatic SEO at scale, marketplace-specific SEO, and AI search optimization."
   subjects: "[\"quality-assurance\",\"product-domain\"]"
   taxonomy_domain: quality/display
-  owner: skill-graph-maintainer
-  freshness: "2026-03-28"
-  drift_check: "{\"last_verified\":\"2026-03-28\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"seo strategy\",\"programmatic seo\",\"content strategy\",\"comparison page\",\"alternative page\",\"schema markup\",\"structured data\",\"ai seo\",\"marketplace seo\",\"etsy seo\"]"
   triggers: "[\"seo-strategy-skill\",\"seo-skill\",\"programmatic-seo-skill\"]"
-  relations: "{\"related\":[\"keywords\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/seo-strategy/SKILL.md
 ---
 # SEO Strategy Skill
+
+## Concept of the skill
+
+SEO implementation strategy for building pages that rank -- covering content strategy, programmatic SEO at scale, marketplace-specific SEO, and AI search optimization.
+
 
 ## Domain Context
 
@@ -44,8 +34,7 @@ metadata:
 | File | Purpose |
 |---|---|
 | `skills/seo-strategy/references/marketplace-seo-differences.md` | See for detailed algorithm breakdowns. |
-## Philosophy
-
+## Philosophy of the skill
 Auditing finds problems; this skill builds solutions. The distinction matters because agents conflate the two and either run a diagnostic when they should be building pages, or build pages without a strategy. SEO strategy is proactive — choosing the right page types, content structures, and schema markup before traffic data exists. The marketplace-specific sections exist because applying Google SEO assumptions to Etsy or Amazon actively hurts rankings: Etsy rewards recency and conversion rate, Amazon rewards sales velocity, and neither cares about backlinks. Without this skill, agents default to generic "add keywords" advice that misses the structural decisions (programmatic templates, hub-and-spoke linking, schema choice) that create ranking power at scale.
 
 ## Coverage
@@ -287,13 +276,15 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `quality-assurance` (also: `product-domain`)
+- Public: `true`
 - Domain: `quality/display`
+- Scope: SEO implementation strategy for building pages that rank -- covering content strategy, programmatic SEO at scale, marketplace-specific SEO, and AI search optimization.
 
 **When to use**
 - Triggers: `seo-strategy-skill`, `seo-skill`, `programmatic-seo-skill`
 
 **Related skills**
-- Related: `keywords`
+- Related: `keywords`, `content-monitor`, `etsy`
 
 **Keywords**
 - `seo strategy`, `programmatic seo`, `content strategy`, `comparison page`, `alternative page`, `schema markup`, `structured data`, `ai seo`, `marketplace seo`, `etsy seo`

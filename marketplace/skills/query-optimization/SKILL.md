@@ -4,36 +4,21 @@ description: "Use when diagnosing and tuning a specific slow query in a relation
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"schema-evolution\",\"indexing-strategy\",\"data-modeling\",\"transaction-isolation\",\"replication-patterns\"],\"suppresses\":[\"indexing-strategy\"],\"verify_with\":[\"data-modeling\",\"indexing-strategy\",\"transaction-isolation\"]}"
   subject: data-engineering
+  public: "true"
+  scope: "Use when diagnosing and tuning a specific slow query in a relational database: the query planner mental model (parse → rewrite → plan → execute), the canonical inputs the planner reasons over (statistics, cost model, available indexes), reading EXPLAIN and EXPLAIN ANALYZE output, the catalog of plan-node types (sequential scan, index scan, index-only scan, bitmap heap scan, nested loop, hash join, merge join, sort, hash aggregate, materialize) and what each tells you about the query's actual cost, the difference between query rewriting (reformulating the SQL) and operational fixes (adding indexes, ANALYZE, statistics targets), and the diagnostic procedure that takes a slow query to a fast one. Do NOT use for the design of which indexes to maintain (use indexing-strategy), schema design (use data-modeling), distributed-data partitioning (use sharding-strategy), or isolation-level decisions (use transaction-isolation)."
   taxonomy_domain: engineering/data
-  owner: skill-graph-maintainer
-  freshness: "2026-05-16"
-  drift_check: "{\"last_verified\":\"2026-05-16\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"query optimization\",\"query planner\",\"EXPLAIN\",\"EXPLAIN ANALYZE\",\"sequential scan\",\"index scan\",\"nested loop\",\"hash join\",\"merge join\",\"query rewriting\"]"
   triggers: "[\"this query is slow\",\"EXPLAIN ANALYZE output\",\"why isn't the planner using the index\",\"join order optimization\",\"subquery vs join\"]"
   examples: "[\"diagnose a query that takes 8 seconds and identify the plan node responsible\",\"rewrite a slow correlated subquery as a join to enable a faster plan\",\"explain why ANALYZE on a recently-changed table can change the planner's decisions\",\"decide whether to add an index, rewrite the query, or accept the cost\"]"
   anti_examples: "[\"design which indexes to maintain on a new schema (use indexing-strategy)\",\"choose a database schema (use data-modeling)\",\"decide isolation level for a workload (use transaction-isolation)\"]"
-  relations: "{\"related\":[\"indexing-strategy\",\"data-modeling\",\"transaction-isolation\",\"schema-evolution\"],\"boundary\":[{\"skill\":\"indexing-strategy\",\"reason\":\"indexing-strategy owns the design of which indexes the database has; this skill owns the diagnosis and tuning of specific slow queries. The two compose: query-optimization diagnoses; indexing-strategy is one of the response tools.\"}],\"verify_with\":[\"indexing-strategy\",\"data-modeling\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "Query optimization is to a slow SQL query what a medical specialist's chart-reading is to a slow-recovering patient — you do not prescribe before reading the lab values; the plan reads like a chart, every plan node is a vital sign, every cardinality misestimate is a misdiagnosis the planner already made, and your job is to translate the chart into the right intervention rather than the most familiar one."
   misconception: "|"
-  concept: "{\"definition\":\"Query optimization is the discipline of diagnosing and tuning a specific slow query. The unit of work is one query that the application or a user reported as slow; the goal is identifying the root cause and applying a response (rewrite the SQL, add an index, refresh statistics, denormalize the schema, change the access pattern). The mental model is the query planner — the database component that takes the SQL string, parses it, applies rewrites, considers possible plans, estimates each plan's cost using statistics and a cost model, picks the cheapest, and executes it. EXPLAIN and EXPLAIN ANALYZE expose the planner's choices and their actual cost; reading these is the central diagnostic skill. The work is largely interpretation: knowing what each plan-node type means, what its cost implies, what cardinality misestimation looks like, and which response (rewrite, index, statistics, schema) addresses the diagnosis.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/data-engineering/query-optimization/SKILL.md
@@ -41,12 +26,19 @@ metadata:
 
 # Query Optimization
 
+## Concept of the skill
+
+Query optimization is the reading discipline applied to slow queries. The mental model is the *query planner* — the database component that takes the SQL string, parses it, applies semantic rewrites, considers possible execution plans, estimates each plan's cost using statistics and a cost model, picks the cheapest, and executes it. The diagnostic vocabulary is the *plan-node catalog*: Seq Scan (read every row of a table), Index Scan (use index to find rows then fetch the row), Index Only Scan (use covering index, no row fetch — the cheapest read access), Bitmap Heap Scan (build bitmap from indexes, fetch matching rows — good for AND of multiple conditions), Nested Loop (for each outer row, scan inner — fast for small outer or when inner has an index, bad for large outer), Hash Join (build hash from one side, probe with other — standard fast equi-join for medium-large inputs), Merge Join (merge two sorted inputs — fast when both are pre-sorted on join key), Sort (expensive at scale; consider an index or ORDER BY-less query), Hash Aggregate, Group Aggregate (on sorted input), Materialize, CTE Scan.
+
+Replaces "guess at the slow query" with planner-led diagnosis and response selection. Solves the problem that a slow query has many possible root causes — sequential scan on a selective predicate (add index), cardinality misestimate where the planner thinks 100 rows and gets 10 million (ANALYZE, raise statistics target, extended statistics), nested loop with large outer (rewrite or change join order to enable a hash plan), correlated subquery (rewrite as join or EXISTS), N+1 from the application (replace with single join query), lock contention under concurrency (isolation work), fundamentally too much work (materialized view, precomputed aggregate, schema change) — and reaching for "add an index" before reading the plan is the most common waste of effort. EXPLAIN ANALYZE exposes the planner's actual choices and their actual cost; the work is interpretation, not guessing. The discipline distinguishes *diagnosis* from *response* and matches one to the other.
+
+Distinct from indexing-strategy, which owns the *design* of which indexes the database has — indexing-strategy is one of the response tools when this skill's diagnosis says "add an index," but it is only one of many possible responses. Distinct from data-modeling, which owns the schema and access patterns — sometimes the diagnosis is "the schema is wrong for this query"; the response is then in data-modeling's scope. Distinct from transaction-isolation, which owns concurrency correctness — sometimes a slow query is slow because of lock contention from isolation, and the disciplines intersect on those cases (slow under concurrency, fast solo → suspect locking). Distinct from schema-evolution (how the schema changes over time) and from sharding-strategy (cross-node partitioning, where this skill addresses within-shard performance). Distinct from performance-testing, which owns measurement of the system under load — this skill diagnoses a single query; performance-testing evaluates the whole system's response under realistic load. Query optimization is to a slow SQL query what a medical specialist's chart-reading is to a slow-recovering patient — you do not prescribe before reading the lab values; the plan reads like a chart, every plan node is a vital sign, every cardinality misestimate is a misdiagnosis the planner already made, and your job is to translate the chart into the right intervention rather than the most familiar one. The wrong mental model is that the response to "this query is slow" is always to add an index. It is not. The most common root cause is *cardinality misestimation* — the planner thinks 100 rows will match, actually 10 million do, and the plan chosen for 100 is wrong for 10 million. The right response is ANALYZE, raised statistics targets, or (occasionally) extended statistics objects — adding an index without addressing the statistics problem produces no improvement. Adjacent misconceptions: that an index that "exists" is being used (use EXPLAIN ANALYZE to confirm — selectivity, type coercion, or function-on-column commonly disable use); that two queries that "should be equivalent" produce the same plan (they may produce dramatically different ones — rewriting a correlated subquery as a join is a *plan-shape* change, not just a syntactic change); that stale statistics are rare (they are routine after bulk inserts and schema changes — ANALYZE is the first thing to try when estimates seem off); that the slowest individual query is the most important one (aggregate impact = frequency × duration — a 100ms query run a million times a day is more important than a 30-second query run weekly). The discipline distinguishes diagnosis from response and matches one to the other; reaching for the most familiar response without reading the plan is the universal failure mode.
+
 ## Coverage
 
 The discipline of diagnosing and tuning specific slow queries by reading the database planner's chosen plan, identifying the root cause, and applying the right response. Covers the query planner's phases (parse → rewrite → plan → execute), the cost model and statistics that drive plan choice, the plan-node catalog (Seq Scan, Index Scan, Index Only Scan, Bitmap Heap Scan, Nested Loop, Hash Join, Merge Join, Sort, Hash Aggregate, Materialize, CTE Scan), the EXPLAIN and EXPLAIN ANALYZE diagnostic vocabulary, the response catalog (rewrite, add index, refresh statistics, denormalize, materialized view, isolation change, settings, application cache, accept cost), and the root-cause taxonomy that links diagnosis to response.
 
-## Philosophy
-
+## Philosophy of the skill
 Query optimization is largely a reading discipline. The planner exposes its decisions and the database reports the actual cost; the work is reading EXPLAIN ANALYZE output, knowing what each node means, and choosing the right response. A team that reaches for "add an index" before reading the plan is guessing; a team that reads the plan finds the actual issue and applies the right response — often *not* adding an index.
 
 The most common root cause is cardinality misestimation: the planner thinks 100 rows will match, actually 10 million do. The chosen plan optimized for 100 is wrong for 10 million. ANALYZE, raised statistics targets, and (occasionally) extended statistics objects are where most diagnoses live. Adding indexes without addressing the statistics problem produces no improvement.
@@ -177,7 +169,9 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `data-engineering`
+- Public: `true`
 - Domain: `engineering/data`
+- Scope: Use when diagnosing and tuning a specific slow query in a relational database: the query planner mental model (parse → rewrite → plan → execute), the canonical inputs the planner reasons over (statistics, cost model, available indexes), reading EXPLAIN and EXPLAIN ANALYZE output, the catalog of plan-node types (sequential scan, index scan, index-only scan, bitmap heap scan, nested loop, hash join, merge join, sort, hash aggregate, materialize) and what each tells you about the query's actual cost, the difference between query rewriting (reformulating the SQL) and operational fixes (adding indexes, ANALYZE, statistics targets), and the diagnostic procedure that takes a slow query to a fast one. Do NOT use for the design of which indexes to maintain (use indexing-strategy), schema design (use data-modeling), distributed-data partitioning (use sharding-strategy), or isolation-level decisions (use transaction-isolation).
 
 **When to use**
 - diagnose a query that takes 8 seconds and identify the plan node responsible
@@ -190,11 +184,10 @@ After applying this skill, verify:
 - design which indexes to maintain on a new schema (use indexing-strategy)
 - choose a database schema (use data-modeling)
 - decide isolation level for a workload (use transaction-isolation)
-- Owned by `indexing-strategy`: the design of which indexes the database has
 
 **Related skills**
-- Verify with: `indexing-strategy`, `data-modeling`
-- Related: `indexing-strategy`, `data-modeling`, `transaction-isolation`, `schema-evolution`
+- Verify with: `data-modeling`, `indexing-strategy`, `transaction-isolation`
+- Related: `schema-evolution`, `indexing-strategy`, `data-modeling`, `transaction-isolation`, `replication-patterns`
 
 **Concept**
 - Mental model: |

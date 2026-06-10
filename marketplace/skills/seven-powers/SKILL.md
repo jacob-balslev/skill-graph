@@ -5,21 +5,21 @@ license: MIT
 compatibility: "Markdown, strategy memos, investment diligence, product strategy, market-entry analysis, moat diagnosis"
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"related\":[\"prioritization\",\"bayesian-reasoning\",\"expected-value\",\"porters-five-forces\",\"playing-to-win\",\"blue-ocean-strategy\",\"vrio\",\"swot-tows\",\"framework-fit-analysis\",\"epistemic-grounding\"],\"suppresses\":[\"porters-five-forces\",\"positioning\"],\"verify_with\":[\"playing-to-win\",\"framework-fit-analysis\",\"epistemic-grounding\",\"porters-five-forces\"]}"
   subject: reasoning-strategy
   scope: "Teaching the portable strategy-diagnosis discipline from Hamilton Helmer's Seven Powers: classify a company's claimed moat mechanism, test benefit and barrier separately, distinguish durable firm-level Power from industry attractiveness or generic advantage, account for phase/timing through Power Progression, catch false positives, and translate the result into strategic implications and evidence requests. Applies to strategy memos, product/business model diagnosis, investment diligence, market-entry analysis, and competitive-advantage reviews. Excludes industry-structure analysis by itself (porters-five-forces), integrated strategy-cascade formulation (playing-to-win), value-curve creation (blue-ocean-strategy), resource-only VRIO diagnosis, SWOT/TOWS inventory work, financial valuation, and generic prioritization."
+  public: "true"
   taxonomy_domain: foundations/strategy
   grounding: "{\"subject_matter\":\"Hamilton Helmer's Seven Powers strategy framework\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://7powers.com/\",\"https://7powers.com/synopsis/\",\"https://7powers.com/foreword/\",\"skills/reasoning-strategy/seven-powers/references/seven-powers-sources.md\",\"skills/reasoning-strategy/seven-powers/references/upstream-displacement-2026-05-26.md\"],\"failure_modes\":[\"growth_confused_with_power\",\"benefit_without_barrier\",\"barrier_without_customer_value\",\"network_effects_claimed_from_usage_only\",\"brand_awareness_confused_with_branding_power\",\"temporary_execution_edge_confused_with_process_power\",\"industry_attractiveness_confused_with_firm_power\"],\"evidence_priority\":\"general_knowledge_first\"}"
   stability: stable
   keywords: "[\"seven powers\",\"7 powers\",\"Hamilton Helmer\",\"strategic power\",\"durable moat\",\"scale economies\",\"network economies\",\"counter-positioning\",\"switching costs\",\"process power\"]"
   examples: "[\"assess whether this startup has a real Seven Powers moat\",\"which of Helmer's powers could apply to this business model?\",\"test if our claimed network effects are actually Power\",\"separate branding from ordinary brand awareness in this strategy memo\",\"does this incumbent face counter-positioning from a new entrant?\"]"
   anti_examples: "[\"analyze the attractiveness of this industry using entrants, suppliers, buyers, substitutes, and rivalry\",\"turn this market-entry plan into a winning aspiration, where to play, how to win, capabilities, and systems\",\"rank these roadmap items by impact and effort\",\"make a SWOT table for this company\",\"value this company using discounted cash flows\"]"
-  relations: "{\"related\":[\"porters-five-forces\",\"playing-to-win\",\"blue-ocean-strategy\",\"vrio\",\"swot-tows\",\"framework-fit-analysis\",\"epistemic-grounding\",\"bayesian-reasoning\",\"expected-value\",\"prioritization\"],\"verify_with\":[\"porters-five-forces\",\"playing-to-win\",\"framework-fit-analysis\",\"epistemic-grounding\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "Seven Powers is a lock-and-key test for strategy: the benefit is the key that opens economic value, and the barrier is the lock that stops rivals from using the same key tomorrow."
   misconception: "|"
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/seven-powers/SKILL.md
@@ -58,8 +58,7 @@ This skill teaches agents to:
 7. Map likely powers to company phase and timing.
 8. Translate power diagnosis into strategic implications and evidence requests.
 
-## Philosophy
-
+## Philosophy of the skill
 Seven Powers is useful because it makes competitive advantage falsifiable. A vague moat claim can survive almost any critique: "we have data," "we have brand," "we are better," "we move faster." A power claim has to survive a sharper question: what exact mechanism lets this company earn better economics, and why can competitors not close the gap?
 
 The framework should make an agent slower and stricter. Do not reward a confident-sounding moat story. Look for the economic effect, the barrier, the time horizon, the rival response, and the evidence that would disconfirm the claim.
@@ -297,12 +296,25 @@ A good Seven Powers answer:
 - `skills/skills/reasoning-strategy/seven-powers/references/seven-powers-sources.md`
 - `skills/skills/reasoning-strategy/seven-powers/references/upstream-displacement-2026-05-26.md`
 
+## Verification
+
+After applying this skill, verify:
+
+- [ ] The task matches the declared scope, coverage, or positive examples.
+- [ ] The response follows this skill's workflow or checks instead of generic advice.
+- [ ] The exclusions in `## Do NOT Use When` do not point to a better skill.
+
+## Do NOT Use When
+
+Use another skill when the task falls outside the declared `scope`, matches an `anti_examples` prompt, or is owned by a more specific related skill.
+
 ## Skill Graph context
 
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
 - Subject: `reasoning-strategy`
+- Public: `true`
 - Domain: `foundations/strategy`
 - Scope: Teaching the portable strategy-diagnosis discipline from Hamilton Helmer's Seven Powers: classify a company's claimed moat mechanism, test benefit and barrier separately, distinguish durable firm-level Power from industry attractiveness or generic advantage, account for phase/timing through Power Progression, catch false positives, and translate the result into strategic implications and evidence requests. Applies to strategy memos, product/business model diagnosis, investment diligence, market-entry analysis, and competitive-advantage reviews. Excludes industry-structure analysis by itself (porters-five-forces), integrated strategy-cascade formulation (playing-to-win), value-curve creation (blue-ocean-strategy), resource-only VRIO diagnosis, SWOT/TOWS inventory work, financial valuation, and generic prioritization.
 
@@ -321,8 +333,8 @@ A good Seven Powers answer:
 - value this company using discounted cash flows
 
 **Related skills**
-- Verify with: `porters-five-forces`, `playing-to-win`, `framework-fit-analysis`, `epistemic-grounding`
-- Related: `porters-five-forces`, `playing-to-win`, `blue-ocean-strategy`, `vrio`, `swot-tows`, `framework-fit-analysis`, `epistemic-grounding`, `bayesian-reasoning`, `expected-value`, `prioritization`
+- Verify with: `playing-to-win`, `framework-fit-analysis`, `epistemic-grounding`, `porters-five-forces`
+- Related: `prioritization`, `bayesian-reasoning`, `expected-value`, `porters-five-forces`, `playing-to-win`, `blue-ocean-strategy`, `vrio`, `swot-tows`, `framework-fit-analysis`, `epistemic-grounding`
 
 **Concept**
 - Mental model: |

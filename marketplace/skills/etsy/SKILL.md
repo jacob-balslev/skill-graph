@@ -3,37 +3,27 @@ name: etsy
 description: "Use when working with Etsy listings — Etsy's own title/tag/category/attribute/description/photo/video model and two-phase search (query matching → ranking on relevancy, listing engagement, recency, shipping price, customer-and-market experience, and personalization); the 13-tag and 20-character-per-tag limits and 140-character title cap; Etsy's 2026 natural-readable-title guidance; the description as an indexed/semantic and Google-snippet surface; free-shipping/shipping-price visibility thresholds; listing-video specs; the first-party Search Visibility diagnostic; the Etsy Open API listing surface; and editing Etsy listings managed by an upstream POD platform (Printify/Printful) including the publish/lock lifecycle, selective publishing, and publish-failure diagnostics. Do NOT use for generic Shopify storefront work, non-Etsy marketplaces, deep keyword-research methodology, the POD product/blueprint/variant model itself, or print-file/artwork generation."
 license: CC-BY-4.0
 metadata:
-  schema_version: "8"
-  version: "1.2.0"
+  relations: "{\"related\":[\"seo-strategy\",\"printify\",\"keywords\",\"shopify\"],\"suppresses\":[\"printify\",\"shopify\"],\"verify_with\":[\"keywords\",\"printify\"]}"
   subject: product-domain
   scope: "Applying chosen keywords and merchandising decisions to Etsy listing fields — title, the 13 tags, category/attributes, description, photos, and listing video — and diagnosing an Etsy listing's search performance through Etsy's own first-party surfaces (the per-listing Search Visibility page, shop stats, and engagement rate). Includes the Etsy Open API listing surface and the special case where the listing's source of truth is an upstream print-on-demand platform (Printify/Printful) reached through an asynchronous, lock-gated, selectively-publishable lifecycle, and the translation/verification boundary between the POD product's fields and the live Etsy listing's indexed fields. Explicitly EXCLUDES keyword-research methodology (seed expansion, clustering, intent mapping, rank tracking), artwork/print-file generation, the POD product/blueprint/variant model itself, generic web SEO, and any non-Etsy marketplace or Shopify storefront."
+  public: "true"
   taxonomy_domain: ecommerce/marketplaces/etsy
-  owner: skill-graph-maintainer
-  freshness: "2026-06-07"
-  drift_check: "{\"last_verified\":\"2026-06-07\"}"
-  eval_artifacts: none
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"etsy seo\",\"etsy tags\",\"etsy listing\",\"etsy title\",\"etsy search ranking\",\"etsy search visibility\",\"etsy listing video\",\"etsy open api\",\"printify to etsy\",\"etsy free shipping\"]"
   triggers: "[\"etsy\",\"etsy seo\",\"etsy listing\",\"etsy tags\",\"etsy search visibility\"]"
   examples: "[\"Optimize an Etsy listing title, description, attributes, and 13 tags without exceeding the 20-character tag limit\",\"Diagnose why an Etsy listing gets impressions but low clicks or sales after a title/tag change\",\"Apply Etsy's 2026 title guidance while preserving useful search phrases in tags, descriptions, or attributes\",\"Edit a Printify-managed Etsy listing and republish without overwriting custom Etsy-side photos or titles\",\"Check whether an Etsy Open API listing client is ready for current listing inventory and variation behavior\"]"
   anti_examples: "[\"Research a full keyword universe and cluster search intent before any listing exists (use keywords)\",\"Edit a Shopify theme or Shopify SEO meta fields (use shopify)\",\"Create the Printify product, select blueprint/provider/variants, or handle Printify webhooks (use printify)\",\"Generate the PNG/SVG artwork that will be printed (graphics task)\",\"Optimize an Amazon or eBay listing (use a channel-specific skill)\"]"
-  relations: "{\"related\":[\"printify\",\"keywords\",\"seo-strategy\",\"shopify\"],\"boundary\":[{\"skill\":\"keywords\",\"reason\":\"Etsy owns applying already-chosen marketplace terms inside Etsy listing fields and diagnostics; keywords owns seed expansion, intent mapping, clustering, cannibalization, and rank-tracking methodology across platforms.\"},{\"skill\":\"printify\",\"reason\":\"Printify owns the POD product/blueprint/provider/variant model, product creation, and cross-channel publish plumbing; this skill owns Etsy-listing-specific concerns — tags, titles, attributes, Etsy search ranking/visibility, and Etsy policy.\"},{\"skill\":\"shopify\",\"reason\":\"Shopify owns its own storefront/theme/Admin/Storefront API and storefront SEO; this skill is Etsy-marketplace-specific.\"}],\"verify_with\":[\"keywords\",\"printify\"]}"
-  grounding: "{\"subject_matter\":\"Etsy marketplace listing fields, search ranking, search visibility diagnostics, Open API listing behavior, and POD-to-Etsy listing sync boundaries\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://help.etsy.com/hc/en-us/articles/360000336307-How-to-Use-Tags-to-Get-Found-in-Search\",\"https://help.etsy.com/hc/en-us/articles/115015628707-How-to-Create-a-Listing?segment=selling\",\"https://www.etsy.com/seller-handbook/article/how-etsy-search-works/375461474487\",\"https://www.etsy.com/legal/policy/search-advertisement-recommendation/899478564529\",\"https://www.etsy.com/seller-handbook/article/1399426136697\",\"https://www.etsy.com/seller-handbook/article/keywords-101-everything-you-need-to-know/382774281517\",\"https://help.etsy.com/hc/en-in/articles/25869947521175-How-to-Use-the-Etsy-Search-Visibility-Page\",\"https://help.etsy.com/hc/en-us/articles/360035901534-How-to-Ship-Your-Items-on-Etsy\",\"https://help.etsy.com/hc/en-us/articles/360024198553-How-to-Offer-Free-Shipping?segment=selling\",\"https://help.etsy.com/hc/en-us/articles/360053206073-How-to-Add-a-Listing-Video\",\"https://help.etsy.com/hc/en-us/articles/115015663987-Search-Engine-Optimization-SEO-for-Shop-and-Listing-Pages?segment=selling\",\"https://developers.etsy.com/documentation/mcp_server/devmcpserver/\",\"https://developers.etsy.com/documentation/tutorials/third-variation/\",\"https://developers.printify.com/API-Doc-RREdits.html\",\"https://help.printify.com/hc/en-us/articles/4483629961489-How-do-I-use-selective-publishing-on-my-sales-channels\",\"https://help.printify.com/hc/en-us/articles/4483630521105-Why-was-my-product-information-overwritten\",\"https://help.printify.com/hc/en-us/articles/4483617102097-Why-can-t-I-publish-my-products-to-Etsy\",\"https://help.printify.com/hc/en-us/articles/45606975744529-How-can-I-create-a-Multi-Product-Listing-on-Etsy\"],\"failure_modes\":[\"old_title_keyword_stuffing_guidance_overrides_2026_clear_title_guidance\",\"title_position_confused_with_ranking_weight_instead_of_buyer_scan_ctr\",\"tags_repeated_from_categories_or_attributes_waste_recall_budget\",\"description_and_first_photo_ignored_in_query_matching\",\"search_personalization_misread_as_universal_rank_drop\",\"listing_visibility_issue_misdiagnosed_as_keyword_problem\",\"free_shipping_guarantee_or_shipping_price_visibility_lever_ignored\",\"video_autoplay_or_format_claims_made_without_current_limits\",\"POD_full_publish_overwrites_custom_etsy_listing_fields\",\"Printify_lock_or_publish_failure_treated_as_successful_Etsy_update\",\"Printify_publish_status_unlock_endpoints_omitted_for_API_flows\",\"Etsy_API_client_assumes_two_variation_inventory_after_third_variation_rollout\"],\"evidence_priority\":\"official_vendor_docs_first\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: ""
-  lint_verdict: UNVERIFIED
-  public: "true"
+  grounding: "{\"subject_matter\":\"Etsy marketplace listing fields, search ranking, search visibility diagnostics, Open API listing behavior, and POD-to-Etsy listing sync boundaries\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://help.etsy.com/hc/en-us/articles/360000336307-How-to-Use-Tags-to-Get-Found-in-Search\",\"https://help.etsy.com/hc/en-us/articles/115015628707-How-to-Create-a-Listing?segment=selling\",\"https://www.etsy.com/seller-handbook/article/how-etsy-search-works/375461474487\",\"https://www.etsy.com/legal/policy/search-advertisement-recommendation/899478564529\",\"https://www.etsy.com/seller-handbook/article/1399426136697\",\"https://www.etsy.com/seller-handbook/article/keywords-101-everything-you-need-to-know/382774281517\",\"https://help.etsy.com/hc/en-in/articles/25869947521175-How-to-Use-the-Etsy-Search-Visibility-Page\",\"https://help.etsy.com/hc/en-us/articles/360035901534-How-to-Ship-Your-Items-on-Etsy\",\"https://help.etsy.com/hc/en-us/articles/360024198553-How-to-Offer-Free-Shipping?segment=selling\",\"https://help.etsy.com/hc/en-us/articles/360053206073-How-to-Add-a-Listing-Video\",\"https://help.etsy.com/hc/en-us/articles/115015663987-Search-Engine-Optimization-SEO-for-Shop-and-Listing-Pages?segment=selling\",\"https://developers.etsy.com/documentation/mcp_server/devmcpserver/\",\"https://developers.etsy.com/documentation/tutorials/third-variation/\",\"https://developers.printify.com/API-Doc-RREdits.html\",\"https://help.printify.com/hc/en-us/articles/4483629961489-How-do-I-use-selective-publishing-on-my-sales-channels\",\"https://help.printify.com/hc/en-us/articles/4483630521105-Why-was-my-product-information-overwritten\",\"https://help.printify.com/hc/en-us/articles/4483617102097-Why-can-t-I-publish-my-products-to-Etsy\",\"https://help.printify.com/hc/en-us/articles/45606975744529-How-can-I-create-a-Multi-Product-Listing-on-Etsy\"],\"failure_modes\":[\"old_title_keyword_stuffing_guidance_overrides_2026_clear_title_guidance\",\"title_position_confused_with_ranking_weight_instead_of_buyer_scan_ctr\",\"tags_repeated_from_categories_or_attributes_waste_recall_budget\",\"description_and_first_photo_ignored_in_query_matching\",\"search_personalization_misread_as_universal_rank_drop\",\"listing_visibility_issue_misdiagnosed_as_keyword_problem\",\"free_shipping_guarantee_or_shipping_price_visibility_lever_ignored\",\"video_autoplay_or_format_claims_made_without_current_limits\",\"POD_full_publish_overwrites_custom_etsy_listing_fields\",\"Printify_lock_or_publish_failure_treated_as_successful_Etsy_update\",\"Printify_publish_status_unlock_endpoints_omitted_for_API_flows\",\"Etsy_API_client_assumes_two_variation_inventory_after_third_variation_rollout\"],\"evidence_priority\":\"general_knowledge_first\"}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/product-domain/etsy/SKILL.md
 ---
 
 # Etsy
+
+## Concept of the skill
+
+Applying chosen keywords and merchandising decisions to Etsy listing fields — title, the 13 tags, category/attributes, description, photos, and listing video — and diagnosing an Etsy listing's search performance through Etsy's own first-party surfaces (the per-listing Search Visibility page, shop stats, and engagement rate).
 
 ## Coverage
 
@@ -121,8 +111,11 @@ A large share of Etsy listings are fulfilled by an upstream print-on-demand plat
 
 **Printful and other POD tools still inherit Etsy limits.** For Printful-managed Etsy tags, public Help says Etsy supports up to 13 unique tags and that a tag over 20 characters can surface as an **Etsy client exception** — do not assume silent truncation or silent dropping; reconcile the live Etsy listing fields after publishing.
 
-## Verification
+## Philosophy of the skill
 
+This skill exists to make agents apply Etsy through its declared scope, coverage, exclusions, and verification checks instead of relying on generic model memory. The useful behavior is specific: recognize the right task, follow the skill's operating guidance, and prove the result with the listed checks.
+
+## Verification
 - Confirm the listing is actually an Etsy listing. If the task is Shopify, Amazon, eBay, Google SEO, or POD product modeling, route elsewhere.
 - Verify title length is ≤140 characters, but optimize for **clarity, not max length**: prefer a concise, natural-language title that names the item and front-loads its objective traits; move gift/aspirational/secondary modifiers to tags, attributes, or description. Do not keyword-stuff to "game position" — position does not by itself affect ranking.
 - Verify **no tag exceeds 20 characters (spaces included)**, no more than **13 tags** are present, and every tag is accurate, distinct, and buyer-relevant — checking the **live Etsy listing fields**, not just that the upstream POD store accepted them.
@@ -176,6 +169,7 @@ Use official vendor docs first; verify against these before relying on a cached 
 
 **Classification**
 - Subject: `product-domain`
+- Public: `true`
 - Domain: `ecommerce/marketplaces/etsy`
 - Scope: Applying chosen keywords and merchandising decisions to Etsy listing fields — title, the 13 tags, category/attributes, description, photos, and listing video — and diagnosing an Etsy listing's search performance through Etsy's own first-party surfaces (the per-listing Search Visibility page, shop stats, and engagement rate). Includes the Etsy Open API listing surface and the special case where the listing's source of truth is an upstream print-on-demand platform (Printify/Printful) reached through an asynchronous, lock-gated, selectively-publishable lifecycle, and the translation/verification boundary between the POD product's fields and the live Etsy listing's indexed fields. Explicitly EXCLUDES keyword-research methodology (seed expansion, clustering, intent mapping, rank tracking), artwork/print-file generation, the POD product/blueprint/variant model itself, generic web SEO, and any non-Etsy marketplace or Shopify storefront.
 
@@ -193,13 +187,10 @@ Use official vendor docs first; verify against these before relying on a cached 
 - Create the Printify product, select blueprint/provider/variants, or handle Printify webhooks (use printify)
 - Generate the PNG/SVG artwork that will be printed (graphics task)
 - Optimize an Amazon or eBay listing (use a channel-specific skill)
-- Owned by `keywords`: applying already-chosen marketplace terms inside Etsy listing fields and diagnostics
-- Owned by `printify`: the POD product/blueprint/provider/variant model, product creation, and cross-channel publish plumbing
-- Owned by `shopify`: its own storefront/theme/Admin/Storefront API and storefront SEO
 
 **Related skills**
 - Verify with: `keywords`, `printify`
-- Related: `printify`, `keywords`, `seo-strategy`, `shopify`
+- Related: `seo-strategy`, `printify`, `keywords`, `shopify`
 
 **Grounding**
 - Mode: `universal`

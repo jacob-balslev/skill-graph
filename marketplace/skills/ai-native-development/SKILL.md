@@ -5,32 +5,16 @@ license: MIT
 compatibility: "Provider- and runtime-agnostic. The autonomy-slider levels and quality-gate sequence apply to any LLM-coding harness (Claude Code, OpenCode, Cursor, Aider, Copilot Workspace, Continue) that supports a deterministic verify step between agent output and merge."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.1.0"
+  relations: "{\"related\":[\"prompt-craft\",\"skill-router\",\"tool-call-strategy\",\"agent-engineering\",\"code-review\"],\"verify_with\":[\"code-review\",\"testing-strategy\"]}"
   subject: agent-ops
   scope: "Reasoning about agent autonomy levels, auto-improve loops, AI-generated code quality, and productivity in LLM-assisted codebases — Karpathy's three eras (1.0 explicit / 2.0 learned / 3.0 natural-language), the vibe-coding-vs-agentic-engineering distinction, the 0–5 autonomy slider with task-type recommendations, the one-asset/one-metric/one-time-box AutoResearch loop, Software 3.0 productivity metrics, and the documented regressions of ungated AI-generated code (the 'vibe hangover'). Portable across any LLM-assisted codebase; principle-grounded, not repo-bound. Excludes choosing a specific autonomy-loop topology (agent-engineering), per-prompt authoring discipline (prompt-craft), and reviewing the AI-generated code itself (code-review)."
+  public: "true"
   taxonomy_domain: agent/concepts
-  owner: skill-graph-maintainer
-  freshness: "2026-05-18"
-  drift_check: "{\"last_verified\":\"2026-05-18\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"software 3.0 concepts\",\"vibe coding\",\"agentic engineering doctrine\",\"autonomy slider\",\"prompt as code\",\"karpathy three eras\",\"autoresearch loop\",\"ai-generated code quality\",\"vibe hangover\",\"llm-native development\"]"
   examples: "[\"we keep accepting agent-generated code on first try and shipping bugs — what discipline replaces this?\",\"what autonomy level should I run for a security-sensitive change?\",\"does measuring lines-of-code per session make sense when an agent generates the code?\",\"the team is treating prompts and skill files like throwaway notes — what's the alternative framing?\",\"we want an auto-improve loop for our skill content — how do we constrain it so it doesn't regress?\",\"what's the conceptual difference between a vibe coding session and an agentic engineering session?\",\"AI-generated code is shipping with vulnerabilities — what gates should sit between agent output and production?\",\"how do I match autonomy level to the risk profile of the task?\"]"
   anti_examples: "[\"improve this specific prompt for the grader\",\"review this AI-generated PR for correctness\",\"design the checkpoint state machine for our loop\",\"scaffold a new skill that codifies our coding doctrine\",\"the autonomous loop is stalling — debug it\"]"
-  relations: "{\"related\":[\"prompt-craft\",\"agent-engineering\",\"code-review\",\"skill-router\",\"tool-call-strategy\"],\"verify_with\":[\"code-review\",\"testing-strategy\"]}"
   grounding: "{\"subject_matter\":\"AI-native software development discipline for prompt-as-code workflows, agent autonomy calibration, metric-gated auto-improvement loops, and quality gates for AI-generated code\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://www.youtube.com/watch?v=LCEmiRjPEtQ\",\"https://github.com/karpathy/autoresearch\",\"https://arxiv.org/abs/2211.03622\",\"https://arxiv.org/abs/2504.20814\",\"https://snyk.io/lp/secure-adoption-in-the-genai-era/\",\"https://owasp.org/www-project-top-10-for-large-language-model-applications/\"],\"failure_modes\":[\"unintentional_high_autonomy_for_high_risk_work\",\"accepting_ai_generated_code_without_review_or_tests\",\"treating_prompts_and_skills_as_throwaway_notes\",\"optimizing_agent_loops_against_multiple_moving_metrics\",\"citing_stale_ai_code_security_statistics_as_fixed_truth\",\"shipping_agentic_systems_without_prompt_injection_or_excessive_agency_controls\"],\"evidence_priority\":\"equal\"}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: UNVERIFIED
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/ai-native-development/SKILL.md
@@ -40,12 +24,15 @@ metadata:
 
 # AI-Native Development
 
+## Concept of the skill
+
+Reasoning about agent autonomy levels, auto-improve loops, AI-generated code quality, and productivity in LLM-assisted codebases — Karpathy's three eras (1.0 explicit / 2.0 learned / 3.0 natural-language), the vibe-coding-vs-agentic-engineering distinction, the 0–5 autonomy slider with task-type recommendations, the one-asset/one-metric/one-time-box AutoResearch loop, Software 3.0 productivity metrics, and the documented regressions of ungated AI-generated code (the 'vibe hangover').
+
 ## Coverage
 
 The conceptual model for software development when an LLM participates in code creation. Specifically: Andrej Karpathy's three eras of software (1.0 explicit code / 2.0 learned weights / 3.0 natural-language programs); the vibe-coding-vs-agentic-engineering distinction and when each is appropriate; the 0–5 autonomy slider mapping task type and risk to the right level of agent independence; the AutoResearch improvement loop with its three constraints (one editable asset, one scalar metric, one time box); Software 3.0 productivity metrics that replace lines-of-code and commit-count for an LLM-assisted team; the documented security and quality regressions of ungated AI-generated code (the "vibe hangover") and the quality-gate sequence that compensates for them; and the operating principle that prompts, skill files, and agent-runtime configuration are _source code_ — versioned, reviewed, tested.
 
-## Philosophy
-
+## Philosophy of the skill
 A prompt is a program. A skill file is a library. An agent session is a runtime. This is not a metaphor; it is the literal operational model of an LLM-assisted codebase. The mistake teams make is treating these artifacts as ad-hoc notes — the same mistake early industry made with shell scripts before treating them as version-controlled software. AI-native development is the discipline of putting the same engineering rigor around prompts and skills that any team puts around production code: source control, code review, tests, contracts, observability.
 
 The largest single failure mode at the team level is unintentional autonomy. Without an explicit framing, every agent session defaults to the _highest_ autonomy the harness allows, regardless of the task's risk. Vibe coding is not wrong — for a throwaway prototype it is correct. It is wrong as the _default_ for production code. The autonomy slider is the framing tool that lets a team decide _intentionally_ where on the slider any given task should run, and what gates compensate when autonomy goes up.
@@ -327,6 +314,7 @@ Moving down the slider is also legitimate: high-stakes work (production deployme
 
 **Classification**
 - Subject: `agent-ops`
+- Public: `true`
 - Domain: `agent/concepts`
 - Scope: Reasoning about agent autonomy levels, auto-improve loops, AI-generated code quality, and productivity in LLM-assisted codebases — Karpathy's three eras (1.0 explicit / 2.0 learned / 3.0 natural-language), the vibe-coding-vs-agentic-engineering distinction, the 0–5 autonomy slider with task-type recommendations, the one-asset/one-metric/one-time-box AutoResearch loop, Software 3.0 productivity metrics, and the documented regressions of ungated AI-generated code (the 'vibe hangover'). Portable across any LLM-assisted codebase; principle-grounded, not repo-bound. Excludes choosing a specific autonomy-loop topology (agent-engineering), per-prompt authoring discipline (prompt-craft), and reviewing the AI-generated code itself (code-review).
 
@@ -349,7 +337,7 @@ Moving down the slider is also legitimate: high-stakes work (production deployme
 
 **Related skills**
 - Verify with: `code-review`, `testing-strategy`
-- Related: `prompt-craft`, `agent-engineering`, `code-review`, `skill-router`, `tool-call-strategy`
+- Related: `prompt-craft`, `skill-router`, `tool-call-strategy`, `agent-engineering`, `code-review`
 
 **Grounding**
 - Mode: `hybrid`

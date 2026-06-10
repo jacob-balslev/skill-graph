@@ -5,37 +5,20 @@ license: MIT
 compatibility: "Operating-model-agnostic. Applies whether the constraint is a single solo developer operating multiple agents, a small team where one senior engineer reviews everything, or a larger team where review capacity is the limiting factor. The framework adapts as the constraint identity changes."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.1.0"
+  relations: "{\"related\":[\"ai-native-development\",\"agent-engineering\",\"code-review\",\"tool-call-strategy\",\"problem-approach-router\"],\"verify_with\":[\"expected-value\",\"porters-five-forces\",\"principled-negotiation\"]}"
   subject: reasoning-strategy
+  public: "true"
+  scope: "Use when prioritizing work in an AI-assisted codebase, designing agent autonomy levels, deciding what to automate vs keep manual, or evaluating whether a process/tool adds value. Covers Theory of Constraints for AI-era engineering: cheap code production, human review/validation/decision bottlenecks, Five Focusing Steps, constraint-aware process design, attention audits, and constraint-shift modeling. Do NOT use for task-effort estimation, backlog scoring with RICE/WSJF/ICE, or routing a task to a specific model."
   taxonomy_domain: foundations/strategy
-  owner: skill-graph-maintainer
-  freshness: "2026-05-16"
-  drift_check: "{\"last_verified\":\"2026-05-16\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"theory of constraints\",\"goldratt five focusing steps\",\"bottleneck identification\",\"constraint of an ai-coding system\",\"human attention as constraint\",\"cost structure inversion ai\",\"what to automate vs keep manual\",\"batch decisions not interrupt\",\"options not questions\",\"constraint-aware process design\"]"
   examples: "[\"we keep adding tooling and the agent throughput isn't going up — what TOC step are we missing?\",\"should this approval gate stay in the loop or be replaced by an automated check?\",\"the agents keep asking me clarifying questions and I'm answering 30 a day — what's the structural fix?\",\"we're considering a 4-model review panel on every architectural decision — does that subordinate to or overload the constraint?\",\"code production used to be the bottleneck; what does the new bottleneck look like once agents do all the typing?\",\"is this proposed automation a constraint-elevator or a non-constraint optimization that won't move throughput?\",\"the rework rate climbed from 12% to 24% over the quarter — which constraint step does that point at?\"]"
   anti_examples: "[\"what's the ICE / RICE score for this initiative against five others\",\"estimate the effort tier for this ticket\",\"route this debugging task to the cheapest model that can solve it\",\"review this AI-generated PR for correctness\",\"design the production reliability layer for our agent system\"]"
-  relations: "{\"related\":[\"ai-native-development\",\"agent-engineering\",\"code-review\",\"tool-call-strategy\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "Constraint awareness is to AI-coding what Drum-Buffer-Rope is to a factory floor — the slowest machine on the line sets the pace for the whole plant; speeding up the other machines just piles inventory in front of the bottleneck. Adding more agents to an AI-coding team where review bandwidth is the constraint is the same as buying faster CNC mills when the constraint is the inspection station — the parts pile up at inspection, the lead time gets worse, and the new mills look efficient locally while the whole shop ships less per day."
   misconception: "|"
-  concept: "{\"definition\":\"Constraint awareness is the discipline of identifying the single resource that limits a system's throughput at any given time, and routing all improvement work through that resource. Drawn from Eliyahu Goldratt's Theory of Constraints (1984), it treats systems as throughput pipelines whose total output is bounded by their narrowest section — and treats local optimization of non-constraints as effort that produces no system-level gain.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/constraint-awareness/SKILL.md
@@ -44,12 +27,19 @@ metadata:
 
 # Constraint Awareness
 
+## Concept of the skill
+
+Constraint awareness is the discipline of *identifying the single resource that limits a system's throughput at any given time, and routing all improvement work through that resource*. Drawn from Eliyahu Goldratt's *Theory of Constraints* (1984, *The Goal*), it treats systems as *throughput pipelines* whose total output is bounded by their narrowest section — and treats local optimization of non-constraints as effort that produces no system-level gain. *Five Focusing Steps*: (1) IDENTIFY the constraint (in an AI-coding team, almost always a class of *human* activity — review bandwidth, validation, decision-making, learning — not a class of agent activity); (2) EXPLOIT the constraint (maximize the value of every minute of constraint-time; never waste it on work the constraint shouldn't be touching); (3) SUBORDINATE everything else to the constraint (non-constraint resources — agents, automation, tooling — exist to serve the constraint, not the other way around); (4) ELEVATE the constraint (invest in increasing the constraint's capacity — better tooling, better skills, higher agent autonomy, better pre-review); (5) REPEAT (when the constraint moves, restart from step 1).
+
+Replaces "add more tooling, more agents, more parallelism" as a default response to "we're not shipping fast enough" with TOC's *constraint-first* prioritization. Solves the problem that most AI-coding systems fail not because the agents are incapable, but because they *waste the one resource that cannot be scaled* — the human operator's attention. Without explicit constraint-awareness, agents treat all tasks as equal-priority, interrupt the operator with questions they could have answered themselves, and produce verbose output nobody reads. Theory of Constraints turns this into a tractable engineering problem rather than a vague productivity complaint: identify the constraint, route work around it, invest only in changes that genuinely move it. *Anti-pattern catalog*: unnecessary questions (better skill content fixes them, not more questions), spawning without consent (never spawn without an explicit user signal — context-switching is expensive for the constraint), summaries nobody reads (the diff is the summary; only elaborate when non-obvious), over-engineering that creates maintenance debt (every abstraction layer is future demand on the constraint), circular discussions (re-litigating settled decisions because they weren't durably recorded). *Attention-audit ratios* measure constraint health: 30-40% reviewing agent output (>50% means agents need more autonomy), 20-30% design/product decisions, 5-10% debugging agent failures (>20% means skill content is incomplete), 5-10% answering agent questions (>15% means rules are incomplete), 15-25% learning/research/strategy (<10% means the constraint is consumed by operations).
+
+Distinct from ai-native-development, which is the *conceptual frame* for AI-coding (Software 3.0, autonomy slider, vibe vs agentic) — this skill is the *prioritization lens* applied within that frame. Distinct from agent-engineering, which owns production reliability patterns (orchestration, error budgets, observability) — this skill owns *which* of those to invest in based on where the bottleneck currently is. Distinct from code-review, which evaluates one piece of work — this skill reasons about whether the review gate *itself* is the bottleneck. Distinct from tool-call-strategy, which decides per-action which tool an agent calls — this skill decides per-process whether that whole class of action should require human intervention at all. Distinct from task-sizing skills (effort estimation per task), prioritization-framework skills (RICE/WSJF/ICE — scoring backlog initiatives against each other), and model-routing/`agents` skills (which AI model gets a specific task). The throughput-bottleneck question is upstream of all of these — they each optimize within a frame this skill questions. Constraint awareness is to AI-coding what Drum-Buffer-Rope is to a factory floor — the slowest machine on the line sets the pace for the whole plant; speeding up the other machines just piles inventory in front of the bottleneck. Adding more agents to an AI-coding team where review bandwidth is the constraint is the same as buying faster CNC mills when the constraint is the inspection station — the parts pile up at inspection, the lead time gets worse, and the new mills look efficient locally while the whole shop ships less per day. The wrong mental model is that *more agents, more parallelism, more tooling, more cleverness* automatically increases throughput. They do not, except when targeted at the actual constraint — which in an AI-coding team is almost always *the human operator's attention*, not the agent's speed. Adjacent misconceptions: that *every optimization is improvement* (it is not — Goldratt's central lesson is that *local optimization of non-constraints produces no system-level gain*, and overloading the constraint *degrades the entire system*; a four-model review panel on every architectural decision sounds rigorous but overloads the constraint with attention demands); that *the constraint is fixed* (it is not — once agent autonomy improves, the bottleneck shifts: review bandwidth → strategic decisions → user research → market timing → a resource constraint like capital or headcount; the Five Focusing Steps must *restart* when the constraint moves, and processes that served the old constraint may be irrelevant or counterproductive to the new one); that *every agent question is legitimate* (it is not — questions about always-yes things, about documented patterns, about safe defaults are *false dependencies on the constraint* and should be promoted to rules or skills; if the answer is always the same, it shouldn't live in a question to the constraint); that *more abstraction is more capability* (it is not — every abstraction creates future demand on the constraint to maintain; the simplest design that passes the constraint lens wins); that *constraint analysis means more meetings* (it does not — TOC is a *decision framework*, applied to specific proposed changes, not a recurring overhead); and that *throughput is the same as utilization* (it is not — a constraint at 100% utilization with a queue of waiting work has the same throughput as a constraint at 100% utilization with no queue; queueing is the symptom of overload, not the goal).
+
 ## Coverage
 
 Theory-of-Constraints (Goldratt) applied to the cost-structure inversion of AI-assisted software development. Identifies the constraint as the human activity that cannot be delegated to an agent — review, validation, decision-making, learning. Walks the Five Focusing Steps (Identify, Exploit, Subordinate, Elevate, Repeat) and shows how each step maps to a team operating multiple coding agents. Names the four constraint-aware process-design rules: front-load agent work and back-load human judgment; batch constraint touches; present options + recommendation rather than open questions; eliminate false dependencies on the constraint by promoting recurring questions into rules or skills. Catalogs five anti-patterns (unnecessary questions, spawning without consent, summaries nobody reads, over-engineering with maintenance debt, circular discussions). Specifies attention-audit ratios for measuring constraint health. Explains the constraint-shift model — that the bottleneck moves over time as agent autonomy improves, from review bandwidth → strategic decisions → user research → market timing — and that the focusing steps must restart when it does.
 
-## Philosophy
-
+## Philosophy of the skill
 Most AI-coding systems fail not because the agents are incapable, but because they waste the one resource that cannot be scaled: the human operator's attention. Without explicit constraint-awareness, agents treat all tasks as equal-priority, interrupt the operator with questions they could have answered themselves, and produce verbose output nobody reads. Theory of Constraints turns this into a tractable engineering problem rather than a vague productivity complaint: identify the constraint, route work around it, invest only in changes that genuinely move it.
 
 The single sharpest insight TOC offers an AI-coding team is the _cost-structure inversion_. Pre-AI, code production was the dominant cost — every feature took hours of typing, every test took hours of writing. Post-AI, code production is nearly free; an agent can produce ten thousand lines in minutes. The bottleneck has moved entirely to the activities that cannot be delegated: reviewing whether the agent's output is correct, deciding what to build next, validating that the system matches user reality, and learning from outcomes. Every team optimization should now be evaluated through one question: does this reduce demand on the constraint?
@@ -322,7 +312,9 @@ When the constraint moves, the Five Focusing Steps restart from step 1. The proc
 
 **Classification**
 - Subject: `reasoning-strategy`
+- Public: `true`
 - Domain: `foundations/strategy`
+- Scope: Use when prioritizing work in an AI-assisted codebase, designing agent autonomy levels, deciding what to automate vs keep manual, or evaluating whether a process/tool adds value. Covers Theory of Constraints for AI-era engineering: cheap code production, human review/validation/decision bottlenecks, Five Focusing Steps, constraint-aware process design, attention audits, and constraint-shift modeling. Do NOT use for task-effort estimation, backlog scoring with RICE/WSJF/ICE, or routing a task to a specific model.
 
 **When to use**
 - we keep adding tooling and the agent throughput isn't going up — what TOC step are we missing?
@@ -341,7 +333,8 @@ When the constraint moves, the Five Focusing Steps restart from step 1. The proc
 - design the production reliability layer for our agent system
 
 **Related skills**
-- Related: `ai-native-development`, `agent-engineering`, `code-review`, `tool-call-strategy`
+- Verify with: `expected-value`, `porters-five-forces`, `principled-negotiation`
+- Related: `ai-native-development`, `agent-engineering`, `code-review`, `tool-call-strategy`, `problem-approach-router`
 
 **Concept**
 - Mental model: |

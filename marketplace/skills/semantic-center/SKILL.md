@@ -6,37 +6,20 @@ compatibility: "Domain-agnostic explanation method. The five-step workflow, prim
 allowed-tools: Read Grep
 metadata:
   grounding: "{\"subject_matter\":\"Semantic-center analysis for explaining one unit of analysis through a single load-bearing part plus typed supporting relations\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://networkx.org/documentation/stable/reference/algorithms/centrality.html\",\"https://www.w3.org/TR/skos-reference/\",\"https://www.barbaraminto.com/\"],\"failure_modes\":[\"everything_is_important_flattening\",\"visibility_recency_or_sequence_mistaken_for_structural_importance\",\"relation_map_uses_proximity_or_chronology_without_a_stronger_relation\",\"multiple_primary_parts_hidden_as_parallel_key_points\",\"semantic_center_analysis_overowns_task_prioritization_formal_modeling_or_implementation\"],\"evidence_priority\":\"equal\"}"
-  drift_check: "{\"last_verified\":\"2026-05-19\"}"
-  schema_version: "8"
-  version: "1.2.0"
+  relations: "{\"related\":[\"intent-recognition\",\"diagnosis\",\"knowledge-modeling\",\"semantic-relations\",\"semantics\",\"task-analysis\",\"conceptual-modeling\",\"pattern-recognition\"],\"suppresses\":[\"semantic-relations\"],\"verify_with\":[\"code-review\",\"semantic-relations\"]}"
   subject: knowledge-organization
+  public: "true"
+  scope: "Use when you need to explain how parts of a system, feature, concept, page, workflow, or problem connect; identify the single most important part of something; untangle dense dependencies into a core plus typed relations; or answer 'what is the load-bearing part?' without drifting into implementation or task prioritization. Provides a five-step workflow — classify the unit of analysis, find the single primary part using removal/governance/purpose/weight/decision tests, map secondary parts via typed relations (dependency, input/output, parent/child, owner/owned, cause/effect, constraint/enabler, and others), produce a structured output, and reduce the whole to one final sentence — that forces explanation through one-primary reduction rather than flat lists or chronology. Do NOT use for implementation work (use the relevant domain skill), choosing what to do next (use a prioritization skill), or formal architectural-ownership design (use a domain-modeling skill)."
   taxonomy_domain: foundations/semantics
-  owner: skill-graph-maintainer
-  freshness: "2026-05-19"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
-  keywords: "[\"semantic center\",\"semantic-center workflow\",\"one-primary-part reduction\",\"removal test\",\"governance test\",\"load-bearing part\",\"typed relation map\",\"center-finding method\",\"structural importance\",\"single primary part\",\"figure-ground reduction\",\"explanation structure\",\"relation typing rules\",\"supporting-relation map\",\"analysis-vs-prioritization distinction\",\"what is the core\",\"what is load bearing\",\"how do these parts connect\",\"relation map around a center\"]"
+  keywords: "[\"semantic center\",\"one-primary-part reduction\",\"removal test\",\"governance test\",\"load-bearing part\",\"typed relation map\",\"center-finding method\",\"structural importance\",\"figure-ground reduction\",\"relation typing rules\"]"
   examples: "[\"what is the most important part of this dashboard, and how do the surrounding widgets relate to it?\",\"explain how the order, fulfillment, and payment systems relate -- what is the semantic center of that flow?\",\"break down the access-control layer; what is the governing policy and how do the other parts depend on it?\",\"we need to understand the onboarding flow, not implement it -- what is the primary part and how do the steps relate around it?\",\"a skill system has frontmatter, body, and references -- which part is the semantic center, and what roles do the others play?\",\"untangle these dense module dependencies into one core plus typed relations\",\"explain at a high level how this system hangs together\",\"what is the load-bearing part of this proposal, and what is merely supporting evidence?\"]"
   anti_examples: "[\"implement the new chart component for the reports page\",\"which task should I work on next from the board?\",\"design bounded contexts and aggregate ownership for the domain\",\"review this PR for code quality and missing tests\",\"decide kebab-case vs camelCase for new database columns\",\"rewrite this UI button label to be specific and action-oriented\"]"
-  relations: "{\"boundary\":[{\"skill\":\"task-analysis\",\"reason\":\"task-analysis decomposes a route or flow around the user goal, top task, friction, and first-viewport hierarchy; semantic-center decomposes a system or concept around the single load-bearing part. The same primary thing prompt routes by whether the lens is user-task fit or structural importance.\"},{\"skill\":\"conceptual-modeling\",\"reason\":\"conceptual-modeling builds a full implementation-neutral model of entities, attributes, relationships, identity, and cardinality; semantic-center reduces a unit to one primary part plus typed relations. The same how do these concepts relate prompt routes by whether the user wants a full model or a load-bearing reduction.\"},{\"skill\":\"semantic-relations\",\"reason\":\"semantic-relations decides the precise type of one edge such as IS-A, PART-OF, causal, thematic, or associative; semantic-center uses a coarser relation vocabulary to explain many secondary parts around one center.\"},{\"skill\":\"pattern-recognition\",\"reason\":\"pattern-recognition surfaces recurring pattern classes across many instances; semantic-center forces one-primary reduction within a single instance. The same how does this hang together prompt routes by whether the unit of analysis is many instances or one instance.\"}],\"related\":[\"intent-recognition\",\"diagnosis\",\"knowledge-modeling\",\"semantic-relations\"],\"verify_with\":[\"semantic-relations\",\"code-review\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "Semantic-center analysis is like finding the load-bearing column in a room: furniture, paint, wiring, and fixtures all matter, but the explanation becomes useful only after the column that everything else depends on is named."
   misconception: "The common mistake is believing the semantic center is whatever is most visible or most recently discussed. Visibility is a UI fact, recency is a conversation fact, sequence is a timeline fact, and none of them alone proves structural importance."
-  concept: "{\"definition\":\"Semantic-center analysis identifies the single load-bearing part of a system, feature, workflow, concept, decision, problem, or page, then maps all secondary parts by typed relations to that primary part.\",\"mental_model\":\"Treat the unit as a graph of parts. Choose one primary node using removal, governance, purpose, weight, or decision tests, then explain every other node by how it supports, constrains, feeds, depends on, or contrasts with that primary node.\",\"purpose\":\"It prevents flat list explanations and chronology-only walkthroughs by forcing one-primary reduction plus explicit relation mapping.\",\"boundary\":\"It does not implement, prioritize tasks, choose AI models, design formal domain models, perform code review, or replace precise semantic relation typing for one edge.\",\"taxonomy\":\"Workflow steps: classify unit, choose primary part, map secondary parts, produce structured output, reduce to one sentence. Primary-part tests: removal, governance, purpose, weight, decision. Relation families: dependency, input/output, containment, source/consumer, cause/effect, authority, trigger/result, semantic grouping, constraint/enabler, sequence, contrast.\",\"analogy\":\"It is finding the load-bearing column in a room: many visible parts matter, but the explanation becomes useful when the load-bearing part is named.\",\"misconception\":\"The common mistake is treating visibility, recency, sequence, or stakeholder emphasis as proof of centrality. They are signals, not tests.\"}"
-  structural_verdict: PASS
-  truth_verdict: UNVERIFIED
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/knowledge-organization/semantic-center/SKILL.md
@@ -44,12 +27,19 @@ metadata:
 
 # Semantic Center
 
+## Concept of the skill
+
+Semantic-center analysis is a figure-ground reduction method. Treat the unit of analysis as a graph of parts, then name the one part that carries the most structural load and place every other part in relation to it. The center is not automatically the most visible, newest, largest, or first-in-sequence part; it is the part whose removal, governing role, purpose explanation, semantic weight, or decision leverage best explains the whole.
+
+This skill prevents flat explanations. It turns "here are all the parts" into "this is the primary part, these are the supporting parts, and this is how each support, constrains, feeds, or depends on the primary." That makes dense systems, pages, workflows, and concepts easier to understand without turning the answer into a prioritized task list or a formal domain model.
+
+This skill owns explanatory reduction for one system, feature, workflow, concept, decision, problem, or page. It does not own user-goal decomposition and friction scoring, full conceptual modeling, precise edge semantics for a single relation, cross-instance pattern detection, implementation, code review, model routing, or project prioritization. Use the specialist skill once the work changes from explanation to those activities. Semantic-center analysis is like finding the load-bearing column in a room: furniture, paint, wiring, and fixtures all matter, but the explanation becomes useful only after the column that everything else depends on is named. The common mistake is believing the semantic center is whatever is most visible or most recently discussed. Visibility is a UI fact, recency is a conversation fact, sequence is a timeline fact, and none of them alone proves structural importance.
+
 ## Coverage
 
 A structured explanatory workflow for identifying the *semantic center* of any system, feature, concept, page, workflow, decision, or problem and mapping how surrounding parts relate to it. Covers (1) **unit-of-analysis classification** (system / feature / module / page / workflow / concept / data model / decision / problem); (2) **primary-part identification** via the five tests (removal, governance, purpose, weight, decision) ranked by priority; (3) **typed secondary-part relation mapping** using a fixed taxonomy of relation types (dependency, input/output, parent/child, source/consumer, cause/effect, owner/owned, trigger/result, semantic grouping, constraint/enabler, sequence/timeline, contrast/tradeoff); (4) **structured-output production** following a fixed skeleton; and (5) **final one-sentence reduction** in a fixed grammatical form. Includes a "codebase analysis mode" overlay for analyzing a real implementation surface (grep, read primary file, follow data path, read tests) and an anti-pattern catalog (everything-is-important flattening, visibility-as-importance, proximity-as-relation, chronology-instead-of-structure, symmetric-relation blur).
 
-## Philosophy
-
+## Philosophy of the skill
 Most explanations fail because they present everything at the same weight. A user asks "how does this work?" and receives a chronological walkthrough or a laundry list, neither of which tells them what the system *depends on*. Until one part is named as load-bearing, the explanation is not structurally useful — the reader still has to do the reduction work themselves.
 
 The core rule is: **prefer one primary part and typed supporting relations over multiple co-equal "important" parts.** When more than one thing seems important, the removal test or the governance test usually breaks the tie. If it doesn't, state the tension explicitly rather than hiding it behind a list. The five-step workflow exists to force that reduction every time, not as an aesthetic preference but as a structural one.
@@ -265,7 +255,9 @@ After delivering a semantic-center analysis, verify:
 
 **Classification**
 - Subject: `knowledge-organization`
+- Public: `true`
 - Domain: `foundations/semantics`
+- Scope: Use when you need to explain how parts of a system, feature, concept, page, workflow, or problem connect; identify the single most important part of something; untangle dense dependencies into a core plus typed relations; or answer 'what is the load-bearing part?' without drifting into implementation or task prioritization. Provides a five-step workflow — classify the unit of analysis, find the single primary part using removal/governance/purpose/weight/decision tests, map secondary parts via typed relations (dependency, input/output, parent/child, owner/owned, cause/effect, constraint/enabler, and others), produce a structured output, and reduce the whole to one final sentence — that forces explanation through one-primary reduction rather than flat lists or chronology. Do NOT use for implementation work (use the relevant domain skill), choosing what to do next (use a prioritization skill), or formal architectural-ownership design (use a domain-modeling skill).
 
 **When to use**
 - what is the most important part of this dashboard, and how do the surrounding widgets relate to it?
@@ -284,14 +276,10 @@ After delivering a semantic-center analysis, verify:
 - review this PR for code quality and missing tests
 - decide kebab-case vs camelCase for new database columns
 - rewrite this UI button label to be specific and action-oriented
-- Owned by `task-analysis`
-- Owned by `conceptual-modeling`
-- Owned by `semantic-relations`
-- Owned by `pattern-recognition`
 
 **Related skills**
-- Verify with: `semantic-relations`, `code-review`
-- Related: `intent-recognition`, `diagnosis`, `knowledge-modeling`, `semantic-relations`
+- Verify with: `code-review`, `semantic-relations`
+- Related: `intent-recognition`, `diagnosis`, `knowledge-modeling`, `semantic-relations`, `semantics`, `task-analysis`, `conceptual-modeling`, `pattern-recognition`
 
 **Concept**
 - Mental model: |
@@ -304,6 +292,6 @@ After delivering a semantic-center analysis, verify:
 - Truth sources: `https://networkx.org/documentation/stable/reference/algorithms/centrality.html`, `https://www.w3.org/TR/skos-reference/`, `https://www.barbaraminto.com/`
 
 **Keywords**
-- `semantic center`, `semantic-center workflow`, `one-primary-part reduction`, `removal test`, `governance test`, `load-bearing part`, `typed relation map`, `center-finding method`, `structural importance`, `single primary part`, `figure-ground reduction`, `explanation structure`, `relation typing rules`, `supporting-relation map`, `analysis-vs-prioritization distinction`, `what is the core`, `what is load bearing`, `how do these parts connect`, `relation map around a center`
+- `semantic center`, `one-primary-part reduction`, `removal test`, `governance test`, `load-bearing part`, `typed relation map`, `center-finding method`, `structural importance`, `figure-ground reduction`, `relation typing rules`
 
 <!-- skill-graph-context:end -->

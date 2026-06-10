@@ -5,35 +5,24 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"context-window\",\"context-management\",\"summarization\",\"cognitive-load-theory\"]}"
   subject: backend-engineering
   scope: "Data and context compression — SaaS payload optimization (Zstd, Brotli, Gzip), database storage compression, and AI context-window compression (semantic summarization, token pruning) — applied to cut API latency, storage cost, and long-running agent context pressure. Portable across any service or agent runtime; principle-grounded, not repo-bound. Excludes lossy image/video compression (product-photo) and file archiving."
+  public: "true"
   taxonomy_domain: engineering/data
-  owner: skill-graph-maintainer
-  freshness: "2026-03-28"
-  drift_check: "{\"last_verified\":\"2026-03-28\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"compression\",\"Zstd\",\"Brotli\",\"Gzip\",\"context window\",\"token efficiency\",\"semantic summarization\",\"payload reduction\",\"DB TOAST\"]"
   triggers: "[\"compression-skill\",\"context-compression\",\"payload-optimization\"]"
-  relations: "{\"related\":[\"context-window\",\"context-management\",\"summarization\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/compression/SKILL.md
 ---
 # Compression
+
+## Concept of the skill
+
+Data and context compression — SaaS payload optimization (Zstd, Brotli, Gzip), database storage compression, and AI context-window compression (semantic summarization, token pruning) — applied to cut API latency, storage cost, and long-running agent context pressure.
+
 
 ## Domain Context
 
@@ -54,8 +43,7 @@ metadata:
 
 SaaS payload compression (Zstd, Brotli, Gzip algorithm selection, level tuning, content negotiation), PostgreSQL storage compression (TOAST with Zstd, application-layer blob compression), and AI context window compression (semantic summarization, token pruning, dead context identification, state re-injection). Covers the decision tree for matching algorithms to data types, the `Accept-Encoding` negotiation order, and the three-phase token pruning workflow.
 
-## Philosophy
-
+## Philosophy of the skill
 Compression is the science of increasing information density. In a modern SaaS, it applies at two layers: the **Infrastructure Layer** (reducing bytes on the wire/disk) and the **Intelligence Layer** (reducing tokens in the context window). Without this skill, agents default to generic compression advice that ignores the specific algorithm-to-data-type mapping (e.g., using Gzip everywhere instead of Zstd for dynamic API payloads) and fail to recognize that sub-1KB payloads should skip compression entirely. On the intelligence side, agents routinely let context windows bloat with dead research turns instead of applying structured summarization that preserves evidence paths.
 
 ## 1. SaaS Data Compression Decision Tree
@@ -139,6 +127,7 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `backend-engineering`
+- Public: `true`
 - Domain: `engineering/data`
 - Scope: Data and context compression — SaaS payload optimization (Zstd, Brotli, Gzip), database storage compression, and AI context-window compression (semantic summarization, token pruning) — applied to cut API latency, storage cost, and long-running agent context pressure. Portable across any service or agent runtime; principle-grounded, not repo-bound. Excludes lossy image/video compression (product-photo) and file archiving.
 
@@ -146,7 +135,7 @@ After applying this skill, verify:
 - Triggers: `compression-skill`, `context-compression`, `payload-optimization`
 
 **Related skills**
-- Related: `context-window`, `context-management`, `summarization`
+- Related: `context-window`, `context-management`, `summarization`, `cognitive-load-theory`
 
 **Keywords**
 - `compression`, `Zstd`, `Brotli`, `Gzip`, `context window`, `token efficiency`, `semantic summarization`, `payload reduction`, `DB TOAST`

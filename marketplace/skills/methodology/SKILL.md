@@ -5,17 +5,17 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
+  relations: "{\"related\":[\"testing-strategy\",\"guardrails\",\"best-practice\",\"agent-eval-design\",\"code-review\"],\"suppresses\":[\"refactor\"],\"verify_with\":[\"best-practice\",\"agent-eval-design\",\"okrs\"]}"
   subject: software-engineering-method
   scope: "Portable methodology design for rigorous agent work: planning multi-step implementations, designing quality gates, establishing verification protocols, and building checklists calibrated to known failure modes. Covers methodology/method/process distinctions, Cleanroom defect prevention, PSP/TSP measurement discipline, hypothesis-driven development, DMAIC/PDCA quality management, checklist design, V&V frameworks, EDDOps, and hard-stop quality gates. Excludes concrete PR review (code-review), behavior-preserving implementation changes (refactor), test-level selection (testing-strategy), eval-case/rubric authoring (agent-eval-design), and high-risk action blocking (guardrails)."
+  public: "true"
   taxonomy_domain: quality/method
   stability: experimental
   keywords: "[\"methodology\",\"method\",\"process\",\"formal methods\",\"cleanroom\",\"PSP\",\"TSP\",\"hypothesis driven\",\"DMAIC\",\"PDCA\"]"
   triggers: "[\"methodology-skill\"]"
   examples: "[\"design a verification protocol for this multi-step agent workflow before implementation starts\",\"turn these recurring agent failure modes into a checklist and hard quality gate\",\"explain why this process step exists instead of just telling the agent to follow it\",\"choose whether this task needs PDCA, DMAIC, hypothesis-driven development, or V&V-style traceability\",\"build a methodology-backed plan for preventing defects earlier in this skill audit loop\",\"convert a vague done checklist into binary gates with evidence receipts\"]"
   anti_examples: "[\"review this PR and decide whether to approve it\",\"refactor this file while preserving behavior\",\"decide unit vs integration vs e2e coverage for this feature\",\"write the eval cases and grader rubric for this router\",\"block this dangerous git command or secret-bearing tool call\"]"
-  relations: "{\"boundary\":[{\"skill\":\"refactor\",\"reason\":\"refactor changes code structure while preserving behavior; methodology defines why and when a process should contain gates, traces, and feedback loops\"}],\"related\":[\"best-practice\",\"agent-eval-design\",\"guardrails\",\"testing-strategy\",\"code-review\"],\"verify_with\":[\"best-practice\",\"agent-eval-design\"]}"
   grounding: "{\"subject_matter\":\"Reference methodology for rigorous agent work: methodology-method-process layering, defect prevention, PSP/TSP measurement, hypothesis-driven development, DMAIC/PDCA, checklist design, V&V, and evaluation-driven LLM agent operations\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://voljournals.utk.edu/utk_harlan/18/\",\"https://www.sei.cmu.edu/library/the-team-software-process-tsp/\",\"https://www.sei.cmu.edu/library/team-software-process-tsp-and-personal-software-process-psp-materials/\",\"https://asq.org/Quality-resources/Dmaic\",\"https://asq.org/quality-resources/pdca-cycle\",\"https://www.who.int/publications/i/item/9789241598590\",\"https://www.nasa.gov/ivv-overview/\",\"https://www.nasa.gov/reference/system-engineering-handbook-appendix/\",\"https://barryoreilly.com/explore/blog/how-to-implement-hypothesis-driven-development/\",\"https://arxiv.org/abs/2411.13768\"],\"failure_modes\":[\"process_steps_followed_without_underlying_methodology\",\"quality_gate_treated_as_advisory\",\"verification_claim_without_evidence_receipt\",\"checklist_not_calibrated_to_known_failure_modes\",\"exact_cost_or_success_claim_made_without_source_or_eval\",\"non_public_neighbor_skill_used_as_public_boundary\",\"eval_or_routing_state_inflated_without_run\"],\"evidence_priority\":\"equal\"}"
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-engineering-method/methodology/SKILL.md
@@ -23,6 +23,10 @@ metadata:
 ---
 
 # Methodology
+
+## Concept of the skill
+
+Portable methodology design for rigorous agent work: planning multi-step implementations, designing quality gates, establishing verification protocols, and building checklists calibrated to known failure modes.
 
 ## Domain Context
 
@@ -32,8 +36,7 @@ metadata:
 
 This skill covers the foundational frameworks that make rigorous agent work possible: the methodology-method-process three-layer stack (why these steps, not just which steps), Cleanroom defect prevention (quality built in, not inspected in), PSP/TSP measurement discipline (plan, review, post-mortem), hypothesis-driven development (define success criteria before the experiment), DMAIC/PDCA quality management (especially the skipped Control/Act phases), Gawande checklist design (calibrated to known failure modes, not generic), V&V frameworks from safety-critical industries (DO-178C bidirectional traceability, NASA verification standards), EDDOps for LLM agent evaluation (lifecycle coverage, slice-level validation, closed feedback loops), quality gates as hard stops (binary, blocking, measurable), and the 8 codifiable methodology patterns synthesized across all source disciplines.
 
-## Philosophy
-
+## Philosophy of the skill
 Agents default to executing process without methodology. They apply steps without understanding the principle that makes the steps necessary, which is exactly why they skip steps that feel low-value in the moment. A pilot who knows the B-17 crash story understands why the gust-lock check exists. A pilot who just has a checklist might skip it when running late.
 
 The academic distinction is load-bearing: **Methodology** is the philosophical framework — WHY you approach work a certain way. **Method** is a specific technique within the methodology. **Process** is the ordered sequence of steps executing a method. One process can contain multiple methods; one method can serve many processes. But without methodology, the agent has no basis for deciding when to apply extra rigor, when to challenge a process that seems wasteful, or when a shortcut is genuinely safe vs. when it compromises the underlying principle.
@@ -351,6 +354,7 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `software-engineering-method`
+- Public: `true`
 - Domain: `quality/method`
 - Scope: Portable methodology design for rigorous agent work: planning multi-step implementations, designing quality gates, establishing verification protocols, and building checklists calibrated to known failure modes. Covers methodology/method/process distinctions, Cleanroom defect prevention, PSP/TSP measurement discipline, hypothesis-driven development, DMAIC/PDCA quality management, checklist design, V&V frameworks, EDDOps, and hard-stop quality gates. Excludes concrete PR review (code-review), behavior-preserving implementation changes (refactor), test-level selection (testing-strategy), eval-case/rubric authoring (agent-eval-design), and high-risk action blocking (guardrails).
 
@@ -369,11 +373,10 @@ After applying this skill, verify:
 - decide unit vs integration vs e2e coverage for this feature
 - write the eval cases and grader rubric for this router
 - block this dangerous git command or secret-bearing tool call
-- Owned by `refactor`
 
 **Related skills**
-- Verify with: `best-practice`, `agent-eval-design`
-- Related: `best-practice`, `agent-eval-design`, `guardrails`, `testing-strategy`, `code-review`
+- Verify with: `best-practice`, `agent-eval-design`, `okrs`
+- Related: `testing-strategy`, `guardrails`, `best-practice`, `agent-eval-design`, `code-review`
 
 **Grounding**
 - Mode: `universal`

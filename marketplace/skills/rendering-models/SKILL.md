@@ -4,17 +4,10 @@ description: "Use when reasoning about how a web UI is produced and delivered: c
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: frontend-engineering
+  public: "true"
+  scope: "Reasoning about how a web UI is produced and delivered across the time × place grid (build / request / stream / interaction × server / edge / client): the named rendering models (CSR, SSR, SSG, ISR, RSC, streaming SSR, edge SSR, PPR), their trade-offs across FCP/LCP/TTI/INP, server cost, cache behavior, and crawlability, the per-route mapping from a content profile (static / dynamic / personalized) to a model, and the relationship between rendering and hydration. Portable across any web framework; principle-grounded, not repo-bound. Excludes frontend codebase organization (frontend-architecture), the server/client serialization frontier (client-server-boundary), HTTP wire semantics (http-semantics), and deploy-platform composition patterns (vercel-composition-patterns)."
   taxonomy_domain: engineering/frontend
-  owner: skill-graph-maintainer
-  freshness: "2026-05-15"
-  drift_check: "{\"last_verified\":\"2026-05-15\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"rendering model\",\"CSR\",\"SSR\",\"SSG\",\"ISR\",\"React Server Components\",\"RSC\",\"streaming SSR\",\"edge rendering\",\"partial prerendering\"]"
   triggers: "[\"should this page be server-rendered\",\"static or dynamic\",\"what's the difference between SSR and RSC\",\"why is this page slow to first paint\",\"should this be a client component\"]"
@@ -23,17 +16,9 @@ metadata:
   relations: "{\"related\":[\"frontend-architecture\",\"client-server-boundary\",\"http-semantics\",\"performance-engineering\",\"vercel-composition-patterns\"],\"boundary\":[{\"skill\":\"frontend-architecture\",\"reason\":\"frontend-architecture owns how the codebase is organized; rendering-models owns where and when the UI is produced. A route's architecture and its rendering model are independent decisions.\"},{\"skill\":\"client-server-boundary\",\"reason\":\"client-server-boundary owns the serialization frontier (what can cross between server and client code). rendering-models owns the staging of work across build/request/stream/interaction.\"}],\"verify_with\":[\"performance-engineering\",\"frontend-architecture\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "Rendering models are to web pages what cooking styles are to restaurant kitchens — the same ingredients (data, components, markup) get plated differently depending on whether the kitchen pre-cooks at dawn (SSG), cooks to order during service (SSR), streams courses out as they finish (streaming SSR), or hands raw ingredients to the diner to assemble themselves (CSR), and no one style is right for every menu item."
   misconception: "|"
-  concept: "{\"definition\":\"A rendering model is the strategy by which a web user interface is produced and delivered, defined by two axes: when the work happens (build time, request time, response stream, or user interaction) and where it executes (server, edge, or client). The choice of model determines first-paint latency, time-to-interactive, server cost, cache behavior, and which content can be indexed by crawlers.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/rendering-models/SKILL.md
@@ -41,11 +26,15 @@ metadata:
 
 # Rendering Models
 
+## Concept of the skill
+
+A rendering model is the strategy by which a web user interface is produced and delivered, defined by two axes that together form a grid: WHEN the work happens (build time, request time, response stream, or user interaction) and WHERE it executes (server, edge, or client). The full work of producing a UI is constant — interpret data, compose a component tree, emit DOM, attach behavior — but moving each step between those time-and-place cells has dramatic consequences for what the user sees first, how the server scales, whether the content is crawlable, and how soon the page becomes interactive. The named models in current use (CSR, SSR, SSG, ISR, RSC, streaming SSR) plus two recent additions (edge SSR, PPR) are particular cells or paths through this grid, each making a different bargain across four user-facing performance numbers (FCP, LCP, TTI, INP) and three operational properties (server cost, cache behavior, crawlability). The decisive insight is that the choice is **per-route, not per-application**: a site that picks one model for everything is wrong for most of its routes, because a marketing page (static content), a search-results page (per-query dynamic content), and a logged-in dashboard (personalized content) each have a different content profile that maps to a different model. This skill exists to make those trade-offs legible — to read each route's content profile and pick the model whose bargain matches — rather than to crown a single winner.
+
 ## Coverage
 
 The taxonomy of how a web user interface is produced and delivered. Covers the time × place grid (build / request / stream / interaction × server / edge / client), the six named models in current use (CSR, SSR, SSG, ISR, RSC, streaming SSR) plus two recent additions (edge SSR, PPR), their trade-offs in FCP, LCP, TTI, INP, server cost, and crawlability, and the relationship between rendering and the downstream concerns of bundling, hydration, and HTTP delivery.
 
-## Philosophy
+## Philosophy of the skill
 
 A rendering model is a staging decision: at what moment, and in what location, does the work of producing the UI happen. The full work is the same — interpret data, compose a component tree, emit DOM, attach behavior — but moving each step between build, request, stream, and interaction has dramatic consequences for what the user experiences first, how the server scales, and whether the content is crawlable.
 
@@ -175,7 +164,9 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `frontend-engineering`
+- Public: `true`
 - Domain: `engineering/frontend`
+- Scope: Reasoning about how a web UI is produced and delivered across the time × place grid (build / request / stream / interaction × server / edge / client): the named rendering models (CSR, SSR, SSG, ISR, RSC, streaming SSR, edge SSR, PPR), their trade-offs across FCP/LCP/TTI/INP, server cost, cache behavior, and crawlability, the per-route mapping from a content profile (static / dynamic / personalized) to a model, and the relationship between rendering and hydration. Portable across any web framework; principle-grounded, not repo-bound. Excludes frontend codebase organization (frontend-architecture), the server/client serialization frontier (client-server-boundary), HTTP wire semantics (http-semantics), and deploy-platform composition patterns (vercel-composition-patterns).
 
 **When to use**
 - decide whether a product page should be SSG with revalidation or SSR

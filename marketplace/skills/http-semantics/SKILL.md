@@ -4,36 +4,21 @@ description: "Use when designing or reviewing HTTP-based systems where method se
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"system-interface-contracts\",\"api-design\",\"webhook-integration\",\"route-handler-design\",\"client-server-boundary\",\"semantics\"],\"suppresses\":[\"api-design\",\"webhook-integration\"],\"verify_with\":[\"code-review\",\"api-design\"]}"
   subject: backend-engineering
+  public: "true"
+  scope: "Use when designing or reviewing HTTP-based systems where method semantics, status codes, idempotency, safe methods, conditional requests, content negotiation, caching headers, range requests, integrity digests, or representation metadata are load-bearing. Covers the RFC 9110/9111/9112 contract layer below any specific framework. Do NOT use for API surface shape and route taxonomy (use api-design), for WebSocket or SSE bidirectional streams (use streaming-architecture skill when available), for vendor-specific webhook signing (use webhook-integration), or for transport-level concerns like TLS or QUIC (use platform-level documentation)."
   taxonomy_domain: engineering/protocol
-  owner: skill-graph-maintainer
-  freshness: "2026-06-07"
-  drift_check: "{\"last_verified\":\"2026-05-15\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"HTTP semantics\",\"RFC 9110\",\"idempotent methods\",\"HTTP status codes\",\"conditional requests\",\"content negotiation\",\"cache control\",\"representation metadata\",\"HTTP QUERY method\",\"Problem Details\"]"
   triggers: "[\"what status code should this return\",\"is this method idempotent\",\"RFC 9110\",\"conditional request\",\"cache control header\",\"HTTP QUERY method\"]"
   examples: "[\"decide whether bulk-update should be PUT or PATCH\",\"explain why this endpoint should return 409 instead of 400\",\"review whether this DELETE handler is truly idempotent\",\"design the Vary header for this endpoint that varies on Accept-Language\",\"decide whether a complex read query should be GET, POST, or QUERY\"]"
   anti_examples: "[\"design the JSON shape of the request and response bodies (use api-design)\",\"verify a Stripe webhook signature (use webhook-integration)\",\"decide between WebSocket and SSE for live updates (use streaming-architecture)\"]"
-  relations: "{\"related\":[\"api-design\",\"webhook-integration\",\"system-interface-contracts\"],\"boundary\":[{\"skill\":\"api-design\",\"reason\":\"api-design owns the surface shape (routes, request/response schemas, pagination); http-semantics owns the protocol-level method/status/header contract that any HTTP API builds on.\"},{\"skill\":\"webhook-integration\",\"reason\":\"webhook-integration owns inbound provider mechanics (signing, retry, vendor-specific topics); http-semantics owns vendor-neutral HTTP method and status semantics.\"}],\"verify_with\":[\"api-design\",\"code-review\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "HTTP semantics is to web APIs what the rules of grammar are to written language — the framework provides the dictionary (routes, handlers, middleware) but the grammar is non-negotiable, and a sentence that follows the dictionary while violating the grammar is technically intelligible but causes downstream tooling (CDNs, proxies, client libraries) to misinterpret it."
   misconception: "|"
-  concept: "{\"definition\":\"HTTP semantics is the IETF-standardized contract layer (RFC 9110, 9111, 9112) that defines method meanings, status code families, request/response metadata, conditional requests, content negotiation, and caching — independent of any specific framework or language. It is the wire-level meaning that every HTTP API inherits.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/http-semantics/SKILL.md
@@ -42,14 +27,21 @@ metadata:
 
 # HTTP Semantics
 
+## Concept of the skill
+
+HTTP semantics is the IETF-standardized contract layer (RFC 9110/9111/9112) consisting of three orthogonal axes — method semantics (what an action means: GET/POST/PUT/DELETE/PATCH and their safe/idempotent/cacheable properties), status code families (1xx informational / 2xx success / 3xx redirect / 4xx client-error / 5xx server-error with first-digit-as-contract), and conditional and caching metadata (ETag/If-Match/Cache-Control/Vary). Each axis is composable: a single response combines a method choice + status code + caching headers + conditional preconditions. Critically, RFC 9110 deliberately SEPARATES semantics from wire syntax — the same semantics are shared by HTTP/1.1 (RFC 9112), HTTP/2 (RFC 9113), and HTTP/3 (RFC 9114), so a method/status/header decision is version-independent. The wire-level meaning every HTTP API inherits, independent of any specific framework or protocol version.
+
+Replaces framework-specific defaults with a portable spec contract. Without HTTP semantics as discipline, every API expresses meaning through framework conventions that do not match across stacks (Express does X, Rails does Y, Next.js does Z) — and the moment a request leaves the codebase (a CDN, a corporate proxy, a client library in another language, an HTTP/3 edge), it hits infrastructure that follows the RFC, not your framework. The alternative — "just whatever the framework does by default" — fails because most "weird HTTP behavior" stories come down to a framework default that does not match the spec. Knowing the spec lets you ground HTTP decisions in the wire-level contract, and lets you reach for the standardized header fields (Problem Details, Idempotency-Key, RateLimit, Content-Digest, Deprecation) instead of inventing per-API conventions that no off-the-shelf client, proxy, or gateway understands.
+
+Distinct from api-design, which owns the API surface shape (routes, request/response JSON schemas, pagination, versioning) — http-semantics owns the underlying protocol contract that any HTTP API inherits, vendor-neutral, including the standardized media types and header fields that carry that contract on the wire. Distinct from webhook-integration, which owns inbound provider mechanics (signature verification, retry policy, idempotency keys, vendor-specific topics) — http-semantics owns vendor-neutral method/status/header semantics. Distinct from streaming-architecture, which owns bidirectional or long-running transport (WebSocket, SSE, HTTP/2 push) — http-semantics owns the unidirectional request-response contract. Distinct from system-interface-contracts, which is transport-agnostic (works for HTTP, gRPC, GraphQL, message bus) — http-semantics is HTTP-specific. HTTP semantics is to web APIs what the rules of grammar are to written language — the framework provides the dictionary (routes, handlers, middleware) but the grammar is non-negotiable, and a sentence that follows the dictionary while violating the grammar is technically intelligible but causes downstream tooling (CDNs, proxies, client libraries) to misinterpret it. The wrong mental model is that the framework's defaults ARE the HTTP contract. They are not — frameworks expose convenience APIs over the underlying spec, and those conveniences often diverge from the spec in subtle ways (Next.js's default cache headers, Express's connection-keep-alive behavior, the way different frameworks interpret 405 vs 404). Treating the framework as authoritative produces APIs that work locally but break at infrastructure boundaries — a CDN sees a 200 with an error body and caches it; a corporate proxy sees a POST as non-idempotent and retries it; a client library in a different language sees a missing Vary header and serves stale content; a gateway returns a 401 with no WWW-Authenticate and the client cannot tell how to authenticate. The discipline is to ground HTTP decisions in RFC 9110, not in the framework's documentation.
+
 ## Coverage
 
 The IETF contract layer for HTTP-based systems: version-independent semantics (RFC 9110), method semantics (§ 9), status code families (§ 15), representation metadata and validators (§ 8), request/response metadata (§ 6-8, 12), conditional requests (§ 13), content negotiation (§ 12), range requests (§ 14), request preferences (RFC 7240), structured field design (RFC 9651), and the caching model (RFC 9111). Extends to the modern header-field ecosystem built on these foundations: standardized error bodies (RFC 9457 Problem Details), payload integrity (RFC 9530 Digest Fields), retry-safety at scale (Idempotency-Key, RateLimit fields), cache observability (RFC 9211 Cache-Status, RFC 9213 Targeted Cache-Control, RFC 9875 Cache Groups), and API lifecycle signaling (RFC 9745 Deprecation, RFC 8594 Sunset). Applies to any system using HTTP as a transport: REST APIs, GraphQL-over-HTTP endpoints, webhook receivers, browser fetches, proxy behavior, CDN configuration, API clients, and agent/tool calls over HTTP — across HTTP/1.1, HTTP/2, and HTTP/3 identically.
 
 This skill answers "what does this HTTP message mean to generic HTTP software?" It does not own the product-facing shape of an API, but it must be used to verify that the chosen API surface still obeys method, status, caching, negotiation, retry, lifecycle, integrity, and metadata semantics.
 
-## Philosophy
-
+## Philosophy of the skill
 HTTP is older and more carefully specified than most of the frameworks running on top of it. RFC 9110 is the consolidated semantics reference (June 2022, obsoletes RFC 7230-7235); it represents 25+ years of distilled experience from browsers, proxies, CDNs, and load balancers. Most "weird HTTP behavior" stories come down to a framework default that doesn't match the spec.
 
 The discipline is to ground HTTP decisions in the RFC, not the framework. When the framework default conflicts with the spec, the spec wins for portability: anything outside your codebase (a browser cache, a CDN, a corporate proxy, a retrying client, a crawler, an API gateway, a generated SDK, a client library in a different language) will follow the RFC, not your framework's documentation.
@@ -380,7 +372,9 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `backend-engineering`
+- Public: `true`
 - Domain: `engineering/protocol`
+- Scope: Use when designing or reviewing HTTP-based systems where method semantics, status codes, idempotency, safe methods, conditional requests, content negotiation, caching headers, range requests, integrity digests, or representation metadata are load-bearing. Covers the RFC 9110/9111/9112 contract layer below any specific framework. Do NOT use for API surface shape and route taxonomy (use api-design), for WebSocket or SSE bidirectional streams (use streaming-architecture skill when available), for vendor-specific webhook signing (use webhook-integration), or for transport-level concerns like TLS or QUIC (use platform-level documentation).
 
 **When to use**
 - decide whether bulk-update should be PUT or PATCH
@@ -394,12 +388,10 @@ After applying this skill, verify:
 - design the JSON shape of the request and response bodies (use api-design)
 - verify a Stripe webhook signature (use webhook-integration)
 - decide between WebSocket and SSE for live updates (use streaming-architecture)
-- Owned by `api-design`: the surface shape (routes, request/response schemas, pagination)
-- Owned by `webhook-integration`: inbound provider mechanics (signing, retry, vendor-specific topics)
 
 **Related skills**
-- Verify with: `api-design`, `code-review`
-- Related: `api-design`, `webhook-integration`, `system-interface-contracts`
+- Verify with: `code-review`, `api-design`
+- Related: `system-interface-contracts`, `api-design`, `webhook-integration`, `route-handler-design`, `client-server-boundary`, `semantics`
 
 **Concept**
 - Mental model: |

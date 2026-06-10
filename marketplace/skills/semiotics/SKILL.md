@@ -2,24 +2,23 @@
 name: semiotics
 description: "Use when designing or auditing icon systems, colors/badges/shapes, visual metaphors, interface signs, or naming-plus-visual surfaces that users misread. Covers semiotic reasoning across icon/index/symbol, signifier/signified, denotation/connotation/myth, color/shape/position/iconography, affordances, code/API signifiers, and semiotic-coherence audits. Do NOT use for actual UI wording (use `microcopy`), palette/typography craft (use `visual-design-foundations`), accessibility or contrast compliance (use `a11y`), formal class hierarchies, or word morphology rules. Do NOT use for I need formal class hierarchies, axioms, and what-exists rules for our knowledge base. Do NOT use for I need physical database schema design and relationship constraints. Do NOT use for I need the relation type between two concepts — synonymy, polysemy, or meronymy. Do NOT use for draft the exact wording for a button label or tooltip after the sign system is chosen."
 license: MIT
-compatibility: "Stack-agnostic sign-system analysis. The Peirce / Saussure / Barthes models, color-as-sign rules, iconography principles, and affordance taxonomy apply to any UI; example surfaces use generic e-commerce framings — substitute the equivalents from your domain."
 allowed-tools: Read Grep
 metadata:
   subject: design
+  public: "true"
   scope: "Designing and auditing icon systems, colors/badges/shapes, visual metaphors, interface signs, and naming-plus-visual surfaces that users misread — semiotic reasoning across icon/index/symbol, signifier/signified, denotation/connotation/myth, color/shape/position/iconography, affordances, code/API signifiers, and semiotic-coherence audits. Portable across any sign-bearing interface; principle-grounded, not repo-bound. Excludes actual UI wording (microcopy), palette/typography craft (visual-design-foundations), accessibility/contrast compliance (a11y), formal class hierarchies, and word morphology rules."
   taxonomy_domain: design/semantics
   stability: experimental
   keywords: "[\"sign-system analysis\",\"icon polysemy\",\"signifier signified mapping\",\"denotation versus connotation\",\"affordance signifier match\",\"icon-index-symbol trichotomy\",\"visual metaphor clarity\",\"color connotation audit\",\"cross-surface sign drift\",\"semiotic coherence audit\"]"
+  triggers: "[\"semiotic audit\",\"icon polysemy\",\"signifier signified\",\"denotation connotation\",\"sign system\"]"
   examples: "[\"our dashboard uses green for both revenue increase and cost increase, so users read both as good — what semiotic failure is that and how should we correct it?\",\"we use a gear icon for settings on one page and preferences on another — is this just a naming issue, or an interface sign conflict?\",\"a disabled button still looks clickable because only the color changed — which signifier or affordance rule is failing?\",\"we need an icon for reconciliation in a financial workflow — which metaphors are available, and when must text stay paired with the icon?\",\"an API function is named processData() — from a sign-system perspective, what is wrong with that name?\",\"audit this status-badge color system for denotation vs connotation conflicts\",\"explain why users keep clicking a non-interactive label that looks like a link\"]"
   anti_examples: "[\"I need formal class hierarchies, axioms, and what-exists rules for our knowledge base\",\"I need physical database schema design and relationship constraints\",\"I need the relation type between two concepts — synonymy, polysemy, or meronymy\",\"draft the exact wording for a button label or tooltip after the sign system is chosen\",\"give me the live color-token values, APCA contrast math, and palette enforcement\",\"explain the morphology rule behind verb-first function names\"]"
-  relations: "{\"boundary\":[{\"skill\":\"microcopy\",\"reason\":\"microcopy owns the actual UI wording (button labels, empty states, tooltips, dialogs); semiotics owns the sign-system reasoning that determines what the words and accompanying visual signs should communicate — the same 'fix this UI element' prompt routes by whether the trigger is the wording itself or the sign system the wording sits inside\"},{\"skill\":\"visual-design-foundations\",\"reason\":\"visual-design-foundations owns visual craft decisions such as palette, type, spacing, and hierarchy; semiotics owns what those signs communicate\"}],\"related\":[\"linguistics\",\"a11y\",\"intent-recognition\",\"visual-design-foundations\",\"semantics\",\"semantic-relations\"],\"verify_with\":[\"a11y\",\"code-review\"]}"
+  relations: "{\"related\":[\"linguistics\",\"a11y\",\"intent-recognition\",\"visual-design-foundations\",\"semantics\",\"semantic-relations\"],\"boundary\":[{\"skill\":\"microcopy\",\"reason\":\"microcopy owns the actual UI wording (button labels, empty states, tooltips, dialogs); semiotics owns the sign-system reasoning that determines what the words and accompanying visual signs should communicate — the same 'fix this UI element' prompt routes by whether the trigger is the wording itself or the sign system the wording sits inside\"},{\"skill\":\"visual-design-foundations\",\"reason\":\"visual-design-foundations owns visual craft decisions such as palette, type, spacing, and hierarchy; semiotics owns what those signs communicate\"}],\"verify_with\":[\"a11y\",\"code-review\"]}"
   mental_model: "|"
   purpose: "|"
-  analogy: "Semiotics is to interface design what choreography is to a play — the words are the script, but the actor's stance, hand position, gaze direction, and proximity to other actors are the choreography. A line that lands flat with the wrong choreography lands well with the right one; same words, different signs. A disabled button that uses only a paler color (signifier too quiet) is a stage actor whispering an exit cue the audience cannot hear."
-  misconception: "|"
-  grounding: "{\"subject_matter\":\"Interface sign-system analysis for icons, color, badges, affordances, visual metaphors, and code/API signifiers\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://plato.stanford.edu/archives/spr2024/entries/peirce-semiotics/\",\"https://openlibrary.org/books/OL23291521M/Course_in_general_linguistics.\",\"https://openlibrary.org/books/OL21215289M/Mythologies\",\"https://jnd.org/signifiers-not-affordances/\",\"https://www.nngroup.com/articles/icon-usability/\",\"https://www.w3.org/WAI/WCAG22/Understanding/use-of-color\"],\"failure_modes\":[\"icon_polysemy_masked_as_style_issue\",\"color_connotation_conflated_with_metric_direction\",\"disabled_state_lacks_anti_affordance\",\"abstract_icon_unpaired_before_convention_is_learned\",\"identifier_or_api_name_forces_reader_to_open_implementation\"],\"evidence_priority\":\"equal\"}"
-  public: "true"
   concept_boundary: "|"
+  analogy: "Semiotics is to interface design what choreography is to a play — the words are the script, but the actor's stance, hand position, gaze direction, and proximity to other actors are the choreography; a line lands flat with the wrong choreography and well with the right one, and a disabled button colored only slightly paler is a stage actor whispering an exit cue the audience cannot hear."
+  misconception: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/semiotics/SKILL.md
@@ -28,6 +27,10 @@ metadata:
 ---
 
 # Semiotics
+
+## Concept of the skill
+
+Semiotics is the discipline of designing and auditing the multi-channel sign systems through which an interface communicates with its users. Its primitives are *signifiers* (perceivable forms — icons, colors, shapes, positions, words, interaction cues) and *signifieds* (the concepts, states, actions, or judgments those forms point to), and its working vocabulary comes from four sources: Peirce's icon/index/symbol trichotomy (a sign resembles, causally connects to, or arbitrarily conventions its referent), Saussure's signifier/signified dyad, Barthes' denotation/connotation/myth layers, and Norman's affordance theory (real affordance, perceived affordance, signifier, anti-affordance). The skill applies these models across visual surfaces (color, shape, position, iconography) and textual/code surfaces (function names, API endpoints, error messages) under one governing rule: one signifier should point clearly to one intended signified within a given system context. Its central insight is that every interface element is *already* communicating whether the designer intended it to or not, so the job is to make that communication intentional and coherent rather than to leave it to aesthetic intuition. Sign drift — a gear icon that means different things on different pages, a green badge that connotes "good" while the metric worsens, a disabled button that still looks clickable — is not a cosmetic quirk; it is a sign failure that imposes inference cost on the reader and compounds into distrust of the whole surface.
 
 ## Coverage
 
@@ -42,7 +45,7 @@ Semiotic analysis as the study of sign systems in software interfaces and commun
 
 The skill operates *above* microcopy execution and color-token math, and *below* formal ontology. It owns the question "what does this sign communicate to a user?", not "what should the button say?", "what hex value is this?", or "what class hierarchy do these things belong to?".
 
-## Philosophy
+## Philosophy of the skill
 
 Every interface element is already communicating, whether the designer intended it to or not. Semiotics exists to make that communication explicit and coherent. A button that looks clickable but is disabled, a green badge that signals "good" when the metric is actually worsening, or a gear icon that means different things on different pages are not visual quirks; they are sign failures that erode user trust one micro-misread at a time.
 
@@ -204,10 +207,6 @@ Use this checklist when reviewing a surface:
 
 ---
 
-## Evals
-
-This skill includes a sibling comprehension eval file for audit-loop grading. Keep `eval_state: unverified` until the eval is run by an independent grader and produces a receipt. The checklist below is the authoring gate for sign-system decisions.
-
 ## Verification
 
 After applying this skill, verify:
@@ -250,6 +249,7 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `design`
+- Public: `true`
 - Domain: `design/semantics`
 - Scope: Designing and auditing icon systems, colors/badges/shapes, visual metaphors, interface signs, and naming-plus-visual surfaces that users misread — semiotic reasoning across icon/index/symbol, signifier/signified, denotation/connotation/myth, color/shape/position/iconography, affordances, code/API signifiers, and semiotic-coherence audits. Portable across any sign-bearing interface; principle-grounded, not repo-bound. Excludes actual UI wording (microcopy), palette/typography craft (visual-design-foundations), accessibility/contrast compliance (a11y), formal class hierarchies, and word morphology rules.
 
@@ -261,6 +261,7 @@ After applying this skill, verify:
 - an API function is named processData() — from a sign-system perspective, what is wrong with that name?
 - audit this status-badge color system for denotation vs connotation conflicts
 - explain why users keep clicking a non-interactive label that looks like a link
+- Triggers: `semiotic audit`, `icon polysemy`, `signifier signified`, `denotation connotation`, `sign system`
 
 **Not for**
 - I need formal class hierarchies, axioms, and what-exists rules for our knowledge base
@@ -279,12 +280,8 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Analogy: Semiotics is to interface design what choreography is to a play — the words are the script, but the actor's stance, hand position, gaze direction, and proximity to other actors are the choreography. A line that lands flat with the wrong choreography lands well with the right one; same words, different signs. A disabled button that uses only a paler color (signifier too quiet) is a stage actor whispering an exit cue the audience cannot hear.
+- Analogy: Semiotics is to interface design what choreography is to a play — the words are the script, but the actor's stance, hand position, gaze direction, and proximity to other actors are the choreography; a line lands flat with the wrong choreography and well with the right one, and a disabled button colored only slightly paler is a stage actor whispering an exit cue the audience cannot hear.
 - Common misconception: |
-
-**Grounding**
-- Mode: `universal`
-- Truth sources: `https://plato.stanford.edu/archives/spr2024/entries/peirce-semiotics/`, `https://openlibrary.org/books/OL23291521M/Course_in_general_linguistics.`, `https://openlibrary.org/books/OL21215289M/Mythologies`, `https://jnd.org/signifiers-not-affordances/`, `https://www.nngroup.com/articles/icon-usability/`, `https://www.w3.org/WAI/WCAG22/Understanding/use-of-color`
 
 **Keywords**
 - `sign-system analysis`, `icon polysemy`, `signifier signified mapping`, `denotation versus connotation`, `affordance signifier match`, `icon-index-symbol trichotomy`, `visual metaphor clarity`, `color connotation audit`, `cross-surface sign drift`, `semiotic coherence audit`

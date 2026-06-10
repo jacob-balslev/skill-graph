@@ -1,48 +1,36 @@
 ---
 name: background-jobs
-description: "Use when moving slow or failure-prone work out of a request path, designing job queues, retries, checkpoints, progress reporting, cancellation, or worker concurrency. Covers inline-vs-background decisions, queue contracts, state machines, idempotency, retry/backoff, progress signals, worker leases, and user-visible completion reporting. Do NOT use for time-based schedule design (use `cron-scheduling`), live browser transport choice (use `real-time-updates`), or async message schema ownership (use `event-contract-design`). Do NOT use for choose the cron expression for a daily run. Do NOT use for design an SSE or WebSocket browser update channel. Do NOT use for define an event envelope and topic naming standard. Do NOT use for debug why this already-running worker crashed. Do NOT use for model the database schema for the business entity being processed. Do NOT use for when recurring work starts (use cron-scheduling). Do NOT use for browser freshness transports (use real-time-updates)."
+description: "Use when moving slow or failure-prone work out of a request path, designing job queues, retries, checkpoints, progress reporting, cancellation, or worker concurrency. Covers inline-vs-background decisions, queue contracts, state machines, idempotency, retry/backoff, progress signals, worker leases, and user-visible completion reporting. Do NOT use for time-based schedule design (use `cron-scheduling`), live browser transport choice (use `real-time-updates`), or async message schema ownership (use `event-contract-design`). Do NOT use for choose the cron expression for a daily run. Do NOT use for design an SSE or WebSocket browser update channel. Do NOT use for define an event envelope and topic naming standard. Do NOT use for debug why this already-running worker crashed. Do NOT use for model the database schema for the business entity being processed."
 license: MIT
 compatibility: "Portable background job design guidance for web apps, APIs, workers, serverless functions, and queue-backed systems. Specific queue products differ; verify platform limits before production rollout."
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "7"
-  version: "1.1.0"
+  relations: "{\"related\":[\"event-contract-design\",\"cron-scheduling\",\"real-time-updates\",\"observability-modeling\"],\"suppresses\":[\"cron-scheduling\",\"real-time-updates\"],\"verify_with\":[\"observability-modeling\",\"testing-strategy\"]}"
   subject: backend-engineering
+  public: "true"
+  scope: "Use when moving slow or failure-prone work out of a request path, designing job queues, retries, checkpoints, progress reporting, cancellation, or worker concurrency. Covers inline-vs-background decisions, queue contracts, state machines, idempotency, retry/backoff, progress signals, worker leases, and user-visible completion reporting. Do NOT use for time-based schedule design (use `cron-scheduling`), live browser transport choice (use `real-time-updates`), or async message schema ownership (use `event-contract-design`)."
   taxonomy_domain: engineering/async/background-jobs
-  owner: skill-graph-maintainer
-  freshness: "2026-05-21"
-  drift_check: "{\"last_verified\":\"2026-05-21\"}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
   stability: stable
-  keywords: "[\"background jobs\",\"job queue\",\"worker queue\",\"async processing\",\"long-running task\",\"retry backoff\",\"dead letter queue\",\"job progress\",\"checkpointing\",\"worker concurrency\",\"idempotent job\",\"queue lease\",\"job cancellation\"]"
+  keywords: "[\"background jobs\",\"job queue\",\"worker queue\",\"async processing\",\"long-running task\",\"retry backoff\",\"dead letter queue\",\"checkpointing\",\"worker concurrency\",\"idempotent job\"]"
   triggers: "[\"background-jobs-skill\",\"job-queue-skill\",\"async-processing-skill\",\"long-running-task-skill\",\"worker-pattern-skill\"]"
   examples: "[\"move this report generation out of the API handler and still show progress\",\"design a queue-backed import job that can resume after failure\",\"choose retry and dead-letter behavior for a worker\",\"avoid duplicate processing when a job is enqueued twice\",\"add cancellation and progress to a long-running export\"]"
   anti_examples: "[\"choose the cron expression for a daily run\",\"design an SSE or WebSocket browser update channel\",\"define an event envelope and topic naming standard\",\"debug why this already-running worker crashed\",\"model the database schema for the business entity being processed\"]"
-  relations: "{\"related\":[\"cron-scheduling\",\"real-time-updates\",\"observability-modeling\",\"event-contract-design\"],\"boundary\":[{\"skill\":\"cron-scheduling\",\"reason\":\"cron-scheduling owns when recurring work starts; background-jobs owns how queued work executes after it starts\"},{\"skill\":\"real-time-updates\",\"reason\":\"real-time-updates owns browser freshness transports; background-jobs only defines progress state and completion signals\"}],\"verify_with\":[\"observability-modeling\",\"testing-strategy\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
-  comprehension_state: present
   mental_model: "A background job system has five primitives: a producer records durable work, a queue orders and deduplicates it, a worker leases and executes it, a state store records progress and outcomes, and a notification path tells humans or systems what changed. Reliability comes from making each primitive explicit instead of hiding long work inside a request handler."
   purpose: "Background jobs keep interactive requests short while preserving reliable processing for slow, retryable, or batch-oriented work. They replace timeout-prone inline execution and untracked fire-and-forget calls with durable state, resumable progress, controlled concurrency, and observable outcomes."
+  concept_boundary: "This skill is not schedule design, browser push transport design, event schema design, or incident debugging. It begins after work has been requested and ends with execution state, retry, progress, completion, cancellation, and failure handling."
   analogy: "A background job is a numbered work order in a shop: the front desk accepts the request, the workshop picks it up when capacity exists, and the status board shows where it is."
   misconception: "Putting work in a worker is not enough. Without durable state, idempotency, progress, retry policy, and observability, a background job is just an invisible request handler with a longer timeout."
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "This skill is not schedule design, browser push transport design, event schema design, or incident debugging. It begins after work has been requested and ends with execution state, retry, progress, completion, cancellation, and failure handling."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/background-jobs/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Background Jobs
+
+## Concept of the skill
+
+A background job system has five primitives: a producer records durable work, a queue orders and deduplicates it, a worker leases and executes it, a state store records progress and outcomes, and a notification path tells humans or systems what changed.
 
 ## Coverage
 
@@ -53,8 +41,7 @@ metadata:
 - User-visible progress: stage names, percentages, timestamps, cancellation, completion notification, and stale status handling.
 - Verification: proving long work left the request path without losing observability or recovery paths.
 
-## Philosophy
-
+## Philosophy of the skill
 Background jobs are not just "run this later." They are a reliability boundary between interactive work and processing work. A request handler is optimized for short, synchronous feedback. A worker is optimized for durable execution, retries, checkpoints, and controlled resource use.
 
 The most common failure is moving code into a worker while keeping request-handler assumptions: no durable state, no idempotency, no progress, no cancellation, and no evidence of completion. That makes the system feel faster only until the first timeout, duplicate enqueue, or partial failure. A good job design makes the execution contract visible before choosing a queue product.
@@ -292,7 +279,9 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `backend-engineering`
+- Public: `true`
 - Domain: `engineering/async/background-jobs`
+- Scope: Use when moving slow or failure-prone work out of a request path, designing job queues, retries, checkpoints, progress reporting, cancellation, or worker concurrency. Covers inline-vs-background decisions, queue contracts, state machines, idempotency, retry/backoff, progress signals, worker leases, and user-visible completion reporting. Do NOT use for time-based schedule design (use `cron-scheduling`), live browser transport choice (use `real-time-updates`), or async message schema ownership (use `event-contract-design`).
 
 **When to use**
 - move this report generation out of the API handler and still show progress
@@ -308,12 +297,10 @@ After applying this skill, verify:
 - define an event envelope and topic naming standard
 - debug why this already-running worker crashed
 - model the database schema for the business entity being processed
-- Owned by `cron-scheduling`: when recurring work starts
-- Owned by `real-time-updates`: browser freshness transports
 
 **Related skills**
 - Verify with: `observability-modeling`, `testing-strategy`
-- Related: `cron-scheduling`, `real-time-updates`, `observability-modeling`, `event-contract-design`
+- Related: `event-contract-design`, `cron-scheduling`, `real-time-updates`, `observability-modeling`
 
 **Concept**
 - Mental model: A background job system has five primitives: a producer records durable work, a queue orders and deduplicates it, a worker leases and executes it, a state store records progress and outcomes, and a notification path tells humans or systems what changed. Reliability comes from making each primitive explicit instead of hiding long work inside a request handler.
@@ -322,6 +309,6 @@ After applying this skill, verify:
 - Common misconception: Putting work in a worker is not enough. Without durable state, idempotency, progress, retry policy, and observability, a background job is just an invisible request handler with a longer timeout.
 
 **Keywords**
-- `background jobs`, `job queue`, `worker queue`, `async processing`, `long-running task`, `retry backoff`, `dead letter queue`, `job progress`, `checkpointing`, `worker concurrency`, `idempotent job`, `queue lease`, `job cancellation`
+- `background jobs`, `job queue`, `worker queue`, `async processing`, `long-running task`, `retry backoff`, `dead letter queue`, `checkpointing`, `worker concurrency`, `idempotent job`
 
 <!-- skill-graph-context:end -->

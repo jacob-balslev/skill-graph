@@ -5,40 +5,21 @@ license: MIT
 compatibility: "Markdown, strategy memos, market-entry analysis, competitive strategy, executive decision-making"
 allowed-tools: Read Grep
 metadata:
-  last_audited: "2026-05-31"
-  lint_verdict: PASS
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"prioritization\",\"framework-fit-analysis\",\"playing-to-win\",\"constraint-awareness\",\"epistemic-grounding\"],\"suppresses\":[\"playing-to-win\",\"seven-powers\",\"positioning\"],\"verify_with\":[\"constraint-awareness\",\"epistemic-grounding\"]}"
   subject: reasoning-strategy
   scope: "Industry competitive-structure analysis using Porter's Five Forces — defining industry boundaries, diagnosing each of the five forces (rivalry, new entrants, supplier power, buyer power, substitutes) by their structural drivers, reading dynamic trends, and translating force intensity into profit-pool and positioning implications. Portable across any domain doing competitive or market-structure analysis; principle-grounded, not repo-bound. Excludes integrated strategy-cascade design (playing-to-win), durable-moat classification (seven-powers), task/option scoring (prioritization), and generic market sizing."
+  public: "true"
   taxonomy_domain: foundations/strategy
-  owner: skill-graph-maintainer
-  freshness: "2026-05-31"
-  drift_check: "{\"last_verified\":\"2026-05-26\",\"truth_source_hashes\":{\"skills/meta-methods/porters-five-forces/references/porters-five-forces-sources.md\":\"66c6fd769ae91f3815b7c34e4fe2c80809b12203bf4e2c5c05220517b4746511\",\"skills/meta-methods/porters-five-forces/references/upstream-displacement-2026-05-26.md\":\"eab1270c9ca85a16946d067291a2e74d4effa88ea1649a7f2c3de3914e515b8c\"}}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: stable
-  keywords: "[\"porter five forces\",\"porters five forces\",\"five forces\",\"industry structure\",\"competitive forces\",\"industry attractiveness\",\"buyer power\",\"supplier power\",\"threat of entrants\",\"threat of substitutes\",\"competitive rivalry\"]"
+  keywords: "[\"porter five forces\",\"porters five forces\",\"five forces\",\"industry structure\",\"competitive forces\",\"buyer power\",\"supplier power\",\"threat of entrants\",\"threat of substitutes\",\"competitive rivalry\"]"
   examples: "[\"analyze this market with Porter's Five Forces\",\"which forces make this industry unattractive?\",\"is supplier power or buyer power the bigger risk in this category?\",\"we are entering a new market; diagnose industry structure before we choose a position\",\"map how substitutes and new entrants could change the profit pool\"]"
   anti_examples: "[\"turn this vague product strategy into where-to-play and how-to-win choices\",\"rank these roadmap items by expected impact\",\"estimate the TAM for this market\",\"classify this company's durable moat source\",\"write OKRs for the chosen strategy\"]"
-  relations: "{\"boundary\":[{\"skill\":\"playing-to-win\",\"reason\":\"playing-to-win owns integrated strategy choices; porters-five-forces owns upstream industry-structure diagnosis\"}],\"related\":[\"playing-to-win\",\"constraint-awareness\",\"epistemic-grounding\",\"framework-fit-analysis\",\"prioritization\"],\"verify_with\":[\"epistemic-grounding\",\"constraint-awareness\"]}"
   grounding: "{\"subject_matter\":\"Porter's Five Forces competitive strategy framework\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://www.isc.hbs.edu/strategy/business-strategy/Pages/the-five-forces.aspx\",\"https://hbr.org/2008/01/the-five-competitive-forces-that-shape-strategy\",\"skills/meta-methods/porters-five-forces/references/porters-five-forces-sources.md\",\"skills/meta-methods/porters-five-forces/references/upstream-displacement-2026-05-26.md\"],\"failure_modes\":[\"industry_boundary_too_broad\",\"direct_competitor_only_view\",\"force_names_listed_without_drivers\",\"firm_strength_confused_with_industry_structure\",\"substitutes_confused_with_rivals\",\"market_size_substituted_for_profitability\",\"static_snapshot_ignores_trends\"],\"evidence_priority\":\"general_knowledge_first\"}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   mental_model: "Porter's Five Forces treats profitability as a structural outcome of five pressures around an industry, not just the visible fight among direct competitors. The primitives are the industry boundary, buyers, suppliers, potential entrants, substitutes, current rivals, structural drivers behind each force, and the resulting division of economic value across the profit pool."
   purpose: "This skill prevents agents from mistaking a market summary, TAM estimate, competitor list, or company-strength memo for competitive strategy analysis. It replaces shallow market attractiveness prose with a force-by-force diagnosis of who can capture value, who can bid it away, which forces are changing, and what strategic position or no-go decision follows."
+  concept_boundary: "Five Forces is for industry-structure and profit-pool diagnosis. It is not a Playing to Win strategy cascade, Seven Powers moat taxonomy, SWOT inventory, PESTEL macro scan, market-sizing model, OKR system, backlog prioritization method, or firm-specific capability audit. Those tools can feed or follow the analysis, but they do not replace the five structural forces."
   analogy: "Five Forces is like checking the pressure on all sides of a container: the firm may be strong, but the industry's structure determines where the pressure leaks value away."
   misconception: "The common mistake is treating Five Forces as a checklist of five labels or as a direct-competitor analysis. The method only works when each force is tied to structural drivers and then translated into profitability, positioning, and change over time."
-  structural_verdict: PASS
-  truth_verdict: UNVERIFIED
-  comprehension_verdict: SKIPPED_BASELINE_HIGH
-  application_verdict: UNVERIFIED
-  eval_score: "4.17"
-  eval_failed_ids: "[]"
-  public: "true"
-  concept_boundary: "Five Forces is for industry-structure and profit-pool diagnosis. It is not a Playing to Win strategy cascade, Seven Powers moat taxonomy, SWOT inventory, PESTEL macro scan, market-sizing model, OKR system, backlog prioritization method, or firm-specific capability audit. Those tools can feed or follow the analysis, but they do not replace the five structural forces."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/porters-five-forces/SKILL.md
@@ -46,6 +27,10 @@ metadata:
 ---
 
 # Porter's Five Forces
+
+## Concept of the skill
+
+Porter's Five Forces treats profitability as a structural outcome of five pressures around an industry, not just the visible fight among direct competitors.
 
 ## Concept Card
 
@@ -76,8 +61,7 @@ This skill teaches agents to:
 7. Translate the analysis into positioning, reshape, or no-go implications.
 8. Avoid false precision and unsupported force scores.
 
-## Philosophy
-
+## Philosophy of the skill
 Five Forces is useful because it turns "is this a good market?" into a structural question. Market growth and customer demand can be attractive while profit potential remains weak because suppliers capture the value, buyers force concessions, substitutes cap willingness to pay, entry keeps prices low, or rivalry burns margin.
 
 The framework is not a worksheet. Naming the five forces is not analysis. A useful Five Forces pass names the structural drivers behind each force and connects them to profitability. It also treats industry structure as dynamic: technology, regulation, distribution, standards, and business model shifts can change the forces.
@@ -250,12 +234,17 @@ Before finishing, verify:
 - `references/porters-five-forces-sources.md`
 - `references/upstream-displacement-2026-05-26.md`
 
+## Do NOT Use When
+
+Use another skill when the task falls outside the declared `scope`, matches an `anti_examples` prompt, or is owned by a more specific related skill.
+
 ## Skill Graph context
 
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
 - Subject: `reasoning-strategy`
+- Public: `true`
 - Domain: `foundations/strategy`
 - Scope: Industry competitive-structure analysis using Porter's Five Forces — defining industry boundaries, diagnosing each of the five forces (rivalry, new entrants, supplier power, buyer power, substitutes) by their structural drivers, reading dynamic trends, and translating force intensity into profit-pool and positioning implications. Portable across any domain doing competitive or market-structure analysis; principle-grounded, not repo-bound. Excludes integrated strategy-cascade design (playing-to-win), durable-moat classification (seven-powers), task/option scoring (prioritization), and generic market sizing.
 
@@ -272,11 +261,10 @@ Before finishing, verify:
 - estimate the TAM for this market
 - classify this company's durable moat source
 - write OKRs for the chosen strategy
-- Owned by `playing-to-win`: integrated strategy choices
 
 **Related skills**
-- Verify with: `epistemic-grounding`, `constraint-awareness`
-- Related: `playing-to-win`, `constraint-awareness`, `epistemic-grounding`, `framework-fit-analysis`, `prioritization`
+- Verify with: `constraint-awareness`, `epistemic-grounding`
+- Related: `prioritization`, `framework-fit-analysis`, `playing-to-win`, `constraint-awareness`, `epistemic-grounding`
 
 **Concept**
 - Mental model: Porter's Five Forces treats profitability as a structural outcome of five pressures around an industry, not just the visible fight among direct competitors. The primitives are the industry boundary, buyers, suppliers, potential entrants, substitutes, current rivals, structural drivers behind each force, and the resulting division of economic value across the profit pool.
@@ -289,6 +277,6 @@ Before finishing, verify:
 - Truth sources: `https://www.isc.hbs.edu/strategy/business-strategy/Pages/the-five-forces.aspx`, `https://hbr.org/2008/01/the-five-competitive-forces-that-shape-strategy`, `skills/meta-methods/porters-five-forces/references/porters-five-forces-sources.md`, `skills/meta-methods/porters-five-forces/references/upstream-displacement-2026-05-26.md`
 
 **Keywords**
-- `porter five forces`, `porters five forces`, `five forces`, `industry structure`, `competitive forces`, `industry attractiveness`, `buyer power`, `supplier power`, `threat of entrants`, `threat of substitutes`, `competitive rivalry`
+- `porter five forces`, `porters five forces`, `five forces`, `industry structure`, `competitive forces`, `buyer power`, `supplier power`, `threat of entrants`, `threat of substitutes`, `competitive rivalry`
 
 <!-- skill-graph-context:end -->

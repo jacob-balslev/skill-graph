@@ -4,20 +4,12 @@ description: "Use when reasoning about the pattern where a language model emits 
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.1.0"
   subject: frontend-engineering
+  public: "true"
   subjects: "[\"frontend-engineering\",\"ai-engineering\"]"
   scope: "The pattern where a language model emits, as structured output, a description of UI components or a UI sub-tree that an application then renders — the typed-schema component palette, the structured-output mechanism (JSON Schema, function-calling) constraining emission to renderable specs, the two render substrates (typed-component-tree vs sandboxed-iframe HTML), the application-side render pipeline, the bidirectional interaction loop (postMessage/JSON-RPC) feeding user actions back into the next turn, the model-author/application-renderer security boundary, and the distinction from adjacent patterns (chat-with-markdown, prebuilt-widget routing, RSC streaming, model-emits-code). Portable across any LLM application that renders model-described UI; principle-grounded, not repo-bound. Excludes the page-level rendering taxonomy (rendering-models), the tool-call protocol cycle (tool-call-flow), the untrusted-content trust boundary (prompt-injection-defense), and general component-library architecture (design-system-architecture)."
   grounding: "{\"subject_matter\":\"Portable generative UI architecture for LLM applications: typed component palettes, structured output/tool-call constraints, render pipelines, interaction loops, render-substrate safety models, and renderer security boundaries\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://developers.openai.com/api/docs/guides/structured-outputs\",\"https://developers.openai.com/api/docs/guides/function-calling\",\"https://developers.openai.com/apps-sdk/reference\",\"https://blog.modelcontextprotocol.io/posts/2026-01-26-mcp-apps/\",\"https://github.com/modelcontextprotocol/ext-apps/blob/main/specification/2026-01-26/apps.mdx\",\"https://a2ui.org/introduction/what-is-a2ui/\",\"https://a2ui.org/concepts/catalogs/\",\"https://a2ui.org/concepts/data-binding/\",\"https://github.com/google/A2UI\",\"https://docs.ag-ui.com/introduction\",\"https://docs.ag-ui.com/concepts/events\",\"https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use\",\"https://platform.claude.com/docs/en/agents-and-tools/tool-use/fine-grained-tool-streaming\",\"https://ai.google.dev/gemini-api/docs/structured-output\",\"https://ai-sdk.dev/docs/ai-sdk-ui/generative-user-interfaces\",\"https://ai-sdk.dev/docs/ai-sdk-rsc/migrating-to-ui\",\"https://docs.langchain.com/oss/python/langchain/structured-output\",\"https://docs.langchain.com/oss/python/langchain/frontend/structured-output\",\"https://json-schema.org/draft/2020-12/json-schema-core\",\"https://github.com/reactjs/rfcs/blob/main/text/0188-server-components.md\",\"https://www.nngroup.com/articles/generative-ui/\"],\"failure_modes\":[\"treating_valid_json_as_schema_adherence\",\"using_non_strict_tool_calling_as_a_production_render_contract\",\"letting_partial_streaming_output_render_or_execute_as_final_ui\",\"confusing_tool_result_to_component_binding_with_open_ended_component_tree_generation\",\"conflating_typed_component_tree_safety_by_restriction_with_sandboxed_iframe_safety_by_isolation\",\"treating_AG_UI_or_MCP_discovery_as_a_generation_constraint\",\"treating_RSC_streamUI_as_the_current_vercel_production_default\",\"rendering_model_authored_markup_or_external_resources_without_allowlists_CSP_and_component_policy\",\"surfacing_raw_chain_of_thought_or_reasoning_tokens_as_user_facing_UI\",\"letting_click_events_auto_execute_destructive_actions\",\"omitting_accessible_fallbacks_and_plain_text_equivalents_for_rich_components\",\"letting_provider_specific_schema_subsets_leak_into_a_portable_component_palette_without_compatibility_checks\"],\"evidence_priority\":\"equal\"}"
   taxonomy_domain: agent/ui
-  owner: skill-graph-maintainer
-  freshness: "2026-06-06"
-  drift_check: "{\"last_verified\":\"2026-06-06\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"generative UI\",\"generative interface\",\"structured output\",\"component schema\",\"typed UI spec\",\"JSON Schema\",\"function calling UI\",\"MCP Apps\",\"model-rendered components\",\"assistant UI\"]"
   triggers: "[\"the assistant should show a chart not a paragraph\",\"how does the model render a card\",\"structured output for UI\",\"is it safe to render what the model returned\",\"should this be a tool call or a UI emission\",\"render model UI in a sandboxed iframe\"]"
@@ -26,17 +18,9 @@ metadata:
   relations: "{\"related\":[\"tool-call-flow\",\"rendering-models\",\"client-server-boundary\",\"prompt-injection-defense\",\"api-design\",\"type-safety\"],\"boundary\":[{\"skill\":\"rendering-models\",\"reason\":\"rendering-models owns the page-level rendering taxonomy (CSR/SSR/SSG/RSC/streaming); this skill owns the model→spec→component pipeline that operates inside any of those rendering models. They compose.\"},{\"skill\":\"design-system-architecture\",\"reason\":\"design-system-architecture owns the component library and its tokens; this skill consumes a design system as the component palette the model can draw from.\"}],\"verify_with\":[\"api-design\",\"type-safety\",\"prompt-injection-defense\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "Generative UI is to a model-rendered interface what a building's framework is to a tenant's customization — the architect (application) lays the structural floor plan, frames the walls, and provides a catalog of approved fixtures (component palette) plus sealed pre-fab rooms the tenant may install but not rewire (sandboxed iframes); the tenant (model) picks which fixtures and rooms to install where for this particular layout, but cannot punch new holes in load-bearing walls or wire fixtures that don't exist in the catalog. The freedom is in the composition; the safety is in the structure (restriction) or in the sealed room (isolation)."
   misconception: "|"
-  concept: "{\"definition\":\"Generative UI is the pattern in which a language model emits, as structured output constrained by a typed schema, a specification of a UI component or sub-tree that an application then renders for the user. The model's output is not a chat response, not a tool call asking for execution, and not raw code — it is a typed instance of a component-vocabulary schema. The application owns the rendering, the interaction layer, and the visual design; the model owns the choice of which components to compose and with what data. The pattern depends on three contracts holding simultaneously: the schema (the typed component vocabulary the model and application share), the generation constraint (the model's emission is restricted to valid instances of the schema), and the render policy (the application renders only what the schema describes, via a typed component tree or a sandboxed iframe, with no escape to model-authored markup injected into the host DOM).\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/generative-ui/SKILL.md
@@ -47,11 +31,15 @@ metadata:
 
 # Generative UI
 
+## Concept of the skill
+
+Generative UI is the pattern in which a language model emits — as structured output constrained by a typed schema — a *specification* of a UI component or sub-tree that an application then renders for the user. The load-bearing distinction is that the model's output is neither a chat response, nor a tool call asking for execution, nor raw markup it freely authors: it is a typed instance of a component-vocabulary schema, plus the data to populate it. Three contracts must hold simultaneously for the pattern to work — the **component schema** (the typed vocabulary the model and application share), the **generation constraint** (the mechanism that forces the model's emission to be a valid schema instance — provider-native structured output or strict tool calling, not best-effort function calls), and the **render pipeline** (the application code that turns a validated spec into pixels). Rendering happens through one of two legitimate substrates that differ in where safety comes from: a *typed-component-tree* where safety is by **restriction** (the model can only name components in the published vocabulary; no HTML executes), or a *sandboxed-iframe* where safety is by **isolation plus host mediation** (a developer-authored HTML resource runs in a sandbox that cannot reach the parent DOM, fed the model's data over a postMessage/JSON-RPC bridge). The invariant across both is that the model never authors raw HTML injected into the host DOM — it authors a typed selection and data. The application owns rendering, the interaction layer, and visual design; the model owns the choice of which components to compose and with what data. A bidirectional interaction loop closes the cycle: a user action on a rendered component becomes a typed event the application encodes as the next turn the model reasons about, with destructive effects gated as separate, user-identity-authorized tool calls rather than auto-executed from a click.
+
 ## Coverage
 
 The pattern where a language model emits or selects, as structured output constrained by a typed schema, a specification of a UI component or sub-tree that an application then renders for the user. Covers the three load-bearing contracts (component schema, generation constraint, render pipeline), the implementation variants (direct UI-spec generation, tool-result-to-component binding, hosted-widget bridge, RSC/component-streaming transport), component-palette design rules (semantic discriminated-union types, bounded props, versioning/migration, fallback representation, provider schema-compatibility testing), the two render substrates (typed-component-tree vs sandboxed-iframe HTML), streaming discipline (partial specs drive provisional UI only; final render waits for completed validation), the bidirectional interaction loop (postMessage/JSON-RPC) that closes the cycle from user action back into the model's next turn — including stable per-instance ids for multi-component disambiguation and per-control state-update rules, the UI lifecycle and human-in-the-loop states (idle/thinking/streaming/finalization; propose-edit, gated action, verification loop), the hosted-widget data-channel split (`structuredContent`/`content` visible to the model vs `_meta` component-only) and per-widget domain/CSP policy, the trust boundary that makes the rendering safe under adversarial input, the taxonomy by palette openness / generation mechanism / render substrate / interactivity / trust posture, the 2025–2026 protocol standardization (MCP Apps, OpenAI Apps SDK, MCP-UI, A2UI, AG-UI), and the distinction from adjacent patterns (chat with markdown, tool-call protocol mechanics, prebuilt-widget routing, RSC streaming / AG-UI as transport, AI-assisted design/codegen, model-emits-code which is something else).
 
-## Philosophy
+## Philosophy of the skill
 
 The conventional model-to-user pipeline is: model emits text; user reads text. Generative UI inverts this: model emits a typed component specification; application renders the specification; user sees a UI surface authored by the application's design system but composed by the model.
 
@@ -296,6 +284,7 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `frontend-engineering` (also: `ai-engineering`)
+- Public: `true`
 - Domain: `agent/ui`
 - Scope: The pattern where a language model emits, as structured output, a description of UI components or a UI sub-tree that an application then renders — the typed-schema component palette, the structured-output mechanism (JSON Schema, function-calling) constraining emission to renderable specs, the two render substrates (typed-component-tree vs sandboxed-iframe HTML), the application-side render pipeline, the bidirectional interaction loop (postMessage/JSON-RPC) feeding user actions back into the next turn, the model-author/application-renderer security boundary, and the distinction from adjacent patterns (chat-with-markdown, prebuilt-widget routing, RSC streaming, model-emits-code). Portable across any LLM application that renders model-described UI; principle-grounded, not repo-bound. Excludes the page-level rendering taxonomy (rendering-models), the tool-call protocol cycle (tool-call-flow), the untrusted-content trust boundary (prompt-injection-defense), and general component-library architecture (design-system-architecture).
 

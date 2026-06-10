@@ -2,34 +2,23 @@
 name: microcopy
 description: "Use when writing or reviewing functional UI text: button labels, empty states, tooltips, dialogs, placeholders, loading/progress messages, toasts, inline validation, permission copy, or onboarding steps. Covers interface-copy patterns such as verb-first action labels, acknowledge-explain-guide empty states, one-sentence tooltips, consequence-first confirmations, progressive loading language, and blur/fix validation messages. Do NOT use for marketing persuasion, documentation prose/guide structure, feedback-state staging, or general linguistic rationale behind wording. Do NOT use for write the marketing headline for the pricing page. Do NOT use for review this WCAG 2.2 contrast violation on the dashboard. Do NOT use for explain the morphology rule behind verb-first function names. Do NOT use for restructure this help-center article into a tutorial. Do NOT use for decide the kebab-case format for this new CSS class. Do NOT use for rename this React component across all call-sites."
 license: MIT
-compatibility: "Stack-agnostic UX-writing patterns. The button-label, empty-state, tooltip, dialog, loading, validation, and toast rules apply to any web, mobile, or desktop UI; example product copy uses generic e-commerce framings (storefront, fulfillment partner, orders) — substitute the equivalents from your own product domain."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: design
+  public: "true"
   scope: "Writing and reviewing functional UI text — button labels, empty states, tooltips, dialogs, placeholders, loading/progress messages, toasts, inline validation, permission copy, and onboarding steps — using interface-copy patterns such as verb-first action labels, acknowledge-explain-guide empty states, one-sentence tooltips, consequence-first confirmations, progressive loading language, and blur/fix validation messages. Portable across any UI; principle-grounded, not repo-bound. Excludes marketing persuasion, documentation prose and guide structure, feedback-state staging (interaction-feedback), and general linguistic rationale behind wording."
   taxonomy_domain: design/ux
-  owner: skill-graph-maintainer
-  freshness: "2026-05-06"
-  drift_check: "{\"last_verified\":\"2026-05-06\"}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"button label microcopy\",\"empty-state copy\",\"tooltip text rule\",\"confirmation dialog wording\",\"inline validation message\",\"toast notification copy\",\"placeholder text rule\",\"loading-state messaging\",\"functional UI text\",\"ux writing patterns\"]"
+  triggers: "[\"button label\",\"empty state copy\",\"tooltip text\",\"confirmation dialog wording\",\"inline validation message\"]"
   examples: "[\"rewrite this button label so it names the actual action instead of saying Submit\",\"what should the empty state say when a user has no orders yet?\",\"draft tooltip text for a production-cost field that explains what it means in one sentence\",\"this destructive confirmation dialog says OK — what should the button label be instead?\",\"the inline validation message says Invalid input — make it specific and actionable\",\"draft a toast message for a successful order export with undo\",\"what should the loading state say when a sync takes longer than 10 seconds?\"]"
   anti_examples: "[\"write the marketing headline for the pricing page\",\"review this WCAG 2.2 contrast violation on the dashboard\",\"explain the morphology rule behind verb-first function names\",\"restructure this help-center article into a tutorial\",\"decide the kebab-case format for this new CSS class\",\"rename this React component across all call-sites\"]"
   relations: "{\"boundary\":[{\"skill\":\"interaction-feedback\",\"reason\":\"interaction-feedback owns when, where, and how feedback states appear; microcopy owns the words inside those states\"}],\"related\":[\"linguistics\",\"task-analysis\",\"intent-recognition\",\"interaction-feedback\",\"form-ux-architecture\",\"a11y\"],\"verify_with\":[\"linguistics\",\"a11y\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
+  mental_model: "|"
+  purpose: "|"
+  concept_boundary: "|"
+  analogy: "Microcopy is to an interface what stage directions and labels are to a theater set — not the marketing poster outside (copywriting) or the program notes (documentation), but the lit EXIT sign, the 'pull' on the door, and the usher's one-line 'your seat is to the left': short functional text placed exactly where someone needs to know what to do next."
+  misconception: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/microcopy/SKILL.md
@@ -38,6 +27,10 @@ metadata:
 ---
 
 # Microcopy
+
+## Concept of the skill
+
+Microcopy is the functional text inside a working interface: the button label a user reads before clicking, the empty state they meet when they first arrive, the error message that appears when something fails, the tooltip that answers "what is this?", the toast that confirms "done." It is distinct from marketing copy (which persuades) and documentation (which teaches at length) — microcopy's job is to make the interface *operable*, telling the user what just happened, what will happen if they act, and what to do next, in as few specific words as possible. The discipline is not free-form writing; each interface surface carries a fixed shape the words must fill — verb-first action labels, acknowledge → explain → guide empty states, consequence-first confirmations, What → Why → What-to-do errors, progressive loading language keyed to elapsed time, blur/fix validation. This skill exists because functional UI text is structurally unowned in most products: copywriters own the marketing surfaces, tech writers own the docs, naming conventions own code identifiers, but nobody owns the words *inside* the running interface — so the placeholder text written during implementation ("Submit", "Error occurred", "No data") ships and stays forever. The skill replaces that accidental quality with surface-specific patterns and a verification checklist, so the words a user actually reads are short, specific, actionable, and correct for the surface they appear on.
 
 ## Coverage
 
@@ -55,7 +48,7 @@ Functional UI text patterns across all interactive surfaces:
 - **Permission request copy** — explain *why* before asking
 - **Onboarding step copy** — one action per step, progressive disclosure, time-honest
 
-## Philosophy
+## Philosophy of the skill
 
 Microcopy is the most-read, least-reviewed text in any application. A user may never read the docs, skip the onboarding, and ignore the marketing — but they will read the button label before clicking it. They will read the error message when something fails. They will read the empty state when they first arrive. These micro-moments determine whether the user feels confident or confused, and they compound across every interaction.
 
@@ -224,10 +217,6 @@ Toasts confirm completed actions. They are the UI's "done" signal.
 
 ---
 
-## Evals
-
-This skill ships a comprehension-eval artifact at [`examples/evals/microcopy.json`](https://github.com/jacob-balslev/skill-graph/blob/main/examples/evals/microcopy.json). The checklist below is the authoring gate for functional UI text; the eval file is the grader surface.
-
 ## Verification
 
 After writing or reviewing UI text, verify:
@@ -262,6 +251,7 @@ After writing or reviewing UI text, verify:
 
 **Classification**
 - Subject: `design`
+- Public: `true`
 - Domain: `design/ux`
 - Scope: Writing and reviewing functional UI text — button labels, empty states, tooltips, dialogs, placeholders, loading/progress messages, toasts, inline validation, permission copy, and onboarding steps — using interface-copy patterns such as verb-first action labels, acknowledge-explain-guide empty states, one-sentence tooltips, consequence-first confirmations, progressive loading language, and blur/fix validation messages. Portable across any UI; principle-grounded, not repo-bound. Excludes marketing persuasion, documentation prose and guide structure, feedback-state staging (interaction-feedback), and general linguistic rationale behind wording.
 
@@ -273,6 +263,7 @@ After writing or reviewing UI text, verify:
 - the inline validation message says Invalid input — make it specific and actionable
 - draft a toast message for a successful order export with undo
 - what should the loading state say when a sync takes longer than 10 seconds?
+- Triggers: `button label`, `empty state copy`, `tooltip text`, `confirmation dialog wording`, `inline validation message`
 
 **Not for**
 - write the marketing headline for the pricing page
@@ -286,6 +277,12 @@ After writing or reviewing UI text, verify:
 **Related skills**
 - Verify with: `linguistics`, `a11y`
 - Related: `linguistics`, `task-analysis`, `intent-recognition`, `interaction-feedback`, `form-ux-architecture`, `a11y`
+
+**Concept**
+- Mental model: |
+- Purpose: |
+- Analogy: Microcopy is to an interface what stage directions and labels are to a theater set — not the marketing poster outside (copywriting) or the program notes (documentation), but the lit EXIT sign, the 'pull' on the door, and the usher's one-line 'your seat is to the left': short functional text placed exactly where someone needs to know what to do next.
+- Common misconception: |
 
 **Keywords**
 - `button label microcopy`, `empty-state copy`, `tooltip text rule`, `confirmation dialog wording`, `inline validation message`, `toast notification copy`, `placeholder text rule`, `loading-state messaging`, `functional UI text`, `ux writing patterns`

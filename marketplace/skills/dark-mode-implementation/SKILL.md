@@ -3,30 +3,21 @@ name: dark-mode-implementation
 description: "Use when implementing dark mode — prefers-color-scheme detection, theme persistence, flash-of-unstyled-theme prevention, color token mirroring, image and asset variants, and meta theme-color updates. Do NOT use for designing the dark palette itself, designing the token architecture, or generic theme-switching across more than two themes. Do NOT use for Pick the dark mode color palette values. Do NOT use for Design the three-tier token architecture. Do NOT use for Build a multi-brand theme system with five themes."
 license: CC-BY-4.0
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: design
+  public: "true"
   scope: "Implementing dark mode — prefers-color-scheme detection, theme persistence, flash-of-unstyled-theme prevention, color-token mirroring, image/asset variants, and meta theme-color updates. Portable across any web UI; principle-grounded, not repo-bound. Excludes designing the dark palette itself (color-system-design), token-architecture design, and generic theme-switching across more than two themes."
   taxonomy_domain: design/visual
-  owner: skill-graph-maintainer
-  freshness: "2026-05-12"
-  drift_check: "{\"last_verified\":\"2026-05-12\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"dark mode\",\"prefers-color-scheme\",\"theme persistence\",\"flash of unstyled theme\",\"flash of incorrect theme\",\"color-scheme css property\",\"meta theme-color\",\"dark mode images\",\"picture source media\",\"system theme detection\"]"
   triggers: "[\"dark mode\",\"prefers-color-scheme\",\"light dark toggle\",\"system theme\",\"FOUC dark mode\"]"
   examples: "[\"Add a dark mode toggle with system / light / dark options and persist the user's choice\",\"Eliminate the white flash that appears for a moment when a dark-mode user loads the page\",\"Provide dark variants of the marketing illustrations and the favicon\"]"
   anti_examples: "[\"Pick the dark mode color palette values\",\"Design the three-tier token architecture\",\"Build a multi-brand theme system with five themes\"]"
-  relations: "{\"related\":[\"theme-system-design\",\"color-system-design\",\"a11y\",\"frontend-architecture\"],\"boundary\":[{\"skill\":\"color-system-design\",\"reason\":\"The dark palette and its contrast pairings are color-system-design's responsibility; this skill consumes them.\"}]}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
+  relations: "{\"related\":[\"theme-system-design\",\"color-system-design\",\"a11y\",\"frontend-architecture\"],\"suppresses\":[{\"skill\":\"color-system-design\",\"reason\":\"dark-mode-implementation owns the runtime wiring of a two-state light/dark switch — detection, persistence, flash prevention, asset variants, and browser-chrome hints; the dark palette values and their contrast pairings are color-system-design's responsibility, which this skill consumes.\"}],\"verify_with\":[\"a11y\"]}"
+  mental_model: "|"
+  purpose: "|"
+  concept_boundary: "|"
+  analogy: "Dark mode implementation is to a designed dark palette what a building's automatic day/night lighting controller is to the fixtures an electrician already chose — it does not select the bulbs or set their brightness (the palette), but it senses dusk, remembers the override switch the resident flipped last night, turns everything to the right setting the instant they walk in (no flicker), and also dims the exterior signage and porch lamps to match (the assets and chrome)."
+  misconception: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/dark-mode-implementation/SKILL.md
@@ -34,6 +25,10 @@ metadata:
 ---
 
 # Dark Mode Implementation
+
+## Concept of the skill
+
+Dark mode implementation is the discipline of making a two-state light/dark switch work flawlessly in a real browser over a palette that has already been designed elsewhere. It is settled by five concerns, each with a well-defined web-platform primitive: **detection** of the user's preference (the `prefers-color-scheme` media query for the system default, plus a persisted explicit choice in localStorage or a cookie, exposed as the three states System / Light / Dark); **first-paint application**, where the resolved theme is set on `<html>` synchronously before stylesheets resolve — via a small blocking inline script in `<head>` or server-side serialization — so the user never sees a flash of the wrong theme; **runtime propagation** through a class or data attribute that paired custom properties (or the `light-dark()` function) respond to, alongside the CSS `color-scheme` property so native form controls, scrollbars, and the page background render correctly; **asset variants** for color-sensitive content — dark raster images via `<picture>` media, `currentColor`/custom-property SVGs, a dark favicon, themed iframes and videos; and **browser-chrome hints** via a per-scheme `meta theme-color` for the mobile address bar, Safari toolbar, and PWA splash. Throughout, the explicit user choice overrides the system preference, and "System" is a genuine third state rather than the absence of a saved choice. The skill's job is to make dark mode a correct runtime integration rather than a stylesheet swap.
 
 ## Coverage
 A dark mode implementation handles five concerns: detecting the user's preference (system, explicit choice, persisted choice), applying the right theme before first paint, propagating theme changes at runtime, swapping color-sensitive assets, and updating browser-chrome hints. Each has well-defined web platform primitives.
@@ -48,7 +43,7 @@ Asset handling covers three categories. Raster images that have brand-color elem
 
 Browser chrome hints include the meta theme-color tag (<meta name="theme-color" content="..." media="(prefers-color-scheme: dark)">), which sets the address bar color on mobile browsers, the Safari toolbar tint, and the PWA splash screen. Pair it with a light variant via media= so the chrome matches the active theme. Apple-specific apple-mobile-web-app-status-bar-style is now overridden by theme-color on supported versions.
 
-## Philosophy
+## Philosophy of the skill
 Dark mode is not a re-skin; it is a parallel design surface. Image contrast, shadow strategy (shadows on dark backgrounds work differently — often replaced with subtle borders or elevated background tints), focus ring visibility, and chart palettes all need attention. Treating dark mode as a CSS-only change produces a dark mode that technically works and feels half-finished.
 
 The user's explicit choice overrides the system. A user who has toggled to Dark on your site once expects Dark on the next visit regardless of what their OS is doing. Persistence is not optional, and a System option is a separate, third state from "no preference saved."
@@ -75,6 +70,7 @@ The user's explicit choice overrides the system. A user who has toggled to Dark 
 
 **Classification**
 - Subject: `design`
+- Public: `true`
 - Domain: `design/visual`
 - Scope: Implementing dark mode — prefers-color-scheme detection, theme persistence, flash-of-unstyled-theme prevention, color-token mirroring, image/asset variants, and meta theme-color updates. Portable across any web UI; principle-grounded, not repo-bound. Excludes designing the dark palette itself (color-system-design), token-architecture design, and generic theme-switching across more than two themes.
 
@@ -91,7 +87,14 @@ The user's explicit choice overrides the system. A user who has toggled to Dark 
 - Owned by `color-system-design`
 
 **Related skills**
+- Verify with: `a11y`
 - Related: `theme-system-design`, `color-system-design`, `a11y`, `frontend-architecture`
+
+**Concept**
+- Mental model: |
+- Purpose: |
+- Analogy: Dark mode implementation is to a designed dark palette what a building's automatic day/night lighting controller is to the fixtures an electrician already chose — it does not select the bulbs or set their brightness (the palette), but it senses dusk, remembers the override switch the resident flipped last night, turns everything to the right setting the instant they walk in (no flicker), and also dims the exterior signage and porch lamps to match (the assets and chrome).
+- Common misconception: |
 
 **Keywords**
 - `dark mode`, `prefers-color-scheme`, `theme persistence`, `flash of unstyled theme`, `flash of incorrect theme`, `color-scheme css property`, `meta theme-color`, `dark mode images`, `picture source media`, `system theme detection`

@@ -6,15 +6,15 @@ compatibility: "Library- and harness-agnostic. Patterns apply to any skill-style
 allowed-tools: Read Grep Bash Edit Write
 metadata:
   grounding: "{\"subject_matter\":\"Deterministic health tooling for Skill Graph libraries\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"package.json\",\"bin/skill-graph.js\",\"scripts/skill-lint.js\",\"scripts/lib/roots.js\",\"scripts/check-schema-constants.js\",\"scripts/check-protocol-consistency.js\",\"scripts/generate-manifest.js\",\"scripts/check-manifest-freshness.js\",\"scripts/check-audit-manifest.js\",\"scripts/check-application-evals.js\",\"lib/audit/eval-staleness-checker.js\",\"scripts/skill-audit-preflight.js\",\"scripts/skill-graph-drift.js\",\"scripts/skill-overlap.js\",\"scripts/skill-graph-routing-eval.js\",\"scripts/export-marketplace-skills.js\",\"scripts/verify-skill-md-export.js\",\"docs/manifest-field-mapping.md\",\"docs/verdict-semantics.md\",\"SKILL_GRAPH.md\",\"skill-audit-loop/SKILL_AUDIT_LOOP.md\"],\"failure_modes\":[\"health_tooling_categories_missing_from_ci\",\"checker_ownership_overclaimed\",\"protocol_mapping_drift\",\"relation_target_integrity_unguarded\",\"eval_thresholds_become_self_attested\",\"audit_verdicts_claim_artifacts_that_do_not_exist\",\"overlap_or_drift_checks_not_run_after_batch_changes\",\"export_surface_or_marketplace_index_drift\"],\"evidence_priority\":\"repo_code_first\"}"
+  relations: "{\"related\":[\"lint-overlay\",\"skill-scaffold\",\"graph-audit\",\"testing-strategy\",\"project-knowledge-extraction\"],\"suppresses\":[\"skill-scaffold\"],\"verify_with\":[\"testing-strategy\",\"code-review\",\"graph-audit\"]}"
   subject: agent-ops
   scope: "Designing deterministic health tooling for skill libraries, including source/schema inventory, protocol/projection consistency, conflict/overlap/relation integrity, routing and retrieval health, drift sentinels and export/mirror parity, safety/supply-chain scanning, audit/eval evidence-state honesty, release/publication gates, and maintenance workflows after batch skill changes. Portable across Skill Graph, Claude skills, OpenAI/Codex skills, Cursor rules, OpenCode skills, and custom in-house skill systems. Excludes authoring a single SKILL.md (skill-scaffold), running this repo's conformance audit (graph-audit), selecting general codebase lint rules (lint-overlay), and reviewing the health-tooling implementation itself (code-review)."
+  public: "true"
   taxonomy_domain: agent/skill-system
   stability: experimental
   keywords: "[\"skill library health\",\"skill system tooling\",\"skill library decay\",\"skill overlap detection\",\"frontmatter validation\",\"routing health\",\"drift sentinel\",\"checker ownership\",\"audit artifact integrity\",\"skill supply-chain scan\"]"
   examples: "[\"our skill library is growing and we''re getting silent decay — eval counts dropping, conflicts emerging — what tooling should we add?\",\"two of our skills give opposite instructions for the same function — how do we detect this automatically?\",\"we keep getting skill-router misses on real user queries — how do we surface and close routing gaps?\",\"design a health-check pipeline for a 200-skill library that runs in CI\",\"what''s a reasonable minimum eval count per skill, and how do we enforce it?\",\"which checker should own relation-target existence — lint, or a separate graph-integrity gate?\",\"what should fail release if an application verdict has no application.json behind it?\",\"our public skills export differs from the canonical source — what parity checks do we need?\",\"a newer vendor skill API exists now — did it make our skill-graph tooling obsolete?\",\"we want to import community skills — what safety/supply-chain scan should gate them before they enter the corpus?\",\"our skill mirror in `.claude/skills` keeps drifting from the source — what''s the parity check?\"]"
   anti_examples: "[\"scaffold a new SKILL.md for our team''s deploy procedure\",\"audit this Skill Graph repo for schema conformance and dangling relation targets\",\"the manifest sample drifted from the generator — find the mismatch\",\"improve this prompt''s wording to get better outputs\",\"review this AI-generated PR for correctness\",\"review this PR that changes scripts/skill-lint.js\",\"set up ESLint for our TypeScript repo\",\"draft an architecture note explaining why we chose Postgres\",\"write documentation explaining the protocol to humans\"]"
-  relations: "{\"suppresses\":[{\"skill\":\"skill-scaffold\",\"reason\":\"skill-infrastructure owns the deterministic health-tooling layer that watches the whole library after skills exist; skill-scaffold owns authoring methodology for one new SKILL.md\"}],\"related\":[\"skill-scaffold\",\"graph-audit\",\"testing-strategy\",\"lint-overlay\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/skill-infrastructure/SKILL.md
@@ -23,6 +23,18 @@ metadata:
 ---
 
 # Skill Infrastructure
+
+## Concept of the skill
+
+**What it is:** Skill infrastructure is the deterministic health-tooling layer for a skill library: schema validation, sidecar integrity, manifest freshness, routing checks, drift detection, eval-artifact honesty, export parity, and release gates.
+
+**Mental model:** Treat the skill corpus like a database. `SKILL.md` files are authored records, `audit-state.json` files are sidecar state, manifests and exports are materialized views, relations are foreign keys, and each checker owns one narrow invariant.
+
+**Why it exists:** Skill libraries decay silently. A stale truth-source hash, vague routing contract, missing eval artifact, or drifted export will not crash the agent, but it can make the loaded skill misleading. The infrastructure turns that quiet drift into explicit findings.
+
+**What it is NOT:** It is not the authoring guide for one new skill, the graph-audit skill for this repo's conformance run, a generic lint-rule catalog, or a code-review process for health-tooling changes.
+
+**Common misconception:** A green linter is not a healthy library. Lint proves only the structural invariant it owns; drift, routing, application-eval shape, audit-manifest honesty, export parity, and relation integrity need their own receipts.
 
 ## Coverage
 
@@ -44,7 +56,7 @@ metadata:
 - Package and workspace-root integrity: the npm CLI entrypoint must dispatch to the same scripts as local development while resolving schemas from the package and skills/manifests from the caller workspace
 - The portable health-tooling landscape: the Skill Graph reference scripts plus external validators (claudelint, SkillCheck, agent-ecosystem/skill-validator) and trace-based harnesses (MLflow) that implement these categories for other ecosystems
 
-## Philosophy
+## Philosophy of the skill
 
 A skill library is only as useful as its worst skill. When agents load stale, conflicting, poorly-routed, over-privileged, or mirror-drifted skills, they get *worse* at tasks — not better. A skill library at scale (50+, certainly 200+) decays invisibly: eval counts drift below minimums, keyword maps miss whole product areas, public exports lag the canonical source, truth sources move, relation edges silently point at the wrong owner, and two skills start giving opposite instructions for the same function.
 
@@ -103,16 +115,16 @@ Walks the skill tree, parses every `SKILL.md`'s frontmatter, joins the sidecar w
 
 | Check | Why it matters |
 |---|---|
-| Required frontmatter fields present (`name`, `description`, `subject`, `deployment_target`, `scope`) | Missing agent-facing fields break manifest generation, routing, and export |
+| Required frontmatter fields present (`name`, `description`, `subject`, `public`, `scope`) | Missing agent-facing fields break manifest generation, routing, and export |
 | `name` shape and parent-directory match | Skill identity is the primary key for routing, relations, exports, and audit artifacts |
 | Required sidecar fields present (`schema_version`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`) — `audit-state.json` exists where audit/eval state is claimed | Missing audit/eval/provenance state prevents honest audit-loop writeback |
-| Field-value enums valid (`subject`, `deployment_target`, `eval_state`, `routing_eval`) | Drift in valid values leaks invalid skills into routing and audit reports |
+| Field-value enums valid (`subject`, `public`, `eval_state`, `routing_eval`) | Drift in valid values leaks invalid skills into routing and audit reports |
 | Description-length and quality (≥ 100 chars, contains "Use when X / Do NOT use for Y") | Short or vague descriptions degrade router precision |
 | Tool-surface integrity (`allowed-tools`, when declared, covers the tools the body actually invokes; no undeclared tool calls) | Privilege creep: a body reaching for tools the contract never promised is both a routing and a safety hazard |
 | Eval-count per skill (warn at < 7, error at < 3 unless the skill explicitly documents why evals are not meaningful) | Under-evaluated skills regress quality undetected |
 | Reference-path resolution (every `references/X.md` cited in frontmatter actually exists) | Dangling references mislead the agent at activation time |
 | Token-budget / progressive disclosure (startup cost per skill is small — ~100 tokens for the description — and heavy detail lives in load-on-demand `references/`, not the always-loaded body) | An unbounded body floods the context window for every activation; progressive disclosure is the structural advantage skills have over global system prompts |
-| Project-grounding consistency (`deployment_target: project` requires populated `grounding` plus `project[]`) | Project claims without grounding can hallucinate file paths |
+| Project-grounding consistency (non-empty `project[]` requires populated `grounding` plus `project[]`) | Project claims without grounding can hallucinate file paths |
 | Public-content fence for exported skills | Public libraries must not leak secrets, private operational data, customer data, or local-only paths |
 
 **Reference implementation (live scope, do not overclaim):** in the Skill Graph reference implementation `scripts/skill-lint.js` is intentionally *narrow* — it is the canonical-source schema gate (frontmatter parse, canonical schema, identifier shape, required authored fields, narrow cross-file schema obligations). It explicitly does **not** own routing topology, eval coherence, schema parity, or other infrastructure invariants; those are split across schema-constant checks, manifest validation, status generation, audit preflight, application-eval checks, drift, and export verification. Broad inventory health is the *sum* of those single-purpose tools, not one linter. External analogues report token counts and resolve links the same way (see § The Portable Health-Tooling Landscape).
@@ -497,7 +509,7 @@ A smoke command is for quick local diagnosis — fast and narrow. A release chec
 | Problem | Fix |
 |---|---|
 | `scope` field absent or vague | Add a free-text PRD-style statement of what the skill teaches, where it deploys, and what it excludes |
-| `deployment_target: project` without grounding | Add `grounding.subject_matter` and truth sources, or change the deployment target if the skill is actually portable |
+| non-empty `project[]` without grounding | Add `grounding.subject_matter` and truth sources, or change the deployment target if the skill is actually portable |
 | Sidecar missing audit/eval fields | Create or repair `audit-state.json`; do not stuff audit state back into frontmatter |
 | `drift_check.last_verified` absent or stale | Add or update the sidecar date only after verifying the declared truth sources |
 | `eval_artifacts` absent | Set the sidecar field to `present` if eval files exist, `planned` if intended, `none` otherwise |
@@ -584,6 +596,7 @@ Before any batch skill commit or public release, verify:
 
 **Classification**
 - Subject: `agent-ops`
+- Public: `true`
 - Domain: `agent/skill-system`
 - Scope: Designing deterministic health tooling for skill libraries, including source/schema inventory, protocol/projection consistency, conflict/overlap/relation integrity, routing and retrieval health, drift sentinels and export/mirror parity, safety/supply-chain scanning, audit/eval evidence-state honesty, release/publication gates, and maintenance workflows after batch skill changes. Portable across Skill Graph, Claude skills, OpenAI/Codex skills, Cursor rules, OpenCode skills, and custom in-house skill systems. Excludes authoring a single SKILL.md (skill-scaffold), running this repo's conformance audit (graph-audit), selecting general codebase lint rules (lint-overlay), and reviewing the health-tooling implementation itself (code-review).
 
@@ -610,11 +623,10 @@ Before any batch skill commit or public release, verify:
 - set up ESLint for our TypeScript repo
 - draft an architecture note explaining why we chose Postgres
 - write documentation explaining the protocol to humans
-- Owned by `skill-scaffold`: the deterministic health-tooling layer
 
 **Related skills**
-- Verify with: `testing-strategy`, `code-review`
-- Related: `skill-scaffold`, `graph-audit`, `testing-strategy`, `lint-overlay`
+- Verify with: `testing-strategy`, `code-review`, `graph-audit`
+- Related: `lint-overlay`, `skill-scaffold`, `graph-audit`, `testing-strategy`, `project-knowledge-extraction`
 
 **Grounding**
 - Mode: `hybrid`

@@ -4,36 +4,21 @@ description: "Use when designing end-to-end tests that exercise a user-visible p
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"test-driven-development\",\"testing-strategy\",\"integration-test-design\",\"snapshot-testing\",\"contract-testing\"],\"suppresses\":[\"integration-test-design\",\"testing-strategy\",\"contract-testing\",\"snapshot-testing\"],\"verify_with\":[\"testing-strategy\",\"integration-test-design\"]}"
   subject: quality-assurance
+  public: "true"
+  scope: "Use when designing end-to-end tests that exercise a user-visible path through the whole system, including the UI layer: the user-journey unit-of-test that distinguishes e2e from integration testing, the five-primitive structure (user journey, environment, test data, observable assertion, recovery), why e2e tests are expensive and how to keep them few-and-load-bearing, the wait/synchronization discipline that makes them not-flaky, the page-object and trace-test patterns, the role of e2e tests in the test pyramid/trophy (the top tier — fewest in count but highest in coverage of user-observable behavior), and the modern e2e tool landscape (Playwright, Cypress, Selenium). Do NOT use for testing internal seams of the system (use integration-test-design), single-unit isolated tests (use testing-strategy + test-doubles-design), consumer-driven contract verification (use contract-testing), or visual regression of specific components (use snapshot-testing)."
   taxonomy_domain: quality/testing
-  owner: skill-graph-maintainer
-  freshness: "2026-05-16"
-  drift_check: "{\"last_verified\":\"2026-05-16\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"end-to-end testing\",\"e2e test\",\"user journey test\",\"Playwright\",\"Cypress\",\"Selenium\",\"page object\",\"test flake\",\"wait strategy\",\"trace test\"]"
   triggers: "[\"do we need e2e tests\",\"the e2e tests are flaky\",\"Playwright vs Cypress\",\"how many e2e tests is too many\",\"page object pattern\"]"
   examples: "[\"design an e2e test suite for an onboarding journey: signup → email verify → first action\",\"decide which user journeys deserve e2e coverage vs integration-test coverage\",\"diagnose flaky e2e tests — usually wait-strategy or test-data problems\",\"explain why fewer e2e tests with higher load-bearing value beats many e2e tests with low value\"]"
   anti_examples: "[\"test internal seams of the system (use integration-test-design)\",\"test a single component in isolation (use testing-strategy + test-doubles-design)\",\"verify a service's contract against consumers (use contract-testing)\"]"
-  relations: "{\"related\":[\"testing-strategy\",\"integration-test-design\",\"snapshot-testing\",\"test-driven-development\",\"contract-testing\"],\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the strategic ratio of test levels; this skill owns the design of the e2e tier specifically — the smallest tier in the pyramid/trophy, the most expensive per test, the most user-meaningful per test.\"},{\"skill\":\"integration-test-design\",\"reason\":\"integration-test-design owns tests of internal seams between units; this skill owns user-journey tests through the whole stack including UI. The cost difference is an order of magnitude; conflating them either inflates CI cost or misses real e2e coverage.\"},{\"skill\":\"contract-testing\",\"reason\":\"contract-testing verifies the interface between consumer and provider via consumer-driven contracts; this skill verifies the user-journey behavior end-to-end. Contracts replace e2e tests across service boundaries when the journey is service-to-service; e2e is for journeys with humans at one end.\"},{\"skill\":\"snapshot-testing\",\"reason\":\"Visual snapshot tests are a regression net at e2e or component scope; this skill owns the user-journey behavior end-to-end. They compose: visual snapshots within e2e tests catch UI changes the journey assertions don't.\"}],\"verify_with\":[\"testing-strategy\",\"integration-test-design\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "An e2e test is to a software system what a flight rehearsal is to a launch — you do not certify a rocket by testing each bolt in a clean room (units), nor by firing each engine in isolation (integration), nor by writing a specification of what the avionics should do (contract); you certify it by performing the entire launch sequence, with real fuel, against a real flight plan, with the actual crew, and you do this rarely because each rehearsal costs millions and ten high-fidelity rehearsals tell you more than a thousand quick ones."
   misconception: "|"
-  concept: "{\"definition\":\"End-to-end (e2e) test design is the discipline of designing tests that exercise a complete user-visible path through the entire system — the UI, the application layer, the data layer, external integrations, and back. The unit of test is the *user journey*: a sequence of user actions and the observable outcomes the user experiences. E2e tests are the highest-scope tier of the test pyramid (or trophy) — the fewest in count, the slowest per test, the most user-meaningful per test. Their value is the confidence that the system, assembled, works for a real user task; their cost is real and growing with the system's complexity. The discipline of e2e test design is keeping the count small enough that the cost stays manageable while keeping the coverage broad enough that the tests are load-bearing evidence the system works for users.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/e2e-test-design/SKILL.md
@@ -41,12 +26,19 @@ metadata:
 
 # E2e Test Design
 
+## Concept of the skill
+
+End-to-end (e2e) test design is the discipline of designing tests that exercise a *complete user-visible path through the entire system* — UI, application layer, data layer, external integrations, and back. The *unit of test is the user journey*: a sequence of user actions and the observable outcomes the user experiences. E2e tests are the *highest-scope, smallest-count, slowest-per-test* tier of the test pyramid (Cohn 2009) or trophy (Dodds 2018) — by design, not by accident. *Five primitives*: (1) *user journey* — signup, checkout, primary creative action; a complete path that matters; (2) *environment* — production-like with real UI, real backend, real database, real message bus; recorded fakes only for paid or unavailable third parties; (3) *test data* — isolated per test, typically via per-test user accounts with unique IDs, with cleanup at test or suite end; (4) *observable assertion* — DOM elements visible, URL changes, key user-observable outcomes (what the user would see and say); (5) *wait/synchronization strategy* — wait-for-condition with generous timeouts; never hardcoded `sleep`; auto-waits in Playwright, retry-until-pass in Cypress.
+
+Replaces "we tested all the units, surely the system works" with empirical evidence that the *assembled system* serves *real user tasks*. Solves the problem that no other test tier can provide that evidence — unit tests verify units in isolation, integration tests verify seams between units, contract tests verify service boundaries; none of them verify "the user can complete signup, see the welcome screen, click the first action, and have it work." E2e tests are the only tier that exercises the actual rendered UI in a real browser against a real backend with real database queries and real third-party integrations (or carefully-recorded fakes). The discipline is making each e2e test *load-bearing*: covers a journey that matters; asserts outcomes that prove the system works for users; runs reliably with near-zero flake. A team with one hundred low-value flaky e2e tests is worse off than a team with ten high-value reliable e2e tests — because *trust in the suite*, the willingness to take a red build as evidence of a real bug, is the suite's value. Modern infrastructure (Playwright's trace viewer, per-test parallelism, video capture on failure, recorded third-party fakes, parallel CI execution) has shifted the cost down enough to make a load-bearing e2e suite practical.
+
+Distinct from testing-strategy, which owns the strategic ratio of test levels — this skill owns the *design of the e2e tier specifically*: the smallest tier in the pyramid/trophy, the most expensive per test, the most user-meaningful per test. Distinct from integration-test-design, which owns tests of *internal seams* between units — this skill owns user-journey tests through the *whole stack including UI*; the cost difference is an order of magnitude, and conflating them either inflates CI cost or misses real e2e coverage. Distinct from contract-testing, which verifies the interface between consumer and provider via consumer-driven contracts — contract tests *replace* e2e tests across service boundaries when the journey is service-to-service; e2e is for journeys *with humans at one end*. Distinct from snapshot-testing — visual snapshot tests compose *inside* e2e tests as a regression net for UI changes the journey assertions don't catch. Distinct from mutation-testing (test-suite quality measurement applied at any level — this skill is the e2e tier's design itself). Distinct from test-driven-development (TDD prescribes red-green-refactor at unit scope; e2e tests typically don't drive TDD because they are too slow for the cycle). An e2e test is to a software system what a flight rehearsal is to a launch — you do not certify a rocket by testing each bolt in a clean room (units), nor by firing each engine in isolation (integration), nor by writing a specification of what the avionics should do (contract); you certify it by performing the entire launch sequence, with real fuel, against a real flight plan, with the actual crew, and you do this rarely because each rehearsal costs millions and ten high-fidelity rehearsals tell you more than a thousand quick ones. The wrong mental model is that *more e2e tests are always better* — "we have ninety-three e2e tests covering every page" as a measure of test quality. They are not, and ninety-three is usually too many. Adjacent misconceptions: that flake is normal and acceptable (it is not — flake's primary cause is bad synchronization, and the discipline is wait-for-condition everywhere with generous timeouts; `sleep(2)` followed by an assertion is the prototype anti-pattern, replaced by `await expect(elem).toBeVisible({ timeout: 10_000 })` which auto-retries until match); that auto-update or auto-retry of flaky tests is a fix (it is not — retried-and-ignored flake destroys trust in the suite; a persistent flake is a *bug in the test design* — shared mutable state, ordering dependency, time-of-day dependency, race condition — to be diagnosed, not accepted); that shared test data is efficient (it is not — the most common test-data strategy in production e2e suites is *per-test data with unique IDs*; shared mutable state is the flake source); that an "e2e test" of clicking one button is e2e (it is not — that is a unit or integration test; e2e is a *complete user journey*: signup → email verify → first action, not "click the save button"); that whole-page snapshot diffs are e2e tests (they are not — snapshot is a regression net that composes inside e2e tests); and that adding e2e tests is the right response to bug pressure (it usually is not — most bugs that escape lower tiers should be caught by improving those tiers; Google's "Just say no to more end-to-end tests" essay is the industrial reference for why this intuition is wrong).
+
 ## Coverage
 
 The discipline of designing tests that exercise a complete user-visible path through the entire system — UI, application, data, third parties, and back — with the user journey as the unit of test. Covers the five primitives (journey, environment, test data, observable assertion, wait strategy), the pyramid/trophy position (top tier, fewest tests, highest cost, highest user-meaningful coverage), the test-data strategies that determine isolation and flake rate, the wait-for-condition synchronization discipline that prevents flake, the framework landscape (Playwright, Cypress, Selenium, Puppeteer), and the cost-and-count trade-off that distinguishes good e2e suites from over-investment.
 
-## Philosophy
-
+## Philosophy of the skill
 E2e tests are the smallest tier of the test suite by count and the largest by individual cost. They are the evidence that the *assembled system* works for *real users*; nothing else in the test suite provides that evidence. They are also the most expensive tests to write, run, and maintain.
 
 The discipline is making each e2e test *load-bearing*: covers a journey that matters; asserts outcomes that prove the system works for users; runs reliably with near-zero flake. A team with one hundred low-value flaky e2e tests is worse off than a team with ten high-value reliable e2e tests, because trust in the suite — the willingness to take a red build as evidence of a real bug — is the suite's value.
@@ -146,7 +138,9 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `quality-assurance`
+- Public: `true`
 - Domain: `quality/testing`
+- Scope: Use when designing end-to-end tests that exercise a user-visible path through the whole system, including the UI layer: the user-journey unit-of-test that distinguishes e2e from integration testing, the five-primitive structure (user journey, environment, test data, observable assertion, recovery), why e2e tests are expensive and how to keep them few-and-load-bearing, the wait/synchronization discipline that makes them not-flaky, the page-object and trace-test patterns, the role of e2e tests in the test pyramid/trophy (the top tier — fewest in count but highest in coverage of user-observable behavior), and the modern e2e tool landscape (Playwright, Cypress, Selenium). Do NOT use for testing internal seams of the system (use integration-test-design), single-unit isolated tests (use testing-strategy + test-doubles-design), consumer-driven contract verification (use contract-testing), or visual regression of specific components (use snapshot-testing).
 
 **When to use**
 - design an e2e test suite for an onboarding journey: signup → email verify → first action
@@ -159,14 +153,10 @@ After applying this skill, verify:
 - test internal seams of the system (use integration-test-design)
 - test a single component in isolation (use testing-strategy + test-doubles-design)
 - verify a service's contract against consumers (use contract-testing)
-- Owned by `testing-strategy`: the strategic ratio of test levels
-- Owned by `integration-test-design`: tests of internal seams between units
-- Owned by `contract-testing`
-- Owned by `snapshot-testing`
 
 **Related skills**
 - Verify with: `testing-strategy`, `integration-test-design`
-- Related: `testing-strategy`, `integration-test-design`, `snapshot-testing`, `test-driven-development`, `contract-testing`
+- Related: `test-driven-development`, `testing-strategy`, `integration-test-design`, `snapshot-testing`, `contract-testing`
 
 **Concept**
 - Mental model: |

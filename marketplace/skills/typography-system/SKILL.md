@@ -3,29 +3,20 @@ name: typography-system
 description: "Use when designing a typography system — typeface selection and pairing, modular type scale, vertical rhythm, line-height and measure rules, and web font delivery (subsetting, font-display, variable fonts). Do NOT use for body copy writing, single-headline font pairing, or non-text design tokens. Do NOT use for Write the headline copy for the landing page. Do NOT use for Pick the brand's primary color. Do NOT use for Decide where the headline component lives in the folder structure."
 license: CC-BY-4.0
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: design
+  public: "true"
   scope: "Designing a typography system — typeface selection and pairing, a modular type scale, vertical rhythm, line-height and measure rules, and web font delivery (subsetting, font-display, variable fonts). Portable across any design system; principle-grounded, not repo-bound. Excludes body-copy writing, single-headline font pairing, and non-text design tokens."
-  owner: skill-graph-maintainer
-  freshness: "2026-05-12"
-  drift_check: "{\"last_verified\":\"2026-05-12\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"type scale\",\"typeface pairing\",\"vertical rhythm\",\"line height\",\"measure line length\",\"web font delivery\",\"variable fonts\",\"font-display swap\",\"font subsetting\",\"modular scale\"]"
   triggers: "[\"typography system\",\"type scale\",\"font pairing\",\"variable fonts\",\"vertical rhythm\"]"
   examples: "[\"Build a type scale with seven steps using a 1.25 ratio and assign each step to a semantic token (display, h1, body, caption)\",\"Pair a serif display face with a sans-serif text face and document when to use each\",\"Self-host a variable font with WOFF2 subsetting and font-display: swap\"]"
   anti_examples: "[\"Write the headline copy for the landing page\",\"Pick the brand's primary color\",\"Decide where the headline component lives in the folder structure\"]"
   relations: "{\"related\":[\"visual-hierarchy\",\"visual-design-foundations\",\"theme-system-design\",\"layout-composition\"],\"boundary\":[{\"skill\":\"visual-hierarchy\",\"reason\":\"visual-hierarchy decides how to deploy type as an ordering signal on a given surface; this skill defines the scale and faces that get deployed.\"}]}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
+  mental_model: "|"
+  purpose: "|"
+  concept_boundary: "|"
+  analogy: "A typography system is to a product's text what a musical key and time signature are to a score — it does not write the melody (the copy) or perform it on a given stage (the layout); it sets the scale and the rhythm every part must play in so the whole stays harmonious across instruments."
+  misconception: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/typography-system/SKILL.md
@@ -33,6 +24,10 @@ metadata:
 ---
 
 # Typography System
+
+## Concept of the skill
+
+A typography system is the discipline of turning a brand's voice into a small, rule-governed set of type decisions that stay coherent across every surface a product renders on. It has four interlocking parts: a minimal set of **typefaces** (typically one display, one text, optionally one monospace); a **modular scale** of sizes derived from a single ratio applied to a base size; **rhythm rules** that couple line-height, letter-spacing, and measure (characters per line); and a **delivery layer** that ships those faces as subset WOFF2 with `font-display` and metrics-matched fallbacks to control layout shift. Each decision is encoded as a design token and consumed through semantic tokens (display, heading, body, caption) so components never hard-code a size or face. The system's job is to make typographic choices reproducible and restrained — faces are justified, sizes are derived rather than hand-picked, and rhythm snaps to a baseline grid — so the type reads consistently whether it lands on a marketing page, an app screen, or an email.
 
 ## Coverage
 A typography system has four components: a small set of typefaces (often one for display, one for text, optionally one monospaced), a modular scale of sizes, a set of weight and style variants per face, and rules for line-height, letter-spacing, and measure (characters per line). Each component is encoded as design tokens — font-family-text, font-size-100 through font-size-900, line-height-tight/normal/loose, letter-spacing-tight/normal — and consumed by components through semantic tokens (display, heading-1, body, caption).
@@ -43,7 +38,7 @@ Line-height and measure are coupled. Longer measures need taller line-heights to
 
 Variable fonts (OpenType font-variations) deliver multiple weights, widths, and optical sizes in a single file via continuous axes (wght 100–900, wdth, opsz, etc.), exposed in CSS via font-variation-settings and font-weight: <number>. They reduce HTTP requests and enable weight as a continuous design decision. Web font delivery best practices: WOFF2 format (universally supported, ~30% smaller than WOFF); subset to Latin or the languages actually used (Google Fonts CSS API does this automatically; self-hosted fonts use pyftsubset or fonttools); font-display: swap to render fallback text immediately and swap in the web font when loaded; preload the most-used font files with <link rel="preload" as="font" crossorigin>; use size-adjust, ascent-override, descent-override, and line-gap-override on the fallback @font-face to match metrics and minimize cumulative layout shift.
 
-## Philosophy
+## Philosophy of the skill
 Restraint is the practice. One text face and one display face cover most product needs; a third is a deliberate choice that requires justification. Each additional typeface costs bandwidth, hierarchy clarity, and rendering consistency across operating systems.
 
 Typography is the densest carrier of brand. A wordmark, a heading face, and a body face shape voice more than any color does. Treat the choice of faces with the same seriousness as the choice of brand color, and treat the system around them — scale, rhythm, measure — as the structure that makes the choices work across surfaces.
@@ -70,6 +65,7 @@ Typography is the densest carrier of brand. A wordmark, a heading face, and a bo
 
 **Classification**
 - Subject: `design`
+- Public: `true`
 - Scope: Designing a typography system — typeface selection and pairing, a modular type scale, vertical rhythm, line-height and measure rules, and web font delivery (subsetting, font-display, variable fonts). Portable across any design system; principle-grounded, not repo-bound. Excludes body-copy writing, single-headline font pairing, and non-text design tokens.
 
 **When to use**
@@ -86,6 +82,12 @@ Typography is the densest carrier of brand. A wordmark, a heading face, and a bo
 
 **Related skills**
 - Related: `visual-hierarchy`, `visual-design-foundations`, `theme-system-design`, `layout-composition`
+
+**Concept**
+- Mental model: |
+- Purpose: |
+- Analogy: A typography system is to a product's text what a musical key and time signature are to a score — it does not write the melody (the copy) or perform it on a given stage (the layout); it sets the scale and the rhythm every part must play in so the whole stays harmonious across instruments.
+- Common misconception: |
 
 **Keywords**
 - `type scale`, `typeface pairing`, `vertical rhythm`, `line height`, `measure line length`, `web font delivery`, `variable fonts`, `font-display swap`, `font subsetting`, `modular scale`

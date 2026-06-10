@@ -5,40 +5,22 @@ license: MIT
 compatibility: "Provider- and harness-agnostic. Patterns apply across Claude Code, Cursor, Copilot, OpenCode, Aider, Continue, custom Anthropic/OpenAI/Google SDK loops, and self-hosted multi-agent systems. Specific filenames in this skill (continuation.json, claim.lock, session-logs.jsonl) are example artefacts -- substitute your harness's equivalents."
 allowed-tools: Read Grep Bash Edit Write
 metadata:
-  schema_version: "8"
-  version: "1.1.0"
+  relations: "{\"related\":[\"context-engineering\",\"tool-call-strategy\",\"debugging\",\"context-window\",\"summarization\",\"prompt-craft\"],\"suppresses\":[\"architecture-decision-records\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
   subject: software-architecture
   subjects: "[\"software-architecture\",\"ai-engineering\"]"
   scope: "Designing and evaluating production AI agent systems — multi-agent coordination patterns (orchestrator/worker, fan-out, consensus, sequential chain, evaluator/optimizer), the four pillars (architecture/lifecycle, task decomposition, coordination, production reliability), the six reliability requirements (observability, cost budgets, idempotency, failure recovery, safety caps, claim locks), the delegation decision framework with overhead crossover, and coordination-failure diagnosis (claim races, silent stalls, context contamination, runaway loops). Portable across any agent runtime; principle-grounded, not repo-bound. Excludes prompt wording (prompt-craft), per-call tool efficiency (tool-call-strategy), single-agent context-stack design (context-engineering), and runtime debugging of a deployed system (debugging)."
+  public: "true"
   taxonomy_domain: ai-engineering/architecture
-  owner: skill-graph-maintainer
-  freshness: "2026-05-18"
-  drift_check: "{\"last_verified\":\"2026-05-18\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"agent engineering\",\"agentic engineering\",\"multi-agent systems\",\"production agent system\",\"orchestration patterns\",\"orchestrator worker\",\"fan-out merge\",\"consensus pattern\",\"evaluator optimizer\",\"sequential chain\"]"
   examples: "[\"we want to fan out 40 classification subtasks to subagents — what coordination pattern should we use and what are the failure modes?\",\"two of our agents claimed the same task and produced duplicate PRs — what atomicity guarantee prevents this?\",\"the orchestrator burns 6x the budget we planned every Tuesday — where do we add cost visibility and caps?\",\"an agent loop ran for four hours without progress before anyone noticed — how do we detect silent stalls?\",\"we keep getting context-contamination bugs where agent B uses stale output from agent A's failed run — fix the protocol\",\"audit this agent loop and tell me whether it's production-ready or still a demo\",\"is consensus-of-three worth the 3x cost for security-critical decisions, or is two-pass cheaper and good enough?\",\"design the lifecycle for a long-running autonomous agent that survives crashes mid-task\"]"
   anti_examples: "[\"improve this prompt's wording to get better outputs\",\"the agent made 17 read calls when 3 greps would have done\",\"design what skills get loaded for which prompts\",\"scaffold a new SKILL.md for our orchestration runbook\",\"review this AI-generated PR for correctness\",\"the test suite is failing after my change — find the cause\",\"draft an architecture note explaining why we chose Postgres\"]"
-  relations: "{\"boundary\":[{\"skill\":\"architecture-decision-records\",\"reason\":\"architecture-decision-records records and explains decisions; agent-engineering designs the agent-system architecture being decided\"}],\"related\":[\"context-engineering\",\"context-window\",\"tool-call-strategy\",\"prompt-craft\",\"summarization\",\"debugging\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
   grounding: "{\"subject_matter\":\"Production AI agent system architecture and multi-agent coordination\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://www.anthropic.com/engineering/building-effective-agents\",\"https://www.anthropic.com/engineering/multi-agent-research-system\",\"https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents\",\"https://openai.github.io/openai-agents-python/tracing/\",\"https://arxiv.org/abs/2308.08155\"],\"failure_modes\":[\"coordination_pattern_mismatch\",\"unbounded_agent_loop\",\"missing_observability\",\"duplicate_task_claims\",\"handoff_context_loss\",\"over_delegation_cost_spike\"],\"evidence_priority\":\"equal\"}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
   mental_model: "Agent engineering treats LLM calls as unreliable, tool-using components inside a larger workflow. The core move is to make lifecycle, delegation, coordination, verification, observability, budgets, and recovery explicit so model variability is contained by system design."
   purpose: "This skill prevents agent systems from shipping as impressive demos that stall, duplicate work, over-spend, lose handoff state, or silently produce unverified results under real workload pressure."
+  concept_boundary: "This skill does not optimize one prompt, choose individual tool calls, design one agent's context payload, debug a single live incident, review generated code, or write the architecture decision record. It owns the architecture of agent loops and multi-agent coordination."
   analogy: "Agent engineering is like operating a crew of contractors on a construction site: each specialist may be capable, but the project succeeds only if the plan, locks, handoffs, inspections, budget, and stop conditions are explicit."
   misconception: "The common mistake is thinking more agents automatically means more capability. Extra agents also add coordination cost, context transfer risk, merge work, and failure modes; delegation is valuable only when independence, specialization, context protection, or cost reduction outweighs the overhead."
-  concept: "{\"definition\":\"Agent engineering is the discipline of designing production AI agent systems: loops, handoffs, coordination patterns, lifecycle state, verification gates, observability, budgets, and recovery mechanisms around one or more LLM agents.\",\"mental_model\":\"Treat each LLM call as an unreliable component in a larger system. Use architecture to constrain variance: explicit state, clear ownership, durable handoffs, verification, stop conditions, and measurable operating limits.\",\"purpose\":\"It turns ad hoc prompt-and-tool demos into systems that can run unattended, survive crashes, coordinate multiple agents, control cost, and produce verifiable outcomes.\",\"boundary\":\"It is not prompt wording, per-tool efficiency, single-agent context assembly, incident debugging, code review, or ADR writing. Neighboring skills own those surfaces; agent-engineering owns the workflow architecture that composes them.\",\"taxonomy\":\"Core areas include lifecycle management, task decomposition, coordination patterns, handoff protocols, observability, cost controls, idempotency, failure recovery, safety caps, claim locks, and staged rollout.\",\"analogy\":\"Agent engineering is like operating a crew of contractors on a construction site: each specialist may be capable, but the project succeeds only if the plan, locks, handoffs, inspections, budget, and stop conditions are explicit.\",\"misconception\":\"More agents is not automatically better. Extra agents add coordination overhead, duplicated work risk, context-transfer loss, and merge complexity; delegation needs a positive expected value.\"}"
-  structural_verdict: PASS
-  truth_verdict: UNVERIFIED
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "This skill does not optimize one prompt, choose individual tool calls, design one agent's context payload, debug a single live incident, review generated code, or write the architecture decision record. It owns the architecture of agent loops and multi-agent coordination."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-architecture/agent-engineering/SKILL.md
@@ -47,6 +29,10 @@ metadata:
 ---
 
 # Agent Engineering
+
+## Concept of the skill
+
+Agent engineering treats LLM calls as unreliable, tool-using components inside a larger workflow.
 
 ## Coverage
 
@@ -62,8 +48,7 @@ metadata:
 - The most common anti-patterns (God Agent, prompt-as-architecture, memory-persisted state, runaway loop, telephone-game briefs, ghost claim) and corrective actions
 - The production readiness audit checklist and the staged-rollout verification workflow (10% → 50% → 100% budget)
 
-## Philosophy
-
+## Philosophy of the skill
 A single LLM prompt produces an answer. A *system* of LLMs produces a workflow that survives session boundaries, crashes, model variance, budget exhaustion, and adversarial input. Agent engineering is the discipline of building the second from the first.
 
 Three foundational truths inform everything that follows:
@@ -435,6 +420,7 @@ After applying agent-engineering decisions, verify:
 
 **Classification**
 - Subject: `software-architecture` (also: `ai-engineering`)
+- Public: `true`
 - Domain: `ai-engineering/architecture`
 - Scope: Designing and evaluating production AI agent systems — multi-agent coordination patterns (orchestrator/worker, fan-out, consensus, sequential chain, evaluator/optimizer), the four pillars (architecture/lifecycle, task decomposition, coordination, production reliability), the six reliability requirements (observability, cost budgets, idempotency, failure recovery, safety caps, claim locks), the delegation decision framework with overhead crossover, and coordination-failure diagnosis (claim races, silent stalls, context contamination, runaway loops). Portable across any agent runtime; principle-grounded, not repo-bound. Excludes prompt wording (prompt-craft), per-call tool efficiency (tool-call-strategy), single-agent context-stack design (context-engineering), and runtime debugging of a deployed system (debugging).
 
@@ -456,11 +442,10 @@ After applying agent-engineering decisions, verify:
 - review this AI-generated PR for correctness
 - the test suite is failing after my change — find the cause
 - draft an architecture note explaining why we chose Postgres
-- Owned by `architecture-decision-records`
 
 **Related skills**
 - Verify with: `testing-strategy`, `code-review`
-- Related: `context-engineering`, `context-window`, `tool-call-strategy`, `prompt-craft`, `summarization`, `debugging`
+- Related: `context-engineering`, `tool-call-strategy`, `debugging`, `context-window`, `summarization`, `prompt-craft`
 
 **Concept**
 - Mental model: Agent engineering treats LLM calls as unreliable, tool-using components inside a larger workflow. The core move is to make lifecycle, delegation, coordination, verification, observability, budgets, and recovery explicit so model variability is contained by system design.

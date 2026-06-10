@@ -5,31 +5,15 @@ license: MIT
 compatibility: "Portable performance discipline for frontend, backend, databases, jobs, APIs, and agent tooling."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"api-design\",\"data-modeling\",\"refactor\",\"observability-modeling\",\"testing-strategy\"],\"suppresses\":[\"testing-strategy\",\"error-tracking\"],\"verify_with\":[\"code-review\",\"observability-modeling\",\"connection-pooling\"]}"
   subject: quality-assurance
   scope: "Measuring, diagnosing, budgeting, and improving performance — latency, throughput, Core Web Vitals, database queries, caching, bundle size, concurrency, resource use, and regression prevention. Portable across any system with performance goals; principle-grounded, not repo-bound. Excludes telemetry schema design alone (observability-modeling), error-capture setup (error-tracking), and premature micro-optimization without a measured bottleneck."
+  public: "true"
   taxonomy_domain: quality/performance
-  owner: skill-graph-maintainer
-  freshness: "2026-05-11"
-  drift_check: "{\"last_verified\":\"2026-05-11\"}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"performance engineering\",\"performance budget\",\"profiling\",\"latency\",\"throughput\",\"Core Web Vitals\",\"database performance\",\"caching\",\"bundle size\",\"performance regression\"]"
   examples: "[\"profile this slow dashboard and decide what to optimize first\",\"set performance budgets for API latency, page load, and query time\",\"review this change for likely N+1 queries, cache mistakes, or bundle growth\",\"design a regression check so this endpoint cannot get slow again unnoticed\"]"
   anti_examples: "[\"design logs, spans, metrics, and correlation IDs before implementation\",\"set up Sentry and error redaction\",\"make random micro-optimizations without measurements\",\"write general unit tests for this feature\"]"
-  relations: "{\"boundary\":[{\"skill\":\"error-tracking\",\"reason\":\"error-tracking captures failures; performance-engineering handles latency, throughput, and resource efficiency\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy plans correctness tests; performance-engineering plans performance budgets and regressions\"}],\"related\":[\"observability-modeling\",\"api-design\",\"data-modeling\",\"testing-strategy\",\"refactor\"],\"verify_with\":[\"observability-modeling\",\"code-review\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/performance-engineering/SKILL.md
@@ -38,12 +22,15 @@ metadata:
 
 # Performance Engineering
 
+## Concept of the skill
+
+Measuring, diagnosing, budgeting, and improving performance — latency, throughput, Core Web Vitals, database queries, caching, bundle size, concurrency, resource use, and regression prevention.
+
 ## Coverage
 
 Measure and improve performance across frontend, backend, database, jobs, APIs, and tooling. Covers bottleneck analysis, performance budgets, Core Web Vitals, query plans, N+1 detection, caching, batching, concurrency, bundle size, resource use, regression checks, and tradeoffs.
 
-## Philosophy
-
+## Philosophy of the skill
 Measure first. Performance work without measurement is guessing, and guessing usually optimizes the easiest code rather than the bottleneck. The correct target is the user-visible or business-critical bottleneck with evidence.
 
 Performance is also a contract. If speed matters, define budgets and regression checks before the system silently decays.
@@ -87,6 +74,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/performance-e
 
 **Classification**
 - Subject: `quality-assurance`
+- Public: `true`
 - Domain: `quality/performance`
 - Scope: Measuring, diagnosing, budgeting, and improving performance — latency, throughput, Core Web Vitals, database queries, caching, bundle size, concurrency, resource use, and regression prevention. Portable across any system with performance goals; principle-grounded, not repo-bound. Excludes telemetry schema design alone (observability-modeling), error-capture setup (error-tracking), and premature micro-optimization without a measured bottleneck.
 
@@ -101,12 +89,10 @@ This skill ships a comprehension-eval artifact at [`examples/evals/performance-e
 - set up Sentry and error redaction
 - make random micro-optimizations without measurements
 - write general unit tests for this feature
-- Owned by `error-tracking`
-- Owned by `testing-strategy`
 
 **Related skills**
-- Verify with: `observability-modeling`, `code-review`
-- Related: `observability-modeling`, `api-design`, `data-modeling`, `testing-strategy`, `refactor`
+- Verify with: `code-review`, `observability-modeling`, `connection-pooling`
+- Related: `api-design`, `data-modeling`, `refactor`, `observability-modeling`, `testing-strategy`
 
 **Keywords**
 - `performance engineering`, `performance budget`, `profiling`, `latency`, `throughput`, `Core Web Vitals`, `database performance`, `caching`, `bundle size`, `performance regression`

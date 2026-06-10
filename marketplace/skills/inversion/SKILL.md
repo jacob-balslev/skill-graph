@@ -4,37 +4,21 @@ description: "Use when a goal, plan, design, strategy, or assumption should be e
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
-  version: "1.0.0"
+  relations: "{\"related\":[\"pattern-recognition\",\"debugging\",\"first-principles-thinking\",\"epistemic-grounding\"],\"suppresses\":[\"first-principles-thinking\"],\"verify_with\":[\"epistemic-grounding\",\"first-principles-thinking\"]}"
   subject: reasoning-strategy
+  public: "true"
+  scope: "Use when a goal, plan, design, strategy, or assumption should be examined by reversing it: ask how to guarantee failure, how the opposite could be true, or what would have to happen for the desired outcome not to occur. Covers objective reversal, failure-path enumeration, obstacle-first planning, opposite-hypothesis testing, and prevention design. Do NOT use for decomposing a problem to irreducible premises (use first-principles-thinking), post-failure root-cause analysis (use debugging), recurring failure clustering (use pattern-recognition), or claim/source grounding (use epistemic-grounding)."
   taxonomy_domain: foundations/reasoning
-  owner: skill-graph-maintainer
-  freshness: "2026-05-21"
-  drift_check: "{\"last_verified\":\"2026-05-21\"}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"inversion thinking\",\"invert the goal\",\"reverse the problem\",\"failure path\",\"opposite hypothesis\",\"obstacle first\",\"what would make this fail\",\"avoid failure\",\"anti-goal\",\"reverse reasoning\"]"
   triggers: "[\"invert this plan\",\"how could this fail\",\"what would guarantee failure\",\"reason from the opposite\",\"avoid the worst outcome\"]"
   examples: "[\"We want activation to improve. Invert the goal and identify what would make users abandon onboarding.\",\"Before we commit to this launch plan, ask how it could fail and what safeguards follow.\",\"Test the opposite hypothesis: what if the metric increase is actually bad?\",\"What actions would guarantee this project misses the deadline?\"]"
   anti_examples: "[\"Break this pricing model down to irreducible assumptions.\",\"This incident already happened; find the root cause.\",\"Score every webhook failure mode with severity, occurrence, and detectability.\",\"Facilitate a team pre-mortem session with independent written generation.\"]"
-  relations: "{\"related\":[\"first-principles-thinking\",\"epistemic-grounding\",\"pattern-recognition\",\"debugging\"],\"verify_with\":[\"epistemic-grounding\",\"first-principles-thinking\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "Inversion is like checking a bridge design by asking where it would snap first, not because you want it to snap, but because that is where reinforcement matters."
   misconception: "|"
-  portability: "{\"readiness\":\"declared\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/inversion/SKILL.md
@@ -59,6 +43,14 @@ metadata:
 
 # Inversion
 
+## Concept of the skill
+
+Inversion has three primitives: desired outcome, opposite outcome, and causal path. The method temporarily replaces "How do we get X?" with "How would we guarantee not-X?" or "What would have to be true for the opposite of our claim to hold?" The output is not pessimism; it is a map of blockers, failure paths, perverse incentives, hidden assumptions, and avoidable behaviors. The agent then translates the inverted map back into prevention, constraints, tests, or decision changes.
+
+Replaces one-direction optimism with obstacle-first reasoning. Forward planning tends to over-focus on actions that might create success and under-examine the behaviors, constraints, and assumptions that would reliably destroy it. Inversion forces the negative space into view: instead of asking only how to win, it asks how to lose, how to be wrong, or how the opposite could be true, then uses those answers to remove avoidable failure paths.
+
+Distinct from first-principles thinking, which decomposes a problem into primitives and rebuilds forward; inversion reverses the target state and reasons backward from failure or negation. Distinct from debugging, which investigates a failure that already occurred; inversion is prospective and can be used before action. Distinct from FMEA, which systematically enumerates component-level failure modes and scores them; inversion is lighter-weight and starts from the goal or claim. Distinct from pre-mortem, which is a facilitated team process using assumed future failure; inversion is a general reasoning move usable by one agent on a plan, claim, or design. Inversion is like checking a bridge design by asking where it would snap first, not because you want it to snap, but because that is where reinforcement matters. The common misconception is that inversion is negativity or risk avoidance. It is not. Inversion is a search strategy. It finds the constraints and behaviors that forward optimism misses, then converts them into action: remove the blocker, add a guardrail, test the opposite hypothesis, or change the plan.
+
 ## Coverage
 
 Inversion covers the deliberate reversal of goals, claims, plans, and designs. It includes goal inversion, opposite-hypothesis testing, obstacle-first planning, anti-goal definition, failure-path enumeration, success-sabotage analysis, and conversion of inverted findings into concrete safeguards.
@@ -71,8 +63,7 @@ Use this skill when the question sounds like:
 - "What would guarantee this project misses?"
 - "How might this metric improvement backfire?"
 
-## Philosophy
-
+## Philosophy of the skill
 Forward reasoning is naturally attractive because it aligns with desire: define the goal, list actions, execute. That shape is useful, but it hides the negative space. Many plans fail because of one avoidable blocker, one untested assumption, one incentive that rewards the wrong behavior, or one condition that would have been obvious if the team had asked how to lose.
 
 Inversion is a compact antidote. It does not replace planning; it improves planning by forcing the plan to survive its own opposite. If the inverted analysis produces no changes, either the plan is unusually robust or the inversion was too generic.
@@ -214,7 +205,9 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `reasoning-strategy`
+- Public: `true`
 - Domain: `foundations/reasoning`
+- Scope: Use when a goal, plan, design, strategy, or assumption should be examined by reversing it: ask how to guarantee failure, how the opposite could be true, or what would have to happen for the desired outcome not to occur. Covers objective reversal, failure-path enumeration, obstacle-first planning, opposite-hypothesis testing, and prevention design. Do NOT use for decomposing a problem to irreducible premises (use first-principles-thinking), post-failure root-cause analysis (use debugging), recurring failure clustering (use pattern-recognition), or claim/source grounding (use epistemic-grounding).
 
 **When to use**
 - We want activation to improve. Invert the goal and identify what would make users abandon onboarding.
@@ -231,7 +224,7 @@ After applying this skill, verify:
 
 **Related skills**
 - Verify with: `epistemic-grounding`, `first-principles-thinking`
-- Related: `first-principles-thinking`, `epistemic-grounding`, `pattern-recognition`, `debugging`
+- Related: `pattern-recognition`, `debugging`, `first-principles-thinking`, `epistemic-grounding`
 
 **Concept**
 - Mental model: |

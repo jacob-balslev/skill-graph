@@ -5,37 +5,21 @@ license: MIT
 compatibility: "Markdown, decision memos, diagnostic reasoning, research synthesis, forecasting, agent confidence calibration"
 allowed-tools: Read Grep
 metadata:
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"prioritization\",\"mental-models\",\"constraint-awareness\",\"problem-approach-router\",\"epistemic-grounding\"],\"suppresses\":[\"playing-to-win\",\"porters-five-forces\"],\"verify_with\":[\"epistemic-grounding\",\"methodology\"]}"
   subject: reasoning-strategy
+  public: "true"
+  scope: "Use when updating beliefs, forecasts, diagnoses, or decision assumptions under uncertainty using Bayesian reasoning: priors/base rates, likelihood, evidence strength, posterior direction, and residual uncertainty. Covers base-rate discipline, likelihood-vs-posterior separation, independent evidence updates, natural-frequency examples, confidence calibration, and when to stop at qualitative probability instead of fake precision. Do NOT use for expected monetary value calculations, strategy-cascade choices (use playing-to-win), industry-structure analysis (use porters-five-forces), or generic task prioritization (use prioritization)."
   taxonomy_domain: foundations/decision-quality
-  owner: skill-graph-maintainer
-  freshness: "2026-05-26"
-  drift_check: "{\"last_verified\":\"2026-05-26\",\"truth_source_hashes\":{\"skills/meta-methods/bayesian-reasoning/references/bayesian-reasoning-sources.md\":\"64efb763c7b63802a0ed16080d20cbc147600090f114cbd498153bf2618e05b3\",\"skills/meta-methods/bayesian-reasoning/references/upstream-displacement-2026-05-26.md\":\"ec0ddfb8bf6a254b9ad4e107d29c40ab33ca24a7524f1cba1560e2847dfa7baa\"}}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: stable
   keywords: "[\"bayesian reasoning\",\"bayes theorem\",\"bayesian update\",\"base rate\",\"prior probability\",\"posterior probability\",\"likelihood ratio\",\"evidence strength\",\"confidence calibration\",\"probabilistic reasoning\"]"
   examples: "[\"use Bayesian reasoning to update our confidence after this new evidence\",\"we have a rare bug signal; account for the base rate before concluding the cause\",\"separate prior, likelihood, and posterior for this diagnosis\",\"how should this customer interview change our belief in the product hypothesis?\",\"calibrate my confidence instead of giving a binary yes/no answer\"]"
   anti_examples: "[\"calculate the expected value of these three options\",\"turn this growth plan into a strategy cascade\",\"analyze supplier power and substitutes in this industry\",\"rank these roadmap items by impact and effort\",\"build a statistical model from a dataset\"]"
-  relations: "{\"boundary\":[{\"skill\":\"playing-to-win\",\"reason\":\"playing-to-win owns integrated strategy choices; bayesian-reasoning owns uncertainty updates about assumptions, evidence, and confidence\"},{\"skill\":\"porters-five-forces\",\"reason\":\"porters-five-forces owns industry-structure diagnosis; bayesian-reasoning owns how new evidence changes belief strength\"}],\"related\":[\"mental-models\",\"constraint-awareness\",\"epistemic-grounding\",\"problem-approach-router\",\"prioritization\"],\"verify_with\":[\"epistemic-grounding\",\"methodology\"]}"
   grounding: "{\"subject_matter\":\"Bayesian reasoning for decision-making under uncertainty\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://plato.stanford.edu/entries/bayes-theorem/\",\"https://plato.stanford.edu/entries/epistemology-bayesian/\",\"https://pubmed.ncbi.nlm.nih.gov/17835457/\",\"skills/meta-methods/bayesian-reasoning/references/bayesian-reasoning-sources.md\",\"skills/meta-methods/bayesian-reasoning/references/upstream-displacement-2026-05-26.md\"],\"failure_modes\":[\"base_rate_neglect\",\"likelihood_confused_with_posterior\",\"anecdote_overweighted\",\"correlated_evidence_double_counted\",\"prior_hidden_or_smuggled\",\"false_precision_from_weak_inputs\",\"binary_answer_given_under_uncertainty\"],\"evidence_priority\":\"general_knowledge_first\"}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   mental_model: "Bayesian reasoning treats belief as a state that changes when evidence arrives. The primitives are a hypothesis, prior probability or base rate, evidence, likelihood of seeing that evidence if the hypothesis were true, likelihood of seeing it if the hypothesis were false, posterior belief, residual uncertainty, and update history. The key move is comparing how much better the evidence is explained by one hypothesis than by alternatives, then updating from the prior instead of starting from the vividness of the evidence."
   purpose: "This skill prevents agents from jumping from a salient signal to a confident conclusion. It replaces binary diagnosis, anecdote-weighting, and base-rate neglect with an explicit update loop: start with the prior, estimate evidential force, adjust belief in the right direction, avoid double-counting correlated evidence, and state what would change the posterior next."
+  concept_boundary: "Bayesian reasoning updates probabilities and confidence; it does not by itself choose the action with the best payoff, produce an expected value table, fit a statistical model, create a strategy cascade, analyze industry structure, or rank a backlog. Those downstream tools may consume Bayesian probabilities, but this skill owns the belief update."
   analogy: "Bayesian reasoning is like adjusting a dimmer switch rather than flipping a light switch: evidence moves confidence up or down from where it started, and stronger evidence moves it farther."
   misconception: "The common mistake is treating Bayes as a formula that requires precise numbers. The formula is the idealized version; in agent work the practical discipline is often qualitative: make the prior explicit, compare evidence under competing hypotheses, update directionally, and label uncertainty instead of inventing decimals."
-  structural_verdict: PASS
-  truth_verdict: UNVERIFIED
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  public: "true"
-  concept_boundary: "Bayesian reasoning updates probabilities and confidence; it does not by itself choose the action with the best payoff, produce an expected value table, fit a statistical model, create a strategy cascade, analyze industry structure, or rank a backlog. Those downstream tools may consume Bayesian probabilities, but this skill owns the belief update."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/bayesian-reasoning/SKILL.md
@@ -43,6 +27,10 @@ metadata:
 ---
 
 # Bayesian Reasoning
+
+## Concept of the skill
+
+Bayesian reasoning treats belief as a state that changes when evidence arrives. The primitives are a hypothesis, prior probability or base rate, evidence, likelihood of seeing that evidence if the hypothesis were true, likelihood of seeing it if the hypothesis were false, posterior belief, residual uncertainty, and update history.
 
 ## Concept Card
 
@@ -73,8 +61,7 @@ This skill teaches agents to:
 7. Use natural frequencies for rare-event and diagnostic examples.
 8. Report residual uncertainty and the evidence that would change the belief.
 
-## Philosophy
-
+## Philosophy of the skill
 Bayesian reasoning is useful because it makes uncertainty inspectable. A confident answer can hide a weak prior, a diagnostic clue can look decisive while being common under multiple explanations, and a vivid example can overwhelm a large base rate. The Bayesian discipline forces those hidden weights into the answer.
 
 The method is not a demand for spreadsheet precision. In many product, strategy, debugging, and research tasks, the honest output is qualitative: "this evidence raises confidence from low to moderate, but not high, because the base rate is low and the evidence is not independent." That is stronger than an invented 73 percent.
@@ -211,13 +198,19 @@ Before finishing, verify:
 - `skills/skills/meta-methods/bayesian-reasoning/references/bayesian-reasoning-sources.md`
 - `skills/skills/meta-methods/bayesian-reasoning/references/upstream-displacement-2026-05-26.md`
 
+## Do NOT Use When
+
+Use another skill when the task falls outside the declared `scope`, matches an `anti_examples` prompt, or is owned by a more specific related skill.
+
 ## Skill Graph context
 
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
 - Subject: `reasoning-strategy`
+- Public: `true`
 - Domain: `foundations/decision-quality`
+- Scope: Use when updating beliefs, forecasts, diagnoses, or decision assumptions under uncertainty using Bayesian reasoning: priors/base rates, likelihood, evidence strength, posterior direction, and residual uncertainty. Covers base-rate discipline, likelihood-vs-posterior separation, independent evidence updates, natural-frequency examples, confidence calibration, and when to stop at qualitative probability instead of fake precision. Do NOT use for expected monetary value calculations, strategy-cascade choices (use playing-to-win), industry-structure analysis (use porters-five-forces), or generic task prioritization (use prioritization).
 
 **When to use**
 - use Bayesian reasoning to update our confidence after this new evidence
@@ -232,12 +225,10 @@ Before finishing, verify:
 - analyze supplier power and substitutes in this industry
 - rank these roadmap items by impact and effort
 - build a statistical model from a dataset
-- Owned by `playing-to-win`: integrated strategy choices
-- Owned by `porters-five-forces`: industry-structure diagnosis
 
 **Related skills**
 - Verify with: `epistemic-grounding`, `methodology`
-- Related: `mental-models`, `constraint-awareness`, `epistemic-grounding`, `problem-approach-router`, `prioritization`
+- Related: `prioritization`, `mental-models`, `constraint-awareness`, `problem-approach-router`, `epistemic-grounding`
 
 **Concept**
 - Mental model: Bayesian reasoning treats belief as a state that changes when evidence arrives. The primitives are a hypothesis, prior probability or base rate, evidence, likelihood of seeing that evidence if the hypothesis were true, likelihood of seeing it if the hypothesis were false, posterior belief, residual uncertainty, and update history. The key move is comparing how much better the evidence is explained by one hypothesis than by alternatives, then updating from the prior instead of starting from the vividness of the evidence.

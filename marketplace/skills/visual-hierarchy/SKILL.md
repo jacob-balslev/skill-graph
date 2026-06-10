@@ -3,29 +3,20 @@ name: visual-hierarchy
 description: "Use when establishing visual hierarchy — type scale ratios, spacing rhythm, contrast as ordering signal, weight and size as importance, and the layered relationship between primary, secondary, and tertiary information. Do NOT use for content writing, information architecture, or specific color palette construction. Do NOT use for Write the H1 copy that should appear at the top of the landing page. Do NOT use for Choose between sans-serif and serif typefaces for the brand. Do NOT use for Pick the brand's primary color."
 license: CC-BY-4.0
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: design
+  public: "true"
   scope: "Establishing visual hierarchy — type-scale ratios, spacing rhythm, contrast as an ordering signal, weight and size as importance cues, and the layered relationship between primary, secondary, and tertiary information. Portable across any visual interface; principle-grounded, not repo-bound. Excludes content writing, information architecture, and specific color-palette construction (color-system-design)."
-  owner: skill-graph-maintainer
-  freshness: "2026-05-12"
-  drift_check: "{\"last_verified\":\"2026-05-12\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"visual hierarchy\",\"hierarchical type sizing\",\"proximity hierarchy\",\"contrast hierarchy\",\"importance ordering\",\"reading order\",\"focal point\",\"figure ground\",\"gestalt principles\",\"hierarchy through weight\"]"
-  triggers: "[\"visual hierarchy\",\"type as hierarchy\",\"what should the eye go to first\",\"establishing focus\",\"page hierarchy\"]"
+  triggers: "[\"visual hierarchy\",\"type as hierarchy\",\"what should the eye go to first\",\"establishing focus\",\"attention hierarchy\"]"
   examples: "[\"Decide the H1/H2/H3 size ratios and weight contrast for a long-form article layout\",\"Reduce visual noise on a dashboard where every element competes for attention\",\"Establish a clear primary call-to-action on a page with multiple secondary actions\"]"
   anti_examples: "[\"Write the H1 copy that should appear at the top of the landing page\",\"Choose between sans-serif and serif typefaces for the brand\",\"Pick the brand's primary color\"]"
   relations: "{\"related\":[\"typography-system\",\"color-system-design\",\"layout-composition\",\"visual-design-foundations\"],\"boundary\":[{\"skill\":\"typography-system\",\"reason\":\"typography-system defines the scale and the typefaces; this skill decides how to deploy them as hierarchy signals on a given surface.\"},{\"skill\":\"layout-composition\",\"reason\":\"layout-composition handles grid, alignment, and spatial structure; this skill handles the prioritization within a layout.\"}]}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
+  mental_model: "|"
+  purpose: "|"
+  concept_boundary: "|"
+  analogy: "Visual hierarchy is to a page what dynamics and mixing are to a piece of music — it does not choose the instruments (the typefaces) or write the notes (the copy); it decides what plays loud and what plays quiet so the listener's ear is led to the melody first and the accompaniment second."
+  misconception: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/visual-hierarchy/SKILL.md
@@ -33,6 +24,10 @@ metadata:
 ---
 
 # Visual Hierarchy
+
+## Concept of the skill
+
+Visual hierarchy is the discipline of ordering perceptual prominence on a surface so a reader's eye is led to what matters first, second, and third — before they read a single word. It works through a small, stackable set of signals: **scale** (larger draws attention before smaller), **weight** (heavier strokes before lighter), **contrast** (higher against the background before lower), **color** (saturated and warm before desaturated and cool), **position** (the reading-order entry point in the reader's culture, plus isolated centered elements that break flow), and **isolation** (whitespace around an element raises its prominence regardless of its intrinsic properties). The central insight is that hierarchy is produced by suppression, not amplification: most elements must be quiet so the few that need to be loud can be heard. When two elements compete, the move is to increase their difference along *one* signal rather than to increment many signals slightly, because loud-against-loud exhausts the reader while one loud element against many quiet ones directs them. Because the eye follows visual cues rather than source order, a hierarchy is correct only when it survives the perceptual test — squint at the surface, or render it in grayscale, and confirm the intended element is the first noticed.
 
 ## Coverage
 Visual hierarchy is the ordering of perceptual prominence that tells a reader what to look at first, second, and third. The available signals are scale (larger draws attention before smaller), weight (heavier strokes draw attention before lighter), contrast (higher contrast against the background reads before lower), color (saturated and warm colors read before desaturated and cool), position (top-left in left-to-right reading cultures reads first; centered isolated elements break flow and draw focus), and isolation (whitespace around an element increases its prominence regardless of its intrinsic properties).
@@ -43,7 +38,7 @@ Spacing creates hierarchy through proximity (Gestalt's law of proximity — item
 
 Contrast as ordering is more general than color contrast. Two equal-sized headlines can be ordered by weight (bold reads before regular), by color (filled black reads before mid-gray), or by treatment (underlined or boxed reads before plain). The principle: when two elements compete for attention, increase the difference along one dimension rather than incrementing many dimensions slightly. Loud-loud combinations exhaust the reader; one loud against many quiet directs them.
 
-## Philosophy
+## Philosophy of the skill
 Hierarchy is what you suppress, not what you amplify. Making one thing important by making everything else louder produces a flat, noisy surface where nothing is important. The discipline is restraint: most elements should be quiet so the few that need to be loud can be heard.
 
 Reading order is a property of the page, not just the markup. CSS source order, visual size, color contrast, and position all participate. When they disagree — a giant pull quote in the middle of an article, an overlay button that contrasts more than the page title — the reader's eye follows the visual cues regardless of the writer's intent. Verify hierarchy by asking what someone notices first, second, and third without reading.
@@ -70,13 +65,14 @@ Reading order is a property of the page, not just the markup. CSS source order, 
 
 **Classification**
 - Subject: `design`
+- Public: `true`
 - Scope: Establishing visual hierarchy — type-scale ratios, spacing rhythm, contrast as an ordering signal, weight and size as importance cues, and the layered relationship between primary, secondary, and tertiary information. Portable across any visual interface; principle-grounded, not repo-bound. Excludes content writing, information architecture, and specific color-palette construction (color-system-design).
 
 **When to use**
 - Decide the H1/H2/H3 size ratios and weight contrast for a long-form article layout
 - Reduce visual noise on a dashboard where every element competes for attention
 - Establish a clear primary call-to-action on a page with multiple secondary actions
-- Triggers: `visual hierarchy`, `type as hierarchy`, `what should the eye go to first`, `establishing focus`, `page hierarchy`
+- Triggers: `visual hierarchy`, `type as hierarchy`, `what should the eye go to first`, `establishing focus`, `attention hierarchy`
 
 **Not for**
 - Write the H1 copy that should appear at the top of the landing page
@@ -87,6 +83,12 @@ Reading order is a property of the page, not just the markup. CSS source order, 
 
 **Related skills**
 - Related: `typography-system`, `color-system-design`, `layout-composition`, `visual-design-foundations`
+
+**Concept**
+- Mental model: |
+- Purpose: |
+- Analogy: Visual hierarchy is to a page what dynamics and mixing are to a piece of music — it does not choose the instruments (the typefaces) or write the notes (the copy); it decides what plays loud and what plays quiet so the listener's ear is led to the melody first and the accompaniment second.
+- Common misconception: |
 
 **Keywords**
 - `visual hierarchy`, `hierarchical type sizing`, `proximity hierarchy`, `contrast hierarchy`, `importance ordering`, `reading order`, `focal point`, `figure ground`, `gestalt principles`, `hierarchy through weight`

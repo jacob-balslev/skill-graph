@@ -4,37 +4,21 @@ description: "Use when a problem is trapped inside inherited assumptions, copied
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
-  version: "1.0.0"
+  relations: "{\"related\":[\"pattern-recognition\",\"debugging\",\"mental-models\",\"epistemic-grounding\",\"conceptual-modeling\"],\"verify_with\":[\"epistemic-grounding\",\"conceptual-modeling\"]}"
   subject: reasoning-strategy
+  public: "true"
+  scope: "Use when a problem is trapped inside inherited assumptions, copied convention, analogy, or local optimization and needs to be rebuilt from irreducible premises. Covers decomposition to primitives, assumption stripping, primitive tests, reconstruction from constraints, derivation chains, and reality checks. Do NOT use for root-cause analysis of an observed failure (use debugging or problem-locating-solving), formal argument grounding (use epistemic-grounding), domain entity modeling (use conceptual-modeling), or recurring issue clustering (use pattern-recognition)."
   taxonomy_domain: foundations/reasoning
-  owner: skill-graph-maintainer
-  freshness: "2026-05-26"
-  drift_check: "{\"last_verified\":\"2026-05-20\"}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"first principles thinking\",\"first principle\",\"irreducible premise\",\"assumption stripping\",\"rebuild from fundamentals\",\"primitive constraints\",\"axiomatic reasoning\",\"inherited assumptions\",\"reasoning from basics\",\"ab initio reasoning\"]"
   triggers: "[\"reason from first principles\",\"rebuild this from fundamentals\",\"strip the assumptions\",\"what are the primitive truths here\",\"stop reasoning by analogy\"]"
   examples: "[\"We keep copying the old pricing model. Rebuild the problem from first principles.\",\"This architecture decision is full of assumptions. What facts and constraints are actually irreducible?\",\"Everyone says this workflow needs five steps, but why? Strip it to fundamentals.\",\"The analogy to competitors is misleading. Derive the design from user needs and constraints instead.\"]"
   anti_examples: "[\"This incident happened yesterday. Find the root cause.\",\"Update the probability after new evidence arrives.\",\"Score these options by expected monetary value.\",\"Imagine this plan failed and list why.\"]"
-  relations: "{\"related\":[\"epistemic-grounding\",\"conceptual-modeling\",\"mental-models\",\"pattern-recognition\",\"debugging\"],\"verify_with\":[\"epistemic-grounding\",\"conceptual-modeling\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "First-principles thinking is like dismantling a machine to its load-bearing parts, discarding decorative casing and copied attachments, then rebuilding only the mechanism that the physics of the problem requires."
   misconception: "|"
-  portability: "{\"readiness\":\"declared\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/first-principles-thinking/SKILL.md
@@ -59,6 +43,14 @@ metadata:
 
 # First-Principles Thinking
 
+## Concept of the skill
+
+First-principles thinking has three primitives: candidate beliefs, primitive premises, and derived conclusions. Candidate beliefs are everything currently accepted in the problem frame: facts, rules, conventions, analogies, preferences, constraints, and proxy metrics. Primitive premises are the subset that cannot be derived from another premise inside the relevant domain and that survives evidence, definition, or constraint tests. Derived conclusions are rebuilt from those primitives through explicit inference steps. The method moves downward from inherited belief to irreducible premise, then upward from premise to design, decision, or explanation.
+
+Replaces reasoning by inheritance with reasoning by construction. Without it, teams copy existing solutions, argue from analogy, preserve outdated constraints, and optimize around proxy rules whose original purpose has been forgotten. First-principles thinking strips those inherited layers away until only load-bearing facts, definitions, laws, constraints, and values remain; then it rebuilds a solution that is justified by those primitives rather than by precedent.
+
+Distinct from root-cause analysis, which starts after an observed failure and asks what caused that failure; first-principles thinking can be used before anything fails, when the problem frame itself may be wrong. Distinct from inversion, which asks what would make the goal fail; first-principles thinking asks what must be true before any solution is valid. Distinct from Bayesian reasoning, which updates belief weights after evidence; first-principles thinking identifies the premises whose truth or falsity should be weighted. Distinct from expected-value reasoning, which compares options once the option space exists; first-principles thinking may reveal that the inherited option space is wrong. First-principles thinking is like dismantling a machine to its load-bearing parts, discarding decorative casing and copied attachments, then rebuilding only the mechanism that the physics of the problem requires. The common misconception is that first-principles thinking means ignoring all prior work. It does not. Prior work is useful evidence and can supply candidate premises, but it is not automatically foundational. The test is whether a belief is derivable, contingent, negotiable, or merely conventional. A copied rule may survive as a primitive if it encodes a real constraint; it fails if it is only inherited habit.
+
 ## Coverage
 
 First-principles thinking covers the reasoning move from inherited problem frame to load-bearing primitives and back to a justified conclusion. It includes assumption inventory, primitive classification, irreducibility tests, premise validation, derivation-chain reconstruction, constraint checks, and anti-pattern detection when precedent, analogy, or local optimization has displaced the real problem.
@@ -70,8 +62,7 @@ Use this skill when the question sounds like:
 - "If we could not use the old solution, what would the problem require?"
 - "Which constraints are real, and which are inherited habit?"
 
-## Philosophy
-
+## Philosophy of the skill
 First-principles thinking is useful because many constraints are second-hand. A rule that began as a physical limit, legal requirement, customer need, or economic fact can degrade into ritual after the environment changes. Once that happens, teams optimize inside a false box.
 
 The discipline is not skepticism for its own sake. It is controlled reduction followed by reconstruction. The reduction phase prevents stale assumptions from entering as axioms. The reconstruction phase prevents analysis paralysis by requiring every conclusion to climb back from the primitives it retained.
@@ -233,7 +224,9 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `reasoning-strategy`
+- Public: `true`
 - Domain: `foundations/reasoning`
+- Scope: Use when a problem is trapped inside inherited assumptions, copied convention, analogy, or local optimization and needs to be rebuilt from irreducible premises. Covers decomposition to primitives, assumption stripping, primitive tests, reconstruction from constraints, derivation chains, and reality checks. Do NOT use for root-cause analysis of an observed failure (use debugging or problem-locating-solving), formal argument grounding (use epistemic-grounding), domain entity modeling (use conceptual-modeling), or recurring issue clustering (use pattern-recognition).
 
 **When to use**
 - We keep copying the old pricing model. Rebuild the problem from first principles.
@@ -250,7 +243,7 @@ After applying this skill, verify:
 
 **Related skills**
 - Verify with: `epistemic-grounding`, `conceptual-modeling`
-- Related: `epistemic-grounding`, `conceptual-modeling`, `mental-models`, `pattern-recognition`, `debugging`
+- Related: `pattern-recognition`, `debugging`, `mental-models`, `epistemic-grounding`, `conceptual-modeling`
 
 **Concept**
 - Mental model: |

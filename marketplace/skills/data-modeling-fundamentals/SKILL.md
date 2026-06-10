@@ -4,37 +4,21 @@ description: "Use when reasoning about the foundational theory beneath data mode
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"conceptual-modeling\",\"data-modeling\",\"entity-relationship-modeling\",\"schema-evolution\"],\"suppresses\":[\"schema-evolution\"],\"verify_with\":[\"entity-relationship-modeling\",\"data-modeling\"]}"
   subject: data-engineering
   scope: "The foundational theory beneath data modeling — Codd's relational model (1970) and its algebra, the normal forms (1NF–5NF, BCNF) as a constraint-elimination sequence, functional dependencies and the closure algorithm, Chen's entity-relationship model (1976), the principled case for and against denormalization, the relational-vs-document tradeoff at the conceptual level, and the immutable-data-model alternative (event sourcing, append-only tables) with its grounding literature. Portable across any data-modeling effort; principle-grounded, not repo-bound. Excludes practical persistence design and method (data-modeling), applying changes to an existing schema (schema-evolution), choosing indexes (indexing-strategy), and the conceptual-modeling layer above the data model (conceptual-modeling)."
+  public: "true"
   taxonomy_domain: engineering/data
-  owner: skill-graph-maintainer
-  freshness: "2026-05-16"
-  drift_check: "{\"last_verified\":\"2026-05-16\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"relational model\",\"Codd\",\"normalization\",\"normal forms\",\"functional dependency\",\"1NF\",\"2NF\",\"3NF\",\"BCNF\",\"4NF\"]"
   triggers: "[\"what normal form is this\",\"should this be normalized or denormalized\",\"explain functional dependencies\",\"relational vs document model\",\"Codd's rules\"]"
   examples: "[\"explain why a table is in 2NF but not 3NF and what change would bring it to 3NF\",\"decide whether a workload's read pattern justifies denormalization against the theoretical baseline\",\"compare the relational, document, and event-sourced models at the conceptual level for a given domain\",\"trace a functional-dependency closure to find a candidate key\"]"
   anti_examples: "[\"design the practical schema for a new persistence layer (use data-modeling)\",\"apply an expand-contract migration to change an existing schema (use schema-evolution)\",\"choose which indexes to maintain (use indexing-strategy)\",\"discover business entities without implementation details (use conceptual-modeling)\"]"
-  relations: "{\"related\":[\"data-modeling\",\"conceptual-modeling\",\"entity-relationship-modeling\",\"schema-evolution\"],\"boundary\":[{\"skill\":\"schema-evolution\",\"reason\":\"schema-evolution owns the migration mechanics — how to change a deployed schema without downtime. This skill owns the static theory of what a good schema is. The decision 'this schema should be in 3NF' is grounded by this skill; the application of that decision to a live database is `schema-evolution`'s domain.\"}],\"verify_with\":[\"data-modeling\",\"entity-relationship-modeling\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "Data-modeling fundamentals is to schema design what Euclidean geometry is to architecture — the architect does not draw a right-angled wall by intuition each time; they draw it because the geometry guarantees stability and squares lock together. A schema in 3NF is the wall built to plumb, where every dependency is structural and no anomaly is hiding in the carpentry. Denormalization is the deliberate decision to cut a non-load-bearing wall for an open floor plan — defensible when the workload justifies it, indefensible when the cost is invisible."
   misconception: "|"
-  concept: "{\"definition\":\"Data-modeling fundamentals is the body of formal theory beneath practical database design: Codd's relational model (1970), which represents data as relations (sets of tuples) and provides a closed algebra (selection, projection, join, union, intersection, difference, division) for querying them; the normal forms (1NF through 5NF and BCNF), each defined by the elimination of a specific class of dependency anomaly; the theory of functional dependencies and the closure algorithm used to derive normal-form membership and candidate keys; Chen's entity-relationship model (1976), which sits above the relational model as a higher-abstraction modeling layer that translates downward into relations; the principled justifications for normalization (avoid update, insert, delete anomalies) and for denormalization (workload-driven performance trade-offs against the normal-form baseline); and the alternative data models — document, graph, key-value, columnar, event-sourced — each of which can be characterized by what relational primitives it preserves, relaxes, or trades for a different access pattern. The skill is the *theory* a practitioner draws on when deciding what shape data should take and why; the practical application of that theory is `data-modeling`.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/data-engineering/data-modeling-fundamentals/SKILL.md
@@ -42,12 +26,19 @@ metadata:
 
 # Data Modeling Fundamentals
 
+## Concept of the skill
+
+Data-modeling fundamentals is the body of formal theory beneath practical database design. *Codd's relational model* (1970) represents data as relations (sets of tuples) and provides a *closed algebra* (selection σ, projection π, join ⋈, union ∪, intersection ∩, difference −, division ÷, rename ρ) where every operator's input and output is a relation — making JOIN of JOIN of JOIN composable, which SQL inherits. The *normal forms* are a precise sequence of constraint-elimination steps: 1NF (atomic values only — no repeating groups), 2NF (1NF + every non-key attribute fully depends on the whole key — eliminates partial-key dependencies), 3NF (2NF + no non-key attribute depends on another non-key — eliminates transitive non-prime dependencies), BCNF (every non-trivial functional dependency has a superkey on its left — eliminates anomalies in overlapping candidate keys), 4NF (no non-trivial multi-valued dependencies), 5NF (every join dependency is implied by candidate keys). *Functional dependencies and the closure algorithm* are the tools used to derive normal-form membership and candidate keys. *Chen's entity-relationship model* (1976) sits above the relational model as a higher-abstraction layer that translates downward into relations.
+
+Replaces folklore-driven design ("normalize because someone said it's good"; "denormalize because joins are slow") with principled, theory-grounded reasoning. Solves the problem that *data outlives application code* — application code is rewritten in years; stored data and integrations persist for decades — making a bad data model the most expensive kind of technical debt, with every consumer (application, report, integration, analytical job) depending on it and changes requiring coordinated migration across all of them. The discipline of getting the model right early pays back over the data's full lifetime. Sub-purposes: (1) make normalization decisions on functional dependencies and named anomaly classes (update, insert, delete anomalies) rather than aesthetic preference, (2) justify denormalization with measured read-performance need and a documented consistency-maintenance plan (not by reflex), (3) characterize alternative models against the relational baseline (what is being traded, for what gain), (4) keep integrity constraints (primary keys, foreign keys, NOT NULL, CHECK, UNIQUE) at the database layer where the theory requires them rather than delegating to application code.
+
+Distinct from data-modeling, which owns the *practical method* of designing persistence — turn a conceptual model into a working schema with keys, constraints, and indexing implications. This skill owns the *theoretical foundations* beneath that method (what normal forms guarantee, what Codd's relational model formally provides, the algebra that makes joins composable, the principled justifications for denormalization). They are companion skills: theory and practice. Distinct from conceptual-modeling, which owns implementation-neutral business-concept discovery — that sits above this layer; the two compose (conceptual modeling identifies entities; this skill formalizes how those entities map to relations). Distinct from entity-relationship-modeling, which owns the ER notation and method (entities, relationships, cardinality, ER diagrams) — ER is the diagramming and discovery layer; the relational model in this skill is the formal target ER diagrams translate into. Distinct from schema-evolution, which owns the migration mechanics — this skill owns the static theory of what a good schema is; schema-evolution owns the application of that theory to a live database. Distinct from indexing-strategy and query-optimization (operational concerns about the schema's runtime behavior, not its formal shape). Data-modeling fundamentals is to schema design what Euclidean geometry is to architecture — the architect does not draw a right-angled wall by intuition each time; they draw it because the geometry guarantees stability and squares lock together. A schema in 3NF is the wall built to plumb, where every dependency is structural and no anomaly is hiding in the carpentry. Denormalization is the deliberate decision to cut a non-load-bearing wall for an open floor plan — defensible when the workload justifies it, indefensible when the cost is invisible. The wrong mental model is that "normalize until 3NF" or "always normalize to BCNF" is a universal rule, and that "denormalize for speed" is the inevitable counter. Both are folklore without the theory. Normalization is a principled cleanup procedure where each normal form eliminates a *specific class of anomaly* — the question is not "what normal form is this in" but "are the anomalies this form admits operationally relevant to our workload." A read-heavy reporting table can defensibly live in 2NF if its update anomalies don't matter; a write-heavy transactional table needs BCNF to avoid the anomalies that produce data corruption. Denormalization isn't "always wrong" or "always right" — it is a workload-driven decision with a *cost* (the redundant data must be maintained consistently, application-side) that must be made deliberately and documented. Adjacent misconceptions: that document and key-value stores "don't need data modeling" (they need it more — they trade relational primitives, and the trade must be made deliberately, not by reflex); that JSON columns are a substitute for proper schema design (they are not — they often hide anomalies the relational model would have surfaced, and queries over them are slow and brittle); that EAV (entity-attribute-value) tables are flexible (they trade integrity for flexibility and produce queries that are slow and brittle); and that the choice between relational, document, graph, columnar, time-series, and event-sourced is a "stack choice" rather than a *model* choice — each model trades specific relational primitives for specific access patterns, and the trade must be matched to the dominant workload, not the team's familiarity with a particular database product.
+
 ## Coverage
 
 The body of formal theory beneath practical database design. Covers Codd's relational model (1970), the closed relational algebra (selection, projection, join, union, difference, division), functional dependencies and the closure algorithm, the normal forms (1NF through 5NF, BCNF, with notes on 6NF and DKNF), Chen's entity-relationship model (1976) and its extensions, the principled framing of normalization vs denormalization as anomaly-elimination vs measured read-performance trade, the alternative data models (document, graph, key-value, columnar, time-series, event-sourced) characterized by which relational primitives they preserve or trade, and the foundational literature from Codd, Chen, Fagin, Date, Garcia-Molina, and Kleppmann that grounds modern database design.
 
-## Philosophy
-
+## Philosophy of the skill
 Data outlives application code. Application code is rewritten in years; stored data and integrations persist for decades. A bad data model is the most expensive kind of technical debt — every consumer (application, report, integration, analytical job) depends on it, and changing it requires coordinated migration across all of them. The discipline of getting the model right early pays back over the data's full lifetime.
 
 Without the theory, design becomes folklore. Teams normalize because someone said normalization is good; they denormalize because someone said joins are slow. Neither claim is wrong, but without the theory underneath, the decisions are tribal rather than reasoned. The theoretical layer — what normal forms guarantee, what anomalies each form eliminates, what relational algebra closure buys — makes the conversation precise.
@@ -151,6 +142,7 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `data-engineering`
+- Public: `true`
 - Domain: `engineering/data`
 - Scope: The foundational theory beneath data modeling — Codd's relational model (1970) and its algebra, the normal forms (1NF–5NF, BCNF) as a constraint-elimination sequence, functional dependencies and the closure algorithm, Chen's entity-relationship model (1976), the principled case for and against denormalization, the relational-vs-document tradeoff at the conceptual level, and the immutable-data-model alternative (event sourcing, append-only tables) with its grounding literature. Portable across any data-modeling effort; principle-grounded, not repo-bound. Excludes practical persistence design and method (data-modeling), applying changes to an existing schema (schema-evolution), choosing indexes (indexing-strategy), and the conceptual-modeling layer above the data model (conceptual-modeling).
 
@@ -166,11 +158,10 @@ After applying this skill, verify:
 - apply an expand-contract migration to change an existing schema (use schema-evolution)
 - choose which indexes to maintain (use indexing-strategy)
 - discover business entities without implementation details (use conceptual-modeling)
-- Owned by `schema-evolution`: the migration mechanics — how to change a deployed schema without downtime
 
 **Related skills**
-- Verify with: `data-modeling`, `entity-relationship-modeling`
-- Related: `data-modeling`, `conceptual-modeling`, `entity-relationship-modeling`, `schema-evolution`
+- Verify with: `entity-relationship-modeling`, `data-modeling`
+- Related: `conceptual-modeling`, `data-modeling`, `entity-relationship-modeling`, `schema-evolution`
 
 **Concept**
 - Mental model: |

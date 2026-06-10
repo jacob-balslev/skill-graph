@@ -100,6 +100,12 @@ SANDBOX + PANEL PREFLIGHT (before ANY paid dispatch; report-and-exit on failure)
    NET-BLOCKED -> report "sandbox has no network: set [sandbox_workspace_write]
    network_access=true in ~/.codex/config.toml" and EXIT. Do not run the panel.
 2. Worklist freshness:  cd ~/Development && node scripts/skill/build-skill-list.js --write
+   (add --refresh-manifest when the builder warns skills.manifest.json is stale AND the sandbox
+   can write the workspace; sandboxed wakes proceed on the last good manifest — the warning is
+   informational, not a stop condition).
+   The written ~/Development/.opencode/progress/SKILL_LIST.md (JSON twin: SKILL_LIST.json) is the
+   canonical skill-state inventory — every skill with its queue position, four verdicts (S·T·C·A),
+   eval state, and last_audited. Read it; NEVER rebuild a skill inventory ad hoc.
 3. Panel execution preflight on the first eligible skill:
      cd ~/Development/skill-graph && node lib/audit/run-skill-audit-loop.js \
        --skill <first-slug> --skill-dir <its dir> --cwd . --preflight-only

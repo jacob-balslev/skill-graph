@@ -3,30 +3,17 @@ name: printify
 description: "Use when working with Printify — the print-on-demand REST API, catalog model (blueprints, print providers, variants, print areas), product creation and publish lifecycle to connected channels, order routing, shipping cost queries, and HMAC SHA-256 webhook verification. Do NOT use for non-Printify POD vendors, generic Shopify storefront work, or print-file (artwork) generation. Do NOT use for Generate the artwork PNG file that gets uploaded as a print file. Do NOT use for Implement the Shopify side of the Printify-to-Shopify sync. Do NOT use for Design a generic POD-vendor-agnostic product schema."
 license: CC-BY-4.0
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"webhook-integration\",\"api-design\",\"shopify\"],\"suppresses\":[\"shopify\"]}"
   subject: product-domain
+  public: "true"
+  scope: "Use when working with Printify — the print-on-demand REST API, catalog model (blueprints, print providers, variants, print areas), product creation and publish lifecycle to connected channels, order routing, shipping cost queries, and HMAC SHA-256 webhook verification. Do NOT use for non-Printify POD vendors, generic Shopify storefront work, or print-file (artwork) generation."
   subjects: "[\"product-domain\",\"backend-engineering\"]"
   taxonomy_domain: engineering/integrations
-  owner: skill-graph-maintainer
-  freshness: "2026-05-12"
-  drift_check: "{\"last_verified\":\"2026-05-12\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"printify api\",\"print on demand\",\"printify blueprints\",\"printify print providers\",\"printify publish lifecycle\",\"printify webhooks\",\"printify variants\",\"printify shipping costs\",\"printify order routing\",\"print provider catalog\"]"
   triggers: "[\"printify\",\"printify api\",\"printify webhook\",\"print on demand\"]"
   examples: "[\"Create a Printify product from a blueprint + print provider + variant set and publish it to a connected Shopify store\",\"Handle a Printify order:updated webhook and reconcile fulfillment status\",\"Resolve shipping cost for a basket of Printify variants given a destination country\"]"
   anti_examples: "[\"Generate the artwork PNG file that gets uploaded as a print file\",\"Implement the Shopify side of the Printify-to-Shopify sync\",\"Design a generic POD-vendor-agnostic product schema\"]"
-  relations: "{\"related\":[\"shopify\",\"webhook-integration\",\"api-design\"],\"boundary\":[{\"skill\":\"shopify\",\"reason\":\"Printify publishes to Shopify (and other channels) but the Shopify-side concerns — theme display, Shopify webhooks, Admin API — belong in the shopify skill.\"}]}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/product-domain/printify/SKILL.md
@@ -34,6 +21,10 @@ metadata:
 ---
 
 # Printify
+
+## Concept of the skill
+
+Use when working with Printify — the print-on-demand REST API, catalog model (blueprints, print providers, variants, print areas), product creation and publish lifecycle to connected channels, order routing, shipping cost queries, and HMAC SHA-256 webhook verification.
 
 ## Coverage
 The Printify REST API exposes a catalog (blueprints — abstract product templates like "Unisex Heavy Cotton Tee"; print providers — fulfillment partners who manufacture a given blueprint; variants — concrete color/size combinations a provider offers for a blueprint), shops (connected sales channels: Shopify, Etsy, WooCommerce, eBay, TikTok, custom API), products (a blueprint + print provider + variant selection + print areas + images, owned by a Printify shop), and orders (created either by sync from a connected channel or directly via API for merchant-fulfilled flows). This skill covers the relationships between these resources and the lifecycle transitions that move a product from draft to published to live on a storefront.
@@ -44,7 +35,7 @@ The publish lifecycle is a two-step asynchronous operation. POST to /products ma
 
 Webhooks deliver order, product, and shop events. Each delivery includes an X-Pfy-Signature header computed as HMAC SHA-256 over the raw body with the webhook secret returned on subscription. Order events (order:created, order:updated, order:sent-to-production, order:shipment:created, order:shipment:delivered, order:cancelled) carry the full order payload including line items with print provider, shipping cost, and tracking. Shipping cost can also be computed pre-purchase via /shops/{shop_id}/orders/shipping.json with a destination address and line items.
 
-## Philosophy
+## Philosophy of the skill
 Printify sits between the merchant and the print provider, and its catalog reflects that — a blueprint's available variants and print areas are determined by the print provider, not by Printify. The same blueprint produced by two providers can have different color availability, different print area dimensions, and different shipping profiles. Integrations should treat blueprint + print_provider as a composite key and never assume that variants are portable across providers.
 
 The publish lifecycle is asynchronous and partially observable. Treat publish success as a separate state from product-create success, and reconcile via webhooks rather than optimistic UI. Costs (product cost, shipping cost) are determined at order-create time by Printify and can differ from any pre-quoted estimate; the order webhook payload is the source of truth for actual cost.
@@ -70,7 +61,9 @@ The publish lifecycle is asynchronous and partially observable. Treat publish su
 
 **Classification**
 - Subject: `product-domain` (also: `backend-engineering`)
+- Public: `true`
 - Domain: `engineering/integrations`
+- Scope: Use when working with Printify — the print-on-demand REST API, catalog model (blueprints, print providers, variants, print areas), product creation and publish lifecycle to connected channels, order routing, shipping cost queries, and HMAC SHA-256 webhook verification. Do NOT use for non-Printify POD vendors, generic Shopify storefront work, or print-file (artwork) generation.
 
 **When to use**
 - Create a Printify product from a blueprint + print provider + variant set and publish it to a connected Shopify store
@@ -82,10 +75,9 @@ The publish lifecycle is asynchronous and partially observable. Treat publish su
 - Generate the artwork PNG file that gets uploaded as a print file
 - Implement the Shopify side of the Printify-to-Shopify sync
 - Design a generic POD-vendor-agnostic product schema
-- Owned by `shopify`
 
 **Related skills**
-- Related: `shopify`, `webhook-integration`, `api-design`
+- Related: `webhook-integration`, `api-design`, `shopify`
 
 **Keywords**
 - `printify api`, `print on demand`, `printify blueprints`, `printify print providers`, `printify publish lifecycle`, `printify webhooks`, `printify variants`, `printify shipping costs`, `printify order routing`, `print provider catalog`

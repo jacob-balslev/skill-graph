@@ -1,42 +1,31 @@
 ---
 name: lint-overlay
-description: "Use when adding or enforcing lint rules as part of a test or verification plan. Extends testing-strategy with lint-specific guidance: rule selection, gate placement, failure triage, and migration planning when introducing rules to an existing codebase. Do NOT use standalone — load the base testing-strategy skill alongside it — and do NOT use for chasing a specific lint failure in one file (that is debugging). Do NOT use for decide whether to unit-test or integration-test this handler. Do NOT use for extract this repeated code pattern into a shared util. Do NOT use for the design of integration-level tests including the unit-vs-integration choice (use integration-test-design)."
+description: "Use when adding or enforcing lint rules as part of a test or verification plan. Extends testing-strategy with lint-specific guidance: rule selection, gate placement, failure triage, and migration planning when introducing rules to an existing codebase. Do NOT use standalone — load the base testing-strategy skill alongside it — and do NOT use for chasing a specific lint failure in one file (that is debugging). Do NOT use for decide whether to unit-test or integration-test this handler. Do NOT use for extract this repeated code pattern into a shared util."
 license: MIT
 compatibility: "Markdown, Git, any codebase with a lint tool"
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"pattern-recognition\",\"debugging\",\"refactor\",\"skill-infrastructure\",\"problem-locating-solving\"],\"suppresses\":[\"testing-strategy\",\"integration-test-design\"]}"
   subject: quality-assurance
-  owner: skill-graph-maintainer
-  freshness: "2026-04-18"
-  drift_check: "{\"last_verified\":\"2026-05-13\",\"truth_source_hashes\":{\"scripts/skill-lint.js\":\"3a78f75f8921542b91dc619cd41bde29bf379de3c16bdcf3653c854ecbe9fa29\",\"scripts/lint/check-routing-quality.js\":\"b57d10f4c7c4e42a1a86c2741cbac6708e2de7dedb51b13f707283fbf91e32b5\",\"scripts/lint/check-routing-eval.js\":\"ab541922dfcbfb2cd7740c4abebb892e8b26477643e9d802fd0ea4cfbc8de649\",\"examples/evals/lint-overlay.json\":\"d60dcd4512904f36e56702d5338295dbf1238448b988dc60225fdd77285eaff9\",\"skills/testing-strategy/SKILL.md\":\"9c5da135ab8834843367da9e9120c92b57e81d1680ef84a0ea9e32f362e1456e\"}}"
-  eval_artifacts: present
-  eval_state: passing
-  routing_eval: present
+  public: "true"
+  scope: "Use when adding or enforcing lint rules as part of a test or verification plan. Extends testing-strategy with lint-specific guidance: rule selection, gate placement, failure triage, and migration planning when introducing rules to an existing codebase. Do NOT use standalone — load the base testing-strategy skill alongside it — and do NOT use for chasing a specific lint failure in one file (that is debugging)."
   stability: experimental
-  extends: testing-strategy
-  keywords: "[\"lint\",\"linting\",\"lint rules\",\"lint integration\",\"static analysis\",\"eslint\",\"format check\",\"add eslint rule\",\"lint is failing\",\"add lint check\",\"noImplicitAny\",\"phased lint rollout\",\"lint rule migration\",\"pre-commit lint\",\"ci lint gate\",\"lint rule violations\"]"
+  keywords: "[\"lint\",\"lint rules\",\"new rule\",\"pre-commit\",\"CI only\",\"lint integration\",\"static analysis\",\"eslint\",\"noImplicitAny\",\"phased lint rollout\"]"
   triggers: "[\"lint-overlay\"]"
   examples: "[\"plan ESLint rule introduction for a monorepo that has never had linting\",\"which lint rules should block CI and which should warn-only for now?\",\"migrate these legacy noImplicitAny violations in phased gates\",\"decide whether this new rule runs pre-commit or in CI only\"]"
   anti_examples: "[\"decide whether to unit-test or integration-test this handler\",\"extract this repeated code pattern into a shared util\"]"
-  relations: "{\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"base testing-strategy owns unit-vs-integration scope selection; lint-overlay extends it only for lint-specific gate placement\"},{\"skill\":\"integration-test-design\",\"reason\":\"integration-test-design owns the design of integration-level tests including the unit-vs-integration choice; lint-overlay owns lint-rule rollout and CI gate placement — deciding test level is a testing concern, not a lint concern\"}],\"related\":[\"debugging\",\"refactor\",\"pattern-recognition\"]}"
   grounding: "{\"subject_matter\":\"Lint-specific verification planning in the Skill Graph starter library\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"scripts/skill-lint.js\",\"scripts/lint/check-routing-quality.js\",\"scripts/lint/check-routing-eval.js\",\"examples/evals/lint-overlay.json\",\"skills/testing-strategy/SKILL.md\"],\"failure_modes\":[\"lint_failure_triaged_as_strategy_problem\",\"overlay_loaded_without_base_testing_strategy\",\"rule_migration_lacks_gate_placement\",\"routing_eval_claim_not_backed_by_harness\"],\"evidence_priority\":\"repo_code_first\"}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  structural_verdict: PASS
-  truth_verdict: DRIFT
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/lint-overlay/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Lint Overlay
+
+## Concept of the skill
+
+Use when adding or enforcing lint rules as part of a test or verification plan. Extends testing-strategy with lint-specific guidance: rule selection, gate placement, failure triage, and migration planning when introducing rules to an existing codebase.
 
 ## Extends
 
@@ -65,8 +54,7 @@ This overlay extends `testing-strategy`. Load both skills whenever lint is part 
 - Failure triage: separating lint failures caused by the current change from pre-existing rule violations
 - Overlay discipline: what this skill adds on top of testing-strategy and what it intentionally leaves to the base
 
-## Philosophy
-
+## Philosophy of the skill
 Lint is a verification signal, not a style opinion. A lint rule exists because a pattern has a measurable cost — a bug class, a readability drop, a maintenance drag — and the rule's job is to surface that cost early enough to fix it cheaply. Rules without that grounding are style preferences dressed up as gates, and style preferences should not block merges.
 
 Three principles follow from that stance:
@@ -91,8 +79,15 @@ These rules augment (not replace) the testing-strategy base skill.
 
 This skill ships a comprehension-eval artifact at [`examples/evals/lint-overlay.json`](https://github.com/jacob-balslev/skill-graph/blob/main/examples/evals/lint-overlay.json). Because this is an overlay, the eval prompts specifically test what the overlay adds on top of `testing-strategy` and what it deliberately leaves to the base. The eval file is how this skill is graded by `scripts/skill-audit.js --graded`.
 
-## Do NOT Use When
+## Verification
 
+After applying this skill, verify:
+
+- [ ] The task matches the declared scope, coverage, or positive examples.
+- [ ] The response follows this skill's workflow or checks instead of generic advice.
+- [ ] The exclusions in `## Do NOT Use When` do not point to a better skill.
+
+## Do NOT Use When
 | Use instead | When |
 |---|---|
 | `testing-strategy` alone | Lint is not in scope for this change — load only the base skill |
@@ -105,6 +100,8 @@ This skill ships a comprehension-eval artifact at [`examples/evals/lint-overlay.
 
 **Classification**
 - Subject: `quality-assurance`
+- Public: `true`
+- Scope: Use when adding or enforcing lint rules as part of a test or verification plan. Extends testing-strategy with lint-specific guidance: rule selection, gate placement, failure triage, and migration planning when introducing rules to an existing codebase. Do NOT use standalone — load the base testing-strategy skill alongside it — and do NOT use for chasing a specific lint failure in one file (that is debugging).
 
 **When to use**
 - plan ESLint rule introduction for a monorepo that has never had linting
@@ -116,17 +113,15 @@ This skill ships a comprehension-eval artifact at [`examples/evals/lint-overlay.
 **Not for**
 - decide whether to unit-test or integration-test this handler
 - extract this repeated code pattern into a shared util
-- Owned by `testing-strategy`
-- Owned by `integration-test-design`: the design of integration-level tests including the unit-vs-integration choice
 
 **Related skills**
-- Related: `debugging`, `refactor`, `pattern-recognition`
+- Related: `pattern-recognition`, `debugging`, `refactor`, `skill-infrastructure`, `problem-locating-solving`
 
 **Grounding**
 - Mode: `hybrid`
 - Truth sources: `scripts/skill-lint.js`, `scripts/lint/check-routing-quality.js`, `scripts/lint/check-routing-eval.js`, `examples/evals/lint-overlay.json`, `skills/testing-strategy/SKILL.md`
 
 **Keywords**
-- `lint`, `linting`, `lint rules`, `lint integration`, `static analysis`, `eslint`, `format check`, `add eslint rule`, `lint is failing`, `add lint check`, `noImplicitAny`, `phased lint rollout`, `lint rule migration`, `pre-commit lint`, `ci lint gate`, `lint rule violations`
+- `lint`, `lint rules`, `new rule`, `pre-commit`, `CI only`, `lint integration`, `static analysis`, `eslint`, `noImplicitAny`, `phased lint rollout`
 
 <!-- skill-graph-context:end -->

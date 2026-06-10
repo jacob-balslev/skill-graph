@@ -1,54 +1,44 @@
 ---
 name: performance-budgets
-description: "Use when declaring, measuring, or enforcing performance thresholds as a quality contract rather than as an aspirational target. Covers the three budget axes (time, size, count), the four governing properties of a real budget (metric, threshold, percentile, consequence), the Core Web Vitals set (LCP, INP, CLS), the RAIL model, Lighthouse budgets.json, lab vs field measurement, and the discipline of treating budget breach as a build or deploy failure rather than a tracked metric. Do NOT use for the activity of profiling and optimizing a specific slow path (use performance-engineering), the choice of rendering model that bounds achievable budgets (use rendering-models), or the design of observability and telemetry signals (use observability-modeling). Do NOT use for runtime-correctness verification (use testing-strategy)."
+description: "Use when declaring, measuring, or enforcing performance thresholds as a quality contract rather than as an aspirational target. Covers the three budget axes (time, size, count), the four governing properties of a real budget (metric, threshold, percentile, consequence), the Core Web Vitals set (LCP, INP, CLS), the RAIL model, Lighthouse budgets.json, lab vs field measurement, and the discipline of treating budget breach as a build or deploy failure rather than a tracked metric. Do NOT use for the activity of profiling and optimizing a specific slow path (use performance-engineering), the choice of rendering model that bounds achievable budgets (use rendering-models), or the design of observability and telemetry signals (use observability-modeling)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"rendering-models\",\"http-semantics\",\"performance-engineering\",\"observability-modeling\",\"testing-strategy\"],\"suppresses\":[\"performance-engineering\",\"testing-strategy\"],\"verify_with\":[\"observability-modeling\",\"performance-engineering\",\"streaming-architecture\"]}"
   subject: quality-assurance
   scope: "Declaring, measuring, and enforcing performance thresholds as a quality contract rather than an aspirational target — the three budget axes (time, size, count), the four governing properties of a real budget (metric, threshold, percentile, consequence), the Core Web Vitals set (LCP, INP, CLS), the RAIL model, Lighthouse budgets.json, lab vs field measurement, and treating budget breach as a build/deploy failure. Portable across any product with performance SLAs; principle-grounded, not repo-bound. Excludes profiling and optimizing a specific slow path (performance-engineering), the rendering-model choice that bounds achievable budgets (rendering-models), and observability/telemetry signal design (observability-modeling)."
+  public: "true"
   taxonomy_domain: quality/performance
-  owner: skill-graph-maintainer
-  freshness: "2026-05-15"
-  drift_check: "{\"last_verified\":\"2026-05-15\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"performance budget\",\"Core Web Vitals\",\"LCP\",\"INP\",\"CLS\",\"RAIL model\",\"Lighthouse budgets\",\"lab metrics\",\"field metrics\",\"p75 performance\"]"
   triggers: "[\"how fast does this page need to be\",\"what's a good LCP target\",\"should this fail the build\",\"why is the Lighthouse score different from real users\",\"we need a performance budget\"]"
   examples: "[\"set a Core Web Vitals budget for a marketing landing page and enforce it in CI\",\"explain why a green Lighthouse score still produced bad real-user performance\",\"decide between INP and FID as the interaction-responsiveness metric\",\"design a per-route budget table that distinguishes static pages from logged-in dashboards\"]"
   anti_examples: "[\"profile a specific slow query and decide what to fix (use performance-engineering)\",\"choose between SSG and SSR for a route (use rendering-models)\",\"design telemetry spans and traces (use observability-modeling)\"]"
-  relations: "{\"related\":[\"performance-engineering\",\"rendering-models\",\"observability-modeling\",\"testing-strategy\",\"http-semantics\"],\"boundary\":[{\"skill\":\"performance-engineering\",\"reason\":\"performance-engineering owns the activity of measuring, profiling, and improving performance. performance-budgets owns the threshold-and-consequence contract. The two compose: budgets define the failure conditions; engineering produces the improvements that prevent breach.\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns runtime-correctness verification. performance-budgets is an analogous discipline for non-functional properties — a budget breach is the same kind of CI failure as a failing test.\"}],\"verify_with\":[\"performance-engineering\",\"observability-modeling\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "A performance budget is to a web app what a calorie budget is to a diet — the calorie count of any single meal is information; the calorie budget is what you do about it when you exceed it. A diet that 'tracks' calories without consequence is description; a diet with a calorie *budget* is discipline. And a per-meal budget (per-route) catches drift earlier than a per-day total: by the time the day total breaches, the offending meal is hours behind you and harder to undo."
   misconception: "|"
-  concept: "{\"definition\":\"A performance budget is a declared, measurable threshold for a user-affecting property of a system — load time, interaction latency, layout stability, bundle size, request count — treated as a contract the system must satisfy. A budget has four parts: the metric (what is measured), the threshold (the maximum or minimum acceptable value), the percentile (whose experience the threshold describes), and the consequence (what happens when the threshold is breached). Without all four, the number is an aspiration, not a budget.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/performance-budgets/SKILL.md
-  skill_graph_export_description_projection: boundary
 ---
 
 # Performance Budgets
+
+## Concept of the skill
+
+A performance budget is a declared, measurable threshold for a user-affecting property of a system — load time, interaction latency, layout stability, bundle size, request count — *treated as a contract the system must satisfy*. A complete budget has *four parts* (a statement missing any part is not a budget): (1) *metric* — LCP, INP, CLS, JS bytes, request count, cited by name not by "speed" or "load time"; (2) *threshold* — a number, not a band ("2.5 seconds"); (3) *percentile* — whose experience the threshold describes ("p75" is the Core Web Vitals standard, meaning the threshold must hold for the median through the 75th percentile of users); (4) *consequence* — what happens when the threshold is breached: deploy blocked / CI failure / rollback trigger, *not* "we look at it next sprint."
+
+Replaces aspirational performance targets ("we'd like the page to be fast") with enforceable contracts ("LCP at p75 must be below 2.5 seconds in field measurement; breach blocks deploy"). Solves the problem that performance regressions accumulate silently — every commit adds a little JS, every quarter ships more third-party scripts, every redesign loosens layout — and by the time anyone notices, the regressions are baked into many changes that are hard to disentangle. Three properties distinguish a real budget from a tracked metric: (1) it is set *before* the spending decisions, not after (a budget that emerges from post-hoc retrospectives is description; one that constrains the next feature is discipline); (2) it binds to a *consequence*, not a dashboard (a number someone watches is a metric; a number that fails a build is a budget); (3) it speaks *for the user* (every other voice in the room — engineering, design, product, marketing — has its own incentives; the budget is the institutional voice of the user, present at every commit, refusing to grant exceptions silently). The hardest part is not setting the number — it is committing to enforce it the first time the budget blocks a feature.
+
+Distinct from performance-engineering, which owns the activity of measuring, profiling, and improving performance — this skill owns the *threshold-and-consequence contract*; the two compose (budgets define failure conditions; engineering produces improvements that prevent breach). Distinct from rendering-models, which owns the choice of when and where UI is produced — this skill sits *downstream* (the chosen rendering model bounds which budgets are achievable on a given route; a fully-CSR dashboard cannot meet a 1.5s LCP budget no matter what optimization). Distinct from observability-modeling, which owns the design of telemetry signals (spans, metrics, logs) — this skill *consumes* signals as evidence of breach but does not design them. Distinct from testing-strategy, which owns runtime-correctness verification — this skill is an analogous discipline for *non-functional* properties; a budget breach is the same kind of CI failure as a failing test. Distinct from http-semantics (transport-level optimization, downstream of the rendering and routing choices that determine achievable budgets). A performance budget is to a web app what a calorie budget is to a diet — the calorie count of any single meal is information; the calorie budget is what you do about it when you exceed it. A diet that 'tracks' calories without consequence is description; a diet with a calorie *budget* is discipline. And a per-meal budget (per-route) catches drift earlier than a per-day total: by the time the day total breaches, the offending meal is hours behind you and harder to undo. The wrong mental model is that a "performance budget" is any kind of measurement-and-tracking around performance — that a dashboard with green-yellow-red thresholds is a budget, or that "we monitor Core Web Vitals" is a budgeting practice. They are not. The defining property is the *consequence*: a budget without an automated build-or-deploy gate is a tracked metric, not a budget. Adjacent misconceptions: that a single site-wide threshold fits all routes (it does not — marketing landing pages need stricter budgets than logged-in admin panels because the audience and competitive context differ; per-route budgets are the working standard); that lab measurements alone are sufficient (they are not — lab is reproducible and fast for CI gates, but field data is authoritative; if the field metric breaches while the lab passes, the lab is missing something — investigate and fix the gap, never accept "but the Lighthouse score is green"); that one-axis budgets are enough (they are not — a JS-bytes budget catches bundle bloat, a time budget catches render delays, a request-count budget catches third-party drift; setting all three axes catches regression at the level closest to where it happened); that FID is still the interaction-responsiveness metric (it is not — INP replaced FID in March 2024; a site that passes FID may fail INP); that third-party scripts should be exempted from the budget (they should not — the user experiences their cost regardless of who shipped them; the budget *includes* third parties or it is not measuring user experience); and that budgets are aspirational from day one (they are not — calibrate against current p75 + 5-10% margin and ratchet tighter as optimization lands; "impossible from day one" gets disabled, "loose forever" generates no signal).
 
 ## Coverage
 
 The discipline of declaring measurable thresholds for performance-affecting properties and enforcing them as quality contracts. Covers the four governing properties (metric, threshold, percentile, consequence), the three budget axes (time, size, count), the three measurement modes (lab, field, synthetic), the Core Web Vitals set as the most-adopted public budget standard, the RAIL model as the interaction-class framework, Lighthouse budgets.json as a declarative enforcement mechanism, and the per-route granularity that real applications require.
 
-## Philosophy
-
+## Philosophy of the skill
 A budget is a contract written in numbers. Three things distinguish a real budget from a tracked metric:
 
 1. **It is set before the spending decisions, not after.** A budget that emerges from post-hoc retrospectives is a description; a budget that constrains the next feature is a discipline.
@@ -220,6 +210,7 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `quality-assurance`
+- Public: `true`
 - Domain: `quality/performance`
 - Scope: Declaring, measuring, and enforcing performance thresholds as a quality contract rather than an aspirational target — the three budget axes (time, size, count), the four governing properties of a real budget (metric, threshold, percentile, consequence), the Core Web Vitals set (LCP, INP, CLS), the RAIL model, Lighthouse budgets.json, lab vs field measurement, and treating budget breach as a build/deploy failure. Portable across any product with performance SLAs; principle-grounded, not repo-bound. Excludes profiling and optimizing a specific slow path (performance-engineering), the rendering-model choice that bounds achievable budgets (rendering-models), and observability/telemetry signal design (observability-modeling).
 
@@ -234,12 +225,10 @@ After applying this skill, verify:
 - profile a specific slow query and decide what to fix (use performance-engineering)
 - choose between SSG and SSR for a route (use rendering-models)
 - design telemetry spans and traces (use observability-modeling)
-- Owned by `performance-engineering`: the activity of measuring, profiling, and improving performance
-- Owned by `testing-strategy`: runtime-correctness verification
 
 **Related skills**
-- Verify with: `performance-engineering`, `observability-modeling`
-- Related: `performance-engineering`, `rendering-models`, `observability-modeling`, `testing-strategy`, `http-semantics`
+- Verify with: `observability-modeling`, `performance-engineering`, `streaming-architecture`
+- Related: `rendering-models`, `http-semantics`, `performance-engineering`, `observability-modeling`, `testing-strategy`
 
 **Concept**
 - Mental model: |

@@ -5,8 +5,10 @@ license: MIT
 compatibility: "Portable database connection-pooling guidance. Pool limits, driver defaults, and proxy features vary by database, driver, cloud provider, and PgBouncer/proxy version; verify production behavior against the target stack."
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"related\":[\"indexing-strategy\",\"sharding-strategy\",\"query-optimization\",\"replication-patterns\",\"transaction-isolation\",\"acid-fundamentals\",\"background-jobs\",\"streaming-architecture\",\"performance-engineering\"],\"suppresses\":[\"transaction-isolation\",\"acid-fundamentals\",\"background-jobs\",\"streaming-architecture\"],\"verify_with\":[\"replication-patterns\",\"performance-engineering\",\"query-optimization\",\"transaction-isolation\"]}"
   subject: backend-engineering
   scope: "How an application manages its database connections — the server-side cost of a connection, application-level pools (HikariCP, pgx, node-postgres) vs proxy-level pools (PgBouncer, Pgpool, ProxySQL), the three PgBouncer modes (session/transaction/statement) and their feature compatibility, the pool-sizing math (Little's Law applied to database concurrency), the failure modes (connection exhaustion, hot-loop reconnects, prepared-statement breakage under transaction pooling, idle-in-transaction leaks), and the diagnostic procedure for connection contention. Portable across any DB-backed application; principle-grounded, not repo-bound. Excludes query-level performance (query-optimization), index design (indexing-strategy), read/write replica routing (replication-patterns), and cross-shard coordination (sharding-strategy)."
+  public: "true"
   taxonomy_domain: engineering/data
   grounding: "{\"subject_matter\":\"Portable database connection-pooling: application pools, proxy pools, PgBouncer pool modes, server-side connection costs, pool sizing, wait-time diagnostics, transaction/session feature compatibility, idle-in-transaction leaks, and reconnect storms\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing\",\"https://github.com/brettwooldridge/HikariCP/wiki/Down-the-Rabbit-Hole\",\"https://www.pgbouncer.org/usage.html\",\"https://www.pgbouncer.org/faq.html\",\"https://www.postgresql.org/docs/current/runtime-config-connection.html\",\"https://www.postgresql.org/docs/current/runtime-config-client.html\",\"https://www.jstor.org/stable/167570\",\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy.html\",\"https://github.com/supabase/supavisor\"],\"failure_modes\":[\"Sizing pools from request rate or app-instance count instead of measured concurrency\",\"Treating max_connections as a target rather than a ceiling\",\"Assuming transaction pooling preserves all session-level database features\",\"Diagnosing pool wait time as slow query time\",\"Ignoring idle-in-transaction leaks that hold pool slots and open transactions\",\"Letting autoscaled or serverless clients multiply direct database connections without a proxy cap\"],\"evidence_priority\":\"equal\"}"
   stability: experimental
@@ -14,17 +16,15 @@ metadata:
   triggers: "[\"connection-pooling\",\"what should max pool size be\",\"PgBouncer transaction mode\",\"too many connections error\",\"connection exhaustion\",\"prepared statements not working with PgBouncer\"]"
   examples: "[\"size a connection-pooling pool using Little's Law, database cores, query time, and app instance count\",\"diagnose connection-pooling exhaustion where pool.acquire_time_p99 is high but query latency is normal\",\"decide between PgBouncer session mode, transaction mode, and statement mode for prepared statements and SET LOCAL\",\"explain why HikariCP recommends small connection pools instead of large ones\"]"
   anti_examples: "[\"choose the transaction isolation level for concurrent account transfers\",\"move a slow export into a background job queue with retry policy\",\"model a producer, stream, consumer, backpressure, and termination contract for an SSE progress stream\"]"
-  relations: "{\"related\":[\"query-optimization\",\"indexing-strategy\",\"replication-patterns\",\"sharding-strategy\",\"transaction-isolation\",\"acid-fundamentals\",\"background-jobs\",\"streaming-architecture\",\"performance-engineering\"],\"boundary\":[{\"skill\":\"transaction-isolation\",\"reason\":\"transaction-isolation owns the per-transaction concurrency-correctness contract; connection-pooling owns the connection-level mechanics that determine whether a transaction's connection is held, released, or shared.\"},{\"skill\":\"acid-fundamentals\",\"reason\":\"acid-fundamentals owns ACID properties and transaction correctness concepts; connection-pooling owns database connection lifecycle, pooling modes, and wait queues.\"},{\"skill\":\"background-jobs\",\"reason\":\"background-jobs owns durable worker execution and retry policy; connection-pooling owns database connection contention and pool sizing for whatever workers or web requests use the database.\"},{\"skill\":\"streaming-architecture\",\"reason\":\"streaming-architecture owns producer/consumer backpressure for value streams; connection-pooling owns database connection wait queues and pool contention.\"}],\"verify_with\":[\"query-optimization\",\"replication-patterns\",\"transaction-isolation\",\"performance-engineering\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "A connection pool is to a database what a taxi rank is to an airport — every taxi has a standing cost (driver salary, fuel, parking space); a rank with too few taxis leaves passengers queuing on the curb; a rank with too many burns money on idle taxis and clogs the access road. The right number is the smallest that doesn't queue under peak arrival rate, sized by how long each taxi trip actually takes — and adding more taxis doesn't make the trips faster, it just lets more start at once."
   misconception: "|"
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/connection-pooling/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
 
@@ -50,8 +50,7 @@ metadata:
 
 The discipline of managing a finite set of database connections shared across many application threads, requests, or processes. Covers the connection cost (server-side process/thread, memory, locks), why pooling is required (open-cost amortization, throughput cap, load-shedding), application-level vs proxy-level pools, the three PgBouncer modes (session, transaction, statement) and their feature compatibility, the canonical pool-sizing math via Little's Law and HikariCP's analyses, the failure modes catalog (connection exhaustion, idle-in-transaction, hot-loop reconnect, prepared-statement breakage, cross-connection state leaks, long-tail accumulation), the operational concerns (wait-time monitoring, connection rotation, reconnect backoff, health checks), and the database-specific connection models (Postgres process-per-connection, MySQL thread-per-connection, serverless variants).
 
-## Philosophy
-
+## Philosophy of the skill
 The pool is a throughput throttle, not a resource budget. Sizing too large doesn't make slow queries faster — it makes the database thrash and shifts the symptom from "queue waiting for connection" to "queue waiting for CPU, buffer cache, or locks." Sizing too small produces queue waits. The right size is the smallest pool that doesn't queue under peak load — typically much smaller than teams initially set.
 
 Pooling mode determines feature surface. The choice between session, transaction, and statement pooling is not just operational — it determines what features the application is allowed to use at the database. Transaction pooling buys multiplexing in exchange for session-feature loss; statement pooling buys further multiplexing in exchange for transaction loss. Knowing which features the application uses, and the cross-product against the pooling mode, is preconditional to choosing a mode.
@@ -143,6 +142,7 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `backend-engineering`
+- Public: `true`
 - Domain: `engineering/data`
 - Scope: How an application manages its database connections — the server-side cost of a connection, application-level pools (HikariCP, pgx, node-postgres) vs proxy-level pools (PgBouncer, Pgpool, ProxySQL), the three PgBouncer modes (session/transaction/statement) and their feature compatibility, the pool-sizing math (Little's Law applied to database concurrency), the failure modes (connection exhaustion, hot-loop reconnects, prepared-statement breakage under transaction pooling, idle-in-transaction leaks), and the diagnostic procedure for connection contention. Portable across any DB-backed application; principle-grounded, not repo-bound. Excludes query-level performance (query-optimization), index design (indexing-strategy), read/write replica routing (replication-patterns), and cross-shard coordination (sharding-strategy).
 
@@ -157,14 +157,10 @@ After applying this skill, verify:
 - choose the transaction isolation level for concurrent account transfers
 - move a slow export into a background job queue with retry policy
 - model a producer, stream, consumer, backpressure, and termination contract for an SSE progress stream
-- Owned by `transaction-isolation`: the per-transaction concurrency-correctness contract
-- Owned by `acid-fundamentals`: ACID properties and transaction correctness concepts
-- Owned by `background-jobs`: durable worker execution and retry policy
-- Owned by `streaming-architecture`: producer/consumer backpressure for value streams
 
 **Related skills**
-- Verify with: `query-optimization`, `replication-patterns`, `transaction-isolation`, `performance-engineering`
-- Related: `query-optimization`, `indexing-strategy`, `replication-patterns`, `sharding-strategy`, `transaction-isolation`, `acid-fundamentals`, `background-jobs`, `streaming-architecture`, `performance-engineering`
+- Verify with: `replication-patterns`, `performance-engineering`, `query-optimization`, `transaction-isolation`
+- Related: `indexing-strategy`, `sharding-strategy`, `query-optimization`, `replication-patterns`, `transaction-isolation`, `acid-fundamentals`, `background-jobs`, `streaming-architecture`, `performance-engineering`
 
 **Concept**
 - Mental model: |

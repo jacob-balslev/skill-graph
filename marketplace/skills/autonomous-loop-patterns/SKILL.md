@@ -2,39 +2,29 @@
 name: autonomous-loop-patterns
 description: "Use when designing, reviewing, or debugging an autonomous AI agent loop: repeated agent execution, completion signals, checkpoints, supervisor respawn, stall detection, safety caps, and human handoff rules. Covers the core loop patterns from simple bounded runs through sentinel-based continuation, checkpoint-resume, and external supervisor loops. Do NOT use for choosing a specific agent product command (use agent-engineering or the product's docs), writing ordinary task instructions (use prompt-craft), or optimizing individual tool calls (use tool-call-strategy)."
 metadata:
-  schema_version: "7"
+  relations: "{\"related\":[\"prompt-craft\",\"tool-call-strategy\",\"context-management\",\"agent-engineering\",\"observability-modeling\"],\"verify_with\":[\"observability-modeling\",\"agent-engineering\"]}"
   subject: agent-ops
-  version: "1.3.0"
+  public: "true"
+  scope: "Use when designing, reviewing, or debugging an autonomous AI agent loop: repeated agent execution, completion signals, checkpoints, supervisor respawn, stall detection, safety caps, and human handoff rules. Covers the core loop patterns from simple bounded runs through sentinel-based continuation, checkpoint-resume, and external supervisor loops. Do NOT use for choosing a specific agent product command (use agent-engineering or the product's docs), writing ordinary task instructions (use prompt-craft), or optimizing individual tool calls (use tool-call-strategy)."
   taxonomy_domain: agent/loop-design
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
   triggers: "[\"autonomous-loop-skill\",\"loop-patterns-skill\",\"agent-loop-design\"]"
   keywords: "[\"autonomous agent loop\",\"agent loop pattern\",\"completion signal\",\"checkpoint resume loop\",\"supervisor respawn\",\"stall detection\",\"safety cap\",\"agent watchdog\",\"human handoff\"]"
-  owner: skill-graph-maintainer
-  freshness: "2026-05-21"
-  drift_check: "{\"last_verified\":\"2026-05-21\"}"
   stability: experimental
-  comprehension_state: present
   mental_model: "An autonomous loop has six primitives: a trigger, a worker agent, a progress signal, a stop condition, durable state, and a safety cap. Different loop patterns place those primitives in different owners: a bounded run keeps them in the prompt and runtime limit, a sentinel loop keeps the stop condition in a completion marker, a checkpoint loop persists state between sessions, and a supervisor loop keeps restart and timeout policy outside the worker."
   purpose: "Autonomous loop patterns replace improvised keep-going instructions with explicit control design. They solve the failure mode where an agent keeps retrying without a stop rule, loses progress after a restart, or appears active while making no useful progress."
+  concept_boundary: "This skill owns loop control shape, not the work performed inside each iteration. Use prompt-craft for the wording of a single worker prompt, tool-call-strategy for per-tool efficiency, agent-engineering for broader multi-agent system architecture, context-management for what context to load, and observability-modeling for telemetry schema design."
   analogy: "An autonomous loop is an autopilot mode: it can keep flying, but only because it has instruments, altitude limits, a route, and a clear handoff back to a pilot."
   misconception: "The common mistake is treating autonomy as permission to run forever. A safe loop is defined by when it stops, what state it writes, what evidence proves progress, and what cap forces human review."
-  relations: "{\"related\":[\"agent-engineering\",\"prompt-craft\",\"tool-call-strategy\",\"context-management\",\"observability-modeling\"],\"verify_with\":[\"agent-engineering\",\"observability-modeling\"]}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "This skill owns loop control shape, not the work performed inside each iteration. Use prompt-craft for the wording of a single worker prompt, tool-call-strategy for per-tool efficiency, agent-engineering for broader multi-agent system architecture, context-management for what context to load, and observability-modeling for telemetry schema design."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/autonomous-loop-patterns/SKILL.md
 ---
 
 # Autonomous Loop Patterns
+
+## Concept of the skill
+
+An autonomous loop has six primitives: a trigger, a worker agent, a progress signal, a stop condition, durable state, and a safety cap.
 
 ## Coverage
 
@@ -46,8 +36,7 @@ metadata:
 - Checkpoint and handoff contracts: what state must persist between runs and what state must never live only in agent memory.
 - Anti-patterns that make autonomous loops unsafe: unbounded retry, prompt-only reliability, hidden mutable state, and silent respawn storms.
 
-## Philosophy
-
+## Philosophy of the skill
 An autonomous agent loop is not just an agent being told to continue. It is a control system. The agent is one component; the loop decides when to run it again, what evidence proves progress, what state survives a crash, and when a human must take over.
 
 The smallest safe loop is usually better than the most powerful loop. A one-off task with a clear finish condition does not need a queue supervisor. A multi-session backlog should not rely on a single completion word. A long-running unattended process must not depend on the worker agent remembering its own state.
@@ -307,14 +296,16 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `agent-ops`
+- Public: `true`
 - Domain: `agent/loop-design`
+- Scope: Use when designing, reviewing, or debugging an autonomous AI agent loop: repeated agent execution, completion signals, checkpoints, supervisor respawn, stall detection, safety caps, and human handoff rules. Covers the core loop patterns from simple bounded runs through sentinel-based continuation, checkpoint-resume, and external supervisor loops. Do NOT use for choosing a specific agent product command (use agent-engineering or the product's docs), writing ordinary task instructions (use prompt-craft), or optimizing individual tool calls (use tool-call-strategy).
 
 **When to use**
 - Triggers: `autonomous-loop-skill`, `loop-patterns-skill`, `agent-loop-design`
 
 **Related skills**
-- Verify with: `agent-engineering`, `observability-modeling`
-- Related: `agent-engineering`, `prompt-craft`, `tool-call-strategy`, `context-management`, `observability-modeling`
+- Verify with: `observability-modeling`, `agent-engineering`
+- Related: `prompt-craft`, `tool-call-strategy`, `context-management`, `agent-engineering`, `observability-modeling`
 
 **Concept**
 - Mental model: An autonomous loop has six primitives: a trigger, a worker agent, a progress signal, a stop condition, durable state, and a safety cap. Different loop patterns place those primitives in different owners: a bounded run keeps them in the prompt and runtime limit, a sentinel loop keeps the stop condition in a completion marker, a checkpoint loop persists state between sessions, and a supervisor loop keeps restart and timeout policy outside the worker.

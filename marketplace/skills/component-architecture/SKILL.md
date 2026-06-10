@@ -23,7 +23,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/component-architecture/SKILL.md
-  skill_graph_export_description_projection: anti_examples
+  skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
 
@@ -152,6 +152,7 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `design`
+- Public: `true`
 - Domain: `design/component-systems`
 - Scope: Structuring a component library or design system for reuse across products, themes, and teams — layering of primitives/composites/product-specific assemblies, component API design (props, polymorphism, compound components, render props vs hooks vs slots), the open-closed principle for component evolution, the headless/styled split for theming, controlled vs uncontrolled state contracts, ref forwarding and imperative escape hatches, and composition-over-configuration trade-offs. Portable across any component library; principle-grounded, not repo-bound. Excludes within-product module composition (design-module-composition), design-system meta-architecture (design-system-architecture), the visual language itself (visual-design-foundations, tokens), tactical hooks (library docs), and non-component-API state-management decisions (state-management).
 

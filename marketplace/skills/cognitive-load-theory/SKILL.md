@@ -5,20 +5,20 @@ license: MIT
 compatibility: "Markdown, Git, any agent-skill runtime"
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"related\":[\"context-window\",\"compression\",\"layout-composition\",\"visual-hierarchy\",\"microcopy\",\"writing-humanizer\",\"summarization\",\"guardrails\",\"context-management\",\"prompt-craft\",\"information-architecture\",\"best-practice\"],\"verify_with\":[\"prompt-craft\",\"information-architecture\",\"best-practice\"]}"
   subject: quality-assurance
   scope: "Portable cognitive-load review for skill bodies, prompts, documentation, dashboards, and agent outputs. Teaches Sweller's intrinsic/extraneous/germane load taxonomy (including the modern post-2010 reframing of germane load as resource allocation / productive processing), element interactivity, working-memory chunk and duration limits, the named CLT instructional effects, segmentation, chunking, worked examples, expertise reversal, structure-over-prose checks, and upstream-displacement checks for modern LLM/tooling features. Excludes retrieval/session working-set design (context-management), token budget math and compaction timing (context-window), provider-specific prompt tactic authoring (prompt-craft), token-efficient representation mechanics (compression), and broad instructional design beyond the CLT mechanisms grounded here."
+  public: "true"
   taxonomy_domain: quality/cognition
   stability: experimental
   keywords: "[\"cognitive load theory\",\"working memory\",\"intrinsic load\",\"extraneous load\",\"germane load\",\"chunking\",\"segmentation\",\"element interactivity\",\"expertise reversal\",\"prompt design\"]"
   triggers: "[\"cognitive-load-skill\",\"working-memory-skill\",\"clt-skill\"]"
-  relations: "{\"related\":[\"context-management\",\"context-window\",\"compression\",\"prompt-craft\",\"information-architecture\",\"layout-composition\",\"visual-hierarchy\",\"microcopy\",\"writing-humanizer\",\"summarization\",\"best-practice\",\"guardrails\"],\"verify_with\":[\"best-practice\",\"information-architecture\",\"prompt-craft\"]}"
   grounding: "{\"subject_matter\":\"Portable cognitive-load theory for authored human-facing and model-facing materials, including skill bodies, prompts, documentation, dashboards, agent outputs, and agent-runtime load diagnosis\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://doi.org/10.1207/s15516709cog1202_4\",\"https://doi.org/10.1023/A:1022193728205\",\"https://doi.org/10.1007/s10648-019-09465-5\",\"https://doi.org/10.1177/0963721420922183\",\"https://doi.org/10.1007/s10648-023-09817-2\",\"https://doi.org/10.1007/s10462-026-11510-z\",\"https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents\",\"https://arxiv.org/abs/2509.19517\",\"https://arxiv.org/abs/2510.05381\",\"https://arxiv.org/abs/2506.06843\",\"https://arxiv.org/abs/2410.11272\",\"https://code.claude.com/docs/en/skills\",\"https://opencode.ai/docs/skills/\",\"https://developers.openai.com/api/docs/guides/structured-outputs\",\"https://ai.google.dev/gemini-api/docs/caching\"],\"failure_modes\":[\"shorter_mistaken_for_lower_load\",\"germane_load_treated_as_independent_additive_dial\",\"long_context_treated_as_comprehension\",\"prompt_cache_treated_as_clarity\",\"structured_output_treated_as_understanding\",\"subagents_split_work_but_add_coordination_load\",\"skill_body_bloats_after_progressive_disclosure\",\"cognitive_overload_attack_misclassified_as_style_issue\"],\"evidence_priority\":\"equal\"}"
   mental_model: "Working memory is a small workspace with only a few independent novel units available at once — plan around ~4 chunks while remembering that estimates vary (3–5 is the safer range) and that expertise changes what counts as one chunk. Cognitive Load Theory asks whether the material's element interactivity is intrinsic to the task, imposed by presentation (extraneous), or productive schema-building work (germane). Good design sequences unavoidable intrinsic load, eliminates extraneous load, and frees capacity so the learner can devote germane processing to schema construction through examples, self-explanation, contrast, and practice."
   purpose: "This skill prevents agents from treating 'simplify' as 'make shorter.' It gives a precise review lens for skill bodies, prompts, docs, dashboards, and agent outputs: identify which kind of load each section creates, remove only unnecessary presentation burden, keep worked examples and structure that build schemas, and verify that newer model/tool features did not merely hide the load in a different layer."
+  concept_boundary: "This skill diagnoses cognitive load in authored or presented material. It is not source selection, session-state pruning, token-budget accounting, compaction timing, prompt phrasing craft, plain-language editing, token compression, or general pedagogy beyond the cognitive-load mechanisms named here."
   analogy: "Cognitive Load Theory is like RAM management for comprehension: intrinsic load is the program that must run, extraneous load is unnecessary background work, and germane processing is useful caching that makes the next run easier."
   misconception: "The common mistake is thinking reduced cognitive load always means shorter output. Cutting context, examples, contrast, or schema-building structure can increase intrinsic load and waste the freed capacity that should go to germane processing; the correct first target is extraneous load."
-  public: "true"
-  concept_boundary: "This skill diagnoses cognitive load in authored or presented material. It is not source selection, session-state pruning, token-budget accounting, compaction timing, prompt phrasing craft, plain-language editing, token compression, or general pedagogy beyond the cognitive-load mechanisms named here."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/cognitive-load-theory/SKILL.md
@@ -45,6 +45,10 @@ metadata:
 **Measurement note:** Cognitive load is not just a metaphor — it is *measured*, classically with subjective rating scales (the Paas single-item mental-effort scale), dual-task performance, and physiological signals. This skill applies CLT as a design lens rather than running formal measurement, but the underlying loads are empirically tractable, not hand-wavy.
 
 # Cognitive Load Theory
+
+## Concept of the skill
+
+Working memory is a small workspace with only a few independent novel units available at once — plan around ~4 chunks while remembering that estimates vary (3–5 is the safer range) and that expertise changes what counts as one chunk.
 
 ## Domain Context
 
@@ -79,8 +83,7 @@ When time or context is tight, apply this kernel before reading the full catalog
 
 Default move: do not shorten first. Classify the load first, then remove only extraneous burden. (The full five-step Diagnostic Protocol in §5 expands this kernel; the kernel is the always-visible fast path before the theory catalogue.)
 
-## Philosophy
-
+## Philosophy of the skill
 Every agent output — a SKILL.md body, a prompt, a dashboard widget, a Linear comment — competes for space in the reader's working memory alongside everything else they hold. An agent that generates a 3-paragraph preamble before the actual answer forces the reader to hold that prose until they reach the substance. An agent that uses a consistent table format for comparative data lets the reader chunk the format into a single schema slot and spend their remaining capacity on the content. CLT is the theoretical justification for structure-over-prose, examples-before-explanation, and segmentation. Without it, quality guidance is cargo-culted. With it, agents can reason precisely about *why* a design choice reduces or increases cognitive burden. But CLT also prevents over-trimming: the goal is not minimum tokens; the goal is maximum useful comprehension within capacity.
 
 CLT is also a *living* theory, not a 1988 relic. It has been refined repeatedly — the reconceptualization of germane load (Sweller 2010), the "20 years later" synthesis (Sweller, van Merriënboer & Paas 2019), and an explicit account (Sweller 2023) of how replication failures drove the theory's expansion rather than its collapse. Apply the current model, not the introductory-textbook caricature.
@@ -607,6 +610,7 @@ The canonical sibling `references/sweller-1988.md` remains the local source trai
 
 **Classification**
 - Subject: `quality-assurance`
+- Public: `true`
 - Domain: `quality/cognition`
 - Scope: Portable cognitive-load review for skill bodies, prompts, documentation, dashboards, and agent outputs. Teaches Sweller's intrinsic/extraneous/germane load taxonomy (including the modern post-2010 reframing of germane load as resource allocation / productive processing), element interactivity, working-memory chunk and duration limits, the named CLT instructional effects, segmentation, chunking, worked examples, expertise reversal, structure-over-prose checks, and upstream-displacement checks for modern LLM/tooling features. Excludes retrieval/session working-set design (context-management), token budget math and compaction timing (context-window), provider-specific prompt tactic authoring (prompt-craft), token-efficient representation mechanics (compression), and broad instructional design beyond the CLT mechanisms grounded here.
 
@@ -614,8 +618,8 @@ The canonical sibling `references/sweller-1988.md` remains the local source trai
 - Triggers: `cognitive-load-skill`, `working-memory-skill`, `clt-skill`
 
 **Related skills**
-- Verify with: `best-practice`, `information-architecture`, `prompt-craft`
-- Related: `context-management`, `context-window`, `compression`, `prompt-craft`, `information-architecture`, `layout-composition`, `visual-hierarchy`, `microcopy`, `writing-humanizer`, `summarization`, `best-practice`, `guardrails`
+- Verify with: `prompt-craft`, `information-architecture`, `best-practice`
+- Related: `context-window`, `compression`, `layout-composition`, `visual-hierarchy`, `microcopy`, `writing-humanizer`, `summarization`, `guardrails`, `context-management`, `prompt-craft`, `information-architecture`, `best-practice`
 
 **Concept**
 - Mental model: Working memory is a small workspace with only a few independent novel units available at once — plan around ~4 chunks while remembering that estimates vary (3–5 is the safer range) and that expertise changes what counts as one chunk. Cognitive Load Theory asks whether the material's element interactivity is intrinsic to the task, imposed by presentation (extraneous), or productive schema-building work (germane). Good design sequences unavoidable intrinsic load, eliminates extraneous load, and frees capacity so the learner can devote germane processing to schema construction through examples, self-explanation, contrast, and practice.

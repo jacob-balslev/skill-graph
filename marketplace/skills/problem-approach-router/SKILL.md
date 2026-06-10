@@ -5,31 +5,16 @@ license: MIT
 compatibility: "Domain-agnostic dispatch. The routing table applies to any problem a human or agent faces — software, design, product, or strategy. The skill names in the Routing Rules refer to sibling skills in the foundations category."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"first-principles-thinking\",\"pattern-recognition\",\"mental-models\",\"constraint-awareness\",\"task-analysis\",\"epistemic-grounding\",\"taxonomy-design\"]}"
   subject: software-engineering-method
+  public: "true"
+  scope: "Use when facing a new problem and unsure which problem-solving methodology or foundational skill to apply first. Routes between first-principles-thinking, pattern-recognition, mental-models, constraint-awareness, and task-analysis by classifying the problem type. Activate before choosing any other foundational skill. Do NOT use to execute the selected approach (use the specific routed skill directly), for implementation work (use the relevant engineering skill), or when the correct approach is already known."
   taxonomy_domain: foundations/meta
-  owner: skill-graph-maintainer
-  freshness: "2026-05-23"
-  drift_check: "{\"last_verified\":\"2026-05-23\"}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"which approach\",\"which methodology\",\"problem-solving method\",\"select methodology\",\"which skill first\",\"approach selection\",\"methodology dispatch\",\"method router\",\"first principles vs pattern\",\"how to approach this problem\"]"
   triggers: "[\"problem-approach-router\",\"methodology-router\",\"approach-router\"]"
   examples: "[\"I have a completely novel problem nobody has solved before — where do I start?\",\"the codebase has a recurring bug pattern — which foundational approach should I use?\",\"I need to explain a complex system to a stakeholder — which skill applies?\",\"I'm blocked by conflicting requirements that all seem equally valid — which approach first?\",\"the task feels overwhelming because there are too many parts — what's the right starting lens?\",\"a user is asking me to solve something I know a similar solution for but the details differ\",\"I don't know what I don't know about this problem — which foundational skill handles that?\"]"
   anti_examples: "[\"actually apply first-principles thinking to this specific problem\",\"analyze why this pattern keeps recurring in the codebase\",\"break down the constraints on this engineering decision\",\"map the mental model for this domain concept\",\"implement the algorithm we already decided on\",\"choose a testing strategy for this feature\"]"
-  relations: "{\"related\":[\"epistemic-grounding\",\"taxonomy-design\",\"first-principles-thinking\",\"pattern-recognition\",\"mental-models\",\"constraint-awareness\",\"task-analysis\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-engineering-method/problem-approach-router/SKILL.md
@@ -37,6 +22,10 @@ metadata:
 ---
 
 # Problem Approach Router
+
+## Concept of the skill
+
+Use when facing a new problem and unsure which problem-solving methodology or foundational skill to apply first.
 
 ## Coverage
 
@@ -63,8 +52,19 @@ If no signal matches clearly, return to the caller with: "Which of the following
 
 When a problem matches more than one row simultaneously (e.g., it is both novel AND constraint-dominated), list both matches and route to each skill in sequence. Declare the compound classification explicitly before proceeding: "This is a novel + constraint-dominated problem. I will apply first-principles-thinking first to clear the assumptions, then constraint-awareness to map the hard boundaries."
 
-## Do NOT Use When
+## Philosophy of the skill
 
+This skill exists to make agents apply Problem Approach Router through its declared scope, coverage, exclusions, and verification checks instead of relying on generic model memory. The useful behavior is specific: recognize the right task, follow the skill's operating guidance, and prove the result with the listed checks.
+
+## Verification
+
+After applying this skill, verify:
+
+- [ ] The task matches the declared scope, coverage, or positive examples.
+- [ ] The response follows this skill's workflow or checks instead of generic advice.
+- [ ] The exclusions in `## Do NOT Use When` do not point to a better skill.
+
+## Do NOT Use When
 | Use instead | When |
 |---|---|
 | `first-principles-thinking` | The approach is already known to be first-principles; the router has already been applied |
@@ -80,7 +80,9 @@ When a problem matches more than one row simultaneously (e.g., it is both novel 
 
 **Classification**
 - Subject: `software-engineering-method`
+- Public: `true`
 - Domain: `foundations/meta`
+- Scope: Use when facing a new problem and unsure which problem-solving methodology or foundational skill to apply first. Routes between first-principles-thinking, pattern-recognition, mental-models, constraint-awareness, and task-analysis by classifying the problem type. Activate before choosing any other foundational skill. Do NOT use to execute the selected approach (use the specific routed skill directly), for implementation work (use the relevant engineering skill), or when the correct approach is already known.
 
 **When to use**
 - I have a completely novel problem nobody has solved before — where do I start?
@@ -101,7 +103,7 @@ When a problem matches more than one row simultaneously (e.g., it is both novel 
 - choose a testing strategy for this feature
 
 **Related skills**
-- Related: `epistemic-grounding`, `taxonomy-design`, `first-principles-thinking`, `pattern-recognition`, `mental-models`, `constraint-awareness`, `task-analysis`
+- Related: `first-principles-thinking`, `pattern-recognition`, `mental-models`, `constraint-awareness`, `task-analysis`, `epistemic-grounding`, `taxonomy-design`
 
 **Keywords**
 - `which approach`, `which methodology`, `problem-solving method`, `select methodology`, `which skill first`, `approach selection`, `methodology dispatch`, `method router`, `first principles vs pattern`, `how to approach this problem`

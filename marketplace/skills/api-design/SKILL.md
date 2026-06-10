@@ -5,38 +5,27 @@ license: MIT
 compatibility: "Portable API design guidance for REST-like HTTP APIs, route handlers, internal APIs, and documented JSON contracts."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"event-contract-design\",\"data-modeling\",\"debugging\",\"system-interface-contracts\",\"testing-strategy\",\"webhook-integration\",\"semantics\"],\"suppresses\":[\"route-handler-design\",\"webhook-integration\",\"http-semantics\"],\"verify_with\":[\"contract-testing\",\"testing-strategy\",\"code-review\",\"http-semantics\"]}"
   subject: backend-engineering
+  public: "true"
+  scope: "Use when designing or reviewing HTTP API surfaces: consumer tasks, audience class, protocol/paradigm fit, resources/actions, route taxonomy, request and response schemas, status codes in context, pagination, filtering, sorting, field selection, idempotency, auth and tenant boundaries, error envelopes, rate-limit signals, versioning, deprecation, discovery, and contract artifacts. Do NOT use for pure HTTP protocol semantics (use `http-semantics`), framework-specific route handler mechanics (use `route-handler-design`), non-HTTP system contracts (use `system-interface-contracts`), async event contracts (use `event-contract-design`), database design (use `data-modeling`), inbound provider webhook mechanics (use `webhook-integration`), or post-failure diagnosis (use `debugging`)."
   taxonomy_domain: engineering/api-design
-  owner: skill-graph-maintainer
-  freshness: "2026-05-11"
-  drift_check: "{\"last_verified\":\"2026-05-11\"}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"API design\",\"REST API\",\"endpoint design\",\"request response schema\",\"status codes\",\"pagination\",\"filtering\",\"idempotency\",\"API versioning\",\"error envelope\"]"
   examples: "[\"design the API for listing orders with filters, pagination, and stable errors\",\"review this route contract before frontend and backend implement it separately\",\"should this operation be a resource update, an action endpoint, or an async job?\",\"define API versioning and idempotency for this create endpoint\"]"
   anti_examples: "[\"define the broader contract between a job, service, and dashboard\",\"design database tables, foreign keys, and views\",\"implement provider webhook signature verification and retry behavior\",\"debug why this endpoint is returning 500\"]"
-  relations: "{\"boundary\":[{\"skill\":\"webhook-integration\",\"reason\":\"webhook-integration owns inbound provider webhooks; api-design owns APIs the system exposes or calls by contract\"},{\"skill\":\"route-handler-design\",\"reason\":\"api-design owns the product-facing API contract; route-handler-design owns framework-specific handler mechanics (route.ts, body parsing, runtime choice, CORS wiring) when implementation is the task\"}],\"related\":[\"system-interface-contracts\",\"data-modeling\",\"testing-strategy\",\"webhook-integration\",\"event-contract-design\",\"debugging\",\"semantics\"],\"verify_with\":[\"testing-strategy\",\"code-review\",\"http-semantics\",\"contract-testing\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/api-design/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
 
 # API Design
+
+## Concept of the skill
+
+Use when designing or reviewing HTTP API surfaces: consumer tasks, audience class, protocol/paradigm fit, resources/actions, route taxonomy, request and response schemas, status codes in context, pagination, filtering, sorting, field selection, idempotency, auth and tenant boundaries, error envelopes, rate-limit signals, versioning, deprecation, discovery, and contract artifacts.
 
 ## Coverage
 
@@ -58,8 +47,7 @@ Design clear, durable HTTP API surfaces — the contract another program depends
 
 This skill owns the product-facing contract of an HTTP API. It does **not** own the broader interface contract between systems, async event envelopes, stored data design, inbound provider webhook mechanics, framework-specific route handler implementation, or diagnosis of an already failing endpoint.
 
-## Philosophy
-
+## Philosophy of the skill
 An API is a product surface for another program. Its main job is **stable meaning under change**: a consumer that integrated last year should keep working, and a client should be able to tell what happened, what it can do next, and whether retrying is safe without reading server code. Internal convenience should not leak into routes, schemas, or errors unless consumers actually need it.
 
 Prefer **boring consistency**. A small set of predictable patterns — one error shape, one pagination style, one idempotency mechanism — beats clever endpoint-specific behavior that every client has to rediscover. Consistency is itself a feature: it is what lets a client author one HTTP layer instead of one per endpoint.
@@ -465,7 +453,9 @@ This skill ships a comprehension-eval artifact at [`examples/evals/api-design.js
 
 **Classification**
 - Subject: `backend-engineering`
+- Public: `true`
 - Domain: `engineering/api-design`
+- Scope: Use when designing or reviewing HTTP API surfaces: consumer tasks, audience class, protocol/paradigm fit, resources/actions, route taxonomy, request and response schemas, status codes in context, pagination, filtering, sorting, field selection, idempotency, auth and tenant boundaries, error envelopes, rate-limit signals, versioning, deprecation, discovery, and contract artifacts. Do NOT use for pure HTTP protocol semantics (use `http-semantics`), framework-specific route handler mechanics (use `route-handler-design`), non-HTTP system contracts (use `system-interface-contracts`), async event contracts (use `event-contract-design`), database design (use `data-modeling`), inbound provider webhook mechanics (use `webhook-integration`), or post-failure diagnosis (use `debugging`).
 
 **When to use**
 - design the API for listing orders with filters, pagination, and stable errors
@@ -478,12 +468,10 @@ This skill ships a comprehension-eval artifact at [`examples/evals/api-design.js
 - design database tables, foreign keys, and views
 - implement provider webhook signature verification and retry behavior
 - debug why this endpoint is returning 500
-- Owned by `webhook-integration`: inbound provider webhooks
-- Owned by `route-handler-design`: the product-facing API contract
 
 **Related skills**
-- Verify with: `testing-strategy`, `code-review`, `http-semantics`, `contract-testing`
-- Related: `system-interface-contracts`, `data-modeling`, `testing-strategy`, `webhook-integration`, `event-contract-design`, `debugging`, `semantics`
+- Verify with: `contract-testing`, `testing-strategy`, `code-review`, `http-semantics`
+- Related: `event-contract-design`, `data-modeling`, `debugging`, `system-interface-contracts`, `testing-strategy`, `webhook-integration`, `semantics`
 
 **Keywords**
 - `API design`, `REST API`, `endpoint design`, `request response schema`, `status codes`, `pagination`, `filtering`, `idempotency`, `API versioning`, `error envelope`

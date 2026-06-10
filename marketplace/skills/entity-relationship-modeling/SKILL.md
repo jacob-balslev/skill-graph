@@ -5,34 +5,24 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"data-modeling\",\"database-migration\"],\"suppresses\":[\"conceptual-modeling\"],\"verify_with\":[\"code-review\",\"data-modeling-fundamentals\"]}"
   subject: software-architecture
+  public: "true"
+  scope: "Use when designing database tables, reviewing schema changes, planning migrations, or translating conceptual models into physical database structures. Covers ER notation, entity/attribute/key design, normalization and denormalization, junction tables, inheritance mapping, temporal modeling, ER-to-SQL translation, indexing, and constraints. Do NOT use for conceptual domain analysis (use `conceptual-modeling`), formal ontology (use `ontology`), or cross-system API contracts (use `system-interface-contracts`)."
   taxonomy_domain: engineering/modeling
-  owner: skill-graph-maintainer
-  freshness: "2026-03-29"
-  drift_check: "{\"last_verified\":\"2026-03-29\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"entity relationship\",\"ER diagram\",\"ER model\",\"database design\",\"schema design\",\"normalization\",\"foreign key\",\"primary key\",\"junction table\",\"database modeling\"]"
   triggers: "[\"er-modeling-skill\",\"database-design-skill\"]"
-  relations: "{\"related\":[\"database-migration\",\"data-modeling\"],\"boundary\":[\"conceptual-modeling\"],\"verify_with\":[\"code-review\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-architecture/entity-relationship-modeling/SKILL.md
 ---
 # Entity-Relationship Modeling
+
+## Concept of the skill
+
+Use when designing database tables, reviewing schema changes, planning migrations, or translating conceptual models into physical database structures.
+
 
 ## Domain Context
 
@@ -42,8 +32,7 @@ metadata:
 
 Entity-relationship modeling for database schema design: Chen notation and Crow's Foot notation, entity identification and attribute analysis, primary/foreign key design (natural vs. surrogate, UUID vs. serial), normalization forms (1NF through BCNF) with trade-off analysis, denormalization patterns for read performance, junction table design for M:N relationships, inheritance mapping strategies (single-table, class-table, concrete-table), temporal data modeling (SCD Type 1/2/3, bi-temporal), schema evolution and migration patterns, ER-to-SQL translation, indexing strategy from access patterns, constraint specification (NOT NULL, UNIQUE, CHECK, FK, EXCLUDE), and anti-patterns (EAV, polymorphic associations, over-normalization, mega-tables). Does not cover conceptual domain analysis (`conceptual-modeling`), formal ontology (`ontology`), or cross-system data mapping (`relational-mapping`).
 
-## Philosophy
-
+## Philosophy of the skill
 A database schema is a commitment about what the business considers true. Every table is a claim that a category of things exists; every foreign key is a claim that two categories are related; every constraint is a claim about what the business considers valid. Bad ER design does not just cause slow queries — it causes business logic bugs, data integrity violations, and migration nightmares. This skill exists because agents commonly produce schemas that "work" for the happy path but fail under real-world conditions: concurrent updates, schema evolution, multi-tenancy, and audit requirements. The goal is schemas that are correct first, performant second, and evolvable always.
 
 ## 1. Entity Identification
@@ -244,14 +233,16 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `software-architecture`
+- Public: `true`
 - Domain: `engineering/modeling`
+- Scope: Use when designing database tables, reviewing schema changes, planning migrations, or translating conceptual models into physical database structures. Covers ER notation, entity/attribute/key design, normalization and denormalization, junction tables, inheritance mapping, temporal modeling, ER-to-SQL translation, indexing, and constraints. Do NOT use for conceptual domain analysis (use `conceptual-modeling`), formal ontology (use `ontology`), or cross-system API contracts (use `system-interface-contracts`).
 
 **When to use**
 - Triggers: `er-modeling-skill`, `database-design-skill`
 
 **Related skills**
-- Verify with: `code-review`
-- Related: `database-migration`, `data-modeling`
+- Verify with: `code-review`, `data-modeling-fundamentals`
+- Related: `data-modeling`, `database-migration`
 
 **Keywords**
 - `entity relationship`, `ER diagram`, `ER model`, `database design`, `schema design`, `normalization`, `foreign key`, `primary key`, `junction table`, `database modeling`

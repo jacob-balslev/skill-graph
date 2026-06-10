@@ -5,35 +5,24 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"seo-strategy\",\"keywords\",\"positioning\"],\"verify_with\":[\"evaluation\"]}"
   subject: agent-ops
   scope: "Building and operating multi-source intelligence pipelines across video, GitHub, Reddit, curated lists, search, and RSS — source adapters, the discovery/transcription/summarization/evaluation phases, deduplication, schedules, per-stage model choice, and actionable brief generation. Portable across any content-monitoring pipeline; principle-grounded, not repo-bound. Excludes SEO keyword research (keywords) and competitive product analysis (user-research)."
+  public: "true"
   taxonomy_domain: agent/ops
-  owner: skill-graph-maintainer
-  freshness: "2026-03-28"
-  drift_check: "{\"last_verified\":\"2026-03-28\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"content monitor\",\"github trending\",\"blog monitor\",\"intelligence brief\",\"youtube monitor\",\"awesome list\",\"trend tracking\",\"content pipeline\",\"content-monitor\",\"rss feed\"]"
   triggers: "[\"content-monitor-skill\",\"research-mode\"]"
-  relations: "{\"verify_with\":[\"evaluation\"],\"related\":[\"keywords\",\"seo-strategy\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/content-monitor/SKILL.md
 ---
 # Content Monitor
+
+## Concept of the skill
+
+Building and operating multi-source intelligence pipelines across video, GitHub, Reddit, curated lists, search, and RSS — source adapters, the discovery/transcription/summarization/evaluation phases, deduplication, schedules, per-stage model choice, and actionable brief generation.
+
 
 ## Domain Context
 
@@ -56,8 +45,7 @@ Use the ordered phases, checklists, and guardrails in the sections below as the 
 
 The multi-source intelligence pipeline that tracks AI coding, e-commerce tooling, and agent infrastructure trends. Covers the live source groups configured in `scripts/content-monitor/sources.json` and `scripts/content-monitor/channels.json`, the 4-phase pipeline (Discover, Extract, Summarize, Evaluate), the MiniMax/GPT-5.4 model split, source adapter contract, deduplication via `seen-items.json` (at `.content-monitor/`), scheduling cadence per source type, evaluation rubric dimensions, and the daily digest output format. Source code lives at `scripts/content-monitor/`. State files live at `.content-monitor/` (the Development repo root).
 
-## Philosophy
-
+## Philosophy of the skill
 Staying current on AI tooling, agent patterns, and e-commerce integrations is essential for a system that competes on engineering velocity. Without this pipeline, the team would manually scan dozens of sources and miss emerging patterns that could inform skill creation, architecture decisions, or competitive positioning. The pipeline automates discovery and extraction (cheap) and reserves expensive model reasoning for evaluation (scarce), following the same constraint-awareness principle that governs the rest of the system.
 
 ### Location Precision
@@ -236,6 +224,7 @@ After modifying the content monitor pipeline, verify:
 
 **Classification**
 - Subject: `agent-ops`
+- Public: `true`
 - Domain: `agent/ops`
 - Scope: Building and operating multi-source intelligence pipelines across video, GitHub, Reddit, curated lists, search, and RSS — source adapters, the discovery/transcription/summarization/evaluation phases, deduplication, schedules, per-stage model choice, and actionable brief generation. Portable across any content-monitoring pipeline; principle-grounded, not repo-bound. Excludes SEO keyword research (keywords) and competitive product analysis (user-research).
 
@@ -244,7 +233,7 @@ After modifying the content monitor pipeline, verify:
 
 **Related skills**
 - Verify with: `evaluation`
-- Related: `keywords`, `seo-strategy`
+- Related: `seo-strategy`, `keywords`, `positioning`
 
 **Keywords**
 - `content monitor`, `github trending`, `blog monitor`, `intelligence brief`, `youtube monitor`, `awesome list`, `trend tracking`, `content pipeline`, `content-monitor`, `rss feed`

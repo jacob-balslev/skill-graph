@@ -1,30 +1,30 @@
 ---
 name: okrs
-description: "Objectives and Key Results goal-setting methodology for turning strategy, quarterly priorities, product goals, or team focus areas into outcome-oriented Objectives, measurable Key Results, review cadences, and learning loops. Do NOT use for Decide our winning aspiration, where to play, and how to win. Do NOT use for Use constraint-awareness to identify hard constraints before choosing a strategy or goal. Do NOT use for measurable execution goals after strategy direction is chosen (use playing-to-win). Do NOT use for goal-setting after constraints and priorities are understood (use constraint-awareness)."
+description: "Objectives and Key Results goal-setting methodology for turning strategy, quarterly priorities, product goals, or team focus areas into outcome-oriented Objectives, measurable Key Results, review cadences, and learning loops. Do NOT use for Decide our winning aspiration, where to play, and how to win. Do NOT use for Use constraint-awareness to identify hard constraints before choosing a strategy or goal."
 license: MIT
 compatibility: "Markdown, strategy memos, operating plans, quarterly planning, goal reviews"
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"related\":[\"prioritization\",\"performance-budgets\",\"evaluation\",\"expected-value\",\"playing-to-win\",\"methodology\",\"constraint-awareness\",\"epistemic-grounding\"],\"suppresses\":[\"constraint-awareness\",\"playing-to-win\"],\"verify_with\":[\"methodology\",\"epistemic-grounding\",\"constraint-awareness\"]}"
   subject: reasoning-strategy
   scope: "OKR goal-setting for strategy execution: define qualitative Objectives, 2-5 measurable outcome Key Results, alignment checks, scoring, review cadence, and learning loops. Excludes upstream strategy formulation, backlog prioritization, KPI dashboard design, compensation evaluation, and task-list management."
+  public: "true"
   taxonomy_domain: foundations/strategy-execution
   stability: stable
   keywords: "[\"OKRs\",\"objectives and key results\",\"objective key results\",\"goal setting\",\"quarterly goals\",\"key results\",\"stretch goals\",\"outcome goals\",\"OKR scoring\",\"goal alignment\"]"
   triggers: "[\"okrs\",\"objectives-and-key-results\",\"objective-key-results\"]"
   examples: "[\"Use okrs to turn this product strategy into quarterly Objectives and Key Results.\",\"Rewrite these OKRs so Objectives are qualitative and Key Results are measurable outcomes with baselines and targets.\",\"Our OKRs look like a task list; convert the activities into outcome Key Results.\",\"Create an OKR set for this launch plan with scoring cadence and retrospective guidance.\"]"
   anti_examples: "[\"Decide our winning aspiration, where to play, and how to win.\",\"Use constraint-awareness to identify hard constraints before choosing a strategy or goal.\"]"
-  relations: "{\"boundary\":[{\"skill\":\"playing-to-win\",\"reason\":\"okrs owns measurable execution goals after strategy direction is chosen; playing-to-win owns the upstream integrated strategy choices\"},{\"skill\":\"constraint-awareness\",\"reason\":\"okrs owns goal-setting after constraints and priorities are understood; constraint-awareness owns identifying hard limits and trade-off boundaries\"}],\"related\":[\"playing-to-win\",\"prioritization\",\"methodology\",\"performance-budgets\",\"evaluation\",\"constraint-awareness\",\"expected-value\",\"epistemic-grounding\"],\"verify_with\":[\"constraint-awareness\",\"epistemic-grounding\",\"methodology\"]}"
   grounding: "{\"subject_matter\":\"Objectives and Key Results as a portable goal-setting and strategy-execution methodology\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://www.whatmatters.com/faqs/okr-meaning-definition-example\",\"https://rework.withgoogle.com/intl/en/guides/set-goals-with-okrs\",\"https://okrinstitute.org/okrs/\",\"skills/reasoning-strategy/okrs/references/okrs-sources.md\",\"skills/reasoning-strategy/okrs/references/upstream-displacement-2026-05-30.md\"],\"failure_modes\":[\"objectives_without_strategy_context\",\"key_results_as_tasks_or_outputs\",\"key_results_without_baselines_or_targets\",\"too_many_objectives_diffusing_focus\",\"okrs_used_as_compensation_evaluation\",\"sandbagged_or_unreachable_goals\",\"no_check_in_or_scoring_cadence\",\"cascading_everything_instead_of_aligning_priorities\"],\"evidence_priority\":\"general_knowledge_first\"}"
   mental_model: "OKRs connect strategic intent to measurable learning over a fixed planning period. The primitives are a small set of qualitative Objectives, two to five measurable Key Results per Objective, owners, baselines, targets, check-in cadence, score, and retrospective learning. Objectives describe the important outcome to pursue; Key Results define observable evidence that the outcome happened."
   purpose: "This skill prevents agents from turning OKRs into task lists, KPI inventories, or aspirational slogans. It forces the work to state what matters this period, how success will be measured, what evidence proves progress, what will be reviewed during the period, and what the team should learn from the score."
+  concept_boundary: "OKRs are for measurable goal-setting and strategy execution. They are not the strategy itself, a project plan, a backlog scoring model, a KPI dashboard for business-as-usual monitoring, a compensation review system, or a list of every task a team will do. Those tools can feed or follow OKRs, but they do not replace outcome-oriented Objectives and measurable Key Results."
   analogy: "OKRs are like a compass plus mile markers: the Objective points toward the destination, and the Key Results show whether the team is actually getting closer."
   misconception: "The common mistake is treating Key Results as planned activities. A Key Result is not 'launch feature X' unless the launch itself proves the outcome; stronger Key Results measure the customer, business, quality, or learning change the work is supposed to create."
-  public: "true"
-  concept_boundary: "OKRs are for measurable goal-setting and strategy execution. They are not the strategy itself, a project plan, a backlog scoring model, a KPI dashboard for business-as-usual monitoring, a compensation review system, or a list of every task a team will do. Those tools can feed or follow OKRs, but they do not replace outcome-oriented Objectives and measurable Key Results."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/okrs/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
 ---
 
 ## Concept of the skill
@@ -261,6 +261,7 @@ Before finalizing OKRs, verify:
 
 **Classification**
 - Subject: `reasoning-strategy`
+- Public: `true`
 - Domain: `foundations/strategy-execution`
 - Scope: OKR goal-setting for strategy execution: define qualitative Objectives, 2-5 measurable outcome Key Results, alignment checks, scoring, review cadence, and learning loops. Excludes upstream strategy formulation, backlog prioritization, KPI dashboard design, compensation evaluation, and task-list management.
 
@@ -274,12 +275,10 @@ Before finalizing OKRs, verify:
 **Not for**
 - Decide our winning aspiration, where to play, and how to win.
 - Use constraint-awareness to identify hard constraints before choosing a strategy or goal.
-- Owned by `playing-to-win`: measurable execution goals after strategy direction is chosen
-- Owned by `constraint-awareness`: goal-setting after constraints and priorities are understood
 
 **Related skills**
-- Verify with: `constraint-awareness`, `epistemic-grounding`, `methodology`
-- Related: `playing-to-win`, `prioritization`, `methodology`, `performance-budgets`, `evaluation`, `constraint-awareness`, `expected-value`, `epistemic-grounding`
+- Verify with: `methodology`, `epistemic-grounding`, `constraint-awareness`
+- Related: `prioritization`, `performance-budgets`, `evaluation`, `expected-value`, `playing-to-win`, `methodology`, `constraint-awareness`, `epistemic-grounding`
 
 **Concept**
 - Mental model: OKRs connect strategic intent to measurable learning over a fixed planning period. The primitives are a small set of qualitative Objectives, two to five measurable Key Results per Objective, owners, baselines, targets, check-in cadence, score, and retrospective learning. Objectives describe the important outcome to pursue; Key Results define observable evidence that the outcome happened.

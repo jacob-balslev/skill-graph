@@ -5,44 +5,31 @@ license: MIT
 compatibility: "Language-agnostic; anchored on OWASP Top 10:2025 with a 2021 compatibility map retained"
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "8"
-  version: "2.0.0"
+  relations: "{\"related\":[\"guardrails\",\"code-review\",\"testing-strategy\",\"debugging\",\"best-practice\",\"prompt-injection-defense\",\"security-fundamentals\"],\"suppresses\":[\"code-review\",\"testing-strategy\"],\"verify_with\":[\"testing-strategy\",\"code-review\",\"security-fundamentals\"]}"
   subject: quality-assurance
   scope: "Teaches the security-specific review lens for the OWASP Top 10:2025 (mapped to 2021): per-category detection greps, mitigations, a procedural source-to-sink review workflow over trust boundaries, severity grading and responsible disclosure, software-supply-chain hardening, error-path (fail-open) review, security-test probes, and the elevated-risk patterns of AI-generated code — turning findings into severity-ranked, root-cause remediation. Applies when the task is an explicit security audit, a feature threat model, or an auth / input-handling implementation. Out of scope: holistic per-PR review (code-review), production-bug hunts (debugging), broad test-level strategy (testing-strategy), LLM prompt/RAG injection and agent-tool-authority defence (prompt-injection-defense), and security-policy authoring (documentation)."
+  public: "true"
   taxonomy_domain: quality/security
   grounding: "{\"subject_matter\":\"Application-security review using OWASP Top 10:2025, ASVS 5.0, OWASP Cheat Sheets, current supply-chain/tooling guidance, and empirical AI-generated-code risk evidence\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://owasp.org/www-project-top-ten/\",\"https://github.com/OWASP/Top10\",\"https://owasp.org/Top10/2025/\",\"https://owasp.org/Top10/2025/0x00_2025-Introduction/\",\"https://owasp.org/Top10/2025/A01_2025-Broken_Access_Control/\",\"https://owasp.org/Top10/2025/A03_2025-Software_Supply_Chain_Failures/\",\"https://owasp.org/Top10/2025/A04_2025-Cryptographic_Failures/\",\"https://owasp.org/Top10/2025/A09_2025-Security_Logging_and_Alerting_Failures/\",\"https://owasp.org/Top10/2025/A10_2025-Mishandling_of_Exceptional_Conditions/\",\"https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html\",\"https://github.com/OWASP/ASVS\",\"https://slsa.dev/spec/v1.2/\",\"https://docs.npmjs.com/trusted-publishers/\",\"https://help.openai.com/en/articles/20001107-codex-security\",\"https://support.claude.com/en/articles/11932705-automated-security-reviews-in-claude-code\",\"https://www.veracode.com/blog/genai-code-security-report/\",\"https://appsecsanta.com/research/ai-code-security-study-2026\"],\"failure_modes\":[\"Citing 2021 category numbers after the 2025 renumber (e.g. calling SSRF 'A10') and mis-routing a finding's A0x label\",\"SSRF removed instead of re-homed under Broken Access Control\",\"Vulnerable components treated as only CVE scanning, not whole-chain supply-chain integrity\",\"Treating a clean SAST/SCA scan as proof of safety rather than the absence of a known-pattern match\",\"AI security reviewer treated as a replacement for human security judgment\",\"Stamping a single AI-vuln-rate multiplier as fixed when published rates vary by language, model, and methodology\",\"Applying this web-appsec taxonomy to an LLM instruction-channel attack (prompt/RAG injection) that belongs to the OWASP LLM Top 10 and prompt-injection-defense\",\"Exception handlers reviewed as code quality, not as security-relevant fail-open paths\",\"Security findings disclosed with exploit payloads or secrets\"],\"evidence_priority\":\"general_knowledge_first\"}"
-  owner: skill-graph-maintainer
-  freshness: "2026-06-07"
-  drift_check: "{\"last_verified\":\"2026-06-07\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"security\",\"owasp\",\"owasp top 10\",\"vulnerability\",\"sql injection\",\"xss\",\"authentication\",\"authorization\",\"supply chain\",\"access control\"]"
   examples: "[\"audit this endpoint for SQL injection and XSS specifically\",\"this PR adds user input — what security checks should I run?\",\"threat-model this new file-upload feature\",\"review this auth flow against OWASP — is there a bypass?\",\"the dependency scanner flagged 12 vulnerabilities — which ones matter?\",\"is this code path vulnerable to SSRF?\",\"review this access-control logic — can a non-admin escalate?\",\"audit our CI/CD and dependencies for supply-chain compromise\",\"does this error handler fail open or leak a stack trace?\",\"what security tests should prove this authorization change is safe?\"]"
   anti_examples: "[\"review this PR holistically\",\"production users are reporting an error — debug it\",\"write our company security policy doc\",\"scaffold a new skill teaching security review\",\"rename this auth function for clarity\",\"harden my chatbot against prompt injection and jailbreaks\",\"my RAG agent is following instructions hidden in retrieved documents\"]"
-  relations: "{\"boundary\":[{\"skill\":\"code-review\",\"reason\":\"code-review is the holistic per-PR pass that includes security as one of many concerns; owasp-security is the security-specific deep audit\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy decides what to test broadly; owasp-security defines security-specific test cases (auth bypass, injection, SSRF, supply-chain, error-path tests) as a sub-concern\"},{\"skill\":\"prompt-injection-defense\",\"reason\":\"owasp-security owns classical appsec exclusively — injection into SQL/shell/DOM, access control, crypto, and supply chain — and suppresses prompt-injection-defense from co-routing when a query is a classical-appsec audit. prompt-injection-defense's territory (LLM-layer prompt/RAG/context injection and agent-tool-authority — the instruction-vs-data channel collapse) is the inverse case it owns and this skill does not\"}],\"related\":[\"code-review\",\"testing-strategy\",\"debugging\",\"best-practice\",\"prompt-injection-defense\",\"guardrails\",\"security-fundamentals\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":120,\"review_cadence\":\"quarterly\"}"
-  comprehension_state: present
   mental_model: "Application-security review is source-to-sink reasoning over trust boundaries. The reviewer identifies attacker-controlled inputs, privileged operations, sensitive data, external dependencies, configuration, and error paths, then asks whether each path preserves confidentiality, integrity, availability, and authorization under hostile input and partial failure."
   purpose: "This skill prevents plausible-looking code from shipping with security-relevant decisions left implicit. It gives agents a current OWASP vocabulary, concrete detection patterns, mitigations, abuse tests, and reporting discipline so security review finds root causes rather than isolated symptoms."
+  concept_boundary: "This skill owns traditional application-security review, OWASP Top 10 web-app weaknesses, and security-specific threat modeling. It does not own holistic PR approval, root-cause debugging after a failure, broad test-level strategy, policy documentation, or LLM-specific prompt-injection and agent-authority architecture."
   analogy: "An OWASP review is a border inspection for a software system: every crossing between trust zones is checked for identity, permission, payload, destination, and failure behavior."
   misconception: "The common mistake is treating the OWASP Top 10 as ten labels to memorize. The better model is to use the labels as routing names for underlying CWE-shaped failure modes; the fix follows the weakness and the trust boundary, not the A0x number."
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "This skill owns traditional application-security review, OWASP Top 10 web-app weaknesses, and security-specific threat modeling. It does not own holistic PR approval, root-cause debugging after a failure, broad test-level strategy, policy documentation, or LLM-specific prompt-injection and agent-authority architecture."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/owasp-security/SKILL.md
 ---
 
 # OWASP Security
+
+## Concept of the skill
+
+Application-security review is source-to-sink reasoning over trust boundaries. The reviewer identifies attacker-controlled inputs, privileged operations, sensitive data, external dependencies, configuration, and error paths, then asks whether each path preserves confidentiality, integrity, availability, and authorization under hostile input and partial failure.
 
 ## Concept of the Skill
 
@@ -66,8 +53,7 @@ metadata:
 - Defence in depth: why a single mitigation is insufficient, and how to layer controls
 - The auth invariants that recur: authentication separated from authorisation, every privileged action checked, sessions invalidated on logout, secrets never in code or logs
 
-## Philosophy
-
+## Philosophy of the skill
 Security is not a feature; it is a *property* of the system that erodes silently unless actively maintained. The OWASP Top 10 is not a checklist to memorise — it is a shared vocabulary for naming the most-common ways software fails under hostile input, missing boundaries, weak configuration, and partial failure. A reviewer who can name "this is A05 Injection" and "this is A07 Authentication Failure" can communicate findings to teammates, prioritise against industry data, and reach mitigations that are already documented and known to work.
 
 The most expensive security bug is the one nobody *noticed was a security bug*. A route with no ownership check, a `catch` block that returns `true`, a dependency publish workflow with a long-lived token, or a helpful stack trace can all look like ordinary engineering until you ask who controls the input, what privilege is exercised, and what happens when the happy path fails. The point of this skill is to enrich your default reading of code with a security lens — not as a separate review pass, but as a way of seeing every input, every boundary, every privileged action, and every *error path*.
@@ -353,6 +339,7 @@ Grade every finding so prioritisation is a property of the finding, not a debate
 
 **Classification**
 - Subject: `quality-assurance`
+- Public: `true`
 - Domain: `quality/security`
 - Scope: Teaches the security-specific review lens for the OWASP Top 10:2025 (mapped to 2021): per-category detection greps, mitigations, a procedural source-to-sink review workflow over trust boundaries, severity grading and responsible disclosure, software-supply-chain hardening, error-path (fail-open) review, security-test probes, and the elevated-risk patterns of AI-generated code — turning findings into severity-ranked, root-cause remediation. Applies when the task is an explicit security audit, a feature threat model, or an auth / input-handling implementation. Out of scope: holistic per-PR review (code-review), production-bug hunts (debugging), broad test-level strategy (testing-strategy), LLM prompt/RAG injection and agent-tool-authority defence (prompt-injection-defense), and security-policy authoring (documentation).
 
@@ -376,13 +363,10 @@ Grade every finding so prioritisation is a property of the finding, not a debate
 - rename this auth function for clarity
 - harden my chatbot against prompt injection and jailbreaks
 - my RAG agent is following instructions hidden in retrieved documents
-- Owned by `code-review`
-- Owned by `testing-strategy`
-- Owned by `prompt-injection-defense`
 
 **Related skills**
-- Verify with: `testing-strategy`, `code-review`
-- Related: `code-review`, `testing-strategy`, `debugging`, `best-practice`, `prompt-injection-defense`, `guardrails`, `security-fundamentals`
+- Verify with: `testing-strategy`, `code-review`, `security-fundamentals`
+- Related: `guardrails`, `code-review`, `testing-strategy`, `debugging`, `best-practice`, `prompt-injection-defense`, `security-fundamentals`
 
 **Concept**
 - Mental model: Application-security review is source-to-sink reasoning over trust boundaries. The reviewer identifies attacker-controlled inputs, privileged operations, sensitive data, external dependencies, configuration, and error paths, then asks whether each path preserves confidentiality, integrity, availability, and authorization under hostile input and partial failure.

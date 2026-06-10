@@ -5,9 +5,10 @@ license: MIT
 compatibility: "Markdown, strategy memos, operating-model reviews, business-unit strategy, value-chain maps, cost and differentiation analysis"
 allowed-tools: Read Grep WebSearch WebFetch
 metadata:
-  relations: "{\"boundary\":[\"porters-five-forces\",\"vrio\",\"bcg-matrix\",\"ansoff-matrix\",\"swot-tows\",\"expected-value\"]}"
+  relations: "{\"related\":[\"playing-to-win\",\"seven-powers\",\"blue-ocean-strategy\",\"positioning\",\"porters-five-forces\",\"vrio\",\"swot-tows\",\"expected-value\",\"epistemic-grounding\",\"methodology\"],\"suppresses\":[\"porters-five-forces\",\"expected-value\",\"vrio\",\"swot-tows\",\"bcg-matrix\",\"ansoff-matrix\"],\"verify_with\":[\"epistemic-grounding\",\"methodology\",\"expected-value\"]}"
   subject: reasoning-strategy
   scope: "Porter's Value Chain analysis for organizations, business units, products, services, operating models, and strategy reviews: map primary and support activities, identify activity-level value and cost drivers, trace linkages and fit across activities, compare the activity system to rivals or alternatives, diagnose cost-leadership and differentiation opportunities, and convert the analysis into strategic hypotheses or operating changes. Excludes external industry profit-pressure diagnosis, resource/capability durability testing, BCG portfolio allocation, Ansoff product-market growth paths, PESTEL macro scanning, OKR execution tracking, Lean waste removal as the primary lens, and standalone financial valuation."
+  public: "true"
   taxonomy_domain: foundations/strategy
   stability: stable
   keywords: "[\"value chain analysis\",\"Porter's Value Chain\",\"activity system\",\"primary activities\",\"support activities\",\"cost drivers\",\"differentiation drivers\",\"activity linkages\",\"strategic fit\",\"margin analysis\"]"
@@ -17,10 +18,9 @@ metadata:
   grounding: "{\"subject_matter\":\"Porter's Value Chain as a portable strategy framework for activity-level cost, differentiation, linkage, and margin analysis\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://www.isc.hbs.edu/strategy/business-strategy/Pages/the-value-chain.aspx\",\"https://www.isc.hbs.edu/strategy/Pages/strategy-explained.aspx\",\"https://www.isc.hbs.edu/strategy/business-strategy/Pages/strategic-positioning.aspx\",\"https://www.hbs.edu/faculty/Pages/item.aspx?num=191\",\"skills/skills/reasoning-strategy/value-chain-analysis/references/value-chain-analysis-sources.md\",\"skills/skills/reasoning-strategy/value-chain-analysis/references/upstream-displacement-2026-06-07.md\"],\"failure_modes\":[\"value_chain_reduced_to_supply_chain_logistics\",\"activity_labels_used_without_cost_or_value_evidence\",\"primary_and_support_activities_treated_as_fixed_org_chart\",\"linkages_and_fit_ignored\",\"operational_effectiveness_confused_with_strategy\",\"competitive_advantage_claimed_without_relative_activity_comparison\",\"margin_not_connected_to_willingness_to_pay_or_cost\",\"value_chain_confused_with_vrio_or_five_forces\"],\"evidence_priority\":\"general_knowledge_first\"}"
   mental_model: "Value Chain analysis treats competitive advantage as arising from activities and the fit among activities. The primitives are a business unit or offering, a customer value proposition, primary activities, support activities, activity costs, activity value or willingness-to-pay effects, linkages between activities, relative activity configuration versus rivals or alternatives, margin, and strategic choices. The agent decomposes the business into activities, asks how each activity affects cost or differentiation, traces how activities reinforce or undermine each other, then identifies where a different configuration could produce lower cost, higher willingness to pay, or stronger fit."
   purpose: "This skill prevents agents from making strategy recommendations at the slogan level. It forces the agent to show where value and cost are created activity by activity, how activities link together, whether advantage comes from cost position, differentiation, or fit, and which downstream method should test the remaining uncertainty."
+  concept_boundary: "Value Chain analysis is internal activity-system diagnosis. It is not Porter's Five Forces external industry analysis, VRIO resource/capability durability testing, Seven Powers moat-source classification, BCG portfolio allocation, Ansoff growth-path selection, PESTEL macro scanning, Lean waste removal as the main lens, OKR execution management, or a DCF valuation. Those methods can feed or follow the analysis, but they do not replace the activity-level value and cost map."
   analogy: "A value chain is like opening the back of a clock: the advantage is not the face, but the gears, costs, timing, and linkages that make the clock run differently."
   misconception: "The common mistake is treating the value chain as a generic supply-chain diagram or org chart. Porter's value chain is an activity-level strategy tool: the activity labels only matter when they reveal value, cost, linkages, fit, margin, and relative difference."
-  public: "true"
-  concept_boundary: "Value Chain analysis is internal activity-system diagnosis. It is not Porter's Five Forces external industry analysis, VRIO resource/capability durability testing, Seven Powers moat-source classification, BCG portfolio allocation, Ansoff growth-path selection, PESTEL macro scanning, Lean waste removal as the main lens, OKR execution management, or a DCF valuation. Those methods can feed or follow the analysis, but they do not replace the activity-level value and cost map."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/value-chain-analysis/SKILL.md
@@ -258,6 +258,7 @@ Before presenting the analysis, check:
 
 **Classification**
 - Subject: `reasoning-strategy`
+- Public: `true`
 - Domain: `foundations/strategy`
 - Scope: Porter's Value Chain analysis for organizations, business units, products, services, operating models, and strategy reviews: map primary and support activities, identify activity-level value and cost drivers, trace linkages and fit across activities, compare the activity system to rivals or alternatives, diagnose cost-leadership and differentiation opportunities, and convert the analysis into strategic hypotheses or operating changes. Excludes external industry profit-pressure diagnosis, resource/capability durability testing, BCG portfolio allocation, Ansoff product-market growth paths, PESTEL macro scanning, OKR execution tracking, Lean waste removal as the primary lens, and standalone financial valuation.
 
@@ -275,6 +276,10 @@ Before presenting the analysis, check:
 - Classify our products as stars, cash cows, question marks, or dogs.
 - Classify growth ideas as market penetration, market development, product development, or diversification.
 - Calculate expected value across these options with probabilities and payoff scenarios.
+
+**Related skills**
+- Verify with: `epistemic-grounding`, `methodology`, `expected-value`
+- Related: `playing-to-win`, `seven-powers`, `blue-ocean-strategy`, `positioning`, `porters-five-forces`, `vrio`, `swot-tows`, `expected-value`, `epistemic-grounding`, `methodology`
 
 **Concept**
 - Mental model: Value Chain analysis treats competitive advantage as arising from activities and the fit among activities. The primitives are a business unit or offering, a customer value proposition, primary activities, support activities, activity costs, activity value or willingness-to-pay effects, linkages between activities, relative activity configuration versus rivals or alternatives, margin, and strategic choices. The agent decomposes the business into activities, asks how each activity affects cost or differentiation, traces how activities reinforce or undermine each other, then identifies where a different configuration could produce lower cost, higher willingness to pay, or stronger fit.

@@ -5,38 +5,21 @@ license: MIT
 compatibility: "Provider-agnostic; abstract tool capabilities map to concrete tools across Claude Code, Cursor, Copilot, OpenCode, Aider, Continue. Specific tool names in this skill (read_file, grep_search, run_in_terminal, apply_patch) are concrete examples — substitute the equivalent in your harness."
 allowed-tools: Read Grep Bash Edit
 metadata:
-  schema_version: "8"
-  version: "1.1.0"
+  relations: "{\"related\":[\"context-engineering\",\"refactor\",\"debugging\",\"prompt-craft\",\"autonomous-loop-patterns\"],\"suppresses\":[\"prompt-craft\"],\"verify_with\":[\"code-review\",\"pattern-recognition\",\"problem-locating-solving\"]}"
   subject: ai-engineering
+  public: "true"
+  scope: "Use when an agent is making too many tool calls, when context is filling from verbose tool outputs, when the same operation could be a script instead of N individual calls, or when designing a tool-use protocol for a new agent or harness. Covers the three costs of every call (token, latency, context pollution), the script-vs-call decision gate, tool-selection decision trees (file-search vs content-search vs targeted-read vs full-read), call batching and parallelization, redundancy avoidance, the poka-yoke principle, subagent delegation for context protection, and cost-benchmark heuristics by task type. Do NOT use for prompt wording (use `prompt-craft`), broader context stack design across the five layers (use `context-engineering`), runtime tool failures or production debugging (use `debugging`), or behaviour-preserving refactor mechanics (use `refactor`)."
   taxonomy_domain: ai-engineering/tool-use
-  owner: skill-graph-maintainer
-  freshness: "2026-05-18"
-  drift_check: "{\"last_verified\":\"2026-05-18\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"tool call optimization\",\"reduce tool calls\",\"too many tool calls\",\"script vs tool call\",\"batching tool calls\",\"parallel tool calls\",\"parallelize calls\",\"independent calls\",\"redundant reads\",\"re-reading file\"]"
   examples: "[\"the agent made 17 read_file calls when 3 greps would have done — what should it have done?\",\"we're renaming a variable across 40 files — script or tool calls?\",\"the agent re-reads the same file three times in one task — fix the policy\",\"should I batch these reads into one message or wait for each result?\",\"design a tool-use protocol for our new agent harness — what rules matter?\",\"the context window is filling with verbose terminal output — how do I cut it?\",\"is it worth delegating this exploratory search to a subagent?\",\"what's a reasonable tool-call budget for a single-file bug fix?\"]"
   anti_examples: "[\"improve this prompt's wording to get better outputs\",\"design what skills get loaded for which prompts\",\"the test suite is failing after my change — find the cause\",\"extract this repeated string-concat into a helper function\",\"scaffold a new SKILL.md for our team's tool-use rules\",\"review this AI-generated PR for correctness\"]"
-  relations: "{\"boundary\":[{\"skill\":\"prompt-craft\",\"reason\":\"prompt-craft writes the wording of one instruction; tool-call-strategy decides which external operations the agent should invoke around that instruction\"}],\"related\":[\"context-engineering\",\"refactor\",\"prompt-craft\",\"debugging\"],\"verify_with\":[\"code-review\"]}"
   grounding: "{\"subject_matter\":\"Efficient tool-call strategy for LLM coding agents\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://developers.openai.com/api/docs/guides/function-calling\",\"https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview\",\"https://platform.claude.com/docs/en/agents-and-tools/tool-use/manage-tool-context\",\"https://github.com/jacob-balslev/skills/blob/main/skills/tool-call-flow/SKILL.md\",\"https://github.com/jacob-balslev/skills/blob/main/skills/context-engineering/SKILL.md\"],\"failure_modes\":[\"tool_call_minimization_without_verification\",\"serial_calls_when_parallel_independent\",\"shell_bulk_work_without_reviewable_diff\",\"verbose_outputs_pollute_context\",\"same_result_refetched_from_conversation\"],\"evidence_priority\":\"equal\"}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
   mental_model: "Tool-call strategy is the query planner for an agent's external actions. Treat every call as an expensive, stateful evidence-acquisition operation with three costs: latency, tokens, and context pollution. The goal is sufficient evidence with minimum noise: pick the narrowest tool that can answer the question, batch independent calls, keep dependent calls sequential, use scripts for deterministic bulk work, preserve reviewability for edits, and stop re-fetching facts already present in the conversation."
   purpose: "This skill prevents agents from wasting time and context with redundant reads, serial searches, unbounded terminal output, or hand-driven N+1 edits while also preventing the opposite failure of under-calling and hallucinating. It gives a portable decision framework for choosing tools, scripts, batching, subagents, and output-shaping patterns."
+  concept_boundary: "This skill decides when, how many, and which external operations an already-running agent should use. It does not describe the protocol mechanics of tool-call messages, the whole context stack around the agent, prompt wording, runtime failure debugging, or the correctness mechanics of a refactor deliverable."
   analogy: "Tool-call strategy is like planning queries against a slow, expensive database: ask the smallest question that returns the needed evidence, combine independent queries when possible, avoid repeating a query whose result is already in hand, and use set-based operations for bulk deterministic work."
   misconception: "The common mistake is treating efficiency as fewer calls at all costs. Good strategy is not tool abstinence; it is evidence discipline. A necessary verification call is cheap compared with a hallucinated answer, while an unbounded log dump or a repeated file read can make every later decision worse."
-  concept: "{\"definition\":\"Tool-call strategy is the discipline of choosing, batching, sequencing, and shaping an agent's external operations so each call produces enough evidence for the next decision without unnecessary latency, token cost, or context pollution.\",\"mental_model\":\"Treat tool use as query planning for an expensive, persistent evidence stream. Each call should have a specific information need, a bounded expected result, and a clear reason it cannot be satisfied from existing context. Independent calls can run together; dependent calls wait; deterministic bulk work moves into scripts; judgment-dependent work stays in the agent loop.\",\"purpose\":\"It keeps agents fast and accurate by preventing redundant reads, serial round trips, noisy outputs, and manual N+1 edits while preserving enough verification to avoid hallucination.\",\"boundary\":\"It is not the tool-call protocol itself, prompt wording, whole-context architecture, runtime debugging, or refactor methodology. It owns per-call efficiency choices inside those broader workflows.\",\"taxonomy\":\"Core levers include tool selection, script-vs-call gating, batching and parallelization, dependency detection, redundancy checks, output bounding, subagent isolation, and reviewable edit strategy.\",\"analogy\":\"Tool-call strategy is like planning queries against a slow, expensive database: ask the smallest question that returns the needed evidence, combine independent queries when possible, avoid repeating a query whose result is already in hand, and use set-based operations for bulk deterministic work.\",\"misconception\":\"Fewer calls is not automatically better. The correct target is sufficient evidence with minimal noise; skipping a needed check is worse than making one more focused call.\"}"
-  structural_verdict: PASS
-  truth_verdict: UNVERIFIED
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "This skill decides when, how many, and which external operations an already-running agent should use. It does not describe the protocol mechanics of tool-call messages, the whole context stack around the agent, prompt wording, runtime failure debugging, or the correctness mechanics of a refactor deliverable."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/ai-engineering/tool-call-strategy/SKILL.md
@@ -45,6 +28,10 @@ metadata:
 ---
 
 # Tool Call Strategy
+
+## Concept of the skill
+
+Tool-call strategy is the query planner for an agent's external actions. Treat every call as an expensive, stateful evidence-acquisition operation with three costs: latency, tokens, and context pollution.
 
 ## Coverage
 
@@ -58,8 +45,7 @@ metadata:
 - The poka-yoke principle: design tool usage to prevent mistakes, not just optimise speed
 - Cost benchmark heuristics: rough call-count ranges per task type and the "stop and reconsider" red flag
 
-## Philosophy
-
+## Philosophy of the skill
 Every tool call has three simultaneous costs: tokens (schema overhead plus result), latency (network round-trip plus decision time), and context pollution (results persist in the attention window and degrade subsequent reasoning). Agents that issue 12 calls where 3 would suffice are not merely slower — they are measurably less accurate, because noise accumulated in the context window pushes useful signal further from the attention window.
 
 The optimal strategy is not "minimise calls." Under-calling causes hallucination and skipped verification. The objective is **information gained per unit cost**: a single well-targeted grep that returns five matching lines is worth more than reading three entire files to find the same information. A script that processes fifty files in one shell call is worth more than fifty individual edit calls. The conversation history acts as a cache; information already retrieved does not need to be retrieved again.
@@ -344,7 +330,9 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `ai-engineering`
+- Public: `true`
 - Domain: `ai-engineering/tool-use`
+- Scope: Use when an agent is making too many tool calls, when context is filling from verbose tool outputs, when the same operation could be a script instead of N individual calls, or when designing a tool-use protocol for a new agent or harness. Covers the three costs of every call (token, latency, context pollution), the script-vs-call decision gate, tool-selection decision trees (file-search vs content-search vs targeted-read vs full-read), call batching and parallelization, redundancy avoidance, the poka-yoke principle, subagent delegation for context protection, and cost-benchmark heuristics by task type. Do NOT use for prompt wording (use `prompt-craft`), broader context stack design across the five layers (use `context-engineering`), runtime tool failures or production debugging (use `debugging`), or behaviour-preserving refactor mechanics (use `refactor`).
 
 **When to use**
 - the agent made 17 read_file calls when 3 greps would have done — what should it have done?
@@ -363,11 +351,10 @@ After applying this skill, verify:
 - extract this repeated string-concat into a helper function
 - scaffold a new SKILL.md for our team's tool-use rules
 - review this AI-generated PR for correctness
-- Owned by `prompt-craft`
 
 **Related skills**
-- Verify with: `code-review`
-- Related: `context-engineering`, `refactor`, `prompt-craft`, `debugging`
+- Verify with: `code-review`, `pattern-recognition`, `problem-locating-solving`
+- Related: `context-engineering`, `refactor`, `debugging`, `prompt-craft`, `autonomous-loop-patterns`
 
 **Concept**
 - Mental model: Tool-call strategy is the query planner for an agent's external actions. Treat every call as an expensive, stateful evidence-acquisition operation with three costs: latency, tokens, and context pollution. The goal is sufficient evidence with minimum noise: pick the narrowest tool that can answer the question, batch independent calls, keep dependent calls sequential, use scripts for deterministic bulk work, preserve reviewability for edits, and stop re-fetching facts already present in the conversation.

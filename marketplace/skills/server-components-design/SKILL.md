@@ -4,17 +4,10 @@ description: "Use when designing or reviewing React Server Components: what an R
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.1.0"
   subject: frontend-engineering
+  public: "true"
+  scope: "Designing and reviewing React Server Components — what an RSC can do (async, direct data access, server-only imports) versus what it cannot (state, effects, event handlers, browser APIs), where to draw the server/client boundary in the component tree, how to keep private data from leaking across that boundary (DTOs, a Data Access Layer, the server-only package, taint APIs), how to fetch without waterfalls (request memoization, parallel reads, the preload pattern), how RSC composes with Suspense to stream content without a separate API layer, and the read-path caching/freshness decision (Next.js Cache Components / 'use cache' / Partial Prerendering). Next.js App Router is the canonical implementation; the discipline is framework-agnostic. Excludes the 'use client'/'use server' directive serialization mechanics (client-server-boundary), Client Component hook discipline (hooks-patterns), the SSR/SSG/ISR/CSR strategy choice (rendering-models), the write-path mutation surface (server-actions-design), and the wider Suspense orchestration (suspense-patterns)."
   taxonomy_domain: engineering/frontend
-  owner: skill-graph-maintainer
-  freshness: "2026-06-07"
-  drift_check: "{\"last_verified\":\"2026-06-07\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"React Server Components\",\"RSC\",\"Next.js App Router\",\"async components\",\"server-side data fetching\",\"streaming RSC\",\"server/client component tree\",\"RSC payload\",\"Data Access Layer DTO\",\"Cache Components use cache\"]"
   triggers: "[\"should this be a Server Component or a Client Component\",\"can I fetch data here\",\"why can't I use useState in this file\",\"how does data move from server to client\",\"do I need an API route\",\"why is the bundle so large\",\"how do I stop private data leaking to the client\",\"can I pass a Promise to a Client Component\",\"why are params and searchParams promises\",\"should this data be cached with use cache\",\"why is loading.tsx not showing\"]"
@@ -23,17 +16,9 @@ metadata:
   relations: "{\"related\":[\"client-server-boundary\",\"rendering-models\",\"hooks-patterns\",\"streaming-architecture\",\"suspense-patterns\",\"server-actions-design\"],\"boundary\":[{\"skill\":\"client-server-boundary\",\"reason\":\"client-server-boundary owns the serialization-and-directive mechanics of the boundary itself ('use client', what can cross, RSC payload format); server-components-design owns the discipline of which work belongs on the server side of that boundary.\"},{\"skill\":\"rendering-models\",\"reason\":\"rendering-models owns the strategic decision among SSR, SSG, ISR, and CSR; server-components-design operates within the App Router / RSC paradigm and is one rendering mode among several.\"},{\"skill\":\"hooks-patterns\",\"reason\":\"hooks-patterns covers state and effect discipline on Client Components; Server Components cannot use those primitives at all, so the two skills cover disjoint surfaces.\"},{\"skill\":\"server-actions-design\",\"reason\":\"server-actions-design owns the write path (mutations, 'use server' functions, form actions, re-authorization inside the action); server-components-design owns the read path (components that fetch and render data). They share the server/client boundary infrastructure but are disjoint design surfaces.\"}],\"verify_with\":[\"code-review\",\"rendering-models\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "A Server Component is to a React tree what a printed page is to a book — the typesetter (server) sets the lead, presses the ink, and ships the printed page (RSC payload); the reader's table lamp (Client Component) is wired and switchable at the reader's end. You do not ship the typesetter to the reader's living room, and you do not ship the lamp's wiring to the printer — the boundary is where 'this never changes once it leaves my workshop' ends and 'this responds to who touches it' begins. And just as a typesetter proofs the galley to strip the editor's private margin notes before the page is printed, a Server Component must strip private fields before the rendered output ships to the reader."
   misconception: "|"
-  concept: "{\"definition\":\"A React Server Component is a component that runs only on the server, never ships to the browser as JavaScript, can be async, and can directly access server-side resources (databases, file system, secrets) — its output is serialized to a wire format (the RSC payload) and reconstituted into the client tree without a separate API layer. Server Components compose with Client Components in a single tree, but the directionality is one-way: a Server Component can render a Client Component, but a Client Component cannot import a Server Component as a child.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/server-components-design/SKILL.md
@@ -42,13 +27,17 @@ metadata:
 
 # Server Components Design
 
+## Concept of the skill
+
+React Server Components (RSC) are a kind of component that runs *only* on the server, never ships to the browser as JavaScript, can be `async`, and can reach directly into server-side resources — databases, the file system, secrets, server-only environment variables. Their rendered output is serialized into a wire format (the *RSC payload*) and reconstituted into the client tree without any intermediating JSON API. Server and Client Components compose in a single tree with strictly one-way directionality: a Server Component may render (or `import`) a Client Component, but a Client Component may never `import` a Server Component — though it *can* receive one as a `children`/slot prop that its Server-Component parent already rendered. The two capability surfaces are disjoint: Server Components cannot use hooks, state, effects, event handlers, or browser APIs; Client Components cannot read databases, secrets, or server-only modules directly. The discipline this skill teaches is *where to draw the boundary in the tree*: push as much as possible to the server side and place `'use client'` at the thinnest interactive leaf, so the surrounding layout and data reads stay server-only (zero bundle, no hydration, data baked into the payload). Three concerns run through every RSC review — execution locality (does this need server-only or browser-only resources?), data security (every prop crossing to a Client Component is serialized and shipped to the browser, so private fields must be filtered into minimal DTOs *before* they cross), and reveal/freshness (which reads block, which stream behind Suspense, and which are cached). Next.js App Router is the canonical implementation, but the primitive is the React RFC, so the discipline is framework-agnostic.
+
 ## Coverage
 
 The discipline of designing React Server Components (RSC): what an RSC is *for*, what it can do that Client Components cannot, what it cannot do, how the server/client boundary shapes the component graph and the data-flow graph, **how to keep private data from leaking across that boundary** (Data Access Layer, Data Transfer Objects, the `server-only` package, and the taint APIs), how to fetch data without waterfalls (request memoization, parallel reads, the preload pattern), how RSC composes with Suspense to stream content from the server in chunks, how a framework's caching layer (Next.js `'use cache'` / Partial Prerendering) reuses a Server Component's output, why Server Components remove the need for a separate API layer for read-path data, and the recurring design questions a reviewer asks of any RSC tree. Next.js App Router is the canonical implementation referenced throughout; the discipline applies to any RSC implementation (Remix RSC, Waku, Parcel RSC, hand-rolled RSC servers) since the underlying primitive is the React RFC, not a single framework.
 
 RSC design also covers the **data-freshness axis** that modern App Router projects must make explicit: whether a Server Component read is uncached, request-cached, framework-cached, tagged for revalidation, or intentionally streamed behind Suspense. In current Next.js, Cache Components and the `'use cache'` directive make caching a component/data design decision, not an incidental `fetch` option. This skill owns the RSC read-path placement question; `server-actions-design` owns the write-path mutation and revalidation trigger.
 
-## Philosophy
+## Philosophy of the skill
 
 The original React component model collapsed two roles into one function: produce HTML for the initial render, and produce a virtual DOM update in response to client-side state. Server-Side Rendering pre-React-18 tried to make that single function run twice — once on the server to produce HTML, once on the client to produce the interactive tree — and pay for it with hydration: a full re-execution on the client to bind event handlers and reconstruct state.
 
@@ -461,7 +450,9 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `frontend-engineering`
+- Public: `true`
 - Domain: `engineering/frontend`
+- Scope: Designing and reviewing React Server Components — what an RSC can do (async, direct data access, server-only imports) versus what it cannot (state, effects, event handlers, browser APIs), where to draw the server/client boundary in the component tree, how to keep private data from leaking across that boundary (DTOs, a Data Access Layer, the server-only package, taint APIs), how to fetch without waterfalls (request memoization, parallel reads, the preload pattern), how RSC composes with Suspense to stream content without a separate API layer, and the read-path caching/freshness decision (Next.js Cache Components / 'use cache' / Partial Prerendering). Next.js App Router is the canonical implementation; the discipline is framework-agnostic. Excludes the 'use client'/'use server' directive serialization mechanics (client-server-boundary), Client Component hook discipline (hooks-patterns), the SSR/SSG/ISR/CSR strategy choice (rendering-models), the write-path mutation surface (server-actions-design), and the wider Suspense orchestration (suspense-patterns).
 
 **When to use**
 - decide whether a dashboard widget should be a Server Component (fetches and renders) or a Client Component (interactive)

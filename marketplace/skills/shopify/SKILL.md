@@ -3,30 +3,17 @@ name: shopify
 description: "Use when working with Shopify — Admin API, Storefront API, OAuth scopes, HMAC SHA-256 webhook verification, GraphQL query-cost handling, Online Store 2.0 themes (sections, blocks, Liquid), metafields and metaobjects, and App Proxy. Do NOT use for generic e-commerce design, non-Shopify storefronts, or internal event-contract design. Do NOT use for Design the event payload schema for our internal order-processing pipeline. Do NOT use for Implement Stripe Connect onboarding for a marketplace. Do NOT use for Refactor a generic shopping cart component that isn't Shopify-specific."
 license: CC-BY-4.0
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"webhook-integration\",\"event-contract-design\",\"api-design\",\"printify\"]}"
   subject: product-domain
+  public: "true"
+  scope: "Use when working with Shopify — Admin API, Storefront API, OAuth scopes, HMAC SHA-256 webhook verification, GraphQL query-cost handling, Online Store 2.0 themes (sections, blocks, Liquid), metafields and metaobjects, and App Proxy. Do NOT use for generic e-commerce design, non-Shopify storefronts, or internal event-contract design."
   subjects: "[\"product-domain\",\"backend-engineering\"]"
   taxonomy_domain: engineering/integrations
-  owner: skill-graph-maintainer
-  freshness: "2026-05-12"
-  drift_check: "{\"last_verified\":\"2026-05-12\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"shopify admin api\",\"shopify storefront api\",\"shopify webhooks\",\"shopify oauth scopes\",\"shopify hmac verification\",\"online store 2.0 sections\",\"liquid templates\",\"shopify graphql query cost\",\"shopify metafields\",\"shopify rate limits\"]"
   triggers: "[\"shopify\",\"shopify webhook\",\"shopify api\",\"shopify theme\",\"shopify app\"]"
   examples: "[\"Verify an incoming Shopify webhook by computing HMAC SHA-256 over the raw body and comparing against the X-Shopify-Hmac-Sha256 header\",\"Query the Shopify Admin GraphQL API for product variants with their metafields and handle query cost throttling\",\"Build an Online Store 2.0 section schema with block types and dynamic settings\"]"
   anti_examples: "[\"Design the event payload schema for our internal order-processing pipeline\",\"Implement Stripe Connect onboarding for a marketplace\",\"Refactor a generic shopping cart component that isn't Shopify-specific\"]"
-  relations: "{\"related\":[\"webhook-integration\",\"api-design\",\"printify\",\"event-contract-design\"]}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/product-domain/shopify/SKILL.md
@@ -34,6 +21,10 @@ metadata:
 ---
 
 # Shopify
+
+## Concept of the skill
+
+Use when working with Shopify — Admin API, Storefront API, OAuth scopes, HMAC SHA-256 webhook verification, GraphQL query-cost handling, Online Store 2.0 themes (sections, blocks, Liquid), metafields and metaobjects, and App Proxy.
 
 ## Coverage
 Shopify exposes four primary integration surfaces: the Admin API (REST and GraphQL, used by apps acting on the merchant's behalf), the Storefront API (GraphQL, customer-facing, unauthenticated by default with a public access token), themes (Liquid templating plus Online Store 2.0 JSON templates with sections and blocks), and webhooks (signed event delivery over HTTPS). Each surface has distinct authentication, rate-limit, and versioning rules. This skill covers all four and the seams between them.
@@ -44,7 +35,7 @@ Rate limits differ per surface. REST Admin API uses a leaky-bucket model — 40 
 
 Metafields and metaobjects extend native resources with typed custom data. Metafields attach to a parent resource (product, variant, customer, order, etc.) with a namespace.key path and a defined type (single_line_text_field, number_integer, json, file_reference, metaobject_reference, etc.). Metaobjects are standalone typed records and are queryable via GraphQL like first-class resources. App Proxy routes a path on the merchant's storefront domain to the app's backend with a signed query string, enabling authenticated storefront experiences without CORS.
 
-## Philosophy
+## Philosophy of the skill
 Shopify's APIs are explicit about cost and explicit about contract. The query-cost model, the HMAC requirement, the five-second webhook deadline, and the API versioning calendar (one stable version per quarter, four supported simultaneously) all push toward integrations that observe their own load and respond to drift rather than assume forever-availability. Treat each surface's contract as load-bearing: don't catch HMAC failures and proceed, don't skip query-cost inspection, don't pin to a soon-to-be-unsupported API version.
 
 The theme surface and the API surface should remain separable. Online Store 2.0 lets merchants customize themes without code; an app that imposes UI through Liquid edits will conflict with merchant theme updates and theme-store apps. Prefer App Blocks and App Embeds (theme app extensions) over Liquid injection wherever the integration needs to render storefront UI.
@@ -70,7 +61,9 @@ The theme surface and the API surface should remain separable. Online Store 2.0 
 
 **Classification**
 - Subject: `product-domain` (also: `backend-engineering`)
+- Public: `true`
 - Domain: `engineering/integrations`
+- Scope: Use when working with Shopify — Admin API, Storefront API, OAuth scopes, HMAC SHA-256 webhook verification, GraphQL query-cost handling, Online Store 2.0 themes (sections, blocks, Liquid), metafields and metaobjects, and App Proxy. Do NOT use for generic e-commerce design, non-Shopify storefronts, or internal event-contract design.
 
 **When to use**
 - Verify an incoming Shopify webhook by computing HMAC SHA-256 over the raw body and comparing against the X-Shopify-Hmac-Sha256 header
@@ -84,7 +77,7 @@ The theme surface and the API surface should remain separable. Online Store 2.0 
 - Refactor a generic shopping cart component that isn't Shopify-specific
 
 **Related skills**
-- Related: `webhook-integration`, `api-design`, `printify`, `event-contract-design`
+- Related: `webhook-integration`, `event-contract-design`, `api-design`, `printify`
 
 **Keywords**
 - `shopify admin api`, `shopify storefront api`, `shopify webhooks`, `shopify oauth scopes`, `shopify hmac verification`, `online store 2.0 sections`, `liquid templates`, `shopify graphql query cost`, `shopify metafields`, `shopify rate limits`

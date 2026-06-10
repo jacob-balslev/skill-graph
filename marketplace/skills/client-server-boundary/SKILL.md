@@ -4,18 +4,10 @@ description: "Use when reasoning about the line at which execution context chang
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: frontend-engineering
+  public: "true"
   scope: "Reasoning about the line at which execution context changes between a server runtime and a client runtime — what values can cross via serialization and what cannot, the directives that mark transitions ('use client', 'use server'), the difference between server-rendered HTML and a serialized component tree, the trust model that treats client input as adversarial, and the consequences of leaking server-only modules into client bundles. Portable across any server/client web framework; principle-grounded, not repo-bound. Excludes when and where the UI is produced (rendering-models), the HTTP wire protocol itself (http-semantics), frontend codebase organization (frontend-architecture), and API JSON-shape design (api-design)."
   taxonomy_domain: engineering/frontend
-  owner: skill-graph-maintainer
-  freshness: "2026-05-15"
-  drift_check: "{\"last_verified\":\"2026-05-15\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"client server boundary\",\"serialization boundary\",\"use client directive\",\"use server directive\",\"React Server Components\",\"server actions\",\"RPC\",\"serializable types\",\"structured clone\",\"secret leakage\"]"
   triggers: "[\"can I pass this function as a prop\",\"why is my server-only module in the client bundle\",\"what does 'use client' actually do\",\"is it safe to put this secret in a server component\",\"why won't this Date / Map / class serialize\"]"
@@ -24,17 +16,9 @@ metadata:
   relations: "{\"related\":[\"rendering-models\",\"http-semantics\",\"frontend-architecture\",\"type-safety\",\"api-design\"],\"boundary\":[{\"skill\":\"rendering-models\",\"reason\":\"rendering-models owns the staging of work across build/request/stream/interaction. client-server-boundary owns the serialization frontier — what can cross between server code and client code. The two compose: any rendering model that emits a server-produced artifact for client consumption faces a boundary.\"}],\"verify_with\":[\"type-safety\",\"api-design\"]}"
   mental_model: "|"
   purpose: "|"
-  analogy: "The client-server boundary is to a unified codebase what an embassy boundary is to a city — both spaces exist in the same physical address, but inside the embassy the law of one country applies (server: full filesystem, secret access, database), outside the law of another applies (client: browser sandbox, no secrets), and everyone crossing must pass through documented customs (serialization) with their bags inspected (validation) and stamped (authentication)."
-  misconception: "|"
-  concept: "{\"definition\":\"The client-server boundary is the line in a unified codebase at which execution context changes — between a server runtime (full filesystem, secret access, database connections) and a client runtime (browser, no filesystem, no server secrets, untrusted by the server). Anything that crosses the boundary must be serialized: encoded as bytes on one side, decoded into a value on the other. The boundary is marked by directives, enforced by the framework, and made invisible to the developer who treats it correctly.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   concept_boundary: "|"
+  analogy: "The client-server boundary is to a unified codebase what an embassy boundary is to a city — both spaces exist at the same physical address, but inside the embassy the law of one country applies (server: full filesystem, secret access, database), outside the law of another applies (client: browser sandbox, no secrets), and everyone crossing must pass through documented customs (serialization) with their bags inspected (validation) and stamped (authentication)."
+  misconception: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/client-server-boundary/SKILL.md
@@ -42,11 +26,15 @@ metadata:
 
 # Client-Server Boundary
 
+## Concept of the skill
+
+The client-server boundary is the line in a unified codebase at which execution context changes between a server runtime (full filesystem, secret access, database connections, trusted by itself) and a client runtime (browser sandbox, no filesystem, no server secrets, untrusted by the server until validated). Anything that crosses must be *serialized* — encoded as bytes on one side, decoded into a value on the other — so the wire format (plain JSON, structured clone, the React Server Components payload, FormData) dictates which types survive and which must be reshaped. The boundary is governed by three interlocking properties: **serialization** (only byte-expressible values cross; closures, class instances, and host-bound objects do not), **direction** (server→client emits trusted payloads consumed as data, while client→server emits adversarial requests whose every byte must be parsed, validated, authenticated, authorized, and rate-limited), and **trust** (a categorical asymmetry — the server trusts itself, the client trusts what the server sent, the server trusts nothing the client said). Modern frameworks make this boundary *syntactically visible* through directives (`'use client'`, `'use server'`, `import 'server-only'`/`'client-only'`) rather than inventing it; the boundary was always there, but a unified file tree makes it trivially crossable by accident. The skill exists to turn that always-present, easy-to-ignore frontier into an object of explicit design so a codebase does not silently leak secrets into the client bundle, ship server-only modules to the browser, or treat a hostile RPC caller as a local function.
+
 ## Coverage
 
 The line in a unified codebase at which execution context changes between server and client. Covers the three governing properties (serialization, direction, trust), the wire formats currently in use (JSON, structured clone, RSC payload, FormData), the directives that mark the boundary (`'use client'`, `'use server'`, framework-specific equivalents), the trust asymmetry that makes client→server crossings categorically different from server→client, the leakage modes (server-only modules, secrets, hidden imports) that an unmarked boundary creates, and the misconceptions that arise from treating the boundary as either invisible or as a TypeScript-checked contract.
 
-## Philosophy
+## Philosophy of the skill
 
 The boundary always exists. Even an old PHP application with a templated HTML response has a server runtime and a client runtime separated by a wire protocol; the boundary is the network. What modern frameworks add is not the boundary itself, but the markers that make it visible — directives that say "this code is for over there" and serializers that say "these bytes will arrive on the other side as this shape."
 
@@ -221,6 +209,7 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `frontend-engineering`
+- Public: `true`
 - Domain: `engineering/frontend`
 - Scope: Reasoning about the line at which execution context changes between a server runtime and a client runtime — what values can cross via serialization and what cannot, the directives that mark transitions ('use client', 'use server'), the difference between server-rendered HTML and a serialized component tree, the trust model that treats client input as adversarial, and the consequences of leaking server-only modules into client bundles. Portable across any server/client web framework; principle-grounded, not repo-bound. Excludes when and where the UI is produced (rendering-models), the HTTP wire protocol itself (http-semantics), frontend codebase organization (frontend-architecture), and API JSON-shape design (api-design).
 
@@ -244,7 +233,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
-- Analogy: The client-server boundary is to a unified codebase what an embassy boundary is to a city — both spaces exist in the same physical address, but inside the embassy the law of one country applies (server: full filesystem, secret access, database), outside the law of another applies (client: browser sandbox, no secrets), and everyone crossing must pass through documented customs (serialization) with their bags inspected (validation) and stamped (authentication).
+- Analogy: The client-server boundary is to a unified codebase what an embassy boundary is to a city — both spaces exist at the same physical address, but inside the embassy the law of one country applies (server: full filesystem, secret access, database), outside the law of another applies (client: browser sandbox, no secrets), and everyone crossing must pass through documented customs (serialization) with their bags inspected (validation) and stamped (authentication).
 - Common misconception: |
 
 **Keywords**

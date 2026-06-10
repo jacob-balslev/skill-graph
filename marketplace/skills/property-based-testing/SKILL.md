@@ -4,36 +4,21 @@ description: "Use when reasoning about tests that specify universal properties o
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"test-driven-development\",\"testing-strategy\",\"type-safety\",\"mutation-testing\"],\"suppresses\":[\"testing-strategy\",\"mutation-testing\",\"type-safety\"],\"verify_with\":[\"testing-strategy\",\"mutation-testing\"]}"
   subject: quality-assurance
+  public: "true"
+  scope: "Use when reasoning about tests that specify universal properties of code rather than specific input-output pairs: the forall(input) → property quantification, the generator/shrinker primitives that produce inputs and minimize failing cases, the four-rules-of-simple-design analog (commutativity, associativity, idempotence, round-trip, oracle, invariant), the difference between example-based tests (one input, one assertion) and property-based tests (many generated inputs, one universal claim), why property tests find bugs example tests don't, the shrinking discipline that produces minimal failing cases, and the trade-off between generator complexity and bug-finding capacity. Do NOT use for specifying one concrete behavior with one input (use example-based tests under testing-strategy), for fuzz-testing focused on crashes (use fuzz-testing), for mutation testing as a test-suite quality signal (use mutation-testing), or for model-based testing of state machines (use state-machine-modeling)."
   taxonomy_domain: quality/testing
-  owner: skill-graph-maintainer
-  freshness: "2026-05-16"
-  drift_check: "{\"last_verified\":\"2026-05-16\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"property-based testing\",\"PBT\",\"QuickCheck\",\"Hypothesis\",\"fast-check\",\"generator\",\"shrinker\",\"forall\",\"invariant\",\"round-trip property\"]"
   triggers: "[\"should this be a property test\",\"what's an invariant for this function\",\"the bug only happens on weird inputs\",\"QuickCheck or fast-check\",\"how do we test all possible cases\"]"
   examples: "[\"design property-based tests for a sorting function that exercise the universal contract\",\"decide which functions in a parser deserve property tests vs example tests\",\"diagnose a property test that finds a real bug but the shrunk input is large — likely a poorly-shrinkable generator\",\"explain the round-trip property for an encode/decode pair\"]"
   anti_examples: "[\"specify one concrete input-output case (use example-based tests; see testing-strategy)\",\"fuzz for crashes and memory safety (use fuzz-testing)\",\"measure whether tests would catch a defect (use mutation-testing)\"]"
-  relations: "{\"related\":[\"testing-strategy\",\"test-driven-development\",\"type-safety\",\"mutation-testing\"],\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the strategic question of what test levels to invest in; this skill owns one tactical technique (generative tests with universal properties) within that strategy. Property-based testing is a complement to example-based tests, not a replacement.\"},{\"skill\":\"mutation-testing\",\"reason\":\"mutation-testing measures whether the test suite catches code-level defects; property-based testing is one source of high-mutation-killing tests because universal properties tend to be specific about behavior across many inputs. They compose: PBT writes the tests; mutation testing measures their effectiveness.\"},{\"skill\":\"type-safety\",\"reason\":\"type-safety constrains the input space at compile time; property-based testing samples the runtime input space within the type-constraint envelope. Stronger types reduce the property-test surface needed; PBT is most valuable where types alone cannot encode the invariants (algorithmic correctness, business rules, round-trips).\"}],\"verify_with\":[\"testing-strategy\",\"mutation-testing\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "A property-based test is to an example test what an actuarial table is to a single insurance claim — the example tells you what happened in one case, the property tells you what must hold across the entire population; you do not learn that fire insurance is sound by inspecting one policy, you learn it from a contract that quantifies over every house ever insured."
   misconception: "|"
-  concept: "{\"definition\":\"Property-based testing is a tactical technique in which a test specifies a universal property — a claim that must hold for all inputs in a domain — and a test framework generates many random inputs in the domain and checks the property holds. When the property fails on some input, the framework shrinks the input to the smallest failing case to make the bug legible. The unit of specification is a forall-quantified claim, not a single example. Properties typically take three shapes: invariants (a property the output must always have, independent of the input), oracles (the output must equal what an alternative implementation computes), and round-trips (encoding then decoding produces the original value). Property-based testing supplements example-based testing rather than replacing it: examples specify particular behaviors; properties specify the universal contract.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/property-based-testing/SKILL.md
@@ -41,12 +26,19 @@ metadata:
 
 # Property-Based Testing
 
+## Concept of the skill
+
+Property-based testing changes the unit of specification from the example to the universal contract. The four primitives are: the *property* (a forall-quantified claim that must hold for all inputs in a domain), the *generator* (produces random inputs spanning the domain including its edges — empty, single-element, boundary values, Unicode pathologies), the *shrinker* (when the property fails, reduces the failing input to its minimal demonstration — without shrinking, a failing input is random noise; with shrinking, it is the smallest case that exhibits the bug), and the *trial budget* (how many inputs the framework tries before declaring the property held — 100 for cheap properties, 1000+ for slow code or rare-bug input spaces, nightly long-running campaigns for production-critical properties).
+
+Replaces hand-written example sets with generative tests that exercise the *universal contract* of the code. Solves the limitation that example tests verify only the specific cases the author thought to write down — they miss the edge cases the author didn't think of, the combinations they couldn't enumerate, and the boundary conditions hidden in the input space. A well-designed property test exercises hundreds or thousands of inputs per run, including the edges humans systematically miss (empty collections, single-element collections, off-by-one boundaries, Unicode edge cases, integer overflow zones). When the bug is rare in the hand-written example space but findable in the generator's reach, property tests catch what examples cannot. Industrial validation: Hughes et al. (2016) caught real Dropbox synchronization bugs via PBT that example tests had not surfaced over years.
+
+Distinct from testing-strategy, which owns the strategic question of what test levels to invest in — this skill is one tactical technique within the strategy, complementary to example-based tests, not a replacement. Distinct from mutation-testing, which measures whether the test suite catches code-level defects — the two compose: PBT tends to produce high-mutation-killing tests because universal properties are specific about behavior across many inputs; mutation testing then measures their effectiveness. Distinct from type-safety, which constrains the input space at compile time — stronger types reduce the property-test surface needed; PBT is most valuable where types alone cannot encode the invariants (algorithmic correctness, business rules, round-trips). Distinct from fuzz-testing, which asserts no-crash implicitly — PBT asserts an explicit property. Distinct from state-machine-modeling, which owns finite-state representation of workflows (stateful PBT is a related narrower technique). Distinct from test-driven-development, which can be done with either example or property tests (the schools and the unit-of-specification choice are orthogonal). A property-based test is to an example test what an actuarial table is to a single insurance claim — the example tells you what happened in one case, the property tells you what must hold across the entire population; you do not learn that fire insurance is sound by inspecting one policy, you learn it from a contract that quantifies over every house ever insured. The wrong mental model is that property tests *replace* example tests, or that any test with random input is a property test. They do not, and it is not. A test that runs `forall input in [single_value]` is an example test in property-test clothing. A "property" written after the fact to fit whatever the generator happens to produce is not a universal claim — it is whatever the generator's reach happens to be, which verifies nothing meaningful. Property tests are *complements* to example tests in a mature suite: properties for the universal contract; examples for specific cases that document particular behaviors or bug fixes. The discipline lives in *three* places simultaneously — the property must be universal, falsifiable, and meaningful (writing a property requires articulating the contract; if the contract is not articulable, PBT does not apply); the generator must produce inputs that cover the space *including the edges* (generators that produce only "typical" inputs miss bug-triggering edges by construction); the shrinker must reduce failing inputs to a minimal form (if the reported failure is a 500-element random list, the generator/shrinker pair is the bug, not the property). All three must be well-designed for PBT to deliver its promise.
+
 ## Coverage
 
 The tactical testing technique in which a test specifies a universal property — a claim that must hold for all inputs in a domain — and a framework generates many random inputs to challenge the claim, shrinking any failing input to its minimal form. Covers the four primitives (property, generator, shrinker, trial budget), the three classical property shapes (invariant, oracle, round-trip) plus algebraic and metamorphic patterns, the QuickCheck heritage and the modern tool ecosystem (Hypothesis, fast-check, ScalaCheck, proptest, jqwik), the generator/shrinker discipline for domain types, and the integration of property tests with example tests in a test suite.
 
-## Philosophy
-
+## Philosophy of the skill
 Property-based testing changes the unit of specification from the example to the contract. An example test says "for this input, the output should be this." A property test says "for any input matching this generator, this universal claim holds." When the contract is articulable, a property test verifies far more of the behavior than a hand-written set of examples could; when the contract is not articulable, property tests are made up after the fact and verify whatever happens to be in the generator's reach, which is not useful.
 
 The discipline is in three places: the property (is the claim universal, falsifiable, and meaningful?), the generator (does it produce inputs that cover the space, including the edges?), and the shrinker (when a property fails, can the framework reduce the failing input to something a developer can read?). All three must be well-designed for property-based testing to deliver its promise.
@@ -133,7 +125,9 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `quality-assurance`
+- Public: `true`
 - Domain: `quality/testing`
+- Scope: Use when reasoning about tests that specify universal properties of code rather than specific input-output pairs: the forall(input) → property quantification, the generator/shrinker primitives that produce inputs and minimize failing cases, the four-rules-of-simple-design analog (commutativity, associativity, idempotence, round-trip, oracle, invariant), the difference between example-based tests (one input, one assertion) and property-based tests (many generated inputs, one universal claim), why property tests find bugs example tests don't, the shrinking discipline that produces minimal failing cases, and the trade-off between generator complexity and bug-finding capacity. Do NOT use for specifying one concrete behavior with one input (use example-based tests under testing-strategy), for fuzz-testing focused on crashes (use fuzz-testing), for mutation testing as a test-suite quality signal (use mutation-testing), or for model-based testing of state machines (use state-machine-modeling).
 
 **When to use**
 - design property-based tests for a sorting function that exercise the universal contract
@@ -146,13 +140,10 @@ After applying this skill, verify:
 - specify one concrete input-output case (use example-based tests; see testing-strategy)
 - fuzz for crashes and memory safety (use fuzz-testing)
 - measure whether tests would catch a defect (use mutation-testing)
-- Owned by `testing-strategy`: the strategic question of what test levels to invest in
-- Owned by `mutation-testing`
-- Owned by `type-safety`
 
 **Related skills**
 - Verify with: `testing-strategy`, `mutation-testing`
-- Related: `testing-strategy`, `test-driven-development`, `type-safety`, `mutation-testing`
+- Related: `test-driven-development`, `testing-strategy`, `type-safety`, `mutation-testing`
 
 **Concept**
 - Mental model: |

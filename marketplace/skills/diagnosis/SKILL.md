@@ -5,31 +5,16 @@ license: MIT
 compatibility: "Language- and stack-agnostic. The classification taxonomy, evidence protocol, and confidence ladder apply to any software failure investigation; specific technique names (git bisect, EXPLAIN plans, HMAC verification) are illustrative — substitute the equivalents of your stack."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.1.0"
+  relations: "{\"related\":[\"code-review\",\"error-tracking\",\"owasp-security\",\"testing-strategy\",\"debugging\"],\"suppresses\":[\"debugging\"],\"verify_with\":[\"debugging\",\"a11y\"]}"
   subject: software-engineering-method
+  public: "true"
+  scope: "Use when facing an unknown software failure, when symptoms point to different root causes, or when an initial debugging attempt has not converged. Provides a triage-first diagnostic routing framework: classify the failure, collect the right evidence, choose a technique, track confidence, and escalate when stuck. Do NOT use for executing scientific debugging after triage (use `debugging`), code-quality review (use `code-review`), or proactive observability setup."
   taxonomy_domain: engineering/debugging
-  owner: skill-graph-maintainer
-  freshness: "2026-05-18"
-  drift_check: "{\"last_verified\":\"2026-05-18\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"diagnostic triage software failure\",\"symptom classification taxonomy\",\"what kind of bug is this\",\"which debugging approach\",\"diagnostic routing framework\",\"evidence collection before hypothesis\",\"confidence ladder debugging\",\"escalation criteria debugging\",\"cascade vs coincidence failure\",\"environment ghost\"]"
   examples: "[\"the agent has been chasing this bug for 30 minutes — what's the structural fix?\",\"the symptoms span data integrity and UI rendering — which is the root cause?\",\"the build fails locally but passes in CI — how do I diagnose that class first?\",\"I have a stack trace and an unhandled exception — what's the cheapest technique?\",\"intermittent failure that doesn't reproduce on retry — which class is this?\",\"we ran profiling, instrumentation, and bisect — none converge. What did we misclassify?\",\"two engineers disagree on whether this is a config issue or a logic error — what evidence settles it?\"]"
   anti_examples: "[\"actually execute scientific-method debugging on this stack trace\",\"review this AI-generated PR for correctness\",\"scan this repo for OWASP top 10 vulnerabilities\",\"design observability instrumentation for this service\",\"decide which agent should pick up this ticket\",\"what's the right test pyramid for this feature\"]"
-  relations: "{\"boundary\":[{\"skill\":\"debugging\",\"reason\":\"debugging is the *execution* phase (run a chosen technique against an already-classified failure); diagnosis is the *triage* phase before debugging — classify first, then debug\"}],\"related\":[\"debugging\",\"error-tracking\",\"code-review\",\"owasp-security\",\"testing-strategy\"],\"verify_with\":[\"debugging\"]}"
   grounding: "{\"subject_matter\":\"Portable software-failure diagnostic triage: evidence collection, symptom classification, technique selection, confidence tracking, escalation, and sensitive diagnostic evidence handling\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://sre.google/sre-book/effective-troubleshooting/\",\"https://git-scm.com/docs/git-bisect\",\"https://stackoverflow.com/help/minimal-reproducible-example\",\"https://developer.chrome.com/docs/devtools/performance/overview\",\"https://www.postgresql.org/docs/current/sql-explain.html\",\"https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html\",\"https://opentelemetry.io/docs/security/handling-sensitive-data/\"],\"failure_modes\":[\"fixing_before_classification\",\"hypothesis_without_baseline_evidence\",\"wrong_technique_for_problem_class\",\"confidence_inflation_without_verification\",\"stuck_state_not_escalated_or_reclassified\",\"diagnostic_evidence_captures_sensitive_or_secret_data\",\"eval_or_routing_claim_inflated_without_run\"],\"evidence_priority\":\"equal\"}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: UNVERIFIED
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-engineering-method/diagnosis/SKILL.md
@@ -38,12 +23,15 @@ metadata:
 
 # Diagnosis
 
+## Concept of the skill
+
+Use when facing an unknown software failure, when symptoms point to different root causes, or when an initial debugging attempt has not converged.
+
 ## Coverage
 
 The triage-first framework that classifies a software failure into a _problem class_ and routes it to the right diagnostic technique before root-cause investigation begins. Names nine symptom classes — Logic Error, Runtime Crash, Data Integrity, Timing / Race, Performance, Configuration, Security, Integration, Tooling / Build / Script-path — and provides a classification decision tree that walks from "is there a stack trace?" to a single class. Specifies a universal evidence-collection protocol (exact error message, reproduction steps, last-known-good state, environment facts) and class-specific evidence checklists. Lays out the technique-selection matrix — stack-trace reading, data-flow tracing, git bisect, differential comparison, instrumentation, MRE isolation, profiling, boundary probing — with each technique's time cost, best-case class, and evidence prerequisite. Defines the diagnostic confidence ladder (level 0 Symptom → 1 Classified → 2 Localized → 3 Root Cause → 4 Verified Fix) with explicit "you can say / you cannot say" boundaries at each level and stuck-state checkpoints (5-min, 10-min, 15-min, oscillation). Names escalation criteria for switching approach, switching class, or escalating to a human. Covers three cross-domain patterns where multiple classes apply simultaneously: the Cascade (one root cause, many symptoms), the Coincidence (two unrelated bugs that look like one), the Environment Ghost (works in one environment, fails in another). Catalogues diagnostic anti-patterns and ships a structured diagnostic-session template.
 
-## Philosophy
-
+## Philosophy of the skill
 Debugging fails most often not because the engineer lacks skill, but because the wrong methodology is applied to the problem class. A timing bug needs different tools than a data-integrity bug. A scope leak needs different thinking than a rendering glitch. The most expensive debugging mistake is spending 30 minutes applying scientific-method debugging to what is actually a configuration error discoverable in 2 minutes.
 
 This skill is the triage _nurse_, not the surgeon. A nurse does not treat the patient — they take vital signs, route to cardiology or neurology, and escalate to the attending physician when criteria are met. Software diagnosis works the same way: collect evidence, classify the symptom, route to the right specialist technique, and pivot when convergence stalls. The small cost of triage is almost always smaller than the cost of chasing a plausible but wrong cause. Skipping triage because "the cause is obvious" is a confirmation-bias trap; even seasoned engineers benefit from making the classification step explicit.
@@ -383,7 +371,9 @@ The current eval metadata remains intentionally conservative: `eval_artifacts: p
 
 **Classification**
 - Subject: `software-engineering-method`
+- Public: `true`
 - Domain: `engineering/debugging`
+- Scope: Use when facing an unknown software failure, when symptoms point to different root causes, or when an initial debugging attempt has not converged. Provides a triage-first diagnostic routing framework: classify the failure, collect the right evidence, choose a technique, track confidence, and escalate when stuck. Do NOT use for executing scientific debugging after triage (use `debugging`), code-quality review (use `code-review`), or proactive observability setup.
 
 **When to use**
 - the agent has been chasing this bug for 30 minutes — what's the structural fix?
@@ -401,11 +391,10 @@ The current eval metadata remains intentionally conservative: `eval_artifacts: p
 - design observability instrumentation for this service
 - decide which agent should pick up this ticket
 - what's the right test pyramid for this feature
-- Owned by `debugging`
 
 **Related skills**
-- Verify with: `debugging`
-- Related: `debugging`, `error-tracking`, `code-review`, `owasp-security`, `testing-strategy`
+- Verify with: `debugging`, `a11y`
+- Related: `code-review`, `error-tracking`, `owasp-security`, `testing-strategy`, `debugging`
 
 **Grounding**
 - Mode: `universal`

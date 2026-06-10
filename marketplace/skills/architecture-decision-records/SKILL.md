@@ -5,15 +5,15 @@ license: MIT
 compatibility: "Portable ADR discipline for Markdown decision logs, repo docs, design docs, and architecture governance."
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"related\":[\"framework-fit-analysis\",\"bounded-context-mapping\",\"system-interface-contracts\",\"dependency-architecture\",\"code-review\"],\"suppresses\":[\"framework-fit-analysis\",\"system-interface-contracts\"],\"verify_with\":[\"code-review\"]}"
   subject: software-architecture
   scope: "Writing, reviewing, and updating Architecture Decision Records — context, decision, options rejected, consequences, status, supersession, and follow-up verification. Portable across any project that records architectural decisions; principle-grounded, not repo-bound. Excludes general documentation prose (documentation), code-review findings (code-review), and choosing between frameworks before a decision exists (framework-fit-analysis)."
+  public: "true"
   taxonomy_domain: architecture/decision-records
   stability: experimental
   keywords: "[\"ADR\",\"architecture decision record\",\"decision log\",\"technical decision\",\"decision consequences\",\"options rejected\",\"superseded ADR\",\"architectural rationale\",\"decision status\"]"
   examples: "[\"write an ADR for choosing Postgres views as the source of truth\",\"review this architecture decision record for missing consequences and rejected options\",\"this decision changed - should we amend the ADR or supersede it?\",\"extract the decision from this long architecture discussion into a durable ADR\"]"
   anti_examples: "[\"write a general README section explaining how this module works\",\"choose which framework we should use for this project\",\"review this PR for bugs and regressions\",\"design the interface contract between these two services\"]"
-  relations: "{\"boundary\":[{\"skill\":\"framework-fit-analysis\",\"reason\":\"framework-fit-analysis evaluates options before selection; architecture-decision-records records the selected option and tradeoffs\"},{\"skill\":\"system-interface-contracts\",\"reason\":\"system-interface-contracts designs boundaries and contracts; architecture-decision-records records the decision to adopt one\"}],\"related\":[\"framework-fit-analysis\",\"bounded-context-mapping\",\"system-interface-contracts\",\"dependency-architecture\",\"code-review\"],\"verify_with\":[\"code-review\"]}"
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-architecture/architecture-decision-records/SKILL.md
@@ -22,12 +22,15 @@ metadata:
 
 # Architecture Decision Records
 
+## Concept of the skill
+
+Writing, reviewing, and updating Architecture Decision Records — context, decision, options rejected, consequences, status, supersession, and follow-up verification.
+
 ## Coverage
 
 Create and audit ADRs for significant technical choices. Covers decision context, forces, considered options, chosen decision, rejected alternatives, consequences, status, supersession, links to implementation, and follow-up verification. Use for decisions with future readers, cross-team consequences, operational cost, or hard-to-reverse effects.
 
-## Philosophy
-
+## Philosophy of the skill
 An ADR is not a design essay. It is a durable answer to "Why did we choose this, given what we knew then?" It should preserve the tradeoff, not retroactively make the decision look inevitable.
 
 Good ADRs are short, dated, statused, and honest about consequences. If a future agent cannot tell whether the decision still holds, the record failed.
@@ -78,6 +81,7 @@ Good ADRs are short, dated, statused, and honest about consequences. If a future
 
 **Classification**
 - Subject: `software-architecture`
+- Public: `true`
 - Domain: `architecture/decision-records`
 - Scope: Writing, reviewing, and updating Architecture Decision Records — context, decision, options rejected, consequences, status, supersession, and follow-up verification. Portable across any project that records architectural decisions; principle-grounded, not repo-bound. Excludes general documentation prose (documentation), code-review findings (code-review), and choosing between frameworks before a decision exists (framework-fit-analysis).
 
@@ -92,8 +96,6 @@ Good ADRs are short, dated, statused, and honest about consequences. If a future
 - choose which framework we should use for this project
 - review this PR for bugs and regressions
 - design the interface contract between these two services
-- Owned by `framework-fit-analysis`
-- Owned by `system-interface-contracts`
 
 **Related skills**
 - Verify with: `code-review`

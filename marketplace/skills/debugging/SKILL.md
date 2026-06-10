@@ -5,30 +5,15 @@ license: MIT
 compatibility: "Markdown, Git, any codebase"
 allowed-tools: Read Grep Bash
 metadata:
-  eval_last_run: "{\"at\":\"2026-05-31T13:46:54.722Z\",\"status\":\"fail\",\"runner\":\"node skill-graph/lib/audit/evaluate-skill.js --mode application\",\"artifact\":\"agent-orchestration/logs/eval-results/debugging/2026-05-31T13-46-54-721Z.json\"}"
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"generative-ui\",\"test-driven-development\",\"testing-strategy\",\"agent-eval-design\",\"tool-call-strategy\"],\"suppresses\":[\"refactor\"],\"verify_with\":[\"testing-strategy\",\"observability-modeling\"]}"
   subject: software-engineering-method
-  owner: skill-graph-maintainer
-  freshness: "2026-04-18"
-  drift_check: "{\"last_verified\":\"2026-04-18\"}"
-  eval_artifacts: present
-  eval_state: passing
-  routing_eval: present
+  scope: "Portable failure-reproduction and root-cause isolation discipline for software work: turning an observed broken behavior, failing test, or contradictory runtime output into a deterministic reproduction; narrowing scope; capturing evidence at the moment of failure; separating symptoms from causes; verifying the fix against the same evidence path; and adding a regression test. Excludes feature planning, architecture design, behavior-preserving refactor, general documentation, and choosing test coverage when no active failure is being investigated."
+  public: "true"
   stability: experimental
-  keywords: "[\"debugging\",\"reproduce failure\",\"reproduce bug\",\"failing test\",\"root cause\",\"symptom vs cause\",\"minimum reproduction\",\"bisect\",\"what caused it\",\"my tests are failing\",\"what changed\",\"regression\",\"used to work\",\"what broke\"]"
+  keywords: "[\"debugging\",\"tests fail in CI\",\"used to work\",\"reproduce failure\",\"failing test\",\"root cause\",\"symptom vs cause\",\"minimum reproduction\",\"regression\",\"what changed\"]"
   triggers: "[\"debugging-skill\"]"
   examples: "[\"my tests pass locally but fail in CI — why?\",\"this function used to work yesterday; what changed?\",\"reproduce this Stripe webhook failure from production logs\",\"I see the symptom but can't find the root cause of this nil panic\"]"
   anti_examples: "[\"plan test coverage for a new feature\",\"document what this function does for future readers\",\"refactor this messy code while the test suite is green\"]"
-  relations: "{\"boundary\":[{\"skill\":\"refactor\",\"reason\":\"refactor is behavior-preserving code change with green tests; debugging is invoked because tests or behavior are NOT green\"}],\"verify_with\":[\"testing-strategy\"],\"related\":[\"testing-strategy\",\"generative-ui\",\"test-driven-development\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: REDUNDANT
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-engineering-method/debugging/SKILL.md
@@ -36,6 +21,18 @@ metadata:
 ---
 
 # Debugging
+
+## Concept of the skill
+
+**What it is:** Debugging is the discipline of turning a broken behavior into a reproduced failure, isolating the cause, verifying the fix on the same evidence path, and preserving the case as a regression test.
+
+**Mental model:** A debugging pass has six gates: reproduce the failure, reduce the scope, capture evidence at the failure point, form a hypothesis that explains all evidence, verify the fix with the same path, and add a regression test that fails without the fix.
+
+**Why it exists:** Plausible explanations are cheap and often wrong. Debugging keeps the agent from patching the visible symptom before proving where the state first becomes wrong.
+
+**What it is NOT:** It is not feature planning, architecture design, green-test refactoring, documentation, or test-strategy planning for a future change.
+
+**Common misconception:** The newest change is not automatically the cause. It is only a hypothesis until it explains the failing path and the unaffected control paths.
 
 ## Coverage
 
@@ -46,7 +43,7 @@ metadata:
 - Fix verification: re-running the original failure path to confirm the fix is real
 - Regression prevention: converting the failing case into a permanent test so the same bug cannot return silently
 
-## Philosophy
+## Philosophy of the skill
 
 The fastest way to fix a bug is usually the wrong fix. A working reproduction is worth more than a plausible hypothesis; a plausible hypothesis is worth more than a clever fix; a clever fix that skips the reproduction step ships the same bug again under a different name. When pressure is high the temptation to jump from symptom to patch is also high — resist it, because the cost of a wrong fix is paid again by the next person who hits the same failure with less context than you had.
 
@@ -95,6 +92,8 @@ This skill ships a comprehension-eval artifact at [`examples/evals/debugging.jso
 
 **Classification**
 - Subject: `software-engineering-method`
+- Public: `true`
+- Scope: Portable failure-reproduction and root-cause isolation discipline for software work: turning an observed broken behavior, failing test, or contradictory runtime output into a deterministic reproduction; narrowing scope; capturing evidence at the moment of failure; separating symptoms from causes; verifying the fix against the same evidence path; and adding a regression test. Excludes feature planning, architecture design, behavior-preserving refactor, general documentation, and choosing test coverage when no active failure is being investigated.
 
 **When to use**
 - my tests pass locally but fail in CI — why?
@@ -107,13 +106,12 @@ This skill ships a comprehension-eval artifact at [`examples/evals/debugging.jso
 - plan test coverage for a new feature
 - document what this function does for future readers
 - refactor this messy code while the test suite is green
-- Owned by `refactor`
 
 **Related skills**
-- Verify with: `testing-strategy`
-- Related: `testing-strategy`, `generative-ui`, `test-driven-development`
+- Verify with: `testing-strategy`, `observability-modeling`
+- Related: `generative-ui`, `test-driven-development`, `testing-strategy`, `agent-eval-design`, `tool-call-strategy`
 
 **Keywords**
-- `debugging`, `reproduce failure`, `reproduce bug`, `failing test`, `root cause`, `symptom vs cause`, `minimum reproduction`, `bisect`, `what caused it`, `my tests are failing`, `what changed`, `regression`, `used to work`, `what broke`
+- `debugging`, `tests fail in CI`, `used to work`, `reproduce failure`, `failing test`, `root cause`, `symptom vs cause`, `minimum reproduction`, `regression`, `what changed`
 
 <!-- skill-graph-context:end -->

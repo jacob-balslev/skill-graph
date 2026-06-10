@@ -5,30 +5,15 @@ license: MIT
 compatibility: "Language- and stack-agnostic. The locate-to-solve loop, boundary-localization techniques, and verification rules apply to any software bug investigation; specific tool names (binary search, git bisect, MRE) are illustrative — substitute the equivalents of your stack."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"diagnosis\",\"pattern-recognition\",\"lint-overlay\",\"testing-strategy\",\"code-review\"],\"suppresses\":[\"debugging\",\"refactor\"],\"verify_with\":[\"tool-call-strategy\",\"context-graph\",\"skill-infrastructure\"]}"
   subject: software-engineering-method
+  public: "true"
+  scope: "Use when locating a bug in an unfamiliar codebase, tracing a failure from symptom to source, or choosing between candidate fixes after the symptom is observed but before a patch lands. Covers the locate-to-solve workflow: problem-statement contract, search-space reduction, boundary-based fault localization, good-vs-bad path comparison, binary search through a call chain, minimal repro, root-cause isolation, fix option comparison, blast-radius review, and post-fix verification. Do NOT use for broad task planning once the bug is localized, test-pyramid design, or performance forensics."
   taxonomy_domain: engineering/debugging
-  owner: skill-graph-maintainer
-  freshness: "2026-05-06"
-  drift_check: "{\"last_verified\":\"2026-05-06\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"locate a defect in unfamiliar codebase\",\"failing-boundary identification\",\"first failing boundary\",\"find where defect originates\",\"trace symptom backward to source\",\"search-space reduction by symptom type\",\"boundary-based fault localization\",\"locate-to-solve workflow\",\"search-space bounding rules\",\"entry-point tracing technique\"]"
   examples: "[\"this route returns 500 but I have no idea where the failure starts — walk me through finding the boundary\",\"I have a wrong-total bug — show me how to locate the divergence point\",\"the build broke after a merge but the error trace is a cascade — which file should I open first?\",\"I see the symptom but I am still in discovery — bound the search space for me\",\"two candidate fixes for this null-pointer crash — compare blast radius between them\",\"I have an unfamiliar codebase and need to find where this report is computed wrong\",\"what step in the locate-to-fix workflow did I skip — the bug came back under different inputs\"]"
   anti_examples: "[\"plan the next 6 weeks of work for the team\",\"review this PR for code quality\",\"this endpoint is slow under load — find the bottleneck\",\"scan this repo for OWASP top 10 vulnerabilities\",\"run scientific-method debugging on this stack trace\",\"I see the symptom but cannot find the root cause of this nil panic\",\"classify this failure into a problem class before debugging\",\"pin this regression so the same bug can't slip through again\",\"decide what test pyramid this feature needs\"]"
-  relations: "{\"boundary\":[{\"skill\":\"debugging\",\"reason\":\"debugging is the *execution* of one chosen technique against an already-localized bug; problem-locating-solving is the workflow that produces the localization — same 'I have a bug, what do I do?' prompt routes to debugging when the class is known and to problem-locating-solving when localization is needed first\"},{\"skill\":\"refactor\",\"reason\":\"refactor restructures non-broken code for clarity or maintainability; problem-locating-solving finds and fixes broken code — same 'this code needs change' prompt routes by whether the trigger is a failure (locate) or a quality concern (refactor)\"}],\"related\":[\"pattern-recognition\",\"diagnosis\",\"lint-overlay\",\"testing-strategy\",\"code-review\"],\"verify_with\":[\"tool-call-strategy\",\"context-graph\",\"skill-infrastructure\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-engineering-method/problem-locating-solving/SKILL.md
@@ -38,12 +23,15 @@ metadata:
 
 # Problem Locating and Solving
 
+## Concept of the skill
+
+Use when locating a bug in an unfamiliar codebase, tracing a failure from symptom to source, or choosing between candidate fixes after the symptom is observed but before a patch lands.
+
 ## Coverage
 
 End-to-end bug localization workflow: problem-statement construction, search-space reduction by symptom type, boundary-based fault localization (entry-point tracing, differential comparison, binary search, minimal repro, search-before-read), root-cause isolation (symptom vs cause analysis with stop conditions), multi-option fix generation across local-patch / guardrail / structural classes, blast-radius comparison between candidates, implementation rules that bind the fix to a regression-proofing artifact, five verification types (repro test, regression test, neighbor check, blast-radius check, explanation check), and a four-question post-fix reflection that promotes one-off fixes into prevention mechanisms when the class could recur.
 
-## Philosophy
-
+## Philosophy of the skill
 The most common debugging failure is not lack of skill — it is skipping steps. Agents jump from symptom to fix without isolating the root cause, which produces patches that hide bugs instead of removing them. This skill exists for the gap between "something is wrong" and "the right fix is verified."
 
 Every step in the loop has been added because skipping it caused a real false fix. Knowing debugging theory is not enough — you need a repeatable way to find the failing boundary, isolate the actual cause, compare solution options, and prove the fix closes the problem without widening the blast radius. The loop is the process; intuition without the loop produces patches that look like fixes and re-emerge under different inputs two days later.
@@ -232,7 +220,9 @@ If the same class of bug could reasonably recur, promote the learning into a pre
 
 **Classification**
 - Subject: `software-engineering-method`
+- Public: `true`
 - Domain: `engineering/debugging`
+- Scope: Use when locating a bug in an unfamiliar codebase, tracing a failure from symptom to source, or choosing between candidate fixes after the symptom is observed but before a patch lands. Covers the locate-to-solve workflow: problem-statement contract, search-space reduction, boundary-based fault localization, good-vs-bad path comparison, binary search through a call chain, minimal repro, root-cause isolation, fix option comparison, blast-radius review, and post-fix verification. Do NOT use for broad task planning once the bug is localized, test-pyramid design, or performance forensics.
 
 **When to use**
 - this route returns 500 but I have no idea where the failure starts — walk me through finding the boundary
@@ -253,12 +243,10 @@ If the same class of bug could reasonably recur, promote the learning into a pre
 - classify this failure into a problem class before debugging
 - pin this regression so the same bug can't slip through again
 - decide what test pyramid this feature needs
-- Owned by `debugging`
-- Owned by `refactor`
 
 **Related skills**
 - Verify with: `tool-call-strategy`, `context-graph`, `skill-infrastructure`
-- Related: `pattern-recognition`, `diagnosis`, `lint-overlay`, `testing-strategy`, `code-review`
+- Related: `diagnosis`, `pattern-recognition`, `lint-overlay`, `testing-strategy`, `code-review`
 
 **Keywords**
 - `locate a defect in unfamiliar codebase`, `failing-boundary identification`, `first failing boundary`, `find where defect originates`, `trace symptom backward to source`, `search-space reduction by symptom type`, `boundary-based fault localization`, `locate-to-solve workflow`, `search-space bounding rules`, `entry-point tracing technique`

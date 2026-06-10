@@ -3,29 +3,20 @@ name: user-research
 description: "Use when planning or conducting generative qualitative research with real users — interviews, contextual inquiry, ethnographic observation, diary studies — to learn what people do, think, and need in their own context. Do NOT use for analytics review, survey statistics, A/B test interpretation, or agent-side intent classification — those are different research practices entirely. Do NOT use for Analyze last quarter's NPS results and produce a dashboard. Do NOT use for Classify whether this agent request from the user is high-risk before executing. Do NOT use for Set up an A/B test of two onboarding flows."
 license: CC-BY-4.0
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: design
-  scope: "Planning and conducting generative qualitative research with real users — interviews, contextual inquiry, ethnographic observation, diary studies — to learn what people do, think, and need in their own context. Portable across any product-discovery effort; principle-grounded, not repo-bound. Excludes analytics review, survey statistics, A/B test interpretation, and agent-side intent classification (different research practices)."
-  owner: skill-graph-maintainer
-  freshness: "2026-05-12"
-  drift_check: "{\"last_verified\":\"2026-05-12\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
+  public: "true"
+  scope: "Planning and conducting generative qualitative research with real users — semi-structured interviews, contextual inquiry, ethnographic observation, diary studies, and intercept studies — to discover what people do, think, feel, and need in their own context before a solution exists. Portable across any product-discovery effort; principle-grounded, not repo-bound. Excludes analytics review, survey statistics, A/B test interpretation, usability evaluation of an existing artifact, and agent-side intent classification (those are different research practices)."
   stability: experimental
   keywords: "[\"user interviews\",\"contextual inquiry\",\"ethnographic observation\",\"diary study\",\"generative research\",\"qualitative research\",\"interview guide\",\"leading questions\",\"master-apprentice model\",\"in-context observation\"]"
   triggers: "[\"interview users\",\"user research plan\",\"what to ask users\",\"contextual inquiry\",\"diary study\"]"
   examples: "[\"Draft an interview guide for SMB founders adopting their first accounting software.\",\"How do I observe ICU nurses on shift without disturbing the workflow?\",\"Review my interview script for leading questions and solution-prompts.\",\"Plan a two-week diary study for commuters using public transit apps.\"]"
   anti_examples: "[\"Analyze last quarter's NPS results and produce a dashboard.\",\"Classify whether this agent request from the user is high-risk before executing.\",\"Set up an A/B test of two onboarding flows.\"]"
-  relations: "{\"related\":[\"problem-framing\",\"research-synthesis\",\"usability-testing\",\"design-thinking\",\"intent-recognition\"],\"boundary\":[{\"skill\":\"usability-testing\",\"reason\":\"usability-testing is evaluative — it watches users attempt tasks on an artifact to find usability defects. user-research is generative — it studies users before any artifact exists, to discover needs and context.\"}]}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
+  relations: "{\"related\":[\"problem-framing\",\"research-synthesis\",\"usability-testing\",\"design-thinking\",\"intent-recognition\"],\"boundary\":[{\"skill\":\"usability-testing\",\"reason\":\"usability-testing is evaluative — it watches users attempt tasks on an artifact to find usability defects. user-research is generative — it studies users before any artifact exists, to discover needs and context.\"}],\"verify_with\":[\"research-synthesis\",\"problem-framing\"]}"
+  mental_model: "|"
+  purpose: "|"
+  concept_boundary: "|"
+  analogy: "A user researcher is a field naturalist, not an interrogator — they study the animal in its habitat and record what it actually does, rather than capturing it, asking it to predict its own behavior, and writing down the confident answer it gives to please them."
+  misconception: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/user-research/SKILL.md
@@ -33,6 +24,10 @@ metadata:
 ---
 
 # User Research
+
+## Concept of the skill
+
+User research, in its generative qualitative form, is the practice of learning what real people do, think, feel, and need in their own context — typically *before* a solution exists — so that a team builds for an actual user rather than an imagined one. It spans three method families that make different trade-offs between depth, naturalism, scale, and scheduling cost: **generative interviews** (semi-structured, episodic, using silence as a tool), **contextual methods** (contextual inquiry with its master-apprentice stance, fly-on-the-wall observation, shadowing — which extend interviews into the user's real environment), and **longitudinal methods** (diary studies and experience sampling — which capture behavior that never surfaces in a single session). What unifies them is a specific epistemological discipline: humans are unreliable narrators of their own behavior, especially when asked hypothetical or future-tense questions, but reasonably reliable when describing concrete recent episodes. The craft is therefore the deliberate opposite of good conversation — leave silence intact, ask people to "say more about that" instead of paraphrasing, ask "tell me about the last time" instead of "would you," and treat a surprising answer as the proof that the conversation is producing new information rather than confirming a prior belief.
 
 ## Coverage
 User research covers the generative qualitative methods that surface what people do, think, feel, and need — typically before a solution exists. The core methods are **semi-structured interviews** (Steve Portigal, Tomer Sharon), **contextual inquiry** with its master-apprentice stance (Beyer & Holtzblatt), **ethnographic observation** in the user's actual environment, **diary studies** for behaviors that unfold over days or weeks, and **intercept studies** for in-the-moment reactions. Each method trades off depth, naturalism, scale, and scheduling cost differently; choosing well depends on what kind of evidence the project needs.
@@ -43,7 +38,7 @@ Contextual methods extend interviews into the user's environment. **Contextual i
 
 Diary and longitudinal methods cover behaviors that do not surface in a single session. Daily prompts, photo diaries, and experience sampling (Csíkszentmihályi) capture in-context moments and reduce recall bias.
 
-## Philosophy
+## Philosophy of the skill
 User research is harder than it looks because the natural conversational instincts that make humans good company — finishing each other's sentences, offering sympathy, confirming what the other person seems to want to hear — actively destroy data quality. The discipline trains interviewers to do the opposite: leave silence intact, ask the participant to "say more about that" instead of paraphrasing, and treat surprise as the signal that the conversation is producing new information.
 
 The practice is grounded in a specific epistemological claim: people are unreliable narrators of their own behavior, especially when asked hypothetical or future-tense questions, but they are reasonably reliable when describing concrete recent episodes. This is why methods skew toward "tell me about the last time" over "would you ever" — episodic memory is more trustworthy than self-prediction. It is also why observation outranks interview when the project can afford it: what people do and what people say they do are routinely different.
@@ -70,7 +65,8 @@ The practice is grounded in a specific epistemological claim: people are unrelia
 
 **Classification**
 - Subject: `design`
-- Scope: Planning and conducting generative qualitative research with real users — interviews, contextual inquiry, ethnographic observation, diary studies — to learn what people do, think, and need in their own context. Portable across any product-discovery effort; principle-grounded, not repo-bound. Excludes analytics review, survey statistics, A/B test interpretation, and agent-side intent classification (different research practices).
+- Public: `true`
+- Scope: Planning and conducting generative qualitative research with real users — semi-structured interviews, contextual inquiry, ethnographic observation, diary studies, and intercept studies — to discover what people do, think, feel, and need in their own context before a solution exists. Portable across any product-discovery effort; principle-grounded, not repo-bound. Excludes analytics review, survey statistics, A/B test interpretation, usability evaluation of an existing artifact, and agent-side intent classification (those are different research practices).
 
 **When to use**
 - Draft an interview guide for SMB founders adopting their first accounting software.
@@ -86,7 +82,14 @@ The practice is grounded in a specific epistemological claim: people are unrelia
 - Owned by `usability-testing`
 
 **Related skills**
+- Verify with: `research-synthesis`, `problem-framing`
 - Related: `problem-framing`, `research-synthesis`, `usability-testing`, `design-thinking`, `intent-recognition`
+
+**Concept**
+- Mental model: |
+- Purpose: |
+- Analogy: A user researcher is a field naturalist, not an interrogator — they study the animal in its habitat and record what it actually does, rather than capturing it, asking it to predict its own behavior, and writing down the confident answer it gives to please them.
+- Common misconception: |
 
 **Keywords**
 - `user interviews`, `contextual inquiry`, `ethnographic observation`, `diary study`, `generative research`, `qualitative research`, `interview guide`, `leading questions`, `master-apprentice model`, `in-context observation`

@@ -5,30 +5,15 @@ license: MIT
 compatibility: "Stack-agnostic. The actor / scenario / top-task model, the five friction dimensions, the breakpoint taxonomy, and the primary / secondary / supporting hierarchy apply to any UI under review; persona / journey YAML files are illustrative — substitute the equivalents (Notion, Confluence, in-repo Markdown, Figma annotations) of your team."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"interaction-feedback\",\"visual-design-foundations\",\"diagnosis\",\"pattern-recognition\",\"code-review\",\"information-architecture\",\"layout-composition\",\"interaction-patterns\",\"a11y\"],\"verify_with\":[\"a11y\",\"information-architecture\"]}"
   subject: reasoning-strategy
+  public: "true"
+  scope: "Use when auditing a route, defining a route contract, reviewing onboarding or setup flows, diagnosing why a page feels confusing, or when the user asks about top tasks, time-to-value, branching, dead ends, or task complexity. Provides goal-driven UX analysis that turns vague critique into explicit goal -> task -> subtask decomposition and a primary / secondary / supporting hierarchy contract for the first viewport. Do NOT use for control-pattern choice (use `interaction-patterns`), visual craft (use `visual-design-foundations`), responsive layout (use `layout-composition`), or accessibility-only QA (use `a11y`)."
   taxonomy_domain: foundations/analysis
-  owner: skill-graph-maintainer
-  freshness: "2026-05-06"
-  drift_check: "{\"last_verified\":\"2026-05-06\"}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"top task analysis\",\"goal-driven UX review\",\"route audit workflow\",\"onboarding flow analysis\",\"task friction scoring\",\"five friction dimensions\",\"dead-end detection\",\"hidden next-step diagnosis\",\"hierarchy contract first viewport\",\"actor and scenario identification\"]"
   examples: "[\"this onboarding flow feels confusing — analyze the task structure\",\"audit this dashboard route for whether it supports the user's top task\",\"what should be above the fold on this page?\",\"users keep abandoning this wizard at step 3 — find the breakpoint\",\"decide what belongs in the first viewport for this analytics page\",\"diagnose why this multi-step setup has too many decisions\",\"the team disagrees on what the top task is for this route — settle it\"]"
   anti_examples: "[\"review this PR for code quality\",\"audit this UI for WCAG 2.2 violations\",\"decide the CSS grid layout for this hero section\",\"pick the right colors for this status badge\",\"build the navigation taxonomy for the whole product\",\"should we use a dropdown or a stepper here\"]"
-  relations: "{\"related\":[\"diagnosis\",\"pattern-recognition\",\"information-architecture\",\"layout-composition\",\"interaction-patterns\",\"interaction-feedback\",\"code-review\",\"a11y\",\"visual-design-foundations\"],\"verify_with\":[\"a11y\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/task-analysis/SKILL.md
@@ -37,12 +22,15 @@ metadata:
 
 # Task Analysis
 
+## Concept of the skill
+
+Use when auditing a route, defining a route contract, reviewing onboarding or setup flows, diagnosing why a page feels confusing, or when the user asks about top tasks, time-to-value, branching, dead ends, or task complexity.
+
 ## Coverage
 
 Goal-driven UX analysis for any route or flow: identifying the actor and scenario from persona / journey contracts, extracting the top task for a route, breaking tasks into sequential subtasks with skip paths and blocked states, scoring task friction across five dimensions (discoverability, cognitive load, effort, trust, recovery), identifying breakpoints (dead ends, hidden next steps, excessive branching, unclear success states, misleading value presentation, mobile-only friction, role / permission confusion), and producing the primary / secondary / supporting hierarchy contract for the first viewport that hands off to layout and composition skills. Applies to route audits, onboarding flow reviews, setup wizards, multi-step processes, and any page where "it feels confusing" needs a structured diagnosis. Includes a five-step analysis protocol, a structured output template, an anti-pattern list (Nielsen-first heuristic critique, "rendered correctly" as proof, ignoring skip paths, decorative polish over task completion, fictional persona detail), and a verification checklist that confirms the actor and scenario were named explicitly rather than assumed.
 
-## Philosophy
-
+## Philosophy of the skill
 UX quality is not about how a page looks — it is about whether the page supports the user's top task. Without task analysis, agents default to generic heuristic critique ("add more whitespace," "reduce clutter") that sounds professional but changes nothing about task completion.
 
 This skill exists because aesthetic-first design reviews produce recommendations that do not address why users abandon flows. Task analysis forces the question: what is the user trying to accomplish, and where does the route break that goal? Once the goal is explicit, every layout, copy, and interaction decision can be measured against task support rather than personal taste — and the conversation moves from subjective debate ("I think this looks better") to falsifiable claim ("this change reduces friction at the discoverability dimension for step 2").
@@ -229,7 +217,9 @@ After applying task analysis, verify:
 
 **Classification**
 - Subject: `reasoning-strategy`
+- Public: `true`
 - Domain: `foundations/analysis`
+- Scope: Use when auditing a route, defining a route contract, reviewing onboarding or setup flows, diagnosing why a page feels confusing, or when the user asks about top tasks, time-to-value, branching, dead ends, or task complexity. Provides goal-driven UX analysis that turns vague critique into explicit goal -> task -> subtask decomposition and a primary / secondary / supporting hierarchy contract for the first viewport. Do NOT use for control-pattern choice (use `interaction-patterns`), visual craft (use `visual-design-foundations`), responsive layout (use `layout-composition`), or accessibility-only QA (use `a11y`).
 
 **When to use**
 - this onboarding flow feels confusing — analyze the task structure
@@ -249,8 +239,8 @@ After applying task analysis, verify:
 - should we use a dropdown or a stepper here
 
 **Related skills**
-- Verify with: `a11y`
-- Related: `diagnosis`, `pattern-recognition`, `information-architecture`, `layout-composition`, `interaction-patterns`, `interaction-feedback`, `code-review`, `a11y`, `visual-design-foundations`
+- Verify with: `a11y`, `information-architecture`
+- Related: `interaction-feedback`, `visual-design-foundations`, `diagnosis`, `pattern-recognition`, `code-review`, `information-architecture`, `layout-composition`, `interaction-patterns`, `a11y`
 
 **Keywords**
 - `top task analysis`, `goal-driven UX review`, `route audit workflow`, `onboarding flow analysis`, `task friction scoring`, `five friction dimensions`, `dead-end detection`, `hidden next-step diagnosis`, `hierarchy contract first viewport`, `actor and scenario identification`

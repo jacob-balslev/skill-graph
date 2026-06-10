@@ -5,8 +5,10 @@ license: MIT
 compatibility: Portable streaming-architecture guidance. Transport capabilities and proxy/runtime limits vary; verify them in the target platform before production rollout.
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"related\":[\"event-contract-design\",\"rendering-models\",\"real-time-updates\",\"api-design\",\"background-jobs\",\"client-server-boundary\",\"performance-budgets\",\"tool-call-flow\"],\"suppresses\":[\"real-time-updates\",\"api-design\",\"background-jobs\"],\"verify_with\":[\"client-server-boundary\",\"performance-budgets\",\"api-design\",\"real-time-updates\"]}"
   subject: backend-engineering
   scope: "Teaching the portable architecture discipline for incremental value delivery over time: producer, stream, consumer, backpressure, framing, termination, reconnect/resume, in-stream error semantics, and transport trade-offs across HTTP chunked transfer, Server-Sent Events, WebSocket, HTTP/2/gRPC, WHATWG Streams, Node streams, and React server rendering streams. Applies when one logical result is delivered as many ordered chunks or messages and the system must reason about slow consumers, abandoned consumers, partial-result correctness, and resource bounds. Excludes browser freshness UX and live-dashboard transport selection (real-time-updates), single request/response payload design (api-design), durable worker execution and retries (background-jobs), model/tool transcript protocol design (tool-call-flow), event payload/domain-event contracts (event-contract-design), and page-level rendering-model taxonomy (rendering-models)."
+  public: "true"
   taxonomy_domain: engineering/realtime
   grounding: "{\"subject_matter\":\"Portable streaming architecture: incremental value delivery, flow control, framing, termination, reconnect/resume, and transport trade-offs across HTTP chunked transfer, SSE, WebSocket, HTTP/2/gRPC, WHATWG Streams, Node streams, Reactive Streams, and React server rendering streams\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://www.rfc-editor.org/rfc/rfc9112#name-chunked-transfer-coding\",\"https://www.rfc-editor.org/rfc/rfc9113#name-streams-and-multiplexing\",\"https://www.rfc-editor.org/rfc/rfc6455\",\"https://html.spec.whatwg.org/multipage/server-sent-events.html\",\"https://streams.spec.whatwg.org/\",\"https://nodejs.org/api/stream.html\",\"https://grpc.io/docs/what-is-grpc/core-concepts/\",\"https://www.reactive-streams.org/\",\"https://react.dev/reference/react-dom/server/renderToPipeableStream\",\"https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Using_readable_streams\"],\"failure_modes\":[\"Choosing a transport before naming producer, consumer, framing, backpressure, and termination\",\"Treating streaming as a single-response API design problem\",\"Routing browser freshness UX to low-level streaming architecture\",\"Assuming TCP flow control solves application slow-consumer memory growth\",\"Treating silence as stream termination\",\"Using WebSocket for one-way server-to-client streaming without a bidirectional requirement\",\"Using SSE reconnect semantics as if they applied to WebSocket or gRPC exactly-once resume\"],\"evidence_priority\":\"general_knowledge_first\"}"
   stability: experimental
@@ -14,13 +16,11 @@ metadata:
   triggers: "[\"streaming-architecture\",\"how should this endpoint stream\",\"producer stream consumer backpressure termination\",\"what's the backpressure story\",\"partial result delivery\"]"
   examples: "[\"model a producer, stream, consumer, backpressure, and termination contract for an SSE progress stream\",\"choose a pull, credit-based push, drop, block, or sampling backpressure strategy for a stream whose producer outruns its consumer\",\"compare HTTP chunked transfer, SSE, WebSocket, gRPC streaming, WHATWG Streams, and Node streams by directionality, framing, backpressure, and termination\"]"
   anti_examples: "[\"design the JSON shape and status codes for a single request-response API payload\",\"choose polling, SSE, or WebSocket for browser dashboard freshness UX\",\"move a slow CSV export into a background job and define retry policy\"]"
-  relations: "{\"related\":[\"real-time-updates\",\"api-design\",\"background-jobs\",\"client-server-boundary\",\"rendering-models\",\"performance-budgets\",\"tool-call-flow\",\"event-contract-design\"],\"boundary\":[{\"skill\":\"api-design\",\"reason\":\"api-design owns the request/response surface for one bounded round trip; streaming-architecture owns the multi-value-over-time surface where one logical response is delivered as ordered chunks.\"},{\"skill\":\"real-time-updates\",\"reason\":\"real-time-updates owns browser freshness UX and live-dashboard transport selection; streaming-architecture owns the low-level producer/stream/consumer/backpressure/termination contract.\"},{\"skill\":\"background-jobs\",\"reason\":\"background-jobs owns durable worker execution, retry policy, and persisted progress; streaming-architecture owns incremental delivery while the producer is emitting.\"}],\"verify_with\":[\"api-design\",\"performance-budgets\",\"real-time-updates\",\"client-server-boundary\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "A streaming architecture is to data delivery what a conveyor belt is to a factory's order fulfillment — you do not wait for an entire shipment to be assembled before any piece leaves the warehouse; the belt moves boxes one at a time, the loading dock signals when it's full (backpressure), a final marker indicates the shipment is complete (termination), and the receiving truck can start unloading the first box while the last one is still being assembled. A conveyor with no full-dock signal flings boxes onto the floor; a conveyor with no end-marker keeps the truck driver waiting forever."
   misconception: "|"
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/streaming-architecture/SKILL.md
@@ -50,8 +50,7 @@ metadata:
 
 The discipline of designing systems that emit and consume sequences of values over time with explicit flow control. Covers the five primitives (producer, stream, consumer, backpressure, termination), the transport mechanisms (HTTP chunked transfer, SSE, WebSocket, HTTP/2 streams, gRPC streaming, WHATWG Streams, Node streams), the directionality and backpressure-model taxonomies, in-stream error semantics, delivery guarantees, the design contract between producer and consumer, and the failure modes that streaming systems exhibit at scale (slow consumer, abandoned consumer, mid-stream disconnect, head-of-line blocking, partial-result correctness).
 
-## Philosophy
-
+## Philosophy of the skill
 Streaming is the response to a category of problem that batch request/response cannot solve: results that are too big to materialize, too slow to wait for, or too useful at the front to delay until the back arrives. The cost is a more demanding contract between producer and consumer — error semantics get harder, backpressure must be explicit, connections must be managed — but for the problem class it serves, batch is not an inferior streaming; batch is wrong.
 
 The deeper philosophy is that streaming is a contract about *time*. The five primitives — producer, stream, consumer, backpressure, termination — are the same whether the transport is an SSE event source, a gRPC bidirectional RPC, a WHATWG ReadableStream piping into a TransformStream, an RSC chunked response, or an LLM emitting tokens. A practitioner who learns the contract once can move between transports at the cost of an encoding translation; a practitioner who learns only one transport's API conflates the contract with its encoding and treats every new streaming surface as a new concept.
@@ -233,6 +232,7 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `backend-engineering`
+- Public: `true`
 - Domain: `engineering/realtime`
 - Scope: Teaching the portable architecture discipline for incremental value delivery over time: producer, stream, consumer, backpressure, framing, termination, reconnect/resume, in-stream error semantics, and transport trade-offs across HTTP chunked transfer, Server-Sent Events, WebSocket, HTTP/2/gRPC, WHATWG Streams, Node streams, and React server rendering streams. Applies when one logical result is delivered as many ordered chunks or messages and the system must reason about slow consumers, abandoned consumers, partial-result correctness, and resource bounds. Excludes browser freshness UX and live-dashboard transport selection (real-time-updates), single request/response payload design (api-design), durable worker execution and retries (background-jobs), model/tool transcript protocol design (tool-call-flow), event payload/domain-event contracts (event-contract-design), and page-level rendering-model taxonomy (rendering-models).
 
@@ -246,13 +246,10 @@ After applying this skill, verify:
 - design the JSON shape and status codes for a single request-response API payload
 - choose polling, SSE, or WebSocket for browser dashboard freshness UX
 - move a slow CSV export into a background job and define retry policy
-- Owned by `api-design`: the request/response surface for one bounded round trip
-- Owned by `real-time-updates`: browser freshness UX and live-dashboard transport selection
-- Owned by `background-jobs`: durable worker execution, retry policy, and persisted progress
 
 **Related skills**
-- Verify with: `api-design`, `performance-budgets`, `real-time-updates`, `client-server-boundary`
-- Related: `real-time-updates`, `api-design`, `background-jobs`, `client-server-boundary`, `rendering-models`, `performance-budgets`, `tool-call-flow`, `event-contract-design`
+- Verify with: `client-server-boundary`, `performance-budgets`, `api-design`, `real-time-updates`
+- Related: `event-contract-design`, `rendering-models`, `real-time-updates`, `api-design`, `background-jobs`, `client-server-boundary`, `performance-budgets`, `tool-call-flow`
 
 **Concept**
 - Mental model: |

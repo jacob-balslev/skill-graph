@@ -5,6 +5,7 @@ license: MIT
 allowed-tools: Read Grep
 metadata:
   subject: frontend-engineering
+  public: "true"
   scope: "Teaching the portable mutation-design discipline for React Server Functions and Next.js Server Actions: when a 'use server' function becomes an invokable POST endpoint, how form action/formAction integration preserves progressive enhancement, how useActionState and useFormStatus report mutation state, how to validate and authorize untrusted arguments, how to revalidate or refresh UI after writes, and how to choose between an in-app action and a public API contract. Applies to Next.js App Router mutations and form submissions. Excludes read-path Server Component fetching (server-components-design), general client/server serialization mechanics (client-server-boundary), public REST/GraphQL/mobile/third-party API design (api-design), and visual form UX or accessibility details (form-ux-architecture)."
   taxonomy_domain: engineering/frontend
   grounding: "{\"subject_matter\":\"React Server Functions and Next.js Server Actions for App Router mutations\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://nextjs.org/docs/app/getting-started/mutating-data\",\"https://nextjs.org/docs/app/api-reference/directives/use-server\",\"https://nextjs.org/docs/app/guides/data-security\",\"https://nextjs.org/docs/app/api-reference/config/next-config-js/serverActions\",\"https://nextjs.org/docs/app/api-reference/functions/revalidatePath\",\"https://nextjs.org/docs/app/api-reference/functions/revalidateTag\",\"https://nextjs.org/docs/app/api-reference/functions/updateTag\",\"https://nextjs.org/docs/app/api-reference/functions/refresh\",\"https://react.dev/reference/react/useActionState\",\"https://react.dev/reference/react-dom/hooks/useFormStatus\"],\"failure_modes\":[\"Treating 'use server' as internal-only instead of a public POST endpoint\",\"Relying on TypeScript call signatures or UI controls instead of server-side parsing and authorization\",\"Using Server Actions for third-party/mobile/public API contracts that need stable HTTP semantics\",\"Forgetting cache revalidation/refresh after writes\",\"Using event handlers or startTransition for forms that should preserve progressive enhancement\",\"Leaving old useFormState or stale Server Actions-only terminology unconnected to current Server Functions wording\"],\"evidence_priority\":\"general_knowledge_first\"}"
@@ -13,36 +14,23 @@ metadata:
   triggers: "[\"how do I submit a form to the server\",\"do I need an API route for this mutation\",\"how do I call a server function from a button\",\"why is my Server Action exposed as an endpoint\",\"useActionState vs useFormState\",\"how do I revalidate after mutation\",\"can Server Actions run in event handlers\",\"how do I use updateTag after a Server Action\"]"
   examples: "[\"design a create-comment form using a Server Action and useActionState so it works without JavaScript and reports server-side validation errors\",\"decide whether a delete button should call a Server Action or an API route\",\"audit a Server Action for missing authorization even though it looks like a normal imported function\",\"design the cache revalidation strategy for a mutation that changes multiple cached routes\",\"review whether bound action arguments are safe for this edit form\"]"
   anti_examples: "[\"design a Server Component that reads data on render (use server-components-design)\",\"design a public REST API consumed by mobile clients or third parties (use api-design)\",\"choose between SSR and SSG (use rendering-models)\",\"design the visual UX and accessibility of a form's validation states (use form-ux-architecture)\",\"explain the whole use client serialization boundary (use client-server-boundary)\",\"debug React hook dependency arrays in a client form (use hooks-patterns)\"]"
-  relations: "{\"related\":[\"server-components-design\",\"client-server-boundary\",\"form-ux-architecture\",\"api-design\",\"hooks-patterns\",\"security-fundamentals\",\"http-semantics\"],\"verify_with\":[\"client-server-boundary\",\"server-components-design\",\"api-design\",\"security-fundamentals\",\"form-ux-architecture\",\"hooks-patterns\"]}"
+  relations: "{\"related\":[\"server-components-design\",\"client-server-boundary\",\"form-ux-architecture\",\"api-design\",\"hooks-patterns\",\"security-fundamentals\",\"http-semantics\"],\"boundary\":[{\"skill\":\"server-components-design\",\"reason\":\"server-components-design owns the read path where Server Components fetch data during render; server-actions-design owns the write path where a client-triggered mutation runs on the server.\"}],\"verify_with\":[\"client-server-boundary\",\"server-components-design\",\"api-design\",\"security-fundamentals\",\"form-ux-architecture\",\"hooks-patterns\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "A Server Action is like a service-counter form wired straight to the back office: the customer fills out normal paperwork, the clerk executes privileged work behind the counter, and the office must still check identity, authority, and the paperwork before changing records."
   misconception: "|"
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/server-actions-design/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
 
+# Server Actions Design
+
 ## Concept of the skill
 
-**What it is:** Server Actions design is the discipline of using React Server Functions for App Router mutations without forgetting that the function-shaped API is still an HTTP boundary.
-
-**Mental model:** A form or client transition serializes untrusted values, sends a POST to a generated server endpoint, executes privileged code server-side, then returns action state and optionally refreshed UI. Treat every argument as attacker-controlled and every visible read path as stale until revalidated or refreshed.
-
-**Why it exists:** Server Actions reduce duplicated client/server mutation code, preserve form-first progressive enhancement, and integrate with the Next.js cache, but the same convenience can hide authentication, authorization, validation, and cache-invalidation mistakes.
-
-**What it is NOT:** It is not Server Component read-path design, a public API contract, the whole client/server serialization model, form visual UX, or general hook discipline.
-
-**Adjacent concepts:** `server-components-design` owns reads; `client-server-boundary` owns serialization/directive mechanics; `api-design` owns stable external HTTP contracts; `security-fundamentals` checks trust boundaries; `form-ux-architecture` owns the user-facing form experience; `hooks-patterns` owns general Client Component hook rules.
-
-**One-line analogy:** A Server Action is a privileged back-office operation triggered by a normal form; the form is convenient, but the office still checks identity, authority, and paperwork.
-
-**Common misconception:** A Server Action is not private merely because the client imports it like a function; it is a reachable POST endpoint with framework protections that do not replace authorization or validation.
-
-# Server Actions Design
+Server Actions design is the discipline of using React Server Functions for App Router mutations without forgetting that the function-shaped API is still an HTTP boundary. A form or client transition serializes untrusted values, sends a POST to a generated server endpoint, executes privileged code server-side, then returns action state and optionally refreshed UI — so the practitioner must treat every argument as attacker-controlled and every visible read path as stale until revalidated or refreshed. The model exists because Server Actions reduce duplicated client/server mutation code, preserve form-first progressive enhancement, and integrate with the Next.js cache; but that same convenience can hide authentication, authorization, validation, and cache-invalidation mistakes behind ordinary-looking function calls. It is **not** Server Component read-path design, a public API contract, the whole client/server serialization model, form visual UX, or general hook discipline: `server-components-design` owns reads, `client-server-boundary` owns serialization/directive mechanics, `api-design` owns stable external HTTP contracts, `security-fundamentals` checks trust boundaries, `form-ux-architecture` owns the user-facing form experience, and `hooks-patterns` owns general Client Component hook rules. The one-line analogy: a Server Action is a privileged back-office operation triggered by a normal form; the form is convenient, but the office still checks identity, authority, and paperwork. The common misconception to correct is that a Server Action is private merely because the client imports it like a function — it is a reachable POST endpoint with framework protections that do not replace authorization or validation.
 
 ## Coverage
 
@@ -57,7 +45,7 @@ Use the current vocabulary deliberately:
 | `'use server'` | The directive that marks an async function or module's exports as server-executed. |
 | Action endpoint | The generated POST endpoint the framework uses to invoke the server function. |
 
-## Philosophy
+## Philosophy of the skill
 
 Before Server Actions, a browser mutation usually required two parallel structures: client code that called `fetch('/api/foo', { method: 'POST', body: ... })` and a server route handler that parsed the request, validated it, authorized it, executed the mutation, and serialized a response. The two sides had to agree on a wire format and failure shape.
 
@@ -322,6 +310,7 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `frontend-engineering`
+- Public: `true`
 - Domain: `engineering/frontend`
 - Scope: Teaching the portable mutation-design discipline for React Server Functions and Next.js Server Actions: when a 'use server' function becomes an invokable POST endpoint, how form action/formAction integration preserves progressive enhancement, how useActionState and useFormStatus report mutation state, how to validate and authorize untrusted arguments, how to revalidate or refresh UI after writes, and how to choose between an in-app action and a public API contract. Applies to Next.js App Router mutations and form submissions. Excludes read-path Server Component fetching (server-components-design), general client/server serialization mechanics (client-server-boundary), public REST/GraphQL/mobile/third-party API design (api-design), and visual form UX or accessibility details (form-ux-architecture).
 
@@ -340,6 +329,7 @@ After applying this skill, verify:
 - design the visual UX and accessibility of a form's validation states (use form-ux-architecture)
 - explain the whole use client serialization boundary (use client-server-boundary)
 - debug React hook dependency arrays in a client form (use hooks-patterns)
+- Owned by `server-components-design`: the read path
 
 **Related skills**
 - Verify with: `client-server-boundary`, `server-components-design`, `api-design`, `security-fundamentals`, `form-ux-architecture`, `hooks-patterns`

@@ -1,38 +1,33 @@
 ---
 name: design-thinking
-description: "Use when orchestrating a full human-centered design process across discovery, definition, ideation, prototyping, and testing — when uncertain which stage of the arc a team is in, when deciding whether to loop back, or when routing to the right stage-specific sibling skill. Do NOT use for single-stage execution (go directly to problem-framing, user-research, research-synthesis, journey-mapping, ideation, prototyping, or usability-testing) or for engineering domain discovery (use event-storming). Do NOT use for Run a single crazy-8s round on this specific how-might-we. Do NOT use for Write the React component for the dashboard widget. Do NOT use for Model the bounded contexts for the order-fulfillment domain."
+description: "Use when orchestrating a full human-centered design process across discovery, definition, ideation, prototyping, and testing — when uncertain which stage of the arc a team is in, when deciding whether to loop back, or when routing to the right stage-specific sibling skill. Do NOT use for single-stage execution (go directly to problem-framing, user-research, research-synthesis, journey-mapping, ideation, prototyping, or usability-testing) or for engineering domain discovery (use event-storming). Do NOT use for Run a single crazy-8s round on this specific how-might-we. Do NOT use for Write the React component for the dashboard widget. Do NOT use for Model the bounded contexts for the order-fulfillment domain. Do NOT use for single-stage divergent/convergent concept generation (use ideation)."
 license: CC-BY-4.0
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: design
+  public: "true"
   scope: "Orchestrating a full human-centered design process across discovery, definition, ideation, prototyping, and testing — identifying which stage of the arc a team is in, deciding whether to loop back, and routing to the right stage-specific sibling skill. Portable across any design effort; principle-grounded, not repo-bound. Excludes single-stage execution (go directly to problem-framing, user-research, research-synthesis, journey-mapping, ideation, prototyping, or usability-testing) and engineering domain discovery (event-storming)."
-  owner: skill-graph-maintainer
-  freshness: "2026-05-12"
-  drift_check: "{\"last_verified\":\"2026-05-12\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"design thinking process\",\"double diamond\",\"five stage design process\",\"empathize define ideate prototype test\",\"human centered design\",\"Stanford d.school\",\"IDEO method\",\"design sprint\",\"discover define develop deliver\",\"looping back\"]"
   triggers: "[\"design thinking\",\"human-centered design\",\"double diamond\",\"which stage\",\"design process\"]"
   examples: "[\"We have user interviews done but no synthesis yet — which design-thinking stage are we in and what's next?\",\"Plan a full design-thinking arc for a four-week project on rural healthcare access.\",\"We just finished a usability test and three findings broke our framing — should we loop back to define?\",\"Route this brief to the right stage-specific skill: 'help us figure out what to build for new homeowners'.\"]"
   anti_examples: "[\"Run a single crazy-8s round on this specific how-might-we.\",\"Write the React component for the dashboard widget.\",\"Model the bounded contexts for the order-fulfillment domain.\"]"
-  relations: "{\"related\":[\"problem-framing\",\"user-research\",\"research-synthesis\",\"journey-mapping\",\"ideation\",\"prototyping\",\"usability-testing\",\"event-storming\",\"problem-locating-solving\"]}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
+  relations: "{\"related\":[\"problem-framing\",\"user-research\",\"research-synthesis\",\"journey-mapping\",\"ideation\",\"prototyping\",\"usability-testing\",\"event-storming\",\"problem-locating-solving\"],\"boundary\":[{\"skill\":\"ideation\",\"reason\":\"ideation owns single-stage divergent/convergent concept generation; design-thinking owns the whole arc and routes to ideation when the open question is concept generation.\"}]}"
+  mental_model: "|"
+  purpose: "|"
+  concept_boundary: "|"
+  analogy: "Design thinking is to a design effort what a conductor is to an orchestra — the conductor plays no instrument, but decides which section comes in next, when a passage must be repeated because the ensemble drifted, and when the piece is finished; the meta-skill chooses the next stage, calls a loop-back when a finding breaks the framing, and names when the team has enough to proceed."
+  misconception: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/design-thinking/SKILL.md
-  skill_graph_export_description_projection: anti_examples
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Design Thinking
+
+## Concept of the skill
+
+Design thinking is the meta-skill that orchestrates a full human-centered design arc and routes specific work to the appropriate stage-specific sibling skill. It treats a design effort as one arc with five recognizable stages — discover/empathize, define, ideate, prototype, test — and supplies four capabilities on top of them: **stage recognition** (knowing which stage a team is in from what artifacts exist and what question is open), **stage routing** (handing each stage's work to the right specialist method), **transition criteria** (the written evidence that justifies advancing), and **loop-back governance** (deciding when a later-stage finding invalidates earlier work so the team returns rather than presses on). The canonical framings — the Stanford d.school's five stages, the UK Design Council's Double Diamond, Tim Brown's IDEO arc, and Knapp's compressed Design Sprint — all agree on the shape; the meta-skill is the discipline of locating the team on that shape, naming the open question, and choosing the next move to answer it. Its single most important content is the non-linearity principle: the stages are described in order, but real projects loop, and recognizing when to loop back is what separates practicing design thinking from performing its ritual.
 
 ## Coverage
 Design thinking is the meta-skill that orchestrates a full human-centered design arc and routes specific work to the appropriate stage-specific sibling skill. Multiple canonical framings exist and largely agree on the shape. The **Stanford d.school** describes five stages: **Empathize → Define → Ideate → Prototype → Test**. The **MIT Sloan** framing renders it as **Understand → Involve → Ideate → Prototype-test → Implement**. The **UK Design Council's Double Diamond** maps the same arc onto two diamonds: **Discover → Define** (the problem-space diamond, diverge then converge on the right problem) and **Develop → Deliver** (the solution-space diamond, diverge then converge on the right solution). Tim Brown's HBR essay (2008) and the IDEO Field Guide describe the same arc under different stage labels.
@@ -43,7 +38,7 @@ The skill includes the **non-linearity principle**: although the stages are desc
 
 The skill also covers **format choices** for orchestration — multi-week project arcs versus compressed **Design Sprints** (Jake Knapp, Google Ventures) which run a full Define-through-Test cycle in five days. The format trades depth for speed; both have valid uses.
 
-## Philosophy
+## Philosophy of the skill
 Design thinking exists because complex human problems do not yield to either pure analysis or pure intuition, and the discipline insists that iterating between empathy with users and concrete artifacts is more productive than either alone. The arc is not a procedure to be executed once; it is a structured way to make uncertainty visible. Each stage produces a specific kind of evidence (qualitative observations, framed problems, concept variants, learning artifacts, behavioral findings), and the discipline rewards teams that can name what kind of evidence they have versus what kind they still need.
 
 The meta-skill is sceptical of two opposite failure modes. The first is **stage skipping** — leaping from a vague brief directly to prototyping because building feels like progress, with no framing and no research; the resulting prototype answers a question nobody asked. The second is **stage stalling** — researching indefinitely, framing endlessly, ideating without ever building, because each new round of empathy raises new questions and the team mistakes activity for progress. Both failures stem from the same root: not knowing which stage's question is currently open. The meta-skill names the open question explicitly and chooses the next stage to address it.
@@ -71,6 +66,7 @@ The meta-skill is sceptical of two opposite failure modes. The first is **stage 
 
 **Classification**
 - Subject: `design`
+- Public: `true`
 - Scope: Orchestrating a full human-centered design process across discovery, definition, ideation, prototyping, and testing — identifying which stage of the arc a team is in, deciding whether to loop back, and routing to the right stage-specific sibling skill. Portable across any design effort; principle-grounded, not repo-bound. Excludes single-stage execution (go directly to problem-framing, user-research, research-synthesis, journey-mapping, ideation, prototyping, or usability-testing) and engineering domain discovery (event-storming).
 
 **When to use**
@@ -84,9 +80,16 @@ The meta-skill is sceptical of two opposite failure modes. The first is **stage 
 - Run a single crazy-8s round on this specific how-might-we.
 - Write the React component for the dashboard widget.
 - Model the bounded contexts for the order-fulfillment domain.
+- Owned by `ideation`: single-stage divergent/convergent concept generation
 
 **Related skills**
 - Related: `problem-framing`, `user-research`, `research-synthesis`, `journey-mapping`, `ideation`, `prototyping`, `usability-testing`, `event-storming`, `problem-locating-solving`
+
+**Concept**
+- Mental model: |
+- Purpose: |
+- Analogy: Design thinking is to a design effort what a conductor is to an orchestra — the conductor plays no instrument, but decides which section comes in next, when a passage must be repeated because the ensemble drifted, and when the piece is finished; the meta-skill chooses the next stage, calls a loop-back when a finding breaks the framing, and names when the team has enough to proceed.
+- Common misconception: |
 
 **Keywords**
 - `design thinking process`, `double diamond`, `five stage design process`, `empathize define ideate prototype test`, `human centered design`, `Stanford d.school`, `IDEO method`, `design sprint`, `discover define develop deliver`, `looping back`

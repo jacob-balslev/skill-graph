@@ -5,35 +5,25 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "8"
-  version: "1.1.0"
+  relations: "{\"related\":[\"evaluation\",\"testing-strategy\",\"code-review\",\"prioritization\",\"interaction-patterns\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
   subject: software-engineering-method
+  public: "true"
+  scope: "Use when starting a non-trivial feature, refactor, or agent implementation that needs a written spec, plan, task breakdown, and verification path before code changes. Covers Spec Kit-style SDD phases, requirements-vs-plan separation, task traceability, review gates, and spec-compliance verification. Do NOT use for one-line edits, README-only fixes, post-implementation code review (use `code-review`), or test-level decisions (use `testing-strategy`)."
   taxonomy_domain: engineering/methodology
-  owner: skill-graph-maintainer
-  freshness: "2026-05-18"
-  drift_check: "{\"last_verified\":\"2026-05-18\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"spec driven development\",\"SDD\",\"specification first\",\"technical plan\",\"task decomposition\",\"spec.md\",\"plan.md\",\"tasks.md\",\"requirements before code\",\"phase gates\"]"
   triggers: "[\"sdd-skill\",\"planning-mode\",\"spec-driven-development\"]"
-  relations: "{\"related\":[\"testing-strategy\",\"evaluation\",\"code-review\"],\"verify_with\":[\"code-review\",\"testing-strategy\"]}"
   grounding: "{\"subject_matter\":\"Spec-driven development workflow for AI-assisted engineering using specification, plan, task, implementation, and verification artifacts\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://github.github.com/spec-kit/index.html\",\"https://github.github.com/spec-kit/reference/workflows.html\",\"https://github.com/github/spec-kit\",\"https://standards.ieee.org/ieee/29148/6937/\"],\"failure_modes\":[\"code_started_before_spec_or_plan\",\"implementation_plan_missing_architecture_contracts_or_tests\",\"tasks_not_traceable_to_plan_or_success_criteria\",\"verification_not_mapped_to_spec_requirements\",\"workflow_requires_vendor_specific_commands_when_plain_markdown_would_work\"],\"evidence_priority\":\"equal\"}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: UNVERIFIED
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-engineering-method/spec-driven-development/SKILL.md
 ---
 # Spec Driven Development (SDD)
+
+## Concept of the skill
+
+Use when starting a non-trivial feature, refactor, or agent implementation that needs a written spec, plan, task breakdown, and verification path before code changes.
+
 
 ## Coverage
 
@@ -45,8 +35,7 @@ metadata:
 - Scope control: if implementation discovers the spec or plan is wrong, update the upstream artifact before continuing.
 - Post-implementation learning: measure whether the change solved the problem when the task has a product, operational, or user-facing success metric.
 
-## Philosophy
-
+## Philosophy of the skill
 AI agents default to implementation-first thinking: receive a prompt, start coding. That produces features that compile, pass narrow tests, and still miss the actual requirement. SDD makes the specification the source of truth and turns the plan, task list, implementation, and verification report into derived artifacts.
 
 GitHub Spec Kit frames the core process as Spec → Plan → Tasks → Implement. This skill keeps that source shape and adds a final Verify gate because a skill application is not complete until the implementation is checked against the spec that justified it.
@@ -174,14 +163,16 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `software-engineering-method`
+- Public: `true`
 - Domain: `engineering/methodology`
+- Scope: Use when starting a non-trivial feature, refactor, or agent implementation that needs a written spec, plan, task breakdown, and verification path before code changes. Covers Spec Kit-style SDD phases, requirements-vs-plan separation, task traceability, review gates, and spec-compliance verification. Do NOT use for one-line edits, README-only fixes, post-implementation code review (use `code-review`), or test-level decisions (use `testing-strategy`).
 
 **When to use**
 - Triggers: `sdd-skill`, `planning-mode`, `spec-driven-development`
 
 **Related skills**
-- Verify with: `code-review`, `testing-strategy`
-- Related: `testing-strategy`, `evaluation`, `code-review`
+- Verify with: `testing-strategy`, `code-review`
+- Related: `evaluation`, `testing-strategy`, `code-review`, `prioritization`, `interaction-patterns`
 
 **Grounding**
 - Mode: `hybrid`

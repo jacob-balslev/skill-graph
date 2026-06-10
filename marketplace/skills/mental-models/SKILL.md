@@ -4,21 +4,21 @@ description: "Use when reasoning about how a system, user, or designer's interna
 license: MIT
 allowed-tools: Read Grep
 metadata:
+  relations: "{\"related\":[\"conceptual-modeling\",\"semantics\",\"knowledge-modeling\",\"user-research\",\"problem-approach-router\"],\"verify_with\":[\"user-research\",\"second-order-thinking\"]}"
   subject: reasoning-strategy
   scope: "Mental-models reasoning for diagnosing how users, designers, developers, teams, and agents represent a system differently from how it actually behaves. Portable across UX, distributed systems, type systems, API design, and collaboration contexts. Covers the three-model frame, the two gulfs, analogy/metaphor as model-seeding, model failure modes, model depth layers, and validation against system behavior. Excludes formal entity/schema modeling (conceptual-modeling), representation-paradigm choice (knowledge-modeling), empirical research-method design (user-research), cognitive-bias analysis, and tactical implementation choices."
+  public: "true"
   taxonomy_domain: foundations/mental-models
   stability: experimental
   keywords: "[\"mental models\",\"mental model\",\"gulf of execution\",\"gulf of evaluation\",\"user model\",\"system model\",\"designer model\",\"conceptual model\",\"metaphor\",\"analogy\"]"
   triggers: "[\"how do I think about\",\"users expect X but the system does Y\",\"this is confusing\",\"the user's model doesn't match\",\"why is this surprising\",\"what's the right metaphor\"]"
   examples: "[\"users keep trying to drag a row to reorder but the table doesn't support drag — diagnose the model mismatch\",\"explain why race conditions across parallel tool calls are hard for developers to anticipate\",\"decide on the right metaphor for a feature that combines folders and tags\",\"the team disagrees on what 'workspace' means in the product — surface the divergent mental models\"]"
   anti_examples: "[\"draw the boxes-and-arrows diagram of the system (use knowledge-modeling)\",\"name the React hook for managing form state (tactical implementation choice)\",\"write user-research interview questions (use user-research)\",\"teach a junior engineer about distributed-systems consistency models\"]"
-  relations: "{\"related\":[\"conceptual-modeling\",\"knowledge-modeling\",\"user-research\",\"semantics\"],\"verify_with\":[\"user-research\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "A mental model is to a system what a map is to a city — the map is not the territory, the map is useful precisely because it is smaller and selective, and a traveler navigating with the wrong map (a city map for a different city, an out-of-date map, a tourist map missing the metro) does not get lost because the map is 'wrong' but because the map's selectiveness does not match the route they need."
   misconception: "|"
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/mental-models/SKILL.md
@@ -28,12 +28,19 @@ metadata:
 
 # Mental Models
 
+## Concept of the skill
+
+Three-model frame (designer's model / system image / user's model) plus the two gulfs (execution: "how do I do what I want to do?" and evaluation: "what did the system actually do?") between them. The interface is the only channel from designer's model to user's model; everything else (intent, internal docs, design rationale) is invisible to the user. Layered on top: five failure modes (transfer, overgeneralization, underspecification, drift, invariant blindness) each with their characteristic intervention; four model layers (surface / operational / architectural / domain) describing different depths of understanding; cross-domain application — UX, distributed systems, type systems, API design, team collaboration all reduce to model-vs-system fit and how to align them.
+
+Replaces "whose fault was that surprise" with "where did the model diverge from the system." Without mental-models discipline, every confusing UX moment, every "user error," every miscommunication, every bug-shaped misunderstanding looks like an isolated incident — and the response is either to train the user or developer harder (rarely works; the model came from somewhere) or to add documentation (rarely read; arrives too late). The discipline replaces blame-finding with diagnosis: which of the three models differs from its referent, where, and which intervention closes the gap. The right model for a role is the smallest model that supports successful action in that role — not the most complete one, not the most accurate one in some absolute sense.
+
+Distinct from conceptual-modeling, which owns the formal representation of a domain (entities, attributes, relationships) for downstream use by schemas and APIs — this skill owns the cognitive construct (how a mind represents the system), upstream of any formalism. Distinct from knowledge-modeling, which owns the choice of representation paradigm (graphs, frames, rules, networks) — this skill owns the discipline of reasoning about model-system fit before any paradigm is chosen. Distinct from user-research, which owns the methods for empirically eliciting and validating mental models (interviews, think-aloud, surveys, contextual inquiry) — this skill owns the framing of what a mental model is and how to reason about its accuracy. Distinct from cognitive-biases work (out of scope) — this skill is about model-system fit, not the systematic decision-making errors a mind exhibits. A mental model is to a system what a map is to a city — the map is not the territory, the map is useful precisely because it is smaller and selective, and a traveler navigating with the wrong map (a city map for a different city, an out-of-date map, a tourist map missing the metro) does not get lost because the map is 'wrong' but because the map's selectiveness does not match the route they need. The wrong mental model is that the user's mental model is the user's fault — that confusion comes from inattention or lack of training, and the response is "train harder" or "add a tooltip." The user's model came from somewhere: usually the interface itself, prior experience with similar systems, the analogy the documentation used. The discipline is to ask which signals seeded the wrong model and how the system image can be made to convey the system's actual model honestly. "The user is holding it wrong" is almost never the right diagnosis; "the interface is teaching the wrong model" almost always is, and the right intervention sits at the interface, not at the user.
+
 ## Coverage
 
 The cognitive discipline of building, evaluating, and aligning the internal representations that minds carry of systems, domains, and interactions. Covers the three-model frame (designer model / system image / user model), the two gulfs (execution and evaluation), the role of analogy and metaphor in seeding new models, the model failure modes (transfer, overgeneralization, underspecification, drift, invariant blindness), the difference between surface, operational, architectural, and domain models, the methods for surfacing and repairing mental models through interface and documentation, and the cross-domain application of mental-models reasoning to UX, distributed systems, type systems, API design, and team collaboration.
 
-## Philosophy
-
+## Philosophy of the skill
 Mental models are how minds make systems tractable. Every user, every developer, every stakeholder operates from a model — partial, private, learned. Most surprise, most "confusing UX," most "miscommunication," most "user error" is the trace of a model-system gap. The disciplined response is to ask which model differs from which referent, where, and which intervention closes the gap — not to ask whose fault the surprise was.
 
 The discipline holds three commitments. First: that the user, the developer, and the system are three distinct sources of truth, each with their own model, none of which is automatically right. Second: that the interface is the bridge through which the system's actual model can become visible enough to repair user models in flight. Third: that the right model for a role is the smallest model that supports successful action in that role — not the most complete model, not the most accurate model in some absolute sense, but the model that does the work and no more.
@@ -146,6 +153,7 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `reasoning-strategy`
+- Public: `true`
 - Domain: `foundations/mental-models`
 - Scope: Mental-models reasoning for diagnosing how users, designers, developers, teams, and agents represent a system differently from how it actually behaves. Portable across UX, distributed systems, type systems, API design, and collaboration contexts. Covers the three-model frame, the two gulfs, analogy/metaphor as model-seeding, model failure modes, model depth layers, and validation against system behavior. Excludes formal entity/schema modeling (conceptual-modeling), representation-paradigm choice (knowledge-modeling), empirical research-method design (user-research), cognitive-bias analysis, and tactical implementation choices.
 
@@ -163,8 +171,8 @@ After applying this skill, verify:
 - teach a junior engineer about distributed-systems consistency models
 
 **Related skills**
-- Verify with: `user-research`
-- Related: `conceptual-modeling`, `knowledge-modeling`, `user-research`, `semantics`
+- Verify with: `user-research`, `second-order-thinking`
+- Related: `conceptual-modeling`, `semantics`, `knowledge-modeling`, `user-research`, `problem-approach-router`
 
 **Concept**
 - Mental model: |

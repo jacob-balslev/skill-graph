@@ -4,21 +4,21 @@ description: "Use when authoring any artifact that makes claims — skill conten
 license: MIT
 allowed-tools: Read Grep WebSearch WebFetch
 metadata:
+  relations: "{\"related\":[\"semantics\",\"methodology\",\"evaluation\",\"agent-eval-design\",\"best-practice\",\"context-engineering\",\"bayesian-reasoning\",\"first-principles-thinking\"],\"verify_with\":[\"evaluation\",\"best-practice\",\"context-engineering\",\"methodology\"]}"
   subject: reasoning-strategy
   scope: "Portable claim-grounding discipline for skill content, documentation, audit findings, architecture proposals, code review comments, research summaries, and other artifacts that assert facts. Teaches Toulmin claim/data/warrant/backing/qualifier/rebuttal structure, the verified/source-supported/inferred/asserted/unverified/contradicted claim-state labels, the chain-of-verification procedure for upgrading a claim's grounding state, RFC 2119/RFC 8174 modality, source-to-claim warrants, citation faithfulness, native citation-tool limits, source-priority (primary over secondary), scoped absence/negative claims, conflict handling, currentness checks, and honest hedging. Excludes execution-level evidence receipts and output completeness (methodology), naming precision (semantics), retrieval/context architecture (context-engineering), and grader/rubric design (evaluation or agent-eval-design)."
+  public: "true"
   taxonomy_domain: foundations/epistemics
   stability: experimental
   keywords: "[\"epistemic grounding\",\"claim grounding\",\"source-to-claim warrant\",\"citation faithfulness\",\"RFC 2119 modality\",\"Toulmin argument\",\"verified inferred asserted\",\"chain-of-verification\",\"hallucination prevention\",\"evidence receipt\"]"
   triggers: "[\"ground this claim\",\"cite a source\",\"MUST vs SHOULD\",\"is this verified\",\"how do you know that\",\"does this citation support the claim\",\"mark this as inference\",\"upgrade this asserted claim to verified\"]"
   examples: "[\"before stating that this library supports X, confirm against the actual docs\",\"rewrite this finding so each assertion either cites a file or is marked as inference\",\"should this be a MUST or a SHOULD? what's the strength of the claim?\",\"the agent reported 'fix works' but no test was run — flag the gap in grounding\",\"this answer has citations, but do the cited pages actually support each claim?\"]"
   anti_examples: "[\"verify every step of an audit task with concrete evidence (use methodology)\",\"decide which lint rule to add for a specific kind of drift (use skill-infrastructure)\",\"evaluate a finished SKILL.md against the comprehension grader (use evaluation)\",\"design the retrieval context and memory stack for this agent (use context-engineering)\"]"
-  relations: "{\"related\":[\"methodology\",\"semantics\",\"evaluation\",\"agent-eval-design\",\"best-practice\",\"context-engineering\",\"bayesian-reasoning\",\"first-principles-thinking\"],\"verify_with\":[\"methodology\",\"evaluation\",\"best-practice\",\"context-engineering\"]}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "Epistemic grounding is to claims what double-entry bookkeeping is to financial transactions — every assertion has a corresponding source and warrant on the other side of the ledger, and any unpaired entry is a red flag in the audit."
   misconception: "|"
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/epistemic-grounding/SKILL.md
@@ -28,14 +28,21 @@ metadata:
 
 # Epistemic Grounding
 
+## Concept of the skill
+
+Toulmin's six argument primitives — claim, data, warrant, backing, qualifier, rebuttal — define the internal structure of a grounded claim: data plus warrant produce a claim; backing strengthens the warrant; qualifier sets the claim's strength; rebuttal names where the claim fails. Layered atop this structural model are four operational checks: claim state (verified / source-supported / inferred / asserted / unverified / contradicted), the verification procedure (draft → generate independent questions → answer against real sources → reconcile) that upgrades a claim between those states, RFC 2119/RFC 8174 modality that gives qualifiers shared machine-readable strength only when the source creates genuine normative force, and attribution quality (a citation must exist, be relevant, support the specific claim, be current, and not be post-rationalized). The discipline is structural, not behavioral — you write each claim so a reader can reconstruct why it is allowed to stand, even when only the claim and its receipt are spelled out.
+
+Distinguishes generated text from defended text. Without epistemic grounding, LLM output is fluent and confident regardless of whether the underlying claim is true — RLHF rewards plausibility, not verification — and the result is ungrounded text that is surface-indistinguishable from grounded text. The "be more careful" alternative fails because the model cannot see its own confidence: verbalized confidence words are empirically poorly calibrated, especially out-of-distribution. Native web-search and citation APIs improve the evidence-collection layer but do not remove the need to inspect the source-to-claim warrant, modality, currentness, and rebuttal. Epistemic grounding replaces the unreliable surface-signal model (tone, structure, vocabulary) with structural signals (citation form, support relation, qualifier word, checked date, hedge marker, verification receipt) that a reader can scan to tell at a glance which claims are grounded and which are not.
+
+Distinct from methodology, which owns execution-level completeness and step-level evidence receipts — methodology enforces *that* evidence accompanies each step; epistemic-grounding decides *what counts* as evidence and how that support is marked in prose. Distinct from semantics, which owns naming and meaning-making — semantics governs how a name is precise; epistemic-grounding governs how a claim is defended. Distinct from first-principles-thinking and bayesian-reasoning, the cognitive primitives of drawing inferences from premises — epistemic-grounding is the surface-marking discipline for distinguishing observation from inference in the output. Distinct from evaluation and agent-eval-design, which own the grader-and-rubric framework — epistemic-grounding is the upstream structural discipline any verification protocol inspects. Distinct from context-engineering, which owns what evidence enters the model — epistemic-grounding owns whether the final artifact faithfully uses and labels that evidence. Epistemic grounding is to claims what double-entry bookkeeping is to financial transactions — every assertion has a corresponding source and warrant on the other side of the ledger, and any unpaired entry is a red flag in the audit. The wrong mental model is that a citation, a retrieval result, or a hedge word is itself grounding. None of the three is. A citation is only a pointer — grounding requires that the pointed-to source actually support the specific claim. A retrieval result is only available evidence — grounding requires that the output use it faithfully rather than post-rationalize an answer from prior belief. A hedge ("probably", "in most cases", "generally") only reduces claim strength; it does not show the source-to-claim chain. Hedging and grounding are orthogonal axes: a sentence can be heavily hedged AND ungrounded ("probably the API returns JSON" with no citation), or unhedged AND grounded ("DELETE is idempotent (RFC 9110 § 9.2.2)"). The discipline separates these axes so that a weak-but-sourced inference, a strong-but-grounded requirement, and an unsupported assertion are visibly different. The failure this prevents is "pseudo-hedge" output that looks careful but never exposes the source-warrant chain a reader needs to verify.
+
 ## Coverage
 
 The discipline of grounding every claim to a verifiable source, marking the modality (RFC 2119 MUST/SHOULD/MAY) of the claim, and making the warrant from source to claim explicit. Covers the six-primitive Toulmin argument structure (claim/data/warrant/backing/qualifier/rebuttal); the verified/source-supported/inferred/asserted/unverified/contradicted claim-state labels (and how an *unlabeled* asserted-but-false claim is what readers experience as a hallucination); the chain-of-verification procedure that upgrades a claim from asserted to verified; the orthogonal source-support-vs-truth axis (a present citation must still clear existence/relevance/support/truth/faithful-use); source-priority (prefer the primary source over secondary); native citation-tool primitives and their limits; RFC 2119 and RFC 8174 normative vocabulary; scoped absence/negative claims; conflict handling; currentness checks for drift-prone claims; honest hedging; and the failure modes that make generated prose look grounded when it is not (cargo-cult citation, fabricated citation, wrong-section citation, citation laundering, authority projection, post-rationalization, stale grounding, vibe-based assertion, generalization bias, sycophantic agreement, and more).
 
 Use this skill for any artifact that makes claims: SKILL.md content, audit findings, code review comments, documentation, architecture proposals, research summaries, incident writeups, migration plans, and agent output. The artifact does not need academic citations — file paths, line numbers, test output, command output, API docs, standards text, release notes, or retrieved web pages can all be evidence when the warrant is visible.
 
-## Philosophy
-
+## Philosophy of the skill
 Confidence is not evidence. An LLM trained to be helpful produces fluent, confident text whether or not the underlying claim is true — RLHF rewards plausibility, not verification — and a human writer does the same when compressing from memory. The result is that ungrounded text is indistinguishable from grounded text by surface signals alone: tone, structure, formatting, confident wording, and a trailing citation look identical whether or not the claim holds.
 
 This is not a soft observation; it is empirically measured. The verbalized confidence markers a model emits ("I'm confident", "likely", "definitely") are poorly calibrated against its actual accuracy and become *inconsistent* out-of-distribution, so a reader cannot trust the model's own expressed certainty as a grounding signal (Liu et al., *Revisiting Epistemic Markers in Confidence Estimation*, ACL 2025). And hallucination is not merely a transient bug awaiting the next model upgrade: Xu et al. (2024) give a learning-theory argument that hallucination is an *innate* limitation of LLMs — a formal-world impossibility result, cited here as contested rather than settled. The practical conclusion holds either way: the burden of distinguishing grounded from ungrounded claims falls on the *artifact's structure*, not on hoping the model "knows better."
@@ -304,6 +311,7 @@ After applying this skill, verify:
 
 **Classification**
 - Subject: `reasoning-strategy`
+- Public: `true`
 - Domain: `foundations/epistemics`
 - Scope: Portable claim-grounding discipline for skill content, documentation, audit findings, architecture proposals, code review comments, research summaries, and other artifacts that assert facts. Teaches Toulmin claim/data/warrant/backing/qualifier/rebuttal structure, the verified/source-supported/inferred/asserted/unverified/contradicted claim-state labels, the chain-of-verification procedure for upgrading a claim's grounding state, RFC 2119/RFC 8174 modality, source-to-claim warrants, citation faithfulness, native citation-tool limits, source-priority (primary over secondary), scoped absence/negative claims, conflict handling, currentness checks, and honest hedging. Excludes execution-level evidence receipts and output completeness (methodology), naming precision (semantics), retrieval/context architecture (context-engineering), and grader/rubric design (evaluation or agent-eval-design).
 
@@ -322,8 +330,8 @@ After applying this skill, verify:
 - design the retrieval context and memory stack for this agent (use context-engineering)
 
 **Related skills**
-- Verify with: `methodology`, `evaluation`, `best-practice`, `context-engineering`
-- Related: `methodology`, `semantics`, `evaluation`, `agent-eval-design`, `best-practice`, `context-engineering`, `bayesian-reasoning`, `first-principles-thinking`
+- Verify with: `evaluation`, `best-practice`, `context-engineering`, `methodology`
+- Related: `semantics`, `methodology`, `evaluation`, `agent-eval-design`, `best-practice`, `context-engineering`, `bayesian-reasoning`, `first-principles-thinking`
 
 **Concept**
 - Mental model: |

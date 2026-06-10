@@ -6,46 +6,36 @@ compatibility: "Domain- and language-agnostic. The conceptual / logical / physic
 allowed-tools: Read Grep
 metadata:
   grounding: "{\"subject_matter\":\"Implementation-neutral conceptual modeling for business domains before logical schema, physical database, ontology, API, or DDD tactical design\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://doi.org/10.1145/320434.320440\",\"https://www.omg.org/spec/UML/2.5.1/PDF\",\"https://opentextbc.ca/dbdesign01/chapter/chapter-8-entity-relationship-model/\",\"https://www.ibm.com/think/topics/conceptual-data-model\"],\"failure_modes\":[\"implementation_leakage_turns_conceptual_model_into_physical_schema\",\"unnamed_relationships_hide_business_meaning\",\"cardinality_or_optionality_left_implicit\",\"identity_criteria_missing_for_entities\",\"relationship_with_attributes_not_reified\",\"generalization_claim_lies_about_disjointness_or_totality\",\"stakeholder_validation_skipped\",\"conceptual_model_overowns_ontology_data_modeling_or_ddd_design\"],\"evidence_priority\":\"equal\"}"
-  drift_check: "{\"last_verified\":\"2026-05-19\"}"
-  schema_version: "8"
-  version: "1.1.0"
+  relations: "{\"related\":[\"taxonomy-design\",\"data-modeling\",\"entity-relationship-modeling\",\"semantic-relations\",\"ontology-modeling\",\"bounded-context-mapping\",\"naming-conventions\",\"code-review\"],\"suppresses\":[\"entity-relationship-modeling\",\"data-modeling\",\"bounded-context-mapping\"],\"verify_with\":[\"semantic-relations\",\"data-modeling\",\"ontology-modeling\"]}"
   subject: software-architecture
   scope: "Translating messy business requirements, stakeholder language, and early product ideas into an implementation-neutral domain model before schemas, endpoints, or DDD aggregates are named — entities, attributes, named relationships, cardinality, identity criteria, specialization/generalization, aggregation/composition, reification, abstraction-level control, stakeholder validation, and modeling anti-patterns. Portable across any domain-modeling effort; principle-grounded, not repo-bound. Excludes database ER diagrams with keys and normalization (data-modeling), formal ontology axioms in OWL/RDFS (ontology-modeling), and DDD tactical design (bounded-context-mapping)."
+  public: "true"
   taxonomy_domain: engineering/modeling
-  owner: skill-graph-maintainer
-  freshness: "2026-05-19"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
-  keywords: "[\"conceptual model\",\"conceptual modeling methodology\",\"domain abstraction\",\"implementation neutral model\",\"business model to system model\",\"stakeholder validation\",\"entity identity criteria\",\"named relationship\",\"relationship cardinality\",\"reified relationship\",\"associative entity\",\"generalization specialization\",\"aggregation composition relationship\",\"conceptual logical physical layers\",\"implementation leakage anti-pattern\",\"unnamed relationship anti-pattern\",\"god entity anti-pattern\",\"missing entity anti-pattern\",\"attribute as entity anti-pattern\",\"conceptual schema before implementation\",\"UML class diagram conceptual\",\"role modeling pattern\",\"is-a vs part-of vs owns\"]"
+  keywords: "[\"conceptual model\",\"conceptual modeling methodology\",\"domain abstraction\",\"implementation neutral model\",\"business model to system model\",\"stakeholder validation\",\"entity identity criteria\",\"named relationship\",\"relationship cardinality\",\"reified relationship\"]"
   examples: "[\"a stakeholder says users place orders that ship in multiple boxes -- how do I capture this as a model before naming tables?\",\"is a refund its own entity or just a payment status -- what conceptual test decides that?\",\"two business stakeholders disagree on whether a cart and an order are the same thing -- how should the conceptual model resolve that?\",\"our domain diagram already mentions UUIDs and cascade-delete -- what anti-pattern is that and how do I pull it back?\",\"this relationship has a date, an amount, and a status -- should it stay as a line between entities or become its own entity?\",\"should this attribute live on Customer or Order -- what is the rule?\",\"we have Physical, Digital, and Subscription products -- how do I model that as specialization without lying about totality?\"]"
   anti_examples: "[\"give me the physical table design with PKs, FKs, and normalization forms\",\"turn this model into SQL migrations and index definitions\",\"I need OWL class axioms and reasoning constraints for these concepts\",\"build the DDD aggregate boundaries and anti-corruption layer\",\"what hypernymy or meronymy labels apply between these two terms\",\"review this ORM model class for code correctness\",\"name the entities and fields once we agree on the conceptual model\"]"
-  relations: "{\"boundary\":[{\"skill\":\"data-modeling\",\"reason\":\"data-modeling owns logical and physical persistence decisions such as keys, constraints, normalization, denormalization, provenance, and indexing; conceptual-modeling stays implementation-neutral and validates business meaning first.\"},{\"skill\":\"entity-relationship-modeling\",\"reason\":\"entity-relationship-modeling owns database-oriented ER notation, primary and foreign keys, junction tables, inheritance mapping, and SQL translation; conceptual-modeling owns pre-database entity, attribute, relationship, and cardinality discovery.\"},{\"skill\":\"ontology-modeling\",\"reason\":\"ontology-modeling formalizes classes, properties, axioms, validation shapes, and reasoning semantics; conceptual-modeling produces stakeholder-readable domain structure without OWL/RDFS/SHACL commitments.\"},{\"skill\":\"semantic-relations\",\"reason\":\"semantic-relations types individual meaning edges such as IS-A, PART-OF, synonymy, and thematic roles; conceptual-modeling assembles the full implementation-neutral domain model that may consume those relation tests.\"},{\"skill\":\"bounded-context-mapping\",\"reason\":\"bounded-context-mapping owns DDD context boundaries, translations, and anti-corruption layers; conceptual-modeling owns the concept inventory before tactical DDD boundaries are chosen.\"},{\"skill\":\"naming-conventions\",\"reason\":\"naming-conventions owns how settled concepts are named in code, schemas, or APIs; conceptual-modeling decides which concepts exist and what their identity and relationships are before naming.\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates an implementation diff; conceptual-modeling happens upstream before code or schema review exists.\"}],\"related\":[\"data-modeling\",\"entity-relationship-modeling\",\"semantic-relations\",\"ontology-modeling\",\"taxonomy-design\",\"bounded-context-mapping\",\"naming-conventions\"],\"depends_on\":[],\"verify_with\":[\"semantic-relations\",\"data-modeling\",\"ontology-modeling\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   mental_model: "|"
   purpose: "|"
+  concept_boundary: "|"
   analogy: "Conceptual modeling is the architectural floor plan before engineering drawings: it says what rooms exist, how people move between them, and what must be connected, while leaving materials, wiring, and load calculations to later specialists."
   misconception: "|"
-  concept: "{\"definition\":\"Conceptual modeling is the implementation-neutral discipline of representing a domain as entities, attributes, relationships, identity criteria, cardinalities, and abstraction boundaries that stakeholders can validate before technical design begins.\",\"mental_model\":\"Treat the conceptual model as a contract between stakeholder language and later system design. It must preserve business meaning while postponing storage, API, ontology, and DDD implementation choices.\",\"purpose\":\"It exposes hidden domain decisions early: what exists, what makes two things the same, how concepts relate, which relationships carry their own data, and which constraints are business truths rather than technical preferences.\",\"boundary\":\"It does not design physical database schemas, write migrations, define formal ontology axioms, choose aggregate boundaries, perform code review, or settle implementation naming once the model is already accepted.\",\"taxonomy\":\"Core moves include entity discovery, attribute placement, relationship naming, cardinality and optionality analysis, identity criteria, aggregation versus composition, specialization/generalization, reification of relationship concepts, abstraction-level policing, and stakeholder scenario validation.\",\"analogy\":\"It is the architectural floor plan before engineering drawings: useful because it is precise about the lived structure while still independent of materials and machinery.\",\"misconception\":\"A conceptual model is not informal hand-waving and not a premature table diagram. It should be business-readable, constraint-aware, and intentionally implementation-neutral.\"}"
-  structural_verdict: PASS
-  truth_verdict: UNVERIFIED
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
-  concept_boundary: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-architecture/conceptual-modeling/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Conceptual Modeling
+
+## Concept of the skill
+
+Conceptual modeling is a meaning-first translation layer. It turns stakeholder language and domain scenarios into an implementation-neutral map of entities, attributes, identity criteria, relationships, cardinalities, and specialization constraints. The model is not the database, not the API, and not the ontology; it is the shared domain agreement those later artifacts must preserve.
+
+This skill exists to catch modeling mistakes while they are still cheap: ambiguous nouns, unnamed relationships, hidden many-to-many concepts, attributes that should be entities, physical design leaking into business diagrams, and subtype claims that silently change business rules. It gives agents a repeatable way to surface decisions before code, migrations, or formal axioms harden them.
+
+This skill owns pre-implementation business meaning and stakeholder validation. It does not choose primary keys, indexes, SQL normalization forms, migration steps, OWL/RDFS axioms, SHACL shapes, DDD aggregate boundaries, anti-corruption layers, implementation names, or code-level correctness. Those are downstream skills once the conceptual model is stable. Conceptual modeling is the architectural floor plan before engineering drawings: it says what rooms exist, how people move between them, and what must be connected, while leaving materials, wiring, and load calculations to later specialists. The common mistake is treating a conceptual model as a vague sketch or as an early database diagram. A good conceptual model is neither. It is precise about meaning, identity, relationship names, cardinality, and business constraints, while deliberately refusing to decide storage, framework, or reasoning technology too early.
 
 ## Coverage
 
@@ -59,8 +49,7 @@ Conceptual modeling translates real-world domain language into a structured, sta
 - Stakeholder validation: scenario walk-throughs, negative testing, terminology audits, and conflict resolution when different stakeholders use different concepts.
 - Anti-pattern detection: implementation leakage, missing entity, god entity, phantom relationship, premature normalization, attribute-as-entity, unnamed relationship, and over-formalization.
 
-## Philosophy
-
+## Philosophy of the skill
 Every software system is a model of a domain. If the model is wrong, correct code faithfully automates the wrong understanding. Conceptual modeling exists to make the model explicit while change is still cheap. A requirement like "users can place orders" hides real decisions: is a cart an order, can one order split into many shipments, is a refund a payment state or a separate event, and who can validate those answers?
 
 The discipline is to stay deliberately one layer above implementation. The model should be precise enough that a stakeholder can reject it, but neutral enough that it does not smuggle in UUIDs, foreign keys, cascade rules, API routes, aggregate boundaries, or OWL axioms. Those downstream choices are important; they are just not conceptual modeling.
@@ -255,6 +244,7 @@ Do not erase the conceptual model after implementation starts. Keep it as the ex
 
 **Classification**
 - Subject: `software-architecture`
+- Public: `true`
 - Domain: `engineering/modeling`
 - Scope: Translating messy business requirements, stakeholder language, and early product ideas into an implementation-neutral domain model before schemas, endpoints, or DDD aggregates are named — entities, attributes, named relationships, cardinality, identity criteria, specialization/generalization, aggregation/composition, reification, abstraction-level control, stakeholder validation, and modeling anti-patterns. Portable across any domain-modeling effort; principle-grounded, not repo-bound. Excludes database ER diagrams with keys and normalization (data-modeling), formal ontology axioms in OWL/RDFS (ontology-modeling), and DDD tactical design (bounded-context-mapping).
 
@@ -275,17 +265,10 @@ Do not erase the conceptual model after implementation starts. Keep it as the ex
 - what hypernymy or meronymy labels apply between these two terms
 - review this ORM model class for code correctness
 - name the entities and fields once we agree on the conceptual model
-- Owned by `data-modeling`
-- Owned by `entity-relationship-modeling`: database-oriented ER notation, primary and foreign keys, junction tables, inheritance mapping, and SQL translation
-- Owned by `ontology-modeling`
-- Owned by `semantic-relations`
-- Owned by `bounded-context-mapping`: DDD context boundaries, translations, and anti-corruption layers
-- Owned by `naming-conventions`: how settled concepts are named in code, schemas, or APIs
-- Owned by `code-review`
 
 **Related skills**
 - Verify with: `semantic-relations`, `data-modeling`, `ontology-modeling`
-- Related: `data-modeling`, `entity-relationship-modeling`, `semantic-relations`, `ontology-modeling`, `taxonomy-design`, `bounded-context-mapping`, `naming-conventions`
+- Related: `taxonomy-design`, `data-modeling`, `entity-relationship-modeling`, `semantic-relations`, `ontology-modeling`, `bounded-context-mapping`, `naming-conventions`, `code-review`
 
 **Concept**
 - Mental model: |
@@ -298,6 +281,6 @@ Do not erase the conceptual model after implementation starts. Keep it as the ex
 - Truth sources: `https://doi.org/10.1145/320434.320440`, `https://www.omg.org/spec/UML/2.5.1/PDF`, `https://opentextbc.ca/dbdesign01/chapter/chapter-8-entity-relationship-model/`, `https://www.ibm.com/think/topics/conceptual-data-model`
 
 **Keywords**
-- `conceptual model`, `conceptual modeling methodology`, `domain abstraction`, `implementation neutral model`, `business model to system model`, `stakeholder validation`, `entity identity criteria`, `named relationship`, `relationship cardinality`, `reified relationship`, `associative entity`, `generalization specialization`, `aggregation composition relationship`, `conceptual logical physical layers`, `implementation leakage anti-pattern`, `unnamed relationship anti-pattern`, `god entity anti-pattern`, `missing entity anti-pattern`, `attribute as entity anti-pattern`, `conceptual schema before implementation`, `UML class diagram conceptual`, `role modeling pattern`, `is-a vs part-of vs owns`
+- `conceptual model`, `conceptual modeling methodology`, `domain abstraction`, `implementation neutral model`, `business model to system model`, `stakeholder validation`, `entity identity criteria`, `named relationship`, `relationship cardinality`, `reified relationship`
 
 <!-- skill-graph-context:end -->

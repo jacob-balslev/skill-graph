@@ -5,31 +5,15 @@ license: MIT
 compatibility: "Portable data-modeling discipline across relational, document, graph, event-sourced, and warehouse-style systems."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"ontology-modeling\",\"entity-relationship-modeling\",\"api-design\",\"conceptual-modeling\",\"database-migration\",\"state-machine-modeling\"],\"suppresses\":[\"conceptual-modeling\"],\"verify_with\":[\"database-migration\",\"testing-strategy\",\"indexing-strategy\"],\"depends_on\":[\"conceptual-modeling\"]}"
   subject: software-architecture
   scope: "Designing logical and physical data structures — entities as stored data, keys, constraints, normalization and denormalization, provenance, lifecycle, indexing implications, and schema tradeoffs. Portable across relational and document data stores; principle-grounded, not repo-bound. Excludes pre-implementation business-concept discovery (conceptual-modeling), migrations against an existing database (database-migration), and formal ontology semantics (ontology-modeling)."
+  public: "true"
   taxonomy_domain: data/modeling
-  owner: skill-graph-maintainer
-  freshness: "2026-05-11"
-  drift_check: "{\"last_verified\":\"2026-05-11\"}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"data modeling\",\"logical data model\",\"physical data model\",\"entity relationship\",\"normalization\",\"denormalization\",\"primary key\",\"foreign key\",\"schema design\",\"data provenance\"]"
   examples: "[\"turn this conceptual model into a logical schema with keys and constraints\",\"should this be normalized, denormalized, or materialized as a view?\",\"model provenance for revenue, cost, and refund fields\",\"choose identifiers and uniqueness constraints before writing the migration\"]"
   anti_examples: "[\"identify business entities and relationships without implementation details\",\"write and apply the actual migration for an existing database\",\"define OWL/RDF class axioms and reasoning rules\",\"design REST endpoints for these resources\"]"
-  relations: "{\"boundary\":[{\"skill\":\"conceptual-modeling\",\"reason\":\"conceptual-modeling is implementation-neutral; data-modeling adds logical and physical data constraints\"}],\"related\":[\"conceptual-modeling\",\"database-migration\",\"api-design\",\"state-machine-modeling\",\"entity-relationship-modeling\",\"ontology-modeling\"],\"depends_on\":[\"conceptual-modeling\"],\"verify_with\":[\"database-migration\",\"testing-strategy\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-architecture/data-modeling/SKILL.md
@@ -38,12 +22,15 @@ metadata:
 
 # Data Modeling
 
+## Concept of the skill
+
+Designing logical and physical data structures — entities as stored data, keys, constraints, normalization and denormalization, provenance, lifecycle, indexing implications, and schema tradeoffs.
+
 ## Coverage
 
 Design logical and physical data structures from a validated conceptual model. Covers entities as stored records, identifiers, primary keys, foreign keys, uniqueness, cardinality enforcement, normalization, denormalization, derived data, materialized views, provenance, retention, indexing implications, and schema-change risk.
 
-## Philosophy
-
+## Philosophy of the skill
 Data models are long-lived promises. Application code changes quickly; stored data and integrations remember mistakes. A good data model preserves business meaning, supports expected queries, and prevents invalid states without overfitting to today's UI.
 
 Do not jump from concept to migration. First decide what must be stored, what can be derived, what must be constrained, and what must remain queryable.
@@ -88,6 +75,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/data-modeling
 
 **Classification**
 - Subject: `software-architecture`
+- Public: `true`
 - Domain: `data/modeling`
 - Scope: Designing logical and physical data structures — entities as stored data, keys, constraints, normalization and denormalization, provenance, lifecycle, indexing implications, and schema tradeoffs. Portable across relational and document data stores; principle-grounded, not repo-bound. Excludes pre-implementation business-concept discovery (conceptual-modeling), migrations against an existing database (database-migration), and formal ontology semantics (ontology-modeling).
 
@@ -102,12 +90,11 @@ This skill ships a comprehension-eval artifact at [`examples/evals/data-modeling
 - write and apply the actual migration for an existing database
 - define OWL/RDF class axioms and reasoning rules
 - design REST endpoints for these resources
-- Owned by `conceptual-modeling`
 
 **Related skills**
 - Depends on: `conceptual-modeling`
-- Verify with: `database-migration`, `testing-strategy`
-- Related: `conceptual-modeling`, `database-migration`, `api-design`, `state-machine-modeling`, `entity-relationship-modeling`, `ontology-modeling`
+- Verify with: `database-migration`, `testing-strategy`, `indexing-strategy`
+- Related: `ontology-modeling`, `entity-relationship-modeling`, `api-design`, `conceptual-modeling`, `database-migration`, `state-machine-modeling`
 
 **Keywords**
 - `data modeling`, `logical data model`, `physical data model`, `entity relationship`, `normalization`, `denormalization`, `primary key`, `foreign key`, `schema design`, `data provenance`

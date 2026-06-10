@@ -5,46 +5,26 @@ license: MIT
 compatibility: "Markdown, product briefs, roadmap analysis, customer-needs research, quality planning"
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  relations: "{\"related\":[\"prioritization\",\"user-research\",\"research-synthesis\",\"positioning\",\"expected-value\",\"methodology\"],\"suppresses\":[\"positioning\",\"expected-value\"],\"verify_with\":[\"epistemic-grounding\",\"prioritization\",\"user-research\"]}"
   subject: reasoning-strategy
   scope: "Kano model feature and customer-need classification for product, service, and quality decisions: classify candidate features by satisfaction response to presence and absence, design paired functional/dysfunctional questions, handle segment differences, translate must-be/performance/attractive/indifferent/reverse categories into roadmap implications, and avoid over-ranking delighters before basics. Excludes generic backlog scoring without customer-response evidence, broad qualitative research synthesis, product-market positioning, and financial expected-value comparison."
+  public: "true"
   taxonomy_domain: foundations/product-strategy
-  owner: skill-graph-maintainer
-  freshness: "2026-06-01"
-  drift_check: "{\"last_verified\":\"2026-06-01\",\"truth_source_hashes\":{\"skills/skills/meta-methods/kano-model/references/kano-model-sources.md\":\"5475489cb775d47510d5cbffcc1d709f49cc59a920e59ac9cb7d750a7804a811\",\"skills/skills/meta-methods/kano-model/references/upstream-displacement-2026-06-01.md\":\"37d2a0d5618b633ade01432772c1ff1cb785980b64cf2b8d0967c218b154ded5\"}}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: present
   stability: stable
   keywords: "[\"Kano model\",\"customer satisfaction\",\"must-be quality\",\"performance needs\",\"delighters\",\"attractive quality\",\"feature prioritization\",\"Kano survey\",\"reverse quality\",\"indifferent quality\"]"
   triggers: "[\"kano-model\",\"kano-analysis\",\"kano-survey\"]"
   examples: "[\"Use the Kano model to classify these feature requests into must-be, performance, delighter, indifferent, and reverse categories.\",\"Design a Kano survey for these roadmap candidates.\",\"Use the Kano model to classify faster search as performance quality and SSO as must-be quality.\",\"Which of these features are delighters versus basics for this customer segment?\",\"Explain Kano category drift when an old delighter becomes a must-have expectation.\"]"
   anti_examples: "[\"Rank this backlog by reach, impact, confidence, and effort.\",\"Synthesize these interview transcripts into research themes.\",\"Design a generic quality-improvement process with DMAIC or PDCA.\"]"
-  relations: "{\"boundary\":[{\"skill\":\"prioritization\",\"reason\":\"kano-model owns customer-satisfaction response classification for feature presence and absence; prioritization owns generic backlog scoring and release-scope ranking across criteria\"},{\"skill\":\"user-research\",\"reason\":\"kano-model owns one structured feature-classification method after candidate features and respondents are identified; user-research owns broader research planning, interview design, and evidence gathering\"},{\"skill\":\"research-synthesis\",\"reason\":\"kano-model owns a specific quantitative/qualitative classification table; research-synthesis owns open-ended theme synthesis across raw research artifacts\"},{\"skill\":\"positioning\",\"reason\":\"kano-model owns satisfaction-response categories for features; positioning owns market context, competitive alternatives, and differentiated value framing\"},{\"skill\":\"expected-value\",\"reason\":\"kano-model owns customer-response shape; expected-value owns probability-weighted payoff comparison once costs, probabilities, and values are modeled\"},{\"skill\":\"methodology\",\"reason\":\"kano-model owns one product-quality framework; methodology owns broad process-design and quality-gate selection\"}],\"related\":[\"prioritization\",\"user-research\",\"research-synthesis\",\"positioning\",\"expected-value\",\"methodology\"],\"verify_with\":[\"epistemic-grounding\",\"prioritization\",\"user-research\"]}"
   grounding: "{\"subject_matter\":\"Kano model feature classification and customer-defined quality analysis\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://www.jstage.jst.go.jp/article/quality/14/2/14_KJ00002952366/_article\",\"https://asq.org/quality-resources/kano-model\",\"https://cir.nii.ac.jp/crid/1571980075723369472\",\"https://www.walden-family.com/public/cqm-journal/2-4-Whole-Issue.pdf\",\"skills/skills/meta-methods/kano-model/references/kano-model-sources.md\",\"skills/skills/meta-methods/kano-model/references/upstream-displacement-2026-06-01.md\"],\"failure_modes\":[\"treating_requested_features_as_equally_valuable\",\"ranking_delighters_before_unmet_basics\",\"classifying_from_feature_names_without_customer_evidence\",\"ignoring_segment_specific_response_patterns\",\"using_yes_no_preference_questions_as_kano_data\",\"missing_reverse_quality_signals\",\"assuming_delighters_stay_delighters_forever\",\"replacing_prioritization_with_kano_categories_alone\"],\"evidence_priority\":\"general_knowledge_first\"}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  comprehension_state: present
   mental_model: "Kano analysis maps how a defined customer segment reacts when a feature is present versus absent. The primitives are segment, candidate feature, functional question, dysfunctional question, response pair, quality category, satisfaction effect, dissatisfaction effect, evidence confidence, and time. Must-be features prevent dissatisfaction, performance features move satisfaction roughly with execution quality, attractive features create upside when present without penalty when absent, indifferent features do not matter much, reverse features hurt some users, and questionable responses signal confusion or bad survey design."
   purpose: "This skill prevents agents from treating all feature requests as the same kind of demand. It forces the answer to distinguish basics customers punish you for missing, performance attributes customers reward proportionally, delighters that can differentiate only after basics are covered, indifferent ideas that should not consume roadmap capacity, and reverse features that help one segment while hurting another."
+  concept_boundary: "The Kano model is for classifying customer satisfaction response patterns to candidate features or service attributes. It is not a complete prioritization score, open-ended user-research synthesis, positioning strategy, expected-value calculation, accessibility or safety gate, or proof that a feature is worth building. Kano categories can feed those decisions, but they do not replace cost, feasibility, strategy, risk, or evidence-quality checks."
   analogy: "Kano analysis is like a control panel with different levers: some only stop alarms, some raise the gauge steadily, some create a burst of delight, and some should not be pulled for the wrong audience."
   misconception: "The common mistake is thinking delighters are always the highest priority. In Kano reasoning, missing basics can destroy satisfaction, performance attributes may deserve steady investment, and delighters only matter when they fit the segment and do not mask must-be gaps."
-  structural_verdict: PASS
-  truth_verdict: UNVERIFIED
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_changed: "2026-06-01"
-  last_audited: "2026-06-01"
-  lint_verdict: PASS
-  drift_status: EXTERNAL_UNHASHED
-  public: "true"
-  concept_boundary: "The Kano model is for classifying customer satisfaction response patterns to candidate features or service attributes. It is not a complete prioritization score, open-ended user-research synthesis, positioning strategy, expected-value calculation, accessibility or safety gate, or proof that a feature is worth building. Kano categories can feed those decisions, but they do not replace cost, feasibility, strategy, risk, or evidence-quality checks."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/kano-model/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
-  skill_graph_export_description_projection_truncated: "true"
+  skill_graph_export_description_projection: anti_examples
 ---
 
 ## Concept of the skill
@@ -252,6 +232,7 @@ Before finalizing a Kano analysis, check:
 
 **Classification**
 - Subject: `reasoning-strategy`
+- Public: `true`
 - Domain: `foundations/product-strategy`
 - Scope: Kano model feature and customer-need classification for product, service, and quality decisions: classify candidate features by satisfaction response to presence and absence, design paired functional/dysfunctional questions, handle segment differences, translate must-be/performance/attractive/indifferent/reverse categories into roadmap implications, and avoid over-ranking delighters before basics. Excludes generic backlog scoring without customer-response evidence, broad qualitative research synthesis, product-market positioning, and financial expected-value comparison.
 
@@ -267,12 +248,6 @@ Before finalizing a Kano analysis, check:
 - Rank this backlog by reach, impact, confidence, and effort.
 - Synthesize these interview transcripts into research themes.
 - Design a generic quality-improvement process with DMAIC or PDCA.
-- Owned by `prioritization`: customer-satisfaction response classification for feature presence and absence
-- Owned by `user-research`: one structured feature-classification method after candidate features and respondents are identified
-- Owned by `research-synthesis`: a specific quantitative/qualitative classification table
-- Owned by `positioning`: satisfaction-response categories for features
-- Owned by `expected-value`: customer-response shape
-- Owned by `methodology`: one product-quality framework
 
 **Related skills**
 - Verify with: `epistemic-grounding`, `prioritization`, `user-research`

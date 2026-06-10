@@ -3,29 +3,20 @@ name: design-module-composition
 description: "Use when designing reusable component modules — composition patterns, compound components, slot/children APIs, render props, headless component contracts, and the choice between configuration and composition. Do NOT use for application-level architecture, single-use feature components, or visual styling decisions. Do NOT use for Choose the border radius value for cards. Do NOT use for Decide where the OrderDetailPage component lives in the folder structure. Do NOT use for Pick the brand font for headings."
 license: CC-BY-4.0
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: design
+  public: "true"
   scope: "Designing reusable component modules — composition patterns, compound components, slot/children APIs, render props, headless component contracts, and the configuration-vs-composition choice. Portable across any component-based UI; principle-grounded, not repo-bound. Excludes application-level architecture, single-use feature components, and visual styling decisions."
-  owner: skill-graph-maintainer
-  freshness: "2026-05-12"
-  drift_check: "{\"last_verified\":\"2026-05-12\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"component composition\",\"compound components\",\"slot api\",\"headless components\",\"render props\",\"polymorphic components\",\"asChild pattern\",\"children as api\",\"composition over configuration\",\"component contract design\"]"
-  triggers: "[\"compound component\",\"composition over configuration\",\"headless component\",\"slot pattern\",\"asChild\"]"
+  triggers: "[\"component module composition\",\"composition over configuration\",\"headless component\",\"slot pattern\",\"asChild\"]"
   examples: "[\"Design a Dialog component whose trigger, content, and close button are addressable by consumers\",\"Refactor a Card with 14 boolean props into a composition-based API\",\"Build a headless table primitive that exposes state and behavior without imposing markup\"]"
   anti_examples: "[\"Choose the border radius value for cards\",\"Decide where the OrderDetailPage component lives in the folder structure\",\"Pick the brand font for headings\"]"
-  relations: "{\"related\":[\"design-system-architecture\",\"frontend-architecture\",\"interaction-patterns\",\"a11y\"]}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
-  public: "true"
+  relations: "{\"related\":[\"design-system-architecture\",\"frontend-architecture\",\"interaction-patterns\",\"a11y\"],\"verify_with\":[\"a11y\"]}"
+  mental_model: "|"
+  purpose: "|"
+  concept_boundary: "|"
+  analogy: "A composable module is to its consumers what a set of LEGO bricks is to a builder — the value is the standardized studs (the context contract and slots) that let anyone assemble shapes the kit's designer never imagined, rather than a single pre-glued model with a few painted-on options; freezing it into one configured shape is gluing the bricks together."
+  misconception: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/design-module-composition/SKILL.md
@@ -33,6 +24,10 @@ metadata:
 ---
 
 # Design Module Composition
+
+## Concept of the skill
+
+Design module composition is the discipline of shaping a reusable component's public API so that its variation is achieved by composing exposed parts rather than by configuring a growing set of props. A composable module externalizes its internals as a contract — most often through one of four mainstream patterns: **compound components** (a parent and a named set of children share context, like Tabs / Tabs.List / Tabs.Trigger / Tabs.Panel), **slot/children APIs** (named slots accept arbitrary content), **render props or function-as-children** (the parent supplies state and the consumer supplies markup), and **headless primitives** (state and behavior leave the module entirely as hooks or unstyled components, leaving all markup and styling to the consumer). The polymorphic "asChild"/"as" pattern lets a consumer swap the rendered element while inheriting behavior and ARIA wiring. The central design judgment is the trade between configuration and composition: a prop-heavy API is fast for the common case but brittle for unanticipated variants, while a composition API costs more typing up front and absorbs variants with no friction — which is why mature systems often offer both, a high-level summary component built on low-level composable primitives. The module's real API is the context contract between parent and children, not the prop signatures, so the discipline asks for every variation whether it belongs to the module's identity (make it a prop) or to how a specific consumer uses the module (make it a slot).
 
 ## Coverage
 A composable component module exposes its parts to consumers rather than hiding them behind a configuration prop. The four mainstream patterns are compound components (a parent and a named set of children share context: <Tabs>, <Tabs.List>, <Tabs.Trigger>, <Tabs.Panel>), slot/children APIs (named slots accept arbitrary content: <Card header={...} footer={...} />), render props or function-as-children (the parent provides state, the consumer provides markup: <Tooltip>{({open}) => ...}</Tooltip>), and headless primitives (state and behavior are exposed as hooks or unstyled components — Radix, Headless UI, TanStack Table — leaving all markup and styling to the consumer).
@@ -43,7 +38,7 @@ Choosing between configuration and composition is a trade-off between control su
 
 State sharing between compound-component pieces uses React context (or framework-equivalent). The context contract — what the parent provides, what the children expect — is the real API of the module, and changing it is a breaking change even when the prop signatures stay the same. Headless primitives push this further: state and behavior leave the module entirely, and the visual layer is the consumer's responsibility.
 
-## Philosophy
+## Philosophy of the skill
 Composition externalizes variation. Every boolean prop on a component is a decision the module author made on behalf of every future consumer; every slot is a decision deferred. The discipline is to ask whether the variant being added is part of the module's identity (it should be a prop) or part of how a specific consumer uses the module (it should be a slot).
 
 Headless primitives separate three concerns that are routinely conflated: state (open/closed, selected, expanded), behavior (focus trapping, keyboard navigation, ARIA attribute wiring), and presentation (markup and styles). Conflation is convenient until the design system needs a second visual treatment of the same behavior; separation makes that addition trivial.
@@ -70,13 +65,14 @@ Headless primitives separate three concerns that are routinely conflated: state 
 
 **Classification**
 - Subject: `design`
+- Public: `true`
 - Scope: Designing reusable component modules — composition patterns, compound components, slot/children APIs, render props, headless component contracts, and the configuration-vs-composition choice. Portable across any component-based UI; principle-grounded, not repo-bound. Excludes application-level architecture, single-use feature components, and visual styling decisions.
 
 **When to use**
 - Design a Dialog component whose trigger, content, and close button are addressable by consumers
 - Refactor a Card with 14 boolean props into a composition-based API
 - Build a headless table primitive that exposes state and behavior without imposing markup
-- Triggers: `compound component`, `composition over configuration`, `headless component`, `slot pattern`, `asChild`
+- Triggers: `component module composition`, `composition over configuration`, `headless component`, `slot pattern`, `asChild`
 
 **Not for**
 - Choose the border radius value for cards
@@ -84,7 +80,14 @@ Headless primitives separate three concerns that are routinely conflated: state 
 - Pick the brand font for headings
 
 **Related skills**
+- Verify with: `a11y`
 - Related: `design-system-architecture`, `frontend-architecture`, `interaction-patterns`, `a11y`
+
+**Concept**
+- Mental model: |
+- Purpose: |
+- Analogy: A composable module is to its consumers what a set of LEGO bricks is to a builder — the value is the standardized studs (the context contract and slots) that let anyone assemble shapes the kit's designer never imagined, rather than a single pre-glued model with a few painted-on options; freezing it into one configured shape is gluing the bricks together.
+- Common misconception: |
 
 **Keywords**
 - `component composition`, `compound components`, `slot api`, `headless components`, `render props`, `polymorphic components`, `asChild pattern`, `children as api`, `composition over configuration`, `component contract design`
