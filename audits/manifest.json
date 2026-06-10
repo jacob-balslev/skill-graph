@@ -38,6 +38,12 @@
           "version": "v1"
         },
         {
+          "id": "claude-panel-supervisor-v1",
+          "path": "skill-graph/prompts/skill-audit-loop-claude-panel-supervisor-v1.md",
+          "mode": "interactive-panel-claude-session",
+          "version": "v1"
+        },
+        {
           "id": "minimal-iteration",
           "path": "skill-graph/prompts/skill-audit-loop-minimal-iteration.md",
           "mode": "interactive-short-batch",
