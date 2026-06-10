@@ -29,11 +29,13 @@
 // heartbeat (and per-agent elapsed) cannot tick mid-call. The viewer therefore EXTRAPOLATES
 // elapsed from `now - status.ts` (passed to renderCollected as `nowMs`), so the header + any
 // active row visibly count up even while the runner is blocked. TTY repaints smoothly each
-// poll; piped/Monitor mode emits a block only on a STRUCTURAL change (phase/state/reason) plus
-// a periodic liveness tick — never per-second (which would trip the Monitor's flood guard).
+// poll; piped/Monitor mode emits a block ONLY on a STRUCTURAL change (phase/state/reason) plus
+// the terminal STALL/SLOW/COMPLETE signals. The periodic liveness tick is OFF by default —
+// every piped line is a Monitor chat message, so a per-N-second timer line floods it. A human
+// tailing in a plain terminal can opt back in with --tick N (N>0).
 //
 // Usage:
-//   node scripts/watch-panel.js <status-file> [--poll SECS] [--stale SECS] [--slow SECS] [--tick SECS] [--once] [--fail-on-stall]
+//   node scripts/watch-panel.js <status-file> [--poll SECS] [--stale SECS] [--slow SECS] [--tick SECS|0=off (default)] [--once] [--fail-on-stall]
 
 const fs = require('fs');
 const path = require('path');
@@ -45,7 +47,7 @@ function main(argv) {
   const args = argv.slice();
   const statusFile = args.find((a) => !a.startsWith('--'));
   if (!statusFile) {
-    process.stderr.write('Usage: node scripts/watch-panel.js <status-file> [--poll SECS] [--stale SECS] [--slow SECS] [--tick SECS] [--once] [--fail-on-stall]\n');
+    process.stderr.write('Usage: node scripts/watch-panel.js <status-file> [--poll SECS] [--stale SECS] [--slow SECS] [--tick SECS|0=off (default)] [--once] [--fail-on-stall]\n');
     process.exit(2);
   }
   const optVal = (name, def) => {
@@ -55,7 +57,11 @@ function main(argv) {
   const pollMs = optVal('poll', 1) * 1000;   // 1s → smooth live timer on a TTY
   const staleMs = optVal('stale', 900) * 1000; // ts frozen > 15m ⇒ hang (above the longest dispatch)
   const slowMs = optVal('slow', 600) * 1000;   // active agent > 10m ⇒ SLOW flag
-  const tickMs = optVal('tick', 20) * 1000;    // piped liveness cadence (no per-second spam)
+  // Periodic piped "liveness tick" is OFF by default: on a Claude Code Monitor every emitted
+  // line becomes a chat message, so a per-N-second timer line floods the conversation. Opt in
+  // with --tick N (N>0) for a human tailing in a plain terminal who wants a visible countdown.
+  const tickRaw = optVal('tick', 0);
+  const tickMs = tickRaw > 0 ? tickRaw * 1000 : 0; // 0 ⇒ disabled (structural + STALL/SLOW/COMPLETE only)
   const once = args.includes('--once');
   // --fail-on-stall: on a STALL (heartbeat ts frozen past --stale and not complete), exit
   // non-zero (3) with a FAILED line instead of spinning forever. Turns a silent hang into a
@@ -96,8 +102,9 @@ function main(argv) {
     } else if (structural !== prevStructural) {
       process.stdout.write(`\n${live}\n`);
       lastTick = now;
-    } else if (!st.complete && now - lastTick >= tickMs) {
-      // periodic liveness so the timer is visibly advancing without per-second spam
+    } else if (tickMs > 0 && !st.complete && now - lastTick >= tickMs) {
+      // periodic liveness so the timer is visibly advancing (opt-in via --tick N; OFF by default
+      // so a Monitor surface only ever sees structural + STALL/SLOW/COMPLETE events)
       const activeBits = (st.agents || []).filter((a) => ACTIVE.has(a.state)).map((a) => {
         const el = (a.elapsed_s || 0) * 1000 + (Number.isNaN(tsMs) ? 0 : Math.max(0, now - tsMs));
         return `${a.model} ${a.phase || ''} ${fmtElapsed(el)}`;
