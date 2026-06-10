@@ -54,11 +54,14 @@ ok('FRONTIER_PAIR is the 2 frontier core', Array.isArray(FRONTIER_PAIR) && FRONT
 // descriptor stays in the registry but it is no longer in ADVISORY_MODELS.
 // big-pickle was dropped from auto-dispatch (2026-06-09, OpenCode Zen 429/free-usage limit
 // plus no first token in bounded direct probes) — descriptor stays resolvable for explicit probes.
-ok('ADVISORY_MODELS has 5 entries', ADVISORY_MODELS.length === 5);
+// minimax was dropped from auto-dispatch (2026-06-10T, text-capture propose produced
+// non-document output twice in the live content-monitor panel run) — descriptor stays resolvable.
+ok('ADVISORY_MODELS has 4 entries', ADVISORY_MODELS.length === 4);
 ok('advisory excludes the core frontier pair', !ADVISORY_MODELS.some((m) => FRONTIER_PAIR.includes(m)));
 ok('advisory no longer auto-dispatches nemotron (SKI-210)', !ADVISORY_MODELS.includes('nemotron'));
 ok('advisory no longer auto-dispatches big-pickle (rate-limited)', !ADVISORY_MODELS.includes('big-pickle'));
-for (const m of ['gemini', 'minimax', 'deepseek-flash', 'mimo', 'gemini-flash']) {
+ok('advisory no longer auto-dispatches minimax (no-document delivery)', !ADVISORY_MODELS.includes('minimax'));
+for (const m of ['gemini', 'deepseek-flash', 'mimo', 'gemini-flash']) {
   ok(`advisory includes ${m}`, ADVISORY_MODELS.includes(m));
 }
 
