@@ -118,9 +118,12 @@ SANDBOX + PANEL PREFLIGHT (before ANY paid dispatch; report-and-exit on failure)
      done; echo NET-OK
    NET-BLOCKED -> report "sandbox has no network: set [sandbox_workspace_write]
    network_access=true in ~/.codex/config.toml" and EXIT. Do not run the panel.
-   NOTE: the probe + the panel preflight prove reachability, binaries, and writable scratch
-   homes — NOT authenticated model dispatch. A logged-out child CLI surfaces as that
-   model's dispatch failing during the run; report it, never re-auth interactively.
+   NOTE: this network probe proves reachability + binaries + writable scratch homes. The panel
+   preflight (step 4) can ALSO prove authenticated dispatch when run with --auth-probe (SKI-376):
+   a cheap per-CLI no-op (opencode `auth list`; one trivial print-mode call for claude/codex/gemini)
+   that fails a logged-out MANDATORY CLI before any paid dispatch. Without --auth-probe a logged-out
+   child CLI only surfaces as that model's dispatch failing mid-run. Either way: report it, never
+   re-auth interactively.
 2. Budget: the driver now owns the opus daily exhausted-lock check — pass
    --fail-fast-budget (in the RUN block below) and it cleanly stops with a recoverable
    `BUDGET-PAUSED` marker (exit 0) at wake start OR mid-drain, instead of the old 300s
@@ -136,13 +139,16 @@ SANDBOX + PANEL PREFLIGHT (before ANY paid dispatch; report-and-exit on failure)
    The written ~/Development/.opencode/progress/SKILL_LIST.md (JSON twin: SKILL_LIST.json) is the
    canonical skill-state inventory — every skill with its queue position, four verdicts (S·T·C·A),
    eval state, and last_audited. Read it; NEVER rebuild a skill inventory ad hoc.
-4. Panel execution preflight on the first eligible skill:
+4. Panel execution preflight on the first eligible skill (add --auth-probe to also verify each
+   child CLI is logged in BEFORE any paid dispatch — recommended for an unattended wake):
      cd ~/Development/skill-graph && node lib/audit/run-skill-audit-loop.js \
-       --skill <first-slug> --skill-dir <its dir> --cwd . --preflight-only
+       --skill <first-slug> --skill-dir <its dir> --cwd . --preflight-only --auth-probe
    Required healthy shape in a Codex desktop session: both mandatory CLIs available, no
-   mandatory budget locks, and EITHER an active OS fence OR (expected here)
-   model-cli-home: scratch + public_workspace.active: true. Any mandatory failure ->
-   report the preflight JSON and EXIT. NEVER fall back to auditing single-model.
+   mandatory budget locks, EITHER an active OS fence OR (expected here)
+   model-cli-home: scratch + public_workspace.active: true, AND (with --auth-probe) every
+   mandatory CLI's `auth.<cli>.ok: true`. Any mandatory failure (incl. a failed auth probe) ->
+   report the preflight JSON (the `auth` block names the exact CLI + its re-auth hint) and EXIT.
+   NEVER fall back to auditing single-model.
 
 RUN (the driver owns claim -> panel -> eval-guarded apply -> CONTENT commit -> release)
   cd ~/Development/skill-graph && \

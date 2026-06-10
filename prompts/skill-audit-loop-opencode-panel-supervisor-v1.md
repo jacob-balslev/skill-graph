@@ -107,15 +107,19 @@ PREFLIGHT (before ANY paid dispatch; report-and-exit on failure)
    empty queue: report the builder stderr + the SKILL_LIST summary block and EXIT without
    running the panel. (Add --refresh-manifest when the builder warns skills.manifest.json
    is stale.)
-3. Panel execution preflight on the first eligible skill:
+3. Panel execution preflight on the first eligible skill (add --auth-probe to also verify each
+   child CLI is logged in BEFORE any paid dispatch — recommended for an unattended session):
      cd ~/Development/skill-graph && node lib/audit/run-skill-audit-loop.js \
-       --skill <first-slug> --skill-dir <its dir> --cwd . --preflight-only
-   Both mandatory CLIs must be available with no mandatory budget locks. Any mandatory
-   failure -> report the preflight JSON and EXIT. NEVER fall back to auditing
-   single-model, and NEVER substitute a weaker model for a mandatory frontier slot.
-   NOTE: the preflight proves binaries and writable scratch homes, NOT authenticated
-   model dispatch — a logged-out child CLI surfaces as that model's dispatch failing
-   during the run; report it, never re-auth interactively mid-drain.
+       --skill <first-slug> --skill-dir <its dir> --cwd . --preflight-only --auth-probe
+   Both mandatory CLIs must be available with no mandatory budget locks, and (with --auth-probe)
+   every mandatory CLI's `auth.<cli>.ok: true`. Any mandatory failure (incl. a failed auth probe)
+   -> report the preflight JSON and EXIT. NEVER fall back to auditing single-model, and NEVER
+   substitute a weaker model for a mandatory frontier slot.
+   NOTE: WITHOUT --auth-probe the preflight proves only binaries + writable scratch homes (a
+   logged-out child CLI then surfaces as that model's dispatch failing mid-run). WITH --auth-probe
+   (SKI-376) it ALSO proves authenticated dispatch via a cheap per-CLI no-op (opencode `auth list`;
+   one trivial print-mode call for claude/codex/gemini) — the `auth` block names the exact CLI +
+   its re-auth hint. Either way: report it, never re-auth interactively mid-drain.
 
 RUN (the driver owns claim -> panel -> eval-guarded apply -> CONTENT commit -> release;
 skills with missing per-skill files are scaffolded/handled by the loop itself — do not

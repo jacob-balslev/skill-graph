@@ -4,7 +4,7 @@ const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { runPanelPreflight, modelCliStateDir } = require('../../lib/audit/panel-preflight');
+const { runPanelPreflight, modelCliStateDir, authProbe } = require('../../lib/audit/panel-preflight');
 
 let passed = 0;
 function check(name, fn) {
@@ -108,6 +108,72 @@ check('advisory CLI list uses registry backends instead of falling through to cl
   });
   assert.strictEqual(result.ok, true);
   assert.deepStrictEqual(result.advisory_clis.sort(), ['gemini', 'opencode']);
+  fs.rmSync(ws, { recursive: true, force: true });
+});
+
+console.log('2. authenticated no-op probe (SKI-376)');
+check('authProbe classifies authed/logged-out/timeout/0-credentials per CLI', () => {
+  const spawn = (cli) => {
+    if (cli === 'claude') return { status: 0, stdout: 'ok', stderr: '' };
+    if (cli === 'gemini') return { status: 1, stdout: '', stderr: 'not authenticated' };
+    if (cli === 'opencode') return { status: 0, stdout: '└  3 credentials\n', stderr: '' };
+    if (cli === 'codex') return { error: { code: 'ETIMEDOUT', message: 'timed out' } };
+    return { status: 0, stdout: '' };
+  };
+  assert.deepStrictEqual(authProbe('claude', { spawn }), { ok: true, detail: null });
+  assert.strictEqual(authProbe('gemini', { spawn }).ok, false);
+  assert.strictEqual(authProbe('opencode', { spawn }).ok, true);
+  assert.strictEqual(authProbe('codex', { spawn }).ok, false);
+  // opencode with 0 credentials = logged out
+  assert.strictEqual(authProbe('opencode', { spawn: () => ({ status: 0, stdout: '└  0 credentials' }) }).ok, false);
+  // no probe defined => ok:null
+  assert.strictEqual(authProbe('unknown-cli', { spawn }).ok, null);
+});
+
+check('runPanelPreflight authProbe gates mandatory (error) vs advisory (warning)', () => {
+  const ws = fs.mkdtempSync(path.join(os.tmpdir(), 'preflight-auth-'));
+  const sg = path.join(ws, 'skill-graph');
+  const skillDir = path.join(ws, 'skills', 'skills', 'quality-assurance', 'a11y');
+  const home = path.join(ws, 'home');
+  fs.mkdirSync(skillDir, { recursive: true });
+  fs.mkdirSync(sg, { recursive: true });
+  fs.mkdirSync(path.join(home, '.codex'), { recursive: true });
+  fs.mkdirSync(path.join(home, '.claude'), { recursive: true });
+  fs.mkdirSync(path.join(home, '.gemini'), { recursive: true });
+  fs.mkdirSync(path.join(home, '.local', 'share', 'opencode'), { recursive: true });
+  // which: all present. auth probe: codex (mandatory) logged out -> error; gemini (advisory) ok.
+  const spawn = (cmd, args = []) => {
+    if (cmd === 'which') return { status: 0, stdout: `/bin/${args[0]}\n` };
+    if (cmd === 'codex') return { status: 1, stdout: '', stderr: 'please login' };
+    if (cmd === 'opencode') return { status: 0, stdout: '└  2 credentials' };
+    return { status: 0, stdout: 'ok' };
+  };
+  const result = runPanelPreflight({
+    skillGraphRoot: sg,
+    workspaceRoot: ws,
+    skillDir,
+    mandatoryModels: ['opus', 'codex-current'],
+    advisoryModels: ['gemini'],
+    env: { HOME: home, CODEX_HOME: path.join(home, '.codex') },
+    osFenceSupported: true,
+    publicWorkspace: { active: false },
+    spawn,
+    authProbe: true,
+  });
+  assert.strictEqual(result.ok, false, 'mandatory codex auth failure fails preflight');
+  assert.strictEqual(result.auth.codex.ok, false);
+  assert.strictEqual(result.auth.codex.tier, 'mandatory');
+  assert.ok(result.auth.codex.hint, 'failed probe carries a re-auth hint');
+  assert.strictEqual(result.auth.claude.ok, true);
+  assert.ok(result.errors.some((e) => /codex CLI auth probe FAILED/.test(e)));
+  // a default run (no authProbe) carries no auth block
+  const noProbe = runPanelPreflight({
+    skillGraphRoot: sg, workspaceRoot: ws, skillDir,
+    mandatoryModels: ['opus'], advisoryModels: [],
+    env: { HOME: home }, osFenceSupported: true, publicWorkspace: { active: false },
+    spawn: fakeSpawn(['claude']),
+  });
+  assert.strictEqual(noProbe.auth, undefined, 'no auth block when authProbe is off');
   fs.rmSync(ws, { recursive: true, force: true });
 });
 
