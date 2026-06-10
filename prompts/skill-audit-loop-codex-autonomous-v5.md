@@ -11,6 +11,7 @@
 
 - Use this for Codex cron automations that should wake up, audit skills, commit scoped improvements, and exit cleanly.
 - Use this when you want the scheduler to start the next session, not the model itself.
+- Use `skill-audit-loop-codex-panel-supervisor-v1.md` when the automation should run the MULTI-MODEL panel loop (mandatory frontier pair + advisory) — that prompt supervises the canonical driver; this one is strictly single-model.
 - Use `skill-audit-loop-minimal-iteration.md` for interactive 1-3 skill sessions.
 - Use `skill-audit-loop-batch-worker-v4.md` only when you need a model-agnostic autonomous wrapper.
 

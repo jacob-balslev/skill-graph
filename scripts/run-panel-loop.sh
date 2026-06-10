@@ -31,7 +31,13 @@
 #
 # Usage:
 #   run-panel-loop.sh (--worklist [--lane <name>] | --skills-file <path>)
-#                     [--max-rounds N] [--no-advisory] [--timeout S] [--work-root D] [--dry-run]
+#                     [--max-rounds N] [--max-skills N] [--no-advisory] [--timeout S]
+#                     [--work-root D] [--dry-run]
+#
+#   --max-skills N    Stop cleanly (exit 0) after N skills have been processed this run.
+#                     0 (default) = uncapped. Added 2026-06-10T for scheduler-bounded wakes
+#                     (e.g. the nightly Codex automation: target 3 / hard cap 5 per wake) so
+#                     a bounded run exits cleanly instead of dying mid-list.
 #
 # Exit-code contract of run-skill-audit-loop.js (consumed below):
 #   0 = enrichment KEPT/applied  ->  commit SKILL.md (+ audit-state.json); release status=completed
@@ -55,6 +61,7 @@ SKILLS_FILE=""
 WORKLIST=0
 LANE=""
 MAX_ROUNDS=2
+MAX_SKILLS=0                           # --max-skills: 0 = uncapped; N = clean stop after N processed
 ADV_FLAG=""                            # empty => full advisory panel (the chosen default)
 DRY_FLAG=""                            # --dry-run: pass through to enrich AND skip the CONTENT commit
 TIMEOUT=5400                           # per-skill watchdog ceiling (s); ~90m, generous over ~68m observed
@@ -66,6 +73,7 @@ while [ $# -gt 0 ]; do
     --lane)        LANE="$2"; shift 2 ;;
     --skills-file) SKILLS_FILE="$2"; shift 2 ;;
     --max-rounds)  MAX_ROUNDS="$2";  shift 2 ;;
+    --max-skills)  MAX_SKILLS="$2"; shift 2 ;;
     --no-advisory) ADV_FLAG="--no-advisory"; shift ;;
     --timeout)     TIMEOUT="$2"; shift 2 ;;
     --dry-run)     DRY_FLAG="--dry-run"; shift ;;
@@ -306,6 +314,9 @@ drain_worklist() {
   echo "run-panel-loop: $TOTAL eligible skill(s) in ranked order" >&2
   for slug in "${SLUGS[@]}"; do
     nn=$((nn+1))
+    if [ "$MAX_SKILLS" -gt 0 ] && [ "$processed" -ge "$MAX_SKILLS" ]; then
+      echo "run-panel-loop: max-skills reached ($processed/$MAX_SKILLS) — clean stop" >&2; break
+    fi
     if steering_says_stop; then echo "run-panel-loop: steering pause/stop — exiting" >&2; break; fi
     while budget_blocked; do echo "run-panel-loop: opus daily budget exhausted — sleeping 300s" >&2; sleep 300; done
 
@@ -345,10 +356,13 @@ drain_worklist() {
 # ── FILE MODE — curated slug list (local-ledger resume; no shared claim) ──────────
 drain_file() {
   mapfile -t SLUGS < <(grep -vE '^\s*(#|$)' "$SKILLS_FILE" | sed 's/[[:space:]]//g')
-  local TOTAL=${#SLUGS[@]} i=0
+  local TOTAL=${#SLUGS[@]} i=0 processed=0
   echo "run-panel-loop: FILE mode · $TOTAL skill(s) · advisory=$([ -z "$ADV_FLAG" ] && echo full-panel || echo floor-only) · timeout=${TIMEOUT}s · work=$WORK_ROOT" >&2
   for slug in "${SLUGS[@]}"; do
     i=$((i+1))
+    if [ "$MAX_SKILLS" -gt 0 ] && [ "$processed" -ge "$MAX_SKILLS" ]; then
+      echo "run-panel-loop: max-skills reached ($processed/$MAX_SKILLS) — clean stop" >&2; break
+    fi
     if done_already "$slug"; then echo "[$i/$TOTAL] $slug — already done (local ledger), skipping" >&2; skipped=$((skipped+1)); continue; fi
     local dir; dir=$(resolve_dir "$slug")
     if [ -z "$dir" ] || [ ! -f "$dir/SKILL.md" ]; then
@@ -356,6 +370,7 @@ drain_file() {
     fi
     echo "[$i/$TOTAL] $slug — enriching -> ${dir#$SKILLS_REPO/}" >&2
     enrich_one_skill "$slug" "$dir"
+    processed=$((processed+1))
   done
   echo "run-panel-loop FILE DONE: applied=$applied reverted=$reverted failed=$failed missing=$missing skipped=$skipped / total=$TOTAL" >&2
 }

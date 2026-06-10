@@ -26,6 +26,12 @@
           "version": "v5"
         },
         {
+          "id": "codex-panel-supervisor-v1",
+          "path": "skill-graph/prompts/skill-audit-loop-codex-panel-supervisor-v1.md",
+          "mode": "autonomous-panel-codex-cron",
+          "version": "v1"
+        },
+        {
           "id": "minimal-iteration",
           "path": "skill-graph/prompts/skill-audit-loop-minimal-iteration.md",
           "mode": "interactive-short-batch",
