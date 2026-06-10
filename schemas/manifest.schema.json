@@ -28,6 +28,10 @@
       "type": "string",
       "format": "date-time"
     },
+    "skill_root": {
+      "type": ["string", "null"],
+      "description": "SKI-370: the primary skill-library root, as a POSIX path relative to the stable manifest path base (the skill-graph repository root). Every skills[].path value is anchored to that same base, so the manifest is reproducible regardless of generation cwd. Optional/additive: a manifest generated before SKI-370 omits it; consumers fall back to origin-probing."
+    },
     "summary": {
       "type": "object",
       "additionalProperties": false,
@@ -107,7 +111,7 @@
             "type": "integer",
             "minimum": 0
           },
-          "description": "Per-application_verdict distribution. The primary quality signal per ADR-0011. Buckets: APPLICABLE / PROVISIONAL / REDUNDANT / HARMFUL / MIXED / FALSE_POSITIVE / UNVERIFIED."
+          "description": "Per-application_verdict distribution. The primary quality signal per ADR-0011. Buckets: APPLICABLE / PROVISIONAL / NOT_DISCRIMINATED_CEILING / EQUIVALENT_ON_FRONTIER / REDUNDANT / HARMFUL / MIXED / FALSE_POSITIVE / UNVERIFIED."
         },
         "by_audit_state": {
           "type": "object",
@@ -836,13 +840,15 @@
                 "enum": [
                   "APPLICABLE",
                   "REDUNDANT",
+                  "NOT_DISCRIMINATED_CEILING",
+                  "EQUIVALENT_ON_FRONTIER",
                   "HARMFUL",
                   "MIXED",
                   "FALSE_POSITIVE",
                   "UNVERIFIED",
                   "PROVISIONAL"
                 ],
-                "description": "Application-layer verdict (gate 9). The v7 primary quality signal — a skill is only behaviorally certified when this is `APPLICABLE`. `UNVERIFIED` means no application assessment has run; `PROVISIONAL` means one model found useful behavior without grader confirmation. Joined from `audit-state.json` into the generated manifest."
+                "description": "Application-layer verdict (gate 9). The primary quality signal — a skill is only behaviorally certified when this is `APPLICABLE`. `NOT_DISCRIMINATED_CEILING` means baseline saturation made the eval inconclusive; `EQUIVALENT_ON_FRONTIER` means no marginal lift for the measured frontier model on that case set. `UNVERIFIED` means no application assessment has run; `PROVISIONAL` means one model found useful behavior without grader confirmation. Joined from `audit-state.json` into the generated manifest."
               },
               "audit_verdict": {
                 "type": "string",
@@ -919,7 +925,7 @@
               },
               "boundary": {
                 "type": "string",
-                "description": "DEPRECATED alias of `concept_boundary` (ADR-0018 renamed the top-level Understanding field to remove the token collision with the routing edge `relations.boundary`). Retained for unmigrated skills; the normalizer presents it as `concept_boundary`."
+                "description": "DEPRECATED alias of `concept_boundary` (ADR-0018 renamed the top-level Understanding field to remove the token collision with the routing edge `relations.suppresses` and legacy `relations.boundary`). Retained for unmigrated skills; the normalizer presents it as `concept_boundary`."
               },
               "concept_boundary": {
                 "type": "string",

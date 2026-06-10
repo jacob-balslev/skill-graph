@@ -70,7 +70,7 @@ Every top-level authored field in `schemas/SKILL_METADATA_PROTOCOL_schema.json` 
 | 33 | `paths` | grouped under parent | `activation.paths`. |
 | 34a | `project` | copied through unchanged | Belonging-entity references for project-anchored skills. Array of `{handle, role}`. Replaces `workspace_tags`. |
 | 34b | `repo` | copied through unchanged | Repo-level belonging-entity references. Array of `{handle, url}`. |
-| 36 | `relations` | copied through unchanged | `relations`. Includes the seven edge keys AND the optional non-edge `relations.io_contract` (`{inputs, outputs}` of abstract artifact-type tokens — SKI-52). The manifest copies `io_contract` through verbatim; the derived `depends_on` edges and broken-chain/cycle findings are NOT projected into the manifest — they are computed at graph-build time and surfaced under `io_composition` in `scripts/discovery/skill-graph.json` (the consumer-side graph), not in `skills.manifest.json`. |
+| 36 | `relations` | copied through unchanged | `relations`. Includes the eight edge keys AND the optional non-edge `relations.io_contract` (`{inputs, outputs}` of abstract artifact-type tokens — SKI-52). The manifest copies `io_contract` through verbatim; the derived `depends_on` edges and broken-chain/cycle findings are NOT projected into the manifest — they are computed at graph-build time and surfaced under `io_composition` in `scripts/discovery/skill-graph.json` (the consumer-side graph), not in `skills.manifest.json`. |
 | 37 | `grounding` | copied through unchanged | `grounding`. |
 | 38 | `portability` | copied through unchanged | `portability`. |
 | 39 | `lifecycle` | grouped under parent | `health.lifecycle`. |
@@ -79,8 +79,8 @@ Every top-level authored field in `schemas/SKILL_METADATA_PROTOCOL_schema.json` 
 | 42 | `last_changed` | grouped under parent | `health.last_changed`. v6 Audit Status field — ISO date the SKILL.md was last edited. Pass-through from authored frontmatter. |
 | 43a | `structural_verdict` | grouped under parent | `health.structural_verdict`. **v7+** Audit Status field — form-layer verdict from gates 1–2, 7. Enum: `PASS`, `PASS_WITH_FIXES`, `FAIL`, `UNVERIFIED`. Replaces the structural slice of v6 `audit_verdict`. Pass-through from authored frontmatter. |
 | 43b | `truth_verdict` | grouped under parent | `health.truth_verdict`. **v7+** Audit Status field — truth-layer verdict from gates 3–6. Enum: `PASS`, `DRIFT`, `BROKEN`, `UNVERIFIED`. Pass-through from authored frontmatter. |
-| 43c | `comprehension_verdict` | grouped under parent | `health.comprehension_verdict`. **v7+** Audit Status field — comprehension-layer verdict from gate 8 (demoted in v7). Enum: `PASS`, `SHALLOW`, `REDUNDANT`, `UNVERIFIED`, `SKIPPED_BASELINE_HIGH`, `NA`. Pass-through from authored frontmatter. |
-| 43d | `application_verdict` | grouped under parent | `health.application_verdict`. **v7+** Audit Status field — application-layer verdict from gate 9 (primary quality signal). Enum: `APPLICABLE`, `REDUNDANT`, `HARMFUL`, `MIXED`, `FALSE_POSITIVE`, `UNVERIFIED`, `PROVISIONAL`. Pass-through from authored frontmatter. |
+| 43c | `comprehension_verdict` | grouped under parent | `health.comprehension_verdict`. **v7+** Audit Status field — comprehension-layer verdict from gate 8 (demoted in v7). Enum: `PASS`, `SHALLOW`, `REDUNDANT`, `UNVERIFIED`, `PROVISIONAL`, `SKIPPED_BASELINE_HIGH`, `NA`. Joined from `audit-state.json` when present; legacy frontmatter fallback remains for old exports. |
+| 43d | `application_verdict` | grouped under parent | `health.application_verdict`. **v7+** Audit Status field — application-layer verdict from gate 9 (primary quality signal). Enum: `APPLICABLE`, `PROVISIONAL`, `NOT_DISCRIMINATED_CEILING`, `EQUIVALENT_ON_FRONTIER`, `REDUNDANT`, `HARMFUL`, `MIXED`, `FALSE_POSITIVE`, `UNVERIFIED`. Joined from `audit-state.json` when present; legacy frontmatter fallback remains for old exports. |
 | 43e | `audit_verdict` *(deprecated in v7)* | grouped under parent | `health.audit_verdict`. v6 Audit Status field — aggregate verdict (`PASS`, `PASS_WITH_FIXES`, `PARTIAL`, `FAIL`, `UNKNOWN`). DEPRECATED in v7; replaced by the four discrete verdicts above. Kept in the manifest schema for back-compat reads of unmigrated v6 manifests. See [ADR 0011](adr/0011-split-audit-verdict-into-four-verdicts.md). |
 | 44 | `eval_score` | grouped under parent | `health.eval_score`. v6 Audit Status field — latest aggregate eval grade (0.0–5.0). Pass-through from authored frontmatter. |
 | 45 | `eval_failed_ids` | grouped under parent | `health.eval_failed_ids`. v6 Audit Status field — eval IDs that failed in the most recent run. Pass-through from authored frontmatter. |
@@ -93,11 +93,12 @@ These fields exist in `skills.manifest.json` with no authored counterpart:
 | Manifest field | Source |
 |---|---|
 | `generated_at` | Timestamp written by the manifest generator at compile time. |
+| `skill_root` | **SKI-370.** The skill-library root, as a POSIX path relative to the stable manifest path base (the skill-graph repository root). Derived from the common ancestor of the resolved skill files (NOT the cwd-dependent discovery root), so it is cwd-invariant. Every `skills[].path` is anchored to the same base, making the whole manifest reproducible regardless of generation cwd. Optional/additive — a manifest generated before SKI-370 omits it; consumers fall back to origin-probing. Single skill-root today; multi-root will generalize to per-entry roots. |
 | `workspace` | Echoed from `.skill-graph/config.json` when present — emits `skill_roots` and `projects` so consumers can resolve semantic tags without re-reading the config. New in v3. |
 | `summary.total_skills` | Count of entries in `skills[]`. |
 | `summary.by_subject`, `summary.by_public`, `summary.by_schema_version`, `summary.by_stability`, `summary.by_project` | Rollup counts derived from the corresponding authored fields across all skills. `by_public` replaced `by_deployment_target` when the `deployment_target` enum became the boolean `public` gate. `by_project` is only present when workspace mode is active. |
 | `skills[].id` | Stable identifier derived from `name`. Normalization rules live in the generator; `id` may be equal to `name` when no normalization is needed. |
-| `skills[].path` | Repo-relative path to the source `SKILL.md` file, written by the generator when it reads the file. |
+| `skills[].path` | POSIX path to the source `SKILL.md` file, **anchored to a stable, cwd-independent base — the skill-graph repository root** (`packageRoot()`), NOT `process.cwd()` (SKI-370). This makes the value byte-identical whether the generator runs from `~/Development` or `~/Development/skill-graph`. Resolve a source file as `resolve(<skill-graph-root>, path)`; the `skill_root` header documents the library subtree under that same base. |
 | `skills[].project` | Literal handle of the project root this skill was loaded from. Absent for skills loaded from a shared root without a project owner. New in v3. |
 | `health.has_grounding` | Boolean flag — `true` when the authored frontmatter contains a `grounding` block, `false` otherwise. A convenience signal for consumers. |
 | `health.has_relations` | Boolean flag — `true` when the authored frontmatter contains a non-empty `relations` block. |
@@ -268,7 +269,7 @@ The new `truth_source_hashes` map is optional but strongly recommended - it turn
 
 The codemod drops the v2 string into `notes` unchanged. Authors upgrade to `runtimes` / `node` manually when the structured form is more accurate.
 
-**4. `relations.boundary` and `relations.depends_on` item shape: string → `string | object`.**
+**4. Historical v3 item-shape extension: `relations.boundary` and `relations.depends_on` string → `string | object`.**
 
 v3 adds an object-item form to both:
 
@@ -282,7 +283,7 @@ relations:
       min_version: "1.2.0"
 ```
 
-The bare-string form remains valid (`- fulfillment`). The object form is opt-in per item. Not a breaking change for authors who keep bare strings; consumers must handle both shapes.
+The bare-string form remains valid (`- fulfillment`). The object form is opt-in per item. Not a breaking change for authors who keep bare strings; consumers must handle both shapes. Current v8 authors use `relations.suppresses` for this routing-exclusion edge; `relations.boundary` is the legacy alias kept for unmigrated skills.
 
 **5. New optional fields:** `category`, `project_tags`, `lifecycle`, `runtime_telemetry`. None are required. Omit them on existing skills until the added metadata is real.
 
@@ -295,7 +296,7 @@ The bare-string form remains valid (`- fulfillment`). The object form is opt-in 
 | `family: <value>` | `browse_category: <value>` | rename only |
 | `drift_check: "2026-04-15"` | `drift_check: { last_verified: "2026-04-15" }` | scalar → object |
 | `compatibility: "<text>"` | `compatibility: { notes: "<text>" }` | scalar → object |
-| `relations.boundary: [str]` | `relations.boundary: [str | {skill, reason}]` | extended (back-compat) |
+| `relations.boundary: [str]` | `relations.suppresses: [str | {skill, reason}]` | extended + renamed; `boundary` remains a back-compat alias |
 | `relations.depends_on: [str]` | `relations.depends_on: [str | {skill, min_version}]` | extended (back-compat) |
 | *(none)* | `relations.io_contract: {inputs:[token], outputs:[token]}` | new optional field (SKI-52) — opt-in, no migration |
 

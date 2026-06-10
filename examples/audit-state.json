@@ -1,0 +1,12 @@
+{
+  "schema_version": 8,
+  "version": "1.0.0",
+  "owner": "skill-graph-maintainer",
+  "freshness": "2026-04-17",
+  "drift_check": {
+    "last_verified": "2026-04-17"
+  },
+  "eval_artifacts": "planned",
+  "eval_state": "unverified",
+  "routing_eval": "absent"
+}

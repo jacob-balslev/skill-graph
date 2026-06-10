@@ -1,12 +1,23 @@
 #!/usr/bin/env node
 /**
- * Manifest generator for Skill Graph (schema_version 8).
+ * Manifest generator for Skill Graph (manifest envelope schema_version 4;
+ * consumes v8 SKILL.md frontmatter).
  *
  * Walks `skills/<name>/SKILL.md` (and optionally `examples/skill-metadata-template.md`),
  * applies the authored-to-generated rename map documented in
  * `docs/manifest-field-mapping.md`, computes summary aggregates, validates the
  * result against `schemas/manifest.schema.json`, and emits the compiled
  * `skills.manifest.json`.
+ *
+ * Path-base contract (SKI-370): every `skills[].path` value (and the
+ * `skill_root` header) is a POSIX path relative to a STABLE, cwd-independent
+ * anchor — the skill-graph repository root (`packageRoot()`), NOT
+ * `process.cwd()`. This makes the emitted manifest byte-identical regardless of
+ * whether the generator runs from `~/Development` or `~/Development/skill-graph`
+ * (the prior `process.cwd()` anchor flipped paths between `skills/skills/...`
+ * and `../skills/skills/...`, which silently emptied the audit worklist — the
+ * 2026-06-10 incident). The `skill_root` header documents the primary skill
+ * library root relative to that same base.
  *
  * Multi-root mode: when `.skill-graph/config.json` exists at the repo root and
  * declares `skill_roots` (a top-level array of strings or `{path, project}`
@@ -34,7 +45,7 @@ const path = require('path');
 const crypto = require('crypto');
 const { parseFrontmatter, normalizeFrontmatter } = require('./lib/parse-frontmatter');
 const { checkAliasParity } = require('./lib/alias-contract');
-const { collectSkillFilesFromRoots, resolveSchemaPath, workspaceRoot } = require('./lib/roots');
+const { collectSkillFilesFromRoots, resolveSchemaPath, workspaceRoot, packageRoot } = require('./lib/roots');
 // ADR-0019: the audit-state sidecar join helper (canonical home).
 const { readSidecar: loadAuditStateSidecar, joinSidecar } = require('./lib/audit-state-sidecar');
 
@@ -44,8 +55,15 @@ const TEMPLATE_PATH = path.join(REPO_ROOT, 'examples', 'skill-metadata-template.
 const MANIFEST_SCHEMA_PATH = resolveSchemaPath(REPO_ROOT, 'manifest.schema.json');
 const CONFIG_PATH = path.join(REPO_ROOT, '.skill-graph', 'config.json');
 
+// SKI-370: anchor every emitted path to a STABLE, cwd-independent base — the
+// skill-graph repository root — so the manifest is reproducible regardless of
+// the generation cwd. `REPO_ROOT` (= workspaceRoot() = cwd) is still used for
+// READING (config, schema, skill discovery); only the EMITTED path values are
+// re-anchored here. See the file header § Path-base contract.
+const MANIFEST_PATH_BASE = packageRoot();
+
 function repoRelative(filePath) {
-  return path.relative(REPO_ROOT, filePath).split(path.sep).join('/');
+  return path.relative(MANIFEST_PATH_BASE, filePath).split(path.sep).join('/');
 }
 
 // ---------------------------------------------------------------------------
@@ -832,10 +850,40 @@ function main() {
   skillEntries.sort((a, b) => a.id.localeCompare(b.id));
   const sortedEntries = skillEntries.map(sortKeys);
 
+  // SKI-370: document the skill-library root relative to the stable path base
+  // (MANIFEST_PATH_BASE = skill-graph repo root). Every `skills[].path` is
+  // anchored to that same base, so a consumer resolves a skill file as
+  // `resolve(<skill-graph-root>, entry.path)` and the skills subtree as
+  // `resolve(<skill-graph-root>, skill_root)`. Derive it from the COMMON
+  // ANCESTOR of the resolved skill files (NOT from the cwd-dependent discovery
+  // root) so the header is itself cwd-invariant — the template specimen
+  // (skill-graph/examples/…) is excluded so it never collapses the prefix to
+  // the repo root. Single-root today; multi-root generalizes to per-entry roots.
+  const librarySkillDirs = sources
+    .filter(({ filePath }) => path.resolve(filePath) !== path.resolve(TEMPLATE_PATH))
+    .map(({ filePath }) => path.dirname(path.resolve(filePath)));
+  const commonAncestor = librarySkillDirs.length > 0
+    ? librarySkillDirs.reduce((acc, dir) => {
+        if (acc === null) return dir;
+        const a = acc.split(path.sep);
+        const b = dir.split(path.sep);
+        const out = [];
+        for (let i = 0; i < Math.min(a.length, b.length); i += 1) {
+          if (a[i] !== b[i]) break;
+          out.push(a[i]);
+        }
+        return out.join(path.sep);
+      }, null)
+    : null;
+  const primarySkillRoot = commonAncestor
+    ? path.relative(MANIFEST_PATH_BASE, commonAncestor).split(path.sep).join('/')
+    : null;
+
   // Build the manifest object.
   const manifest = {
     schema_version: 4,
     generated_at: fixedTimestamp || new Date().toISOString(),
+    skill_root: primarySkillRoot,
     summary: computeSummary(skillEntries),
     skills: sortedEntries,
   };
