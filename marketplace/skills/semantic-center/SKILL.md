@@ -284,6 +284,7 @@ After delivering a semantic-center analysis, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Semantic-center analysis is like finding the load-bearing column in a room: furniture, paint, wiring, and fixtures all matter, but the explanation becomes useful only after the column that everything else depends on is named.
 - Common misconception: The common mistake is believing the semantic center is whatever is most visible or most recently discussed. Visibility is a UI fact, recency is a conversation fact, sequence is a timeline fact, and none of them alone proves structural importance.
 

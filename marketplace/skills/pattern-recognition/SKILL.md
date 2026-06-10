@@ -529,6 +529,7 @@ Before codifying a pattern, confirm:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Pattern recognition is to a codebase what epidemiology is to a city's public health — a doctor (debugging) treats one patient with one infection; the epidemiologist (this skill) notices that fourteen patients across three hospitals all have the same infection, traces it back to a contaminated water source (root cause), names the outbreak, prescribes a public-health intervention (lint rule, type constraint, architectural fix) that prevents the next thousand cases, and updates the surveillance protocol so the next outbreak is caught at three cases instead of fourteen.
 - Common misconception: |
 

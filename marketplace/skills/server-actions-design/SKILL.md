@@ -338,6 +338,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: A Server Action is like a service-counter form wired straight to the back office: the customer fills out normal paperwork, the clerk executes privileged work behind the counter, and the office must still check identity, authority, and the paperwork before changing records.
 - Common misconception: |
 

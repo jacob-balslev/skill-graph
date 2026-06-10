@@ -173,6 +173,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: TDD is to code design what a piano teacher's metronome is to a student's playing — the rhythm is not the music, but it surfaces every uneven phrase, every rushed measure, every hesitation, in time to correct it before it ossifies into habit.
 - Common misconception: |
 

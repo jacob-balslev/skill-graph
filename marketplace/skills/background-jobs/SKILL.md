@@ -305,6 +305,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: A background job system has five primitives: a producer records durable work, a queue orders and deduplicates it, a worker leases and executes it, a state store records progress and outcomes, and a notification path tells humans or systems what changed. Reliability comes from making each primitive explicit instead of hiding long work inside a request handler.
 - Purpose: Background jobs keep interactive requests short while preserving reliable processing for slow, retryable, or batch-oriented work. They replace timeout-prone inline execution and untracked fire-and-forget calls with durable state, resumable progress, controlled concurrency, and observable outcomes.
+- Boundary: This skill is not schedule design, browser push transport design, event schema design, or incident debugging. It begins after work has been requested and ends with execution state, retry, progress, completion, cancellation, and failure handling.
 - Analogy: A background job is a numbered work order in a shop: the front desk accepts the request, the workshop picks it up when capacity exists, and the status board shows where it is.
 - Common misconception: Putting work in a worker is not enough. Without durable state, idempotency, progress, retry policy, and observability, a background job is just an invisible request handler with a longer timeout.
 

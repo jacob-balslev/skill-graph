@@ -112,6 +112,7 @@ Honesty under uncertainty is the core value. The hardest feedback states are not
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Interaction feedback is to a user's action what a courier's tracking updates are to a shipment — the package is not faster because you can watch 'picked up → in transit → out for delivery,' but the staged, honest signals turn an anxious silence into a confident wait, and a failed delivery that tells you why and offers a re-attempt is recoverable where one that simply vanishes is not.
 - Common misconception: |
 

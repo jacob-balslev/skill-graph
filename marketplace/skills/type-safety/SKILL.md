@@ -226,6 +226,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Type safety is to programs what a passport check is to international travel — the document (type annotation) certifies identity within the issuing country's records, but on the way through customs (the I/O boundary), the document is re-verified against the actual traveler, and any mismatch is rejected before they enter the trusted zone.
 - Common misconception: |
 

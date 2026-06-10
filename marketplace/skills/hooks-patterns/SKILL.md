@@ -240,6 +240,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Hooks are to function components what stack frames are to function calls — they let a function remember things across calls without breaking referential transparency from the outside, by tracking state in a slot array indexed by call order, and the Rules of Hooks are the same kind of invariant as 'do not goto into the middle of a stack frame': violating them produces undefined behavior masked by garbage collection rather than visible crashes.
 - Common misconception: |
 

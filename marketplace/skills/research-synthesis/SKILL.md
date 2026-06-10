@@ -86,6 +86,7 @@ The discipline is wary of premature abstraction. A theme named too early ("users
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Research synthesis is to raw transcripts what sorting a shuffled deck into suits is to a hand of cards — you do not decide the suits in advance and force cards into them; you lay every card face up, group what genuinely belongs together by looking at it, and only then name the groups, so the categories are discovered in the evidence rather than imposed on it.
 - Common misconception: |
 

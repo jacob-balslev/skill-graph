@@ -148,6 +148,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: A test double is to a unit under test what a Hollywood stunt-double is to a leading actor — the stunt-double looks like the actor enough that the camera believes the scene, performs the dangerous part the actor cannot or should not perform (slow networks, paid APIs, real emails), but is not the actor. The director's job is choosing the right kind of stunt-double for the scene: a dummy stands in the back of the shot (placeholder); a stub recites canned lines from off-camera (canned answers); a spy records which lines were spoken (call recording); a mock has a script that *fails the take* if the actor deviates (rigid interaction verification); a fake is a body-double trained to actually perform the action in a controlled way (working in-memory substitute). Casting mocks where a fake would do produces takes that pass when the stunt is performed exactly as written and fail catastrophically when the actor improvises a better line.
 - Common misconception: |
 

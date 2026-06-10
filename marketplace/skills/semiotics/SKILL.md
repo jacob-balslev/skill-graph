@@ -280,6 +280,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Semiotics is to interface design what choreography is to a play — the words are the script, but the actor's stance, hand position, gaze direction, and proximity to other actors are the choreography; a line lands flat with the wrong choreography and well with the right one, and a disabled button colored only slightly paler is a stage actor whispering an exit cue the audience cannot hear.
 - Common misconception: |
 

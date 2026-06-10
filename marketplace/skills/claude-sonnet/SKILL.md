@@ -133,6 +133,7 @@ Before concluding "route this to Sonnet," confirm:
 **Concept**
 - Mental model: A model roster is a tiered ladder. The middle rung is the default — routing starts here and moves only with evidence: up to the frontier tier when a task proves too hard, down to the fast tier when a task proves mechanical. Most work clears the middle rung at lower cost and latency than the top.
 - Purpose: Anchor the roster with an explicit default lane so routing becomes a question of 'is there evidence to move off the default' rather than a guess about which model is good enough — preventing the two bad habits of sending everything to the smartest model (overpaying) or chasing the cheapest (underperforming on real coding work).
+- Boundary: It is not the tier for the hardest reasoning (that earns the frontier tier) nor for high-volume mechanical work (that drops to the fast tier or a script). It is not a quality compromise — for well-specified feature work it is the correct choice, not a budget concession. It is not the loop or harness the model runs inside.
 - Analogy: The balanced tier is the experienced generalist who handles the bulk of the caseload well — you escalate to the specialist only for the genuinely hard case and hand the routine paperwork to the assistant.
 - Common misconception: That the middle tier is 'the cheaper compromise you settle for.' It is not a compromise — it is the default, chosen affirmatively because most implementation work does not need the frontier tier's ceiling and is poorly served by the fast tier's limits.
 

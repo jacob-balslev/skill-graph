@@ -178,6 +178,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Component architecture is to a UI library what API design is to a backend service — the public contract is the only thing consumers see; every consumer depends on shape, behavior, and naming for things that may seem internal to the author; once a version ships, every prop and slot becomes a thing future versions must continue to support, just as every endpoint and field of a public API does. The headless/styled split is to component libraries what the data-plane/control-plane split is to distributed systems: separating the part that changes slowly (behavior, contracts) from the part that changes fast (visual treatment, theming).
 - Common misconception: |
 

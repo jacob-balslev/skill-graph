@@ -165,6 +165,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: A connection pool is to a database what a taxi rank is to an airport — every taxi has a standing cost (driver salary, fuel, parking space); a rank with too few taxis leaves passengers queuing on the curb; a rank with too many burns money on idle taxis and clogs the access road. The right number is the smallest that doesn't queue under peak arrival rate, sized by how long each taxi trip actually takes — and adding more taxis doesn't make the trips faster, it just lets more start at once.
 - Common misconception: |
 

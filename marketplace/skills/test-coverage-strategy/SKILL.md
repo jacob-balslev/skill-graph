@@ -328,6 +328,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Test coverage is to a test suite what cell-phone coverage maps are to a network — a green map on the carrier's website is not the same as actually being able to make a call in your basement; the map measures *where there is theoretical signal*, not *whether the call gets through*. A 100% coverage map with a 30% call-completion rate is the same shape of problem as a 100%-line-coverage suite that misses bugs — the floor is met (no dead zones), but the ceiling is unverified.
 - Common misconception: |
 

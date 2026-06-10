@@ -88,6 +88,7 @@ The meta-skill is sceptical of two opposite failure modes. The first is **stage 
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Design thinking is to a design effort what a conductor is to an orchestra — the conductor plays no instrument, but decides which section comes in next, when a passage must be repeated because the ensemble drifted, and when the piece is finished; the meta-skill chooses the next stage, calls a loop-back when a finding breaks the framing, and names when the team has enough to proceed.
 - Common misconception: |
 

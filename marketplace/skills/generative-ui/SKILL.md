@@ -310,6 +310,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Generative UI is to a model-rendered interface what a building's framework is to a tenant's customization — the architect (application) lays the structural floor plan, frames the walls, and provides a catalog of approved fixtures (component palette) plus sealed pre-fab rooms the tenant may install but not rewire (sandboxed iframes); the tenant (model) picks which fixtures and rooms to install where for this particular layout, but cannot punch new holes in load-bearing walls or wire fixtures that don't exist in the catalog. The freedom is in the composition; the safety is in the structure (restriction) or in the sealed room (isolation).
 - Common misconception: |
 

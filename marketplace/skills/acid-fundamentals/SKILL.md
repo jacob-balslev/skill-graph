@@ -155,6 +155,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: ACID is to a database transaction what the four corners of a legal contract are to an agreement — Atomicity is the signing block (all parties sign together or no contract exists), Consistency is the boilerplate clauses (every clause must be satisfied for the contract to be valid), Isolation is the negotiating-room rule (other negotiations cannot read your draft until both sides initial each page), and Durability is the safe in the law office (once signed, the contract survives the office burning down).
 - Common misconception: |
 

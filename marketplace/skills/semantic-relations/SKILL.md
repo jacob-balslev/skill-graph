@@ -329,6 +329,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Semantic-relations is to a knowledge graph what road-type labels are to a transit map: motorway, slip road, roundabout, bridge, tunnel, and one-way street are each typed connections with their own traversal rules. A map that labels every road connector is nearly useless for navigation; precise relation vocabulary makes the map a tool rather than an illustration.
 - Common misconception: |
 

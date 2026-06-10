@@ -792,6 +792,7 @@ SEMANTICS CHECK
 **Concept**
 - Mental model: Semantics in software is meaning encoding: every name, status code, version number, commit type, token, telemetry attribute, tool definition, and typed value is a sign that points at a referent under a convention. Good semantics keeps the sign, referent, and convention aligned as the system changes.
 - Purpose: Make meaning a first-class artifact so readers, tools, APIs, models, and users can infer what something is, why it exists, and what signal it sends without opening implementation details or tribal context.
+- Boundary: This skill owns the meaning encoded by one identifier, signal, token, version, status, schema field, or type. It does not own word morphology, casing rules, rename mechanics, typed relation analysis between concepts, UI-copy pattern writing, taxonomy governance, accessibility compliance, full API-surface or protocol design, tool-surface design, telemetry strategy, or git history shape.
 - Analogy: Semantics is road signage for software: the sign is not the road, but wrong signage sends people and machines down the wrong path even when the underlying road is structurally sound.
 - Common misconception: The common mistake is treating naming and signaling as polish. A name that lies, a version number that understates a breaking change, or a 200 response that reports request failure is a behavioral defect because downstream readers and tools act on the signal.
 

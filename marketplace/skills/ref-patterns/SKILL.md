@@ -338,6 +338,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: A ref is to a React component what a static local variable is to a C function — it persists across calls (renders), reading it does not make the function 'depend on' it, writing to it does not change the function's signature or trigger any caller-visible event, and its single purpose is to hold the state that is not part of the function's interface. State, by contrast, is to the component what the function's return value is to the caller: every read participates in the contract, every change requires a re-evaluation.
 - Common misconception: |
 

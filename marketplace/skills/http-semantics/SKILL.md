@@ -396,6 +396,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: HTTP semantics is to web APIs what the rules of grammar are to written language — the framework provides the dictionary (routes, handlers, middleware) but the grammar is non-negotiable, and a sentence that follows the dictionary while violating the grammar is technically intelligible but causes downstream tooling (CDNs, proxies, client libraries) to misinterpret it.
 - Common misconception: |
 

@@ -189,6 +189,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Rendering models are to web pages what cooking styles are to restaurant kitchens — the same ingredients (data, components, markup) get plated differently depending on whether the kitchen pre-cooks at dawn (SSG), cooks to order during service (SSR), streams courses out as they finish (streaming SSR), or hands raw ingredients to the diner to assemble themselves (CSR), and no one style is right for every menu item.
 - Common misconception: |
 

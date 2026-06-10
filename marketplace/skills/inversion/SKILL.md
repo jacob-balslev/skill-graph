@@ -229,6 +229,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Inversion is like checking a bridge design by asking where it would snap first, not because you want it to snap, but because that is where reinforcement matters.
 - Common misconception: |
 

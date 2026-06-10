@@ -148,6 +148,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: A property-based test is to an example test what an actuarial table is to a single insurance claim — the example tells you what happened in one case, the property tells you what must hold across the entire population; you do not learn that fire insurance is sound by inspecting one policy, you learn it from a contract that quantifies over every house ever insured.
 - Common misconception: |
 

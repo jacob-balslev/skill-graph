@@ -175,6 +175,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: CAP is to a distributed database what the Heisenberg uncertainty principle is to physics — you cannot simultaneously have a fully consistent reading and a fully available reading when the network has partitioned, just as you cannot simultaneously measure a precise position and a precise momentum. The trade-off is not a limit of the engineering, it is a limit of the physics; pretending otherwise is the source of every 'CA' system that claims to defy CAP and chooses one side anyway on its first partition.
 - Common misconception: |
 

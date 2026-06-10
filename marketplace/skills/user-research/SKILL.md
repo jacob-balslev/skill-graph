@@ -88,6 +88,7 @@ The practice is grounded in a specific epistemological claim: people are unrelia
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: A user researcher is a field naturalist, not an interrogator — they study the animal in its habitat and record what it actually does, rather than capturing it, asking it to predict its own behavior, and writing down the confident answer it gives to please them.
 - Common misconception: |
 

@@ -103,6 +103,7 @@ Client-side validation is a user-experience aid, not a security boundary. The se
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Designing a form is like designing an intake interview rather than handing someone a blank questionnaire — a good interviewer asks only what is relevant, in an order the person can follow, waits until an answer is complete before correcting it, and never loses the answers already given when one question goes wrong.
 - Common misconception: |
 

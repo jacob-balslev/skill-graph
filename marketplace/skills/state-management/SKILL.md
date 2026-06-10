@@ -196,6 +196,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: State management is to a frontend application what addressing is to a postal system — you do not ask 'should this letter exist?', you ask 'where does it live?', and the right destination depends entirely on the letter's kind: a registered package (server data with provable delivery), a postcard (URL state, public on the back), a private letter (client UI state, inside an envelope), a deed (persistent state, kept in the safe). One mailbox for everything produces predictable failures.
 - Common misconception: |
 

@@ -577,6 +577,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: A Route Handler is to a Next.js app what a service window at a government office is to its workflow — different windows handle different services (`GET /posts`, `POST /comments`); each window has a posted sign saying which forms it accepts and what stamps it returns; you do not walk into the back office (Server Action) unless you work there. The window is the contract: filesystem path = window number, export name = service offered, function body = the clerk's actual work.
 - Common misconception: |
 

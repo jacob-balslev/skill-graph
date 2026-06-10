@@ -84,6 +84,7 @@ The discipline is sceptical of "good enough" early ideas. The first three ideas 
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Ideation is to a solution like casting a wide net then sorting the catch — the net is thrown deliberately wide with no inspection mid-haul (divergent), and only once it is on deck does anyone decide which fish to keep against rules agreed before the boat left port (convergent); inspecting each fish as it is caught would only slow the haul and shrink it.
 - Common misconception: |
 

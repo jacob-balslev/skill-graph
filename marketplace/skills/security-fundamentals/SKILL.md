@@ -204,6 +204,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Security fundamentals is to a software system what structural engineering is to a building — load-bearing walls, fire egress, electrical isolation, foundation depth are not features added after the building works; they are properties of the design from the first sketch, and retrofitting them costs ten times more and produces worse results than designing them in. A building that survives an earthquake does so because of decisions made at the structural-engineering stage, not because of decorations added later.
 - Common misconception: |
 

@@ -273,6 +273,7 @@ Do not erase the conceptual model after implementation starts. Keep it as the ex
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Conceptual modeling is the architectural floor plan before engineering drawings: it says what rooms exist, how people move between them, and what must be connected, while leaving materials, wiring, and load calculations to later specialists.
 - Common misconception: |
 

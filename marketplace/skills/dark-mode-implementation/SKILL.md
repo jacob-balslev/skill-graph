@@ -93,6 +93,7 @@ The user's explicit choice overrides the system. A user who has toggled to Dark 
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Dark mode implementation is to a designed dark palette what a building's automatic day/night lighting controller is to the fixtures an electrician already chose — it does not select the bulbs or set their brightness (the palette), but it senses dusk, remembers the override switch the resident flipped last night, turns everything to the right setting the instant they walk in (no flicker), and also dims the exterior signage and porch lamps to match (the assets and chrome).
 - Common misconception: |
 

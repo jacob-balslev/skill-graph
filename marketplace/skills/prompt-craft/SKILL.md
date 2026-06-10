@@ -298,6 +298,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: A prompt is an executable instruction contract: stable rules and examples define the function, variable user content supplies arguments, and evals decide whether revisions improved behavior.
 - Purpose: Make LLM behavior more reliable, inspectable, portable, and safe by turning vague requests into tested instruction structures with clear boundaries and output contracts.
+- Boundary: This skill owns prompt wording and template structure. It does not own the entire context system, eval harness design, generated-code review, SKILL.md authoring, routing selection, or root-cause debugging of an already observed failure.
 - Analogy: Prompt craft is like writing a contract for a skilled but unfamiliar collaborator: specify the job, available evidence, allowed moves, examples, and acceptance format before judging the result.
 - Common misconception: The common mistake is believing a clever prompt can replace context quality, tool permissions, evals, validation, or security controls. Good prompts make those surfaces explicit; they do not substitute for them.
 

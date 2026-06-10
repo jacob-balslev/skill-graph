@@ -147,6 +147,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Composition patterns are to a component API what a power strip with labeled, purpose-built outlets is to a wall socket wired with a dozen toggle switches — instead of guessing which combination of switches produces a working configuration, you plug each named part into the contract it was built for, and the impossible combinations simply have no socket to plug into.
 - Common misconception: |
 

@@ -160,6 +160,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Mutation testing is to a test suite what a fire drill is to a building's evacuation plan — you do not measure preparedness by counting how many exits exist (coverage), you measure it by deliberately staging a fire and watching whether anyone notices in time (mutation kill rate). An exit that nobody walks through during the drill is not really an exit, regardless of how prominently it is signposted.
 - Common misconception: |
 

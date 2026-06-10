@@ -96,6 +96,7 @@ The practice resists two failure modes. The first is the **anodyne happy-path ma
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: A journey map is like a film's emotional storyboard rather than a wiring diagram: it tracks how the protagonist feels scene by scene across locations and time, so you fix the scenes that lose the audience — not the lighting rig behind them.
 - Common misconception: |
 

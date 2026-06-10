@@ -506,6 +506,7 @@ LINGUISTICS I18N CHECK
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Linguistics in software is grammar for the interface between people and systems: the syntax of a name or sentence should make the intended meaning easy to recover without hidden context.
 - Common misconception: The common mistake is treating naming and wording as personal preference. Ambiguous words, weak compounds, blame-heavy error text, and wrong register create predictable comprehension failures; agreement inside one team does not make the language portable or clear.
 

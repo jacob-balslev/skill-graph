@@ -276,6 +276,7 @@ Semantic tokens are worth the indirection because color meanings outlive specifi
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: A color system is a swatch deck plus a wiring diagram. Like a paint manufacturer's standardized deck, it does not decide which room is painted (the per-screen deployment) or hang the lights that change how it reads at night (the theme switch); it guarantees every swatch is mixed by formula from a base pigment so the shades step evenly, and that swatch number N always means the same job (trim, wall, accent) whatever the pigment. The wiring diagram is the part taste alone never supplies: it states which foregrounds may sit on which surfaces, and proves each pairing still meets a legibility floor under every lighting condition.
 - Common misconception: |
 

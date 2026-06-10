@@ -192,6 +192,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Query optimization is to a slow SQL query what a medical specialist's chart-reading is to a slow-recovering patient — you do not prescribe before reading the lab values; the plan reads like a chart, every plan node is a vital sign, every cardinality misestimate is a misdiagnosis the planner already made, and your job is to translate the chart into the right intervention rather than the most familiar one.
 - Common misconception: |
 

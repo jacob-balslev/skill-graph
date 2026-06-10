@@ -113,6 +113,7 @@ The simplest pattern that keeps the needed context visible wins. Complexity in i
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Choosing an interaction pattern is like a surgeon choosing the approach before choosing the instrument — the decision is driven by the anatomy of the problem (how many options, ordered or not, reversible or not), and only once the approach is right does it make sense to pick the exact tool; a brilliant instrument used for the wrong approach still produces a worse outcome than the plain instrument used correctly.
 - Common misconception: |
 

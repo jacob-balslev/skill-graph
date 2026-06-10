@@ -152,6 +152,7 @@ Before concluding "run this in Claude Code," confirm:
 **Concept**
 - Mental model: The harness is the body; the model is the brain. The model decides what to do; the harness decides what the model is allowed to do and how its actions are gated, rendered, parallelized, and persisted. Choosing this harness is choosing that body — its permission model, extensibility layers, and context budget — not just the underlying model.
 - Purpose: A frontier model alone cannot safely operate a codebase. The harness supplies the missing scaffolding — typed tool surfaces the host can gate, lifecycle hooks for automation and security, isolated subagent context windows, on-demand skill loading, and a plan-before-act mode — so a long-horizon coding task can run autonomously without losing control or context.
+- Boundary: It is not the model provider's API or SDK (that is application code you write), not the model itself (the model is swappable inside the harness), and not a generic 'agent framework' you assemble — it is one specific, opinionated harness with a fixed protocol.
 - Analogy: Picking a harness is like picking the cockpit, not the pilot — the same pilot flies differently depending on which instruments, autopilot, and safety interlocks the cockpit gives them.
 - Common misconception: That the harness and the model are the same choice. They are two orthogonal decisions: which harness (this one vs a rival) and which model runs inside it. Conflating them leads to picking a harness for a model strength it does not own, or vice versa.
 

@@ -87,6 +87,7 @@ Reading order is a property of the page, not just the markup. CSS source order, 
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Visual hierarchy is to a page what dynamics and mixing are to a piece of music — it does not choose the instruments (the typefaces) or write the notes (the copy); it decides what plays loud and what plays quiet so the listener's ear is led to the melody first and the accompaniment second.
 - Common misconception: |
 

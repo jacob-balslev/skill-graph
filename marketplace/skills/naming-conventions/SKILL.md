@@ -174,6 +174,7 @@ Renaming is a small change that touches many places. Do all of them in one commi
 **Concept**
 - Mental model: A name is a compact contract. It binds an artifact kind, a casing convention, a grammatical shape, and a behavior promise. Good naming starts by identifying the artifact type, choosing the casing that readers expect for that artifact, selecting words whose verbs and nouns match actual behavior, and then coordinating the rename so every reference carries the same meaning.
 - Purpose: Prevents code and system artifacts from lying to future readers. Accurate names reduce debugging time, make APIs and data models easier to scan, and keep refactors honest because the name travels with every call site while comments explaining a bad name usually rot.
+- Boundary: This skill decides what an artifact should be called. It does not restructure code, review a whole diff, write prose documentation about a convention, debug a runtime failure, or choose end-user UI copy. If the work changes structure, use refactor; if the work evaluates all PR risks, use code-review; if the behavior is already broken, use debugging.
 - Analogy: Naming is like labeling circuit breakers: a short label is only useful if it truthfully names the circuit it controls.
 - Common misconception: The wrong mental model is that naming is cosmetic. A misleading name is a behavioral bug in the reader's model: `getOrder()` that returns `undefined`, `validate()` that mutates input, or `created` that stores a ship date will eventually cause wrong assumptions.
 

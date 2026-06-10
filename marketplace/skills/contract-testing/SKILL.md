@@ -180,6 +180,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: A contract test is to a service interface what a lease is to a tenancy — the consumer writes down the specific obligations they depend on (utilities included, quiet hours, this exact rent), the landlord (provider) verifies independently that they can honor those obligations, and the lease in the broker's filing cabinet lets either party prove compatibility without re-negotiating from scratch each time one of them moves.
 - Common misconception: |
 

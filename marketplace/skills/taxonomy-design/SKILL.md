@@ -115,6 +115,7 @@ Prefer shallow, stable, mutually understandable structure. Add facets when one t
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Taxonomy design is to a knowledge surface what a public library's call-number system is to its collection — the books haven't changed, but the system determines which books a researcher finds when looking under 'biology' versus 'medicine' versus 'public health.' A library that categorizes by acquisition date (the author's mental map) is unfindable; one that categorizes by subject with cross-references and facet headings (retrieval contract for the navigator) is searchable. Dewey Decimal is a hierarchy with facet-like subdivisions; Library of Congress is more faceted; both are taxonomies, both have explicit retrieval-task analyses behind their structure.
 - Common misconception: |
 

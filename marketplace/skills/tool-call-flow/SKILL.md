@@ -277,6 +277,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: A tool-call flow is to a language model what a procurement system is to an executive — the executive does not personally drive to the supplier; they sign a typed purchase order, the procurement department validates the order, executes it, and returns the receipt with whatever was delivered or with a documented reason it could not be. The executive's signature is intent; the department's stamp is authorization; the receipt is the only state of the cycle that survives, and the next decision is made against that record.
 - Common misconception: |
 

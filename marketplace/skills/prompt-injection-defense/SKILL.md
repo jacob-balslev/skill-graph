@@ -182,6 +182,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Prompt injection defense is to LLM-integrated systems what blast walls are to fuel depots — you cannot prevent the fuel from being flammable (the structural property), so you do not try; you build the walls so that an ignition contains itself, the radius is bounded, and the rest of the depot survives. The walls are the architectural defense; the model's susceptibility is the fuel's flammability — a property of its physics, not a bug to fix.
 - Common misconception: |
 

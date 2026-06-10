@@ -154,6 +154,7 @@ Use this checklist to confirm a GPT-vs-Claude routing decision is correct and cu
 **Concept**
 - Mental model: Frontier models are specialists with overlapping but non-identical edges. Two near-equal models still diverge by task TYPE, so routing means matching a task's dominant axis to the model that owns that axis — not crowning one model 'best overall'.
 - Purpose: An explicit per-task model-routing rule exists because 'just use the strongest model' ignores that strength is task-shaped and ignores cost. The rule captures real per-benchmark splits so concrete-implementation, CLI/terminal, and analytical-review work lands on the model that leads those axes while architecture-heavy work stays on the model that leads there.
+- Boundary: This decides WHICH frontier MODEL gets a task (the GPT line vs the Claude tiers). It is NOT the CLI harness that runs the model, NOT the model's SDK/API, NOT intra-Claude tier selection, and NOT request-time dispatch among local skills.
 - Analogy: Choosing the model is choosing a surgeon by procedure, not by overall reputation — the more decorated surgeon is still the wrong pick for the operation the other one specializes in.
 - Common misconception: That a higher headline coding-benchmark score makes one model the universal coding choice. Aggregate margins are often within noise and carry contamination caveats; on complex multi-file resolution the ranking can flip, so a single verified-bench headline does not generalize to architecture-heavy work.
 

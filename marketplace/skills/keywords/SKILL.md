@@ -287,6 +287,7 @@ These are grounding points, not permanent invariants. Re-check them when platfor
 **Concept**
 - Mental model: Keyword work is demand translation. Raw queries are evidence of language, intent, and platform constraints; the skill turns them into targetable clusters, page/listing assignments, and measurement baselines without pretending that keywords alone create rankings.
 - Purpose: This skill prevents agents from jumping straight to generic SEO copy, stuffing repeated terms into marketplace fields, or targeting one query from multiple pages. It gives a repeatable process for finding search language, mapping intent, respecting platform fields, and measuring whether changes moved visibility.
+- Boundary: This skill owns research, clustering, intent mapping, field translation, cannibalization detection, and tracking setup. It does not build SEO pages, write final listing or page prose, design navigation, diagnose technical SEO, guarantee rankings, or bypass current marketplace policy checks.
 - Analogy: Keyword research is like translating customer demand into a shelf map: each phrase tells you where a shopper is looking, but the shelf still needs good products, labels, layout, and measurement.
 - Common misconception: The common mistake is treating keywords as magic words to repeat. Search systems reward relevance, clarity, and satisfaction signals; repeated or irrelevant terms can waste fields, confuse readers, and make pages compete with each other.
 

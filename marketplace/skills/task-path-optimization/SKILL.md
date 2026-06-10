@@ -340,6 +340,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: Task path optimization is route planning before execution: classify the task shape, choose the lightest sufficient approach, sequence dependencies, isolate exploration when context would get polluted, and switch strategy after repeated failure instead of pushing harder on a bad path.
 - Purpose: This skill prevents agents from either coding too soon on ambiguous work or over-planning simple work. It makes the execution path an explicit decision so planning, delegation, parallelization, review, and context reset are used only when the task shape justifies them.
+- Boundary: This skill chooses the approach before execution. It does not execute the implementation, debug a concrete failure, optimize individual tool calls, manage Linear issue lifecycle, or record durable architecture decisions.
 - Analogy: Task path optimization is like choosing a route before a trip: walking across the street needs no map, crossing a city needs traffic awareness, and crossing a mountain range needs checkpoints and fallback routes.
 - Common misconception: The common mistake is treating more process as safer. The safest path is the smallest path that still handles ambiguity, dependency, risk, and verification.
 

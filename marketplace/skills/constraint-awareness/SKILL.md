@@ -339,6 +339,7 @@ When the constraint moves, the Five Focusing Steps restart from step 1. The proc
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Constraint awareness is to AI-coding what Drum-Buffer-Rope is to a factory floor — the slowest machine on the line sets the pace for the whole plant; speeding up the other machines just piles inventory in front of the bottleneck. Adding more agents to an AI-coding team where review bandwidth is the constraint is the same as buying faster CNC mills when the constraint is the inspection station — the parts pile up at inspection, the lead time gets worse, and the new mills look efficient locally while the whole shop ships less per day.
 - Common misconception: |
 

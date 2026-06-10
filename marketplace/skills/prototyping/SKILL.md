@@ -88,6 +88,7 @@ The discipline insists prototypes are means, not ends. A successful prototype is
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: A prototype is to a product what a wind-tunnel model is to an aircraft — a deliberately cheap, deliberately disposable stand-in built to answer one question (does this wing shape generate lift?) at the lowest fidelity that gives a trustworthy answer; nobody flies the wind-tunnel model, and its whole value is the data it produces before the expensive real thing is committed.
 - Common misconception: |
 

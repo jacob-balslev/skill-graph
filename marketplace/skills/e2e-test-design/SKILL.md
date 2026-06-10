@@ -161,6 +161,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: An e2e test is to a software system what a flight rehearsal is to a launch — you do not certify a rocket by testing each bolt in a clean room (units), nor by firing each engine in isolation (integration), nor by writing a specification of what the avionics should do (contract); you certify it by performing the entire launch sequence, with real fuel, against a real flight plan, with the actual crew, and you do this rarely because each rehearsal costs millions and ten high-fidelity rehearsals tell you more than a thousand quick ones.
 - Common misconception: |
 

@@ -87,6 +87,7 @@ Semantic names beat descriptive names. color.background.surface tells a componen
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: A theme system is to a product's appearance what a translation layer is to a multilingual app — components speak in stable intent words (\"surface\", \"danger\"), and the active theme is the dictionary that resolves each word to a concrete value, so swapping the dictionary repaints everything without rewriting a single component's vocabulary.
 - Common misconception: |
 

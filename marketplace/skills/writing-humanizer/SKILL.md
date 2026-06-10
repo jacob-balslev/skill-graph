@@ -444,6 +444,7 @@ Before finalizing any humanized text, confirm:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Writing humanization is like audio mastering: the recording may already contain the right notes, but mastering removes hiss, balances loudness, and restores dynamics so a listener can trust what they hear.
 - Common misconception: |
 

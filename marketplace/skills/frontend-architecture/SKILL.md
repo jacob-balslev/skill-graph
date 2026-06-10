@@ -88,6 +88,7 @@ Server state and client state are different problems. Mixing them in a single st
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Frontend architecture is to a codebase what a city's zoning and one-way street grid are to its buildings — it does not design any single building's facade (visual design) or decide what the factories produce (the API), but it dictates which districts may connect to which, which way traffic flows, and who is allowed to build what where, so the city stays navigable as it grows instead of collapsing into gridlock.
 - Common misconception: |
 

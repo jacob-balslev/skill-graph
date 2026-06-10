@@ -480,6 +480,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: A Server Component is to a React tree what a printed page is to a book — the typesetter (server) sets the lead, presses the ink, and ships the printed page (RSC payload); the reader's table lamp (Client Component) is wired and switchable at the reader's end. You do not ship the typesetter to the reader's living room, and you do not ship the lamp's wiring to the printer — the boundary is where 'this never changes once it leaves my workshop' ends and 'this responds to who touches it' begins. And just as a typesetter proofs the galley to strip the editor's private margin notes before the page is printed, a Server Component must strip private fields before the rendered output ships to the reader.
 - Common misconception: |
 

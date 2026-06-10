@@ -156,6 +156,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: An index is to a database what the back-of-the-book index is to a reference manual — you do not flip through every page to find every mention of 'Postgres'; you go to the I section, find the page numbers, and jump. Adding an index for every word in the book is technically possible and obviously wrong; the printer would still have to update every index every time the text changed, and the book would now spend most of its pages on indexes rather than content.
 - Common misconception: |
 

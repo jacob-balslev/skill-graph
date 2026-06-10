@@ -310,6 +310,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: An autonomous loop has six primitives: a trigger, a worker agent, a progress signal, a stop condition, durable state, and a safety cap. Different loop patterns place those primitives in different owners: a bounded run keeps them in the prompt and runtime limit, a sentinel loop keeps the stop condition in a completion marker, a checkpoint loop persists state between sessions, and a supervisor loop keeps restart and timeout policy outside the worker.
 - Purpose: Autonomous loop patterns replace improvised keep-going instructions with explicit control design. They solve the failure mode where an agent keeps retrying without a stop rule, loses progress after a restart, or appears active while making no useful progress.
+- Boundary: This skill owns loop control shape, not the work performed inside each iteration. Use prompt-craft for the wording of a single worker prompt, tool-call-strategy for per-tool efficiency, agent-engineering for broader multi-agent system architecture, context-management for what context to load, and observability-modeling for telemetry schema design.
 - Analogy: An autonomous loop is an autopilot mode: it can keep flying, but only because it has instruments, altitude limits, a route, and a clear handoff back to a pilot.
 - Common misconception: The common mistake is treating autonomy as permission to run forever. A safe loop is defined by when it stops, what state it writes, what evidence proves progress, and what cap forces human review.
 

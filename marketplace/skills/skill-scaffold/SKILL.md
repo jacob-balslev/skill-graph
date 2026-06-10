@@ -167,6 +167,7 @@ Use this checklist as the authoring gate before committing a skill. Every item m
 **Concept**
 - Mental model: Skill scaffolding is protocol-backed authoring, not free-form prompt writing. The scaffold separates the routing contract, field contract, concept model, grounding evidence, body sections, and verification gates so a new skill becomes a routable graph node rather than a decorative Markdown file.
 - Purpose: This skill prevents new SKILL.md files from inheriting template comments, false eval claims, stale schema fields, dangling relations, or vague descriptions. It turns authoring into a reproducible sequence: start from the canonical template, choose the v8 classification and body shape, adapt the contract, remove teaching annotations, and verify before publishing.
+- Boundary: This skill is for authoring a new skill or restructuring a draft before it becomes a stable node. It is not for routine edits to an existing skill, router debugging, bulk graph audits, general documentation, or correctness review of an already-authored skill's domain content.
 - Analogy: A skill scaffold is like construction formwork: it gives the new structure its shape while the concrete sets, but the temporary braces must be removed before the finished building is occupied.
 - Common misconception: The common mistake is treating the template as copy text to fill in. A scaffold is an authoring instrument: fields must be chosen for the new skill, template notes must disappear, and every health or eval claim must match evidence from the current change.
 

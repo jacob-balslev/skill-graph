@@ -233,6 +233,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: A performance budget is to a web app what a calorie budget is to a diet — the calorie count of any single meal is information; the calorie budget is what you do about it when you exceed it. A diet that 'tracks' calories without consequence is description; a diet with a calorie *budget* is discipline. And a per-meal budget (per-route) catches drift earlier than a per-day total: by the time the day total breaches, the offending meal is hours behind you and harder to undo.
 - Common misconception: |
 

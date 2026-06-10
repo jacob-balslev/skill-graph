@@ -177,6 +177,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: A mental model is to a system what a map is to a city — the map is not the territory, the map is useful precisely because it is smaller and selective, and a traveler navigating with the wrong map (a city map for a different city, an out-of-date map, a tourist map missing the metro) does not get lost because the map is 'wrong' but because the map's selectiveness does not match the route they need.
 - Common misconception: |
 

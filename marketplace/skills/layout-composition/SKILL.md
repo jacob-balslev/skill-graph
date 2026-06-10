@@ -115,6 +115,7 @@ Stability is a feature. An element that holds its position through loading, hove
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Layout composition is to a screen what an architect's floor plan is to a building — it does not choose the furniture's finish (visual polish) or decide why you need a kitchen (task analysis) or how you walk between buildings on the campus (information architecture); it fixes where the load-bearing rooms sit, how the space reflows when the lot is narrow, and which walls stay put so the structure holds at every size.
 - Common misconception: |
 

@@ -281,6 +281,7 @@ After writing or reviewing UI text, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Microcopy is to an interface what stage directions and labels are to a theater set — not the marketing poster outside (copywriting) or the program notes (documentation), but the lit EXIT sign, the 'pull' on the door, and the usher's one-line 'your seat is to the left': short functional text placed exactly where someone needs to know what to do next.
 - Common misconception: |
 

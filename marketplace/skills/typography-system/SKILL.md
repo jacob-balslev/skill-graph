@@ -86,6 +86,7 @@ Typography is the densest carrier of brand. A wordmark, a heading face, and a bo
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: A typography system is to a product's text what a musical key and time signature are to a score — it does not write the melody (the copy) or perform it on a given stage (the layout); it sets the scale and the rhythm every part must play in so the whole stays harmonious across instruments.
 - Common misconception: |
 

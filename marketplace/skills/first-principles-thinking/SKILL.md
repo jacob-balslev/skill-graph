@@ -248,6 +248,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: First-principles thinking is like dismantling a machine to its load-bearing parts, discarding decorative casing and copied attachments, then rebuilding only the mechanism that the physics of the problem requires.
 - Common misconception: |
 

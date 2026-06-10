@@ -133,6 +133,7 @@ Before concluding "route this to Haiku," confirm:
 **Concept**
 - Mental model: A model roster is a tiered ladder, and just below the bottom model rung sits 'no model at all — a script.' The fast tier is the rung you take when a task needs a little judgment (more than a regex) but not reasoning depth, and runs often or fast enough that a higher tier's cost and latency are wasteful.
 - Purpose: Give mechanical, high-volume, low-latency work a correct home — cheaper and faster than the implementation lane — so a premium reasoning model is not wasted on transcription, polling, or slot-filling where it adds cost and latency with zero quality gain.
+- Boundary: It is not the lane for multi-step synthesis, architecture, or hard debugging — those need a higher tier's reasoning and tunable depth. It is not a universal cost-cutter: routing a task that needs reasoning here to 'save money' produces wrong answers, the most expensive outcome of all. It is not the loop or harness the model runs inside.
 - Analogy: The fast tier is the quick, low-cost assistant for high-volume routine paperwork — perfect for the form-filling that floods the inbox, the wrong choice for the case that needs an analyst's judgment.
 - Common misconception: That the cheapest model is the safe way to cut costs across the board. It is the right choice only for work that does not need reasoning depth or large context; pushing reasoning-heavy or large-context work down to it trades a small token saving for wrong answers and re-work.
 

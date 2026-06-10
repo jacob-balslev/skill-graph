@@ -233,6 +233,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: The client-server boundary is to a unified codebase what an embassy boundary is to a city — both spaces exist at the same physical address, but inside the embassy the law of one country applies (server: full filesystem, secret access, database), outside the law of another applies (client: browser sandbox, no secrets), and everyone crossing must pass through documented customs (serialization) with their bags inspected (validation) and stamped (authentication).
 - Common misconception: |
 

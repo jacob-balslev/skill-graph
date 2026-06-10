@@ -354,6 +354,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Schema evolution is to a database what stage carpentry is to a Broadway musical — the show does not stop; you do not bolt a new staircase to the stage during the second act; you build the new staircase upstage while the old staircase serves the cast (expand), gradually rehearse the cast to use the new one while the old still works (migrate), and only after every performer has memorized the new route do you remove the old staircase (contract). Removing the old before everyone has migrated is the production-incident equivalent of a missed cue; swinging a heavy set piece across the stage mid-scene without warning the cast — even briefly — is the lock-queue freeze.
 - Common misconception: |
 

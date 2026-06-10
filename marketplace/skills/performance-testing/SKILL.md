@@ -179,6 +179,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Performance testing is to a software system what a load-bearing inspection is to a bridge — you do not certify a bridge by walking across it (functional test) and concluding it works; you drive trucks of known weight across at increasing volumes, with strain gauges on every beam, and verify the deflection stays within spec under expected traffic, that the failure mode is graceful when overloaded (cracks before collapse), that nothing creeps over a long soak. A bridge whose 'average' load it can carry is 50 tonnes but whose p99 stressor reveals harmonic resonance at 80 tonnes is the bridge that fails on a windy day.
 - Common misconception: |
 

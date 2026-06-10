@@ -254,6 +254,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: A streaming architecture is to data delivery what a conveyor belt is to a factory's order fulfillment — you do not wait for an entire shipment to be assembled before any piece leaves the warehouse; the belt moves boxes one at a time, the loading dock signals when it's full (backpressure), a final marker indicates the shipment is complete (termination), and the receiving truck can start unloading the first box while the last one is still being assembled. A conveyor with no full-dock signal flings boxes onto the floor; a conveyor with no end-marker keeps the truck driver waiting forever.
 - Common misconception: |
 

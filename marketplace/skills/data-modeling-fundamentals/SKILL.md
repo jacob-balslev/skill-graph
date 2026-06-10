@@ -166,6 +166,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Data-modeling fundamentals is to schema design what Euclidean geometry is to architecture — the architect does not draw a right-angled wall by intuition each time; they draw it because the geometry guarantees stability and squares lock together. A schema in 3NF is the wall built to plumb, where every dependency is structural and no anomaly is hiding in the carpentry. Denormalization is the deliberate decision to cut a non-load-bearing wall for an open floor plan — defensible when the workload justifies it, indefensible when the cost is invisible.
 - Common misconception: |
 

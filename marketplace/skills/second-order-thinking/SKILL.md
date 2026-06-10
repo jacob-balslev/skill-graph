@@ -260,6 +260,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Second-order thinking is like playing chess beyond the current move: the obvious move matters less than the position it creates after everyone else responds.
 - Common misconception: |
 

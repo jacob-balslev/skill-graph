@@ -337,6 +337,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Mobile dashboard UX is a pocket control panel: it exposes the few controls and readings that matter while in motion, while the full cockpit of comparison, filtering, and export stays on desktop.
 - Common misconception: |
 

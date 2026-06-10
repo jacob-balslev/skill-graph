@@ -336,6 +336,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Epistemic grounding is to claims what double-entry bookkeeping is to financial transactions — every assertion has a corresponding source and warrant on the other side of the ledger, and any unpaired entry is a red flag in the audit.
 - Common misconception: |
 

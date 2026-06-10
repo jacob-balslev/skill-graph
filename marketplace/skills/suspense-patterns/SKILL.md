@@ -330,6 +330,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Suspense boundaries are to React's component tree what a restaurant's seating policy is to a multi-course meal — the policy decides whether courses arrive together (boundary around the whole meal, everyone waits for the slowest dish) or course-by-course (boundary per dish, each appears when ready). The component (the kitchen) just signals 'this course needs more time'; the boundary (the maître d') decides who waits for what and what placeholder shows in the meantime.
 - Common misconception: |
 

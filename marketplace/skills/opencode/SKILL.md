@@ -145,6 +145,7 @@ Use this checklist to confirm an OpenCode runtime decision was made correctly.
 **Concept**
 - Mental model: A coding-agent runtime is the HARNESS (the loop, tool use, session, permissions); the model is a swappable engine behind a provider/model string. A provider-agnostic runtime separates the two cleanly — pick the harness once, switch the engine per task — where single-vendor CLIs weld the harness to one engine.
 - Purpose: It exists so one terminal agent can reach any model — frontier, cheap, free, or local — through a single configuration, without a separate CLI per vendor and without vendor lock-in, so model choice becomes a per-task routing decision rather than a tooling commitment.
+- Boundary: This owns the RUNTIME: choosing and operating the provider-agnostic harness, its non-interactive invocation, the provider/model string and selection precedence, the curated/free model service, and local-model config. It does NOT own which specific model a task should route to, the agent-loop logic itself, or another tool's premium-credit economics.
 - Analogy: It is a universal power-tool body with a swappable bit — the body (harness) stays, you snap in whichever bit (model) the job needs, including the free ones in the case.
 - Common misconception: That the runtime's name denotes a model or a quality tier. It does not — the runtime is just the harness; capability and cost come entirely from the provider/model routed to, so naming the runtime says nothing about how capable or expensive a run was.
 

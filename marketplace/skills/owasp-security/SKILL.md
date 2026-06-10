@@ -371,6 +371,7 @@ Grade every finding so prioritisation is a property of the finding, not a debate
 **Concept**
 - Mental model: Application-security review is source-to-sink reasoning over trust boundaries. The reviewer identifies attacker-controlled inputs, privileged operations, sensitive data, external dependencies, configuration, and error paths, then asks whether each path preserves confidentiality, integrity, availability, and authorization under hostile input and partial failure.
 - Purpose: This skill prevents plausible-looking code from shipping with security-relevant decisions left implicit. It gives agents a current OWASP vocabulary, concrete detection patterns, mitigations, abuse tests, and reporting discipline so security review finds root causes rather than isolated symptoms.
+- Boundary: This skill owns traditional application-security review, OWASP Top 10 web-app weaknesses, and security-specific threat modeling. It does not own holistic PR approval, root-cause debugging after a failure, broad test-level strategy, policy documentation, or LLM-specific prompt-injection and agent-authority architecture.
 - Analogy: An OWASP review is a border inspection for a software system: every crossing between trust zones is checked for identity, permission, payload, destination, and failure behavior.
 - Common misconception: The common mistake is treating the OWASP Top 10 as ten labels to memorize. The better model is to use the labels as routing names for underlying CWE-shaped failure modes; the fix follows the weakness and the trust boundary, not the A0x number.
 

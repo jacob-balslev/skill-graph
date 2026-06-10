@@ -101,6 +101,7 @@ Optimize for clear constraints. A system with too many escape hatches is not fle
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: A design system architecture is to product UI what a building code plus a kit of standardized parts is to construction — it does not draw any single floor plan (the page layout) or pick the paint colors (the visual values); it defines the load-bearing vocabulary (semantic tokens), the certified components and how they connect (component contracts), and the rules every builder must follow (governance), so any team can assemble a sound, consistent building without re-engineering the joists each time.
 - Common misconception: |
 

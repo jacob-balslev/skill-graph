@@ -110,6 +110,7 @@ The credibility of an IA comes from being tested, not asserted. A structure that
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Information architecture is to a product what the floor plan and signage of a building are to its rooms — it does not furnish a room (layout) or write the notices on the wall (microcopy) or decide the building code for room types (taxonomy); it decides which rooms exist on which floor, how they are grouped, what each door is labeled, and how a lost visitor finds their way back to the lobby.
 - Common misconception: |
 

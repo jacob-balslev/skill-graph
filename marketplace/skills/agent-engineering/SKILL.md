@@ -450,6 +450,7 @@ After applying agent-engineering decisions, verify:
 **Concept**
 - Mental model: Agent engineering treats LLM calls as unreliable, tool-using components inside a larger workflow. The core move is to make lifecycle, delegation, coordination, verification, observability, budgets, and recovery explicit so model variability is contained by system design.
 - Purpose: This skill prevents agent systems from shipping as impressive demos that stall, duplicate work, over-spend, lose handoff state, or silently produce unverified results under real workload pressure.
+- Boundary: This skill does not optimize one prompt, choose individual tool calls, design one agent's context payload, debug a single live incident, review generated code, or write the architecture decision record. It owns the architecture of agent loops and multi-agent coordination.
 - Analogy: Agent engineering is like operating a crew of contractors on a construction site: each specialist may be capable, but the project succeeds only if the plan, locks, handoffs, inspections, budget, and stop conditions are explicit.
 - Common misconception: The common mistake is thinking more agents automatically means more capability. Extra agents also add coordination cost, context transfer risk, merge work, and failure modes; delegation is valuable only when independence, specialization, context protection, or cost reduction outweighs the overhead.
 

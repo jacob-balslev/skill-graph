@@ -116,6 +116,7 @@ The ontology must preserve business meaning while stating which inferences are a
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: An ontology is to a domain model what an engineering tolerance specification is to a manufactured part — the part might fit at +/-0.5mm informally (taxonomy, conceptual model), but if another factory must mass-produce a counterpart that mates with it, both factories need a tolerance spec that says *exactly* what 'fits' means in microns. The spec is more expensive to write than the napkin sketch, but it is the artefact that lets two shops produce interlocking parts without ever talking to each other.
 - Common misconception: |
 

@@ -213,6 +213,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: Evaluation is a gate, not a compliment: compare the requested outcome, produced artifact, evidence trail, and meaningful failure modes before deciding whether the work is done.
 - Purpose: Prevent optimistic completion claims by making scores, evidence gaps, required revisions, and residual risks explicit before acceptance.
+- Boundary: This skill applies after a concrete artifact or task result exists. It does not design eval suites, review a diff line by line, choose test levels, debug a failure, or design the process before implementation.
 - Analogy: Evaluation is an inspection gate at the end of a production line: passing one measurement is not enough if the product misses the order, lacks traceability, or carries a known risk.
 - Common misconception: Tests passing, lint passing, or a plausible final answer is not the same as completion. Completion requires fit to request, sufficient evidence, handled risks, and honest reporting.
 

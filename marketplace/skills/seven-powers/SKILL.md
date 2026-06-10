@@ -339,6 +339,7 @@ Use another skill when the task falls outside the declared `scope`, matches an `
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Seven Powers is a lock-and-key test for strategy: the benefit is the key that opens economic value, and the barrier is the lock that stops rivals from using the same key tomorrow.
 - Common misconception: |
 

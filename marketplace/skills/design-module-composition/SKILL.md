@@ -86,6 +86,7 @@ Headless primitives separate three concerns that are routinely conflated: state 
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: A composable module is to its consumers what a set of LEGO bricks is to a builder — the value is the standardized studs (the context contract and slots) that let anyone assemble shapes the kit's designer never imagined, rather than a single pre-glued model with a few painted-on options; freezing it into one configured shape is gluing the bricks together.
 - Common misconception: |
 

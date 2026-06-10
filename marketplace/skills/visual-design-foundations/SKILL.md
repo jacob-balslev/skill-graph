@@ -105,6 +105,7 @@ This skill ships comprehension and application eval artifacts in its sibling `ev
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Visual design foundations is the interior-design layer of a building, not the structural engineering — it chooses the palette, lighting, spacing, and materials that make a room legible and set its tone, but it defers the load-bearing structure (layout), the building code (a11y), the signage meaning (semiotics), and the building-systems contracts (design-system-architecture) to the disciplines that own them.
 - Common misconception: |
 

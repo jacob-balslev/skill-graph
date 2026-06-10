@@ -87,6 +87,7 @@ The practice is opinionated about moderator behavior. The moderator's job is to 
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: A usability test is to a design what a flight check with a new pilot is to a cockpit layout — you do not ask the designers whether the controls are intuitive; you put someone unfamiliar in the seat, give them a goal, and watch which switch they reach for, because the moment they reach for the wrong one is the finding, and a helpful instructor pointing at the right switch erases the very evidence you came for.
 - Common misconception: |
 

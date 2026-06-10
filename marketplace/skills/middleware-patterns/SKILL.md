@@ -628,6 +628,7 @@ After applying this skill, verify:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: The proxy/middleware layer is to a Next.js app what a building's lobby concierge is to its offices — every visitor passes through the lobby before reaching any specific floor; the concierge can glance at ID badges (auth UX gate), redirect visitors to the right elevator (locale or A/B rewrite), hand out lanyards with security policies attached (CSP nonce, request-ID header), or turn away obvious bad-faith visitors at the door (bot block) — but a concierge's glance is not the vault lock: the office door still verifies you (route-level auth), because anyone who slips past the lobby (CVE-2025-29927) must still be stopped at the office itself.
 - Common misconception: |
 

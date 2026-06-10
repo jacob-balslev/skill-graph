@@ -289,6 +289,7 @@ Rules:
 **Concept**
 - Mental model: |
 - Purpose: |
+- Boundary: |
 - Analogy: Knowledge modeling is to a knowledge artefact what choosing between blueprint, schematic, exploded view, flowchart, and storyboard is to documenting a complex device — the device hasn't changed, but each format makes different questions easy or impossible to answer. A blueprint answers 'where does this part go?'; a schematic answers 'what is connected to what?'; a flowchart answers 'what happens when?'. Showing a customer a wiring schematic when they want to know how the product is assembled is choosing the wrong representation, not failing at the documentation.
 - Common misconception: |
 
