@@ -20,6 +20,12 @@ Skill Graph versions describe the contract at each checkpoint in the git history
 
 ### Fixed
 
+- **SKILL_AUDIT_LOOP.md navigability (skill-audit SYSTEM audit Cluster 5, 2026-06-10T20:35Z).** Two doc-hygiene fixes to the audit-loop contract (the full file split, C9, was deliberately NOT done this session — too high-race):
+  - **A1** — added a **"Choosing an entry point (runtime × intent) — START HERE"** decision table. The loop had accreted ~10 overlapping entry points (single-model / minimal-iteration / codex-autonomous / batch-worker / 3 panel supervisors / opencode queue wrapper / two-frontier lite / direct panel runner) with no single lookup; a cold agent on a given runtime could not tell which to use. The table maps situation → exact entry point → execution shape, and points the private-skill row at the single-model lane (D2).
+  - **C8** — added a real **"## Status — Tracked Follow-ups"** section (true-parallel Phase-1 dispatch, heartbeat adoption beyond the panel runner, the Linux/CI container fence) and repointed the dangling "tracked follow-up in § Status" reference (Phase-1 propose note) at it — previously it referenced a section that did not exist.
+  - **C7 (deferred)** — moving the dated inline status notes out of the contract body into the CHANGELOG is left as a follow-up: it touches many spots in a high-race file for low value, and the durable records now live in this CHANGELOG anyway.
+  Verified: `node scripts/check-markdown-links.js` OK (1345 files). SYSTEM-only; no skill content touched.
+
 - **Runner-prompt & slash-command-shim drift (skill-audit SYSTEM audit Cluster 4, 2026-06-10T20:20Z).** Cross-runtime consistency fixes across the runner prompts + the Claude/OpenCode adapters:
   - **A2** — `skill-audit-loop-batch-worker-v4.md` declared itself model-agnostic (header + § Codex note) but the inner Single-model rule hardcoded "Run as `codex`"; reconciled to "Run as YOURSELF (the ONE model executing this), model-agnostic" with the Codex-cron pointer to v5.
   - **A6** — `skill-audit-loop-minimal-iteration.md` committed BEFORE releasing the claim; every other runner releases-before-commit (SKI-204) so the terminal ledger line + `latest` symlink land inside the commit. Swapped steps 11/12.
