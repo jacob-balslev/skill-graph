@@ -87,7 +87,7 @@ triggers:
 # style negation (e.g., `- "!skills/experimental/**"`). Each glob should map
 # to ONE canonical skill — overlapping globs produce router ambiguity that
 # the scope tiebreaker resolves arbitrarily. `scripts/skill-overlap.js`
-# reports shared keyword recall as INFO. Omit this block if the skill is
+# accepts shared keyword recall as OK. Omit this block if the skill is
 # purely conceptual with no file surface.
 #
 # TEMPLATE NOTE: paths is present here because this template is the entry
@@ -96,6 +96,19 @@ triggers:
 # `skill-infrastructure`; tiebreaker picks it anyway.
 paths:
   - examples/skill-metadata-template.md
+# dependencies: packages a TARGET CODEBASE must use for this skill to be
+# relevant — the codebase-fingerprint activation signal (canonical registry
+# names, e.g. next, tailwindcss, stripe, @anthropic-ai/sdk). Detectors match
+# a repo's package.json / requirements.txt against this list. NOT
+# relations.depends_on (skill-to-skill composition) and NOT compatibility
+# (the runtime envelope the SKILL itself needs). Omit for stack-independent
+# concept/method skills.
+#
+# TEMPLATE NOTE: omitted here — this template is stack-independent. Author it
+# on framework/library/SDK skills, e.g.:
+# dependencies:
+#   - next
+#   - tailwindcss
 # examples: 2-5 realistic user prompts the skill SHOULD activate for.
 # Written in the user's voice, not imperative abstract form. Improves
 # retrieval recall beyond keywords alone. Omit for purely label-routed skills.

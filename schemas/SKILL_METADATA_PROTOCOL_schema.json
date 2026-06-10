@@ -215,6 +215,16 @@
         "minLength": 1
       }
     },
+    "dependencies": {
+      "type": "array",
+      "uniqueItems": true,
+      "description": "Package/tool/framework names a codebase must use for this skill to be relevant (e.g. `next`, `tailwindcss`, `stripe`, `playwright`, `@anthropic-ai/sdk`). A codebase-relevance activation signal: detectors match a repo's manifest dependencies (package.json, requirements.txt, etc.) against this list to select skills for that codebase. Use the package's canonical registry name. Distinct from `relations.depends_on` (skill-to-skill composition — names sibling SKILLs, not packages) and from `compatibility` (the runtime envelope the SKILL itself needs — agent runtimes + Node version). Optional; absent = the skill's relevance is not keyed to any package. Added 2026-06-10 per owner directive (codebase-fingerprint signal).",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[a-z0-9@][a-zA-Z0-9@/._-]*$"
+      }
+    },
     "relations": {
       "type": "object",
       "additionalProperties": false,

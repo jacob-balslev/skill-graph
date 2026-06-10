@@ -354,7 +354,7 @@ function buildSkillEntry(fm, filePath, skillId, _projectFromRoot) {
   // routing config (`bundles` / `bundleTypes`), not in per-skill frontmatter.
   // workspace_tags removed. Use `project[]` for project-affiliation routing.
 
-  // --- Grouped: activation (triggers + keywords + paths + examples + anti_examples) ---
+  // --- Grouped: activation (triggers + keywords + paths + dependencies + examples + anti_examples) ---
   const activation = {};
   if (Array.isArray(fm.triggers) && fm.triggers.length > 0) {
     activation.triggers = fm.triggers;
@@ -364,6 +364,9 @@ function buildSkillEntry(fm, filePath, skillId, _projectFromRoot) {
   }
   if (Array.isArray(fm.paths) && fm.paths.length > 0) {
     activation.paths = fm.paths;
+  }
+  if (Array.isArray(fm.dependencies) && fm.dependencies.length > 0) {
+    activation.dependencies = fm.dependencies;
   }
   if (Array.isArray(fm.examples) && fm.examples.length > 0) {
     activation.examples = fm.examples;

@@ -68,6 +68,7 @@ Every top-level authored field in `schemas/SKILL_METADATA_PROTOCOL_schema.json` 
 | 31 | `examples` | grouped under parent | `activation.examples`. |
 | 32 | `anti_examples` | grouped under parent | `activation.anti_examples`. |
 | 33 | `paths` | grouped under parent | `activation.paths`. |
+| 33b | `dependencies` | grouped under parent | `activation.dependencies` (added 2026-06-10 — codebase-fingerprint signal: packages a target repo must use for this skill to be relevant; distinct from `relations.depends_on` and `compatibility`). |
 | 34a | `project` | copied through unchanged | Belonging-entity references for project-anchored skills. Array of `{handle, role}`. Replaces `workspace_tags`. |
 | 34b | `repo` | copied through unchanged | Repo-level belonging-entity references. Array of `{handle, url}`. |
 | 36 | `relations` | copied through unchanged | `relations`. Includes the eight edge keys AND the optional non-edge `relations.io_contract` (`{inputs, outputs}` of abstract artifact-type tokens — SKI-52). The manifest copies `io_contract` through verbatim; the derived `depends_on` edges and broken-chain/cycle findings are NOT projected into the manifest — they are computed at graph-build time and surfaced under `io_composition` in `scripts/discovery/skill-graph.json` (the consumer-side graph), not in `skills.manifest.json`. |

@@ -1257,6 +1257,38 @@ paths:
 
 ---
 
+## `dependencies`
+
+**Purpose.** Package/tool/framework names a codebase must use for this skill to be relevant. The codebase-fingerprint activation signal: a detector matches a repo's manifest dependencies (`package.json`, `requirements.txt`, `Cargo.toml`, …) against this list to select the skills that apply to that codebase. Added 2026-06-10 per owner directive.
+
+**Rules.**
+- Array of strings; each entry is the package's canonical registry name (npm name, PyPI name, etc.) — e.g. `next`, `tailwindcss`, `stripe`, `playwright`, `@anthropic-ai/sdk`.
+- Unique entries; schema pattern `^[a-z0-9@][a-zA-Z0-9@/._-]*$`.
+- Name the packages whose *presence makes the skill applicable*, not every package the skill happens to mention.
+- Optional; absent = the skill's relevance is not keyed to any package.
+- Projects into the manifest under `activation.dependencies`.
+
+**Boundary — three dependency-shaped fields, three different questions.**
+
+| Field | Names | Question it answers |
+|---|---|---|
+| `dependencies` | external packages | "Does the TARGET CODEBASE use the stack this skill teaches?" |
+| `relations.depends_on` | sibling skills | "Which other SKILLs must be in scope for this skill to compose?" |
+| `compatibility` | agent runtimes + Node version | "What runtime does the SKILL itself need to execute?" |
+
+**Example.**
+```yaml
+dependencies:
+  - next
+  - tailwindcss
+```
+
+**When to use.** Skills teaching a framework, library, platform SDK, or tool whose presence in the target repo is the relevance signal.
+
+**When NOT to use.** Concept/method skills (taxonomy design, debugging method) whose relevance is stack-independent.
+
+---
+
 <!-- workspace_tags REMOVED (see ADR-0017 amendment, 2026-05-27).
      Use `project` (array of {handle, role}) for project belonging-entity identity.
      The former workspace_tags field + workspace.projects semantic-tag mapping were

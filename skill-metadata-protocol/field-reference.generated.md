@@ -7,13 +7,13 @@
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld) (frontmatter fields only — the sidecar is not exported/RDF'd).
 > **Two-file split:** per [ADR-0019](../docs/adr/0019-audit-state-sidecar-separation.md), agent-facing fields live in `SKILL.md` frontmatter; audit/eval/provenance fields live in the `audit-state.json` sidecar.
 
-Schema version: **8** · Total fields: **55**
+Schema version: **8** · Total fields: **56**
 
 ---
 
 ## Frontmatter fields (`SKILL.md`)
 
-> Source schema: `schemas/SKILL_METADATA_PROTOCOL_schema.json`. Field count: **26** · Required: **5**.
+> Source schema: `schemas/SKILL_METADATA_PROTOCOL_schema.json`. Field count: **27** · Required: **5**.
 
 ---
 
@@ -271,6 +271,16 @@ Negative-class activation examples — realistic user prompts that look topicall
 Glob patterns that identify code surfaces this skill governs. Patterns prefixed with `!` are negations (gitignore-style). Negations only subtract from prior includes; a pattern list consisting only of negations matches nothing and is rejected by lint.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#paths`](field-reference.md#paths)
+
+---
+
+### `dependencies` *(optional)*
+
+**Type:** array of string
+
+Package/tool/framework names a codebase must use for this skill to be relevant (e.g. `next`, `tailwindcss`, `stripe`, `playwright`, `@anthropic-ai/sdk`). A codebase-relevance activation signal: detectors match a repo's manifest dependencies (package.json, requirements.txt, etc.) against this list to select skills for that codebase. Use the package's canonical registry name. Distinct from `relations.depends_on` (skill-to-skill composition — names sibling SKILLs, not packages) and from `compatibility` (the runtime envelope the SKILL itself needs — agent runtimes + Node version). Optional; absent = the skill's relevance is not keyed to any package. Added 2026-06-10 per owner directive (codebase-fingerprint signal).
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#dependencies`](field-reference.md#dependencies)
 
 ---
 

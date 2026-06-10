@@ -8,6 +8,10 @@ Skill Graph versions describe the contract at each checkpoint in the git history
 
 ## [Unreleased]
 
+### Added
+
+- **`dependencies` frontmatter field — the codebase-fingerprint activation signal (2026-06-10T21:00Z, owner directive).** New optional `string[]` on `SKILL.md`: canonical registry names of packages a TARGET CODEBASE must use for the skill to be relevant (e.g. `next`, `tailwindcss`, `stripe`, `@anthropic-ai/sdk`). Detectors match a repo's manifest dependencies (`package.json`, `requirements.txt`, …) against this list to select skills for that codebase — the field that lets "make skills relevant for specific projects and codebases" key off the stack itself. Distinct from `relations.depends_on` (skill-to-skill composition) and `compatibility` (the skill's own runtime envelope); boundary table in `field-reference.md` § `dependencies`. Surfaces updated together: `schemas/SKILL_METADATA_PROTOCOL_schema.json` (property + pattern `^[a-z0-9@][a-zA-Z0-9@/._-]*$`, uniqueItems), `schemas/manifest.schema.json` + `scripts/generate-manifest.js` (projects as `activation.dependencies`), `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` (§ Activation and Routing + enrichment list), `skill-metadata-protocol/field-reference.md`, `docs/manifest-field-mapping.md` (row 33b), `examples/skill-metadata-template.md` (field-purpose comment). Optional — no corpus migration forced; authoring drains per-skill through the audit loop.
+
 ### Changed
 
 - **Panel supervisors now run in PARALLEL on DIFFERENT skills (per-runtime lock pools), the panel claims the LEAD lock with a run-length lease, and the viewer no longer false-aborts a long-but-alive call (2026-06-10T14:30Z).** Two panel supervisors (Claude + OpenCode + Codex) converged on the SAME worklist skill and the running skill showed as "not claimed"; the OpenCode supervisor then reported the run STALLED/ABORTED while the underlying drain (verified pid-alive) was merely blocked in a long advisory call. Four coupled root causes, all fixed:

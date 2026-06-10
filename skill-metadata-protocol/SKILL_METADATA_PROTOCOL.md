@@ -258,6 +258,10 @@ subjects        # string[] (max 2, primary first) — polyhierarchy when a skill
 urn             # globally unique URN
 taxonomy_domain # hierarchical taxonomy sub-path (e.g. "ecommerce/integrations/shopify") — renamed from `domain` in the 2026-05-27 amendment
 paths           # glob[] — code surfaces this skill governs
+dependencies    # string[] — packages a codebase must use for this skill to be
+                # relevant (codebase-fingerprint signal; e.g. next, tailwindcss).
+                # NOT relations.depends_on (skill-to-skill) and NOT compatibility
+                # (the skill's own runtime envelope).
 examples        # string[] — positive activation prompts
 anti_examples   # string[] — negative activation prompts (wrong-skill training)
 project         # { handle, role }[] — projects this skill belongs to (replaces the removed `workspace_tags`)
@@ -570,6 +574,12 @@ Seven flat top-level fields that record a skill's audit fingerprint in its sibli
 - Glob patterns identifying the code surfaces this skill governs.
 - Patterns prefixed with `!` are negations (gitignore-style).
 - A list consisting only of negations matches nothing and is rejected by lint.
+
+**`dependencies`** (added 2026-06-10)
+- Package/tool/framework names a codebase must use for this skill to be relevant — the codebase-fingerprint activation signal (e.g. `next`, `tailwindcss`, `stripe`, `@anthropic-ai/sdk`). Detectors match a repo's manifest dependencies (`package.json`, `requirements.txt`, …) against this list to select skills for that codebase.
+- Canonical registry names, unique, optional. Name only the packages whose *presence makes the skill applicable*.
+- Distinct from `relations.depends_on` (skill-to-skill composition) and `compatibility` (the runtime envelope the skill itself needs). Full boundary table: `field-reference.md` § `dependencies`.
+- Projects into the manifest under `activation.dependencies`.
 
 **`examples`**
 - Positive-class activation examples — realistic user prompts this skill SHOULD activate for.

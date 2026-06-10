@@ -1,5 +1,5 @@
 {
-  "_comment": "JSON-LD @context for Skill Graph v8 frontmatter. Maps authored fields to W3C standard vocabularies so a Skill Graph SKILL.md can be projected into RDF/OWL/SKOS consumers without changing the authoring surface. v8 authored fields (subject, deployment_target, taxonomy_domain, scope, project, repo, keywords, relations, grounding.subject_matter) are projected through this context.",
+  "_comment": "JSON-LD @context for Skill Graph v8 frontmatter. Maps authored fields to W3C standard vocabularies so a Skill Graph SKILL.md can be projected into RDF/OWL/SKOS consumers without changing the authoring surface. v8 authored fields (subject, public, taxonomy_domain, scope, project, repo, keywords, relations, grounding.subject_matter) are projected through this context.",
   "_version": "3.2.0",
   "_schema_version_target": 8,
   "_references": {
@@ -16,10 +16,10 @@
     "0002": "JSON-LD @context coverage policy.",
     "0006": "boundary stays canonical in v8.0 for a routing-layer asymmetric exclusion edge (sg:disjointOwnership); disjoint_with is a separate orthogonal relation for formal OWL class-disjointness (owl:disjointWith). Reverts the `boundary -> disjoint_with` rename proposed in ADR 0001 Decision #2.",
     "0011": "Four-verdict Audit Status (structural/truth/comprehension/application) replaces the single audit_verdict; audit_verdict retained for back-read of unmigrated manifests.",
-    "0017": "v8 entity-vocabulary completion: top-level `domain` renamed `taxonomy_domain`, `scope` repurposed as free-text PRD content, `deployment_target` enum split out (workspace value removed), `project[]` and `repo[]` added as belonging-entity fields, `workspace_tags` removed (finishing the original ADR-0017 promise), `grounding.domain_object` renamed `grounding.subject_matter`."
+    "0017": "v8 entity-vocabulary completion: top-level `domain` renamed `taxonomy_domain`, `scope` repurposed as free-text PRD content, publishability moved to boolean `public`, `project[]` and `repo[]` added as belonging-entity fields, `workspace_tags` removed (finishing the original ADR-0017 promise), `grounding.domain_object` renamed `grounding.subject_matter`."
   },
   "_term_collisions": {
-    "boundary": "The token `boundary` has TWO distinct senses: (1) the v6+ Understanding field (a string teaching the concept's edges) and (2) relations.boundary (the routing-layer anti-ownership predicate, an array). JSON-LD term resolution is by key, not by nesting depth, so a single global term cannot serve both. Resolved via a JSON-LD 1.1 property-scoped @context: top-level `boundary` -> sg:conceptBoundary (the Understanding string); `boundary` appearing inside `relations` -> sg:disjointOwnership (the routing predicate). See https://www.w3.org/TR/json-ld11/#scoped-contexts."
+    "boundary": "The token `boundary` has TWO distinct legacy senses: (1) the deprecated top-level Understanding alias for `concept_boundary` and (2) the deprecated `relations.boundary` alias for canonical `relations.suppresses`. JSON-LD term resolution is by key, not by nesting depth, so a single global term cannot serve both. Resolved via a JSON-LD 1.1 property-scoped @context: top-level `boundary` -> sg:conceptBoundary (the Understanding string); `boundary` appearing inside `relations` -> sg:disjointOwnership (the routing predicate). See https://www.w3.org/TR/json-ld11/#scoped-contexts."
   },
   "@context": {
     "sg": "https://skillgraph.dev/vocab#",
@@ -88,6 +88,10 @@
       "@id": "sg:pathGlob",
       "@container": "@set"
     },
+    "dependencies": {
+      "@id": "schema:softwareRequirements",
+      "@container": "@set"
+    },
     "allowed-tools": "sg:allowedTools",
     "relations": {
       "@id": "sg:relations",
@@ -127,11 +131,11 @@
     },
     "concept_boundary": {
       "@id": "sg:conceptBoundary",
-      "_note": "v6+ Understanding field (string) — things commonly confused with the concept but that are NOT it, expressed as a mechanism. Canonical name as of ADR-0018 (renamed from the top-level `boundary` so the token no longer collides with the routing-layer relations.boundary/relations.suppresses predicate). See _term_collisions.boundary and SKILL_METADATA_PROTOCOL.md § Understanding."
+      "_note": "v6+ Understanding field (string) — things commonly confused with the concept but that are NOT it, expressed as a mechanism. Canonical name as of ADR-0018 (renamed from the top-level `boundary` so the token no longer collides with the routing-layer `relations.suppresses` predicate and legacy `relations.boundary` alias). See _term_collisions.boundary and SKILL_METADATA_PROTOCOL.md § Understanding."
     },
     "boundary": {
       "@id": "sg:conceptBoundary",
-      "_note": "DEPRECATED top-level alias of `concept_boundary` (ADR-0018). Same sg:conceptBoundary mapping; retained for skills not yet migrated. The routing-layer relations.boundary predicate (sg:disjointOwnership) is defined separately via the property-scoped @context on `relations`."
+      "_note": "DEPRECATED top-level alias of `concept_boundary` (ADR-0018). Same sg:conceptBoundary mapping; retained for skills not yet migrated. The routing-layer `relations.suppresses` predicate and legacy `relations.boundary` alias (sg:disjointOwnership) are defined separately via the property-scoped @context on `relations`."
     },
     "disjoint_with": {
       "@id": "owl:disjointWith",

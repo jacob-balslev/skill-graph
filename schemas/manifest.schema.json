@@ -294,6 +294,12 @@
                   "type": "string"
                 }
               },
+              "dependencies": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
               "examples": {
                 "type": "array",
                 "items": {
