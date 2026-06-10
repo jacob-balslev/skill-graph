@@ -53,6 +53,19 @@ if (!_sourceDir || !fs.existsSync(_sourceDir)) {
   // behavioral guidance IS projected
   assert(out.includes('Depends on: `a`'), 'keeps behavioral relations');
   assert(out.includes('**Keywords**'), 'keeps keywords (activation signal)');
+
+  // Concept/Understanding: the canonical `concept_boundary` field MUST reach the body.
+  // Regression guard for the projector reading the deprecated `boundary` (ADR-0018 rename);
+  // since the normalizer deletes top-level `boundary`, reading it projected nothing.
+  {
+    const canon = renderSkillGraphContext({ concept_boundary: 'NOT a CB lookup table' });
+    assert(canon.includes('Boundary: NOT a CB lookup table'),
+      'render: canonical `concept_boundary` Understanding field is projected into the Concept block');
+    // The deprecated top-level `boundary` alias still projects for a non-normalized caller.
+    const legacy = renderSkillGraphContext({ boundary: 'legacy boundary prose' });
+    assert(legacy.includes('Boundary: legacy boundary prose'),
+      'render: deprecated `boundary` alias still projects (back-compat for non-normalized input)');
+  }
   // maintenance state is NEVER projected into the agent-facing body
   assert(!out.includes('Audit status'), 'omits audit verdicts');
   assert(!out.includes('Lifecycle'), 'omits lifecycle block');
@@ -69,8 +82,12 @@ if (!_sourceDir || !fs.existsSync(_sourceDir)) {
   const skills = collectAllSkills();
   assert(skills.length > 0, 'collectAllSkills discovers skills');
 
-  // The marketplace export gates out deployment_target: project skills; render must NOT.
-  const projectScoped = skills.filter(s => s.fm.deployment_target === 'project');
+  // The marketplace export gates out private/project-anchored skills; render must NOT.
+  const projectScoped = skills.filter(s =>
+    s.fm.public === false ||
+    (Array.isArray(s.fm.project) && s.fm.project.length > 0) ||
+    s.fm.deployment_target === 'project'
+  );
   // If the corpus has any project-scoped skills, they must appear in render output.
   const { files } = expectedFiles(path.join(_root, 'dist', 'skills'));
   for (const s of projectScoped) {

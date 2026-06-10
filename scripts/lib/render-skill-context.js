@@ -38,7 +38,7 @@ const CONTEXT_MARKER_END = '<!-- skill-graph-context:end -->';
 const OWNS_CLAUSE_RE = /^[a-z][a-z0-9-]*[a-z0-9]\s+owns\s+([^;.]+?)(?:\s+where\s|\s+when\s|\s+that\s|[;.]|$)/i;
 
 /**
- * Extract the "X owns Y" clause from a relations.boundary reason string.
+ * Extract the "X owns Y" clause from a relations.suppresses reason string.
  * E.g. "testing-strategy owns deterministic-software testing where every run
  * is binary..." → "deterministic-software testing".
  *
@@ -118,7 +118,8 @@ function renderSkillGraphContext(fm) {
         : [];
       lines.push(`- Subject: \`${oneLine(fm.subject)}\`${extra.length ? ` (also: ${extra.map(s => `\`${oneLine(s)}\``).join(', ')})` : ''}`);
     }
-    if (fm.deployment_target) lines.push(`- Deployment: \`${oneLine(fm.deployment_target)}\``);
+    if (typeof fm.public === 'boolean') lines.push(`- Public: \`${fm.public}\``);
+    if (fm.deployment_target) lines.push(`- Legacy deployment: \`${oneLine(fm.deployment_target)}\``);
     if (fm.taxonomy_domain) lines.push(`- Domain: \`${oneLine(fm.taxonomy_domain)}\``);
     if (fm.scope) lines.push(`- Scope: ${oneLine(fm.scope)}`);
     push('Classification', lines);
@@ -183,7 +184,15 @@ function renderSkillGraphContext(fm) {
     const lines = [];
     if (fm.mental_model) lines.push(`- Mental model: ${oneLine(fm.mental_model)}`);
     if (fm.purpose) lines.push(`- Purpose: ${oneLine(fm.purpose)}`);
-    if (fm.boundary) lines.push(`- Boundary: ${oneLine(fm.boundary)}`);
+    // `concept_boundary` is the canonical Understanding field; ADR-0018 renamed it
+    // from `boundary` to remove the token collision with the routing edge
+    // `relations.suppresses` (legacy `relations.boundary`). The normalizer deletes
+    // the deprecated top-level `boundary` after mapping it across, so a plain
+    // `fm.boundary` read projected NOTHING for any skill. Prefer the canonical name,
+    // fall back to the deprecated alias only for a non-normalized caller — mirrors
+    // the suppresses/boundary alias handling above.
+    const conceptBoundary = fm.concept_boundary || fm.boundary;
+    if (conceptBoundary) lines.push(`- Boundary: ${oneLine(conceptBoundary)}`);
     if (fm.analogy) lines.push(`- Analogy: ${oneLine(fm.analogy)}`);
     if (fm.misconception) lines.push(`- Common misconception: ${oneLine(fm.misconception)}`);
     push('Concept', lines);
