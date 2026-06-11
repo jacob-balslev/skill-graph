@@ -60,13 +60,17 @@ function assert(condition, msg) {
   assert(!threw, 'extractHealthBlock tolerates a missing sidecar argument (back-compat)');
 }
 
-// 4. v8 deployment_target informs conceptScope instead of falling back to unknown.
+// 4. v8 project[]/public informs conceptScope, with deployment_target kept as a legacy fallback.
 {
   const health = { structural_verdict: 'PASS', truth_verdict: 'PASS', application_verdict: 'UNVERIFIED' };
+  assert(classifyAuditState(health, { public: true }).conceptScope === 'portable',
+    'conceptScope: public true is reported as portable');
+  assert(classifyAuditState(health, { public: false, project: [{ handle: 'skill-graph' }] }).conceptScope === 'project',
+    'conceptScope: project[] anchoring is reported as project');
   assert(classifyAuditState(health, { deployment_target: 'portable' }).conceptScope === 'portable',
-    'conceptScope: portable deployment target is reported as portable');
+    'conceptScope: legacy portable deployment target is reported as portable');
   assert(classifyAuditState(health, { deployment_target: 'project' }).conceptScope === 'project',
-    'conceptScope: project deployment target is reported as project');
+    'conceptScope: legacy project deployment target is reported as project');
 }
 
 if (failures > 0) {

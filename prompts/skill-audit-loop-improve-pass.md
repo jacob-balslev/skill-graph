@@ -4,7 +4,7 @@
      lib/audit/propose-one.js). "ENRICH Pass" is the prose name for this Phase-1 propose pass;
      the file + manifest id is `improve-pass`. -->
 
-> Portable across the two frontier models — the registry roles `opus` and `codex-current`.
+> Portable across the two frontier models — the registry roles `opus` and `gpt-5.5`.
 > This is the **per-model enrich pass** the bidirectional enrich orchestrator
 > (`lib/audit/run-skill-audit-loop-lite.js`) dispatches to EACH frontier model
 > independently. You produce a **proposal**, not a commit — the curator unions the

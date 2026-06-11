@@ -1,18 +1,22 @@
 ---
+# name: stable skill identifier. Match the skill directory name or the final namespace segment.
+# Lowercase letters/numbers with hyphen, slash, or colon separators.
 name: stripe-webhook-signature-verification
+# description: routing-facing summary of what the skill covers and when it activates.
+# Include concrete triggers and an explicit negative boundary; keep routing semantics out of prose-only ambiguity.
 description: "Use when validating incoming Stripe webhook requests in a Node.js or Next.js backend before processing any payment event. Verifies the `stripe-signature` header against `STRIPE_WEBHOOK_SECRET` using Stripe's HMAC-SHA256 scheme, and rejects replays older than 300 seconds. Do NOT use for general HTTP signature validation (use a generic crypto-signature skill), for processing the webhook payload after signature is confirmed (use payment-provider-router), or for Stripe API calls that are not webhook-driven."
 
-# === v8 Classification (subject + deployment_target; polyhierarchy via subjects[]) — see ADR-0017 ===
+# === v8 Classification (subject + public; polyhierarchy via subjects[]) — see ADR-0017 ===
 # subject: primary browse shelf — what the skill teaches. One of twelve closed values:
 # backend-engineering / frontend-engineering / software-architecture / data-engineering / agent-ops / ai-engineering /
 # quality-assurance / design / reasoning-strategy / software-engineering-method / knowledge-organization / product-domain.
 subject: backend-engineering
-# deployment_target: where this skill applies. One of two closed values:
-# portable (any project, repo-agnostic) /
-# project (one or more specific projects; requires populated `grounding` and `project[]`).
-deployment_target: portable
-# scope: free-text PRD-style statement of what the skill teaches and where it deploys
-# (v8 required; not an enum). Positive scope + portability/grounding + explicit exclusions.
+# public: publishability/private-data gate. Boolean.
+# true = publishable/shareable; false = private and excluded from public export.
+# Project anchoring is carried separately by non-empty `project[]` plus `grounding`.
+public: true
+# scope: free-text PRD-style statement of what the skill teaches and what it excludes.
+# (v8 required; not an enum). Mirrors Coverage + Do NOT Use When at frontmatter level.
 scope: "Verifying the authenticity of an incoming Stripe webhook via signature check before any processing in the saas-stripe-postgres example. Excludes routing the verified event (payment-provider-router) and the downstream database writes (postgres-rls-pattern)."
 # taxonomy_domain: optional hierarchical sub-path within `subject`. Slash-delimited
 # lowercase kebab-case segments. rename of the original v8 `domain`. Remove when the flat
@@ -63,26 +67,24 @@ examples:
   - "set up the Stripe webhook endpoint in a Next.js App Router API route"
   - "reject replayed webhook events older than 5 minutes"
 # anti_examples: near-miss prompts that should route ELSEWHERE.
-# Pair with relations.boundary to indicate the confusable territory's owner.
+# Pair with relations.suppresses (or legacy boundary alias) to name the confusable territory's owner.
 anti_examples:
   - "process the Stripe payment_intent.succeeded event payload"
   - "call the Stripe API to create a payment intent"
   - "validate a generic HTTP signature that is not from Stripe"
 # relations: typed graph edges to sibling skills. Current fields:
 # related (adjacency for browse / co-routing expansion) /
-# boundary (exclude listed skills from co-routing when THIS skill wins — name is inverse
-#           to mechanic; write reason as "I own this exclusively over X", not "use X instead";
-#           see ADR-0018 for rename rationale) /
+# suppresses (exclude listed skills from co-routing when THIS skill wins; write reason
+#             as "I own this exclusively over X", not "use X instead") /
+# boundary (DEPRECATED alias of suppresses, retained for unmigrated skills) /
 # verify_with (cross-check; co-loaded as one-hop expansion) /
 # depends_on (composition; transitive — A→B→C loads all three) /
 # broader / narrower (SKOS-style generalization) /
 # disjoint_with (mutual exclusion for incompatible ownership).
 relations:
-  boundary:
-    - skill: payment-provider-router
-      reason: "payment-provider-router decides which downstream handler receives the verified event; this skill verifies authenticity before any routing happens"
-    - skill: nextjs-server-action-validation
-      reason: "nextjs-server-action-validation validates user-submitted form input via Zod; this skill validates Stripe's HMAC signature — different trust boundary, different mechanism"
+  related:
+    - payment-provider-router
+    - nextjs-server-action-validation
   depends_on:
     - postgres-rls-pattern
   verify_with:
@@ -90,6 +92,16 @@ relations:
 ---
 
 # Stripe Webhook Signature Verification
+
+## Concept of the skill
+
+**What it is:** The security check that proves an incoming Stripe webhook was signed by Stripe before any payment logic runs.
+**Mental model:** The raw request body, signature header, and webhook secret form one verification tuple; change any part and the event is untrusted.
+**Why it exists:** Webhook routes are public endpoints that can trigger billing and fulfillment, so authenticity has to be established before routing.
+**What it is NOT:** It is not payment-event routing, general HTTP signature validation, or Stripe API usage outside webhook delivery.
+**Adjacent concepts:** HMAC verification, raw request bodies, replay tolerance, idempotency keys.
+**One-line analogy:** It is the seal check before opening the payment envelope.
+**Common misconception:** Parsing JSON first is harmless; transforming the raw bytes invalidates the signature comparison.
 
 ## Coverage
 
@@ -99,7 +111,7 @@ relations:
 - Environment-specific secrets — `STRIPE_WEBHOOK_SECRET` for production vs `whsec_...` from the Stripe CLI `--forward-to` session in development; why they must never be swapped
 - Idempotency key pattern — recording the `event.id` in Postgres before processing so a retried delivery does not double-charge or double-fulfill
 
-## Philosophy
+## Philosophy of the skill
 
 A webhook that skips signature verification is an unauthenticated public endpoint that can trigger payment processing. The verification step is load-bearing security, not a convenience check. Stripe's SDK makes verification a single call, but two failure modes are common in practice: the request body gets parsed (by a body-parser middleware) before the raw bytes reach the verification call, which silently corrupts the HMAC comparison; and the wrong webhook secret is loaded from environment variables, producing a 400 that is hard to distinguish from a replay rejection. Both failures look the same to the caller — a rejected webhook — and both are invisible until a real event is dropped.
 

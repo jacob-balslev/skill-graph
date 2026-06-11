@@ -8,7 +8,7 @@
  * the binding shape in `schemas/application.schema.json` (v1, SH-6624 / SKI-51):
  * required top-level fields, the `mode: "application"` discriminator, the ≥5-case
  * floor, the per-case required-field set, unique case ids, and the red-herring
- * recommendation. The worked specimen at `examples/evals/application.sample.json`
+ * coverage requirement. The worked specimen at `examples/evals/application.sample.json`
  * is validated too.
  *
  * WHY THIS EXISTS. The application-eval schema is a binding SPEC doc that the
@@ -18,15 +18,15 @@
  * `--case` filter must be runnable; and `scripts/check-audit-manifest.js` only
  * checks that the artifact *exists* when a graded `application_verdict` is
  * claimed — it never validates the `cases[]` shape. So an application.json could
- * drift below the floor, lose a required per-case field, or duplicate an id, and
- * nothing would catch it until a grader run failed opaquely. This script closes
+ * drift below the floor, lose red-herring coverage, lose a required per-case field,
+ * or duplicate an id, and nothing would catch it until a grader run failed opaquely. This script closes
  * that gap: it makes the schema mechanically checkable, mirroring how the
  * comprehension shape is covered by `lib/audit/eval-linter.js`.
  *
  * WORK MODE. This is a SYSTEM-mode tool (it reads CONTENT, never writes it). It
  * is report-only by default (exit 0 — the SYSTEM-safe debt ledger) so the SYSTEM
  * `verify:system` gate does not go red purely because corpus application.json
- * files have not yet been migrated to the ≥5-case floor through the audit loop
+ * files have not yet been migrated to the ≥5-case floor and red-herring coverage through the audit loop
  * (that migration is CONTENT work, drained via `/audit:*`). The `--check` flag is
  * the opt-in HARD gate (exit 1 on any nonconformance) for use once the corpus has
  * migrated, or in a CONTENT pre-commit that just authored an application.json.
@@ -86,9 +86,9 @@ function makeFinding(file, severity, code, message) {
  * structural contract. Returns an array of findings (empty = conformant).
  *
  * Severity scale (workspace canonical 5-level): CRITICAL contract violations that
- * would break the runner or grader; HIGH correctness gaps; MEDIUM the ≥5-case
- * floor (an authoring-contract shortfall that is real but not a hard runner break);
- * LOW the red-herring recommendation (strongly recommended, not required).
+ * would break the runner or grader; HIGH correctness gaps including missing
+ * red-herring coverage; MEDIUM the ≥5-case floor (an authoring-contract shortfall
+ * that is real but not a hard runner break).
  */
 function validateApplicationEval(relFile, data) {
   const findings = [];
@@ -210,7 +210,7 @@ function validateApplicationEval(relFile, data) {
   });
 
   if (data.cases.length > 0 && !hasRedHerring) {
-    findings.push(makeFinding(relFile, 'LOW', 'no-red-herring', 'No red_herring:true case. A real-cases-only suite gives false confidence — at least one hard negative is strongly recommended (agent-eval-design).'));
+    findings.push(makeFinding(relFile, 'HIGH', 'no-red-herring', 'No red_herring:true case. A real-cases-only suite cannot certify boundary behavior — at least one hard negative is required before APPLICABLE can be earned (agent-eval-design).'));
   }
 
   return findings;
@@ -288,15 +288,16 @@ function main(argv) {
   const allFindings = report.flatMap((r) => r.findings);
   const conformant = report.filter((r) => r.findings.length === 0).length;
   const nonconformant = report.length - conformant;
-  // A "hard" finding is anything above the authoring-shortfall tier (below-floor /
-  // red-herring recommendation). Those structural breaks fail the gate; the floor
-  // and red-herring findings are corpus-migration debt, reported but not gating
-  // unless --strict-floor is set.
+  // A "hard" finding is anything above the authoring-shortfall tier. Below-floor and
+  // missing-red-herring findings are certification-blocking CONTENT migration debt:
+  // reported in SYSTEM mode, hard-gated by --check, but not allowed to make the
+  // report-only system gate fail while the corpus is migrating.
   const hardCodes = new Set(allFindings
     .filter((f) => !['below-case-floor', 'no-red-herring'].includes(f.code))
     .map((f) => f.code));
   const hasHardFindings = hardCodes.size > 0;
   const hasFloorFindings = allFindings.some((f) => f.code === 'below-case-floor');
+  const hasRedHerringFindings = allFindings.some((f) => f.code === 'no-red-herring');
 
   if (jsonOut) {
     console.log(JSON.stringify({
@@ -323,8 +324,8 @@ function main(argv) {
       console.log('[check-application-evals] OK — every application.json conforms to the schema.');
     } else {
       console.log(`\n[check-application-evals] ${nonconformant}/${report.length} file(s) nonconformant; ${allFindings.length} finding(s) total.`);
-      if (hasFloorFindings && !hardGate) {
-        console.log('[check-application-evals] NOTE: below-case-floor findings are CONTENT-migration debt (drain via /audit:*) — they do NOT fail report mode. Run with --check (or --strict-floor) to gate on them.');
+      if ((hasFloorFindings || hasRedHerringFindings) && !hardGate) {
+        console.log('[check-application-evals] NOTE: below-case-floor and no-red-herring findings are CONTENT-migration debt (drain via /audit:*) — they do NOT fail report mode. Run with --check (or --strict-floor for the floor) to gate on them.');
       }
     }
   }

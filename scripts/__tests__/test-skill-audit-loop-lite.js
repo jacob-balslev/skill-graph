@@ -72,6 +72,8 @@ check('UNVERIFIED / non-lift => KEEP (absence of measured lift is not a regressi
   assert.strictEqual(enrich.decideKeepOrRevert({ synthesized_verdict: 'PROVISIONAL' }).action, 'keep');
   // REDUNDANT (skill didn't add measured value) is NOT a regression to revert — enrich keeps it.
   assert.strictEqual(enrich.decideKeepOrRevert({ synthesized_verdict: 'REDUNDANT' }).action, 'keep');
+  assert.strictEqual(enrich.decideKeepOrRevert({ synthesized_verdict: 'NOT_DISCRIMINATED_CEILING' }).action, 'keep');
+  assert.strictEqual(enrich.decideKeepOrRevert({ synthesized_verdict: 'EQUIVALENT_ON_FRONTIER' }).action, 'keep');
 });
 check('F9: an invalid/capped run (certifying_clean:false) DEFERS — never reverts on a confidence cap', () => {
   // Parity failed → APPLICABLE was capped to PROVISIONAL; prior was APPLICABLE. The
@@ -107,7 +109,9 @@ function makeDeps(overrides = {}) {
       calls.evalDirs.push(skillDir);
       return {
         direction, generator_model: generatorModel, grader_model: graderModel,
-        verdict: 'APPLICABLE', certification_tier: 'certifying', execution_profile: executionProfile,
+        verdict: 'APPLICABLE', certification_tier: 'certifying',
+        calibrated: true, red_herring_cases_total: 1,
+        execution_profile: executionProfile,
       };
     },
   };
@@ -117,9 +121,9 @@ function makeDeps(overrides = {}) {
 check('runs both frontier models, curates, evals the ENRICHED copy, keeps + applies', () => {
   const deps = makeDeps();
   const r = enrich.runSkillAuditLoopLite({ skill: 's', skillDir: '/x/skills/s', cwd: '/x/skill-graph', deps });
-  assert.deepStrictEqual(deps._calls.claims, ['opus', 'codex-current']);
-  assert.deepStrictEqual(deps._calls.proposals, ['opus', 'codex-current']);
-  assert.deepStrictEqual(deps._calls.releases, ['opus:completed', 'codex-current:completed']);
+  assert.deepStrictEqual(deps._calls.claims, ['opus', 'gpt-5.5']);
+  assert.deepStrictEqual(deps._calls.proposals, ['opus', 'gpt-5.5']);
+  assert.deepStrictEqual(deps._calls.releases, ['opus:completed', 'gpt-5.5:completed']);
   assert.strictEqual(deps._calls.curated, 1);
   assert.strictEqual(r.merge.anti_loss.ok, true);
   assert.strictEqual(r.eval.synthesized_verdict, 'APPLICABLE');
@@ -144,7 +148,14 @@ check('anti-loss violation in the merge throws (no silent lossy merge)', () => {
 
 check('genuine regression (HARMFUL eval) => revert: does NOT apply to canonical (SH-6686)', () => {
   const deps = makeDeps({
-    runEvalDirection: ({ direction, executionProfile }) => ({ direction, verdict: 'HARMFUL', certification_tier: 'certifying', execution_profile: executionProfile }),
+    runEvalDirection: ({ direction, executionProfile }) => ({
+      direction,
+      verdict: 'HARMFUL',
+      certification_tier: 'certifying',
+      calibrated: true,
+      red_herring_cases_total: 1,
+      execution_profile: executionProfile,
+    }),
   });
   const r = enrich.runSkillAuditLoopLite({ skill: 's', skillDir: '/x/s', cwd: '/x', deps });
   assert.strictEqual(r.keep_or_revert.action, 'revert');

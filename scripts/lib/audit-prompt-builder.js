@@ -62,9 +62,11 @@ const DIMENSIONS = [
     id: 'grounding',
     label: 'Grounding fidelity',
     checklistAnchor: '4. Grounding quality',
-    // v8: the old scope: 'codebase' was replaced by deployment_target: 'project'.
-    // Keep the legacy scope check for back-compat with unmigrated skills.
+    // v8: project anchoring is carried by non-empty project[]; public is only
+    // publishability. Keep retired deployment_target/scope checks for back-compat
+    // with unmigrated skills.
     appliesWhen: (fm) => fm && (
+      (Array.isArray(fm.project) && fm.project.length > 0) ||
       fm.deployment_target === 'project' ||
       fm.scope === 'codebase' ||
       (fm.grounding && fm.grounding.grounding_mode === 'repo_specific')

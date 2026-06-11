@@ -1,18 +1,22 @@
 ---
+# name: stable skill identifier. Match the skill directory name or the final namespace segment.
+# Lowercase letters/numbers with hyphen, slash, or colon separators.
 name: postgres-rls-pattern
+# description: routing-facing summary of what the skill covers and when it activates.
+# Include concrete triggers and an explicit negative boundary; keep routing semantics out of prose-only ambiguity.
 description: "Use when writing or reviewing Postgres queries in a multi-tenant SaaS where every table row must be scoped to a single organization. Enforces the FORCE ROW LEVEL SECURITY + USING + WITH CHECK triple on every tenant-bound table, and wraps application queries in an `orgQuery(orgId)` helper that sets `app.current_org_id` before each statement. Do NOT use for cross-org system queries such as billing cron jobs or admin panels (those bypass RLS intentionally via the service role); use a service-role query wrapper instead."
 
-# === v8 Classification (subject + deployment_target; polyhierarchy via subjects[]) — see ADR-0017 ===
+# === v8 Classification (subject + public; polyhierarchy via subjects[]) — see ADR-0017 ===
 # subject: primary browse shelf — what the skill teaches. One of twelve closed values:
 # backend-engineering / frontend-engineering / software-architecture / data-engineering / agent-ops / ai-engineering /
 # quality-assurance / design / reasoning-strategy / software-engineering-method / knowledge-organization / product-domain.
 subject: backend-engineering
-# deployment_target: where this skill applies. One of two closed values:
-# portable (any project, repo-agnostic) /
-# project (one or more specific projects; requires populated `grounding` and `project[]`).
-deployment_target: portable
-# scope: free-text PRD-style statement of what the skill teaches and where it deploys
-# (v8 required; not an enum). Positive scope + portability/grounding + explicit exclusions.
+# public: publishability/private-data gate. Boolean.
+# true = publishable/shareable; false = private and excluded from public export.
+# Project anchoring is carried separately by non-empty `project[]` plus `grounding`.
+public: true
+# scope: free-text PRD-style statement of what the skill teaches and what it excludes.
+# (v8 required; not an enum). Mirrors Coverage + Do NOT Use When at frontmatter level.
 scope: "Row-level-security policy pattern for multi-tenant Postgres in the saas-stripe-postgres example — tenant isolation via RLS policies on every tenant-scoped table. Excludes application-layer authorization logic and the event routing that triggers the writes."
 # taxonomy_domain: optional hierarchical sub-path within `subject`. Slash-delimited
 # lowercase kebab-case segments. rename of the original v8 `domain`. Remove when the flat
@@ -65,32 +69,40 @@ examples:
   - "set up the orgQuery helper so every query is automatically scoped to the current org"
   - "add row level security to a new subscriptions table"
 # anti_examples: near-miss prompts that should route ELSEWHERE.
-# Pair with relations.boundary to indicate the confusable territory's owner.
+# Pair with relations.suppresses (or legacy boundary alias) to name the confusable territory's owner.
 anti_examples:
   - "run a billing cron job that needs to read all orgs"
   - "write a migration that backfills data across all organizations"
   - "query the database without any tenant context for an admin dashboard"
 # relations: typed graph edges to sibling skills. Current fields:
 # related (adjacency for browse / co-routing expansion) /
-# boundary (exclude listed skills from co-routing when THIS skill wins — name is inverse
-#           to mechanic; write reason as "I own this exclusively over X", not "use X instead";
-#           see ADR-0018 for rename rationale) /
+# suppresses (exclude listed skills from co-routing when THIS skill wins; write reason
+#             as "I own this exclusively over X", not "use X instead") /
+# boundary (DEPRECATED alias of suppresses, retained for unmigrated skills) /
 # verify_with (cross-check; co-loaded as one-hop expansion) /
 # depends_on (composition; transitive — A→B→C loads all three) /
 # broader / narrower (SKOS-style generalization) /
 # disjoint_with (mutual exclusion for incompatible ownership).
 relations:
-  boundary:
-    - skill: migrate-orders-to-canonical-schema
-      reason: "migrate-orders-to-canonical-schema changes column layout; this skill defines the RLS policy that must be updated alongside any schema change on tenant-bound tables"
-    - skill: nextjs-server-action-validation
-      reason: "nextjs-server-action-validation validates the input layer; this skill governs the query layer — both are required but at different tiers"
+  related:
+    - migrate-orders-to-canonical-schema
+    - nextjs-server-action-validation
   depends_on: []
   verify_with:
     - migrate-orders-to-canonical-schema
 ---
 
 # Postgres RLS Pattern
+
+## Concept of the skill
+
+**What it is:** The database-enforced tenant isolation pattern for Postgres tables in a multi-organization SaaS.
+**Mental model:** The application sets the current organization; Postgres enforces which rows that organization can read or write.
+**Why it exists:** A missed `WHERE org_id = ...` clause should not become a cross-tenant data leak.
+**What it is NOT:** It is not a service-role migration pattern, admin reporting bypass, or generic SQL optimization guidance.
+**Adjacent concepts:** Row-level policies, session variables, service-role isolation, tenant-bound tables.
+**One-line analogy:** It is a database lock that opens only for the current organization.
+**Common misconception:** Application-level filters are equivalent to RLS; RLS moves the guardrail into the database itself.
 
 ## Coverage
 
@@ -100,7 +112,7 @@ relations:
 - Policy audit checklist — grepping for `query()` calls without a preceding `SET app.current_org_id` as a CI-safe audit gate
 - New-table checklist — steps to add RLS to a table that was created before RLS was enforced on the schema
 
-## Philosophy
+## Philosophy of the skill
 
 Row-level security on Postgres is the difference between "we checked org_id in the WHERE clause" and "the database rejects cross-org reads at the storage layer." Application-level checks are deleted by a single missing WHERE clause; RLS cannot be bypassed unless you use the service role explicitly. The cost is a session variable that must be set before every query and a discipline of never using the service role for application queries. Both costs are cheap relative to the consequence of a cross-tenant data leak.
 

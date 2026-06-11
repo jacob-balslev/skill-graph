@@ -22,7 +22,7 @@ Paste the prompt block below into a Codex automation. Recommended automation set
 | Field | Value |
 |---|---|
 | Workspace | `/Users/jacobbalslev/Development` |
-| Model | the `codex-current` role — whatever GPT model Codex currently serves (do not pin a version) |
+| Model | the `gpt-5.5` role — whatever GPT model Codex currently serves (do not pin a version) |
 | Reasoning | `high` by default; avoid `xhigh` for broad edit loops unless the scheduler already enforces tight timeouts |
 | Environment | `local` for root Development edits, `worktree` only when the setup path is verified |
 | Cadence | Scheduler-controlled; do not ask the model to respawn itself |

@@ -42,8 +42,16 @@
     "cases": {
       "type": "array",
       "minItems": 5,
+      "contains": {
+        "type": "object",
+        "required": ["red_herring"],
+        "properties": {
+          "red_herring": { "const": true }
+        }
+      },
+      "minContains": 1,
       "items": { "$ref": "#/$defs/application_case" },
-      "description": "Per-scenario application cases. The application layer uses `cases[]` (NOT `evals[]` — that is the comprehension shape; the runner throws if it sees the wrong key). Minimum 5 to mirror the comprehension gate-8 floor and the agent-eval-design discipline (realistic positives + hard negatives + prior failures); 7 recommended. At least one `red_herring: true` case is strongly recommended — a real-cases-only suite gives false confidence (agent-eval-design: 'the highest-value cases are hard negatives and prior failures')."
+      "description": "Per-scenario application cases. The application layer uses `cases[]` (NOT `evals[]` — that is the comprehension shape; the runner throws if it sees the wrong key). Minimum 5 to mirror the comprehension gate-8 floor and the agent-eval-design discipline (realistic positives + hard negatives + prior failures); 7 recommended. At least one `red_herring: true` case is required before APPLICABLE can be earned — a real-cases-only suite gives false confidence (agent-eval-design: 'the highest-value cases are hard negatives and prior failures')."
     }
   },
   "$defs": {

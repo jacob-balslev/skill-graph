@@ -191,7 +191,7 @@ check('ADR-0019: an audit-state field in frontmatter is now rejected (sidecar-on
 });
 
 check('legacy v7-shaped frontmatter fails (missing v8 fields + retired fields)', () => {
-  // Missing subject + deployment_target + scope (now required) AND carries the retired
+  // Missing subject + public + scope (now required) AND carries the retired
   // type/category fields (now additionalProperties violations).
   const errors = validate(v7Legacy, SCHEMA);
   if (errors.length === 0) throw new Error('v7-shaped frontmatter should have failed');

@@ -1,7 +1,7 @@
 {
   "skill_name": "skill-router",
   "kind": "routing_eval",
-  "subject": "Dispatch assertions: given (query, candidate-skills) tuples, verify the router selects the expected winner skill by applying the Routing Rules priority chain, deployment_target tiebreaker, legacy type fallback, and Fallback behavior.",
+  "subject": "Dispatch assertions: given (query, candidate-skills) tuples, verify the router selects the expected winner skill by applying the Routing Rules priority chain, project-anchoring tiebreaker, legacy type fallback, and Fallback behavior.",
   "schema_note": "This is a v1 routing_eval artifact. Each case is a (query, candidates, expected_winner, reason) tuple. A consuming grader SHOULD implement the router's priority chain and assert that the winner matches expected_winner for each case. The format is deliberate: comprehension evals (examples/evals/skill-router.json) ask the model to explain what the router would do; routing evals (this file) ask a router implementation to actually do it. A skill declaring `routing_eval: present` ships one of these.",
   "routing_cases": [
     {
@@ -57,8 +57,8 @@
       "reason": "debugging-skill is a unique trigger match for debugging. Even though Modal.tsx would path-match a11y AND 'decide what to test' would keyword-match testing-strategy, the chain stops at Priority 1. A router that aggregated votes across surfaces here would be wrong."
     },
     {
-      "id": "deployment-target-tiebreaker-project-over-portable",
-      "description": "Two skills tie on keyword score. Deployment-target tiebreaker breaks the tie in favor of `project` over `portable` when the project-specific skill is otherwise a fit. Mirrors comprehension eval #4.",
+      "id": "project-anchor-tiebreaker-over-ambient",
+      "description": "Two skills tie on keyword score. Project-anchoring tiebreaker breaks the tie in favor of the skill with non-empty project[] when it is otherwise a fit. Mirrors comprehension eval #4.",
       "query": {
         "triggers": [],
         "paths_touched": [],
@@ -66,17 +66,17 @@
       },
       "candidates": ["graph-audit", "documentation"],
       "candidate_metadata": {
-        "graph-audit":   { "deployment_target": "project" },
-        "documentation": { "deployment_target": "portable" }
+        "graph-audit":   { "public": false, "project": [{ "handle": "skill-graph" }] },
+        "documentation": { "public": true }
       },
       "expected_winner": "graph-audit",
       "expected_surface": "keywords",
-      "expected_tiebreaker": "deployment_target",
-      "reason": "Both skills score similarly on keyword match. graph-audit is `deployment_target: project`; documentation is `deployment_target: portable`. When both remain valid candidates for a Skill Graph request, the project-specific deployment target wins over the portable one."
+      "expected_tiebreaker": "project",
+      "reason": "Both skills score similarly on keyword match. graph-audit is project-anchored via non-empty `project[]`; documentation is ambient. When both remain valid candidates for a Skill Graph request, the project-specific skill wins over the ambient one. `public` is not the routing-specificity signal."
     },
     {
       "id": "legacy-type-fallback-workflow-over-capability",
-      "description": "Two legacy manifest entries tie on keyword and deployment target. Legacy type fallback breaks the tie: `workflow` > `capability` > `router` > `overlay`. Mirrors comprehension eval #8.",
+      "description": "Two legacy manifest entries tie on keyword and project anchoring. Legacy type fallback breaks the tie: `workflow` > `capability` > `router` > `overlay`. Mirrors comprehension eval #8.",
       "query": {
         "triggers": [],
         "paths_touched": [],
@@ -84,13 +84,13 @@
       },
       "candidates": ["debugging", "a11y"],
       "candidate_metadata": {
-        "debugging": { "deployment_target": "portable", "type": "workflow" },
-        "a11y":      { "deployment_target": "portable", "type": "capability" }
+        "debugging": { "public": true, "type": "workflow" },
+        "a11y":      { "public": true, "type": "capability" }
       },
       "expected_winner": "debugging",
       "expected_surface": "keywords",
       "expected_tiebreaker": "type",
-      "reason": "Both legacy entries are `deployment_target: portable`. debugging is `type: workflow`; a11y is `type: capability`. The legacy type fallback keeps older specimens deterministic, but current v8 skill metadata should not author new `type` claims."
+      "reason": "Both legacy entries are ambient current-v8 candidates. debugging is `type: workflow`; a11y is `type: capability`. The legacy type fallback keeps older specimens deterministic, but current v8 skill metadata should not author new `type` claims."
     },
     {
       "id": "no-match-coverage-gap",

@@ -630,19 +630,19 @@ assert(
   assert(renderSkillGraphContext({}) === '', 'renderSkillGraphContext: no meaningful fields → empty');
 }
 
-// renderSkillGraphContext — classification block renders subject/deployment/domain/scope
+// renderSkillGraphContext — classification block renders subject/public/domain/scope
 {
   const out = renderSkillGraphContext({
     subject: 'quality-assurance',
     subjects: ['quality-assurance', 'frontend-engineering'],
-    deployment_target: 'portable',
+    public: true,
     taxonomy_domain: 'quality/accessibility',
     scope: 'Teaches accessible interaction patterns.',
   });
   assert(out.startsWith('## Skill Graph context'), 'renderSkillGraphContext: starts with heading');
   assert(out.includes('**Classification**'), 'renderSkillGraphContext: has Classification block');
   assert(out.includes('- Subject: `quality-assurance` (also: `frontend-engineering`)'), `renderSkillGraphContext: subject + secondary; got\n${out}`);
-  assert(out.includes('- Deployment: `portable`'), 'renderSkillGraphContext: deployment rendered');
+  assert(out.includes('- Public: `true`'), 'renderSkillGraphContext: public rendered');
   assert(out.includes('- Domain: `quality/accessibility`'), 'renderSkillGraphContext: domain rendered');
   assert(out.includes('- Scope: Teaches accessible interaction patterns.'), 'renderSkillGraphContext: scope rendered');
 }

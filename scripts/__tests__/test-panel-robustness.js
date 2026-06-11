@@ -37,7 +37,15 @@ function makeDeps(overrides = {}) {
     prepareEnrichedEval: ({ skillDir }) => ({ evalSkillDir: `${skillDir}/.enriched`, baselineEvalSkillDir: `${skillDir}/.baseline`, cleanup: () => {} }),
     applyMerge: ({ skillDir }) => ({ applied: `${skillDir}/SKILL.md` }),
     evalArtifactExists: () => true,
-    runEvalDirection: ({ direction, executionProfile }) => ({ direction, verdict: 'APPLICABLE', certification_tier: 'certifying', execution_profile: executionProfile, certifying_clean: true }),
+    runEvalDirection: ({ direction, executionProfile }) => ({
+      direction,
+      verdict: 'APPLICABLE',
+      certification_tier: 'certifying',
+      calibrated: true,
+      red_herring_cases_total: 1,
+      execution_profile: executionProfile,
+      certifying_clean: true,
+    }),
   };
   return { ...base, ...overrides };
 }
@@ -46,7 +54,7 @@ console.log('1. F1 — rate-limit recovery (mandatory propose)');
 check('a rate-limit dispatch error raises a RECOVERABLE RateLimitError with a checkpoint (not a fatal abort)', () => {
   const deps = makeDeps({
     researchAndPropose: ({ model }) => {
-      if (model === 'codex-current') { const e = new Error('proposal not written'); e.dispatchOutput = 'HTTP 429 rate_limit_exceeded; retry after 30s'; throw e; }
+      if (model === 'gpt-5.5') { const e = new Error('proposal not written'); e.dispatchOutput = 'HTTP 429 rate_limit_exceeded; retry after 30s'; throw e; }
       return { proposalPath: `p-${model}.md` };
     },
   });
@@ -56,7 +64,7 @@ check('a rate-limit dispatch error raises a RECOVERABLE RateLimitError with a ch
   assert.strictEqual(err.recoverable, true);
   assert.strictEqual(err.retryAfterMs, 30000);
   assert.deepStrictEqual(err.checkpoint.proposed, ['opus']);
-  assert.deepStrictEqual(err.checkpoint.pending, ['codex-current']);
+  assert.deepStrictEqual(err.checkpoint.pending, ['gpt-5.5']);
 });
 check('a NON-rate-limit mandatory failure RETRIES (transient), then ABORTS after retries exhausted (SKI-297)', () => {
   // "codex crashed hard" carries no STRUCTURAL/UNAVAILABLE signal → classified TRANSIENT
@@ -66,7 +74,7 @@ check('a NON-rate-limit mandatory failure RETRIES (transient), then ABORTS after
   const deps = makeDeps({
     sleepMs: () => {},
     researchAndPropose: ({ model }) => {
-      if (model === 'codex-current') { attempts += 1; throw new Error('codex crashed hard'); }
+      if (model === 'gpt-5.5') { attempts += 1; throw new Error('codex crashed hard'); }
       return { proposalPath: `p-${model}.md` };
     },
   });
@@ -81,7 +89,7 @@ check('a STRUCTURAL mandatory propose failure ABORTS immediately (no retry — a
   const deps = makeDeps({
     sleepMs: () => {},
     researchAndPropose: ({ model }) => {
-      if (model === 'codex-current') { attempts += 1; throw new Error('worktree session not found'); }
+      if (model === 'gpt-5.5') { attempts += 1; throw new Error('worktree session not found'); }
       return { proposalPath: `p-${model}.md` };
     },
   });
@@ -96,7 +104,7 @@ check('a TRANSIENT mandatory propose failure that recovers within retries comple
   const deps = makeDeps({
     sleepMs: () => {},
     researchAndPropose: ({ model }) => {
-      if (model === 'codex-current') {
+      if (model === 'gpt-5.5') {
         attempts += 1;
         if (attempts === 1) throw new Error('connection timeout'); // transient, recovers on retry
       }
@@ -116,7 +124,7 @@ check('assertBudget throwing BudgetExhaustedError propagates as the recoverable 
   assert.ok(err instanceof BudgetExhaustedError);
   assert.strictEqual(err.recoverable, true);
 });
-check('degraded mode with codex-current only never checks the exhausted opus budget gate', () => {
+check('degraded mode with gpt-5.5 only never checks the exhausted opus budget gate', () => {
   const checked = [];
   const deps = makeDeps({
     assertBudget: ({ model }) => {
@@ -128,12 +136,12 @@ check('degraded mode with codex-current only never checks the exhausted opus bud
     skill: 's',
     skillDir: '/x/s',
     cwd: '/x',
-    mandatoryModels: ['codex-current'],
+    mandatoryModels: ['gpt-5.5'],
     advisoryModels: [],
     degradedFrontier: { enabled: true, reason: 'single_frontier:opus_budget_exhausted', missingFrontiers: ['opus'] },
     deps,
   });
-  assert.deepStrictEqual(checked, ['codex-current']);
+  assert.deepStrictEqual(checked, ['gpt-5.5']);
   assert.strictEqual(r.applied, true);
   assert.strictEqual(r.eval.synthesized_verdict, 'PROVISIONAL');
   assert.strictEqual(r.degraded_frontier.regrade_required, true);
@@ -176,7 +184,7 @@ check('byte-identical curation with NO already-optimal declaration throws', () =
 check('byte-identical curation WITH curation_decision:already-optimal passes', () => {
   const deps = makeDeps({
     hashProposal: () => 'IDENTICAL',
-    curate: () => ({ mergedSkillPath: 'merged-SKILL.md', mergeLedgerPath: 'm.json', mergeLedger: { curation_decision: 'already-optimal', contributions: [{ id: 1, surfaced_by: 'opus', disposition: 'kept' }, { id: 2, surfaced_by: 'codex-current', disposition: 'kept' }] } }),
+    curate: () => ({ mergedSkillPath: 'merged-SKILL.md', mergeLedgerPath: 'm.json', mergeLedger: { curation_decision: 'already-optimal', contributions: [{ id: 1, surfaced_by: 'opus', disposition: 'kept' }, { id: 2, surfaced_by: 'gpt-5.5', disposition: 'kept' }] } }),
   });
   const r = panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], deps });
   assert.strictEqual(r.applied, true);
@@ -220,14 +228,14 @@ check('a TRANSIENT cross-review failure on a mandatory cell retries and the run 
     sleepMs: () => {},
     crossReview: ({ reviewerModel }) => {
       calls[reviewerModel] = (calls[reviewerModel] || 0) + 1;
-      // codex-current's FIRST cross-review call dies transiently, then recovers.
-      if (reviewerModel === 'codex-current' && calls[reviewerModel] === 1) return { ok: false, error: 'connection timeout' };
+      // gpt-5.5's FIRST cross-review call dies transiently, then recovers.
+      if (reviewerModel === 'gpt-5.5' && calls[reviewerModel] === 1) return { ok: false, error: 'connection timeout' };
       return { ok: true, structured: { items: [] } };
     },
   });
   const r = panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/skills/s', cwd: '/x/skill-graph', advisoryModels: [], deps });
   assert.strictEqual(r.applied, true, 'a transient cross-review blip that recovers does not collapse quorum');
-  assert.ok(calls['codex-current'] >= 2, 'codex cross-review was retried (≥2 calls)');
+  assert.ok(calls['gpt-5.5'] >= 2, 'codex cross-review was retried (≥2 calls)');
 });
 check('a PERSISTENT transient cross-review failure on a mandatory cell aborts ONLY after retries exhausted (quorum-collapse)', () => {
   const calls = {};
@@ -235,7 +243,7 @@ check('a PERSISTENT transient cross-review failure on a mandatory cell aborts ON
     sleepMs: () => {},
     crossReview: ({ reviewerModel }) => {
       calls[reviewerModel] = (calls[reviewerModel] || 0) + 1;
-      if (reviewerModel === 'codex-current') return { ok: false, error: 'econnreset' }; // always transient-fail
+      if (reviewerModel === 'gpt-5.5') return { ok: false, error: 'econnreset' }; // always transient-fail
       return { ok: true, structured: { items: [] } };
     },
   });
@@ -243,7 +251,7 @@ check('a PERSISTENT transient cross-review failure on a mandatory cell aborts ON
     () => panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/skills/s', cwd: '/x/skill-graph', advisoryModels: [], deps }),
     /quorum lost mid-convergence/,
   );
-  assert.strictEqual(calls['codex-current'], 3, 'codex cross-review attempted 1 + 2 retries before being declared dead');
+  assert.strictEqual(calls['gpt-5.5'], 3, 'codex cross-review attempted 1 + 2 retries before being declared dead');
 });
 check('a TRANSIENT revise failure on a mandatory cell retries and the run completes', () => {
   const calls = {};
@@ -253,13 +261,13 @@ check('a TRANSIENT revise failure on a mandatory cell retries and the run comple
       calls[reviserModel] = (calls[reviserModel] || 0) + 1;
       // genuinely transient blip ('timeout') — rate-limit/session-limit texts are BUDGET
       // class since 2026-06-10T and raise RateLimitError instead (next test).
-      if (reviserModel === 'codex-current' && calls[reviserModel] === 1) return { ok: false, error: 'timeout hit mid-revise' };
+      if (reviserModel === 'gpt-5.5' && calls[reviserModel] === 1) return { ok: false, error: 'timeout hit mid-revise' };
       return { ok: true, proposalPath: ownProposalPath, contentHash: `h:${ownProposalPath}`, changed: false };
     },
   });
   const r = panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/skills/s', cwd: '/x/skill-graph', advisoryModels: [], deps });
   assert.strictEqual(r.applied, true, 'a transient revise blip that recovers does not collapse quorum');
-  assert.ok(calls['codex-current'] >= 2, 'codex revise was retried (≥2 calls)');
+  assert.ok(calls['gpt-5.5'] >= 2, 'codex revise was retried (≥2 calls)');
 });
 check('a BUDGET (rate-limit / session-window) failure on a mandatory cell mid-convergence raises recoverable RateLimitError, never inline-retries or collapses quorum', () => {
   const calls = {};
@@ -268,7 +276,7 @@ check('a BUDGET (rate-limit / session-window) failure on a mandatory cell mid-co
     reviseProposal: ({ reviserModel, ownProposalPath }) => {
       calls[reviserModel] = (calls[reviserModel] || 0) + 1;
       // the live 2026-06-10T incident text shape
-      if (reviserModel === 'codex-current') return { ok: false, error: "You've hit your session limit · resets 4:40am" };
+      if (reviserModel === 'gpt-5.5') return { ok: false, error: "You've hit your session limit · resets 4:40am" };
       return { ok: true, proposalPath: ownProposalPath, contentHash: `h:${ownProposalPath}`, changed: false };
     },
   });
@@ -277,7 +285,7 @@ check('a BUDGET (rate-limit / session-window) failure on a mandatory cell mid-co
   catch (e) { err = e; }
   assert.ok(err instanceof RateLimitError, 'session-window exhaustion raises RateLimitError (checkpoint + resume)');
   assert.strictEqual(err.recoverable, true);
-  assert.strictEqual(calls['codex-current'], 1, 'no inline retry on a BUDGET failure — retrying burns the budget harder');
+  assert.strictEqual(calls['gpt-5.5'], 1, 'no inline retry on a BUDGET failure — retrying burns the budget harder');
 });
 
 console.log(`\n${passed} passed`);

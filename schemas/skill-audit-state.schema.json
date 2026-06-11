@@ -268,18 +268,19 @@
         "bidirectional": {
           "type": "object",
           "additionalProperties": false,
-          "description": "Two-frontier bidirectional eval provenance (Opus 4.8 / GPT-5.5), present when the receipt comes from lib/audit/run-bidirectional-eval.js. Records BOTH directions' resolved models, the tools-ON execution profile + parity result, the conservative reconciliation, and a link to the enrichment merge-ledger so enrichment and eval provenance are one record (SH-6663). A graded verdict (PASS/APPLICABLE) is honest only when `parity_ok` AND `certifying_clean` are both true; otherwise the verdict was capped to PROVISIONAL. See docs/skill-audit-loop-philosophy.md and lib/audit/eval-execution-profile.js.",
+          "description": "Eval provenance from lib/audit/run-bidirectional-eval.js. The normal certifying shape is the two-frontier Opus/GPT bidirectional receipt. An explicit single-available-frontier degraded run may record one direction only; that shape is non-certifying, must set `regrade_required: true`, and can support at most PROVISIONAL until a later full two-frontier re-grade runs. A graded verdict (PASS/APPLICABLE) is honest only when `parity_ok` AND `certifying_clean` are both true; otherwise the verdict was capped to PROVISIONAL. See docs/skill-audit-loop-philosophy.md and lib/audit/eval-execution-profile.js.",
           "properties": {
             "frontier_pair": {
               "type": "array",
               "items": { "type": "string" },
-              "minItems": 2,
+              "minItems": 1,
               "maxItems": 2,
-              "description": "The two frontier model role/aliases used (e.g. [\"opus\", \"codex-current\"]). Aliases, never dated versions (model-identity discipline)."
+              "description": "The frontier model role/aliases used. Two items is the normal certifying pair (e.g. [\"opus\", \"gpt-5.5\"]); one item is allowed only for explicit single-available-frontier degraded runs. Aliases, never dated versions (model-identity discipline)."
             },
             "reconciliation": {
-              "const": "conservative",
-              "description": "How the two directions were reconciled. Only the conservative rule (more-skeptical verdict wins) is valid — APPLICABLE/PASS requires BOTH directions to reach it."
+              "type": "string",
+              "enum": ["conservative", "single-frontier-provisional"],
+              "description": "How directions were reconciled. `conservative` is the two-frontier rule (more-skeptical verdict wins; APPLICABLE/PASS requires BOTH directions). `single-frontier-provisional` records an explicit degraded run with one available frontier and may never certify."
             },
             "agreement": {
               "type": "boolean",
@@ -287,7 +288,7 @@
             },
             "parity_ok": {
               "type": "boolean",
-              "description": "True when both directions ran under an identical tools-ON execution profile. parity_ok:false ⇒ the run measured permissions, not the model — INVALID, may never certify."
+              "description": "True when both directions ran under an identical tools-ON execution profile. false means either profile parity failed or the run had only one direction; it may never certify."
             },
             "certifying_clean": {
               "type": "boolean",
@@ -310,6 +311,19 @@
               "type": ["string", "null"],
               "description": "Path/ref to the enrichment merge-ledger that produced the skill version this eval graded, so enrichment and eval provenance are one record. Null when the eval ran standalone (not after an enrich)."
             },
+            "provisional_reason": {
+              "type": "string",
+              "description": "Reason a degraded/non-certifying receipt is capped at PROVISIONAL, e.g. the unavailable frontier or unresolved model provenance."
+            },
+            "missing_frontiers": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Frontier aliases that did not run in an explicit single-available-frontier degraded receipt."
+            },
+            "regrade_required": {
+              "type": "boolean",
+              "description": "True when this receipt must be replaced by a later full two-frontier re-grade before certification."
+            },
             "execution_profile": {
               "type": "object",
               "additionalProperties": false,
@@ -323,14 +337,14 @@
             },
             "directions": {
               "type": "array",
-              "minItems": 2,
+              "minItems": 1,
               "maxItems": 2,
-              "description": "The two eval directions, named by which model GENERATES (the measured agent). Direction 'Claude': Claude (opus) generates → Codex (gpt) grades. Direction 'Codex': the swap.",
+              "description": "Eval directions, named by which model GENERATES (the measured agent). Direction 'Claude': Claude (opus) generates → Codex (gpt) grades. Direction 'Codex': the swap. One direction is allowed only for an explicit single-available-frontier degraded run.",
               "items": {
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
-                  "role": { "type": "string", "enum": ["Claude", "Codex"] },
+                  "role": { "type": "string", "enum": ["Claude", "Codex", "Single"] },
                   "generator_model": { "type": "string", "description": "Role/alias of the model that produced the answer." },
                   "grader_model": { "type": "string", "description": "Role/alias of the model that graded it (cross-family)." },
                   "generator_family": { "type": "string" },
@@ -525,7 +539,7 @@
         },
         "models": {
           "type": "object",
-          "description": "Map keyed by stable model alias (`opus`, `codex-current`, `gemini`, `deepseek-flash`, etc.). Aliases come from the canonical model registry; concrete dated IDs belong in historical receipts, not durable prompts.",
+          "description": "Map keyed by stable model alias (`opus`, `gpt-5.5`, `gemini`, `deepseek-flash`, etc.). Aliases come from the canonical model registry; concrete dated IDs belong in historical receipts, not durable prompts.",
           "additionalProperties": {
             "type": "object",
             "additionalProperties": false,

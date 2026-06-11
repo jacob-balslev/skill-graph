@@ -1,22 +1,26 @@
 ---
+# name: stable skill identifier. Match the skill directory name or the final namespace segment.
+# Lowercase letters/numbers with hyphen, slash, or colon separators.
 name: migrate-orders-to-canonical-schema
+# description: routing-facing summary of what the skill covers and when it activates.
+# Include concrete triggers and an explicit negative boundary; keep routing semantics out of prose-only ambiguity.
 description: "Use when running migration 0004 that normalizes the orders table from a Stripe-specific shape (stripe_session_id, stripe_customer_id as top-level columns) to a canonical provider-agnostic shape (provider, provider_order_id, provider_customer_id). Covers the four-phase safe migration procedure — add nullable columns, backfill from existing data, validate, drop legacy columns — and the RLS policy update that must accompany the column rename. Do NOT use for unrelated schema migrations (write a fresh skill anchored to that migration's number), for designing a new canonical schema from scratch, or for the ongoing orgQuery access pattern (use postgres-rls-pattern)."
 
-# === v8 Classification (subject + deployment_target; polyhierarchy via subjects[]) — see ADR-0017 ===
+# === v8 Classification (subject + public; polyhierarchy via subjects[]) — see ADR-0017 ===
 # subject: primary browse shelf — what the skill teaches. One of twelve closed values:
 # backend-engineering / frontend-engineering / software-architecture / data-engineering / agent-ops / ai-engineering /
 # quality-assurance / design / reasoning-strategy / software-engineering-method / knowledge-organization / product-domain.
 subject: data-engineering
-# deployment_target: where this skill applies. One of two closed values:
-# portable (any project, repo-agnostic) /
-# project (one or more specific projects; requires populated `grounding` and `project[]`).
-deployment_target: project
+# public: publishability/private-data gate. Boolean.
+# true = publishable/shareable; false = private and excluded from public export.
+# Project anchoring is carried separately by non-empty `project[]` plus `grounding`.
+public: false
 # taxonomy_domain: optional hierarchical sub-path within `subject`. Slash-delimited
 # lowercase kebab-case segments. rename of the original v8 `domain`. Remove when the flat
 # `subject` is sufficient.
 taxonomy_domain: engineering/database
-# scope: free-text PRD-style statement of what the skill teaches and where it deploys
-# (v8 required; not an enum). Positive scope + portability/grounding + explicit exclusions.
+# scope: free-text PRD-style statement of what the skill teaches and what it excludes.
+# (v8 required; not an enum). Mirrors Coverage + Do NOT Use When at frontmatter level.
 scope: "Four-phase orders-table migration for the saas-stripe-postgres example project — canonicalizes Stripe-specific column names to provider-agnostic names with RLS policy update."
 
 # stability: lifecycle marker. One of:
@@ -65,31 +69,29 @@ examples:
   - "update the RLS policy on orders after the column rename"
   - "verify that every order row has a non-null provider_order_id before dropping the old column"
 # anti_examples: near-miss prompts that should route ELSEWHERE.
-# Pair with relations.boundary to indicate the confusable territory's owner.
+# Pair with relations.suppresses (or legacy boundary alias) to name the confusable territory's owner.
 anti_examples:
   - "design a different migration for the invoices table"
   - "add row level security to a new table"
   - "query the orders table in an application route"
 # relations: typed graph edges to sibling skills. Current fields:
 # related (adjacency for browse / co-routing expansion) /
-# boundary (exclude listed skills from co-routing when THIS skill wins — name is inverse
-#           to mechanic; write reason as "I own this exclusively over X", not "use X instead";
-#           see ADR-0018 for rename rationale) /
+# suppresses (exclude listed skills from co-routing when THIS skill wins; write reason
+#             as "I own this exclusively over X", not "use X instead") /
+# boundary (DEPRECATED alias of suppresses, retained for unmigrated skills) /
 # verify_with (cross-check; co-loaded as one-hop expansion) /
 # depends_on (composition; transitive — A→B→C loads all three) /
 # broader / narrower (SKOS-style generalization) /
 # disjoint_with (mutual exclusion for incompatible ownership).
 relations:
-  boundary:
-    - skill: postgres-rls-pattern
-      reason: "postgres-rls-pattern defines the ongoing RLS access pattern; this skill owns the one-time migration that changes the table structure those policies reference"
-    - skill: payment-provider-router
-      reason: "payment-provider-router reads orders to check idempotency; this migration changes the column the idempotency check uses — coordinate migration timing with router deployment"
+  related:
+    - postgres-rls-pattern
+    - payment-provider-router
   depends_on:
     - postgres-rls-pattern
   verify_with:
     - postgres-rls-pattern
-# grounding: required when `deployment_target: project`. Declares the truth sources
+# grounding: required when `project[]` is non-empty. Declares the truth sources
 # the skill anchors to and the failure modes those sources prevent. Omit when the
 # skill is universal-knowledge. `subject_matter` replaces v8 `domain_object`.
 grounding:
@@ -108,14 +110,24 @@ grounding:
     - rollback_path_not_documented_before_irreversible_step
   evidence_priority: repo_code_first
 # project: projects this skill is linked to. Array of {handle, role} objects.
-# Required pattern when `deployment_target: project`. Role values: source-of-truth,
-# consumer, mirror. replaces the original v8 `workspace_tags`.
+# Non-empty project[] anchors the skill to a project and requires `grounding`.
+# Suggested role values: source-of-truth, consumer, mirror. Replaces original v8 `workspace_tags`.
 project:
   - handle: saas-stripe-postgres
     role: primary
 ---
 
 # Migrate Orders to Canonical Schema
+
+## Concept of the skill
+
+**What it is:** The safe migration procedure for moving an orders table from Stripe-specific columns to provider-neutral columns.
+**Mental model:** Add the new shape beside the old one, backfill and observe, then remove the old shape only after application reads have moved.
+**Why it exists:** Billing tables sit under live traffic, so schema changes need compatibility windows and explicit validation.
+**What it is NOT:** It is not generic data modeling, a new provider router, or the steady-state RLS query pattern.
+**Adjacent concepts:** Expand-and-contract migrations, backfills, idempotency checks, RLS policy updates.
+**One-line analogy:** It is changing the rails under a moving train by laying the new track beside the old track first.
+**Common misconception:** A database rename is atomic enough by itself; application deploy timing makes old and new column reads coexist.
 
 ## Coverage
 
@@ -125,7 +137,7 @@ project:
 - Application code audit — grepping for `stripe_session_id` and `stripe_customer_id` in the codebase to find every reference that must be updated before the old columns are dropped
 - The dry-run gate — `scripts/migrate-orders.ts` runs in `--dry-run` by default, printing the diff without committing; `--apply` is the explicit opt-in
 
-## Philosophy
+## Philosophy of the skill
 
 A column rename under live traffic is a non-trivial operation even on a small table. The temptation to write one migration that renames columns atomically and ships them fails because application code reads the old column names until the new application version deploys, and the deployment window is not instant. The four-phase procedure exists because the new column can be null during the window, the application can write both, and the old column can be dropped only after the new application version has been running for a full observation period with zero reads of the old column name in logs.
 

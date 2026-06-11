@@ -17,30 +17,30 @@ function check(name, fn) {
 }
 
 console.log('1. Frontier pair + other-frontier swap');
-check('FRONTIER_PAIR is [opus, codex-current]', () => {
-  assert.deepStrictEqual(mp.FRONTIER_PAIR, ['opus', 'codex-current']);
+check('FRONTIER_PAIR is [opus, gpt-5.5]', () => {
+  assert.deepStrictEqual(mp.FRONTIER_PAIR, ['opus', 'gpt-5.5']);
 });
 check('otherFrontier swaps the pair', () => {
-  assert.strictEqual(mp.otherFrontier('opus'), 'codex-current');
-  assert.strictEqual(mp.otherFrontier('codex-current'), 'opus');
+  assert.strictEqual(mp.otherFrontier('opus'), 'gpt-5.5');
+  assert.strictEqual(mp.otherFrontier('gpt-5.5'), 'opus');
 });
 check('otherFrontier throws for a non-frontier (no silent weak pairing)', () => {
   assert.throws(() => mp.otherFrontier('sonnet'), /not a frontier/);
 });
 
 console.log('2. Cross-family certification (both directions certifying)');
-check('opus⇄codex-current is cross-family certifying both ways', () => {
-  assert.strictEqual(cert.resolveCertificationTier({ certifying: true, generatorFamily: 'opus', graderFamily: 'codex-current' }).tier, 'certifying');
-  assert.strictEqual(cert.resolveCertificationTier({ certifying: true, generatorFamily: 'codex-current', graderFamily: 'opus' }).tier, 'certifying');
+check('opus⇄gpt-5.5 is cross-family certifying both ways', () => {
+  assert.strictEqual(cert.resolveCertificationTier({ certifying: true, generatorFamily: 'opus', graderFamily: 'gpt-5.5' }).tier, 'certifying');
+  assert.strictEqual(cert.resolveCertificationTier({ certifying: true, generatorFamily: 'gpt-5.5', graderFamily: 'opus' }).tier, 'certifying');
 });
 check('same family caps at provisional (self-preference guard)', () => {
   assert.strictEqual(cert.resolveCertificationTier({ certifying: true, generatorFamily: 'opus', graderFamily: 'sonnet' }).tier, 'provisional');
 });
 check('no certifying assertion => provisional', () => {
-  assert.strictEqual(cert.resolveCertificationTier({ generatorFamily: 'opus', graderFamily: 'codex-current' }).tier, 'provisional');
+  assert.strictEqual(cert.resolveCertificationTier({ generatorFamily: 'opus', graderFamily: 'gpt-5.5' }).tier, 'provisional');
 });
 check('isCrossFamily true only for different known families', () => {
-  assert.strictEqual(cert.isCrossFamily('opus', 'codex-current'), true);
+  assert.strictEqual(cert.isCrossFamily('opus', 'gpt-5.5'), true);
   assert.strictEqual(cert.isCrossFamily('opus', 'sonnet'), false);
   assert.strictEqual(cert.isCrossFamily('opus', 'mystery'), false);
 });
@@ -59,6 +59,10 @@ check('APPLICABLE vs MIXED => MIXED (lower wins), agreement false', () => {
 });
 check('APPLICABLE vs HARMFUL => HARMFUL (most skeptical)', () => {
   assert.strictEqual(syn.reconcile({ verdict: 'APPLICABLE' }, { verdict: 'HARMFUL' }, { mode: 'application' }).verdict, 'HARMFUL');
+});
+check('APPLICABLE vs no-lift verdict preserves scoped no-lift category', () => {
+  assert.strictEqual(syn.reconcile({ verdict: 'APPLICABLE' }, { verdict: 'NOT_DISCRIMINATED_CEILING' }, { mode: 'application' }).verdict, 'NOT_DISCRIMINATED_CEILING');
+  assert.strictEqual(syn.reconcile({ verdict: 'APPLICABLE' }, { verdict: 'EQUIVALENT_ON_FRONTIER' }, { mode: 'application' }).verdict, 'EQUIVALENT_ON_FRONTIER');
 });
 check('APPLICABLE only when BOTH agree (PROVISIONAL drags it down)', () => {
   assert.strictEqual(syn.reconcile({ verdict: 'APPLICABLE' }, { verdict: 'PROVISIONAL' }, { mode: 'application' }).verdict, 'PROVISIONAL');
@@ -111,6 +115,8 @@ check('capAtProvisional caps PASS, keeps negatives', () => {
   assert.strictEqual(syn.capAtProvisional(syn.COMPREHENSION_RANK, 'PASS'), 'PROVISIONAL');
   assert.strictEqual(syn.capAtProvisional(syn.COMPREHENSION_RANK, 'SHALLOW'), 'SHALLOW');
   assert.strictEqual(syn.capAtProvisional(syn.APPLICATION_RANK, 'APPLICABLE'), 'PROVISIONAL');
+  assert.strictEqual(syn.capAtProvisional(syn.APPLICATION_RANK, 'NOT_DISCRIMINATED_CEILING'), 'NOT_DISCRIMINATED_CEILING');
+  assert.strictEqual(syn.capAtProvisional(syn.APPLICATION_RANK, 'EQUIVALENT_ON_FRONTIER'), 'EQUIVALENT_ON_FRONTIER');
 });
 check('unknown mode throws', () => {
   assert.throws(() => syn.reconcile({ verdict: 'PASS' }, { verdict: 'PASS' }, { mode: 'bogus' }), /unknown mode/);

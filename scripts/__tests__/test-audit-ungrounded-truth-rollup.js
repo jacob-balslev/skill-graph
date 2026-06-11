@@ -58,9 +58,9 @@ description: "Use for the audit ungrounded truth-rollup regression fixture."
 metadata:
   # subject: primary browse shelf — what the skill teaches.
   subject: quality-assurance
-  # deployment_target: where this skill applies.
-  deployment_target: portable
-  # scope: free-text PRD-style statement of what the skill teaches and where it deploys.
+  # public: publishability/private-data gate. Boolean.
+  public: true
+  # scope: free-text PRD-style statement of what the skill teaches and what it excludes.
   scope: "Portable audit-runner regression fixture with no declared truth sources."
 ---
 

@@ -78,7 +78,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Model alias/role (e.g. 'opus', 'codex-current', 'minimax'). The renderer resolves it to a full display name."
+            "description": "Model alias/role (e.g. 'opus', 'gpt-5.5', 'minimax'). The renderer resolves it to a full display name."
           },
           "tier": {
             "type": "string",

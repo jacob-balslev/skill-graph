@@ -2,7 +2,7 @@
 
 // Unit test: SH-6680 — capture codex's resolved model from `codex exec` output.
 //
-// `codex-current` omits the -m flag, so resolveModelExecutor returns model:null and
+// `gpt-5.5` omits the -m flag, so resolveModelExecutor returns model:null and
 // the bidirectional receipt would carry the `latest-alias-unresolved` sentinel (which
 // caps the run to PROVISIONAL). codex exec's default output header names the model it
 // actually used (`model: gpt-5.5`); we parse it from the real run output so the receipt

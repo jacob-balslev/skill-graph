@@ -95,13 +95,15 @@ console.log('4. runBidirectionalEval — sequencing, swap, conservative reconcil
 
 // A faithful injected runDirection: echoes back the profile it was handed (so
 // parity holds) and a per-direction verdict from a lookup keyed by direction.
-function fakeRunner(verdictByDirection, { breakParity = false } = {}) {
+function fakeRunner(verdictByDirection, { breakParity = false, calibrated = true, redHerringCases = 1 } = {}) {
   return ({ direction, generatorModel, graderModel, executionProfile }) => ({
     direction,
     generator_model: generatorModel,
     grader_model: graderModel,
     verdict: verdictByDirection[direction],
     certification_tier: 'certifying',
+    calibrated,
+    red_herring_cases_total: redHerringCases,
     // The Codex direction optionally records a DIFFERENT profile to simulate a parity break.
     execution_profile: breakParity && direction === 'Codex'
       ? { ...executionProfile, tools: 'none' }
@@ -109,7 +111,7 @@ function fakeRunner(verdictByDirection, { breakParity = false } = {}) {
   });
 }
 
-check('swaps generator/grader across directions (Claude: opus→codex-current, Codex: codex-current→opus)', () => {
+check('swaps generator/grader across directions (Claude: opus→gpt-5.5, Codex: gpt-5.5→opus)', () => {
   const seen = [];
   runBidirectionalEval({
     mode: 'application',
@@ -118,15 +120,22 @@ check('swaps generator/grader across directions (Claude: opus→codex-current, C
     deps: {
       runDirection: (params) => {
         seen.push(params);
-        return { ...params, verdict: 'APPLICABLE', certification_tier: 'certifying', execution_profile: params.executionProfile };
+        return {
+          ...params,
+          verdict: 'APPLICABLE',
+          certification_tier: 'certifying',
+          calibrated: true,
+          red_herring_cases_total: 1,
+          execution_profile: params.executionProfile,
+        };
       },
     },
   });
   const A = seen.find((s) => s.direction === 'Claude');
   const B = seen.find((s) => s.direction === 'Codex');
   assert.strictEqual(A.generatorModel, 'opus');
-  assert.strictEqual(A.graderModel, 'codex-current');
-  assert.strictEqual(B.generatorModel, 'codex-current');
+  assert.strictEqual(A.graderModel, 'gpt-5.5');
+  assert.strictEqual(B.generatorModel, 'gpt-5.5');
   assert.strictEqual(B.graderModel, 'opus');
 });
 
@@ -160,6 +169,44 @@ check('parity break => strong verdict capped to PROVISIONAL, certifying_clean fa
   assert.strictEqual(r.certifying_clean, false);
   assert.strictEqual(r.verdict_capped, true);
   assert.strictEqual(r.synthesized_verdict, 'PROVISIONAL');
+});
+
+check('application mode: uncalibrated grader caps APPLICABLE to PROVISIONAL', () => {
+  const r = runBidirectionalEval({
+    mode: 'application',
+    skill: 's',
+    cwd: '/x/skill-graph',
+    deps: {
+      runDirection: fakeRunner({ Claude: 'APPLICABLE', Codex: 'APPLICABLE' }, { calibrated: false }),
+    },
+  });
+  assert.strictEqual(r.calibration_clean, false);
+  assert.strictEqual(r.certifying_clean, false);
+  assert.strictEqual(r.synthesized_verdict, 'PROVISIONAL');
+  assert.ok(/uncalibrated/.test(r.cap_reason));
+});
+
+check('application mode: no red-herring coverage caps APPLICABLE to PROVISIONAL', () => {
+  const runDirection = ({ direction, generatorModel, graderModel, executionProfile }) => ({
+    direction,
+    generator_model: generatorModel,
+    grader_model: graderModel,
+    verdict: 'APPLICABLE',
+    certification_tier: 'certifying',
+    calibrated: true,
+    red_herring_cases_total: 0,
+    execution_profile: executionProfile,
+  });
+  const r = runBidirectionalEval({
+    mode: 'application',
+    skill: 's',
+    cwd: '/x/skill-graph',
+    deps: { runDirection },
+  });
+  assert.strictEqual(r.red_herring_coverage_clean, false);
+  assert.strictEqual(r.certifying_clean, false);
+  assert.strictEqual(r.synthesized_verdict, 'PROVISIONAL');
+  assert.ok(/red_herring/.test(r.cap_reason));
 });
 
 check('comprehension mode: both PASS => PASS', () => {
@@ -217,8 +264,9 @@ console.log('5. Honest model provenance + receipt normalization (GPT-5.5 review 
 check('F6: an unresolved direction model caps APPLICABLE to PROVISIONAL (cannot prove which model ran)', () => {
   const runDirection = ({ direction, generatorModel, graderModel, executionProfile }) => ({
     direction, generator_model: generatorModel, grader_model: graderModel,
-    verdict: 'APPLICABLE', certification_tier: 'certifying', execution_profile: executionProfile,
-    // The Codex direction's grader model is unresolvable (the codex-current case
+    verdict: 'APPLICABLE', certification_tier: 'certifying',
+    calibrated: true, red_herring_cases_total: 1, execution_profile: executionProfile,
+    // The Codex direction's grader model is unresolvable (the gpt-5.5 case
     // before codex's concrete model is captured) → the run cannot honestly certify.
     resolved_model: direction === 'Codex' ? 'latest-alias-unresolved' : 'claude-opus-x',
   });
@@ -236,7 +284,8 @@ check('F8: toSidecarReceipt projects ONLY schema-allowed keys', () => {
   const runDirection = ({ direction, generatorModel, graderModel, generatorFamily, graderFamily, executionProfile }) => ({
     direction, generator_model: generatorModel, grader_model: graderModel,
     generator_family: generatorFamily, grader_family: graderFamily, resolved_model: 'm',
-    verdict: 'APPLICABLE', certification_tier: 'certifying', execution_profile: executionProfile,
+    verdict: 'APPLICABLE', certification_tier: 'certifying',
+    calibrated: true, red_herring_cases_total: 1, execution_profile: executionProfile,
   });
   const full = runBidirectionalEval({ mode: 'application', skill: 's', cwd: '/x/skill-graph', deps: { runDirection } });
   const rec = toSidecarReceipt(full);
@@ -253,7 +302,7 @@ check('single frontier APPLICABLE is capped to PROVISIONAL and marked for re-gra
     mode: 'application',
     skill: 's',
     cwd: '/x/skill-graph',
-    frontierModel: 'codex-current',
+    frontierModel: 'gpt-5.5',
     missingFrontiers: ['opus'],
     provisionalReason: 'single_frontier:opus_budget_exhausted',
     deps: {
@@ -263,11 +312,13 @@ check('single frontier APPLICABLE is capped to PROVISIONAL and marked for re-gra
         grader_model: graderModel,
         verdict: 'APPLICABLE',
         certification_tier: 'certifying',
+        calibrated: true,
+        red_herring_cases_total: 1,
         execution_profile: executionProfile,
       }),
     },
   });
-  assert.deepStrictEqual(r.frontier_pair, ['codex-current']);
+  assert.deepStrictEqual(r.frontier_pair, ['gpt-5.5']);
   assert.strictEqual(r.reconciliation, 'single-frontier-provisional');
   assert.strictEqual(r.synthesized_verdict, 'PROVISIONAL');
   assert.strictEqual(r.certifying_clean, false);
@@ -280,7 +331,7 @@ check('single frontier sidecar receipt keeps one direction plus regrade evidence
     skill: 's',
     cwd: '/x/skill-graph',
     frontierModel: 'opus',
-    missingFrontiers: ['codex-current'],
+    missingFrontiers: ['gpt-5.5'],
     deps: {
       runDirection: ({ direction, generatorModel, graderModel, executionProfile }) => ({
         direction,
@@ -288,6 +339,8 @@ check('single frontier sidecar receipt keeps one direction plus regrade evidence
         grader_model: graderModel,
         verdict: 'PASS',
         certification_tier: 'certifying',
+        calibrated: true,
+        red_herring_cases_total: 1,
         execution_profile: executionProfile,
       }),
     },
@@ -298,7 +351,7 @@ check('single frontier sidecar receipt keeps one direction plus regrade evidence
   assert.strictEqual(rec.directions.length, 1);
   assert.strictEqual(rec.directions[0].role, 'Claude');
   assert.strictEqual(rec.regrade_required, true);
-  assert.deepStrictEqual(rec.missing_frontiers, ['codex-current']);
+  assert.deepStrictEqual(rec.missing_frontiers, ['gpt-5.5']);
 });
 
 console.log('\n4. web-off baseline — CLI arg builder + isolated workspace');

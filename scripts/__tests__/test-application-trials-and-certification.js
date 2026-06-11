@@ -14,8 +14,9 @@
  *      per-case verdict, verdict_consistency, red-herring NO false-positive,
  *      history records carry trial_index/trials_total/certification_tier,
  *      default certification_tier === 'provisional', dry-run accounting scales by trials
- *   6. The PROVISIONAL cap in stampApplicationVerdict honors certification_tier:
- *      APPLICABLE survives only from a certifying run; provisional/absent → PROVISIONAL
+ *   6. The PROVISIONAL cap in stampApplicationVerdict honors certification evidence:
+ *      APPLICABLE survives only from a certifying, calibrated run with red-herring coverage;
+ *      provisional/absent evidence → PROVISIONAL
  *
  * Uses only Node built-ins.
  */
@@ -352,6 +353,7 @@ const certifyingSummary = runApplicationEval(evalPath, {
   deps: { getEvalResponse: mockGetEvalResponse, runGraderPrompt: mockRunGraderPrompt },
 });
 assert(certifyingSummary.certification_tier === 'certifying', '5r. attested cross-family run → summary.certification_tier = certifying');
+assert(certifyingSummary.calibrated === false, '5s. certifying tier alone does not imply calibration evidence');
 
 // ── 6. stampApplicationVerdict honors certification_tier (the PROVISIONAL cap) ──
 
@@ -410,6 +412,8 @@ fs.writeFileSync(stampSkillMd, STAMP_SKILL);
     dryRun: false,
     aggregate_verdict: 'applicable',
     certification_tier: 'certifying',
+    calibrated: true,
+    red_herring_cases_total: 1,
     total: 2,
     errors: 0,
     resolved_generator_model: 'claude-opus-4-8-20260601',
@@ -417,7 +421,7 @@ fs.writeFileSync(stampSkillMd, STAMP_SKILL);
   };
   stampApplicationVerdict(stampEval, result, false, { artifactPath: writeApplicationReceipt(tmpStampDir, result) });
 }
-assert(readVerdict(stampSkillMd) === 'APPLICABLE', '6c. applicable + certifying tier → APPLICABLE survives');
+assert(readVerdict(stampSkillMd) === 'APPLICABLE', '6c. applicable + certifying tier + calibration + red-herring coverage → APPLICABLE survives');
 
 // 6c-2. certifying tier but unresolved model aliases still cap to PROVISIONAL.
 fs.writeFileSync(stampSkillMd, STAMP_SKILL);
@@ -426,6 +430,8 @@ fs.writeFileSync(stampSkillMd, STAMP_SKILL);
     dryRun: false,
     aggregate_verdict: 'applicable',
     certification_tier: 'certifying',
+    calibrated: true,
+    red_herring_cases_total: 1,
     total: 2,
     errors: 0,
     resolved_generator_model: 'latest-alias-unresolved',
@@ -435,6 +441,42 @@ fs.writeFileSync(stampSkillMd, STAMP_SKILL);
 }
 assert(readVerdict(stampSkillMd) === 'PROVISIONAL', '6c-2. certifying + unresolved model id → PROVISIONAL');
 
+// 6c-3. certifying tier but uncalibrated grader still caps to PROVISIONAL.
+fs.writeFileSync(stampSkillMd, STAMP_SKILL);
+{
+  const result = {
+    dryRun: false,
+    aggregate_verdict: 'applicable',
+    certification_tier: 'certifying',
+    calibrated: false,
+    red_herring_cases_total: 1,
+    total: 2,
+    errors: 0,
+    resolved_generator_model: 'claude-opus-4-8-20260601',
+    resolved_grader_model: 'gpt-5.5-20260601',
+  };
+  stampApplicationVerdict(stampEval, result, false, { artifactPath: writeApplicationReceipt(tmpStampDir, result) });
+}
+assert(readVerdict(stampSkillMd) === 'PROVISIONAL', '6c-3. certifying + uncalibrated grader → PROVISIONAL');
+
+// 6c-4. certifying tier but no red-herring coverage still caps to PROVISIONAL.
+fs.writeFileSync(stampSkillMd, STAMP_SKILL);
+{
+  const result = {
+    dryRun: false,
+    aggregate_verdict: 'applicable',
+    certification_tier: 'certifying',
+    calibrated: true,
+    red_herring_cases_total: 0,
+    total: 2,
+    errors: 0,
+    resolved_generator_model: 'claude-opus-4-8-20260601',
+    resolved_grader_model: 'gpt-5.5-20260601',
+  };
+  stampApplicationVerdict(stampEval, result, false, { artifactPath: writeApplicationReceipt(tmpStampDir, result) });
+}
+assert(readVerdict(stampSkillMd) === 'PROVISIONAL', '6c-4. certifying + zero red_herring:true cases → PROVISIONAL');
+
 // 6d. certifying tier but --single-model forces PROVISIONAL.
 fs.writeFileSync(stampSkillMd, STAMP_SKILL);
 {
@@ -442,6 +484,8 @@ fs.writeFileSync(stampSkillMd, STAMP_SKILL);
     dryRun: false,
     aggregate_verdict: 'applicable',
     certification_tier: 'certifying',
+    calibrated: true,
+    red_herring_cases_total: 1,
     total: 2,
     errors: 0,
     resolved_generator_model: 'claude-opus-4-8-20260601',
@@ -462,7 +506,7 @@ assert(readVerdict(stampSkillMd) === 'HARMFUL', '6e. harmful is unaffected by ce
 // ── 7. Top-tier grader allowlist (SH-6626) ────────────────────────────────────
 // A quality JUDGE may never be a lesser tier; the grader-model env override must fail
 // closed. The generator (measured agent) is NOT covered by this guard.
-for (const top of ['opus', 'codex-current', 'gpt-5.4', 'gemini', 'strongest-reasoning-grader']) {
+for (const top of ['opus', 'gpt-5.5', 'gpt-5.4', 'gemini', 'opus']) {
   assert(isLesserQualityGraderModel(top) === false, `7. top-tier judge accepted: ${top}`);
   assert(assertTopTierGraderModel(top) === top, `7. assertTopTierGraderModel passes through: ${top}`);
 }

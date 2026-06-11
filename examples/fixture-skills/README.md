@@ -8,18 +8,18 @@
 
 ## Fixtures
 
-| Fixture | Subject | Deployment Target | Tests | Status |
+| Fixture | Subject | Public | Tests | Status |
 |---|---|---|---|---|
-| [`minimal-capability`](minimal-capability/SKILL.md) | backend-engineering | portable | Bare-minimum v8 frontmatter; happy-path lint pass | **shipped** |
-| [`with-grounding`](with-grounding/SKILL.md) | knowledge-organization | project | Conditional requiredness — `deployment_target: project` requires `grounding.*` sub-fields | **shipped** |
-| [`with-relations`](with-relations/SKILL.md) | knowledge-organization | portable | Relation target resolution and live item shapes for `related`, `boundary`, `verify_with`, and `depends_on` | **shipped** |
-| [`comprehension-full`](comprehension-full/SKILL.md) | knowledge-organization | portable | Flat Understanding fields + nested `concept` fallback (`anyOf`) | **shipped** |
+| [`minimal-capability`](minimal-capability/SKILL.md) | backend-engineering | true | Bare-minimum v8 frontmatter; happy-path lint pass | **shipped** |
+| [`with-grounding`](with-grounding/SKILL.md) | knowledge-organization | false | Conditional requiredness — non-empty `project[]` requires `grounding.*` sub-fields | **shipped** |
+| [`with-relations`](with-relations/SKILL.md) | knowledge-organization | true | Relation target resolution and live item shapes for `related`, `suppresses`, `verify_with`, and `depends_on` | **shipped** |
+| [`comprehension-full`](comprehension-full/SKILL.md) | knowledge-organization | true | Flat Understanding fields + nested `concept` fallback (`anyOf`) | **shipped** |
 
 All four fixtures cross-reference each other in `with-relations`, forming
 a closed reference set: lint resolves every relation target from this
 directory alone, with no dependency on the sibling `../skills/skills/`
 canonical library. The four fixtures together exercise the current schema's
-core conditional rules: `deployment_target: project -> grounding`,
+core conditional rules: `project[] non-empty -> grounding`,
 `comprehension_state: present -> Understanding fields or concept`, and
 `eval_state: passing|monitored -> eval_artifacts: present` through negative
 schema tests.

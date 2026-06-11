@@ -86,9 +86,11 @@ function checkStabilityPromotion({ fm, today = new Date() } = {}) {
     }
   }
 
-  // v8: the old scope: 'codebase' was replaced by deployment_target: 'project'.
-  // Check both for back-compat with legacy skills not yet migrated through the audit loop.
+  // v8: project anchoring is carried by non-empty project[]; public is only
+  // publishability. Check retired deployment_target/scope fields for back-compat
+  // with legacy skills not yet migrated through the audit loop.
   const isProjectScoped =
+    (Array.isArray(fm.project) && fm.project.length > 0) ||
     fm.deployment_target === 'project' ||
     fm.scope === 'codebase' ||
     (fm.grounding && fm.grounding.grounding_mode === 'repo_specific');

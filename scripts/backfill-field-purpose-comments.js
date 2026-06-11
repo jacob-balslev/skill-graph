@@ -77,6 +77,14 @@ const path = require('path');
 // established in d9fe52f).
 // -----------------------------------------------------------------------------
 const FIELD_COMMENTS = {
+  name: [
+    '# name: stable skill identifier. Match the skill directory name or the final namespace segment.',
+    '# Lowercase letters/numbers with hyphen, slash, or colon separators.',
+  ],
+  description: [
+    '# description: routing-facing summary of what the skill covers and when it activates.',
+    '# Include concrete triggers and an explicit negative boundary; keep routing semantics out of prose-only ambiguity.',
+  ],
   schema_version: [
     '# schema_version: protocol contract version this skill conforms to.',
     '# Integer 8. Prior contract retrievable via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`.',
@@ -89,14 +97,18 @@ const FIELD_COMMENTS = {
     '# backend-engineering / frontend-engineering / software-architecture / data-engineering / agent-ops / ai-engineering /',
     '# quality-assurance / design / reasoning-strategy / software-engineering-method / knowledge-organization / product-domain.',
   ],
+  public: [
+    '# public: publishability/private-data gate. Boolean.',
+    '# true = publishable/shareable; false = private and excluded from public export.',
+    '# Project anchoring is carried separately by non-empty `project[]` plus `grounding`.',
+  ],
   deployment_target: [
-    '# deployment_target: where this skill applies. One of two closed values:',
-    '# portable (any project, repo-agnostic) /',
-    '# project (one or more specific projects; requires populated `grounding` and `project[]`).',
+    '# deployment_target: DEPRECATED alias of `public` kept only for unmigrated skills.',
+    '# portable -> public: true; project -> public: false. Do not author on new skills.',
   ],
   scope: [
-    '# scope: free-text PRD-style statement of what the skill teaches and where it deploys',
-    '# (v8 required; not an enum). Positive scope + portability/grounding + explicit exclusions.',
+    '# scope: free-text PRD-style statement of what the skill teaches and what it excludes.',
+    '# (v8 required; not an enum). Mirrors Coverage + Do NOT Use When at frontmatter level.',
   ],
   taxonomy_domain: [
     '# taxonomy_domain: optional hierarchical sub-path within `subject`. Slash-delimited',
@@ -105,8 +117,8 @@ const FIELD_COMMENTS = {
   ],
   project: [
     '# project: projects this skill is linked to. Array of {handle, role} objects.',
-    '# Required pattern when `deployment_target: project`. Role values: source-of-truth,',
-    '# consumer, mirror. replaces the original v8 `workspace_tags`.',
+    '# Non-empty project[] anchors the skill to a project and requires `grounding`.',
+    '# Suggested role values: source-of-truth, consumer, mirror. Replaces original v8 `workspace_tags`.',
   ],
   repo: [
     '# repo: repos this skill is linked to. Array of {handle, url} objects. Plural even',
@@ -139,7 +151,7 @@ const FIELD_COMMENTS = {
   ],
   comprehension_state: [
     '# comprehension_state: marker that this skill has populated v6+ Understanding fields',
-    '# (mental_model, purpose, boundary, analogy, misconception). Value: `present` or absent.',
+    '# (mental_model, purpose, concept_boundary, analogy, misconception). Value: `present` or absent.',
   ],
   stability: [
     '# stability: lifecycle marker. One of:',
@@ -172,21 +184,21 @@ const FIELD_COMMENTS = {
   ],
   anti_examples: [
     '# anti_examples: near-miss prompts that should route ELSEWHERE.',
-    '# Pair with relations.boundary to indicate the confusable territory\'s owner.',
+    '# Pair with relations.suppresses (or legacy boundary alias) to name the confusable territory\'s owner.',
   ],
   relations: [
     '# relations: typed graph edges to sibling skills. Current fields:',
     '# related (adjacency for browse / co-routing expansion) /',
-    '# boundary (exclude listed skills from co-routing when THIS skill wins — name is inverse',
-    '#           to mechanic; write reason as "I own this exclusively over X", not "use X instead";',
-    '#           see ADR-0018 for rename rationale) /',
+    '# suppresses (exclude listed skills from co-routing when THIS skill wins; write reason',
+    '#             as "I own this exclusively over X", not "use X instead") /',
+    '# boundary (DEPRECATED alias of suppresses, retained for unmigrated skills) /',
     '# verify_with (cross-check; co-loaded as one-hop expansion) /',
     '# depends_on (composition; transitive — A→B→C loads all three) /',
     '# broader / narrower (SKOS-style generalization) /',
     '# disjoint_with (mutual exclusion for incompatible ownership).',
   ],
   grounding: [
-    '# grounding: required when `deployment_target: project`. Declares the truth sources',
+    '# grounding: required when `project[]` is non-empty. Declares the truth sources',
     '# the skill anchors to and the failure modes those sources prevent. Omit when the',
     '# skill is universal-knowledge. `subject_matter` replaces v8 `domain_object`.',
   ],
@@ -211,9 +223,13 @@ const FIELD_COMMENTS = {
   purpose: [
     '# purpose: the problem this concept solves and why the field exists. One paragraph.',
   ],
+  concept_boundary: [
+    '# concept_boundary: what this concept is NOT. Distinguishes from adjacent skills by naming',
+    '# the MECHANISM that differs, not just the label. Canonical replacement for top-level `boundary`.',
+  ],
   boundary: [
-    '# boundary: what this concept is NOT. Distinguishes from adjacent skills by naming the',
-    '# MECHANISM that differs, not just the label. Universal terms only — no repo-specific nouns.',
+    '# boundary: DEPRECATED alias of `concept_boundary`. Retained only for unmigrated skills;',
+    '# new skills author `concept_boundary`.',
   ],
   analogy: [
     '# analogy: one-sentence metaphor preserving the core mechanism.',
@@ -223,7 +239,7 @@ const FIELD_COMMENTS = {
   ],
   concept: [
     '# concept: legacy v5 nested Understanding block. DEPRECATED — flat fields above',
-    '# (mental_model, purpose, boundary, analogy, misconception) win when both are present.',
+    '# (mental_model, purpose, concept_boundary, analogy, misconception) win when both are present.',
   ],
   skill_graph_source_repo: [
     '# === Export provenance (set by the export pipeline; do not hand-author) ===',
@@ -248,7 +264,8 @@ const FIELD_COMMENTS = {
   application_verdict: [
     '# application_verdict: gate 9 — the primary quality signal. APPLICABLE is the only verdict',
     '# that certifies the skill is USEFUL (grader-confirmed). PROVISIONAL = one model self-assessed.',
-    '# APPLICABLE / REDUNDANT / HARMFUL / MIXED / FALSE_POSITIVE / PROVISIONAL / UNVERIFIED.',
+    '# APPLICABLE / PROVISIONAL / NOT_DISCRIMINATED_CEILING / EQUIVALENT_ON_FRONTIER',
+    '# / REDUNDANT / HARMFUL / MIXED / FALSE_POSITIVE / UNVERIFIED.',
   ],
   eval_score: [
     '# eval_score: 0.0–5.0 aggregate from the eval runner. Written by `evaluate`.',
@@ -276,7 +293,7 @@ const FIELD_COMMENTS = {
 // they first appear. Map: fieldName -> divider line.
 // The divider is inserted BEFORE the field-purpose comment block.
 const SECTION_DIVIDERS = {
-  subject: '# === v8 Classification (subject + deployment_target; polyhierarchy via subjects[]) — see ADR-0017 ===',
+  subject: '# === v8 Classification (subject + public; polyhierarchy via subjects[]) — see ADR-0017 ===',
   eval_artifacts: '# === Evaluation Status: three orthogonal axes ===',
   mental_model: '# === Understanding fields (when comprehension_state: present) ===',
 };

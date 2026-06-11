@@ -256,13 +256,15 @@ const evalFilePath = path.join(evalsDir, 'application.json');
 fs.writeFileSync(evalFilePath, JSON.stringify({ skill: 'test-skill', cases: [] }));
 
 // 4a. Non-dry-run stamps the verdict. APPLICABLE survives ONLY from a
-// cross-family certifying run (SH-6624) — so this fixture declares
-// certification_tier: 'certifying'. A run without it caps APPLICABLE→PROVISIONAL
-// (covered in test-application-trials-and-certification.js).
+// cross-family certifying run with calibrated grading evidence and red-herring
+// coverage — so this fixture declares all three evidence fields. Runs without
+// them cap APPLICABLE→PROVISIONAL (covered in test-application-trials-and-certification.js).
 const fakeResult = {
   dryRun: false,
   aggregate_verdict: 'applicable',
   certification_tier: 'certifying',
+  calibrated: true,
+  red_herring_cases_total: 1,
   skillName: 'test-skill',
   resolved_generator_model: 'claude-opus-4-8-20260601',
   resolved_grader_model: 'gpt-5.5-20260601',
@@ -421,7 +423,9 @@ fs.writeFileSync(evalFile5, JSON.stringify({ skill: 'test-skill-canonical', case
   const result = {
     dryRun: false,
     aggregate_verdict: 'applicable',
-    certification_tier: 'certifying', // APPLICABLE requires a cross-family certifying run (SH-6624)
+    certification_tier: 'certifying',
+    calibrated: true,
+    red_herring_cases_total: 1,
     skillName: 'test-skill-canonical',
     resolved_generator_model: 'claude-opus-4-8-20260601',
     resolved_grader_model: 'gpt-5.5-20260601',

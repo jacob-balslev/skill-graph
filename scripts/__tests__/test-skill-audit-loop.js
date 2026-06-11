@@ -16,32 +16,32 @@ function check(name, fn) {
 console.log('1. validateMandatoryCoverage');
 
 check('both mandatory models surfaced => ok', () => {
-  const ledger = { contributions: [{ id: 1, surfaced_by: 'opus', disposition: 'kept' }, { id: 2, surfaced_by: 'codex-current', disposition: 'kept' }] };
-  const props = [{ model: 'opus', alive: true }, { model: 'codex-current', alive: true }];
-  const r = panel.validateMandatoryCoverage(ledger, props, ['opus', 'codex-current']);
+  const ledger = { contributions: [{ id: 1, surfaced_by: 'opus', disposition: 'kept' }, { id: 2, surfaced_by: 'gpt-5.5', disposition: 'kept' }] };
+  const props = [{ model: 'opus', alive: true }, { model: 'gpt-5.5', alive: true }];
+  const r = panel.validateMandatoryCoverage(ledger, props, ['opus', 'gpt-5.5']);
   assert.strictEqual(r.ok, true);
-  assert.deepStrictEqual(r.covered.sort(), ['codex-current', 'opus']);
+  assert.deepStrictEqual(r.covered.sort(), ['gpt-5.5', 'opus']);
 });
 
 check('a mandatory model absent from the ledger => violation (silent frontier loss)', () => {
   const ledger = { contributions: [{ id: 1, surfaced_by: 'opus', disposition: 'kept' }] };
-  const props = [{ model: 'opus', alive: true }, { model: 'codex-current', alive: true }];
-  const r = panel.validateMandatoryCoverage(ledger, props, ['opus', 'codex-current']);
+  const props = [{ model: 'opus', alive: true }, { model: 'gpt-5.5', alive: true }];
+  const r = panel.validateMandatoryCoverage(ledger, props, ['opus', 'gpt-5.5']);
   assert.strictEqual(r.ok, false);
-  assert.match(r.violations[0].reason, /codex-current.*silently lost/);
+  assert.match(r.violations[0].reason, /gpt-5.5.*silently lost/);
 });
 
 check('surfaced via corroborated_by also counts as covered', () => {
-  const ledger = { contributions: [{ id: 1, surfaced_by: 'opus', corroborated_by: ['codex-current'], disposition: 'kept' }] };
-  const props = [{ model: 'opus', alive: true }, { model: 'codex-current', alive: true }];
-  const r = panel.validateMandatoryCoverage(ledger, props, ['opus', 'codex-current']);
+  const ledger = { contributions: [{ id: 1, surfaced_by: 'opus', corroborated_by: ['gpt-5.5'], disposition: 'kept' }] };
+  const props = [{ model: 'opus', alive: true }, { model: 'gpt-5.5', alive: true }];
+  const r = panel.validateMandatoryCoverage(ledger, props, ['opus', 'gpt-5.5']);
   assert.strictEqual(r.ok, true);
 });
 
 check('a dropped-with-reason contribution still counts as covered (presence, not disposition)', () => {
-  const ledger = { contributions: [{ id: 1, surfaced_by: 'opus', disposition: 'kept' }, { id: 2, surfaced_by: 'codex-current', disposition: 'dropped', drop_reason: 'redundant' }] };
-  const props = [{ model: 'opus', alive: true }, { model: 'codex-current', alive: true }];
-  assert.strictEqual(panel.validateMandatoryCoverage(ledger, props, ['opus', 'codex-current']).ok, true);
+  const ledger = { contributions: [{ id: 1, surfaced_by: 'opus', disposition: 'kept' }, { id: 2, surfaced_by: 'gpt-5.5', disposition: 'dropped', drop_reason: 'redundant' }] };
+  const props = [{ model: 'opus', alive: true }, { model: 'gpt-5.5', alive: true }];
+  assert.strictEqual(panel.validateMandatoryCoverage(ledger, props, ['opus', 'gpt-5.5']).ok, true);
 });
 
 // ── 2. runConvergence ──
@@ -53,7 +53,7 @@ function mkProps(list) {
 }
 
 check('converges (stable) when no agent changes in a round', () => {
-  const proposals = mkProps([{ model: 'opus', tier: 'mandatory', hash: 'a' }, { model: 'codex-current', tier: 'mandatory', hash: 'b' }]);
+  const proposals = mkProps([{ model: 'opus', tier: 'mandatory', hash: 'a' }, { model: 'gpt-5.5', tier: 'mandatory', hash: 'b' }]);
   const deps = {
     crossReview: () => ({ ok: true, structured: { items: [] } }),
     // revise returns same hash => no change => stable at round 1
@@ -68,7 +68,7 @@ check('converges (stable) when no agent changes in a round', () => {
 
 check('hits round-budget when agents keep changing every round', () => {
   let n = 0;
-  const proposals = mkProps([{ model: 'opus', tier: 'mandatory', hash: 'a0' }, { model: 'codex-current', tier: 'mandatory', hash: 'b0' }]);
+  const proposals = mkProps([{ model: 'opus', tier: 'mandatory', hash: 'a0' }, { model: 'gpt-5.5', tier: 'mandatory', hash: 'b0' }]);
   const deps = {
     crossReview: () => ({ ok: true, structured: { items: [] } }),
     reviseProposal: ({ reviserModel }) => { n += 1; return { ok: true, proposalPath: `p-${reviserModel}.md`, contentHash: `${reviserModel}-${n}`, changed: true }; },
@@ -82,7 +82,7 @@ check('hits round-budget when agents keep changing every round', () => {
 
 check('HASH-AUTHORITATIVE: agent claims changed:false but emits a different hash => counted as changed', () => {
   let round = 0;
-  const proposals = mkProps([{ model: 'opus', tier: 'mandatory', hash: 'a' }, { model: 'codex-current', tier: 'mandatory', hash: 'b' }]);
+  const proposals = mkProps([{ model: 'opus', tier: 'mandatory', hash: 'a' }, { model: 'gpt-5.5', tier: 'mandatory', hash: 'b' }]);
   const deps = {
     crossReview: () => ({ ok: true, structured: { items: [] } }),
     reviseProposal: ({ reviserModel }) => {
@@ -101,9 +101,9 @@ check('HASH-AUTHORITATIVE: agent claims changed:false but emits a different hash
 });
 
 check('quorum-collapsed when a mandatory model dies below quorum mid-rounds', () => {
-  const proposals = mkProps([{ model: 'opus', tier: 'mandatory', hash: 'a' }, { model: 'codex-current', tier: 'mandatory', hash: 'b' }]);
+  const proposals = mkProps([{ model: 'opus', tier: 'mandatory', hash: 'a' }, { model: 'gpt-5.5', tier: 'mandatory', hash: 'b' }]);
   const deps = {
-    crossReview: ({ reviewerModel }) => (reviewerModel === 'codex-current' ? { ok: false, error: 'dead' } : { ok: true, structured: { items: [] } }),
+    crossReview: ({ reviewerModel }) => (reviewerModel === 'gpt-5.5' ? { ok: false, error: 'dead' } : { ok: true, structured: { items: [] } }),
     reviseProposal: ({ reviserModel }) => ({ ok: true, proposalPath: `p-${reviserModel}.md`, contentHash: `${reviserModel}-x`, changed: true }),
     hashProposal: (p) => p,
   };
@@ -113,7 +113,7 @@ check('quorum-collapsed when a mandatory model dies below quorum mid-rounds', ()
 });
 
 check('advisory death is best-effort: does not collapse quorum, run continues', () => {
-  const proposals = mkProps([{ model: 'opus', tier: 'mandatory', hash: 'a' }, { model: 'codex-current', tier: 'mandatory', hash: 'b' }, { model: 'minimax', tier: 'advisory', hash: 'c' }]);
+  const proposals = mkProps([{ model: 'opus', tier: 'mandatory', hash: 'a' }, { model: 'gpt-5.5', tier: 'mandatory', hash: 'b' }, { model: 'minimax', tier: 'advisory', hash: 'c' }]);
   const deps = {
     crossReview: ({ reviewerModel }) => (reviewerModel === 'minimax' ? { ok: false, error: 'dead advisory' } : { ok: true, structured: { items: [] } }),
     reviseProposal: ({ reviserModel }) => ({ ok: true, proposalPath: `p-${reviserModel}.md`, contentHash: reviserModel === 'opus' ? 'a' : 'b', changed: false }),
@@ -130,7 +130,7 @@ check('advisory death is best-effort: does not collapse quorum, run continues', 
 check('SKI-211: advisory churn does NOT block convergence — stability is mandatory-only', () => {
   // 2 mandatory stable after round 1; 1 advisory re-emits a different hash every round
   // (the text-capture churn). Convergence must key off the mandatory tier and converge.
-  const proposals = mkProps([{ model: 'opus', tier: 'mandatory', hash: 'a' }, { model: 'codex-current', tier: 'mandatory', hash: 'b' }, { model: 'minimax', tier: 'advisory', hash: 'c0' }]);
+  const proposals = mkProps([{ model: 'opus', tier: 'mandatory', hash: 'a' }, { model: 'gpt-5.5', tier: 'mandatory', hash: 'b' }, { model: 'minimax', tier: 'advisory', hash: 'c0' }]);
   let n = 0;
   const deps = {
     crossReview: () => ({ ok: true, structured: { items: [] } }),
@@ -173,7 +173,17 @@ function makeDeps(overrides = {}) {
     prepareEnrichedEval: ({ skillDir }) => ({ evalSkillDir: `${skillDir}/.enriched`, cleanup: () => {} }),
     applyMerge: ({ skillDir }) => { calls.applied += 1; return { applied: `${skillDir}/SKILL.md` }; },
     evalArtifactExists: () => true,
-    runEvalDirection: ({ direction, executionProfile, skillDir }) => { calls.evalDirs.push(skillDir); return { direction, verdict: 'APPLICABLE', certification_tier: 'certifying', execution_profile: executionProfile }; },
+    runEvalDirection: ({ direction, executionProfile, skillDir }) => {
+      calls.evalDirs.push(skillDir);
+      return {
+        direction,
+        verdict: 'APPLICABLE',
+        certification_tier: 'certifying',
+        calibrated: true,
+        red_herring_cases_total: 1,
+        execution_profile: executionProfile,
+      };
+    },
   };
   return { ...base, ...overrides };
 }
@@ -181,7 +191,7 @@ function makeDeps(overrides = {}) {
 check('runs mandatory + advisory proposals, converges, curates with advisory+crossReview, keeps + applies', () => {
   const deps = makeDeps();
   const r = panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/skills/s', cwd: '/x/skill-graph', advisoryModels: ['minimax', 'gemini'], deps });
-  assert.deepStrictEqual(deps._calls.mandatoryProposals, ['opus', 'codex-current']);
+  assert.deepStrictEqual(deps._calls.mandatoryProposals, ['opus', 'gpt-5.5']);
   assert.deepStrictEqual(deps._calls.advisoryProposals, ['minimax', 'gemini']);
   // curate received both mandatory proposals + advisory + crossReview key
   assert.strictEqual(deps._calls.curatedWith.proposals.length, 2);
@@ -198,7 +208,7 @@ check('runs mandatory + advisory proposals, converges, curates with advisory+cro
 });
 
 check('MANDATORY propose failure ABORTS the run', () => {
-  const deps = makeDeps({ researchAndPropose: ({ model }) => { if (model === 'codex-current') throw new Error('codex down'); return { proposalPath: `p-${model}.md` }; } });
+  const deps = makeDeps({ researchAndPropose: ({ model }) => { if (model === 'gpt-5.5') throw new Error('codex down'); return { proposalPath: `p-${model}.md` }; } });
   assert.throws(() => panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], deps }), /MANDATORY research\/propose failed.*codex down/);
 });
 
@@ -293,7 +303,16 @@ check('missing eval artifact => guardrail skipped => keep + apply, eval null', (
 });
 
 check('HARMFUL eval => revert, does NOT apply', () => {
-  const deps = makeDeps({ runEvalDirection: ({ direction, executionProfile }) => ({ direction, verdict: 'HARMFUL', certification_tier: 'certifying', execution_profile: executionProfile }) });
+  const deps = makeDeps({
+    runEvalDirection: ({ direction, executionProfile }) => ({
+      direction,
+      verdict: 'HARMFUL',
+      certification_tier: 'certifying',
+      calibrated: true,
+      red_herring_cases_total: 1,
+      execution_profile: executionProfile,
+    }),
+  });
   const r = panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], deps });
   assert.strictEqual(r.keep_or_revert.action, 'revert');
   assert.strictEqual(r.applied, false);
@@ -305,16 +324,16 @@ check('single-available-frontier degraded mode uses quorum=1 and PROVISIONAL-cap
     skill: 's',
     skillDir: '/x/s',
     cwd: '/x',
-    mandatoryModels: ['codex-current'],
+    mandatoryModels: ['gpt-5.5'],
     advisoryModels: [],
     degradedFrontier: { enabled: true, reason: 'single_frontier:opus_budget_exhausted', missingFrontiers: ['opus'] },
     deps,
   });
-  assert.deepStrictEqual(deps._calls.mandatoryProposals, ['codex-current']);
+  assert.deepStrictEqual(deps._calls.mandatoryProposals, ['gpt-5.5']);
   assert.strictEqual(deps._calls.curatedWith.proposals.length, 1);
   assert.strictEqual(r.convergence.policy.quorum, 1);
   assert.strictEqual(r.degraded_frontier.enabled, true);
-  assert.deepStrictEqual(r.degraded_frontier.available, ['codex-current']);
+  assert.deepStrictEqual(r.degraded_frontier.available, ['gpt-5.5']);
   assert.strictEqual(r.eval.reconciliation, 'single-frontier-provisional');
   assert.strictEqual(r.eval.synthesized_verdict, 'PROVISIONAL');
   assert.strictEqual(r.eval.regrade_required, true);
@@ -326,7 +345,7 @@ check('single-available-frontier degraded mode uses quorum=1 and PROVISIONAL-cap
 check('requires skill/skillDir/cwd, 2-model mandatory unless degraded, and injected deps', () => {
   assert.throws(() => panel.runSkillAuditLoop({ deps: {} }), /skill, skillDir, and cwd are required/);
   assert.throws(() => panel.runSkillAuditLoop({ skill: 's', skillDir: '/x', cwd: '/x', mandatoryModels: ['opus'], deps: {} }), /2-element array unless degradedFrontier\.enabled/);
-  assert.throws(() => panel.runSkillAuditLoop({ skill: 's', skillDir: '/x', cwd: '/x', mandatoryModels: ['opus', 'codex-current'], degradedFrontier: { enabled: true }, deps: {} }), /exactly one available mandatory model/);
+  assert.throws(() => panel.runSkillAuditLoop({ skill: 's', skillDir: '/x', cwd: '/x', mandatoryModels: ['opus', 'gpt-5.5'], degradedFrontier: { enabled: true }, deps: {} }), /exactly one available mandatory model/);
   assert.throws(() => panel.runSkillAuditLoop({ skill: 's', skillDir: '/x', cwd: '/x', advisoryModels: [], deps: {} }), /must be a function/);
 });
 
@@ -349,9 +368,9 @@ check('both frontiers approve => verify RUN, 1 round, proceeds to eval + apply',
   const r = panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], deps });
   assert.strictEqual(r.verify.status, 'RUN');
   assert.strictEqual(r.verify.rounds, 1);
-  assert.deepStrictEqual(verified.sort(), ['codex-current', 'opus']);
+  assert.deepStrictEqual(verified.sort(), ['gpt-5.5', 'opus']);
   assert.strictEqual(r.verify.approvals.opus, true);
-  assert.strictEqual(r.verify.approvals['codex-current'], true);
+  assert.strictEqual(r.verify.approvals['gpt-5.5'], true);
   assert.strictEqual(r.applied, true);
 });
 

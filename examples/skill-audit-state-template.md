@@ -67,8 +67,8 @@ Build automation treats this file specially: the sample manifest
 generator ingests it only under `--include-template`, and the library-wide
 harness counts it as the 9th "skill" only when the flag is set. It is NOT
 routable in day-to-day skill dispatch. The frontmatter template declares
-`deployment_target: project` because it is itself a Skill Graph specimen with
-local truth sources; authors choose `portable` or `project` for their derived
+`public: false` plus `project[]` because it is itself a Skill Graph specimen with
+local truth sources; authors choose `public: true` or `false` for their derived
 skill and keep `project[]` / `repo[]` only when those belonging-entity
 references are true.
 ============================================================================

@@ -5,21 +5,21 @@
  * Validates that `schemas/SKILL_METADATA_PROTOCOL_schema.json` and `schemas/manifest.schema.json`
  * carry the enum values mandated by:
  *   - ADR-0011 (four-verdict Audit Status)
- *   - ADR-0020 twelve-shelf re-axis (`subject` 12-enum),
- *     `deployment_target` 2-enum, and free-text `scope` with NO enum). The
- *     amendment retired the `operation` axis, removed the `scope` enum, and
- *     dropped the `category` and `type` axes. This checker asserts the
- *     clean-cut v8 shape, not the retired one.
+ *   - ADR-0020 twelve-shelf re-axis (`subject` 12-enum), boolean `public`,
+ *     and free-text `scope` with NO enum. The amendment retired the `operation`
+ *     axis, replaced the interim `deployment_target` enum, removed the `scope`
+ *     enum, and dropped the `category` and `type` axes. This checker asserts
+ *     the clean-cut v8 shape, not the retired one.
  *
  * Why this gate exists (per 2026-05-25 F14 finding): `doctor` historically
  * passed clean even when an enum value was missing or extra, because the
  * deterministic checks downstream (`skill-lint.js`, `protocol-check`) validate
  * SKILLS against the schema but do not validate the SCHEMA's constants against
- * the ADR. A typo in the `subject` / `subjects[]` / `deployment_target` enums
- * would route the corpus into a silent acceptance hole — invalid values pass
- * because the typo widens the enum, or valid values fail because it shrinks it.
- * This check closes that hole, and also guards against a `scope` enum being
- * re-introduced after the 2026-05-27 amendment made it free-text.
+ * the ADR. A typo in the `subject` / `subjects[]` enum would route the corpus
+ * into a silent acceptance hole — invalid values pass because the typo widens
+ * the enum, or valid values fail because it shrinks it. This check closes that
+ * hole, and also guards against a `scope` enum or retired `deployment_target`
+ * requirement being re-introduced after the ADR-0017 amendment.
  *
  * Exit codes:
  *   0 — every spec-mandated enum value is present and no extras present

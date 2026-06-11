@@ -9,6 +9,9 @@ const {
   BudgetExhaustedError,
   parseRateLimit,
   exhaustedLockPath,
+  exhaustedLockAliases,
+  findExhaustedLock,
+  frontierAvailability,
   assertBudgetAvailable,
 } = require('../../lib/audit/panel-budget');
 const { advisoryAuthPreflight } = require('../../lib/audit/advisory-preflight');
@@ -38,13 +41,13 @@ check('no lock => no throw', () => {
   assert.doesNotThrow(() => assertBudgetAvailable({ model: 'opus', budgetDir: '/b', fsImpl }));
 });
 check('lock present => throws BudgetExhaustedError with resetAt', () => {
-  const lock = exhaustedLockPath('codex-current', '/b');
+  const lock = exhaustedLockPath('gpt-5.5', '/b');
   const fsImpl = {
     existsSync: (p) => p === lock,
     readFileSync: () => JSON.stringify({ resetAt: '2026-06-08T12:00:00Z' }),
   };
   let err;
-  try { assertBudgetAvailable({ model: 'codex-current', budgetDir: '/b', fsImpl }); } catch (e) { err = e; }
+  try { assertBudgetAvailable({ model: 'gpt-5.5', budgetDir: '/b', fsImpl }); } catch (e) { err = e; }
   assert.ok(err instanceof BudgetExhaustedError);
   assert.strictEqual(err.code, 'BUDGET_EXHAUSTED');
   assert.strictEqual(err.recoverable, true);
@@ -52,6 +55,36 @@ check('lock present => throws BudgetExhaustedError with resetAt', () => {
 });
 check('exhaustedLockPath sanitizes the model alias', () => {
   assert.match(exhaustedLockPath('gemini-flash', '/b'), /exhausted-gemini-flash\.lock$/);
+});
+check('gpt-5.5 lock aliases include app/provider names', () => {
+  assert.ok(exhaustedLockAliases('gpt-5.5').includes('gpt-5.5'));
+  assert.ok(exhaustedLockAliases('gpt-5.5').includes('gpt-5.4'));
+});
+check('findExhaustedLock honors aliases and ignores stale dated locks', () => {
+  const stale = exhaustedLockPath('opus', '/b');
+  const activeAlias = exhaustedLockPath('gpt-5.5', '/b');
+  const fsImpl = {
+    existsSync: (p) => p === stale || p === activeAlias,
+    readFileSync: (p) => (p === stale
+      ? JSON.stringify({ date: '2026-06-09' })
+      : JSON.stringify({ date: '2026-06-10', reset_at: '2026-06-10T12:00:00Z' })),
+  };
+  assert.strictEqual(findExhaustedLock({ model: 'opus', budgetDir: '/b', fsImpl, today: '2026-06-10' }).active, false);
+  const codex = findExhaustedLock({ model: 'gpt-5.5', budgetDir: '/b', fsImpl, today: '2026-06-10' });
+  assert.strictEqual(codex.active, true);
+  assert.strictEqual(codex.alias, 'gpt-5.5');
+});
+check('frontierAvailability returns the available frontier when one is exhausted', () => {
+  const opusLock = exhaustedLockPath('opus', '/b');
+  const fsImpl = {
+    existsSync: (p) => p === opusLock,
+    readFileSync: () => JSON.stringify({ date: '2026-06-10' }),
+  };
+  const r = frontierAvailability({ models: ['opus', 'gpt-5.5'], budgetDir: '/b', fsImpl, today: '2026-06-10' });
+  assert.deepStrictEqual(r.available, ['gpt-5.5']);
+  assert.deepStrictEqual(r.exhausted.map((e) => e.model), ['opus']);
+  assert.strictEqual(r.anyAvailable, true);
+  assert.strictEqual(r.allExhausted, false);
 });
 
 console.log('3. RateLimitError shape');

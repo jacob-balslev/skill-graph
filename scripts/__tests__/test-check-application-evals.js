@@ -11,7 +11,7 @@
  *   5. Duplicate case ids → CRITICAL.
  *   6. Invalid criticality enum / non-boolean red_herring → HIGH.
  *   7. Empty expectation-array entries → HIGH.
- *   8. No red-herring case → LOW (recommendation, not a hard break).
+ *   8. No red-herring case → HIGH (certification-blocking boundary gap).
  *
  * Uses only Node built-ins. Pure function tests — no filesystem walk, no LLM.
  */
@@ -153,14 +153,14 @@ process.stdout.write('\n7. Empty expectation-array entries\n');
   assert(codes(findings).includes('empty-expectation-entry'), 'an empty string in expected_flags → empty-expectation-entry');
 }
 
-// ── 8. No red herring → LOW recommendation ──────────────────────────────────
+// ── 8. No red herring → HIGH certification blocker ──────────────────────────
 process.stdout.write('\n8. No red-herring case\n');
 {
   const cases = [makeCase(1), makeCase(2), makeCase(3), makeCase(4), makeCase(5)];
   const findings = validateApplicationEval(REL, makeSuite(cases));
   const rh = findings.find((f) => f.code === 'no-red-herring');
   assert(Boolean(rh), 'an all-real suite → no-red-herring finding');
-  assert(rh && rh.severity === 'LOW', 'no-red-herring is LOW (strongly recommended, not required)');
+  assert(rh && rh.severity === 'HIGH', 'no-red-herring is HIGH (boundary behavior must be tested before certification)');
 }
 
 // ── Summary ─────────────────────────────────────────────────────────────────

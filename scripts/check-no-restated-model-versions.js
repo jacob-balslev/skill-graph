@@ -4,21 +4,25 @@
 /**
  * check-no-restated-model-versions.js
  *
- * Enforces the Model Identity Discipline (workspace AGENTS.md § "Model Identity
+ * Enforces Model Identity Discipline (workspace AGENTS.md § "Model Identity
  * Discipline"; skill-graph AGENTS.md § "Skill Audit Loop Model Policy"):
  *
- *   Model identity is resolved through the model registry, not restated in prose.
- *   Durable instructions name model ROLES or family ALIASES, never dated release
- *   IDs. A dated model id/name in a durable instruction surface is drift: when a
- *   newer model ships, that surface silently points at the old one.
+ *   Durable instruction surfaces name models EXPLICITLY by their real current
+ *   product names (Opus 4.8, GPT-5.5, …) — there are NO invented role personas.
+ *   The registry (lib/audit-shared/model-provider.js) is the single source of
+ *   which name is current; when a newer model ships, the registry display pin is
+ *   bumped in one place and this gate then flags any surface still naming the old
+ *   model. So the failure this gate catches is a STALE/WRONG dated name, never the
+ *   current canonical one.
  *
  * This check scans DURABLE INSTRUCTION surfaces (grader prompts, audit runner
- * prompt templates, audit policy docs) for dated model identifiers and fails when
- * it finds one outside the allowed homes.
+ * prompt templates) for dated model identifiers and fails on any that is NOT one
+ * of the registry's current canonical names.
  *
- * ALLOWED homes for a dated version string (NOT scanned / explicitly permitted):
- *   - the model registry itself (lib/audit-shared/model-provider.js + workspace mirror)
- *   - this check script
+ * ALLOWED (NOT flagged):
+ *   - any dated name that matches the registry's CURRENT model set (DISPLAY_NAMES
+ *     values + registry alias keys/modelIds + MODEL_LATEST/OPENCODE_LATEST ids)
+ *   - the registry itself + this check script
  *   - CHANGELOG / history / ADR / receipts / archived / research surfaces
  *     (those record PAST state and stay accurate by NOT being rewritten)
  *
@@ -32,11 +36,31 @@
 
 const fs = require('fs');
 const path = require('path');
+const {
+  DISPLAY_NAMES,
+  MODEL_REGISTRY,
+  MODEL_LATEST,
+  OPENCODE_LATEST,
+} = require('../lib/audit-shared/model-provider');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 
-// Dated model identifiers. Roles/bare aliases (opus, sonnet, codex-current,
-// strongest-reasoning-grader) are intentionally NOT matched.
+// The registry's CURRENT canonical model identifiers (lowercased). A dated name
+// matching one of these is the model we WANT named explicitly, not drift — so it
+// is allowed in durable surfaces. Anything else dated is a stale/wrong reference.
+const CURRENT_MODEL_NAMES = new Set(
+  [
+    ...Object.values(DISPLAY_NAMES),
+    ...Object.keys(MODEL_REGISTRY),
+    ...Object.values(MODEL_REGISTRY).map((d) => d && d.modelId).filter(Boolean),
+    ...Object.values(MODEL_LATEST),
+    ...Object.values(OPENCODE_LATEST),
+  ].map((s) => String(s).toLowerCase().trim()),
+);
+
+// Dated model identifiers. Bare aliases (opus, sonnet) are not dated and never
+// match. A pattern hit is a FINDING only when the matched string is not in the
+// registry's CURRENT_MODEL_NAMES set above (i.e. it names a stale/wrong version).
 const DATED_MODEL_PATTERNS = [
   /\bclaude-opus-4-\d+\b/i,
   /\bclaude-sonnet-4-\d+\b/i,
@@ -103,6 +127,8 @@ function scan() {
       for (const pat of DATED_MODEL_PATTERNS) {
         const m = line.match(pat);
         if (m) {
+          // A current canonical model name is exactly what we want named explicitly.
+          if (CURRENT_MODEL_NAMES.has(m[0].toLowerCase().trim())) break;
           findings.push({
             file: path.relative(REPO_ROOT, file),
             line: i + 1,
@@ -128,8 +154,8 @@ function main() {
   } else if (findings.length === 0) {
     console.log('✓ No restated dated model versions in durable instruction surfaces.');
   } else {
-    console.log(`Found ${findings.length} restated dated model version(s) in durable surfaces:`);
-    console.log('(Use a ROLE or family ALIAS instead — see AGENTS.md § Model Identity Discipline.)\n');
+    console.log(`Found ${findings.length} STALE/WRONG dated model version(s) in durable surfaces:`);
+    console.log('(Name the registry\'s CURRENT model — bump the display pin in model-provider.js if a newer model shipped. See AGENTS.md § Model Identity Discipline.)\n');
     for (const f of findings) {
       console.log(`  ${f.file}:${f.line}  [${f.match}]  ${f.text}`);
     }

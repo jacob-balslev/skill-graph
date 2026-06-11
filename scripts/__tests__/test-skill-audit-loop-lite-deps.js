@@ -54,15 +54,15 @@ check('parseClaimOutput throws on empty / non-JSON output', () => {
 
 console.log('2. Pure seams — paths + CLI routing + prompt assembly');
 check('proposalPaths + mergePaths follow the enrich-pass naming', () => {
-  const pp = d.proposalPaths('/run', 'debugging', 'codex-current');
-  assert.strictEqual(pp.proposalPath, path.join('/run', 'debugging.codex-current.proposed-SKILL.md'));
-  assert.strictEqual(pp.noveltyMemoPath, path.join('/run', 'debugging.codex-current.novelty-memo.md'));
+  const pp = d.proposalPaths('/run', 'debugging', 'gpt-5.5');
+  assert.strictEqual(pp.proposalPath, path.join('/run', 'debugging.gpt-5.5.proposed-SKILL.md'));
+  assert.strictEqual(pp.noveltyMemoPath, path.join('/run', 'debugging.gpt-5.5.novelty-memo.md'));
   const mp = d.mergePaths('/run', 'debugging');
   assert.strictEqual(mp.mergedSkillPath, path.join('/run', 'debugging.merged-SKILL.md'));
   assert.strictEqual(mp.mergeLedgerPath, path.join('/run', 'debugging.merge-ledger.json'));
 });
 check('cliForModel routes through the model registry', () => {
-  assert.strictEqual(d.cliForModel('codex-current'), 'codex');
+  assert.strictEqual(d.cliForModel('gpt-5.5'), 'codex');
   assert.strictEqual(d.cliForModel('gpt-5.4'), 'codex');
   assert.strictEqual(d.cliForModel('opus'), 'claude');
   assert.strictEqual(d.cliForModel('sonnet'), 'claude');
@@ -97,7 +97,7 @@ check('buildEnrichPrompt names the exact output paths + private-content scope vi
   assert.ok(p.includes('Your model role: opus'));
 });
 check('buildEnrichPrompt embeds the current SKILL.md so cross-tree FS access is unnecessary', () => {
-  const p = d.buildEnrichPrompt({ template: 'T', skill: 's', skillDir: '/s', model: 'codex-current', brief: 'B', skillBody: '# THE SKILL BODY', proposalPath: '/r/p.md', noveltyMemoPath: '/r/m.md' });
+  const p = d.buildEnrichPrompt({ template: 'T', skill: 's', skillDir: '/s', model: 'gpt-5.5', brief: 'B', skillBody: '# THE SKILL BODY', proposalPath: '/r/p.md', noveltyMemoPath: '/r/m.md' });
   assert.ok(p.includes('# THE SKILL BODY'));
   assert.ok(/embedded/i.test(p));
   // No skillBody => no embedded block.
@@ -137,7 +137,7 @@ check('model dispatch uses injected model cwd and scratch env, not the claim cwd
       return '';
     },
   });
-  deps.researchAndPropose({ skill: 'demo-skill', skillDir, model: 'codex-current', brief: 'B', artifactsDir: runDir });
+  deps.researchAndPropose({ skill: 'demo-skill', skillDir, model: 'gpt-5.5', brief: 'B', artifactsDir: runDir });
   assert.strictEqual(seen.length, 1);
   assert.strictEqual(seen[0].cli, 'codex');
   assert.strictEqual(seen[0].cwd, modelCwd);
@@ -228,21 +228,21 @@ check('claimSlot claims --op audit per model; curate claims --op merge with a di
   const s1 = deps.claimSlot({ skill, model: 'opus' });
   deps.researchAndPropose({ skill, skillDir, model: 'opus', brief: 'B', artifactsDir: s1.artifactsDir });
   deps.releaseSlot({ skill, model: 'opus', status: 'completed' });
-  const s2 = deps.claimSlot({ skill, model: 'codex-current' });
-  deps.researchAndPropose({ skill, skillDir, model: 'codex-current', brief: 'B', artifactsDir: s2.artifactsDir });
-  deps.releaseSlot({ skill, model: 'codex-current', status: 'completed' });
+  const s2 = deps.claimSlot({ skill, model: 'gpt-5.5' });
+  deps.researchAndPropose({ skill, skillDir, model: 'gpt-5.5', brief: 'B', artifactsDir: s2.artifactsDir });
+  deps.releaseSlot({ skill, model: 'gpt-5.5', status: 'completed' });
   const merge = deps.curate({ skill, skillDir, proposals: [{ model: 'opus', proposalPath: path.join(s1.artifactsDir, `${skill}.opus.proposed-SKILL.md`), noveltyMemoPath: 'n' }], currentSkillPath: path.join(skillDir, 'SKILL.md') });
 
   // The two per-model PROPOSE slots claimed AUDIT (not merge); the curator claimed MERGE.
   const proposeClaims = claims.filter((c) => c.op === 'audit');
   const mergeClaims = claims.filter((c) => c.op === 'merge');
   assert.strictEqual(proposeClaims.length, 2, 'two per-model audit claims');
-  assert.deepStrictEqual(proposeClaims.map((c) => c.model).sort(), ['codex-current', 'opus']);
+  assert.deepStrictEqual(proposeClaims.map((c) => c.model).sort(), ['gpt-5.5', 'opus']);
   assert.strictEqual(mergeClaims.length, 1, 'one curator merge claim');
   // SKI-230: the per-model + curator owners are RUN-SCOPED (suffixed with the runToken) so a
   // killed run's orphaned slot cannot block a later run via the one-skill-per-agent guard.
   assert.strictEqual(mergeClaims[0].agentId, 'skill-audit-loop-curator-TEST');
-  assert.deepStrictEqual(proposeClaims.map((c) => c.agentId).sort(), ['curate-codex-current-TEST', 'curate-opus-TEST'],
+  assert.deepStrictEqual(proposeClaims.map((c) => c.agentId).sort(), ['curate-gpt-5.5-TEST', 'curate-opus-TEST'],
     'per-model PROPOSE owners are run-scoped (curate-<model>-<runToken>)');
   assert.ok(!proposeClaims.some((c) => c.agentId.startsWith('skill-audit-loop-curator')), 'propose slots are not the curator owner');
   // The curator lock was released (finally block) under the SAME run-scoped owner.

@@ -34,7 +34,7 @@ ok('writes the documented status.json keys (superset of comprehension-ab-driver)
   const out = fakeStream();
   let clock = 1000;
   const r = createProgressReporter({
-    skill: 's', mandatoryModels: ['opus', 'codex-current'], advisoryModels: ['minimax'],
+    skill: 's', mandatoryModels: ['opus', 'gpt-5.5'], advisoryModels: ['minimax'],
     statusFile: sf, tty: false, now: () => clock, out,
   });
   r.heartbeat();
@@ -57,7 +57,7 @@ ok('propose start → running; propose done → done count increments', () => {
   const out = fakeStream();
   let clock = 0;
   const r = createProgressReporter({
-    skill: 's', mandatoryModels: ['opus', 'codex-current'], advisoryModels: [],
+    skill: 's', mandatoryModels: ['opus', 'gpt-5.5'], advisoryModels: [],
     statusFile: sf, tty: false, now: () => clock, out,
   });
   clock = 5000;
@@ -77,10 +77,10 @@ ok('propose start → running; propose done → done count increments', () => {
 ok('agent fail → failed count; skip → skipped state, not counted done/failed', () => {
   const sf = statusPath('failskip');
   const r = createProgressReporter({
-    skill: 's', mandatoryModels: ['opus', 'codex-current'], advisoryModels: ['minimax'],
+    skill: 's', mandatoryModels: ['opus', 'gpt-5.5'], advisoryModels: ['minimax'],
     statusFile: sf, tty: false, out: fakeStream(),
   });
-  r.onProgress({ kind: 'agent', model: 'codex-current', tier: 'mandatory', phase: 'propose', state: 'fail' });
+  r.onProgress({ kind: 'agent', model: 'gpt-5.5', tier: 'mandatory', phase: 'propose', state: 'fail' });
   r.onProgress({ kind: 'agent', model: 'minimax', tier: 'advisory', phase: 'propose', state: 'skip' });
   const st = readStatus(sf);
   assert.strictEqual(st.failed, 1, 'one failed');
@@ -90,7 +90,7 @@ ok('agent fail → failed count; skip → skipped state, not counted done/failed
 
 ok('phase event updates the phase label', () => {
   const sf = statusPath('phase');
-  const r = createProgressReporter({ skill: 's', mandatoryModels: ['opus', 'codex-current'], advisoryModels: [], statusFile: sf, tty: false, out: fakeStream() });
+  const r = createProgressReporter({ skill: 's', mandatoryModels: ['opus', 'gpt-5.5'], advisoryModels: [], statusFile: sf, tty: false, out: fakeStream() });
   r.onProgress({ kind: 'phase', phase: 'curate (synthesis)' });
   assert.strictEqual(readStatus(sf).phase, 'curate (synthesis)');
 });
@@ -100,7 +100,7 @@ console.log('3. TTY gating');
 ok('NOT a TTY → no ANSI escapes written, heartbeat still written', () => {
   const sf = statusPath('notty');
   const out = fakeStream({ isTTY: false });
-  const r = createProgressReporter({ skill: 's', mandatoryModels: ['opus', 'codex-current'], advisoryModels: [], statusFile: sf, tty: false, out });
+  const r = createProgressReporter({ skill: 's', mandatoryModels: ['opus', 'gpt-5.5'], advisoryModels: [], statusFile: sf, tty: false, out });
   r.onProgress({ kind: 'agent', model: 'opus', tier: 'mandatory', phase: 'propose', state: 'start' });
   r.teardown();
   assert.strictEqual(out.text(), '', 'no terminal writes when not a TTY');
@@ -110,7 +110,7 @@ ok('NOT a TTY → no ANSI escapes written, heartbeat still written', () => {
 
 ok('TTY → writes ANSI scroll-region + header escapes', () => {
   const out = fakeStream({ isTTY: true });
-  const r = createProgressReporter({ skill: 's', mandatoryModels: ['opus', 'codex-current'], advisoryModels: ['minimax'], statusFile: statusPath('tty'), tty: true, out });
+  const r = createProgressReporter({ skill: 's', mandatoryModels: ['opus', 'gpt-5.5'], advisoryModels: ['minimax'], statusFile: statusPath('tty'), tty: true, out });
   r.onProgress({ kind: 'agent', model: 'opus', tier: 'mandatory', phase: 'propose', state: 'start' });
   const text = out.text();
   assert.ok(text.includes('\x1b['), 'emits ANSI escapes on a TTY');
@@ -128,7 +128,7 @@ ok('renders a single-line header + one tree row per agent (no per-row tier tag)'
     done: 1, total: 3, failed: 0,
     agents: [
       { model: 'opus', tier: 'mandatory', phase: 'review', state: 'reviewing', elapsed_s: 40 },
-      { model: 'codex-current', tier: 'mandatory', phase: 'propose', state: 'proposed', elapsed_s: 0 },
+      { model: 'gpt-5.5', tier: 'mandatory', phase: 'propose', state: 'proposed', elapsed_s: 0 },
       { model: 'minimax', tier: 'advisory', phase: 'propose', state: 'queued', elapsed_s: 0 },
     ],
   };
@@ -168,7 +168,7 @@ ok('quality + advisory render by display name, ordering preserved, no tier tag',
     skill: 'board', phase: 'review', done: 1, total: 3, failed: 1,
     agents: [
       { model: 'opus', tier: 'quality', phase: 'review', state: 'reviewing' },
-      { model: 'codex-current', tier: 'quality', phase: 'review', state: 'reviewing' },
+      { model: 'gpt-5.5', tier: 'quality', phase: 'review', state: 'reviewing' },
       { model: 'minimax', tier: 'advisory', phase: 'review', state: 'done' },
     ],
   });

@@ -1,18 +1,44 @@
 ---
+# name: stable skill identifier. Match the skill directory name or the final namespace segment.
+# Lowercase letters/numbers with hyphen, slash, or colon separators.
 name: migrate-posts-to-v2-frontmatter
+# description: routing-facing summary of what the skill covers and when it activates.
+# Include concrete triggers and an explicit negative boundary; keep routing semantics out of prose-only ambiguity.
 description: "Use when migrating every existing post in `content/posts/**/*.md` to the v2 frontmatter schema — adding the new required `summary` field, normalizing `tags` to the controlled vocabulary, converting bare-date `date` strings to ISO 8601 with timezone, and re-validating every post against the v2 schema before the next build runs. Activate this skill whenever the task references migration `0007-frontmatter-v2`, the v2 frontmatter rollout, or asks how to safely change a required-field set across a populated content tree without breaking the build. Do NOT use for unrelated migrations (use a generic content-migration skill or write a fresh one) or for general schema-design questions (use a schema-design skill)."
+
+# === v8 Classification (subject + public; polyhierarchy via subjects[]) — see ADR-0017 ===
+# subject: primary browse shelf — what the skill teaches. One of twelve closed values:
+# backend-engineering / frontend-engineering / software-architecture / data-engineering / agent-ops / ai-engineering /
+# quality-assurance / design / reasoning-strategy / software-engineering-method / knowledge-organization / product-domain.
 subject: backend-engineering
-deployment_target: project
+# public: publishability/private-data gate. Boolean.
+# true = publishable/shareable; false = private and excluded from public export.
+# Project anchoring is carried separately by non-empty `project[]` plus `grounding`.
+public: false
+# taxonomy_domain: optional hierarchical sub-path within `subject`. Slash-delimited
+# lowercase kebab-case segments. rename of the original v8 `domain`. Remove when the flat
+# `subject` is sufficient.
 taxonomy_domain: content/migrations
+# scope: free-text PRD-style statement of what the skill teaches and what it excludes.
+# (v8 required; not an enum). Mirrors Coverage + Do NOT Use When at frontmatter level.
 scope: "Four-phase frontmatter migration workflow for the markdown-static-site example project — add nullable field, backfill, human review, flip validator."
+# stability: lifecycle marker. One of:
+# experimental (active development) / stable (production-ready) /
+# frozen (no further changes expected) / deprecated.
+# When `deprecated`, schema's allOf REQUIRES `superseded_by: <real-skill-name>`.
 stability: experimental
+# license: SPDX license identifier (e.g., MIT, Apache-2.0).
 license: MIT
+# compatibility: runtime compatibility object. Prefer structured fields
+# (`runtimes`, `node`) over free-text `notes`.
 compatibility:
   runtimes:
     - node
   node: ">=20"
   notes: "Markdown content tree under content/posts/; assumes Zod or similar runtime validator."
 allowed-tools: Read Grep Bash
+# keywords: semantic phrases for fuzzy router activation. v8 cap: max 10.
+# Keep terms a user would actually type when starting a task in this skill's domain.
 keywords:
   - migrate posts
   - frontmatter v2 migration
@@ -23,34 +49,51 @@ keywords:
   - safe content migration
   - post backfill
   - frontmatter migration
+# triggers: explicit-match activation phrases the router fires on literally.
+# Use when label-based routing is intended; usually keywords + examples are enough.
 triggers:
   - migrate-posts-to-v2-frontmatter
+# paths: glob array of code surfaces this skill governs. Supports gitignore-style
+# negation. Each glob should map to ONE canonical skill. Omit if purely conceptual.
 paths:
   - "scripts/migrate-frontmatter-v2.ts"
   - "lib/content/schema.ts"
   - "lib/content/tag-vocabulary.ts"
+# examples: 2-5 realistic user prompts the skill SHOULD activate for.
+# Written in the user's voice. Improves retrieval recall beyond keywords alone.
 examples:
   - "run the v2 frontmatter migration on every post in `content/posts/`"
   - "the v2 migration's tag-normalization step is rejecting some valid tags — what's safe to do?"
   - "verify that every post passes the v2 schema before flipping the validator"
   - "design migration 0008 to drop the legacy `excerpt` field now that `summary` is canonical"
+# anti_examples: near-miss prompts that should route ELSEWHERE.
+# Pair with relations.suppresses (or legacy boundary alias) to name the confusable territory's owner.
 anti_examples:
   - "design a new frontmatter schema for a different domain"
   - "the migration is failing in CI — what's wrong?"
   - "write the v2 frontmatter doc for new contributors"
+# relations: typed graph edges to sibling skills. Current fields:
+# related (adjacency for browse / co-routing expansion) /
+# suppresses (exclude listed skills from co-routing when THIS skill wins; write reason
+#             as "I own this exclusively over X", not "use X instead") /
+# boundary (DEPRECATED alias of suppresses, retained for unmigrated skills) /
+# verify_with (cross-check; co-loaded as one-hop expansion) /
+# depends_on (composition; transitive — A→B→C loads all three) /
+# broader / narrower (SKOS-style generalization) /
+# disjoint_with (mutual exclusion for incompatible ownership).
 relations:
-  boundary:
-    - skill: documentation
-      reason: "documentation writes prose explaining the schema migration; this workflow is the procedural enforcement"
-    - skill: debugging
-      reason: "debugging chases a specific migration failure from logs; this workflow is the pre-failure procedure"
-    - skill: refactor
-      reason: "refactor changes code shape with no behavior change; a content-schema migration changes the validation contract — different problem, different gates"
+  related:
+    - documentation
+    - debugging
+    - refactor
   verify_with:
     - testing-strategy
   depends_on:
     - skill: testing-strategy
       min_version: "^1.0.0"
+# grounding: required when `project[]` is non-empty. Declares the truth sources
+# the skill anchors to and the failure modes those sources prevent. Omit when the
+# skill is universal-knowledge. `subject_matter` replaces v8 `domain_object`.
 grounding:
   subject_matter: "The 0007 frontmatter-v2 migration — a multi-step procedure that adds a required field, normalizes the tag vocabulary, converts bare-date strings to ISO 8601, and re-validates every post against the v2 schema before the validator is flipped"
   grounding_mode: repo_specific
@@ -65,12 +108,25 @@ grounding:
     - migration_runs_outside_dry_run_gate_first
     - rollback_step_overwrites_authored_summary_field
   evidence_priority: repo_code_first
+# project: projects this skill is linked to. Array of {handle, role} objects.
+# Non-empty project[] anchors the skill to a project and requires `grounding`.
+# Suggested role values: source-of-truth, consumer, mirror. Replaces original v8 `workspace_tags`.
 project:
   - handle: markdown-static-site
     role: primary
 ---
 
 # Migrate Posts to v2 Frontmatter
+
+## Concept of the skill
+
+**What it is:** The rollout procedure for migrating all existing markdown posts to a new frontmatter contract.
+**Mental model:** Treat the migration as a staged data change: add support, backfill content, validate everything, then enforce the new schema.
+**Why it exists:** Required metadata changes can break every existing post unless compatibility and validation are sequenced deliberately.
+**What it is NOT:** It is not a generic schema-design exercise or a debugging guide for a failed migration run.
+**Adjacent concepts:** Content backfills, schema compatibility windows, tag normalization, date conversion.
+**One-line analogy:** It is a bridge that lets old posts cross safely into the new metadata format.
+**Common misconception:** Updating the validator first is harmless; populated content needs a compatibility window before enforcement.
 
 ## Coverage
 
@@ -81,7 +137,7 @@ project:
 - The dry-run gate — the migration script always runs in dry-run by default, printing the diff per post; the `--apply` flag is opt-in and never the CI default
 - The rollback path — what `ROLLBACK.md` for this migration looks like and why "regenerate every summary" is wrong (overwrites authored summaries); the correct rollback restores the per-post `.bak` file the migration writes alongside each edit
 
-## Philosophy
+## Philosophy of the skill
 
 A content-schema migration is a rare migration where being careful is cheaper than being clever. The temptation to combine the four phases into one "atomic" pass fails because the backfill produces some surprising auto-summaries, the human reviewer needs time to override them, and flipping the validator before the human pass is done means every build between then and the override fails. The four-phase pattern is verbose but unambiguous: each phase has a clear success criterion, each phase is re-runnable, and the rollback at any phase is well-defined. Pay the verbosity cost; the alternative is a build outage on a non-emergency migration.
 

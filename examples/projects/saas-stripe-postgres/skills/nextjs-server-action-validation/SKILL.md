@@ -1,18 +1,22 @@
 ---
+# name: stable skill identifier. Match the skill directory name or the final namespace segment.
+# Lowercase letters/numbers with hyphen, slash, or colon separators.
 name: nextjs-server-action-validation
+# description: routing-facing summary of what the skill covers and when it activates.
+# Include concrete triggers and an explicit negative boundary; keep routing semantics out of prose-only ambiguity.
 description: "Use when writing a Next.js Server Action that accepts user-submitted form data, mutation parameters, or any client-originated input. Every Server Action is a public HTTP endpoint regardless of how it is called — validate with Zod and check authentication as the first two operations before touching the database. Do NOT use for GET route handlers or Server Components that fetch data (those have no user-supplied input); do NOT use for Stripe webhook handlers (use stripe-webhook-signature-verification instead)."
 
-# === v8 Classification (subject + deployment_target; polyhierarchy via subjects[]) — see ADR-0017 ===
+# === v8 Classification (subject + public; polyhierarchy via subjects[]) — see ADR-0017 ===
 # subject: primary browse shelf — what the skill teaches. One of twelve closed values:
 # backend-engineering / frontend-engineering / software-architecture / data-engineering / agent-ops / ai-engineering /
 # quality-assurance / design / reasoning-strategy / software-engineering-method / knowledge-organization / product-domain.
 subject: frontend-engineering
-# deployment_target: where this skill applies. One of two closed values:
-# portable (any project, repo-agnostic) /
-# project (one or more specific projects; requires populated `grounding` and `project[]`).
-deployment_target: portable
-# scope: free-text PRD-style statement of what the skill teaches and where it deploys
-# (v8 required; not an enum). Positive scope + portability/grounding + explicit exclusions.
+# public: publishability/private-data gate. Boolean.
+# true = publishable/shareable; false = private and excluded from public export.
+# Project anchoring is carried separately by non-empty `project[]` plus `grounding`.
+public: true
+# scope: free-text PRD-style statement of what the skill teaches and what it excludes.
+# (v8 required; not an enum). Mirrors Coverage + Do NOT Use When at frontmatter level.
 scope: "Server-side input validation for Next.js Server Actions in the saas-stripe-postgres example — schema-validate untrusted form/RPC payloads at the server boundary before any mutation. Excludes external-webhook signature verification (stripe-webhook-signature-verification) and database-layer RLS enforcement (postgres-rls-pattern)."
 # taxonomy_domain: optional hierarchical sub-path within `subject`. Slash-delimited
 # lowercase kebab-case segments. rename of the original v8 `domain`. Remove when the flat
@@ -64,26 +68,24 @@ examples:
   - "validate user input with Zod in a Server Action before writing to Postgres"
   - "my Server Action is being called directly via fetch — is that safe?"
 # anti_examples: near-miss prompts that should route ELSEWHERE.
-# Pair with relations.boundary to indicate the confusable territory's owner.
+# Pair with relations.suppresses (or legacy boundary alias) to name the confusable territory's owner.
 anti_examples:
   - "validate the stripe-signature header in a webhook route handler"
   - "fetch data in a Server Component to display on a page"
   - "write a GET route handler that returns public product data"
 # relations: typed graph edges to sibling skills. Current fields:
 # related (adjacency for browse / co-routing expansion) /
-# boundary (exclude listed skills from co-routing when THIS skill wins — name is inverse
-#           to mechanic; write reason as "I own this exclusively over X", not "use X instead";
-#           see ADR-0018 for rename rationale) /
+# suppresses (exclude listed skills from co-routing when THIS skill wins; write reason
+#             as "I own this exclusively over X", not "use X instead") /
+# boundary (DEPRECATED alias of suppresses, retained for unmigrated skills) /
 # verify_with (cross-check; co-loaded as one-hop expansion) /
 # depends_on (composition; transitive — A→B→C loads all three) /
 # broader / narrower (SKOS-style generalization) /
 # disjoint_with (mutual exclusion for incompatible ownership).
 relations:
-  boundary:
-    - skill: stripe-webhook-signature-verification
-      reason: "stripe-webhook-signature-verification validates Stripe's HMAC signature on webhook route handlers; this skill validates user-submitted input on Server Actions — different trust model, different entry point"
-    - skill: postgres-rls-pattern
-      reason: "postgres-rls-pattern governs the database layer; this skill governs the action layer — both are required in a secure Server Action, but at separate tiers"
+  related:
+    - stripe-webhook-signature-verification
+    - postgres-rls-pattern
   depends_on:
     - postgres-rls-pattern
   verify_with:
@@ -91,6 +93,16 @@ relations:
 ---
 
 # Next.js Server Action Validation
+
+## Concept of the skill
+
+**What it is:** The validation and authorization discipline for Next.js Server Actions that accept client-originated input.
+**Mental model:** A Server Action is a public POST endpoint wearing function-call syntax.
+**Why it exists:** Convenience syntax can hide the HTTP boundary, leading developers to skip auth, input validation, or org scoping.
+**What it is NOT:** It is not GET route handling, Server Component data fetching, or Stripe webhook verification.
+**Adjacent concepts:** Zod schemas, auth checks, org-scoped mutations, controlled error surfaces.
+**One-line analogy:** It is the security checkpoint every form submission crosses before touching the database.
+**Common misconception:** Only the project UI can call the action; any HTTP client can call the generated endpoint.
 
 ## Coverage
 
@@ -100,7 +112,7 @@ relations:
 - Org-scoping after authentication — verifying that `input.orgId` matches the session's org, not just that the user is logged in
 - Error surface control — how `try/catch` around database calls prevents internal errors from propagating to the client response
 
-## Philosophy
+## Philosophy of the skill
 
 Server Actions are a convenience feature that makes form submission feel like a function call. That convenience obscures a critical fact: the action is a public HTTP POST endpoint. A developer who writes `const { data } = await myAction(formData)` in a Client Component is writing what looks like a local function call, but the runtime sends an HTTP request that any script can replicate. Skipping auth or validation because "it's called from our own UI" is the same reasoning that made `getServerSideProps` data-fetching functions leaky in the Pages Router — the server boundary does not restrict callers.
 

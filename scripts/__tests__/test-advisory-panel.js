@@ -39,6 +39,9 @@ function fakeRunDirection({ direction, generatorModel, graderModel }) {
     grader_family: graderModel,
     resolved_model: generatorModel,
     verdict: advisory && generatorModel === 'minimax' ? 'REDUNDANT' : 'APPLICABLE',
+    certification_tier: 'certifying',
+    calibrated: true,
+    red_herring_cases_total: 1,
     execution_profile: { tools: true, research: true, repoScope: '.', cwd: '.' },
   };
 }
@@ -67,8 +70,8 @@ for (const m of ['gemini', 'deepseek-flash', 'mimo', 'gemini-flash']) {
 
 // 3. Display names spell out full model names (never the alias).
 ok('opus -> Opus 4.8', resolveDisplayName('opus') === 'Opus 4.8');
-ok('strongest-reasoning-grader -> Opus 4.8', resolveDisplayName('strongest-reasoning-grader') === 'Opus 4.8');
-ok('codex-current -> GPT-5.5', resolveDisplayName('codex-current') === 'GPT-5.5');
+ok('opus -> Opus 4.8', resolveDisplayName('opus') === 'Opus 4.8');
+ok('gpt-5.5 -> GPT-5.5', resolveDisplayName('gpt-5.5') === 'GPT-5.5');
 ok('gemini -> Gemini 3.1 Pro', resolveDisplayName('gemini') === 'Gemini 3.1 Pro');
 ok('minimax -> MiniMax M3', resolveDisplayName('minimax') === 'MiniMax M3');
 ok('big-pickle descriptor display remains available', resolveDisplayName('big-pickle') === 'Big Pickle');

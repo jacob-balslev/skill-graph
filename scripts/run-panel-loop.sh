@@ -379,7 +379,7 @@ drain_worklist() {
   # a stale lock no longer BLOCKS a new run — but clearing the stale lock FILES at startup is
   # still good hygiene (the drain is the sole panel runner; no panel slot is legitimately held
   # at startup). The trap + mid-loop reap below (SKI-234) cover orphans that arise DURING the run.
-  for _m in opus codex-current gemini gemini-flash minimax big-pickle deepseek-flash mimo nemotron skill-audit-loop; do
+  for _m in opus gpt-5.5 gemini gemini-flash minimax big-pickle deepseek-flash mimo nemotron skill-audit-loop; do
     rm -f "$DEV"/.claude/agent-memory/skill-audit-*--"$_m" 2>/dev/null || true
   done
   # SKI-234: release THIS run's in-flight claim if the drain is interrupted (SIGINT/SIGTERM) or

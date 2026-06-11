@@ -7,14 +7,14 @@
  *      the top-1 winner MUST be this skill. Else: positive-class FAIL.
  *   2. Run every `activation.anti_examples[]` entry through skill-graph-route →
  *      the top-1 winner MUST NOT be this skill. A non-null winner named in
- *      `relations.boundary[]` is recorded as a boundary-target pass; any other
+ *      `relations.suppresses[]` is recorded as a boundary-target pass; any other
  *      non-self winner is still a pass for this skill's hard-negative contract.
  *      A null winner is COVERAGE_GAP (informational, not a FAIL — the anti-
  *      example correctly avoids this skill but nothing else absorbs it).
  *   3. Emit a per-skill verdict + per-case evidence block.
  *
  * This script is the rent-proof for L1's `examples`, `anti_examples`, and
- * `relations.boundary.{skill, reason}` fields. Until this script runs,
+ * `relations.suppresses.{skill, reason}` fields. Until this script runs,
  * `routing_eval: present` is a self-assertion a human reviewer cannot check.
  *
  * Usage:
@@ -134,7 +134,7 @@ function evaluateNegative(manifest, excludedSkill, prompt, boundaryTargets, toda
       prompt,
       verdict: 'COVERAGE_GAP',
       actual: null,
-      reason: `no skill absorbed this anti_example — consider a boundary target the router can resolve (${excludedSkill}.relations.boundary: [${boundaryTargets.join(', ') || 'empty'}])`,
+      reason: `no skill absorbed this anti_example — consider a suppression target the router can resolve (${excludedSkill}.relations.suppresses: [${boundaryTargets.join(', ') || 'empty'}])`,
     };
   }
 
@@ -144,7 +144,7 @@ function evaluateNegative(manifest, excludedSkill, prompt, boundaryTargets, toda
       prompt,
       verdict: 'PASS',
       actual: winner,
-      reason: `routed to ${winner}, named in ${excludedSkill}.relations.boundary`,
+      reason: `routed to ${winner}, named in ${excludedSkill}.relations.suppresses`,
     };
   }
 
@@ -153,7 +153,7 @@ function evaluateNegative(manifest, excludedSkill, prompt, boundaryTargets, toda
     prompt,
     verdict: 'PASS',
     actual: winner,
-    reason: `routed away to ${winner}; not named in ${excludedSkill}.relations.boundary (${boundaryTargets.join(', ') || 'empty'}), so this is an off-boundary anti-example pass rather than a boundary-target pass`,
+    reason: `routed away to ${winner}; not named in ${excludedSkill}.relations.suppresses (${boundaryTargets.join(', ') || 'empty'}), so this is an off-boundary anti-example pass rather than a boundary-target pass`,
   };
 }
 
@@ -207,9 +207,13 @@ function evaluateSkill(manifest, skillEntry, todayISO) {
   };
 }
 
-/** Extract boundary skill names, handling v3 `{skill, reason}` objects and v2 bare strings. */
+/** Extract suppression skill names, handling v3 `{skill, reason}` objects and v2 bare strings. */
 function extractBoundaryTargets(skillEntry) {
-  const b = (skillEntry.relations && skillEntry.relations.boundary) || [];
+  const b = (skillEntry.relations && (
+    Array.isArray(skillEntry.relations.suppresses)
+      ? skillEntry.relations.suppresses
+      : skillEntry.relations.boundary
+  )) || [];
   const out = [];
   for (const item of b) {
     if (typeof item === 'string') out.push(item);

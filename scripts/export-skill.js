@@ -48,9 +48,9 @@ const SKILL_MD_BASE_FIELDS = ['name', 'description', 'license', 'compatibility',
 // are not in either list are placed under metadata: too (fail-safe).
 //
 // Current v8 authored fields include: `subject` (primary browse shelf),
-// `deployment_target` (portable | project), `taxonomy_domain` (hierarchical
-// sub-path within subject), and `project[]`/`repo[]` (belonging-entity
-// references). The inert per-skill
+// `public` (publishability/private-data gate), `scope` (free-text coverage),
+// `taxonomy_domain` (hierarchical sub-path within subject), and `project[]` /
+// `repo[]` (belonging-entity references). The inert per-skill
 // `routing_bundles` field was removed (SKI-286 — 0 acting consumer; activation
 // bundles live in the library-level skill-injector routing config). Pre-v8 fields
 // `category`, `domain`, and `family` remain in the set so the exporter can still read older
@@ -63,10 +63,12 @@ const SKILL_GRAPH_EXTENSION_FIELDS = new Set([
   'version',
   // v7 classification fields (type/archetype/category/domain/family) were removed in
   // the v8 clean cut (ADR-0017; schema 0 occurrences) — not listed here. v8 uses
-  // subject / subjects / deployment_target / taxonomy_domain (below).
+  // subject / subjects / public / taxonomy_domain (below).
   'scope',
   'subject',
   'subjects',
+  'public',
+  // Retired alias retained for back-compat exports of unmigrated skills.
   'deployment_target',
   'taxonomy_domain',
   'owner',

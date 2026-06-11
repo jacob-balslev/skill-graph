@@ -26,7 +26,7 @@
 |---|---|
 | Project / workspace | `/Users/jacobbalslev/Development` |
 | Environment | **Local** (NOT worktree): the claim/ledger system, the per-skill run-root, and the `~/Development/skills` CONTENT commits are shared state on the main checkout; a worktree would orphan claims and strand commits. |
-| Model | the `codex-current` role — whatever model the Codex app currently serves (do not pin a version) |
+| Model | the `gpt-5.5` role — whatever model the Codex app currently serves (do not pin a version) |
 | Reasoning | `high` (not the maximum tier — broad loop supervision does not benefit and it slows the wake) |
 | Cadence | scheduler-owned (e.g. nightly); the prompt NEVER respawns itself |
 
@@ -201,7 +201,7 @@ RUN (the driver owns claim -> panel -> eval-guarded apply -> CONTENT commit -> r
 - Full advisory panel is the default. Do not pass --no-advisory for this automation unless the
   user explicitly asks for a fast floor-only run.
 - Full panel semantics: the mandatory frontier pair is the configured FRONTIER_PAIR
-  (Opus plus codex-current, the Codex/GPT app's current GPT role; do not pin or restate
+  (Opus plus gpt-5.5, the Codex/GPT app's current GPT role; do not pin or restate
   a dated model version here). Gemini and OpenCode free models are advisory. Every participating model
   performs its own research, proposal/recommendation, cross-review, and revision through the
   driver. Advisory models widen evidence and recommendations; the mandatory frontier pair

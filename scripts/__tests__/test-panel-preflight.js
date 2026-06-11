@@ -38,7 +38,7 @@ check('passes with mandatory CLIs, writable scratch state, and public workspace 
     skillGraphRoot: sg,
     workspaceRoot: ws,
     skillDir,
-    mandatoryModels: ['opus', 'codex-current'],
+    mandatoryModels: ['opus', 'gpt-5.5'],
     advisoryModels: [],
     env: { HOME: home, CODEX_HOME: path.join(home, '.codex') },
     osFenceSupported: false,
@@ -64,7 +64,7 @@ check('fails when mandatory CLI is missing or state dir is not writable', () => 
     skillGraphRoot: sg,
     workspaceRoot: ws,
     skillDir,
-    mandatoryModels: ['opus', 'codex-current'],
+    mandatoryModels: ['opus', 'gpt-5.5'],
     env: { HOME: blockedParent, CODEX_HOME: path.join(blockedParent, '.codex') },
     osFenceSupported: false,
     publicWorkspace: { active: false },
@@ -99,7 +99,7 @@ check('advisory CLI list uses registry backends instead of falling through to cl
     skillGraphRoot: sg,
     workspaceRoot: ws,
     skillDir,
-    mandatoryModels: ['opus', 'codex-current'],
+    mandatoryModels: ['opus', 'gpt-5.5'],
     advisoryModels: ['minimax', 'gemini'],
     env: { HOME: home, CODEX_HOME: path.join(home, '.codex') },
     osFenceSupported: true,
@@ -152,7 +152,7 @@ check('runPanelPreflight authProbe gates mandatory (error) vs advisory (warning)
     skillGraphRoot: sg,
     workspaceRoot: ws,
     skillDir,
-    mandatoryModels: ['opus', 'codex-current'],
+    mandatoryModels: ['opus', 'gpt-5.5'],
     advisoryModels: ['gemini'],
     env: { HOME: home, CODEX_HOME: path.join(home, '.codex') },
     osFenceSupported: true,
@@ -174,6 +174,84 @@ check('runPanelPreflight authProbe gates mandatory (error) vs advisory (warning)
     spawn: fakeSpawn(['claude']),
   });
   assert.strictEqual(noProbe.auth, undefined, 'no auth block when authProbe is off');
+  fs.rmSync(ws, { recursive: true, force: true });
+});
+
+check('scratch CLI home auth failures are labeled as bridge failures, not real logout', () => {
+  const ws = fs.mkdtempSync(path.join(os.tmpdir(), 'preflight-scratch-auth-'));
+  const sg = path.join(ws, 'skill-graph');
+  const skillDir = path.join(ws, 'skills', 'skills', 'quality-assurance', 'a11y');
+  const scratchHome = path.join(ws, 'scratch-home');
+  fs.mkdirSync(skillDir, { recursive: true });
+  fs.mkdirSync(sg, { recursive: true });
+  fs.mkdirSync(path.join(scratchHome, '.claude'), { recursive: true });
+  fs.mkdirSync(path.join(scratchHome, '.codex'), { recursive: true });
+  const spawn = (cmd, args = []) => {
+    if (cmd === 'which') return { status: 0, stdout: `/bin/${args[0]}\n` };
+    if (cmd === 'claude') return { status: 1, stdout: '', stderr: '' };
+    if (cmd === 'codex') return { status: 0, stdout: 'ok', stderr: '' };
+    return { status: 0, stdout: '' };
+  };
+  const result = runPanelPreflight({
+    skillGraphRoot: sg,
+    workspaceRoot: ws,
+    skillDir,
+    mandatoryModels: ['opus', 'gpt-5.5'],
+    advisoryModels: [],
+    env: { HOME: scratchHome, CODEX_HOME: path.join(scratchHome, '.codex') },
+    modelCliHome: { active: true, mode: 'scratch', homeDir: scratchHome },
+    osFenceSupported: true,
+    publicWorkspace: { active: false },
+    spawn,
+    authProbe: true,
+  });
+  assert.strictEqual(result.ok, false);
+  assert.strictEqual(result.auth.claude.scratch_bridge, true);
+  assert.ok(/scratch CLI home/.test(result.auth.claude.hint));
+  assert.ok(result.errors.some((e) => /scratch CLI home/.test(e) && /does NOT prove the real claude CLI is logged out/.test(e)));
+  assert.ok(!result.errors.some((e) => /run `claude` once/.test(e)));
+  fs.rmSync(ws, { recursive: true, force: true });
+});
+
+check('scratch mode can use real HOME for Claude and scratch HOME for other CLIs', () => {
+  const ws = fs.mkdtempSync(path.join(os.tmpdir(), 'preflight-per-cli-env-'));
+  const sg = path.join(ws, 'skill-graph');
+  const skillDir = path.join(ws, 'skills', 'skills', 'quality-assurance', 'a11y');
+  const realHome = path.join(ws, 'real-home');
+  const scratchHome = path.join(ws, 'scratch-home');
+  const scratchEnv = {
+    HOME: scratchHome,
+    CODEX_HOME: path.join(scratchHome, '.codex'),
+    XDG_DATA_HOME: path.join(scratchHome, '.local', 'share'),
+  };
+  fs.mkdirSync(skillDir, { recursive: true });
+  fs.mkdirSync(sg, { recursive: true });
+  fs.mkdirSync(path.join(realHome, '.claude'), { recursive: true });
+  fs.mkdirSync(scratchEnv.CODEX_HOME, { recursive: true });
+  const seen = [];
+  const spawn = (cmd, args = [], opts = {}) => {
+    if (cmd === 'which') return { status: 0, stdout: `/bin/${args[0]}\n` };
+    if (cmd === 'claude' || cmd === 'codex') seen.push({ cmd, home: opts.env && opts.env.HOME, codexHome: opts.env && opts.env.CODEX_HOME });
+    return { status: 0, stdout: cmd === 'claude' || cmd === 'codex' ? 'ok' : '' };
+  };
+  const result = runPanelPreflight({
+    skillGraphRoot: sg,
+    workspaceRoot: ws,
+    skillDir,
+    mandatoryModels: ['opus', 'gpt-5.5'],
+    advisoryModels: [],
+    env: scratchEnv,
+    envByCli: { claude: {}, codex: scratchEnv },
+    modelCliHome: { active: true, mode: 'scratch', homeDir: scratchHome },
+    osFenceSupported: true,
+    publicWorkspace: { active: false },
+    spawn,
+    authProbe: true,
+  });
+  assert.strictEqual(result.ok, true);
+  assert.strictEqual(seen.find((x) => x.cmd === 'claude').home, process.env.HOME);
+  assert.strictEqual(seen.find((x) => x.cmd === 'codex').home, scratchHome);
+  assert.strictEqual(seen.find((x) => x.cmd === 'codex').codexHome, scratchEnv.CODEX_HOME);
   fs.rmSync(ws, { recursive: true, force: true });
 });
 

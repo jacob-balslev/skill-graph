@@ -257,7 +257,7 @@ function assertSourceRootIsPortable(sourceDir, workspaceConfig) {
   if (operationalFraction > GUARD_OPERATIONAL_THRESHOLD) {
     throw new Error(
       `Root-resolution guard: resolved source root appears to be the internal operational\n` +
-      `  skill library (${operationalCount}/${samplePaths.length} sampled skills have deployment_target:project/scope:operational/codebase).\n` +
+      `  skill library (${operationalCount}/${samplePaths.length} sampled skills are public:false or legacy internal/project-scoped).\n` +
       `  Resolved source root: ${sourceDir}\n` +
       `  Generating from this root would include internal sales-hub/ references and fail\n` +
       `  the privacy gate. The marketplace export must run against the clean portable library.\n` +
@@ -460,7 +460,8 @@ function provenanceForSkill(sourceRelPath) {
 // Anthropic's auto-invocation runtime only pre-loads `name + description` at
 // startup (https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview).
 // The negative-boundary signal carried by the workspace's typed fields
-// (anti_examples, relations.boundary) is invisible to it. This projection
+// (anti_examples, relations.suppresses; legacy relations.boundary aliases are
+// normalized) is invisible to it. This projection
 // synthesizes that signal into the exported description while keeping the
 // canonical SKILL.md source unchanged.
 //
@@ -480,9 +481,9 @@ const MENTIONED_SLUG_RE = /\(use ([a-z][a-z0-9-]*[a-z0-9])\)/g;
 /**
  * Scan a description for `(use <slug>)` mentions so synthesis can skip slugs
  * the canonical description already names. Without this, the exporter would
- * stack `Do NOT use for X (use Y).` twice for the same boundary slug when
+ * stack `Do NOT use for X (use Y).` twice for the same suppression slug when
  * the author chose to name it in canonical prose AND also added it to
- * relations.boundary.
+ * relations.suppresses.
  *
  * @param {string} description Canonical or override description text.
  * @returns {Set<string>} Slugs already mentioned via `(use <slug>)`.
@@ -500,17 +501,17 @@ function collectMentionedSlugs(description) {
 
 /**
  * Synthesize a `Do NOT use for X (use Y).` tail from typed fields. Reads
- * skill.fm.anti_examples and skill.fm.relations.boundary; dedupes against
+ * skill.fm.anti_examples and skill.fm.relations.suppresses; dedupes against
  * slugs already mentioned in the base description.
  *
- * Shape A boundary entries (bare slug, no reason) are skipped — the slug
+ * Shape A suppression entries (bare slug, no reason) are skipped — the slug
  * alone is too information-poor for a meaningful tail. To project a
- * boundary entry, populate it as Shape B with an `owns` reason clause.
+ * suppression entry, populate it as Shape B with an `owns` reason clause.
  *
  * @param {object} skill Skill record with .fm.
  * @param {Set<string>} alreadyMentioned Slugs to dedupe against; mutated as
  *   the function adds new slugs to prevent same-pass duplication between
- *   anti_examples and boundary.
+ *   anti_examples and suppresses.
  * @returns {{ tail: string, sources: Array<string> }}
  */
 function synthesizeBoundaryTail(skill, alreadyMentioned) {
@@ -532,8 +533,11 @@ function synthesizeBoundaryTail(skill, alreadyMentioned) {
     sources.add('anti_examples');
   }
 
-  // relations.boundary: array of strings (Shape A) or objects { skill, reason } (Shape B).
-  const boundary = Array.isArray(skill.fm.relations && skill.fm.relations.boundary)
+  // relations.suppresses: array of strings (Shape A) or objects { skill, reason } (Shape B).
+  // Fall back to the deprecated boundary alias for unmigrated skills.
+  const boundary = Array.isArray(skill.fm.relations && skill.fm.relations.suppresses)
+    ? skill.fm.relations.suppresses
+    : Array.isArray(skill.fm.relations && skill.fm.relations.boundary)
     ? skill.fm.relations.boundary
     : [];
   for (const entry of boundary) {

@@ -5,7 +5,7 @@
  * update-model-roster.js
  *
  * The model roster is single-source: Claude family aliases (`opus`/`sonnet`/
- * `haiku`) and the `codex-current` role track "latest" automatically (the CLI/app
+ * `haiku`) and the `gpt-5.5` role track "latest" automatically (the CLI/app
  * resolves the newest model — no edit needed when a new Claude or GPT ships).
  *
  * Providers WITHOUT a CLI latest-alias (Gemini, and the OpenCode GPT pin) keep
@@ -48,9 +48,9 @@ function printRoster() {
   console.log(`Model roster — registry version ${REGISTRY_VERSION}\n`);
   console.log('Auto-latest (no pin to maintain):');
   console.log('  opus / sonnet / haiku          → newest Claude (claude CLI alias)');
-  console.log('  strongest-reasoning-grader     → newest Opus  (the evaluator)');
-  console.log('  representative-generator       → newest Sonnet');
-  console.log('  codex-current                  → newest GPT Codex serves (model flag omitted)\n');
+  console.log('  opus     → newest Opus  (the evaluator)');
+  console.log('  opus       → newest Sonnet');
+  console.log('  gpt-5.5                  → newest GPT Codex serves (model flag omitted)\n');
   console.log('Single-source pins in MODEL_LATEST (bump with --set <key>=<id>):');
   for (const [k, v] of Object.entries(MODEL_LATEST)) {
     console.log(`  ${k.padEnd(14)} = ${v}`);
@@ -65,7 +65,7 @@ function printRoster() {
   const { DISPLAY_NAMES } = require(CANONICAL);
   if (DISPLAY_NAMES) {
     console.log('\nHuman display names in DISPLAY_NAMES (OUTPUT only — board minutes, audit');
-    console.log('receipts). The CLI-resolving aliases (opus/codex-current) are display PINS:');
+    console.log('receipts). The CLI-resolving aliases (opus/gpt-5.5) are display PINS:');
     console.log('hand-edit DISPLAY_NAMES in BOTH model-provider.js copies when a new model');
     console.log('ships (e.g. Opus 4.8 → Opus 4.9). This never affects dispatch/resolution:');
     for (const [k, v] of Object.entries(DISPLAY_NAMES)) {

@@ -65,7 +65,7 @@ check('model_run_coverage: records mandatory and advisory model participation se
     evalMode: 'application',
     result: {
       registry_version: '2026-06-11',
-      mandatory_models: ['opus', 'codex-current'],
+      mandatory_models: ['opus', 'gpt-5.5'],
       advisory_models_requested: ['gemini', 'mimo'],
       advisory_models_alive: ['gemini'],
       advisory_failures: [
@@ -83,7 +83,7 @@ check('model_run_coverage: records mandatory and advisory model participation se
   });
 
   assert.strictEqual(coverage.models.opus.operations.panel.status, 'completed');
-  assert.strictEqual(coverage.models['codex-current'].operations.panel.certifying, true);
+  assert.strictEqual(coverage.models['gpt-5.5'].operations.panel.certifying, true);
   assert.strictEqual(coverage.models.gemini.operations.panel.status, 'completed');
   assert.strictEqual(coverage.models.mimo.operations.panel.status, 'failed');
   assert.strictEqual(coverage.models.mimo.operations.panel.failure_reason, 'no-document');
@@ -96,7 +96,7 @@ check('model_run_coverage: records mandatory and advisory model participation se
     at: '2026-06-11T12:00:00.000Z',
     result: {
       registry_version: '2026-06-11',
-      mandatory_models: ['opus', 'codex-current'],
+      mandatory_models: ['opus', 'gpt-5.5'],
       advisory_models_requested: [],
       advisory_models_alive: [],
       advisory_failures: [],

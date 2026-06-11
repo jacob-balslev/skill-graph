@@ -1,10 +1,29 @@
 ---
+# name: stable skill identifier. Match the skill directory name or the final namespace segment.
+# Lowercase letters/numbers with hyphen, slash, or colon separators.
 name: minimal-capability
+# description: routing-facing summary of what the skill covers and when it activates.
+# Include concrete triggers and an explicit negative boundary; keep routing semantics out of prose-only ambiguity.
 description: "Use as the smallest v8-compat capability fixture for skill-graph package tests. Activate this skill when verifying that lint, manifest generation, and routing accept the bare-minimum required frontmatter. Do NOT use as a production skill (use a real capability skill from the canonical library)."
+
+# === v8 Classification (subject + public; polyhierarchy via subjects[]) — see ADR-0017 ===
+# subject: primary browse shelf — what the skill teaches. One of twelve closed values:
+# backend-engineering / frontend-engineering / software-architecture / data-engineering / agent-ops / ai-engineering /
+# quality-assurance / design / reasoning-strategy / software-engineering-method / knowledge-organization / product-domain.
 subject: backend-engineering
+# public: publishability/private-data gate. Boolean.
+# true = publishable/shareable; false = private and excluded from public export.
+# Project anchoring is carried separately by non-empty `project[]` plus `grounding`.
 public: true
+# scope: free-text PRD-style statement of what the skill teaches and what it excludes.
+# (v8 required; not an enum). Mirrors Coverage + Do NOT Use When at frontmatter level.
 scope: "Minimal v8 schema fixture for validating lint, manifest generation, routing, and standalone audit smoke tests. Out: production skill guidance."
+# stability: lifecycle marker. One of:
+# experimental (active development) / stable (production-ready) /
+# frozen (no further changes expected) / deprecated.
+# When `deprecated`, schema's allOf REQUIRES `superseded_by: <real-skill-name>`.
 stability: experimental
+# license: SPDX license identifier (e.g., MIT, Apache-2.0).
 license: Apache-2.0
 ---
 

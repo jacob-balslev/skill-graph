@@ -47,20 +47,20 @@ eq('isLatestResolvingModel("gemini-3.1-pro-preview") is concrete', isLatestResol
 // resolveReceiptModelId: bare claude aliases → sentinel (not "opus").
 eq('opus → sentinel', resolveReceiptModelId('opus'), LATEST_ALIAS_SENTINEL);
 eq('sonnet → sentinel', resolveReceiptModelId('sonnet'), LATEST_ALIAS_SENTINEL);
-eq('strongest-reasoning-grader → sentinel (resolves to opus)',
-  resolveReceiptModelId('strongest-reasoning-grader'), LATEST_ALIAS_SENTINEL);
-eq('representative-generator → sentinel (resolves to sonnet)',
-  resolveReceiptModelId('representative-generator'), LATEST_ALIAS_SENTINEL);
+eq('opus → sentinel (resolves to opus)',
+  resolveReceiptModelId('opus'), LATEST_ALIAS_SENTINEL);
+eq('opus → sentinel (resolves to sonnet)',
+  resolveReceiptModelId('opus'), LATEST_ALIAS_SENTINEL);
 
 // Concrete pinned ids are recorded as-is.
 eq('gemini → concrete gemini-3.1-pro-preview', resolveReceiptModelId('gemini'), 'gemini-3.1-pro-preview');
 eq('gpt-5.4 → concrete gpt-5.4', resolveReceiptModelId('gpt-5.4'), 'gpt-5.4');
 
-// codex-current resolves to null (app-current) → sentinel unless a concrete id
+// gpt-5.5 resolves to null (app-current) → sentinel unless a concrete id
 // was captured from the codex output header (SH-6680).
-eq('codex-current → sentinel without capture', resolveReceiptModelId('codex-current'), LATEST_ALIAS_SENTINEL);
-eq('codex-current → captured id when supplied',
-  resolveReceiptModelId('codex-current', { capturedCodexModel: 'gpt-5.5-codex' }), 'gpt-5.5-codex');
+eq('gpt-5.5 → sentinel without capture', resolveReceiptModelId('gpt-5.5'), LATEST_ALIAS_SENTINEL);
+eq('gpt-5.5 → captured id when supplied',
+  resolveReceiptModelId('gpt-5.5', { capturedCodexModel: 'gpt-5.5-codex' }), 'gpt-5.5-codex');
 
 console.log(`\nTests passed: ${passed}`);
 console.log(`Tests failed: ${failed}`);

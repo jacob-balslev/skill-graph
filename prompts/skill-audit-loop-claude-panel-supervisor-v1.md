@@ -26,7 +26,7 @@
 |---|---|
 | Project / workspace | `/Users/jacobbalslev/Development` (launch Claude Code from HERE, not from inside `skill-graph/` — the orchestration brain, rules, skills, and memory are cwd-keyed to this root) |
 | Environment | **Local** (NOT a worktree): the claim/ledger system, the per-skill run-root, and the `~/Development/skills` CONTENT commits are shared state on the main checkout; a worktree orphans claims and strands commits. |
-| Supervisor model | `opus` (Claude MAX, the `strongest-reasoning-grader` tier) — for supervising the driver; the panel's own mandatory frontiers are resolved by the engine (`FRONTIER_PAIR`), do not pin them here |
+| Supervisor model | `opus` (Claude MAX, the `opus` tier) — for supervising the driver; the panel's own mandatory frontiers are resolved by the engine (`FRONTIER_PAIR`), do not pin them here |
 | Cadence | session- or scheduler-owned; the prompt NEVER respawns itself |
 
 **Claude-runtime facts (the adaptations vs Codex/OpenCode):**
@@ -132,8 +132,8 @@ REPORT (end of session)
 
 ## Rate-limit resilience (Opus rate-limited)
 
-The panel's certifying core is still the two-frontier pair `FRONTIER_PAIR = ['opus', 'codex-current']`
+The panel's certifying core is still the two-frontier pair `FRONTIER_PAIR = ['opus', 'gpt-5.5']`
 with a **bidirectional** Opus⇄GPT eval. When Opus is rate-limited, `--degrade-on-budget` lets the
-driver run GPT (`codex-current`) as the sole available frontier, cap the result at `PROVISIONAL`,
+driver run GPT (`gpt-5.5`) as the sole available frontier, cap the result at `PROVISIONAL`,
 and record `regrade_required` until Opus returns for the full two-frontier re-grade. This keeps
 Codex/OpenCode drains moving without pretending a one-frontier run is certified.

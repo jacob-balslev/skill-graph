@@ -43,7 +43,7 @@
     },
     {
       "id": 3,
-      "prompt": "A project-targeted skill declares `deployment_target: project` but has no `grounding.truth_sources`. Which graph-audit check should flag this, and why is a project-targeted skill different from a portable one?",
+      "prompt": "A project-anchored skill declares non-empty `project[]` but has no `grounding.truth_sources`. Which graph-audit check should flag this, and why is a project-anchored skill different from an ambient one?",
       "dimension": "purpose",
       "substance": "domain",
       "calibration": "semantic",
@@ -114,7 +114,7 @@
     },
     {
       "id": 8,
-      "prompt": "A synthetic skill has valid YAML and a matching directory name, but its `subject` is `quality` and `deployment_target` is `repo`. Predict the graph-audit result and name the schema rule being violated.",
+      "prompt": "A synthetic skill has valid YAML and a matching directory name, but its `subject` is `quality` and `public` is the string `repo`. Predict the graph-audit result and name the schema rule being violated.",
       "dimension": "application",
       "substance": "domain",
       "calibration": "semantic",

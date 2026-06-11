@@ -7,15 +7,15 @@
  * specifies (docs/plans/skill-audit-loop-end-to-end-completion-2026-05-30.md
  * § Decision A; enums per docs/verdict-semantics.md):
  *
- *   1. Proven-negative application verdicts (HARMFUL/REDUNDANT/FALSE_POSITIVE)
- *      are gated OUT of routing.
+ *   1. Proven-dangerous application verdicts (HARMFUL/FALSE_POSITIVE)
+ *      are gated OUT of routing; no-lift verdicts stay routable.
  *   2. UNVERIFIED stays routable ("unknown" is not "bad").
- *   3. MIXED stays routable (it is not proven-negative).
+ *   3. MIXED stays routable (it is not proven-dangerous).
  *   4. Hard integrity blocks: structural_verdict=FAIL and truth_verdict=BROKEN
  *      exclude a skill; UNVERIFIED structural/truth still routes.
  *   5. APPLICABLE rank-weights (gentle additive boost) so it wins a keyword tie
  *      over an alphabetically-earlier UNVERIFIED skill.
- *   6. A negative verdict EXPIRES — by age (> NEGATIVE_VERDICT_EXPIRY_DAYS) or by
+ *   6. A dangerous verdict EXPIRES — by age (> NEGATIVE_VERDICT_EXPIRY_DAYS) or by
  *      the skill changing after the grade (last_changed > eval_last_run.at) — so a
  *      since-fixed skill is not tombstoned.
  */
@@ -66,13 +66,15 @@ const recentReceipt = { at: '2026-05-20' };   // 11 days before TODAY — well i
 const staleReceipt = { at: '2026-01-01' };     // 150 days before TODAY — past the 90d expiry window
 
 // ---------------------------------------------------------------------------
-// 1–4: gate-out negatives, keep UNVERIFIED/MIXED, hard integrity blocks.
+// 1–4: gate-out dangerous verdicts, keep UNVERIFIED/MIXED/no-lift, hard integrity blocks.
 // ---------------------------------------------------------------------------
 const gateSkills = [
   widgetSkill('app-unverified', { application_verdict: 'UNVERIFIED' }),
   widgetSkill('app-mixed', { application_verdict: 'MIXED' }),
   widgetSkill('app-harmful', { application_verdict: 'HARMFUL', eval_last_run: recentReceipt }),
   widgetSkill('app-redundant', { application_verdict: 'REDUNDANT', eval_last_run: recentReceipt }),
+  widgetSkill('app-ceiling', { application_verdict: 'NOT_DISCRIMINATED_CEILING', eval_last_run: recentReceipt }),
+  widgetSkill('app-equivalent', { application_verdict: 'EQUIVALENT_ON_FRONTIER', eval_last_run: recentReceipt }),
   widgetSkill('app-false-positive', { application_verdict: 'FALSE_POSITIVE', eval_last_run: recentReceipt }),
   widgetSkill('struct-fail', { structural_verdict: 'FAIL', application_verdict: 'UNVERIFIED' }),
   widgetSkill('truth-broken', { truth_verdict: 'BROKEN', application_verdict: 'UNVERIFIED' }),
@@ -86,14 +88,16 @@ for (const e of r.excluded) {
 }
 
 assert(selectedNames.has('app-unverified'), 'UNVERIFIED application_verdict stays routable (selected)');
-assert(selectedNames.has('app-mixed'), 'MIXED application_verdict stays routable (not proven-negative)');
+assert(selectedNames.has('app-mixed'), 'MIXED application_verdict stays routable (not proven-dangerous)');
+assert(selectedNames.has('app-redundant'), 'REDUNDANT stays routable as legacy no-lift evidence, not a tombstone');
+assert(selectedNames.has('app-ceiling'), 'NOT_DISCRIMINATED_CEILING stays routable (inconclusive baseline saturation)');
+assert(selectedNames.has('app-equivalent'), 'EQUIVALENT_ON_FRONTIER stays routable (model/case-set scoped no-lift)');
 assert(excludedByRole['app-harmful'] === 'behavior_excluded', 'HARMFUL is gated out (behavior_excluded)');
-assert(excludedByRole['app-redundant'] === 'behavior_excluded', 'REDUNDANT is gated out (behavior_excluded)');
 assert(excludedByRole['app-false-positive'] === 'behavior_excluded', 'FALSE_POSITIVE is gated out (behavior_excluded)');
 assert(excludedByRole['struct-fail'] === 'integrity_excluded', 'structural_verdict=FAIL is a hard integrity block');
 assert(excludedByRole['truth-broken'] === 'integrity_excluded', 'truth_verdict=BROKEN is a hard integrity block');
 
-// A negative-exclusion reason names the verdict (the router explains WHY).
+// A dangerous-exclusion reason names the verdict (the router explains WHY).
 const harmfulEntry = r.excluded.find(e => e.skill.name === 'app-harmful');
 assert(harmfulEntry && /application_verdict=HARMFUL/.test(harmfulEntry.reason),
   'behavior-excluded reason names the application_verdict');
@@ -121,7 +125,7 @@ assert(rTieNoBoost.selected.length === 1 && rTieNoBoost.selected[0].skill.name =
   'UNVERIFIED skill routes when it is the only candidate (no popularity-contest penalty)');
 
 // ---------------------------------------------------------------------------
-// 6: negative-verdict expiry — by age and by post-grade change.
+// 6: dangerous-verdict expiry — by age and by post-grade change.
 // ---------------------------------------------------------------------------
 const expirySkills = [
   // HARMFUL but the grade is 150 days old (> 90d) → expired → routes again.

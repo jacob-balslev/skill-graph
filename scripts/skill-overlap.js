@@ -14,17 +14,15 @@
  *      query about "foreign key" should reach both data-modeling and
  *      entity-relationship-modeling, and the router disambiguates by score
  *      plus the typed relation edges between them. A shared keyword is
- *      therefore NOT a duplicate and NOT a defect — it is a prompt to confirm
- *      the co-activating skills declare an explicit relations.boundary /
- *      relations.related edge so the graph can route between them. Emitted as
- *      advisory warnings for author review; never run under --strict in
- *      `npm run verify`, so they block nothing.
+ *      therefore NOT a duplicate and NOT a defect. It may be useful context
+ *      when diagnosing a real routing miss, but it is never a warning and
+ *      --strict does not promote it.
  *
- *      CORRECT response to a shared-keyword pair: add or verify a relations
- *      edge (boundary — "use that instead because…"; or related), or accept
- *      it as legitimate shared vocabulary. WRONG response: deleting the
- *      keyword from one skill to shrink this count — that strips recall and
- *      degrades routing. Do not do it.
+ *      CORRECT response to a shared-keyword pair: do nothing by default.
+ *      If there is a concrete routing miss, inspect the router score and
+ *      relation edges, then add a relation only when it expresses real skill
+ *      semantics. WRONG response: deleting the keyword from one skill to
+ *      shrink this count — that strips recall and degrades routing. Do not do it.
  *
  *   3. paths — glob match. Two skills claiming the same file surface
  *      will both activate when that surface is touched. Exact-string
@@ -36,13 +34,14 @@
  * This script validates cross-skill routing hygiene.
  *
  * Self-contained. Only uses Node built-ins — no external dependencies.
- * Exit 0 on success (no errors), 1 on any trigger/keyword/path error.
- * With --strict, warnings are promoted to errors.
+ * Exit 0 on success (no errors), 1 on any trigger/path error.
+ * With --strict, path warnings are promoted to errors; keyword recall remains OK.
  *
  * Usage:
  *   node scripts/skill-overlap.js
  *   node scripts/skill-overlap.js --include-template   # also scan skill-metadata-template.md
  *   node scripts/skill-overlap.js --strict             # warnings become errors
+ *   node scripts/skill-overlap.js --show-keywords      # print shared keyword details
  *   node scripts/skill-overlap.js --json               # machine-readable output
  *   node scripts/skill-overlap.js --no-color           # plain CI output
  */
@@ -132,7 +131,7 @@ function formatDuplicateLine(kind, entry, useColor) {
   return `  ${label} ${value}  —  in: ${owners}`;
 }
 
-function printReport({ triggerDups, keywordDups, pathDups, strict, useColor }) {
+function printReport({ triggerDups, keywordDups, pathDups, strict, showKeywordInfo, useColor }) {
   // Triggers — always error.
   if (triggerDups.length === 0) {
     console.log(paint('OK   ', C.green, useColor) + '[triggers]   no duplicate trigger labels');
@@ -141,22 +140,17 @@ function printReport({ triggerDups, keywordDups, pathDups, strict, useColor }) {
     for (const d of triggerDups) console.error(formatDuplicateLine('trigger', d, useColor));
   }
 
-  // Keywords — advisory only (recall signal). Promoted to error in --strict.
+  // Keywords — informational only (recall signal). Never promoted by --strict.
   if (keywordDups.length === 0) {
     console.log(paint('OK   ', C.green, useColor) + '[keywords]   no shared keyword entries');
   } else {
-    const level = strict ? 'FAIL ' : 'WARN ';
-    const levelColor = strict ? C.red : C.yellow;
-    const stream = strict ? console.error : console.log;
-    stream.call(console, paint(level, levelColor, useColor) + `[keywords]   ${keywordDups.length} shared keyword(s) (recall signal — review relation edges, do NOT delete keywords)`);
-    for (const d of keywordDups) stream.call(console, formatDuplicateLine('keyword', d, useColor));
-    // Inline guidance so the correct response is unmissable at the call site.
-    stream.call(console, paint('  → Shared keywords are RECALL, not duplicates: a query should be able to reach', C.dim, useColor));
-    stream.call(console, paint('    every skill that genuinely covers the term. The router disambiguates by score', C.dim, useColor));
-    stream.call(console, paint('    and by the typed relation edges between skills.', C.dim, useColor));
-    stream.call(console, paint('    FIX (if any): add or confirm a relations.boundary / relations.related edge', C.dim, useColor));
-    stream.call(console, paint('    between the listed skills — or accept it as legitimate shared vocabulary.', C.dim, useColor));
-    stream.call(console, paint('    Do NOT delete a keyword to shrink this count: that strips recall and degrades routing.', C.dim, useColor));
+    console.log(paint('OK   ', C.green, useColor) + `[keywords]   shared keyword recall accepted (${keywordDups.length} phrase(s); use --show-keywords or --json to inspect)`);
+    if (showKeywordInfo) {
+      for (const d of keywordDups) console.log(formatDuplicateLine('keyword', d, useColor));
+      console.log(paint('  → Shared keywords are RECALL, not duplicates: the same phrase can validly', C.dim, useColor));
+      console.log(paint('    reach multiple skills and can carry multiple meanings. Treat this list as', C.dim, useColor));
+      console.log(paint('    routing context only; do NOT delete keywords to shrink it.', C.dim, useColor));
+    }
   }
 
   // Paths — warning (or error in --strict).
@@ -180,6 +174,7 @@ function main() {
   const strict = argv.includes('--strict');
   const includeTemplate = argv.includes('--include-template');
   const jsonOut = argv.includes('--json');
+  const showKeywordInfo = argv.includes('--show-keywords') || argv.includes('--verbose');
   const noColor = argv.includes('--no-color');
   const useColor = !noColor && process.stdout.isTTY;
 
@@ -194,7 +189,8 @@ function main() {
   const pathDups    = detectDuplicates(skills, 'paths');
 
   const triggerErrors = triggerDups.length;
-  const warnCount     = keywordDups.length + pathDups.length;
+  const infoCount     = keywordDups.length;
+  const warnCount     = pathDups.length;
   const totalErrors   = triggerErrors + (strict ? warnCount : 0);
 
   if (jsonOut) {
@@ -205,6 +201,7 @@ function main() {
       paths:    pathDups,
       summary:  {
         errors:   triggerErrors,
+        infos:    infoCount,
         warnings: strict ? 0 : warnCount,
         strict,
       },
@@ -213,7 +210,7 @@ function main() {
     process.exit(totalErrors > 0 ? 1 : 0);
   }
 
-  printReport({ triggerDups, keywordDups, pathDups, strict, useColor });
+  printReport({ triggerDups, keywordDups, pathDups, strict, showKeywordInfo, useColor });
 
   const tail = strict && warnCount > 0
     ? ` (--strict: ${warnCount} warning(s) promoted to errors)`

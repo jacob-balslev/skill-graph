@@ -1,18 +1,22 @@
 ---
+# name: stable skill identifier. Match the skill directory name or the final namespace segment.
+# Lowercase letters/numbers with hyphen, slash, or colon separators.
 name: payment-provider-router
+# description: routing-facing summary of what the skill covers and when it activates.
+# Include concrete triggers and an explicit negative boundary; keep routing semantics out of prose-only ambiguity.
 description: "Use when dispatching a verified payment event (Stripe webhook or future provider) to the correct downstream handler based on event type. Routes `checkout.session.completed` to subscription provisioning, `invoice.payment_failed` to dunning logic, and `customer.subscription.deleted` to cancellation. Do NOT use for signature verification of the incoming event (use stripe-webhook-signature-verification first) or for the actual subscription database writes (use the per-handler skill or postgres-rls-pattern)."
 
-# === v8 Classification (subject + deployment_target; polyhierarchy via subjects[]) — see ADR-0017 ===
+# === v8 Classification (subject + public; polyhierarchy via subjects[]) — see ADR-0017 ===
 # subject: primary browse shelf — what the skill teaches. One of twelve closed values:
 # backend-engineering / frontend-engineering / software-architecture / data-engineering / agent-ops / ai-engineering /
 # quality-assurance / design / reasoning-strategy / software-engineering-method / knowledge-organization / product-domain.
 subject: backend-engineering
-# deployment_target: where this skill applies. One of two closed values:
-# portable (any project, repo-agnostic) /
-# project (one or more specific projects; requires populated `grounding` and `project[]`).
-deployment_target: portable
-# scope: free-text PRD-style statement of what the skill teaches and where it deploys
-# (v8 required; not an enum). Positive scope + portability/grounding + explicit exclusions.
+# public: publishability/private-data gate. Boolean.
+# true = publishable/shareable; false = private and excluded from public export.
+# Project anchoring is carried separately by non-empty `project[]` plus `grounding`.
+public: true
+# scope: free-text PRD-style statement of what the skill teaches and what it excludes.
+# (v8 required; not an enum). Mirrors Coverage + Do NOT Use When at frontmatter level.
 scope: "Dispatching a verified payment event to the correct downstream handler by event type in the saas-stripe-postgres example. Excludes webhook signature verification (stripe-webhook-signature-verification) and the subscription database writes (postgres-rls-pattern)."
 # taxonomy_domain: optional hierarchical sub-path within `subject`. Slash-delimited
 # lowercase kebab-case segments. rename of the original v8 `domain`. Remove when the flat
@@ -64,26 +68,24 @@ examples:
   - "add a new event type handler for customer.subscription.updated"
   - "design the event router so it is extensible to a second payment provider"
 # anti_examples: near-miss prompts that should route ELSEWHERE.
-# Pair with relations.boundary to indicate the confusable territory's owner.
+# Pair with relations.suppresses (or legacy boundary alias) to name the confusable territory's owner.
 anti_examples:
   - "verify that the webhook request is genuinely from Stripe"
   - "write the database insert that creates the subscription record"
   - "handle a failed Stripe API call when creating a payment intent"
 # relations: typed graph edges to sibling skills. Current fields:
 # related (adjacency for browse / co-routing expansion) /
-# boundary (exclude listed skills from co-routing when THIS skill wins — name is inverse
-#           to mechanic; write reason as "I own this exclusively over X", not "use X instead";
-#           see ADR-0018 for rename rationale) /
+# suppresses (exclude listed skills from co-routing when THIS skill wins; write reason
+#             as "I own this exclusively over X", not "use X instead") /
+# boundary (DEPRECATED alias of suppresses, retained for unmigrated skills) /
 # verify_with (cross-check; co-loaded as one-hop expansion) /
 # depends_on (composition; transitive — A→B→C loads all three) /
 # broader / narrower (SKOS-style generalization) /
 # disjoint_with (mutual exclusion for incompatible ownership).
 relations:
-  boundary:
-    - skill: stripe-webhook-signature-verification
-      reason: "stripe-webhook-signature-verification verifies the event is authentic before it reaches this router; routing an unverified event is a security failure"
-    - skill: postgres-rls-pattern
-      reason: "postgres-rls-pattern governs the database writes that each handler performs; this router decides which handler runs, not how it writes"
+  related:
+    - stripe-webhook-signature-verification
+    - postgres-rls-pattern
   depends_on:
     - stripe-webhook-signature-verification
   verify_with:
@@ -91,6 +93,16 @@ relations:
 ---
 
 # Payment Provider Router
+
+## Concept of the skill
+
+**What it is:** The typed dispatch layer that sends verified payment events to the correct business handler.
+**Mental model:** Verification proves the event is authentic; the router decides what business operation the event represents.
+**Why it exists:** Payment events are high-impact and retried by providers, so ambiguous routing can duplicate work or miss fulfillment.
+**What it is NOT:** It is not webhook signature verification, subscription database writes, or provider SDK setup.
+**Adjacent concepts:** Event type maps, handler isolation, provider abstraction, idempotency.
+**One-line analogy:** It is the switchboard that sends a verified payment event to the right desk.
+**Common misconception:** Unknown events should return an HTTP error; for Stripe, acknowledging and logging unknown-but-valid events prevents retry storms.
 
 ## Coverage
 
@@ -100,7 +112,7 @@ relations:
 - Error surface — handlers must catch their own errors and return a structured result; an uncaught exception must not produce a 500 that triggers Stripe's retry mechanism with an exponential backoff cascade
 - Event type coverage audit — which event types are handled, which are known-ignored (acknowledged with a comment), and which are genuinely unknown
 
-## Philosophy
+## Philosophy of the skill
 
 A payment event router has the same discipline requirement as a content source router: prefer an explicit handler over an implicit fallback, surface unhandled events loudly (in logs, not in HTTP status codes — a 400 triggers a retry, a 200 with a log entry does not), and never let one handler own two semantically distinct events. The event type is the authoritative signal for which business operation to perform; ambiguity at this layer produces double-charges, missed provisioning, and unfired dunning emails.
 

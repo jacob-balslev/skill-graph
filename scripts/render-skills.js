@@ -19,7 +19,7 @@
  *     carry the full evolved intelligence.
  *   - Unlike `export`, `render` applies NO publication gate and NO privacy
  *     scrub: it includes EVERY skill in the configured roots — including
- *     `deployment_target: project` skills — because the output is for local use
+ *     `public: false` / project-anchored skills — because the output is for local use
  *     by whoever owns those roots, not for public skills.sh publication.
  *
  * What the body projection contains: agent-facing guidance ONLY — classification,
