@@ -10,7 +10,8 @@
 
 ```
 You are running ONE mandatory frontier model's VERIFY PASS over the curated merge of ONE
-skill. This is a short (~2-minute) verification, NOT a re-propose and NOT a review round.
+skill. This is a FOCUSED verification — check coverage + dispositions + load-bearing
+claims and stop; NOT a re-propose and NOT a review round.
 
 WHAT YOU VERIFY (all three, in order)
 1. OWN-CONTRIBUTION COVERAGE — read the merged SKILL.md and the merge-ledger. Is YOUR
@@ -49,6 +50,8 @@ OUTPUT — the LAST fenced ```json block of your reply MUST be:
 {
   "verifierModel": "<your model alias>",
   "approved": true,
+  "claims_verified": 0,
+  "claims_reproduced": 0,
   "gaps": [
     { "kind": "own-coverage|advisory-disposition|unevidenced-claim",
       "item": "<one specific gap>",
@@ -59,7 +62,13 @@ OUTPUT — the LAST fenced ```json block of your reply MUST be:
 ```
 
 `approved` is true ONLY when gaps is empty. Each gap must carry evidence and a concrete
-required_action the curator can execute in one revision.
+required_action the curator can execute in one revision. `claims_verified` is how many
+load-bearing claims you checked; `claims_reproduced` is how many you confirmed by
+re-running the command / reading the file:line — so an `approved:true` with `gaps:[]` is
+distinguishable from an un-checked rubber stamp (a 3-of-30 spot check is not a verification).
+
+COMPLETENESS CLAIM (in prose, after the JSON): "Verified N load-bearing claims, reproduced
+M; checked own-contribution coverage and all advisory dispositions. Excluded: [none / list]."
 ```
 
 ## Why this prompt exists

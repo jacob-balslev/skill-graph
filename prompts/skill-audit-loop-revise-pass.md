@@ -63,7 +63,8 @@ OUTPUT — emit a fenced JSON block as the LAST ```json block:
   "reviserModel": "<your model alias>",
   "changed": true,
   "applied": [ { "from": "missing|wrong", "item": "<what you folded in / corrected>" } ],
-  "rejected": [ { "item": "<feedback you declined>", "reason": "<why — wrong/redundant/out-of-scope>" } ]
+  "rejected": [ { "item": "<feedback you declined>", "reason": "<why — wrong/redundant/out-of-scope>" } ],
+  "novelty": [ { "claim": "<OPTIONAL: off-rubric pattern the applied/rejected channel can't carry>", "evidence": "<file:line | command | URL | inference>", "format_loss": false } ]
 }
 ```
 

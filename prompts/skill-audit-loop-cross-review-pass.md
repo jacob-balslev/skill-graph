@@ -79,12 +79,22 @@ The JSON block (parsed by the orchestrator) MUST be the LAST fenced ```json bloc
       "items": [
         { "verdict": "keep|wrong|missing", "item": "<one specific point>",
           "evidence": "<file:line | command output | URL | inference>",
-          "evidence_strength": "direct-file-line|command-output|external-source|inference" }
+          "evidence_strength": "direct-file-line|command-output|external-source|inference|unsupported" }
       ]
     }
+  ],
+  "novelty": [
+    { "claim": "<OPTIONAL: an off-rubric pattern the keep/wrong/missing rubric can't carry — a cross-skill observation, a format gap, a systemic issue>",
+      "evidence": "<file:line | command output | URL | inference>",
+      "evidence_strength": "direct-file-line|command-output|external-source|inference|unsupported",
+      "format_loss": false }
   ]
 }
 ```
+
+The `novelty` array is OPTIONAL (omit or leave empty if nothing off-rubric) — it exists so
+a reviewer who spots something the keep/wrong/missing channel structurally cannot carry has
+a place to record it; set `format_loss: true` when the rubric itself has the gap.
 
 DISSENT-OR-ABSTAIN: if you find another proposal genuinely strong with nothing to add,
 say so explicitly per target (an empty items[] is honest) — do NOT invent ceremonial

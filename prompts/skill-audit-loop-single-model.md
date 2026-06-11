@@ -54,7 +54,7 @@ SETUP
 2. Read the protocol + the SINGLE-skill audit contract ONLY:
    - skill-graph/AGENTS.md  → Skill Metadata Protocol + "Labels Are Earned" doctrine
      (the old top-level `skill-metadata-protocol` path is gone; this is canonical)
-   - skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook  → the per-skill audit contract (steps 1-8)
+   - skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook  → the per-skill audit contract (the 13-step runbook)
    - docs/reference/skill-audit-pipeline.md          → Audit Doctrine (intent fidelity +
      teaching efficacy; lint is a floor, never the goal)
    Do NOT read or act on skill-audit-merge-v1.md — that is the multi-model flow (see RULE 0).
