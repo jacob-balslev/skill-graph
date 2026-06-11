@@ -7,7 +7,7 @@
 
 const assert = require('assert');
 const ep = require('../../lib/audit/eval-execution-profile');
-const { runBidirectionalEval, toSidecarReceipt } = require('../../lib/audit/run-bidirectional-eval');
+const { runBidirectionalEval, runSingleFrontierEval, toSidecarReceipt } = require('../../lib/audit/run-bidirectional-eval');
 
 let passed = 0;
 function check(name, fn) {
@@ -20,20 +20,38 @@ console.log('1. buildExecutionProfile');
 check('requires cwd (the public-content fence)', () => {
   assert.throws(() => ep.buildExecutionProfile({}), /cwd is required/);
 });
-check('defaults to tools=full, research=repo+web, public repo scope', () => {
+check('defaults to tools=full, research=repo (NO web), public repo scope', () => {
   const p = ep.buildExecutionProfile({ cwd: '/x/skill-graph' });
   assert.strictEqual(p.tools, 'full');
-  assert.strictEqual(p.research, 'repo+web');
+  assert.strictEqual(p.research, 'repo'); // no-web baseline default (2026-06-11)
   assert.strictEqual(p.repoScope, 'skill-graph + skills ONLY');
   assert.strictEqual(p.cwd, '/x/skill-graph');
 });
+check('SKILL_EVAL_WEB=on restores repo+web; explicit research arg always wins over env', () => {
+  const prev = process.env.SKILL_EVAL_WEB;
+  try {
+    process.env.SKILL_EVAL_WEB = 'on';
+    assert.strictEqual(ep.resolveDefaultEvalResearch(), 'repo+web');
+    assert.strictEqual(ep.buildExecutionProfile({ cwd: '/x' }).research, 'repo+web');
+    // explicit arg wins over env even when web is on
+    assert.strictEqual(ep.buildExecutionProfile({ cwd: '/x', research: 'repo' }).research, 'repo');
+    delete process.env.SKILL_EVAL_WEB;
+    assert.strictEqual(ep.resolveDefaultEvalResearch(), 'repo');
+  } finally {
+    if (prev === undefined) delete process.env.SKILL_EVAL_WEB; else process.env.SKILL_EVAL_WEB = prev;
+  }
+});
 
 console.log('2. cliAccessForProfile — equal access, different flags');
-check('claude DROPS disallowed-tools (allowTools true) under a full profile', () => {
+check('claude: default profile (research=repo) => allowTools true, web FALSE', () => {
   const p = ep.buildExecutionProfile({ cwd: '/x/skill-graph' });
   const a = ep.cliAccessForProfile('claude', p);
   assert.strictEqual(a.allowTools, true);
-  assert.strictEqual(a.web, true);
+  assert.strictEqual(a.web, false); // no-web baseline
+});
+check('claude: research=repo+web => web TRUE', () => {
+  const p = ep.buildExecutionProfile({ cwd: '/x/skill-graph', research: ep.RESEARCH_REPO_WEB });
+  assert.strictEqual(ep.cliAccessForProfile('claude', p).web, true);
 });
 check('codex uses its in-repo normal sandbox (full tools)', () => {
   const p = ep.buildExecutionProfile({ cwd: '/x/skill-graph' });
@@ -212,7 +230,7 @@ check('F6: an unresolved direction model caps APPLICABLE to PROVISIONAL (cannot 
   assert.ok(/unresolved/.test(r.cap_reason));
 });
 check('F8: toSidecarReceipt projects ONLY schema-allowed keys', () => {
-  const allowed = new Set(['frontier_pair', 'reconciliation', 'agreement', 'parity_ok', 'certifying_clean', 'synthesized_verdict', 'applicable_for', 'registry_version', 'merge_ledger_ref', 'execution_profile', 'directions']);
+  const allowed = new Set(['frontier_pair', 'reconciliation', 'agreement', 'parity_ok', 'certifying_clean', 'synthesized_verdict', 'applicable_for', 'registry_version', 'merge_ledger_ref', 'provisional_reason', 'missing_frontiers', 'regrade_required', 'execution_profile', 'directions']);
   const dirKeys = new Set(['role', 'generator_model', 'grader_model', 'generator_family', 'grader_family', 'resolved_model', 'verdict', 'certification_tier']);
   const epKeys = new Set(['tools', 'research', 'repoScope', 'cwd']);
   const runDirection = ({ direction, generatorModel, graderModel, generatorFamily, graderFamily, executionProfile }) => ({
@@ -227,6 +245,121 @@ check('F8: toSidecarReceipt projects ONLY schema-allowed keys', () => {
   for (const d of rec.directions) for (const k of Object.keys(d)) assert.ok(dirKeys.has(k), `unexpected direction key: ${k}`);
   for (const k of Object.keys(rec.execution_profile)) assert.ok(epKeys.has(k), `unexpected execution_profile key: ${k}`);
   assert.strictEqual(rec.reconciliation, 'conservative');
+});
+
+console.log('6. Single-available-frontier degraded eval');
+check('single frontier APPLICABLE is capped to PROVISIONAL and marked for re-grade', () => {
+  const r = runSingleFrontierEval({
+    mode: 'application',
+    skill: 's',
+    cwd: '/x/skill-graph',
+    frontierModel: 'codex-current',
+    missingFrontiers: ['opus'],
+    provisionalReason: 'single_frontier:opus_budget_exhausted',
+    deps: {
+      runDirection: ({ direction, generatorModel, graderModel, executionProfile }) => ({
+        direction,
+        generator_model: generatorModel,
+        grader_model: graderModel,
+        verdict: 'APPLICABLE',
+        certification_tier: 'certifying',
+        execution_profile: executionProfile,
+      }),
+    },
+  });
+  assert.deepStrictEqual(r.frontier_pair, ['codex-current']);
+  assert.strictEqual(r.reconciliation, 'single-frontier-provisional');
+  assert.strictEqual(r.synthesized_verdict, 'PROVISIONAL');
+  assert.strictEqual(r.certifying_clean, false);
+  assert.strictEqual(r.regrade_required, true);
+  assert.deepStrictEqual(r.missing_frontiers, ['opus']);
+});
+check('single frontier sidecar receipt keeps one direction plus regrade evidence', () => {
+  const r = runSingleFrontierEval({
+    mode: 'comprehension',
+    skill: 's',
+    cwd: '/x/skill-graph',
+    frontierModel: 'opus',
+    missingFrontiers: ['codex-current'],
+    deps: {
+      runDirection: ({ direction, generatorModel, graderModel, executionProfile }) => ({
+        direction,
+        generator_model: generatorModel,
+        grader_model: graderModel,
+        verdict: 'PASS',
+        certification_tier: 'certifying',
+        execution_profile: executionProfile,
+      }),
+    },
+  });
+  const rec = toSidecarReceipt(r);
+  assert.strictEqual(rec.reconciliation, 'single-frontier-provisional');
+  assert.deepStrictEqual(rec.frontier_pair, ['opus']);
+  assert.strictEqual(rec.directions.length, 1);
+  assert.strictEqual(rec.directions[0].role, 'Claude');
+  assert.strictEqual(rec.regrade_required, true);
+  assert.deepStrictEqual(rec.missing_frontiers, ['codex-current']);
+});
+
+console.log('\n4. web-off baseline — CLI arg builder + isolated workspace');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const { runClaudeCliPrompt } = require('../../lib/audit/evaluate-skill');
+const { prepareIsolatedEvalWorkspace } = require('../../lib/audit/isolated-eval-workspace');
+
+check('repo-only (no web) both directions, tools full => parity_ok true (certifying config preserved)', () => {
+  const p = ep.buildExecutionProfile({ cwd: '/x/skill-graph' }); // research=repo
+  const r = ep.assertParity(p, { ...p });
+  assert.strictEqual(r.parity_ok, true);
+  assert.ok(/tools=full/.test(r.reason), r.reason);
+});
+
+// Stub claude binary that echoes its args so we can assert the disallowed-tools flag
+// without spawning the real CLI (CLAUDE_GRADER_BIN override path, SKI-133).
+(() => {
+  const stubDir = fs.mkdtempSync(path.join(os.tmpdir(), 'claude-stub-'));
+  const stubBin = path.join(stubDir, 'claude');
+  fs.writeFileSync(stubBin, '#!/bin/sh\necho "ARGS: $@"\n');
+  fs.chmodSync(stubBin, 0o755);
+  const prevBin = process.env.CLAUDE_GRADER_BIN;
+  process.env.CLAUDE_GRADER_BIN = stubBin;
+  try {
+    check('claude arg-builder: allowTools + web OFF => --disallowed-tools WebSearch,WebFetch (repo tools stay ON)', () => {
+      const out = runClaudeCliPrompt('hi', { model: 'opus', allowTools: true, web: false });
+      assert.ok(/--disallowed-tools WebSearch,WebFetch/.test(out), out);
+      assert.ok(!/Read,Edit,Write,Bash/.test(out), 'repo/exec tools must NOT be disallowed when allowTools is true');
+    });
+    check('claude arg-builder: allowTools + web ON => no --disallowed-tools', () => {
+      const out = runClaudeCliPrompt('hi', { model: 'opus', allowTools: true, web: true });
+      assert.ok(!/--disallowed-tools/.test(out), out);
+    });
+    check('claude arg-builder: tools OFF => full disallow list (incl WebSearch,WebFetch)', () => {
+      const out = runClaudeCliPrompt('hi', { model: 'opus', allowTools: false });
+      assert.ok(/--disallowed-tools Read,Edit,Write,Bash,Glob,Grep,Agent,WebSearch,WebFetch,NotebookEdit/.test(out), out);
+    });
+  } finally {
+    if (prevBin === undefined) delete process.env.CLAUDE_GRADER_BIN; else process.env.CLAUDE_GRADER_BIN = prevBin;
+    fs.rmSync(stubDir, { recursive: true, force: true });
+  }
+})();
+
+check('prepareIsolatedEvalWorkspace: public copy, repo-only (web-off) profile, candidate absent, cleanup', () => {
+  const src = fs.mkdtempSync(path.join(os.tmpdir(), 'sg-src-')); // tiny stand-in for skill-graph repo
+  fs.writeFileSync(path.join(src, 'marker.txt'), 'public');
+  const iso = prepareIsolatedEvalWorkspace({ skillGraphRoot: src });
+  try {
+    assert.strictEqual(iso.active, true);
+    assert.strictEqual(iso.executionProfile.research, 'repo'); // web OFF
+    assert.strictEqual(iso.executionProfile.tools, 'full');
+    assert.strictEqual(iso.baselineWorkspace, iso.cwd);
+    assert.ok(fs.existsSync(path.join(iso.cwd, 'marker.txt')), 'skill-graph content copied into the isolated cwd');
+    assert.ok(!fs.existsSync(path.join(iso.cwd, '..', 'skills')), 'skills corpus NOT copied (candidate definitionally absent)');
+  } finally {
+    iso.cleanup();
+    fs.rmSync(src, { recursive: true, force: true });
+  }
+  assert.ok(!fs.existsSync(iso.root), 'cleanup removes the tmp workspace');
 });
 
 console.log(`\nResults: ${passed} passed, 0 failed`);
