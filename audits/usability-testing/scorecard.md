@@ -8,7 +8,7 @@
 
 | Dimension | Score | Note |
 |---|---|---|
-| Metadata validity | 4 | auto: lint passes with 1 warning(s) |
+| Metadata validity | 5 | auto: lint passes clean |
 | Activation quality | TODO | Human review required — see findings.md |
 | Relation quality | TODO | Human review required — see findings.md |
 | Grounding fidelity | TODO | Human review required — verify claims match truth sources |
