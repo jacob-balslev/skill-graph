@@ -306,9 +306,9 @@ assert(summary.certification_tier === 'provisional', '5b. default certification_
 assert(summary.completed === 2 && summary.errors === 0, '5c. both cases completed, no errors', JSON.stringify({ completed: summary.completed, errors: summary.errors }));
 
 // Each case: 2 generated runs × TRIALS, plus 2 pointwise grader calls and
-// 1 blind pairwise grader call per trial.
+// 2 pairwise grader calls per trial (A8: both presentation orders, both must agree).
 assert(generatorCalls === 2 * 2 * TRIALS, `5d. generator invoked cases×2×trials = ${2 * 2 * TRIALS} times`, `Got: ${generatorCalls}`);
-assert(graderCalls === (2 * 2 * TRIALS) + (2 * TRIALS), `5e. grader invoked pointwise + pairwise calls = ${(2 * 2 * TRIALS) + (2 * TRIALS)} times`, `Got: ${graderCalls}`);
+assert(graderCalls === (2 * 2 * TRIALS) + (2 * TRIALS * 2), `5e. grader invoked pointwise + both-order pairwise calls = ${(2 * 2 * TRIALS) + (2 * TRIALS * 2)} times`, `Got: ${graderCalls}`);
 
 const realCase = summary.results.find((r) => r.id === 1);
 const redHerringCase = summary.results.find((r) => r.id === 2);
@@ -341,7 +341,7 @@ const dry = runApplicationEval(evalPath, {
 });
 assert(dry.dryRun === true && dry.planned_generator_calls === 2 * 2 * 4, '5p. dry-run planned_generator_calls = cases×2×trials', JSON.stringify(dry.planned_generator_calls));
 assert(dry.trials === 4 && dry.certification_tier === 'provisional', '5q. dry-run reports trials + certification_tier');
-assert(dry.planned_pairwise_grader_calls === 2 * 4, '5q-2. dry-run reports pairwise grader calls separately');
+assert(dry.planned_pairwise_grader_calls === 2 * 4 * 2, '5q-2. dry-run reports pairwise grader calls separately (both orders ×2 per trial)');
 assert(dry.planned_history_records === 2 * 2 * 4, '5q-3. dry-run history records count pointwise run records, not pairwise calls');
 
 // 5r. A certifying run is reachable end-to-end and tier propagates to the summary.
@@ -354,6 +354,51 @@ const certifyingSummary = runApplicationEval(evalPath, {
 });
 assert(certifyingSummary.certification_tier === 'certifying', '5r. attested cross-family run → summary.certification_tier = certifying');
 assert(certifyingSummary.calibrated === false, '5s. certifying tier alone does not imply calibration evidence');
+
+// ── 5.5 A8: gradeApplicationPairwiseBothOrders — both orders + require agreement ──
+
+process.stdout.write('\n5.5 A8 both-orders pairwise (position-bias mitigation)\n');
+
+const { gradeApplicationPairwiseBothOrders } = require(path.join(REPO_ROOT, 'lib', 'audit', 'application-eval'));
+
+const a8Case = { id: 7, scenario_type: 'real', red_herring: false };
+const a8Responses = { baseline: 'BASELINE_TEXT', with_skill: 'WITH_SKILL_TEXT' };
+function a8Options(graderFn) {
+  return {
+    workspace: '/tmp', skillName: 's', graderPromptTemplate: 'TEMPLATE',
+    grader: 'claude', graderModel: 'opus',
+    deps: { runGraderPrompt: graderFn },
+  };
+}
+
+// (a) Unbiased judge — always prefers the with_skill arm regardless of position.
+// Both orders therefore agree → clean winner, order_agreement true, signal kept.
+let a8Calls = 0;
+const unbiased = gradeApplicationPairwiseBothOrders(a8Case, a8Responses, a8Options((prompt) => {
+  a8Calls += 1;
+  const m = prompt.match(/## Response A\s*\n\s*([\s\S]*?)\n\s*## Response B/);
+  const aIsWithSkill = /WITH_SKILL/.test(m ? m[1] : '');
+  return JSON.stringify({ preferred: aIsWithSkill ? 'A' : 'B', confidence: 3, with_skill_delta: 'neutral', application_verdict: 'APPLICABLE', criteria_results: [], rollup: {}, comparative_reasoning: 'x' });
+}));
+assert(a8Calls === 2, '5.5a both orders graded (2 grader calls)', `Got: ${a8Calls}`);
+assert(unbiased.both_orders === true && unbiased.order_agreement === true && unbiased.position_bias === false, '5.5b orders agree → order_agreement true, no position bias');
+assert(unbiased.preferred_run === 'with_skill' && unbiased.confidence === 3, '5.5c clean winner preserved (with_skill, conf 3)', JSON.stringify(unbiased));
+
+// (b) Position-biased judge — always prefers whatever it sees SECOND (Response B).
+// Order ['baseline','with_skill'] → prefers with_skill; order ['with_skill','baseline']
+// → prefers baseline. Orders DISAGREE → pairwise signal dropped (tie, confidence 0).
+const biased = gradeApplicationPairwiseBothOrders(a8Case, a8Responses, a8Options(() => JSON.stringify({
+  preferred: 'B', confidence: 3, with_skill_delta: 'neutral', application_verdict: 'APPLICABLE', criteria_results: [], rollup: {}, comparative_reasoning: 'second is better',
+})));
+assert(biased.order_agreement === false && biased.position_bias === true, '5.5d position-biased judge → orders disagree, position_bias true');
+assert(biased.preferred_run === 'tie' && biased.confidence === 0, '5.5e disagreement drops the pairwise signal (tie, confidence 0)', JSON.stringify(biased));
+
+// (c) The dropped signal (confidence 0) makes computeApplicationPerCaseVerdict fall
+// through to the absolute-axis path rather than forcing a biased pairwise verdict.
+const strongAxis = { axis_scores: { flag_correctness: 95, fix_correctness: 95, false_positive_avoidance: 95, primary_signal_clarity: 95 }, weighted_score: 95 };
+const weakAxis = { axis_scores: { flag_correctness: 10, fix_correctness: 10, false_positive_avoidance: 95, primary_signal_clarity: 50 }, weighted_score: 40 };
+const fallthrough = computeApplicationPerCaseVerdict({ baseline: weakAxis, withSkill: strongAxis, redHerring: false, pairwise: biased });
+assert(fallthrough === 'applicable', '5.5f confidence-0 pairwise → verdict from absolute axes (flag 10→95 = applicable)', `Got: ${fallthrough}`);
 
 // ── 6. stampApplicationVerdict honors certification_tier (the PROVISIONAL cap) ──
 
