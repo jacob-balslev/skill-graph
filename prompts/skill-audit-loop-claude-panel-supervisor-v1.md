@@ -9,6 +9,9 @@
 > commit → release, per skill) over `lib/audit/run-skill-audit-loop.js`
 > Binding contracts: `skill-audit-loop/SKILL_AUDIT_LOOP.md` § "Multi-agent panel" + § "Canonical
 > way to run the PANEL loop VISIBLY"; `docs/skill-audit-loop-philosophy.md` (the WHY)
+> Shared panel-driver contract (CANONICAL, edit there first): `prompts/_panel-supervisor-common.md`.
+> This file restates the runtime-relevant parts inline (it is read by the Claude Code harness) and
+> carries the Claude-runtime DELTAS; the common doc is the single place the shared contract changes.
 
 ## Instruction and Data Boundary
 

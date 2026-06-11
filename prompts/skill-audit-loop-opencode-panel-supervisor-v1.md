@@ -10,6 +10,10 @@
 > commit → release, per skill) over `lib/audit/run-skill-audit-loop.js`
 > Binding contracts: `skill-audit-loop/SKILL_AUDIT_LOOP.md` § "Multi-agent panel" + § "Canonical
 > way to run the PANEL loop VISIBLY"; `docs/skill-audit-loop-philosophy.md` (the WHY)
+> Shared panel-driver contract (CANONICAL, edit there first): `prompts/_panel-supervisor-common.md`.
+> This file is pasted into an OpenCode session, so it restates the shared contract inline and carries
+> the OpenCode-runtime DELTAS (interactive session, no automation memory, context-budget bound); the
+> common doc is the single place the shared contract changes.
 
 ## When to use this prompt
 
