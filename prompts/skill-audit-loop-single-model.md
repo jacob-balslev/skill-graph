@@ -3,7 +3,7 @@
 > Portable across Opus, GPT-5.x/Codex, Gemini, and Sonnet. Hand this to ONE model to run the
 > Skill Audit Loop from the worklist, upgrading skills to the newest Skill Metadata Protocol.
 > This is the SINGLE-MODEL audit prompt. The multi-model union-merge flow is a separate,
-> separately-orchestrated process (`.opencode/commands/skill-audit-merge-v1.md`) — do not use
+> separately-orchestrated process (`skill-graph/audits/merge-protocol.md`) — do not use
 > this prompt to drive it.
 >
 > Last updated: 2026-06-11T (C2): added the mandatory Novelty Memo + Dissent-or-Abstain block to Step 8 per the prompt-shape rule. Prior: 2026-06-07T20:21Z (SKI-204): release-before-commit ordering aligned with SKILL_AUDIT_LOOP.md Part 3 — commit moved to after release in step 9.
@@ -27,7 +27,7 @@ You are running the Skill Audit Loop. Work from the repo root (Development/).
 ║  Do NOT spawn, invoke, delegate to, or "consult" any other model or CLI —  ║
 ║  not Gemini, not Claude/Opus, not OpenCode, not Codex — under any           ║
 ║  circumstance. The repo documents a MULTI-MODEL MERGE flow                  ║
-║  (skill-audit-merge-v1.md). That is a SEPARATE, separately-orchestrated     ║
+║  (merge-protocol.md). That is a SEPARATE, separately-orchestrated           ║
 ║  process. IGNORE it. You are a single-model Skill Audit Loop contributor:   ║
 ║  run the Read→Verify→Evaluate→Research→Improve→Use→Evaluate→Grade lifecycle ║
 ║  for ONE skill and commit it. The lowercase audit operation is report-only. ║
@@ -61,7 +61,7 @@ SETUP
    - skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook  → the per-skill audit contract (the 13-step runbook)
    - docs/reference/skill-audit-pipeline.md          → Audit Doctrine (intent fidelity +
      teaching efficacy; lint is a floor, never the goal)
-   Do NOT read or act on skill-audit-merge-v1.md — that is the multi-model flow (see RULE 0).
+   Do NOT read or act on skill-graph/audits/merge-protocol.md — that is the multi-model flow (see RULE 0).
 3. Load the skills relevant to this task: skill-infrastructure, skill-scaffold,
    skill-evolution, evaluation, methodical, no-cutting-corners, best-practice
    (read skills/<name>/SKILL.md directly — these are the quality-assurance set).
@@ -292,6 +292,10 @@ the runner must not depend on a clean baseline to function.)
 - The claim lock is pid-bound; `release` across process boundaries needs `reap --ttl-min 0`.
 
 ## Changelog
+- **v3.2 (2026-06-11T, D6):** repointed the live references to the multi-model merge flow from the
+  relocated legacy alias `.opencode/commands/skill-audit-merge-v1.md` (a back-compat pointer) to the
+  canonical `skill-graph/audits/merge-protocol.md` (project-owned per ADR-0016 surface #2). The
+  historical-incident note keeps its as-of filename.
 - **v3.1 (2026-06-11T):** added the mandatory NOVELTY MEMO (max-10 evidence-tagged off-rubric
   claims, with `format_loss` flag and abstain-over-padding) + DISSENT-OR-ABSTAIN block to Step 8,
   per `~/Development/.claude/rules/prompt-shape-structured-plus-novelty.md` (the numbered steps give
@@ -314,7 +318,7 @@ the runner must not depend on a clean baseline to function.)
 ## Related
 
 - `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook` — the per-skill audit contract this prompt drives.
-- `.opencode/commands/skill-audit-merge-v1.md` — the SEPARATE multi-model union-merge flow (curator only).
+- `skill-graph/audits/merge-protocol.md` — the SEPARATE multi-model union-merge flow (curator only; canonical per ADR-0016 surface #2. Slash alias: `/audit:merge`; the old `.opencode/commands/skill-audit-merge-v1.md` is a back-compat pointer to this).
 - `skill-graph/AGENTS.md` — Skill Metadata Protocol + "Labels Are Earned, Not Bumped" doctrine.
 - `.claude/rules/version-schema-contract.md` — labels are earned; never bulk-bump a version label.
 - `.claude/rules/multi-session-commits.md` — why every commit uses `git commit --only`.
