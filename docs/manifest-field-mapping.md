@@ -20,7 +20,7 @@
 
 ## Rename Map
 
-> **Two-file source (ADR-0019).** Since the audit-state sidecar split, the manifest is compiled from **two** authored files joined together: `SKILL.md` frontmatter (`schemas/SKILL_METADATA_PROTOCOL_schema.json`) and the `audit-state.json` sidecar (`schemas/skill-audit-state.schema.json`). `generate-manifest.js` merges the sidecar under the frontmatter before projecting, so the manifest shape is unchanged. Where a row below says "Pass-through from authored frontmatter" for an audit/eval/provenance field (`schema_version`, `version`, `owner`, `urn`, `repo`, `freshness`, `drift_check`, the `eval_*` triple, the four verdicts, `comprehension_state`, `lifecycle`, `marketplace_tier`, `portability`, `runtime_telemetry`), read it as "pass-through from the joined authored source (now the sidecar)." Field placement: `benchmarks/field-relevance/field-placement.json`.
+> **Two-file source (ADR-0019).** Since the audit-state sidecar split, the manifest is compiled from **two** authored files joined together: `SKILL.md` frontmatter (`schemas/SKILL_METADATA_PROTOCOL_schema.json`) and the `audit-state.json` sidecar (`schemas/skill-audit-state.schema.json`). `generate-manifest.js` merges the sidecar under the frontmatter before projecting, so the manifest shape is unchanged. Where a row below says "Pass-through from authored frontmatter" for an audit/eval/provenance field (`schema_version`, `version`, `owner`, `urn`, `repo`, `freshness`, `drift_check`, the `eval_*` triple, the four verdicts, `comprehension_state`, `lifecycle`, `marketplace_tier`, `portability`, `runtime_telemetry`, `model_run_coverage`), read it as "pass-through from the joined authored source (now the sidecar)." Field placement: `benchmarks/field-relevance/field-placement.json`.
 
 Every top-level authored field in `schemas/SKILL_METADATA_PROTOCOL_schema.json` (frontmatter) or `schemas/skill-audit-state.schema.json` (sidecar) has exactly one entry below. The entry declares one of five fates:
 
@@ -76,6 +76,7 @@ Every top-level authored field in `schemas/SKILL_METADATA_PROTOCOL_schema.json` 
 | 38 | `portability` | copied through unchanged | `portability`. |
 | 39 | `lifecycle` | grouped under parent | `health.lifecycle`. |
 | 40 | `runtime_telemetry` | grouped under parent | `health.runtime_telemetry`. |
+| 40b | `model_run_coverage` | grouped under parent | `health.model_run_coverage`. Per-model audit-loop participation matrix; coverage evidence, not a quality verdict. |
 | 41 | `last_audited` | grouped under parent | `health.last_audited`. v6 Audit Status field — ISO date the `audit` command last ran. Pass-through from authored frontmatter. |
 | 42 | `last_changed` | grouped under parent | `health.last_changed`. v6 Audit Status field — ISO date the SKILL.md was last edited. Pass-through from authored frontmatter. |
 | 43a | `structural_verdict` | grouped under parent | `health.structural_verdict`. **v7+** Audit Status field — form-layer verdict from gates 1–2, 7. Enum: `PASS`, `PASS_WITH_FIXES`, `FAIL`, `UNVERIFIED`. Replaces the structural slice of v6 `audit_verdict`. Pass-through from authored frontmatter. |

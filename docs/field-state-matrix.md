@@ -122,6 +122,7 @@ The five Understanding fields are **human-authored** in `SKILL.md`. The sidecar'
 | `lifecycle.stale_after_days` | int | human-authored in `audit-state.json` | When the drift sentinel flags the skill `STALE` after `drift_check.last_verified`. |
 | `lifecycle.review_cadence` | enum | human-authored in `audit-state.json` | `per-commit` / `weekly` / `quarterly` / `on-truth-source-change`. |
 | `runtime_telemetry` | object | human-authored in `audit-state.json` | Points at a JSONL feed of run receipts. Optional. |
+| `model_run_coverage` | object | loop-written in `audit-state.json` | Per-model Skill Audit Loop participation matrix. Records model aliases, phase status, failures, and receipts; not a quality verdict. |
 | `eval_last_run` | object | earned-with-receipt in `audit-state.json` | Receipt for the most recent eval run. Supports `eval_state: passing` / `monitored` with a real receipt. |
 
 ## Audit Status (v7+, loop-written)
@@ -160,7 +161,7 @@ The Skill Audit Loop owns these in `audit-state.json`. **Do not hand-author.** H
 | `summary` | Aggregate counts (`total_skills`, `by_subject`, `by_public`, `by_schema_version`, `by_stability`, `by_project`). |
 | `generated_at` | ISO timestamp of when the manifest was generated. |
 | `activation` | Compiled block merging `triggers`, `keywords`, `paths`, `examples`, `anti_examples`. |
-| `health` | Compiled block merging `eval_artifacts`, `eval_state`, `routing_eval`, `comprehension_state`, `eval_last_run`, `freshness`, `drift_check`. |
+| `health` | Compiled block merging `eval_artifacts`, `eval_state`, `routing_eval`, `comprehension_state`, `eval_last_run`, `freshness`, `drift_check`, `model_run_coverage`. |
 
 For the complete authored-to-generated field rename map and loss policy see [manifest-field-mapping.md](./manifest-field-mapping.md).
 

@@ -453,6 +453,9 @@ function buildSkillEntry(fm, filePath, skillId, _projectFromRoot) {
   if (fm.runtime_telemetry !== undefined && fm.runtime_telemetry !== null && typeof fm.runtime_telemetry === 'object') {
     health.runtime_telemetry = fm.runtime_telemetry;
   }
+  if (fm.model_run_coverage !== undefined && fm.model_run_coverage !== null && typeof fm.model_run_coverage === 'object') {
+    health.model_run_coverage = fm.model_run_coverage;
+  }
   // Audit Status fields are joined into the generated manifest's health object
   // from normalized audit state. `audit_verdict` is the DEPRECATED v6 single-aggregate field
   // (replaced by the four discrete verdicts above in v7 per ADR-0011) — kept

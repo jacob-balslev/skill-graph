@@ -1606,3 +1606,77 @@ runtime_telemetry:
 **When to use.** When a telemetry pipeline actually exists for this skill and produces receipts the router or auditor can consume.
 
 **When NOT to use.** Speculative feedback-source paths that do not yet exist. An empty `feedback_source` is worse than an absent block — it promises data that isn't there.
+
+---
+
+## `model_run_coverage`
+
+**Purpose.** Records which model aliases have participated in the Skill Audit Loop for this skill, which operation they ran, which phase they reached, and where the receipt or failure evidence lives. This field lives in `audit-state.json`, not in `SKILL.md` frontmatter.
+
+**Why it exists.** Protocol conformance and model coverage are different facts. A skill can have earned the latest Skill Metadata Protocol content label while still lacking advisory-model passes; a free advisory model can fail on a phase without changing the skill's quality verdict. `model_run_coverage` lets corpus tooling answer questions such as "which UX skills have seen `gemini-flash`?" or "which business-strategy skills still need the advisory tier?" without scraping panel logs.
+
+**Rules.**
+- Optional object written by the audit loop. Do not hand-author it to imply a model ran.
+- Keys under `models` are stable model aliases from `lib/audit-shared/model-provider.js`, such as `opus`, `codex-current`, `gemini`, `deepseek-flash`, or `mimo`.
+- The field records participation and failure evidence only. It does not replace `structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`, or `eval_last_run`.
+- Advisory-tier records can be `completed`, `degraded`, `failed`, or `skipped`; they never certify `application_verdict: APPLICABLE`.
+- `registry_version` records the model-registry epoch so aliases can be compared honestly across model-roster updates.
+
+**Sub-fields.**
+
+| Sub-field | Type | Meaning |
+|---|---|---|
+| `schema_version` | integer | Shape version for the coverage sub-record. Currently `1`. |
+| `updated_at` | string (date-time) | Timestamp when the matrix was last updated. |
+| `registry_version` | string | Model registry epoch used for this coverage update. |
+| `models.<alias>.provider` | string | Provider family resolved from the model registry. |
+| `models.<alias>.backend` | string | CLI/backend used for that alias. |
+| `models.<alias>.tier` | enum | `mandatory`, `advisory`, or `orchestrator`. |
+| `models.<alias>.operations.<operation>.status` | enum | `completed`, `degraded`, `failed`, `skipped`, or `blocked`. |
+| `models.<alias>.operations.<operation>.phase_status` | object | Per-phase status for budget, claim, propose, cross-review, revise, curate, verify, evaluate, apply, and record. |
+| `models.<alias>.operations.<operation>.receipt` | string | Path or URL to the merge ledger, eval receipt, run root, or other evidence. |
+
+**Example.**
+```json
+{
+  "model_run_coverage": {
+    "schema_version": 1,
+    "updated_at": "2026-06-11T12:00:00.000Z",
+    "registry_version": "2026-06-11",
+    "models": {
+      "opus": {
+        "model": "opus",
+        "provider": "anthropic",
+        "backend": "claude",
+        "tier": "mandatory",
+        "operations": {
+          "panel": {
+            "at": "2026-06-11T12:00:00.000Z",
+            "operation": "panel",
+            "eval_mode": "application",
+            "tier": "mandatory",
+            "status": "completed",
+            "registry_version": "2026-06-11",
+            "phase_status": {
+              "propose": "completed",
+              "cross_review": "completed",
+              "revise": "completed",
+              "curate": "completed",
+              "verify": "completed",
+              "evaluate": "completed",
+              "apply": "completed",
+              "record": "completed"
+            },
+            "certifying": true,
+            "receipt": "skill-audit-loop/progress/skill-audits/demo/merge-ledger.json"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+**When to use.** Read it when choosing the next model pass to run, debugging why a specific model failed on a skill, or reporting corpus coverage by model alias and subject area.
+
+**When NOT to use.** Do not use it as the quality signal. Quality remains the four verdict fields plus their receipts; model participation is evidence about what has been tried, not proof that the skill is good.

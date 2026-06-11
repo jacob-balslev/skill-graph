@@ -497,6 +497,181 @@
           }
         }
       }
+    },
+    "model_run_coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Per-model Skill Audit Loop participation matrix. This is not a verdict and never certifies quality; it records which model aliases ran which loop operation for this skill, which phase they reached, and where the receipt/failure evidence lives. Used to answer coverage questions such as 'has the free advisory tier run on this skill yet?' separately from `schema_version`, `skill_graph_protocol`, and the four Audit Status verdicts.",
+      "required": [
+        "schema_version",
+        "updated_at",
+        "registry_version",
+        "models"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "integer",
+          "enum": [1],
+          "description": "Shape version for this coverage sub-record. Independent of the skill metadata protocol version."
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when this coverage matrix was last updated."
+        },
+        "registry_version": {
+          "type": "string",
+          "description": "Model registry epoch from `lib/audit-shared/model-provider.js`. Coverage comparisons across epochs must account for alias target drift."
+        },
+        "models": {
+          "type": "object",
+          "description": "Map keyed by stable model alias (`opus`, `codex-current`, `gemini`, `deepseek-flash`, etc.). Aliases come from the canonical model registry; concrete dated IDs belong in historical receipts, not durable prompts.",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "model",
+              "provider",
+              "backend",
+              "tier",
+              "operations"
+            ],
+            "properties": {
+              "model": {
+                "type": "string",
+                "description": "Stable model alias from the model registry."
+              },
+              "provider": {
+                "type": "string",
+                "description": "Provider family resolved by the model registry."
+              },
+              "backend": {
+                "type": "string",
+                "description": "CLI/backend used to run this model alias."
+              },
+              "tier": {
+                "type": "string",
+                "enum": [
+                  "mandatory",
+                  "advisory",
+                  "orchestrator"
+                ],
+                "description": "`mandatory` means quality-frontier/certifying tier; `advisory` means breadth/novelty tier; `orchestrator` means the model supervised the runtime wrapper rather than acted as a panel participant."
+              },
+              "operations": {
+                "type": "object",
+                "description": "Latest participation record per operation. Current writer uses `panel`; future single-model audit/evaluate wrappers may add `audit`, `improve`, `evaluate`, or `evolve` keys.",
+                "additionalProperties": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "at",
+                    "operation",
+                    "eval_mode",
+                    "tier",
+                    "status",
+                    "registry_version",
+                    "phase_status",
+                    "certifying"
+                  ],
+                  "properties": {
+                    "at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "operation": {
+                      "type": "string",
+                      "description": "Loop operation or composite operation this record describes."
+                    },
+                    "eval_mode": {
+                      "type": "string",
+                      "enum": [
+                        "application",
+                        "comprehension"
+                      ]
+                    },
+                    "tier": {
+                      "type": "string",
+                      "enum": [
+                        "mandatory",
+                        "advisory",
+                        "orchestrator"
+                      ]
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "completed",
+                        "degraded",
+                        "failed",
+                        "skipped",
+                        "blocked"
+                      ],
+                      "description": "Participation status for this model on this operation. `completed` means the model participated as expected; `degraded` means it contributed but some phase/finality was non-certifying; `failed`/`skipped` name distinct non-participation modes."
+                    },
+                    "registry_version": {
+                      "type": "string"
+                    },
+                    "phase_status": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "description": "Phase-by-phase state for the model in this operation.",
+                      "properties": {
+                        "budget": { "$ref": "#/$defs/phaseStatus" },
+                        "claim": { "$ref": "#/$defs/phaseStatus" },
+                        "propose": { "$ref": "#/$defs/phaseStatus" },
+                        "cross_review": { "$ref": "#/$defs/phaseStatus" },
+                        "revise": { "$ref": "#/$defs/phaseStatus" },
+                        "curate": { "$ref": "#/$defs/phaseStatus" },
+                        "verify": { "$ref": "#/$defs/phaseStatus" },
+                        "evaluate": { "$ref": "#/$defs/phaseStatus" },
+                        "apply": { "$ref": "#/$defs/phaseStatus" },
+                        "record": { "$ref": "#/$defs/phaseStatus" }
+                      }
+                    },
+                    "verdict": {
+                      "type": "string",
+                      "description": "Reconciled eval verdict seen by this operation when present. This mirrors evidence; it does not replace the canonical four verdict fields."
+                    },
+                    "certifying": {
+                      "type": "boolean",
+                      "description": "True only when the overall run produced certifying-clean evidence for the evaluated dimension."
+                    },
+                    "regrade_required": {
+                      "type": "boolean",
+                      "description": "True when a degraded/single-frontier/non-certifying run must be replaced by a full certifying run."
+                    },
+                    "failure_reason": {
+                      "type": "string",
+                      "description": "Machine-readable reason when the model failed, skipped, or degraded."
+                    },
+                    "failure_detail": {
+                      "type": "string",
+                      "description": "Short human-readable detail from the failure or certifying-block reason."
+                    },
+                    "receipt": {
+                      "type": "string",
+                      "description": "Path or URL to the merge ledger, eval receipt, run root, or other evidence for this model's participation."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "phaseStatus": {
+      "type": "string",
+      "enum": [
+        "completed",
+        "degraded",
+        "failed",
+        "skipped",
+        "not_applicable"
+      ]
     }
   },
   "allOf": [

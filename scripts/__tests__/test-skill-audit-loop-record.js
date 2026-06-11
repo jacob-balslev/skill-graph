@@ -8,6 +8,7 @@
 
 const assert = require('assert');
 const { recordFullLoop } = require('../../lib/audit/run-skill-audit-loop');
+const { buildModelRunCoverage } = require('../../lib/audit/model-run-coverage');
 
 let pass = 0;
 let fail = 0;
@@ -58,6 +59,59 @@ check('keep: records Integrity + Behavior gates (receipt verdict + canonical com
   assert.ok(d.spawns.some((s) => s.includes('evaluate-skill.js') && s.includes('comprehension')), 'spawned comprehension evaluate');
 });
 
+check('model_run_coverage: records mandatory and advisory model participation separately from verdicts', () => {
+  const coverage = buildModelRunCoverage({
+    at: '2026-06-11T12:00:00.000Z',
+    evalMode: 'application',
+    result: {
+      registry_version: '2026-06-11',
+      mandatory_models: ['opus', 'codex-current'],
+      advisory_models_requested: ['gemini', 'mimo'],
+      advisory_models_alive: ['gemini'],
+      advisory_failures: [
+        { model: 'mimo', phase: 'propose', failure_reason: 'no-document', error: 'captured non-document output' },
+      ],
+      degraded_frontier: { enabled: false },
+      verify: { status: 'RUN' },
+      eval_status: 'RUN',
+      eval_certified: true,
+      certifying_blocked: [],
+      applied: true,
+      merge: { mergeLedgerPath: 'runs/demo/merge-ledger.json' },
+      eval: { synthesized_verdict: 'APPLICABLE' },
+    },
+  });
+
+  assert.strictEqual(coverage.models.opus.operations.panel.status, 'completed');
+  assert.strictEqual(coverage.models['codex-current'].operations.panel.certifying, true);
+  assert.strictEqual(coverage.models.gemini.operations.panel.status, 'completed');
+  assert.strictEqual(coverage.models.mimo.operations.panel.status, 'failed');
+  assert.strictEqual(coverage.models.mimo.operations.panel.failure_reason, 'no-document');
+  assert.strictEqual(coverage.models.mimo.operations.panel.phase_status.propose, 'failed');
+  assert.strictEqual(coverage.models.opus.operations.panel.receipt, 'runs/demo/merge-ledger.json');
+  assert.strictEqual(coverage.models['deepseek-flash'].operations.panel.status, 'skipped');
+  assert.strictEqual(coverage.models['deepseek-flash'].operations.panel.phase_status.budget, 'skipped');
+
+  const blocked = buildModelRunCoverage({
+    at: '2026-06-11T12:00:00.000Z',
+    result: {
+      registry_version: '2026-06-11',
+      mandatory_models: ['opus', 'codex-current'],
+      advisory_models_requested: [],
+      advisory_models_alive: [],
+      advisory_failures: [],
+      degraded_frontier: { enabled: false },
+      verify: { status: 'RUN' },
+      eval_status: 'RUN',
+      eval_certified: false,
+      certifying_blocked: ['parity failed'],
+      applied: true,
+    },
+  });
+  assert.strictEqual(blocked.models.opus.operations.panel.status, 'degraded');
+  assert.strictEqual(blocked.models.opus.operations.panel.regrade_required, true);
+});
+
 // 2. KEEP + NO guardrail receipt + NO eval artifacts → behavior verdicts UNVERIFIED, each
 //    with an explicit finding (never a silent skip). Integrity still runs.
 check('keep, missing evals: behavior verdicts UNVERIFIED with explicit findings', () => {
@@ -76,6 +130,7 @@ check('keep, missing evals: behavior verdicts UNVERIFIED with explicit findings'
   const w = merged(d.writes);
   assert.strictEqual(w.application_verdict, 'UNVERIFIED', 'application_verdict UNVERIFIED WRITTEN to sidecar on keep+missing-eval');
   assert.strictEqual(w.comprehension_verdict, 'UNVERIFIED', 'comprehension_verdict UNVERIFIED WRITTEN to sidecar on keep+missing-eval');
+  assert.ok(w.model_run_coverage && w.model_run_coverage.models.opus, 'model_run_coverage written to sidecar');
   assert.ok(out.findings.some((f) => /application\.json/.test(f)), 'finding names missing application.json');
   assert.ok(out.findings.some((f) => /comprehension\.json/.test(f)), 'finding names missing comprehension.json');
   // no behavior gate spawned (no comprehension.json), no application stamp

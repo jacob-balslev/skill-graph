@@ -116,7 +116,7 @@ Distinct from the two *encodings* above (which are two shapes of the same frontm
 | File | Holds | Who reads it | Schema |
 |---|---|---|---|
 | **`SKILL.md`** frontmatter | The 25 agent-facing fields — what the everyday agent reads to **find, understand, and execute** the skill: `name`, `description`, `subject`/`subjects`/`taxonomy_domain`, `public`, `scope`, `grounding`, `project`, the activation surfaces (`keywords`/`triggers`/`examples`/`anti_examples`/`paths`), `relations`, the five flat Understanding fields, `stability`/`superseded_by`, `license`, `compatibility`, `allowed-tools`. `required`: `name`, `description`, `subject`, `public`, `scope`. | every consumer + the everyday agent | `schemas/SKILL_METADATA_PROTOCOL_schema.json` |
-| **`audit-state.json`** (sidecar, skill-folder root) | The 28 audit/eval/provenance fields — the Skill Audit Loop's records *about* the skill: `schema_version`, `version`, `owner`, `urn`, `repo`, `freshness`, `drift_check`, the `eval_*` triple, the four Audit Status verdicts (`structural`/`truth`/`comprehension`/`application`), `comprehension_state`, `lifecycle`, `marketplace_tier`, `portability`, `runtime_telemetry`. `required`: `schema_version`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` (`version` optional). | the audit loop (`/audit:*`) only — written by it, never read by the everyday agent | `schemas/skill-audit-state.schema.json` |
+| **`audit-state.json`** (sidecar, skill-folder root) | The 30 audit/eval/provenance fields — the Skill Audit Loop's records *about* the skill: `schema_version`, `version`, `owner`, `urn`, `repo`, `freshness`, `drift_check`, the `eval_*` triple, the four Audit Status verdicts (`structural`/`truth`/`comprehension`/`application`), `comprehension_state`, `lifecycle`, `marketplace_tier`, `portability`, `runtime_telemetry`, `skill_graph_protocol`, `model_run_coverage`. `required`: `schema_version`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` (`version` optional). | the audit loop (`/audit:*`) only — written by it, never read by the everyday agent | `schemas/skill-audit-state.schema.json` |
 
 The split *is* the SYSTEM/CONTENT boundary made physical: the sidecar is audit-loop output, the frontmatter is the agent-facing contract. The compiled manifest **joins** the two (`generate-manifest.js` merges the sidecar under the frontmatter before building each entry) so the router's quality and staleness gates read the same `health`/`eval`/`lifecycle` projections as before — the SOURCE changed, the manifest SHAPE did not. Three gates that used to live in the frontmatter schema's `allOf` are now expressed where they belong post-split: `eval_state ∈ {passing, monitored} ⇒ eval_artifacts: present` stays intra-sidecar; `comprehension_state: present` (sidecar) ⇒ the five flat Understanding fields (frontmatter) and `stability: deprecated` (frontmatter) ⇒ `superseded_by` (frontmatter) are **cross-file lint checks** in `skill-lint.js`. The prior single-file contract is recoverable via `git tag schema-v8`.
 
@@ -269,6 +269,7 @@ project         # { handle, role }[] — projects this skill belongs to (replace
 portability     # { readiness, targets }
 lifecycle       # { stale_after_days, review_cadence }
 runtime_telemetry  # { feedback_source, metrics }
+model_run_coverage # per-model audit-loop participation matrix; coverage evidence, not a verdict
 comprehension_state # absent | present
 # Understanding fields (v6+, flat) — required when comprehension_state: present
 mental_model    # string — primitives and their relationships
@@ -745,7 +746,7 @@ mental_model, purpose, concept_boundary, analogy, misconception
 schema_version, version, owner, urn, repo, freshness, reviewed_at,
 drift_check, eval_artifacts, eval_state, routing_eval, eval_last_run,
 eval, comprehension_state, lifecycle, marketplace_tier, portability,
-runtime_telemetry,
+runtime_telemetry, model_run_coverage,
 # Audit Status stamped by `audit` / `improve` / `evaluate`
 last_audited, last_changed, structural_verdict, truth_verdict,
 comprehension_verdict, application_verdict, eval_score, eval_failed_ids,
@@ -761,7 +762,7 @@ The manifest generator (`scripts/generate-manifest.js`) reads the authored front
 - `summary` — aggregate counts (`total_skills`, `by_schema_version`, `by_subject`, `by_public`, `by_stability`, `by_project`).
 - `generated_at` — ISO timestamp of when the manifest was generated.
 - `activation` — compiled block merging `triggers`, `keywords`, `paths`, `examples`, and `anti_examples` from frontmatter.
-- `health` — compiled block merging `eval_artifacts`, `eval_state`, `routing_eval`, `comprehension_state`, `eval_last_run`, `freshness`, and `drift_check`.
+- `health` — compiled block merging `eval_artifacts`, `eval_state`, `routing_eval`, `comprehension_state`, `eval_last_run`, `freshness`, `drift_check`, and `model_run_coverage`.
 
 The manifest schema is at `schemas/manifest.schema.json`. For the complete authored-to-generated field rename map and loss policy, see `docs/manifest-field-mapping.md`.
 

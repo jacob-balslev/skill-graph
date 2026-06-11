@@ -120,7 +120,7 @@ Skill Metadata Protocol makes these questions explicit:
 | When should it load? | `description`, `keywords`, `triggers`, `examples`, `anti_examples`, `paths` |
 | What is it near, dependent on, hierarchically related to, formally disjoint from, or not responsible for? | `relations.related`, `relations.depends_on`, `relations.verify_with`, `relations.suppresses`, `relations.broader`, `relations.narrower`, `relations.disjoint_with` |
 | What evidence makes it true? | `grounding.truth_sources`, `grounding.failure_modes`, `grounding.evidence_priority` |
-| Is it current and tested? | `audit-state.json` fields: `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, `eval_last_run`, `lifecycle` |
+| Is it current, tested, and covered by model runs? | `audit-state.json` fields: `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, `eval_last_run`, `lifecycle`, `model_run_coverage` |
 | Can it move to another runtime? | `portability`, `compatibility`, `allowed-tools` |
 
 Once those fields exist, a skill library stops being a flat folder of Markdown files. It becomes a map of project knowledge that humans can browse and agents can route through.
@@ -211,7 +211,7 @@ The sibling `audit-state.json` carries audit/eval/provenance state:
 }
 ```
 
-The protocol is the two-file contract. The template is just the easiest way to author the contract correctly.
+The protocol is the two-file contract. The template is just the easiest way to author the contract correctly. Loop-written fields such as `model_run_coverage` are intentionally absent from the seed example; the Skill Audit Loop writes them after real model-panel runs.
 
 ## Library Axes
 

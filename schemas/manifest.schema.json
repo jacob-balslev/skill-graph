@@ -780,6 +780,10 @@
                   }
                 }
               },
+              "model_run_coverage": {
+                "type": "object",
+                "description": "Per-model Skill Audit Loop participation matrix joined from `audit-state.json`. This records model aliases, operation/phase status, and receipt pointers; it is coverage evidence, not a quality verdict."
+              },
               "has_grounding": {
                 "type": "boolean"
               },

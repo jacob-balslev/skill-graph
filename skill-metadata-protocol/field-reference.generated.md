@@ -7,7 +7,7 @@
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld) (frontmatter fields only — the sidecar is not exported/RDF'd).
 > **Two-file split:** per [ADR-0019](../docs/adr/0019-audit-state-sidecar-separation.md), agent-facing fields live in `SKILL.md` frontmatter; audit/eval/provenance fields live in the `audit-state.json` sidecar.
 
-Schema version: **8** · Total fields: **56**
+Schema version: **8** · Total fields: **57**
 
 ---
 
@@ -327,7 +327,7 @@ Records what the skill is grounded against — the truth sources, the grounding 
 
 ## Audit-state sidecar fields (`audit-state.json`)
 
-> Source schema: `schemas/skill-audit-state.schema.json`. Field count: **29** · Required: **7**.
+> Source schema: `schemas/skill-audit-state.schema.json`. Field count: **30** · Required: **7**.
 
 ---
 
@@ -590,7 +590,7 @@ Optional receipt for the most recent eval run. Complements `eval_state` so `pass
 - `model` *optional* — Optional grader/model identifier when an LLM grader was used.
 - `receipt` *optional* — Path or URL to the eval receipt, scorecard, grader history, or CI run.
 - `receipt_hash` *optional* — Optional SHA-256 digest of the receipt artifact.
-- `bidirectional` *optional* — Eval provenance from lib/audit/run-bidirectional-eval.
+- `bidirectional` *optional* — Two-frontier bidirectional eval provenance (Opus 4.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#eval_last_run`](field-reference.md#eval_last_run)
 
@@ -677,5 +677,22 @@ Optional pointer to a real-world success/failure feed. Consumers may use telemet
 - `metrics` *optional*
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#runtime_telemetry`](field-reference.md#runtime_telemetry)
+
+---
+
+### `model_run_coverage` *(optional)*
+
+**Type:** object
+
+Per-model Skill Audit Loop participation matrix. This is not a verdict and never certifies quality; it records which model aliases ran which loop operation for this skill, which phase they reached, and where the receipt/failure evidence lives. Used to answer coverage questions such as 'has the free advisory tier run on this skill yet?' separately from `schema_version`, `skill_graph_protocol`, and the four Audit Status verdicts.
+
+**Sub-fields:**
+
+- `schema_version` *required* (`1`) — Shape version for this coverage sub-record.
+- `updated_at` *required* — Timestamp when this coverage matrix was last updated.
+- `registry_version` *required* — Model registry epoch from `lib/audit-shared/model-provider.
+- `models` *required* — Map keyed by stable model alias (`opus`, `codex-current`, `gemini`, `deepseek-flash`, etc.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#model_run_coverage`](field-reference.md#model_run_coverage)
 
 ---

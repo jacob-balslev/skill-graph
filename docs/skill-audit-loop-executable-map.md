@@ -62,7 +62,7 @@ The lowercase `audit` operation is only the report-only **Verify** command insid
 | 3 | Curate | `curate()` in live deps; anti-loss validators in `run-skill-audit-loop-lite.js` / `run-skill-audit-loop.js` | merged candidate + merge ledger | Every contribution is kept or dropped with a wrong/redundant/harmful reason. |
 | 4 | Use + evaluate candidate | `run-bidirectional-eval.js` | eval receipt | Missing/invalid/capped evals are inconclusive and do not cause revert. |
 | 5 | Grade | `decideKeepOrRevert()` | on keep, canonical `SKILL.md`; on revert, no body write | Revert only `HARMFUL`, `FALSE_POSITIVE`, or a certifying-clean verdict measurably worse than the prior verdict. Flat/non-lift/UNVERIFIED is not a regression. |
-| 6 | Record full loop | `recordFullLoop()` in `run-skill-audit-loop.js` | Integrity sidecar fields always; behavior sidecar fields only after keep + receipt | Revert records an explicit finding and does not stamp candidate behavior onto unchanged canonical skill. |
+| 6 | Record full loop | `recordFullLoop()` in `run-skill-audit-loop.js` | Integrity sidecar fields and `model_run_coverage` always; behavior sidecar fields only after keep + receipt | Revert records an explicit finding and does not stamp candidate behavior onto unchanged canonical skill. Model coverage records participation/failure evidence, not quality certification. |
 
 ## `evolve` pipeline
 

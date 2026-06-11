@@ -216,3 +216,52 @@ runtime_telemetry:
     sample_size: 0
     success_rate: 0
 ```
+
+### `model_run_coverage`
+
+model_run_coverage: loop-written participation matrix for the Skill Audit
+Loop's model panel. It records stable model aliases, operation/phase status,
+failure reasons, and receipt pointers. It is coverage evidence only — quality
+certification still lives in the four Audit Status verdicts and eval receipts.
+Do not seed or hand-edit this block; `recordFullLoop()` writes it after a real
+panel run.
+
+```json
+{
+  "model_run_coverage": {
+    "schema_version": 1,
+    "updated_at": "2026-06-11T12:00:00.000Z",
+    "registry_version": "2026-06-10",
+    "models": {
+      "opus": {
+        "model": "opus",
+        "provider": "anthropic",
+        "backend": "claude",
+        "tier": "mandatory",
+        "operations": {
+          "panel": {
+            "at": "2026-06-11T12:00:00.000Z",
+            "operation": "panel",
+            "eval_mode": "application",
+            "tier": "mandatory",
+            "status": "completed",
+            "registry_version": "2026-06-10",
+            "phase_status": {
+              "propose": "completed",
+              "cross_review": "completed",
+              "revise": "completed",
+              "curate": "completed",
+              "verify": "completed",
+              "evaluate": "completed",
+              "apply": "completed",
+              "record": "completed"
+            },
+            "certifying": true,
+            "receipt": "skill-audit-loop/progress/skill-audits/demo/merge-ledger.json"
+          }
+        }
+      }
+    }
+  }
+}
+```

@@ -244,6 +244,7 @@ The YAML frontmatter uses the current v8 schema, including the flat Understandin
 | | [`drift_check`](field-reference.md#drift_check) | always | `{ last_verified, truth_source_hashes? }` |
 | | [`lifecycle`](field-reference.md#lifecycle) | | `{ stale_after_days, review_cadence }` |
 | | [`runtime_telemetry`](field-reference.md#runtime_telemetry) | | `{ feedback_source, metrics }` |
+| | [`model_run_coverage`](field-reference.md#model_run_coverage) | | per-model audit-loop participation matrix |
 | **Audit Status** (v7+, flat) | [`last_audited`](field-reference.md#last_audited) | | ISO date |
 | | [`last_changed`](field-reference.md#last_changed) | | ISO date |
 | | [`structural_verdict`](field-reference.md#structural_verdict) | | `PASS` \| `PASS_WITH_FIXES` \| `FAIL` \| `UNVERIFIED` (v7+; form gate roll-up) |
