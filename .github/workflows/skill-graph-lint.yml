@@ -14,8 +14,8 @@ on:
       - 'docs/**'
       - 'README.md'
       - 'SKILL_GRAPH.md'
-      - 'SKILL_METADATA_PROTOCOL.md'
-      - 'SKILL_AUDIT_LOOP.md'
+      - 'skill-metadata-protocol/**'
+      - 'skill-audit-loop/**'
       - 'AGENTS.md'
       - 'package.json'
   pull_request:
@@ -30,8 +30,8 @@ on:
       - 'docs/**'
       - 'README.md'
       - 'SKILL_GRAPH.md'
-      - 'SKILL_METADATA_PROTOCOL.md'
-      - 'SKILL_AUDIT_LOOP.md'
+      - 'skill-metadata-protocol/**'
+      - 'skill-audit-loop/**'
       - 'AGENTS.md'
       - 'package.json'
 
