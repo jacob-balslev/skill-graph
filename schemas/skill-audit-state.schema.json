@@ -298,6 +298,11 @@
               "type": "string",
               "description": "The reconciled verdict after the conservative rule and the certifying-clean cap."
             },
+            "eval_slice": {
+              "type": "string",
+              "enum": ["all", "iteration", "certification"],
+              "description": "A10 held-out slicing: which application-case slice produced this verdict. `certification` means the verdict was earned on the held-out slice the improve/evolve loop never optimized against (anti-Goodhart — a certifying verdict on this slice cannot be overfit). `iteration` is the slice the loop tunes against (not certification-grade on its own). `all` (default) graded every case (legacy / no held-out split)."
+            },
             "applicable_for": {
               "type": "string",
               "enum": ["anthropic", "openai", "both", "neither"],

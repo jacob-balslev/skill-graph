@@ -37,7 +37,9 @@ function fakeRunDirection({ direction, generatorModel, graderModel }) {
     grader_model: graderModel,
     generator_family: generatorModel,
     grader_family: graderModel,
-    resolved_model: generatorModel,
+    // resolved_model is the GRADER's resolved id (the grader is the certifying judge) — it
+    // must share the grader's family, else A7's family-consistency guard correctly caps.
+    resolved_model: graderModel,
     verdict: advisory && generatorModel === 'minimax' ? 'REDUNDANT' : 'APPLICABLE',
     certification_tier: 'certifying',
     calibrated: true,

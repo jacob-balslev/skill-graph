@@ -400,6 +400,58 @@ const weakAxis = { axis_scores: { flag_correctness: 10, fix_correctness: 10, fal
 const fallthrough = computeApplicationPerCaseVerdict({ baseline: weakAxis, withSkill: strongAxis, redHerring: false, pairwise: biased });
 assert(fallthrough === 'applicable', '5.5f confidence-0 pairwise → verdict from absolute axes (flag 10→95 = applicable)', `Got: ${fallthrough}`);
 
+// ── 5.6 A10: held-out certification slice ──
+
+process.stdout.write('\n5.6 A10 held-out certification slice\n');
+
+const { splitApplicationCases } = require(path.join(REPO_ROOT, 'lib', 'audit', 'application-eval'));
+
+// (a) Deterministic split: 6 cases, default 1/3 → every 3rd held out (ids 3,6).
+const sixCases = [1, 2, 3, 4, 5, 6].map((id) => ({ id, red_herring: id % 2 === 0 }));
+const split = splitApplicationCases(sixCases);
+assert(split.certification.map((c) => c.id).join(',') === '3,6', '5.6a certification slice = every 3rd case (ids 3,6)', JSON.stringify(split.certification.map((c) => c.id)));
+assert(split.iteration.map((c) => c.id).join(',') === '1,2,4,5', '5.6b iteration slice = the rest (ids 1,2,4,5)', JSON.stringify(split.iteration.map((c) => c.id)));
+// Split is disjoint + covers everything.
+assert(split.iteration.length + split.certification.length === sixCases.length, '5.6c slices partition all cases');
+// Deterministic — same input → same split.
+const split2 = splitApplicationCases(sixCases.slice().reverse());
+assert(split2.certification.map((c) => c.id).join(',') === '3,6', '5.6d split is order-independent (sorts by id first)');
+// Empty input → empty slices.
+assert(splitApplicationCases([]).certification.length === 0, '5.6e empty input → empty slices');
+
+// (b) runApplicationEval honors slice + records eval_slice. Build a 6-case eval file.
+const sliceEvalDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sg-slice-'));
+fs.mkdirSync(path.join(sliceEvalDir, 'evals'), { recursive: true });
+const sliceEvalPath = path.join(sliceEvalDir, 'evals', 'application.json');
+fs.writeFileSync(sliceEvalPath, JSON.stringify({
+  skill: 'slice-skill',
+  cases: [1, 2, 3, 4, 5, 6].map((id) => ({
+    id, scenario_type: 'real', red_herring: false,
+    question: `q${id}`, scenario: `s${id}`,
+    expected_flags: ['f'], expected_fix_hints: ['h'], absent_signals: [],
+  })),
+}));
+
+const dryAll = runApplicationEval(sliceEvalPath, { dryRun: true, trials: 1, deps: { getEvalResponse: mockGetEvalResponse, runGraderPrompt: mockRunGraderPrompt } });
+assert(dryAll.eval_slice === 'all' && dryAll.planned_generator_calls === 6 * 2 * 1, '5.6f slice defaults to all (6 cases)', JSON.stringify({ slice: dryAll.eval_slice, gen: dryAll.planned_generator_calls }));
+
+const dryCert = runApplicationEval(sliceEvalPath, { slice: 'certification', dryRun: true, trials: 1, deps: { getEvalResponse: mockGetEvalResponse, runGraderPrompt: mockRunGraderPrompt } });
+assert(dryCert.eval_slice === 'certification' && dryCert.planned_generator_calls === 2 * 2 * 1, '5.6g certification slice runs only the 2 held-out cases', JSON.stringify({ slice: dryCert.eval_slice, gen: dryCert.planned_generator_calls }));
+
+const dryIter = runApplicationEval(sliceEvalPath, { slice: 'iteration', dryRun: true, trials: 1, deps: { getEvalResponse: mockGetEvalResponse, runGraderPrompt: mockRunGraderPrompt } });
+assert(dryIter.eval_slice === 'iteration' && dryIter.planned_generator_calls === 4 * 2 * 1, '5.6h iteration slice runs the 4 non-held-out cases', JSON.stringify({ slice: dryIter.eval_slice, gen: dryIter.planned_generator_calls }));
+
+// (c) An empty slice (too few cases) throws a clear error rather than silently certifying on nothing.
+const tinyEvalDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sg-tiny-'));
+fs.mkdirSync(path.join(tinyEvalDir, 'evals'), { recursive: true });
+const tinyEvalPath = path.join(tinyEvalDir, 'evals', 'application.json');
+fs.writeFileSync(tinyEvalPath, JSON.stringify({ skill: 'tiny', cases: [{ id: 1, scenario_type: 'real', red_herring: false, question: 'q', expected_flags: ['f'], expected_fix_hints: [], absent_signals: [] }] }));
+let threw = false;
+try {
+  runApplicationEval(tinyEvalPath, { slice: 'certification', dryRun: true, trials: 1, deps: { getEvalResponse: mockGetEvalResponse, runGraderPrompt: mockRunGraderPrompt } });
+} catch (e) { threw = /slice 'certification' is empty/.test(e.message); }
+assert(threw, '5.6i empty certification slice throws rather than certifying on zero cases');
+
 // ── 6. stampApplicationVerdict honors certification_tier (the PROVISIONAL cap) ──
 
 process.stdout.write('\n6. stampApplicationVerdict() PROVISIONAL cap by tier\n');
