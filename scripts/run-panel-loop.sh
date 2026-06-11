@@ -16,9 +16,16 @@
 #   --worklist        Drain EVERY eligible skill via the shared claim/ledger system
 #                     (scripts/skill/skill-audit-claim.js `next`→`claim`→`release`): ranked,
 #                     public-safe, atomically claimed (cannot double-process with the OpenCode
-#                     skill-audit loop), and ledger-completed skills are auto-skipped. Resumable
+#                     skill-audit loop), and completed skills are auto-skipped. Resumable
 #                     corpus-wide. This is the unattended default for "look through every skill".
-#   --skills-file P   Walk a newline-delimited slug file (curated sets); resume via the local ledger.
+#   --skills-file P   Walk a newline-delimited slug file (curated sets).
+#
+# Resume completion authority (B4 — UNIFIED across BOTH modes via is_completed()): a skill is
+# "done" when EITHER it carries a `content(<slug>): skill-audit-loop` git commit (the durable
+# KEPT-enrichment authority, surviving a wiped local ledger) OR it has a terminal local-ledger
+# line (applied|reverted|noop|missing). Previously WORKLIST resumed off the git log ONLY and FILE
+# off the local ledger ONLY — a split-brain that re-burned a full panel on every reverted/noop/
+# missing skill in WORKLIST mode (those leave no commit). `failed` is NOT terminal (retried).
 #
 # Resilience: a per-skill WATCHDOG (--timeout, default 5400s/90m) kills a hung enrich (whole
 # process tree) and the loop continues. Best-effort budget gate (exhausted-lock fast path),
@@ -180,6 +187,21 @@ ledger() { # slug status [detail] — local mirror (the canonical ledger is writ
 done_already() { # slug -> 0 if a terminal line already exists in the LOCAL ledger (skills-file resume)
   grep -q "\"skill\":\"$1\",\"status\":\"\(applied\|reverted\|missing\|noop\)\"" "$LEDGER"
 }
+committed_already() { # slug -> 0 if a KEPT enrichment commit exists in the skills repo (durable authority)
+  git -C "$SKILLS_REPO" log -1 --grep="content(${1}): skill-audit-loop" --format=%h 2>/dev/null | grep -q .
+}
+# B4: ONE completion authority for BOTH drain modes (was split-brain: WORKLIST resumed off git
+# log only, FILE off the local ledger only — so a reverted/noop/missing skill, which leaves NO
+# git commit, was skipped by FILE but RE-BURNED a full panel by WORKLIST every wave). A skill is
+# "done" when EITHER:
+#   (1) it carries a `content(<slug>): skill-audit-loop` commit — the DURABLE authority for a KEPT
+#       enrichment, which survives a wiped local ledger (git history is permanent); OR
+#   (2) it has a terminal LOCAL-ledger line (applied|reverted|noop|missing) in the persistent
+#       ledger ($WORK_ROOT=/tmp/enrich-loop) — covering non-committed terminal outcomes so neither
+#       mode re-runs a full panel on a skill already attempted-and-settled this wave-set.
+# `failed` is deliberately NOT terminal (watchdog timeout / external kill → retried). To force a
+# fresh attempt on a reverted/noop skill, clear its ledger line or run with a fresh --work-root.
+is_completed() { committed_already "$1" || done_already "$1"; }
 
 # Recursively kill a PID and all its descendants (enumerating children of a KNOWN pid is a
 # kill-target list, not a name-scan liveness inference — see no-ps-for-liveness).
@@ -421,8 +443,8 @@ drain_worklist() {
       break
     fi
 
-    if git -C "$SKILLS_REPO" log -1 --grep="content(${slug}): skill-audit-loop" --format=%h 2>/dev/null | grep -q .; then
-      echo "[$nn/$TOTAL] $slug — already skill-audit-looped (git), skipping" >&2; skipped=$((skipped+1)); continue
+    if is_completed "$slug"; then
+      echo "[$nn/$TOTAL] $slug — already done (git commit or terminal ledger), skipping" >&2; skipped=$((skipped+1)); continue
     fi
     local dir; dir=$(resolve_dir "$slug")
     if [ -z "$dir" ] || [ ! -f "$dir/SKILL.md" ]; then
@@ -472,7 +494,7 @@ drain_file() {
       echo "run-panel-loop: clean stop after ${processed} processed skill(s); resume next wake (recoverable, not a failure)" >&2
       break
     fi
-    if done_already "$slug"; then echo "[$i/$TOTAL] $slug — already done (local ledger), skipping" >&2; skipped=$((skipped+1)); continue; fi
+    if is_completed "$slug"; then echo "[$i/$TOTAL] $slug — already done (git commit or terminal ledger), skipping" >&2; skipped=$((skipped+1)); continue; fi
     local dir; dir=$(resolve_dir "$slug")
     if [ -z "$dir" ] || [ ! -f "$dir/SKILL.md" ]; then
       echo "[$i/$TOTAL] $slug — NOT FOUND, skipping" >&2; ledger "$slug" missing "no SKILL.md"; missing=$((missing+1)); continue
