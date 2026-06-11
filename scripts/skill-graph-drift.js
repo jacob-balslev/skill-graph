@@ -48,6 +48,15 @@ const { collectSkillFilesFromRoots, workspaceRoot, resolveTruthSourcePath, detec
 const { readSidecar, writeSidecarFields, joinSidecar } = require('./lib/audit-state-sidecar');
 
 const REPO_ROOT = workspaceRoot();
+// The surrounding workspace root (parent of the tooling repo in the monorepo
+// dev layout: REPO_ROOT = ~/Development/skill-graph → WORKSPACE_ROOT = ~/Development).
+// Used as the existence-checked extra resolution root for workspace-anchored
+// skills (project[] includes `development`), whose truth_sources are authored
+// workspace-relative (AGENTS.md, docs/reference/..., skill-graph/...). It is a
+// CANDIDATE only — every use is existence-checked, so a wrong guess (e.g. a
+// standalone clone where the parent is unrelated) never mis-resolves; it just
+// falls back to REPO_ROOT exactly as before.
+const WORKSPACE_ROOT = path.dirname(REPO_ROOT);
 const DEFAULT_SKILLS_DIR = path.join(REPO_ROOT, 'skills');
 const CONFIG_PATH = path.join(REPO_ROOT, '.skill-graph', 'config.json');
 
@@ -207,7 +216,7 @@ function sha256TruthSource(src, skillRoots = [], options = {}) {
     };
   }
 
-  const absPath = resolveTruthSourcePath(normalized.path, REPO_ROOT, skillRoots);
+  const absPath = resolveTruthSourcePath(normalized.path, REPO_ROOT, skillRoots, options.extraRoots || []);
   if (!fs.existsSync(absPath)) {
     // Before reporting a bare "file not found", check whether the path has a
     // structural defect — specifically the redundant `skills/skills/` prefix
@@ -274,6 +283,20 @@ function checkSkill(skillMdPath, skillRoots = [], options = {}) {
     return { skill: name, path: rel, status: 'UNGROUNDED', details: 'no truth_sources declared', truth_sources: [] };
   }
 
+  // Project-aware truth_source resolution: a workspace-anchored skill (project[]
+  // names the surrounding workspace, e.g. `development`) authors its non-`skills/`
+  // truth_sources relative to the WORKSPACE root, not this tooling repo. Hand the
+  // resolver the workspace root as an existence-checked extra candidate for those
+  // skills only; every other skill keeps pure repo-root resolution (extraRoots
+  // stays empty), so this can never regress the tooling-repo-relative truth_sources.
+  const projectHandles = Array.isArray(fm.project)
+    ? fm.project.map(p => (p && typeof p === 'object' ? p.handle : p)).filter(Boolean)
+    : [];
+  const isWorkspaceAnchored = projectHandles.includes('development');
+  const skillOptions = (isWorkspaceAnchored && WORKSPACE_ROOT !== REPO_ROOT)
+    ? { ...options, extraRoots: [...(options.extraRoots || []), WORKSPACE_ROOT] }
+    : options;
+
   // ADR-0019: drift_check + lifecycle live in the audit-state.json sidecar.
   // Join it under the frontmatter (grounding stays frontmatter and wins).
   const merged = joinSidecar(fm, readSidecar(skillMdPath));
@@ -289,7 +312,7 @@ function checkSkill(skillMdPath, skillRoots = [], options = {}) {
   let anyExternal = false;
 
   for (const src of grounding.truth_sources) {
-    const hashed = sha256TruthSource(src, skillRoots, options);
+    const hashed = sha256TruthSource(src, skillRoots, skillOptions);
     const liveHash = hashed.hash;
     const sourceKey = hashed.normalized.key;
     const recorded = recordedHashes[sourceKey];

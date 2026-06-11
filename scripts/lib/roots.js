@@ -254,19 +254,42 @@ function resolveSkillDirSpecifier(input, root = workspaceRoot(), config = loadRo
  *     `skills/a11y/SKILL.md` → `<repo-root>/skills/a11y/SKILL.md` (unchanged)
  *   - Configured workspace (skill_roots = ["../skills/skills"]):
  *     `skills/a11y/SKILL.md` → `<repo-root>/../skills/skills/a11y/SKILL.md`
- *   - Paths that don't start with `skills/` (e.g., `schemas/foo.json`) always
- *     resolve against `<repo-root>` — they reference the tooling repo itself.
+ *   - Paths that don't start with `skills/` (e.g., `schemas/foo.json`) resolve
+ *     against `<repo-root>` (the tooling repo) by default — they reference the
+ *     tooling repo itself.
+ *   - `extraRoots` (project-aware override): a workspace-anchored skill — one
+ *     whose `project[]` names the surrounding workspace (e.g. `development`) —
+ *     authors its non-`skills/` truth_sources relative to the WORKSPACE root
+ *     (`AGENTS.md`, `docs/reference/...`, `skill-graph/...`), NOT this tooling
+ *     repo. The caller passes the workspace root(s) in `extraRoots`; each is
+ *     tried in priority order, existence-checked, and the first that exists
+ *     wins. Callers that omit `extraRoots` (the default) get byte-identical
+ *     behavior to plain `<repo-root>` resolution — so the three non-drift
+ *     consumers are unaffected.
  *
  * @param {string} relPath — workspace-relative path from a truth_source
  * @param {string} repoRoot — the tooling repo workspace root (= REPO_ROOT)
  * @param {Array<{absPath: string, project?: string|null}>} skillRoots — output of resolveSkillRoots()
- * @returns {string} absolute path (existence not guaranteed)
+ * @param {string[]} [extraRoots] — additional candidate roots (priority order) to try,
+ *   existence-checked, before falling back to `<repo-root>`. Used for project-aware
+ *   (workspace-anchored) skills. Empty/omitted = current repo-root behavior.
+ * @returns {string} absolute path (existence not guaranteed for the repo-root fallback)
  */
-function resolveTruthSourcePath(relPath, repoRoot, skillRoots) {
+function resolveTruthSourcePath(relPath, repoRoot, skillRoots, extraRoots = []) {
   if (typeof relPath === 'string' && relPath.startsWith('skills/') && Array.isArray(skillRoots) && skillRoots.length > 0) {
     const firstRoot = skillRoots[0] && skillRoots[0].absPath;
     if (firstRoot && path.basename(firstRoot) === 'skills') {
       return path.resolve(path.dirname(firstRoot), relPath);
+    }
+  }
+  // Project-aware resolution: try each extra (workspace) root, existence-checked,
+  // first hit wins. Only populated for workspace-anchored skills; for everyone
+  // else extraRoots is empty and this loop is skipped (no behavior change).
+  if (Array.isArray(extraRoots) && extraRoots.length > 0) {
+    for (const root of extraRoots) {
+      if (!root) continue;
+      const candidate = path.resolve(root, relPath);
+      if (fs.existsSync(candidate)) return candidate;
     }
   }
   return path.resolve(repoRoot, relPath);
