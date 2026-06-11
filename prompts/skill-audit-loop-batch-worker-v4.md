@@ -1,7 +1,7 @@
 # Skill Audit Loop, Autonomous Batch Worker (v4)
 
 > Type: Outer queue contract that wraps the single-model audit (v3) for an autonomous batch.
-> Last updated: 2026-05-24 (v4). v4 adds the novelty-memo slot, evidence_strength tagging, format_loss flagging, batch-novelty flush on exit, and an explicit completeness claim. All other v3 mechanics are preserved.
+> Last updated: 2026-06-11T (C2): added the mandatory DISSENT-OR-ABSTAIN section (`dissent.md`) to per-skill loop step 9 — the prompt shape's fourth required section, which v4 had omitted. Prior: 2026-05-24 (v4). v4 adds the novelty-memo slot, evidence_strength tagging, format_loss flagging, batch-novelty flush on exit, and an explicit completeness claim. All other v3 mechanics are preserved.
 > Inner contract: `skill-graph/prompts/skill-audit-loop-single-model.md` (v3). RULE 0 still binds.
 > Pattern: `.claude/rules/prompt-shape-structured-plus-novelty.md`
 > Codex note: for Codex cron automations, prefer `skill-audit-loop-codex-autonomous-v5.md`. This v4 prompt remains the model-agnostic autonomous wrapper.
@@ -108,6 +108,17 @@ Per-skill loop:
                                  # rubric / evidence_strength. If nothing noticed beyond the
                                  # rubric, write: "Abstain: structured rubric covered every
                                  # concern." Ceremonial novelty is worse than abstain.
+   - `dissent.md`                # NEW (C2, 2026-06-11T). DISSENT-OR-ABSTAIN — the mandatory
+                                 # fourth section of the prompt shape (per
+                                 # .claude/rules/prompt-shape-structured-plus-novelty.md), which
+                                 # v4 omitted. Name at least ONE specific place where you disagree
+                                 # with this audit rubric / the brief's framing for THIS skill,
+                                 # backed by evidence (file:line / command output / external URL).
+                                 # If after honest reflection no evidence-backed dissent surfaces,
+                                 # write: "Abstain: no evidence-backed dissent — <one-line reason>."
+                                 # Evidence-backed dissent OR an explicit abstain. Forced
+                                 # ceremonial dissent is worse than an honest abstain (it trains
+                                 # curators to discount the dissent channel — GPT-5.5 2026-05-24 §6).
 10. Show every finding in artifacts. No "top findings" filtering.
 10a. (NEW in v4) For each finding in findings.md, include an evidence_strength tag:
      direct-file-line | command-output | external-source | inference | unsupported.
@@ -186,6 +197,7 @@ v4 adds five additive elements to the v3 batch worker, all sourced from the 2026
 | format_loss flag in step 11 | Per-skill loop | GPT-5.5 (2026-05-24 §Q2) + 05-19 runner-drift incident |
 | Batch novelty flush on exit | Batch target | Cross-skill insights lost in v3; only-visible-at-batch-level |
 | Completeness claim in final response (step 3a) | Before final response | `methodical` RULE-9; sycophancy 58% rate |
+| Dissent-or-abstain artifact (`dissent.md`) in per-skill loop step 9 (C2, 2026-06-11T) | Per-skill loop | `prompt-shape-structured-plus-novelty.md` § Dissent-or-abstain — the prompt shape's mandatory fourth section, which v4 had omitted |
 
 ## Why this shape
 

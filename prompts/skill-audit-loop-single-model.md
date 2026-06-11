@@ -6,7 +6,7 @@
 > separately-orchestrated process (`.opencode/commands/skill-audit-merge-v1.md`) — do not use
 > this prompt to drive it.
 >
-> Last updated: 2026-06-07T20:21Z (SKI-204): release-before-commit ordering aligned with SKILL_AUDIT_LOOP.md Part 3 — commit moved to after release in step 9.
+> Last updated: 2026-06-11T (C2): added the mandatory Novelty Memo + Dissent-or-Abstain block to Step 8 per the prompt-shape rule. Prior: 2026-06-07T20:21Z (SKI-204): release-before-commit ordering aligned with SKILL_AUDIT_LOOP.md Part 3 — commit moved to after release in step 9.
 > Previously: 2026-05-22 (v3). v3 fixes a PREFLIGHT lint gate that hard-stopped automation runs
 > in a sparse/sandboxed worktree (env false-positive lint errors); the gate is now per-skill, not
 > a clean-corpus precondition. v3 also makes Step 8 (self-assessment) auto-solve small/low-risk findings
@@ -193,6 +193,22 @@ self-assessment + DOCUMENT
    No severity filter, no truncation, no silently dropping the small ones into Linear to avoid the
    work: examined N findings, account for all N. Each finding ends tagged either
    FIXED-IN-SESSION (commit hash) or FILED → SH-XXXX. List both sets in the Step 10 report.
+
+   NOVELTY MEMO + DISSENT-OR-ABSTAIN (mandatory — the numbered steps above produce determinism;
+   these two unstructured slots produce discovery, per `~/Development/.claude/rules/
+   prompt-shape-structured-plus-novelty.md`). Append BOTH to the run-dir artifacts (a
+   `novelty-memo.md` in the skill's run dir) AND summarize them in the Step 10 report:
+   - NOVELTY MEMO (max 10 claims): anything genuinely OFF the audit rubric above — a real issue
+     the structured Steps 1–8 did not solicit. Each claim: (a) evidence-backed with `file:line`,
+     command output, or an external URL; (b) self-explained ("why this does not fit the rubric");
+     (c) tagged with an evidence-strength label `direct-file-line` / `command-output` /
+     `external-source` / `inference` / `unsupported`; (d) a `format_loss: true` flag when the
+     rubric itself has a gap. If nothing genuinely off-rubric is found, write ONE abstain line —
+     ceremonial padding is worse than abstain (it trains readers to discount the channel).
+   - DISSENT-OR-ABSTAIN (mandatory): name at least ONE specific place where you disagree with the
+     audit rubric / this prompt's framing for THIS skill, backed by evidence. If after honest
+     reflection no evidence-backed dissent surfaces, write an explicit abstain line with the
+     reason. Forced ceremonial dissent is worse than an honest abstain.
 9. Release YOUR claim first (so the terminal ledger line and updated `latest` symlink are written
    before the commit), rebuild worklist, then commit the skill changes and run-dir artifacts together:
      node scripts/skill/skill-audit-claim.js release <slug> --status completed \
@@ -272,6 +288,10 @@ the runner must not depend on a clean baseline to function.)
 - The claim lock is pid-bound; `release` across process boundaries needs `reap --ttl-min 0`.
 
 ## Changelog
+- **v3.1 (2026-06-11T):** added the mandatory NOVELTY MEMO (max-10 evidence-tagged off-rubric
+  claims, with `format_loss` flag and abstain-over-padding) + DISSENT-OR-ABSTAIN block to Step 8,
+  per `~/Development/.claude/rules/prompt-shape-structured-plus-novelty.md` (the numbered steps give
+  determinism; these two unstructured slots give discovery and counter representational collapse).
 - **v3 (2026-05-22):** fixed the PREFLIGHT lint gate that hard-stopped the Skill Audit Loop 3.0
   automation in a sparse/sandboxed worktree (191 environmental false-positive lint errors). The
   preflight now only verifies the toolchain RUNS and captures BASELINE_ERRORS; the lint gate is
