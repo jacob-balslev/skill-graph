@@ -171,6 +171,62 @@ check('parity break => strong verdict capped to PROVISIONAL, certifying_clean fa
   assert.strictEqual(r.synthesized_verdict, 'PROVISIONAL');
 });
 
+check('A7: resolved model family != declared family caps APPLICABLE to PROVISIONAL', () => {
+  // The Claude direction declares an `opus` (anthropic) generator but RESOLVES to a
+  // gpt id (openai) — a stale alias / registry drift. The cross-family certifying
+  // decision was computed from the DECLARED family, so the run must not certify.
+  const runDirection = ({ direction, generatorModel, graderModel, executionProfile }) => ({
+    direction,
+    generator_model: generatorModel,
+    grader_model: graderModel,
+    generator_family: generatorModel,
+    grader_family: graderModel,
+    // Claude direction's generator alias is `opus` (anthropic) but resolves to a GPT id.
+    resolved_generator_model: direction === 'Claude' ? 'gpt-5.4' : undefined,
+    verdict: 'APPLICABLE',
+    certification_tier: 'certifying',
+    calibrated: true,
+    red_herring_cases_total: 1,
+    execution_profile: executionProfile,
+  });
+  const r = runBidirectionalEval({
+    mode: 'application', skill: 's', cwd: '/x/skill-graph',
+    deps: { runDirection },
+  });
+  assert.strictEqual(r.family_consistent, false);
+  assert.strictEqual(r.certifying_clean, false);
+  assert.strictEqual(r.verdict_capped, true);
+  assert.strictEqual(r.synthesized_verdict, 'PROVISIONAL');
+  assert.ok(/resolved model family differs/.test(r.cap_reason), `cap_reason mentions family mismatch: ${r.cap_reason}`);
+});
+
+check('A7: resolved family == declared family stays certifying_clean', () => {
+  // Same as the certifying-clean baseline but with resolved ids that AGREE with the
+  // declared family — the mismatch guard must not fire on an honest resolution.
+  const runDirection = ({ direction, generatorModel, graderModel, executionProfile }) => ({
+    direction,
+    generator_model: generatorModel,
+    grader_model: graderModel,
+    generator_family: generatorModel,
+    grader_family: graderModel,
+    // opus→claude-opus id (anthropic), gpt-5.5→gpt-5.4 id (openai): both agree with declared.
+    resolved_generator_model: generatorModel === 'opus' ? 'claude-opus-4-8' : 'gpt-5.4',
+    resolved_model: graderModel === 'opus' ? 'claude-opus-4-8' : 'gpt-5.4',
+    verdict: 'APPLICABLE',
+    certification_tier: 'certifying',
+    calibrated: true,
+    red_herring_cases_total: 1,
+    execution_profile: executionProfile,
+  });
+  const r = runBidirectionalEval({
+    mode: 'application', skill: 's', cwd: '/x/skill-graph',
+    deps: { runDirection },
+  });
+  assert.strictEqual(r.family_consistent, true);
+  assert.strictEqual(r.certifying_clean, true);
+  assert.strictEqual(r.synthesized_verdict, 'APPLICABLE');
+});
+
 check('application mode: uncalibrated grader caps APPLICABLE to PROVISIONAL', () => {
   const r = runBidirectionalEval({
     mode: 'application',
