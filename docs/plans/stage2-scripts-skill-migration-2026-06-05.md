@@ -89,3 +89,69 @@ ADR-0009 § Update (one-line, dated, time-of-day).
 
 - Classification: DRAFT done (2026-06-05). Per-script verification + moves: NOT STARTED — high-risk,
   sequenced for a dedicated SYSTEM session per the protocol above. No moves executed yet.
+- **Inventory refreshed 2026-06-11T22:46+02:00 (D1 of the audit-loop fix-list).** Confirmed against the
+  live registry: of the 42 `scripts/skill/*.js`, exactly **5 are registered** in
+  `docs/reference/implementation-ownership.json` (as canonical / entrypoint-shim / removed_path) and
+  **37 remain UNREGISTERED + unmigrated.** The fix-list session that surfaced this did NOT execute any
+  moves: the top scripts carry 50+ live workspace consumers each (across `*.js`/`*.sh`/`*.json`/`*.py`
+  incl. the skill-injector hook, loops, pre-commit gates, package.json) — a relocation is the exact
+  high-risk, broad-blast-radius change this plan reserves for a dedicated session, and the session in
+  question had already landed 13 audit-loop commits; moving core scripts blind (with no way to run the
+  full multi-repo suite) would have risked the live loop. Per the fix-list's own fallback, the rest is
+  filed here. **Note (D2):** the evolve fork `scripts/skill/skill-evolution-loop-continuous.js` +
+  the distinct thin walker `scripts/skill/skill-evolution-loop.js` are part of this 37 and are
+  additionally analyzed in `skill-graph/CHANGELOG.md § [Unreleased] → Deprecated` (canonical =
+  `lib/audit/skill-evolution-loop.js`; collapse blocked on a parity test).
+
+### The 37 unregistered scripts — execution order (highest live-consumer count first)
+
+> Counts are live workspace references (excluding frozen records: `.research/`, `.roundtable/`,
+> `docs/plans|audits|research/`, `*/snapshots/`, `_archive`). HIGHER count = MORE references to update
+> in the move's same change = higher risk. Verify the skill-graph equivalent per the § protocol before
+> EACH move; do NOT batch.
+
+| refs | script |
+|---|---|
+| 56 | `skill-lint.js` |
+| 50 | `skill-census.js` |
+| 33 | `skills.js` |
+| 29 | `skill-evolution-loop.js` (D2 thin walker — distinct tool, likely `git mv` not collapse) |
+| 18 | `skill-overlap-detector.js` |
+| 18 | `skill-graph-builder.js` |
+| 16 | `source-truth-catalog.js` |
+| 11 | `skill-audit-claim.js` (MOVE+SHIM — loops/ledger/paths require it) |
+| 10 | `skill-evolution-analyzer.js` |
+| 9 | `skill-router.js` |
+| 9 | `skill-keyword-matrix.js` |
+| 9 | `generate-skill-docs.js` |
+| 8 | `skill-auto-create.js` |
+| 8 | `batch-eval.js` |
+| 7 | `skill-leverage-ranker.js` |
+| 7 | `skill-families.js` |
+| 6 | `skill-test-runner.js` |
+| 6 | `skill-audit-paths.js` |
+| 6 | `check-version-earned.js` (pre-commit gate — MOVE+SHIM) |
+| 5 | `skill-discovery-loop.js` |
+| 4 | `skill-evolution-loop-continuous.js` (D2 fork of `lib/audit/skill-evolution-loop.js`) |
+| 4 | `skill-audit-tracker.js` |
+| 4 | `eval-linter.js` |
+| 4 | `eval-discriminability-report.js` |
+| 4 | `check-io-composition.js` |
+| 3 | `update-skill-index-counts.js` |
+| 3 | `skill-audit-ledger.js` |
+| 3 | `research-feedback.js` |
+| 3 | `check-work-mode-separation.js` (pre-commit warning) |
+| 2 | `skill-writeback.js` |
+| 2 | `skill-search-tool.js` |
+| 2 | `skill-app-coverage-matrix.js` |
+| 2 | `claim-extractor.js` |
+| 1 | `skill-verify.js` |
+| 1 | `skill-embedder.js` |
+| 1 | `io-dependency-derivation.js` |
+| 1 | `build-keyfile-cache.js` (KEEP — live-cache generator a running hook reads, per `delete-dont-archive`) |
+
+**Recommended next-session order:** start from the BOTTOM (1–2 ref scripts) to build the move+shim+register
+muscle on low-blast-radius files, confirm the skill-injector + loop smokes stay green, THEN climb to the
+high-ref core (`skill-audit-claim`, `skill-census`, `skill-lint`) which gate the live audit loop. Each
+move is one commit with its references updated in the same change; run
+`node scripts/infra/check-implementation-ownership.js` after each registration.
