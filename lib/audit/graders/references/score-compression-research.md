@@ -162,8 +162,10 @@ See `docs/plans/eval-weighting-decompression.md` (in the workspace orchestration
 - `skills/self-evaluation/SKILL.md` (1-5 scale)
 - `.claude/agents/experiment-judge.md` (110-pt, 13 dims)
 - `.claude/agents/fusion-judge.md` (100-pt, 6 dims)
-- `scripts/skill/graders/concept-grader-prompt.md` (0/1/2 × 7 dims)
-- `scripts/skill/graders/application-grader-prompt.md` (0/1/2 × 4 axes)
+- `lib/audit/graders/concept-grader-prompt.md` (0/1/2 × 7 dims)
+- `lib/audit/graders/application-grader-prompt.md` (0–100 × 4 axes — migrated from 0/1/2 on 2026-06-11)
+
+> **2026-06-11 reconciliation (application grader).** The application grader moved from a coarse 0/1/2 per-axis scale to free-continuous 0–100. The 0/1/2 scale was originally chosen to fight the compression documented above, but it carried a side effect this research did not weigh: on a 3-point scale a strong frontier *baseline* (the no-skill arm) is forced to the ceiling (2/2), auto-tripping baseline saturation with zero headroom to measure the skill's marginal lift — the ceiling effect (see [Ceiling & Floor Effects](https://www.cogn-iq.org/learn/theory/ceiling-floor-effects/) in the sources). 0–100 restores that headroom. The compression risk this doc documents is REAL on a wide scale and is mitigated, not ignored: the grader retains its Anti-Compression Mandate (use the full range including the tails, anchor on the calibration set, never round up) and `eval-discriminability-report.js` (CV / Cronbach's α / histogram) is the empirical backstop if compression resurfaces. The concept (comprehension) grader keeps its 0/1/2 × 7-dim scale — that layer was out of scope for the 2026-06-11 change.
 
 ## Sources (Score Compression Research)
 

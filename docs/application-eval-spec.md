@@ -3,7 +3,7 @@
 > Type: Reference. Binding sibling of [`comprehension-eval-spec.md`](./comprehension-eval-spec.md).
 > Canonical schema: [`schemas/application.schema.json`](../schemas/application.schema.json) (v1, 2026-05-30, SH-6624).
 > Consumed by: `evaluate-skill.js --mode application` → `lib/audit/application-eval.js`.
-> Graded by: [`lib/audit/graders/application-grader-prompt.md`](../lib/audit/graders/application-grader-prompt.md) (deployed pointwise grader).
+> Graded by: [`lib/audit/graders/application-grader-prompt.md`](../lib/audit/graders/application-grader-prompt.md) for pointwise score provenance plus [`lib/audit/graders/application-comparative-grader-prompt.md`](../lib/audit/graders/application-comparative-grader-prompt.md) for the default blind pairwise verdict.
 > Required-on-disk by: `scripts/check-audit-manifest.js` whenever a graded `application_verdict` is claimed.
 
 ## What this artifact is
@@ -28,7 +28,7 @@ The application layer uses **`cases[]`**, not `evals[]` (the comprehension key).
 
 **Floor: ≥5 cases** (mirrors the comprehension gate-8 floor), **7 recommended**, and **at least one `red_herring: true`** is strongly recommended — a real-cases-only suite gives false confidence (per the `agent-eval-design` skill: "the highest-value cases are hard negatives and prior failures").
 
-## Per-case shape (the deployed pointwise contract)
+## Per-case shape
 
 Each case carries the scenario and the expected-behavior spec the grader scores against:
 
@@ -44,8 +44,8 @@ Each case carries the scenario and the expected-behavior spec the grader scores 
 | `expected_flags[]` | yes | Issues the skill should lead the agent to surface (flag_correctness, weight 2.0). |
 | `expected_fix_hints[]` | yes | Remediations the skill should lead the agent to recommend (fix_correctness, weight 1.5). |
 | `absent_signals[]` | yes | Claims the candidate should NOT make — false-positive risks (false_positive_avoidance, weight 1.0 real / 2.0 red-herring). |
-| `criteria[]` | **optional, PROVISIONAL** | Boolean per-criterion checklist — see below. |
-| `artifact` | **optional, PROVISIONAL** | Single input for the comparative grader — see below. |
+| `criteria[]` | optional | Boolean per-criterion checklist consumed by the blind comparative grader when present. |
+| `artifact` | optional | Single real input for the comparative grader; falls back to `scenario` + `context` when absent. |
 
 ## Two eval shapes — `application.json` vs `comprehension.json` (NOT interchangeable)
 
@@ -62,15 +62,19 @@ The application and comprehension evals are **different schemas with different a
 
 > ⚠ **`criticality` differs between the two:** application uses `normal`, comprehension uses `medium`. Writing `criticality: medium` in an application case fails `check-application-evals.js` (the enum here is `critical / high / normal / low`). Full comprehension contract: [`comprehension-eval-spec.md`](./comprehension-eval-spec.md).
 
-## How it is graded (deployed pointwise grader)
+## How it is graded
 
-For each case the runner runs **N trials** (`--trials`, default 3, recommended 3–5). Each trial is one baseline run (no skill) + one with_skill run (skill body injected), graded **independently** on 4 axes (0/1/2), then **paired** to compute a per-trial verdict from the delta. Independent (pointwise) grading means the grader never sees both runs side-by-side, so it is **not exposed to pairwise position bias** (verified 2026-05-30 against the LLM-as-judge literature; see `docs/research/`).
+For each case the runner runs **N trials** (`--trials`, default 3, recommended 3–5). Each trial is one baseline run (no skill) + one with_skill run (skill body injected). The runner records pointwise 0–100 axis grades for both arms, then uses a blind A/B comparative grader by default (`grading_mode: pairwise`) to decide which anonymous response is better. The runner alternates A/B order and decodes the judge's preference back to baseline vs with_skill after grading.
 
 The authoritative **per-case verdict is the MODE** of the N per-trial verdicts (averaging categorical verdicts is a fallacy; the winning verdict is one a real trial produced). The runner reports `verdict_consistency` (the modal-agreement fraction) and flags `verdict_stable: false` when the mode holds across fewer than 60% of trials — an unstable per-case verdict is surfaced, never silently averaged away. Repetition smooths the single-draw noise of same-judge grading (IRT judge-reliability framework, CARE confounder-aware aggregation; verified 2026-05-30).
 
 Axes and weights: `flag_correctness` (2.0), `fix_correctness` (1.5), `false_positive_avoidance` (1.0 real / 2.0 red-herring), `primary_signal_clarity` (1.0).
 
-Per-case verdict from the delta (real case): `applicable` if flag or fix improves ≥ +0.2 with false-positives clean; `redundant` if no measurable delta; `harmful` if flag/fix regresses; `mixed` on split signals. Red-herring: graded primarily on false-positive avoidance. Aggregate per-skill verdict: `applicable` if ≥60% of real cases are applicable AND ≤20% of red-herrings false-positive; `harmful` if any real case is harmful or >20% red-herrings false-positive.
+Each axis is scored on a **0–100** free-continuous integer scale (the coarse 0/1/2 scale was retired 2026-06-11: on a 3-point scale a strong frontier baseline is forced to the ceiling (2/2) and auto-trips saturation with no headroom to measure the skill's lift — see the grader's Anti-Compression Mandate for the discipline that keeps a wide scale discriminative). The per-axis `weighted_score` stays normalized 0–1. A baseline counts as **saturated** (no headroom → `not_discriminated_ceiling` on a no-lift case) only when it scores ≥ `APPLICATION_BASELINE_SATURATION_THRESHOLD` (default 90, env-overridable) on *every* axis; a per-axis delta counts as a real behavior change rather than grader noise only at ≥ `APPLICATION_MIN_MEANINGFUL_DELTA` points (default 10).
+
+Per-case verdict from the paired evidence (real case): `applicable` if the with-skill arm is preferred with clean false-positive behavior; `not_discriminated_ceiling` if there is no visible lift because the pointwise baseline already saturated all axes; `equivalent_on_frontier` if there was headroom but this measured frontier model behaved the same with and without the skill; `harmful` if the baseline arm is preferred or flag/fix behavior regresses; `mixed` on split signals. Red-herring cases are graded primarily on false-positive avoidance. Aggregate per-skill verdict: `applicable` if ≥60% of real cases are applicable AND ≤20% of red-herrings false-positive; `harmful` if any real case is harmful or >20% red-herrings false-positive; otherwise the majority no-lift category is preserved instead of collapsing every no-lift outcome into `REDUNDANT`.
+
+Important scope boundary: this application eval measures **raw skill-body injection** (`<skill>...</skill>` in the with-skill arm) against the same task prompt. It does not measure router recall, progressive-disclosure loading, marketplace installation, or whether an everyday agent would choose to load the skill. Those are separate routing/runtime evals. A no-lift application verdict therefore says "this body did not improve this measured model on this case set under raw injection," not "the skill should be removed from routing."
 
 ## Verdict tiering — earned, not assumed (enforced in code)
 
@@ -106,9 +110,9 @@ APPLICATION_GENERATOR_MODEL=opus APPLICATION_GRADER_MODEL=<codex-current> \
 - `--generator-family` / `--grader-family` are a **declaration of provenance, not a model selector** — set the actual models via the env vars / session model.
 - For a same-family PROVISIONAL spot-check (no certification), use the `skill-graph evaluate:gpt-5.5` profile or pass `--single-model`.
 
-## Provisional fields (`criteria[]`, `artifact`) — SH-6624 Phase-0 pilot
+## Comparative fields (`criteria[]`, `artifact`)
 
-The optional `criteria[]` (boolean per-criterion checklist: `{id, polarity: positive|negative|guard, statement}`) and `artifact` fields are the **comparative / checklist** contract under evaluation by the SH-6624 grader-design pilot. Research (CheckEval, FLASK) shows binary per-criterion rubrics have higher judge agreement and lower variance than graded scales. These fields are a **superset extension** so that, if the pilot promotes the checklist format, adoption is additive and non-breaking. **Do not rely on them** until the pilot resolves the grader-design fork and the fields are promoted from optional to part of the contract. The deployed pointwise runner ignores them.
+The optional `criteria[]` (boolean per-criterion checklist: `{id, polarity: positive|negative|guard, statement}`) and `artifact` fields are consumed by the default blind comparative grader when present. They remain optional so existing eval artifacts continue to run, but new application evals should include them when the case has a concrete diff/config/query or when the expected behavior can be expressed as crisp, checkable criteria.
 
 ## Structural conformance gate
 

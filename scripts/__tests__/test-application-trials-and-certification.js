@@ -39,6 +39,9 @@ const {
   aggregateTrialVerdicts,
   aggregateTrialGrades,
   runApplicationEval,
+  computeApplicationPerCaseVerdict,
+  computeApplicationAggregateVerdict,
+  isBaselineSaturated,
   APPLICATION_VERDICT_CONSISTENCY_THRESHOLD,
 } = require(path.join(REPO_ROOT, 'lib', 'audit', 'application-eval'));
 const { stampApplicationVerdict } = require(path.join(REPO_ROOT, 'lib', 'audit', 'evaluate-skill'));
@@ -141,15 +144,43 @@ assert(agg5.case_verdict === 'redundant' && agg5.trials === 0, '3e. empty trial 
 process.stdout.write('\n4. aggregateTrialGrades()\n');
 
 const grades = [
-  { primary_axis: 'flag_correctness', axis_scores: { flag_correctness: 2, fix_correctness: 2, false_positive_avoidance: 2, primary_signal_clarity: 1 }, raw_score: 7, max_raw_score: 8, weighted_score: 0.8, passed: true },
-  { primary_axis: 'flag_correctness', axis_scores: { flag_correctness: 1, fix_correctness: 1, false_positive_avoidance: 2, primary_signal_clarity: 1 }, raw_score: 5, max_raw_score: 8, weighted_score: 0.5, passed: false },
+  { primary_axis: 'flag_correctness', axis_scores: { flag_correctness: 90, fix_correctness: 90, false_positive_avoidance: 90, primary_signal_clarity: 50 }, raw_score: 320, max_raw_score: 400, weighted_score: 0.8, passed: true },
+  { primary_axis: 'flag_correctness', axis_scores: { flag_correctness: 50, fix_correctness: 50, false_positive_avoidance: 90, primary_signal_clarity: 50 }, raw_score: 240, max_raw_score: 400, weighted_score: 0.5, passed: false },
 ];
 const meanGrade = aggregateTrialGrades(grades);
-assert(meanGrade.axis_scores.flag_correctness === 1.5, '4a. mean flag_correctness = (2+1)/2 = 1.5', JSON.stringify(meanGrade.axis_scores));
+assert(meanGrade.axis_scores.flag_correctness === 70, '4a. mean flag_correctness = (90+50)/2 = 70', JSON.stringify(meanGrade.axis_scores));
 assert(meanGrade.weighted_score === 0.65, '4b. mean weighted_score = (0.8+0.5)/2 = 0.65');
-assert(meanGrade.primary_axis_score === 1.5, '4c. primary_axis_score follows the mean');
+assert(meanGrade.primary_axis_score === 70, '4c. primary_axis_score follows the mean');
 assert(meanGrade.passed === false, '4d. majority-passed is false (1 of 2 passed is not a majority)');
 assert(aggregateTrialGrades([]) === null, '4e. empty grades → null');
+
+process.stdout.write('\n4b. ceiling-aware no-lift verdicts\n');
+const saturatedBaseline = {
+  axis_scores: { flag_correctness: 95, fix_correctness: 95, false_positive_avoidance: 95, primary_signal_clarity: 95 },
+  weighted_score: 1,
+};
+const unsaturatedBaseline = {
+  axis_scores: { flag_correctness: 60, fix_correctness: 60, false_positive_avoidance: 95, primary_signal_clarity: 60 },
+  weighted_score: 0.625,
+};
+assert(isBaselineSaturated({ baseline: saturatedBaseline, redHerring: false }) === true, '4b-a. all-axes ≥90 real baseline is saturated');
+assert(isBaselineSaturated({ baseline: unsaturatedBaseline, redHerring: false }) === false, '4b-b. baseline below the saturation band is not saturated');
+assert(
+  computeApplicationPerCaseVerdict({ baseline: saturatedBaseline, withSkill: saturatedBaseline, redHerring: false }) === 'not_discriminated_ceiling',
+  '4b-c. no-lift at saturated baseline → not_discriminated_ceiling',
+);
+assert(
+  computeApplicationPerCaseVerdict({ baseline: unsaturatedBaseline, withSkill: unsaturatedBaseline, redHerring: false }) === 'equivalent_on_frontier',
+  '4b-d. no-lift with headroom → equivalent_on_frontier',
+);
+assert(
+  computeApplicationAggregateVerdict([{ case_verdict: 'not_discriminated_ceiling', red_herring: false }, { case_verdict: 'not_discriminated_ceiling', red_herring: false }]) === 'not_discriminated_ceiling',
+  '4b-e. aggregate preserves majority ceiling-inconclusive verdict',
+);
+assert(
+  computeApplicationAggregateVerdict([{ case_verdict: 'equivalent_on_frontier', red_herring: false }, { case_verdict: 'equivalent_on_frontier', red_herring: false }]) === 'equivalent_on_frontier',
+  '4b-f. aggregate preserves majority frontier-equivalent verdict',
+);
 
 // ── 5. runApplicationEval() end-to-end with mocked deps ───────────────────────
 
@@ -202,30 +233,60 @@ const evalDoc = {
 const evalPath = path.join(tmpEvalsDir, 'application.json');
 fs.writeFileSync(evalPath, JSON.stringify(evalDoc, null, 2));
 
-// Mock generator: just returns a non-empty canned response (the grader mock,
-// not the generator text, drives the scores deterministically).
+// Mock generator: return distinguishable text so the blind pairwise grader can
+// prefer the anonymous response that contains the skill-driven behavior without
+// seeing runner labels.
 let generatorCalls = 0;
-function mockGetEvalResponse() {
+function mockGetEvalResponse(prompt) {
   generatorCalls += 1;
-  return 'A candidate response. (mocked — content is irrelevant; the grader mock scores deterministically.)';
+  return /<skill name=/.test(prompt)
+    ? 'WITH_SKILL: use an expand/contract migration and avoid blocking writes.'
+    : 'BASELINE: apply the change directly.';
 }
 
 // Mock grader: reads the run type + red-herring flag out of the grader prompt
 // (which the runner builds via buildApplicationGraderPrompt) and returns a fixed
 // grade. Real case: with-skill surfaces the issue (flag 0→2). Red-herring: both
-// runs keep false_positive_avoidance high (skill must NOT trigger).
+// runs keep false_positive_avoidance high (skill must NOT trigger). Scores are on
+// the 0–100 axis scale (flag 10→95 with skill on the real case).
 let graderCalls = 0;
 function mockRunGraderPrompt(prompt) {
   graderCalls += 1;
+  if (/Pairwise grading task/.test(prompt)) {
+    const redHerring = /Red herring: true/.test(prompt);
+    if (redHerring) {
+      return JSON.stringify({
+        preferred: 'tie',
+        confidence: 2,
+        with_skill_delta: 'neutral',
+        application_verdict: 'EQUIVALENT_ON_FRONTIER',
+        criteria_results: [],
+        rollup: { gained: 0, lost: 0, already: 1, harm: 0, total: 1 },
+        comparative_reasoning: 'Both anonymous responses avoid the migration false-positive on the red herring.',
+      });
+    }
+    const responseAMatch = prompt.match(/## Response A\s*\n\s*([\s\S]*?)\n\s*## Response B/);
+    const responseA = responseAMatch ? responseAMatch[1] : '';
+    const aIsWithSkill = /WITH_SKILL/.test(responseA);
+    return JSON.stringify({
+      preferred: aIsWithSkill ? 'A' : 'B',
+      confidence: 3,
+      with_skill_delta: 'neutral',
+      application_verdict: 'APPLICABLE',
+      criteria_results: [],
+      rollup: { gained: 1, lost: 0, already: 0, harm: 0, total: 1 },
+      comparative_reasoning: 'The anonymous response containing expand/contract is materially better.',
+    });
+  }
   const withSkill = /Run type: with_skill/.test(prompt);
   const redHerring = /Red herring: true/.test(prompt);
   let scores;
   if (redHerring) {
-    scores = { flag_correctness: 1, fix_correctness: 1, false_positive_avoidance: 2, primary_signal_clarity: 1 };
+    scores = { flag_correctness: 50, fix_correctness: 50, false_positive_avoidance: 95, primary_signal_clarity: 50 };
   } else if (withSkill) {
-    scores = { flag_correctness: 2, fix_correctness: 2, false_positive_avoidance: 2, primary_signal_clarity: 2 };
+    scores = { flag_correctness: 95, fix_correctness: 95, false_positive_avoidance: 95, primary_signal_clarity: 95 };
   } else {
-    scores = { flag_correctness: 0, fix_correctness: 0, false_positive_avoidance: 2, primary_signal_clarity: 1 };
+    scores = { flag_correctness: 10, fix_correctness: 10, false_positive_avoidance: 95, primary_signal_clarity: 50 };
   }
   return JSON.stringify({ axis_scores: scores });
 }
@@ -243,13 +304,14 @@ assert(summary.trials === TRIALS, `5a. summary.trials === ${TRIALS}`, `Got: ${su
 assert(summary.certification_tier === 'provisional', '5b. default certification_tier === provisional (no attestation passed)');
 assert(summary.completed === 2 && summary.errors === 0, '5c. both cases completed, no errors', JSON.stringify({ completed: summary.completed, errors: summary.errors }));
 
-// Each case: 2 runs × TRIALS trials generator calls + the same grader calls.
+// Each case: 2 generated runs × TRIALS, plus 2 pointwise grader calls and
+// 1 blind pairwise grader call per trial.
 assert(generatorCalls === 2 * 2 * TRIALS, `5d. generator invoked cases×2×trials = ${2 * 2 * TRIALS} times`, `Got: ${generatorCalls}`);
-assert(graderCalls === 2 * 2 * TRIALS, `5e. grader invoked cases×2×trials = ${2 * 2 * TRIALS} times`, `Got: ${graderCalls}`);
+assert(graderCalls === (2 * 2 * TRIALS) + (2 * TRIALS), `5e. grader invoked pointwise + pairwise calls = ${(2 * 2 * TRIALS) + (2 * TRIALS)} times`, `Got: ${graderCalls}`);
 
 const realCase = summary.results.find((r) => r.id === 1);
 const redHerringCase = summary.results.find((r) => r.id === 2);
-assert(realCase.case_verdict === 'applicable', '5f. real case verdict = applicable (flag 0→2 with skill)', JSON.stringify(realCase.case_verdict));
+assert(realCase.case_verdict === 'applicable', '5f. real case verdict = applicable (flag 10→95 with skill)', JSON.stringify(realCase.case_verdict));
 assert(realCase.verdict_consistency === 1 && realCase.verdict_stable === true, '5g. deterministic mock → consistency 1.0, stable');
 assert(realCase.trials_total === TRIALS, '5h. per-case trials_total recorded');
 assert(realCase.trial_verdicts.length === TRIALS, '5i. one trial verdict per trial recorded', JSON.stringify(realCase.trial_verdicts));
@@ -258,6 +320,7 @@ assert(redHerringCase.case_verdict !== 'false_positive', '5j. red-herring case d
 assert(summary.red_herring_false_positive === 0, '5k. zero red-herring false positives in the rollup');
 assert(summary.aggregate_verdict === 'applicable', '5l. aggregate verdict = applicable (real case applicable + clean red herring)');
 assert(summary.mean_verdict_consistency === 1, '5m. mean verdict consistency = 1.0 across the deterministic run');
+assert(summary.grading_mode === 'pairwise', '5m-2. default grading_mode is pairwise');
 
 // History log: one record per run per trial per case = 2 runs × TRIALS × 2 cases.
 const logLines = fs.readFileSync(process.env.SKILL_GRAPH_APP_HISTORY, 'utf8').trim().split('\n').filter(Boolean);
@@ -277,6 +340,8 @@ const dry = runApplicationEval(evalPath, {
 });
 assert(dry.dryRun === true && dry.planned_generator_calls === 2 * 2 * 4, '5p. dry-run planned_generator_calls = cases×2×trials', JSON.stringify(dry.planned_generator_calls));
 assert(dry.trials === 4 && dry.certification_tier === 'provisional', '5q. dry-run reports trials + certification_tier');
+assert(dry.planned_pairwise_grader_calls === 2 * 4, '5q-2. dry-run reports pairwise grader calls separately');
+assert(dry.planned_history_records === 2 * 2 * 4, '5q-3. dry-run history records count pointwise run records, not pairwise calls');
 
 // 5r. A certifying run is reachable end-to-end and tier propagates to the summary.
 const certifyingSummary = runApplicationEval(evalPath, {
@@ -315,29 +380,83 @@ function readVerdict(file) {
   catch { return null; }
 }
 
+function writeApplicationReceipt(dir, result) {
+  const receiptPath = path.join(dir, `receipt-${Math.random().toString(16).slice(2)}.json`);
+  if (!result.skillName) result.skillName = 'stamp-skill';
+  fs.writeFileSync(receiptPath, JSON.stringify({ mode: 'application', skillName: 'stamp-skill', ...result }, null, 2));
+  return receiptPath;
+}
+
 // 6a. No certification_tier + APPLICABLE → capped to PROVISIONAL.
 fs.writeFileSync(stampSkillMd, STAMP_SKILL);
-stampApplicationVerdict(stampEval, { dryRun: false, aggregate_verdict: 'applicable', total: 2, errors: 0 }, false);
+{
+  const result = { dryRun: false, aggregate_verdict: 'applicable', total: 2, errors: 0 };
+  stampApplicationVerdict(stampEval, result, false, { artifactPath: writeApplicationReceipt(tmpStampDir, result) });
+}
 assert(readVerdict(stampSkillMd) === 'PROVISIONAL', '6a. applicable + no tier → PROVISIONAL (provisional is the safe default)', `Got: ${readVerdict(stampSkillMd)}`);
 
 // 6b. certification_tier: provisional + APPLICABLE → PROVISIONAL.
 fs.writeFileSync(stampSkillMd, STAMP_SKILL);
-stampApplicationVerdict(stampEval, { dryRun: false, aggregate_verdict: 'applicable', certification_tier: 'provisional', total: 2, errors: 0 }, false);
+{
+  const result = { dryRun: false, aggregate_verdict: 'applicable', certification_tier: 'provisional', total: 2, errors: 0 };
+  stampApplicationVerdict(stampEval, result, false, { artifactPath: writeApplicationReceipt(tmpStampDir, result) });
+}
 assert(readVerdict(stampSkillMd) === 'PROVISIONAL', '6b. applicable + provisional tier → PROVISIONAL');
 
 // 6c. certification_tier: certifying + APPLICABLE → APPLICABLE survives.
 fs.writeFileSync(stampSkillMd, STAMP_SKILL);
-stampApplicationVerdict(stampEval, { dryRun: false, aggregate_verdict: 'applicable', certification_tier: 'certifying', total: 2, errors: 0 }, false);
+{
+  const result = {
+    dryRun: false,
+    aggregate_verdict: 'applicable',
+    certification_tier: 'certifying',
+    total: 2,
+    errors: 0,
+    resolved_generator_model: 'claude-opus-4-8-20260601',
+    resolved_grader_model: 'gpt-5.5-20260601',
+  };
+  stampApplicationVerdict(stampEval, result, false, { artifactPath: writeApplicationReceipt(tmpStampDir, result) });
+}
 assert(readVerdict(stampSkillMd) === 'APPLICABLE', '6c. applicable + certifying tier → APPLICABLE survives');
+
+// 6c-2. certifying tier but unresolved model aliases still cap to PROVISIONAL.
+fs.writeFileSync(stampSkillMd, STAMP_SKILL);
+{
+  const result = {
+    dryRun: false,
+    aggregate_verdict: 'applicable',
+    certification_tier: 'certifying',
+    total: 2,
+    errors: 0,
+    resolved_generator_model: 'latest-alias-unresolved',
+    resolved_grader_model: 'gpt-5.5-20260601',
+  };
+  stampApplicationVerdict(stampEval, result, false, { artifactPath: writeApplicationReceipt(tmpStampDir, result) });
+}
+assert(readVerdict(stampSkillMd) === 'PROVISIONAL', '6c-2. certifying + unresolved model id → PROVISIONAL');
 
 // 6d. certifying tier but --single-model forces PROVISIONAL.
 fs.writeFileSync(stampSkillMd, STAMP_SKILL);
-stampApplicationVerdict(stampEval, { dryRun: false, aggregate_verdict: 'applicable', certification_tier: 'certifying', total: 2, errors: 0 }, false, { singleModel: true });
+{
+  const result = {
+    dryRun: false,
+    aggregate_verdict: 'applicable',
+    certification_tier: 'certifying',
+    total: 2,
+    errors: 0,
+    resolved_generator_model: 'claude-opus-4-8-20260601',
+    resolved_grader_model: 'gpt-5.5-20260601',
+  };
+  stampApplicationVerdict(stampEval, result, false, { singleModel: true, artifactPath: writeApplicationReceipt(tmpStampDir, result) });
+}
 assert(readVerdict(stampSkillMd) === 'PROVISIONAL', '6d. certifying + --single-model → PROVISIONAL (explicit single-model override)');
 
 // 6e. Non-APPLICABLE verdicts are unaffected by tier (HARMFUL stays HARMFUL).
 fs.writeFileSync(stampSkillMd, STAMP_SKILL);
-stampApplicationVerdict(stampEval, { dryRun: false, aggregate_verdict: 'harmful', total: 2, errors: 0 }, false);
+{
+  const result = { dryRun: false, aggregate_verdict: 'harmful', total: 2, errors: 0 };
+  stampApplicationVerdict(stampEval, result, false, { artifactPath: writeApplicationReceipt(tmpStampDir, result) });
+}
 assert(readVerdict(stampSkillMd) === 'HARMFUL', '6e. harmful is unaffected by certification_tier');
 
 // ── 7. Top-tier grader allowlist (SH-6626) ────────────────────────────────────
