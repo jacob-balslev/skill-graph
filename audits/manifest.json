@@ -54,6 +54,7 @@
         { "id": "improve-pass",      "path": "skill-graph/prompts/skill-audit-loop-improve-pass.md",      "phase": "1-propose",       "role": "Per-model ENRICH/propose pass (research repo+web, write proposal + novelty memo, no commit). Dispatched by lib/audit/propose-one.js." },
         { "id": "cross-review-pass", "path": "skill-graph/prompts/skill-audit-loop-cross-review-pass.md", "phase": "2-cross-review", "role": "Per-model cross-review pass (keep/wrong/missing JSON over every other proposal). Dispatched by lib/audit/cross-review-one.js." },
         { "id": "revise-pass",       "path": "skill-graph/prompts/skill-audit-loop-revise-pass.md",       "phase": "2-revise",        "role": "Per-model revise pass (revise own proposal in light of feedback; hash-authoritative convergence). Dispatched by lib/audit/revise-one.js." },
+        { "id": "curate-pass",       "path": "skill-graph/prompts/skill-audit-loop-curate-pass.md",       "phase": "3-curate",        "role": "Frontier curator synthesis pass (union-merge under STRICT anti-loss + mandatory-coverage; disposition every advisory finding; write merged SKILL.md + merge-ledger). Dispatched by lib/audit/curate-one.js." },
         { "id": "verify-pass",       "path": "skill-graph/prompts/skill-audit-loop-verify-pass.md",       "phase": "3.1-verify",      "role": "Per-mandatory-frontier verify pass (own-contribution coverage + advisory-disposition honesty + reproduced evidence on load-bearing claims). Dispatched by lib/audit/verify-one.js." }
       ],
       "commands": [
