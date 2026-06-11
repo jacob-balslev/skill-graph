@@ -252,4 +252,35 @@ check('claimSlot claims --op audit per model; curate claims --op merge with a di
   fs.rmSync(tmp, { recursive: true, force: true });
 });
 
+console.log('6. applyMerge atomicity (B1) — merged bytes land via rename, no orphan temp');
+check('applyMerge writes merged content via .tmp+rename and leaves no .tmp behind', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'enrich-apply-'));
+  const skill = 'demo-skill';
+  const skillDir = path.join(tmp, 'skills', skill);
+  fs.mkdirSync(skillDir, { recursive: true });
+  const canonical = path.join(skillDir, 'SKILL.md');
+  fs.writeFileSync(canonical, '---\nname: demo-skill\n---\n# Demo\nORIGINAL body.\n');
+  const merged = path.join(tmp, 'merged-SKILL.md');
+  const MERGED = '---\nname: demo-skill\npublic: true\n---\n# Demo\nMERGED enriched body.\n';
+  fs.writeFileSync(merged, MERGED);
+
+  const deps = d.createSkillAuditLoopLiteDeps({ skillGraphRoot: tmp, workspaceRoot: tmp, dryRun: false, dispatch: () => '' });
+  const res = deps.applyMerge({ skill, skillDir, mergedSkillPath: merged });
+
+  // The merged bytes are now the canonical content.
+  assert.strictEqual(res.applied, canonical, 'applyMerge reports the canonical path');
+  assert.strictEqual(fs.readFileSync(canonical, 'utf8'), MERGED, 'canonical replaced with merged bytes');
+  // No orphan temp file is left in the skill dir (atomic rename consumed it).
+  assert.ok(!fs.existsSync(`${canonical}.tmp`), 'no orphan SKILL.md.tmp remains');
+  assert.deepStrictEqual(
+    fs.readdirSync(skillDir).filter((f) => f.endsWith('.tmp')),
+    [],
+    'no .tmp siblings remain in the skill dir',
+  );
+  // The atomic-write source (merged) is untouched — applyMerge copies, never moves it.
+  assert.strictEqual(fs.readFileSync(merged, 'utf8'), MERGED, 'merged source preserved');
+
+  fs.rmSync(tmp, { recursive: true, force: true });
+});
+
 console.log(`\nResults: ${passed} passed, 0 failed`);

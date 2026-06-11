@@ -345,6 +345,18 @@ enrich_one_skill() { # $1=slug $2=dir
       ;;
     143|137)
       local T_ELAPSED=$(( $(date +%s) - T_START ))
+      # Post-kill integrity check (B1): a kill can land between applyMerge's atomic
+      # rename and the git commit, leaving the canonical SKILL.md modified-but-uncommitted
+      # (and possibly an orphan `${SKILL.md}.tmp` if the kill hit mid-write). The atomic
+      # rename guarantees SKILL.md itself is never truncated, but a dirty-from-killed-apply
+      # working tree must be restored so the next drain re-enriches from the committed
+      # baseline (and the git-log resume guard at the loop top stays the single completion
+      # authority). Discard the uncommitted change and remove the orphan temp.
+      rm -f "$dir/SKILL.md.tmp" "$dir/audit-state.json.tmp" 2>/dev/null || true
+      if [ -n "$(git -C "$SKILLS_REPO" status --porcelain -- "$dir/SKILL.md" "$dir/audit-state.json" 2>/dev/null)" ]; then
+        echo "    $slug — restoring SKILL.md/audit-state.json dirtied by killed apply (git checkout)" >&2
+        git -C "$SKILLS_REPO" checkout -- "$dir/SKILL.md" "$dir/audit-state.json" 2>/dev/null || true
+      fi
       if [ -f "$WD_SENTINEL" ]; then
         echo "    $slug — KILLED by watchdog (ran ${T_ELAPSED}s, ceiling ${TIMEOUT}s)" >&2
         ledger "$slug" failed "watchdog timeout: ran ${T_ELAPSED}s of ${TIMEOUT}s"; failed=$((failed+1)); REL_STATUS="aborted"
