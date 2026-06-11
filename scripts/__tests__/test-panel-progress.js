@@ -198,6 +198,60 @@ ok('fmtElapsed formats seconds and minutes', () => {
   assert.strictEqual(fmtElapsed(120000), '2m');
 });
 
+// ── D5. writeRunnerHeartbeat — the non-panel-runner heartbeat (batch-eval, evaluate-skill, evolve) ──
+console.log('D5. writeRunnerHeartbeat (non-panel runners)');
+const { writeRunnerHeartbeat } = require('../../lib/audit/panel-status-file');
+
+ok('writes a valid status.json in the panel-progress contract shape', () => {
+  const sf = statusPath('runner-shape');
+  writeRunnerHeartbeat(sf, {
+    skill: null, phase: 'batch-eval', total: 3, done: 1, failed: 0,
+    agents: [
+      { model: 's-a', tier: 'eval', phase: 'evaluate', state: 'done' },
+      { model: 's-b', tier: 'eval', phase: 'evaluate', state: 'running' },
+      { model: 's-c', tier: 'eval', phase: 'evaluate', state: 'pending' },
+    ],
+  });
+  const st = readStatus(sf);
+  // Same top-level keys the watch-audit-batch.sh / watch-panel.js readers expect.
+  for (const k of ['ts', 'pid', 'skill', 'phase', 'total', 'done', 'failed', 'running', 'complete', 'agents']) {
+    assert.ok(k in st, `status.json carries key ${k}`);
+  }
+  assert.strictEqual(st.total, 3);
+  assert.strictEqual(st.done, 1);
+  assert.strictEqual(st.phase, 'batch-eval');
+  assert.strictEqual(st.complete, false);
+  assert.strictEqual(st.agents.length, 3);
+  // running[] is derived from agents in the 'running' state.
+  assert.strictEqual(st.running.length, 1);
+  assert.strictEqual(st.running[0].cell, 's-b:evaluate');
+});
+
+ok('complete:true is recorded; counters default from agents when omitted', () => {
+  const sf = statusPath('runner-complete');
+  writeRunnerHeartbeat(sf, {
+    phase: 'evolve', complete: true,
+    agents: [
+      { model: 'x', tier: 'evolve', phase: 'evolve', state: 'done' },
+      { model: 'y', tier: 'evolve', phase: 'evolve', state: 'failed' },
+    ],
+  });
+  const st = readStatus(sf);
+  assert.strictEqual(st.complete, true);
+  assert.strictEqual(st.total, 2);   // defaulted from agents.length
+  assert.strictEqual(st.done, 1);    // defaulted from agents in 'done' state
+  assert.strictEqual(st.failed, 1);  // defaulted from agents in 'failed' state
+});
+
+ok('no-op on a falsy statusFile (opt-in); never throws on a bad path', () => {
+  assert.doesNotThrow(() => writeRunnerHeartbeat(null, { phase: 'x' }));
+  assert.doesNotThrow(() => writeRunnerHeartbeat('', { phase: 'x' }));
+  // A path under a file (un-creatable dir) is swallowed best-effort, not thrown.
+  const badParent = statusPath('not-a-dir');
+  fs.writeFileSync(badParent, 'x');
+  assert.doesNotThrow(() => writeRunnerHeartbeat(path.join(badParent, 'child.json'), { phase: 'x' }));
+});
+
 try { fs.rmSync(tmp, { recursive: true, force: true }); } catch (_) {}
 
 console.log(`\nResults: ${passed} passed, ${failed} failed`);
