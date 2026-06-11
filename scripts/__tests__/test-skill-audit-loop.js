@@ -375,11 +375,11 @@ check('both frontiers approve => verify RUN, 1 round, proceeds to eval + apply',
 });
 
 check('round-1 gap => curator revision + re-verify approves in round 2 (curate called twice)', () => {
-  let curateCalls = 0;
   let verifyCalls = 0;
+  const curateArgs = [];
   const deps = makeDeps({
     curate: (args) => {
-      curateCalls += 1;
+      curateArgs.push(args);
       return {
         mergedSkillPath: 'SKILL.md',
         mergeLedgerPath: 'merge-ledger.json',
@@ -396,9 +396,19 @@ check('round-1 gap => curator revision + re-verify approves in round 2 (curate c
   const r = panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], deps });
   assert.strictEqual(r.verify.status, 'RUN');
   assert.strictEqual(r.verify.rounds, 2);
-  assert.strictEqual(curateCalls, 2); // initial curate + one verify revision
+  assert.strictEqual(curateArgs.length, 2); // initial curate + one verify revision
   assert.strictEqual(r.verify.gaps.length, 2); // the two round-1 gaps stay on the record
   assert.strictEqual(r.applied, true);
+
+  // B7: the verify-revision curate call receives the gaps via a TYPED verifyGaps[] param,
+  // NOT smuggled into crossReview with a synthetic targetModel:'curator'.
+  const revision = curateArgs[1];
+  assert.ok(Array.isArray(revision.verifyGaps) && revision.verifyGaps.length === 2, 'revision curate received typed verifyGaps[]');
+  assert.ok(revision.verifyGaps.every((g) => g.verifier && g.item && g.required_action), 'verifyGaps carry verifier/item/required_action');
+  // crossReview is NOT the carrier for verify gaps anymore.
+  assert.ok(!(revision.crossReview || []).some((c) => c.targetModel === 'curator'), 'verify gaps are NOT smuggled into crossReview as targetModel:curator');
+  // The initial curate (round-0) carries no verify gaps.
+  assert.ok(!curateArgs[0].verifyGaps || curateArgs[0].verifyGaps.length === 0, 'initial curate has no verify gaps');
 });
 
 check('approval never reached after max verify rounds => throws, nothing applied', () => {

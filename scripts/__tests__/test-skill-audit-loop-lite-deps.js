@@ -109,6 +109,22 @@ check('buildCuratePrompt forbids "did not move a score" drops + names ledger pat
   assert.ok(/did not move a score/i.test(p));
   assert.ok(p.includes('/r/l.json'));
   assert.ok(p.includes('UNION'));
+  // B7: with no verify gaps, no verification block is rendered.
+  assert.ok(!/MANDATORY VERIFICATION GAPS/.test(p), 'no verify-gap block when verifyGaps empty');
+});
+check('B7: buildCuratePrompt renders verifyGaps in a DISTINCT block, not cross-review', () => {
+  const gaps = [{ verifier: 'opus', round: 1, item: 'claim X lacks evidence', evidence: 'f.js:1', required_action: 'drop or evidence it' }];
+  const p = d.buildCuratePrompt({
+    skill: 's', proposals: [{ model: 'opus', proposalPath: '/r/a', noveltyMemoPath: '/r/an' }],
+    crossReview: [], verifyGaps: gaps,
+    currentSkillPath: '/s/SKILL.md', mergedSkillPath: '/r/m.md', mergeLedgerPath: '/r/l.json', mergeProtocolRef: 'P',
+  });
+  assert.ok(/MANDATORY VERIFICATION GAPS \(Phase 3.1\)/.test(p), 'verify gaps get their own labeled block');
+  assert.ok(p.includes('claim X lacks evidence') && p.includes('"verifier": "opus"'), 'gap content + typed shape rendered');
+  // The block is distinct from cross-review and from the merge-ledger shape line.
+  const verifyIdx = p.indexOf('MANDATORY VERIFICATION GAPS');
+  const crossIdx = p.indexOf('Cross-review feedback to consider');
+  assert.ok(crossIdx !== -1 && verifyIdx > crossIdx, 'verify block follows the cross-review block, not merged into it');
 });
 check('model dispatch uses injected model cwd and scratch env, not the claim cwd/env', () => {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'enrich-model-env-'));
