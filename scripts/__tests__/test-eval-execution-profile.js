@@ -27,6 +27,12 @@ check('defaults to tools=full, research=repo (NO web), public repo scope', () =>
   assert.strictEqual(p.repoScope, 'skill-graph + skills ONLY');
   assert.strictEqual(p.cwd, '/x/skill-graph');
 });
+check('A6: a real-repo-root cwd defaults to fence=prompt-level; os-isolated only when asserted', () => {
+  assert.strictEqual(ep.buildExecutionProfile({ cwd: '/x/skill-graph' }).fence, 'prompt-level');
+  assert.strictEqual(ep.buildExecutionProfile({ cwd: '/x/skill-graph', fence: ep.FENCE_OS_ISOLATED }).fence, 'os-isolated');
+  // An unknown fence value is normalized to prompt-level (the safe, weaker assertion).
+  assert.strictEqual(ep.buildExecutionProfile({ cwd: '/x', fence: 'wishful' }).fence, 'prompt-level');
+});
 check('SKILL_EVAL_WEB=on restores repo+web; explicit research arg always wins over env', () => {
   const prev = process.env.SKILL_EVAL_WEB;
   try {
@@ -334,9 +340,9 @@ check('F6: an unresolved direction model caps APPLICABLE to PROVISIONAL (cannot 
   assert.ok(/unresolved/.test(r.cap_reason));
 });
 check('F8: toSidecarReceipt projects ONLY schema-allowed keys', () => {
-  const allowed = new Set(['frontier_pair', 'reconciliation', 'agreement', 'parity_ok', 'certifying_clean', 'synthesized_verdict', 'eval_slice', 'applicable_for', 'registry_version', 'merge_ledger_ref', 'provisional_reason', 'missing_frontiers', 'regrade_required', 'execution_profile', 'directions']);
+  const allowed = new Set(['frontier_pair', 'reconciliation', 'agreement', 'parity_ok', 'certifying_clean', 'synthesized_verdict', 'eval_slice', 'applicable_for', 'registry_version', 'merge_ledger_ref', 'provisional_reason', 'missing_frontiers', 'regrade_required', 'fence_caveat', 'execution_profile', 'directions']);
   const dirKeys = new Set(['role', 'generator_model', 'grader_model', 'generator_family', 'grader_family', 'resolved_model', 'verdict', 'certification_tier']);
-  const epKeys = new Set(['tools', 'research', 'repoScope', 'cwd']);
+  const epKeys = new Set(['tools', 'research', 'repoScope', 'cwd', 'fence']);
   const runDirection = ({ direction, generatorModel, graderModel, generatorFamily, graderFamily, executionProfile }) => ({
     direction, generator_model: generatorModel, grader_model: graderModel,
     generator_family: generatorFamily, grader_family: graderFamily, resolved_model: 'm',
@@ -350,6 +356,37 @@ check('F8: toSidecarReceipt projects ONLY schema-allowed keys', () => {
   for (const d of rec.directions) for (const k of Object.keys(d)) assert.ok(dirKeys.has(k), `unexpected direction key: ${k}`);
   for (const k of Object.keys(rec.execution_profile)) assert.ok(epKeys.has(k), `unexpected execution_profile key: ${k}`);
   assert.strictEqual(rec.reconciliation, 'conservative');
+});
+
+check('A6: a non-isolated run records fence=prompt-level + a fence_caveat on the receipt', () => {
+  const runDirection = ({ direction, generatorModel, graderModel, generatorFamily, graderFamily, executionProfile }) => ({
+    direction, generator_model: generatorModel, grader_model: graderModel,
+    generator_family: generatorFamily, grader_family: graderFamily, resolved_model: graderModel,
+    verdict: 'APPLICABLE', certification_tier: 'certifying',
+    calibrated: true, red_herring_cases_total: 1, execution_profile: executionProfile,
+  });
+  // runBidirectionalEval builds its own profile from cwd (the real repo root) → prompt-level.
+  const r = runBidirectionalEval({ mode: 'application', skill: 's', cwd: '/x/skill-graph', deps: { runDirection } });
+  assert.strictEqual(r.fence, 'prompt-level');
+  assert.ok(/fence: prompt-level only/.test(r.fence_caveat), 'result carries the prompt-level fence caveat');
+  const rec = toSidecarReceipt(r);
+  assert.strictEqual(rec.execution_profile.fence, 'prompt-level');
+  assert.ok(/prompt-level only/.test(rec.fence_caveat), 'sidecar receipt carries the fence caveat');
+});
+
+check('A6: an os-isolated profile records no fence_caveat', () => {
+  // Hand-build a result whose execution profile is os-isolated (the isolated-eval-workspace path).
+  const r = {
+    frontier_pair: ['opus', 'gpt-5.5'], reconciliation: 'conservative', agreement: true,
+    parity: { parity_ok: true }, certifying_clean: true, synthesized_verdict: 'APPLICABLE',
+    applicable_for: 'both', registry_version: 'x', merge_ledger_ref: null,
+    direction_claude: { verdict: 'APPLICABLE' }, direction_codex: { verdict: 'APPLICABLE' },
+    fence: 'os-isolated', fence_caveat: null,
+    execution_profile: { tools: 'full', research: 'repo', repoScope: 'skill-graph + skills ONLY', cwd: '/tmp/skill-eval-ws/skill-graph', fence: 'os-isolated' },
+  };
+  const rec = toSidecarReceipt(r);
+  assert.strictEqual(rec.execution_profile.fence, 'os-isolated');
+  assert.ok(!('fence_caveat' in rec), 'os-isolated run carries NO fence_caveat');
 });
 
 console.log('6. Single-available-frontier degraded eval');

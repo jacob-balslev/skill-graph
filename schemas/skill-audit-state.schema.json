@@ -329,6 +329,10 @@
               "type": "boolean",
               "description": "True when this receipt must be replaced by a later full two-frontier re-grade before certification."
             },
+            "fence_caveat": {
+              "type": "string",
+              "description": "A6: present (non-empty) when the repoScope/answer-key boundary was prompt-level only — the prompt instruction + claim-filter, NOT an OS-isolated public-only checkout (isolated-eval-workspace.js). Absent when the run ran under an os-isolated fence. Records that a certifying verdict is honest only to a prompt-level fence strength, never silently implying a kernel-enforced fence it did not have."
+            },
             "execution_profile": {
               "type": "object",
               "additionalProperties": false,
@@ -337,7 +341,8 @@
                 "tools": { "type": "string", "description": "Tool-access level, e.g. 'full'." },
                 "research": { "type": "string", "description": "Research allowance, e.g. 'repo+web'." },
                 "repoScope": { "type": "string", "description": "Repo scope fence, e.g. 'skill-graph + skills ONLY' (the public-content boundary)." },
-                "cwd": { "type": "string", "description": "Working directory both directions ran from (the skill-graph repo root)." }
+                "cwd": { "type": "string", "description": "Working directory both directions ran from (the skill-graph repo root)." },
+                "fence": { "type": "string", "enum": ["os-isolated", "prompt-level"], "description": "A6: enforcement strength of the repoScope/answer-key boundary. 'os-isolated' = cwd is a public-only temp checkout (the private tree is physically off-path). 'prompt-level' = the boundary is the prompt + claim-filter only." }
               }
             },
             "directions": {
