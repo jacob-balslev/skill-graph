@@ -47,6 +47,7 @@ const TEMPLATE = path.join(REPO_ROOT, 'examples', 'skill-metadata-template.md');
 
 let passed = 0;
 let failed = 0;
+let skipped = 0;
 const failures = [];
 
 function check(name, cond, detail) {
@@ -58,6 +59,15 @@ function check(name, cond, detail) {
     failures.push(`${name}${detail ? ` — ${detail}` : ''}`);
     console.error(`  FAIL  ${name}${detail ? ` — ${detail}` : ''}`);
   }
+}
+
+// Record a guard that does not apply in the current checkout shape (e.g. a
+// monorepo-only assertion run from a standalone clone). A SKIP is neither a
+// pass nor a failure — it keeps the contract test portable instead of hard-
+// failing on a file the engine is itself designed to treat as optional.
+function skip(name, detail) {
+  skipped++;
+  console.log(`  SKIP  ${name}${detail ? ` — ${detail}` : ''}`);
 }
 
 // ---------------------------------------------------------------------------
@@ -274,14 +284,26 @@ const engineSrc = fs.readFileSync(
 const scaffoldRefs = [...engineSrc.matchAll(/['"]([\w./-]*skill-auto-create\.js)['"]/g)].map((m) => m[1]);
 check('BREAK#1: evolve engine references a skill-auto-create.js path', scaffoldRefs.length > 0,
   'no skill-auto-create.js reference found in skill-evolution-loop.js');
-// The engine resolves these relative to the workspace scripts/skill dir at runtime;
-// assert the leaf script exists somewhere reachable (workspace scripts/skill).
-const autoCreate = path.join(REPO_ROOT, '..', 'scripts', 'skill', 'skill-auto-create.js');
-check('BREAK#1: skill-auto-create.js exists at the workspace scripts/skill path',
-  fs.existsSync(autoCreate), `looked at ${autoCreate}`);
+// The engine resolves skill-auto-create.js at <workspaceRoot>/scripts/skill/ at
+// runtime (skill-evolution-loop.js -> resolveWorkspaceScript, scaffold path ~L771)
+// and DEGRADES GRACEFULLY when it is absent (~L767-774: "the loop never hard-fails
+// on a missing Development-tree orchestration script"). So this is a monorepo-only
+// path-regression guard: in a standalone skill-graph checkout the parent workspace
+// scripts/skill dir does not exist and the engine is designed to no-op the scaffold
+// step. Assert the guard when the monorepo workspace is present; SKIP (do not fail)
+// in a standalone checkout so the public-CLI contract test stays portable.
+const wsScriptsSkill = path.join(REPO_ROOT, '..', 'scripts', 'skill');
+const autoCreate = path.join(wsScriptsSkill, 'skill-auto-create.js');
+if (fs.existsSync(wsScriptsSkill)) {
+  check('BREAK#1: skill-auto-create.js exists at the workspace scripts/skill path',
+    fs.existsSync(autoCreate), `looked at ${autoCreate}`);
+} else {
+  skip('BREAK#1: skill-auto-create.js existence (standalone checkout — engine degrades gracefully)',
+    `no monorepo workspace scripts/skill dir at ${wsScriptsSkill}`);
+}
 
 // ===========================================================================
-console.log(`\nResults: ${passed} passed, ${failed} failed`);
+console.log(`\nResults: ${passed} passed, ${failed} failed, ${skipped} skipped`);
 if (failed > 0) {
   console.error('\nFailures:');
   for (const f of failures) console.error(`  - ${f}`);
