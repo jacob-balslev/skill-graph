@@ -20,7 +20,6 @@ metadata:
   skill_graph_canonical_skill: skills/software-engineering-method/problem-approach-router/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Problem Approach Router
 
 ## Concept of the skill

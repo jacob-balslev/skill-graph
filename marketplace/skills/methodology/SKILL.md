@@ -21,7 +21,6 @@ metadata:
   skill_graph_canonical_skill: skills/software-engineering-method/methodology/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Methodology
 
 ## Concept of the skill

@@ -24,7 +24,6 @@ metadata:
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/test-driven-development/SKILL.md
 ---
-
 # Test-Driven Development
 
 ## Concept of the skill

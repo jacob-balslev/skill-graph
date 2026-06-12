@@ -17,7 +17,6 @@ metadata:
   skill_graph_canonical_skill: skills/reasoning-strategy/problem-framing/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Problem Framing
 
 ## Concept of the skill

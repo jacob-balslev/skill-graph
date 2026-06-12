@@ -10,7 +10,7 @@ metadata:
   public: "true"
   taxonomy_domain: engineering/data
   stability: experimental
-  keywords: "[\"replication\",\"primary replica\",\"multi-leader\",\"leaderless\",\"quorum\",\"synchronous replication\",\"asynchronous replication\",\"replication lag\",\"read-after-write\",\"failover\"]"
+  keywords: "[\"database replication\",\"PostgreSQL streaming replication\",\"MySQL replication\",\"Cassandra quorum\",\"primary replica\",\"multi-leader\",\"leaderless\",\"replication lag\",\"read-after-write\",\"failover\"]"
   triggers: "[\"single-leader vs multi-leader\",\"synchronous vs async replication\",\"what happens on failover\",\"split brain\",\"read-after-write consistency\"]"
   examples: "[\"design replication topology for a service with one region writing and three regions reading\",\"decide between synchronous and asynchronous replication given a target RPO\",\"diagnose stale reads after a write — likely replication lag without read-after-write handling\",\"explain the split-brain risk in multi-leader replication\"]"
   anti_examples: "[\"horizontally partition data across nodes (use sharding-strategy)\",\"reason about the CAP theorem abstractly (use cap-theorem-tradeoffs)\",\"explain ACID properties (use acid-fundamentals)\"]"
@@ -23,7 +23,6 @@ metadata:
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/data-engineering/replication-patterns/SKILL.md
 ---
-
 ## Concept of the skill
 
 **What it is:** Replication is the design discipline for keeping multiple copies of the same data on multiple nodes so a database can survive failures, scale reads, or place data near users.
@@ -171,6 +170,6 @@ After applying this skill, verify:
 - Common misconception: |
 
 **Keywords**
-- `replication`, `primary replica`, `multi-leader`, `leaderless`, `quorum`, `synchronous replication`, `asynchronous replication`, `replication lag`, `read-after-write`, `failover`
+- `database replication`, `PostgreSQL streaming replication`, `MySQL replication`, `Cassandra quorum`, `primary replica`, `multi-leader`, `leaderless`, `replication lag`, `read-after-write`, `failover`
 
 <!-- skill-graph-context:end -->

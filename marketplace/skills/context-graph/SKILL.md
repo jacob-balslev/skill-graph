@@ -26,7 +26,6 @@ metadata:
   skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
-
 # Context Graph
 
 ## Concept of the skill
@@ -35,7 +34,7 @@ Context discovery is a graph problem: agents start from the current task, then t
 
 ## Coverage
 
-The architectural model behind navigable context in an AI-coding workspace. Names the four interconnected graphs that any mature workspace accumulates — Skill Knowledge Graph, Document Routing Graph, Memory Index, Script / Command Registry — and the cross-graph edges that connect them (skill → script, skill → memory, doc-routing → doc, script → command). Specifies the three skill-graph edge types (`adjacent`, `boundary`, `verify_with`) and their per-edge-type caps. Defines orphan detection (a node with zero or near-zero incoming edges that agents cannot find by traversal) and the priority order for remediation (security skills first, then financial, integration, infrastructure, then UX). Specifies graph-connectivity metrics with healthy / unhealthy bands: connectivity, average degree, orphan rate, max degree, cluster count, hub-spoke ratio. Names the five deterministic signals that should drive graph synthesis (explicit prose references, manual `relations` frontmatter, bundle co-membership, shared routing labels, keyword overlap) — never an LLM at synthesis time. Walks the change-propagation checklist that traces a single edit across all four graphs. Catalogs the anti-patterns that quietly destroy graph quality: edge inflation, one-way edges, optional-metadata mindset, AI-inferred edges that drift on rebuild, ignoring cross-graph edges.
+The architectural model behind navigable context in an AI-coding workspace. Names the four interconnected graphs that any mature workspace accumulates — Skill Knowledge Graph, Document Routing Graph, Memory Index, Script / Command Registry — and the cross-graph edges that connect them (skill → script, skill → memory, doc-routing → doc, script → command). Specifies the three skill-graph edge types (`adjacent`, `boundary`, `verify_with`) and their per-edge-type caps. Defines orphan detection (a node with zero or near-zero incoming edges that agents cannot find by traversal) and the priority order for remediation (security skills first, then financial, integration, infrastructure, then UX). Specifies graph-connectivity metrics with locally calibrated healthy / unhealthy bands: connectivity, average degree, orphan rate, max degree, cluster count, hub-spoke ratio. Names the five deterministic signals that should drive graph synthesis (explicit prose references, manual `relations` frontmatter, bundle co-membership, shared routing labels, keyword overlap) — never an LLM at synthesis time. Walks the change-propagation checklist that traces a single edit across all four graphs. Catalogs the anti-patterns that quietly destroy graph quality: edge inflation, one-way edges, optional-metadata mindset, AI-inferred edges that drift on rebuild, ignoring cross-graph edges.
 
 ## Philosophy of the skill
 Without a navigable graph, agents cannot discover context they did not already know existed. The original failure mode looks like this: a skill exists, the agent doesn't reference it by name in the current prompt, and the routing layer has no edge to find it from — so the skill might as well not exist. A workspace can ship hundreds of skills and still operate as if it had ten, because the other 290 are unreachable from any traversal an agent actually performs.
@@ -173,8 +172,7 @@ Each step exercises a different edge type. Skipping a step leaves a stale edge s
 - [ ] All four graphs in the workspace are named and have an authoritative source-of-truth file
 - [ ] Cross-graph edges are explicit (skill → script, skill → memory, doc-routing → doc, script → command) — not implicit
 - [ ] Graph rebuild is deterministic — same input artefacts produce identical edge set on every run
-- [ ] Orphan rate is below 10%; orphans above the threshold have been triaged by blast radius
-- [ ] Average degree is above 5; max degree is below 30; cluster count is 1 (or small with explicit reason)
+- [ ] Orphan-rate, average-degree, max-degree, and cluster-count thresholds have been calibrated from this workspace's graph history, then enforced consistently
 - [ ] Edge-type discipline is enforced — `adjacent` ≤ 5, `boundary` ≤ 5, `verify_with` ≤ 3 per skill
 - [ ] `boundary` is used for routing-exclusion only, not for "see also"
 - [ ] The change-propagation checklist has been applied for the most recent significant change, end-to-end across all four graphs

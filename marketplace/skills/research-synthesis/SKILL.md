@@ -22,7 +22,6 @@ metadata:
   skill_graph_canonical_skill: skills/design/research-synthesis/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
 ---
-
 # Research Synthesis
 
 ## Concept of the skill

@@ -759,9 +759,114 @@
                   "feedback_source": {
                     "type": "string"
                   },
+                  "run_receipts_source": {
+                    "type": "string"
+                  },
                   "last_updated": {
                     "type": "string",
                     "format": "date"
+                  },
+                  "last_run": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "operation": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "phase": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "agent": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "status": {
+                        "type": "string"
+                      },
+                      "duration_ms": {
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "minimum": 0
+                      },
+                      "tokens": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "input_tokens": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "minimum": 0
+                          },
+                          "output_tokens": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "minimum": 0
+                          },
+                          "total_tokens": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "minimum": 0
+                          },
+                          "source": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "line_delta": {
+                        "type": [
+                          "object",
+                          "null"
+                        ],
+                        "additionalProperties": false,
+                        "properties": {
+                          "before_lines": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "after_lines": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "added_lines": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "removed_lines": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "net_lines": {
+                            "type": "integer"
+                          },
+                          "algorithm": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "receipt": {
+                        "type": "string"
+                      }
+                    }
                   },
                   "metrics": {
                     "type": "object",
@@ -775,6 +880,25 @@
                         "type": "number",
                         "minimum": 0,
                         "maximum": 1
+                      },
+                      "agent_run_count": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "total_duration_ms": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "total_tokens": {
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "minimum": 0
+                      },
+                      "tokens_observed_count": {
+                        "type": "integer",
+                        "minimum": 0
                       }
                     }
                   }

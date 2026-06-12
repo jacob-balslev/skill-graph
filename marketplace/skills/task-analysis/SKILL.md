@@ -19,7 +19,6 @@ metadata:
   skill_graph_canonical_skill: skills/reasoning-strategy/task-analysis/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Task Analysis
 
 ## Concept of the skill

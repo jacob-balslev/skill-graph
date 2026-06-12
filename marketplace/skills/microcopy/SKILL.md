@@ -25,7 +25,6 @@ metadata:
   skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
-
 # Microcopy
 
 ## Concept of the skill

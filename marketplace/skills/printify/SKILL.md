@@ -12,6 +12,7 @@ metadata:
   stability: experimental
   keywords: "[\"printify api\",\"print on demand\",\"printify blueprints\",\"printify print providers\",\"printify publish lifecycle\",\"printify webhooks\",\"printify variants\",\"printify shipping costs\",\"printify order routing\",\"print provider catalog\"]"
   triggers: "[\"printify\",\"printify api\",\"printify webhook\",\"print on demand\"]"
+  grounding: "{\"subject_matter\":\"Printify API catalog, product publish lifecycle, orders, shipping, and webhook verification\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://developers.printify.com/\",\"https://developers.printify.com/#catalog\",\"https://developers.printify.com/#products\",\"https://developers.printify.com/#orders\",\"https://developers.printify.com/#shipping\",\"https://developers.printify.com/#webhooks\"],\"failure_modes\":[\"blueprint_and_print_provider_treated_as_independent_variant_spaces\",\"publish_request_treated_as_synchronous_channel_success\",\"webhook_signature_verified_from_parsed_json_instead_of_raw_body\",\"shipping_cost_estimate_treated_as_final_order_cost\",\"shopify_sync_boundary_misrouted_to_printify_skill\",\"artwork_generation_misclassified_as_printify_api_work\"],\"evidence_priority\":\"general_knowledge_first\"}"
   examples: "[\"Create a Printify product from a blueprint + print provider + variant set and publish it to a connected Shopify store\",\"Handle a Printify order:updated webhook and reconcile fulfillment status\",\"Resolve shipping cost for a basket of Printify variants given a destination country\"]"
   anti_examples: "[\"Generate the artwork PNG file that gets uploaded as a print file\",\"Implement the Shopify side of the Printify-to-Shopify sync\",\"Design a generic POD-vendor-agnostic product schema\"]"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
@@ -19,7 +20,6 @@ metadata:
   skill_graph_canonical_skill: skills/product-domain/printify/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Printify
 
 ## Concept of the skill
@@ -78,6 +78,10 @@ The publish lifecycle is asynchronous and partially observable. Treat publish su
 
 **Related skills**
 - Related: `webhook-integration`, `api-design`, `shopify`
+
+**Grounding**
+- Mode: `universal`
+- Truth sources: `https://developers.printify.com/`, `https://developers.printify.com/#catalog`, `https://developers.printify.com/#products`, `https://developers.printify.com/#orders`, `https://developers.printify.com/#shipping`, `https://developers.printify.com/#webhooks`
 
 **Keywords**
 - `printify api`, `print on demand`, `printify blueprints`, `printify print providers`, `printify publish lifecycle`, `printify webhooks`, `printify variants`, `printify shipping costs`, `printify order routing`, `print provider catalog`

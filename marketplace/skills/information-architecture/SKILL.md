@@ -25,7 +25,6 @@ metadata:
   skill_graph_canonical_skill: skills/design/information-architecture/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
 ---
-
 # Information Architecture
 
 ## Concept of the skill

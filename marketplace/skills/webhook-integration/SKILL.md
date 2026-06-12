@@ -8,7 +8,7 @@ metadata:
   relations: "{\"related\":[\"debugging\",\"owasp-security\",\"refactor\",\"testing-strategy\",\"code-review\",\"event-contract-design\"],\"verify_with\":[\"testing-strategy\",\"code-review\",\"cron-scheduling\"]}"
   subject: backend-engineering
   public: "true"
-  scope: "Use when implementing or reviewing an inbound webhook handler for any third-party provider - verifying signatures, deduplicating retries, choosing the right HTTP status code for retry vs no-retry, persisting raw payloads before canonical mapping, and quarantining unverifiable events. Covers signature schemes, idempotency patterns, provider retry contracts, raw-then-canonical pipelines, quarantine, secret rotation, and PII-capture timing. Do NOT use for outbound webhook publishing (use `event-contract-design`), general background-job orchestration, or chasing a webhook handler that has already failed in production (use `debugging`)."
+  scope: "Teaches inbound webhook reliability and trust boundaries: raw-body capture, signature verification before parsing, idempotency and deduplication, provider retry semantics, status-code contracts, raw-to-canonical mapping, quarantine, secret rotation, and PII capture timing. Portable across third-party providers. Excludes outbound event publishing, general background-job orchestration, and post-incident debugging."
   subjects: "[\"backend-engineering\",\"product-domain\"]"
   taxonomy_domain: integrations/webhooks
   stability: experimental
@@ -21,7 +21,6 @@ metadata:
   skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
-
 # Webhook Integration
 
 ## Concept of the skill
@@ -351,7 +350,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/webhook-integ
 - Subject: `backend-engineering` (also: `product-domain`)
 - Public: `true`
 - Domain: `integrations/webhooks`
-- Scope: Use when implementing or reviewing an inbound webhook handler for any third-party provider - verifying signatures, deduplicating retries, choosing the right HTTP status code for retry vs no-retry, persisting raw payloads before canonical mapping, and quarantining unverifiable events. Covers signature schemes, idempotency patterns, provider retry contracts, raw-then-canonical pipelines, quarantine, secret rotation, and PII-capture timing. Do NOT use for outbound webhook publishing (use `event-contract-design`), general background-job orchestration, or chasing a webhook handler that has already failed in production (use `debugging`).
+- Scope: Teaches inbound webhook reliability and trust boundaries: raw-body capture, signature verification before parsing, idempotency and deduplication, provider retry semantics, status-code contracts, raw-to-canonical mapping, quarantine, secret rotation, and PII capture timing. Portable across third-party providers. Excludes outbound event publishing, general background-job orchestration, and post-incident debugging.
 
 **When to use**
 - implement signature verification for a new third-party webhook handler

@@ -23,7 +23,6 @@ metadata:
   skill_graph_canonical_skill: skills/frontend-engineering/theme-system-design/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Theme System Design
 
 ## Concept of the skill

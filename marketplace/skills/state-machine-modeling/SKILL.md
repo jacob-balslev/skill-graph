@@ -19,7 +19,6 @@ metadata:
   skill_graph_canonical_skill: skills/software-architecture/state-machine-modeling/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # State Machine Modeling
 
 ## Concept of the skill

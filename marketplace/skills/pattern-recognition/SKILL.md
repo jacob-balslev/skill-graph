@@ -24,7 +24,6 @@ metadata:
   skill_graph_canonical_skill: skills/reasoning-strategy/pattern-recognition/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Pattern Recognition
 
 ## Concept of the skill

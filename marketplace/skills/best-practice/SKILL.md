@@ -20,7 +20,6 @@ metadata:
   skill_graph_canonical_skill: skills/quality-assurance/best-practice/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Best Practice — Cross-Cutting Quality Enforcement
 
 ## Concept of the skill

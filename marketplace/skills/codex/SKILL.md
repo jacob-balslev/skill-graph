@@ -14,6 +14,7 @@ metadata:
   keywords: "[\"codex cli harness\",\"when to use codex\",\"codex exec resume\",\"resumable codex session\",\"codex vs claude code\",\"codex permissions sandbox\",\"codex review agent\",\"codex in-process dispatch\",\"codex mcp subagents\",\"codex failure modes\"]"
   examples: "[\"should I run this through Codex or Claude Code?\",\"how do I resume my last Codex session non-interactively?\",\"what are Codex's permission modes and when is Full Access risky?\"]"
   anti_examples: "[\"is GPT-5.5 or Opus the better model for this task?\",\"what is Claude Code good at?\",\"design a resumable supervised loop from scratch\"]"
+  grounding: "{\"subject_matter\":\"Codex model routing, app capability, and failure-mode facts\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"skills/agent-ops/codex/references/model-facts.md\"],\"failure_modes\":[\"stale_model_id\",\"stale_context_window\",\"stale_pricing_or_rate_limit\",\"benchmark_claim_without_date\",\"capability_claim_quoted_from_memory\"],\"evidence_priority\":\"repo_code_first\"}"
   relations: "{\"related\":[\"claude-code\",\"gpt-5-5\",\"autonomous-loop-patterns\",\"agent-eval-design\",\"claude-opus\"],\"suppresses\":[{\"skill\":\"gpt-5-5\",\"reason\":\"I own running GPT through the Codex CLI harness; gpt-5-5 owns routing the task to the GPT MODEL vs Claude\"},{\"skill\":\"claude-code\",\"reason\":\"I own the Codex harness decision; claude-code owns the Claude Code harness decision\"}],\"verify_with\":[\"claude-code\",\"gpt-5-5\"]}"
   mental_model: "An agent CLI is a HARNESS (the body: loop, tool use, session, permissions) wrapping a swappable frontier MODEL (the brain). What distinguishes this harness among bodies is statefulness — a session is a durable object holding transcript, plan, and approvals that can be resumed by id — plus a non-interactive exec mode that pipes results to stdout for scripting and in-process dispatch."
   purpose: It exists to operate a codebase with a frontier model under a controllable permission boundary while making runs RESUMABLE and SCRIPTABLE — so a long task can be continued across invocations (keeping its plan and approval history) and automated into pipelines instead of restarting cold every time.
@@ -156,6 +157,10 @@ Use this checklist to confirm a Codex harness decision is correct and current.
 - Boundary: This is the HARNESS decision — which agent CLI runs the work, and how to scope its native capabilities and avoid its failure modes. It is NOT routing the task to a model versus another model, NOT the rival harness's decision, and NOT designing a generic resumable agent loop from scratch.
 - Analogy: It is a cockpit with a flight recorder and autopilot resume — you can land, walk away, and later climb back into the exact same flight with its plan and clearances intact, instead of taking off from scratch.
 - Common misconception: That resuming a session means re-pasting context into a fresh run. It does not — resume-by-id reuses the stored transcript, plan, and approvals; cold one-shots that re-send full context every turn waste tokens and discard that state. A second misconception is that the harness auto-spawns subagents; it only does so when explicitly asked.
+
+**Grounding**
+- Mode: `hybrid`
+- Truth sources: `skills/agent-ops/codex/references/model-facts.md`
 
 **Keywords**
 - `codex cli harness`, `when to use codex`, `codex exec resume`, `resumable codex session`, `codex vs claude code`, `codex permissions sandbox`, `codex review agent`, `codex in-process dispatch`, `codex mcp subagents`, `codex failure modes`

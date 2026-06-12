@@ -23,7 +23,6 @@ metadata:
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/e2e-test-design/SKILL.md
 ---
-
 # E2e Test Design
 
 ## Concept of the skill

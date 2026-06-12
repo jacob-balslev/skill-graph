@@ -24,7 +24,6 @@ metadata:
   skill_graph_canonical_skill: skills/knowledge-organization/ontology-modeling/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Ontology Modeling
 
 ## Concept of the skill

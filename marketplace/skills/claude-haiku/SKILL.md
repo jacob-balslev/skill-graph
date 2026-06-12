@@ -15,6 +15,7 @@ metadata:
   misconception: That the cheapest model is the safe way to cut costs across the board. It is the right choice only for work that does not need reasoning depth or large context; pushing reasoning-heavy or large-context work down to it trades a small token saving for wrong answers and re-work.
   keywords: "[\"when to use Claude Haiku\",\"fast cheap model tier\",\"transcription model\",\"high-volume classification model\",\"format conversion model\",\"slot-filling model\",\"cheapest model tier\",\"Haiku vs Sonnet boundary\",\"200K context model\",\"low latency model\"]"
   stability: experimental
+  grounding: "{\"subject_matter\":\"Claude Haiku model routing, pricing, context, and rate-limit facts\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"skills/agent-ops/claude-haiku/references/model-facts.md\"],\"failure_modes\":[\"stale_model_id\",\"stale_context_window\",\"stale_pricing_or_rate_limit\",\"benchmark_claim_without_date\",\"capability_claim_quoted_from_memory\"],\"evidence_priority\":\"repo_code_first\"}"
   relations: "{\"related\":[\"claude-sonnet\",\"claude-opus\",\"autonomous-loop-patterns\",\"agent-engineering\",\"tool-call-strategy\"],\"suppresses\":[{\"skill\":\"claude-sonnet\",\"reason\":\"I own routing mechanical/high-volume/low-latency work to the fast tier; claude-sonnet owns the balanced lane for ordinary multi-step implementation work above this floor\"},{\"skill\":\"claude-opus\",\"reason\":\"I own the fast/cheap floor of the roster; claude-opus owns the frontier reasoning ceiling — the opposite end of the same ladder\"}],\"verify_with\":[\"claude-sonnet\",\"claude-opus\"]}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
@@ -136,6 +137,10 @@ Before concluding "route this to Haiku," confirm:
 - Boundary: It is not the lane for multi-step synthesis, architecture, or hard debugging — those need a higher tier's reasoning and tunable depth. It is not a universal cost-cutter: routing a task that needs reasoning here to 'save money' produces wrong answers, the most expensive outcome of all. It is not the loop or harness the model runs inside.
 - Analogy: The fast tier is the quick, low-cost assistant for high-volume routine paperwork — perfect for the form-filling that floods the inbox, the wrong choice for the case that needs an analyst's judgment.
 - Common misconception: That the cheapest model is the safe way to cut costs across the board. It is the right choice only for work that does not need reasoning depth or large context; pushing reasoning-heavy or large-context work down to it trades a small token saving for wrong answers and re-work.
+
+**Grounding**
+- Mode: `hybrid`
+- Truth sources: `skills/agent-ops/claude-haiku/references/model-facts.md`
 
 **Keywords**
 - `when to use Claude Haiku`, `fast cheap model tier`, `transcription model`, `high-volume classification model`, `format conversion model`, `slot-filling model`, `cheapest model tier`, `Haiku vs Sonnet boundary`, `200K context model`, `low latency model`

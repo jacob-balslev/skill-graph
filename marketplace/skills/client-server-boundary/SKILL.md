@@ -23,7 +23,6 @@ metadata:
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/client-server-boundary/SKILL.md
 ---
-
 # Client-Server Boundary
 
 ## Concept of the skill

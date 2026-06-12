@@ -19,7 +19,6 @@ metadata:
   skill_graph_canonical_skill: skills/quality-assurance/performance-engineering/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Performance Engineering
 
 ## Concept of the skill

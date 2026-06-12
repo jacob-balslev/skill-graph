@@ -24,7 +24,6 @@ metadata:
   skill_graph_canonical_skill: skills/design/form-ux-architecture/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
 ---
-
 # Form UX Architecture
 
 ## Concept of the skill

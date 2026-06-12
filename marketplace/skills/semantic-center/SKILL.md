@@ -24,7 +24,6 @@ metadata:
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/knowledge-organization/semantic-center/SKILL.md
 ---
-
 # Semantic Center
 
 ## Concept of the skill

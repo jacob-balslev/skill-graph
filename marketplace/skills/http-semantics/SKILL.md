@@ -24,7 +24,6 @@ metadata:
   skill_graph_canonical_skill: skills/backend-engineering/http-semantics/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # HTTP Semantics
 
 ## Concept of the skill

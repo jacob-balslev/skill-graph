@@ -26,7 +26,6 @@ metadata:
   skill_graph_canonical_description_length: "1311"
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Ref Patterns
 
 ## Concept of the skill

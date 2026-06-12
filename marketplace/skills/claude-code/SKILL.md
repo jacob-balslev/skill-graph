@@ -19,6 +19,7 @@ metadata:
   keywords: "[\"claude code harness\",\"when to use claude code\",\"claude code skills hooks subagents\",\"claude code vs codex\",\"claude code plan mode\",\"1M context opus\",\"run_in_background tasks\",\"claude code mcp\",\"agent harness comparison\",\"claude code slash commands\"]"
   examples: "[\"should I run this refactor in Claude Code or hand it to Codex?\",\"what is Claude Code actually good at compared to other agent CLIs?\",\"do I need a hook, a subagent, or a skill for this?\"]"
   anti_examples: "[\"write a Python script that calls the Anthropic Messages API\",\"is GPT-5.5 or Opus better for this code review?\",\"design a resumable autonomous loop with a supervisor\"]"
+  grounding: "{\"subject_matter\":\"Claude Code model routing and command/runtime capability facts\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"skills/agent-ops/claude-code/references/model-facts.md\"],\"failure_modes\":[\"stale_model_id\",\"stale_context_window\",\"stale_pricing_or_rate_limit\",\"benchmark_claim_without_date\",\"capability_claim_quoted_from_memory\"],\"evidence_priority\":\"repo_code_first\"}"
   relations: "{\"related\":[\"codex\",\"gpt-5-5\",\"claude-opus\",\"autonomous-loop-patterns\",\"agent-eval-design\"],\"suppresses\":[{\"skill\":\"gpt-5-5\",\"reason\":\"I own the Claude Code harness decision; gpt-5-5 owns routing a task to the GPT MODEL vs Claude\"},{\"skill\":\"codex\",\"reason\":\"I own the Claude Code harness scope; codex owns the rival Codex harness decision\"}],\"verify_with\":[\"codex\",\"gpt-5-5\"]}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
@@ -60,12 +61,12 @@ Reach for Claude Code when the task wants its **native extensibility stack** or 
 | Want this | Why Claude Code fits |
 |---|---|
 | On-demand, reusable expertise the agent loads only when relevant | **Skills** — progressive disclosure via the Skill tool; the description sits in context, the body loads on demand |
-| Deterministic automation or a security gate around the agent's actions | **Hooks** — fire at 25 lifecycle points; `PreToolUse` is the primary gate before any tool runs |
+| Deterministic automation or a security gate around the agent's actions | **Hooks** — use lifecycle hook points such as `PreToolUse` for gates that must run before tools execute; verify the current hook event list before depending on a specific count |
 | Parallel or isolated sub-work without polluting the main context | **Subagents** — each runs in its own context window; only a summary returns |
 | Investigate-and-propose before any edit lands | **Plan mode** — read-only planning phase, then execute on approval |
 | Kick off a long shell job and keep working | **Background tasks** — `run_in_background` on the Bash tool; notified on completion |
 | A very large codebase or multi-day project held in one window | **1M context** on the Opus tier (no long-context premium on the Opus model), with cross-session context carry |
-| Anthropic-first reasoning quality on architecture and large-codebase work | Runs Opus, which leads on SWE-bench Pro and broad architectural reasoning |
+| Anthropic-first reasoning quality on architecture and large-codebase work | Runs Opus; treat current benchmark claims as dated routing evidence and re-check them before making a model-choice decision |
 
 Choose a **different harness** when its differentiator is the point of the task — see the boundary table below.
 
@@ -87,7 +88,7 @@ Choose a **different harness** when its differentiator is the point of the task 
 **Strengths**
 - The richest native extensibility protocol (skills + hooks + subagents) of the major harnesses — no assembly required.
 - Plan mode plus typed, host-gatable tools give strong control over destructive actions.
-- Runs Opus, which leads on architectural reasoning and SWE-bench Pro (complex multi-file issue resolution).
+- Runs Opus; current benchmark snapshots favor it for architectural reasoning and complex multi-file issue resolution, but model-routing claims must be re-checked against the dated fact source before use.
 - 1M context on the Opus tier with no long-context premium; cross-session context for multi-day work.
 
 **Weaknesses / watch-outs**
@@ -155,6 +156,10 @@ Before concluding "run this in Claude Code," confirm:
 - Boundary: It is not the model provider's API or SDK (that is application code you write), not the model itself (the model is swappable inside the harness), and not a generic 'agent framework' you assemble — it is one specific, opinionated harness with a fixed protocol.
 - Analogy: Picking a harness is like picking the cockpit, not the pilot — the same pilot flies differently depending on which instruments, autopilot, and safety interlocks the cockpit gives them.
 - Common misconception: That the harness and the model are the same choice. They are two orthogonal decisions: which harness (this one vs a rival) and which model runs inside it. Conflating them leads to picking a harness for a model strength it does not own, or vice versa.
+
+**Grounding**
+- Mode: `hybrid`
+- Truth sources: `skills/agent-ops/claude-code/references/model-facts.md`
 
 **Keywords**
 - `claude code harness`, `when to use claude code`, `claude code skills hooks subagents`, `claude code vs codex`, `claude code plan mode`, `1M context opus`, `run_in_background tasks`, `claude code mcp`, `agent harness comparison`, `claude code slash commands`

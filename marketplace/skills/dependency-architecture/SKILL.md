@@ -19,7 +19,6 @@ metadata:
   skill_graph_canonical_skill: skills/software-architecture/dependency-architecture/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Dependency Architecture
 
 ## Concept of the skill
@@ -44,6 +43,8 @@ Prefer fewer, clearer dependencies with explicit ownership. Wrap volatile extern
 5. Decide where adapters are needed for external SDKs or volatile APIs.
 6. Assess security, maintenance, license, and ecosystem health.
 7. Define upgrade, pinning, and removal policy.
+
+Use the package manager and a graph tool to make the inventory observable before making architecture claims. In JavaScript/TypeScript, start with `npm ls`, `pnpm why`, `yarn why`, `madge`, or dependency-cruiser. In JVM systems, use Gradle/Maven dependency reports or `jdeps`. In Go, use `go list -deps` and `go mod graph`; in Rust, `cargo tree`; in Python, `pipdeptree` or lockfile inspection. Pair the generated graph with code search for imports at boundary seams, because manifest dependencies show what is installed while imports show what the architecture actually depends on.
 
 ## Evals
 

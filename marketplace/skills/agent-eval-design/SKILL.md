@@ -26,7 +26,6 @@ metadata:
   skill_graph_canonical_skill: skills/ai-engineering/agent-eval-design/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Agent Eval Design
 
 ## Concept of the skill

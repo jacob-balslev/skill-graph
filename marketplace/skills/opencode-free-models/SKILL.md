@@ -14,6 +14,7 @@ metadata:
   keywords: "[\"which free model to use\",\"free agent models\",\"opencode zen free tier\",\"minimax nemotron glm routing\",\"cheap model for mechanical work\",\"model cost routing\",\"when to escalate to frontier model\",\"free model quality ceiling\",\"route deterministic work to cheap model\"]"
   examples: "[\"which free model should I send this bulk classification job to?\",\"is MiniMax M3 or Nemotron the better free choice for this?\",\"can I use a free model to grade these eval responses?\"]"
   anti_examples: "[\"how do I invoke opencode from a script?\",\"how do I write the retry loop for my agent?\",\"how many Copilot premium requests will this cost?\"]"
+  grounding: "{\"subject_matter\":\"OpenCode free-model roster, pricing, capability, and routing facts\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"skills/agent-ops/opencode-free-models/references/model-facts.md\"],\"failure_modes\":[\"stale_model_id\",\"stale_context_window\",\"stale_pricing_or_rate_limit\",\"benchmark_claim_without_date\",\"capability_claim_quoted_from_memory\"],\"evidence_priority\":\"repo_code_first\"}"
   relations: "{\"related\":[\"opencode\",\"github-copilot\",\"autonomous-loop-patterns\",\"ai-native-development\"],\"suppresses\":[{\"skill\":\"opencode\",\"reason\":\"I own WHICH free/cheap model to route work to; opencode owns the runtime itself (invocation, provider/model strings, Zen service)\"},{\"skill\":\"github-copilot\",\"reason\":\"I own free/cheap open-weight model routing; github-copilot owns Copilot's paid premium-request / AI-credit lane\"}],\"verify_with\":[\"opencode\"]}"
   mental_model: "Every task has a quality BAR; every model has a quality CEILING and a cost. Cost-routing matches the cheapest model whose ceiling clears the task's bar, then escalates only on a concrete signal. Free is the default lane only for work whose bar a competent open-weight model already clears."
   purpose: "It exists because premium model capacity is finite and expensive while a large share of agent work — mechanical edits, bulk classification, high-volume triage — does not need a frontier model. Routing that work to a free/cheap model preserves premium capacity for work that genuinely needs it, but only if the ceiling-vs-bar match is made honestly rather than by reflex."
@@ -144,6 +145,10 @@ Use this checklist to confirm a free-model routing decision was made correctly.
 - Boundary: This owns the per-task MODEL CHOICE among free and cheap models, including the escalation rule and the hard quality boundary. It does NOT own the runtime (how to invoke a model), the agent loop (how to retry/claim), or a paid premium-credit lane's economics.
 - Analogy: It is choosing the right gear for the grade — flat ground takes the cheap, fast gear; a steep climb needs the powerful one, and forcing the climb in the cheap gear strips the chain.
 - Common misconception: That a free model is interchangeable with a frontier model if you just retry enough — or, inversely, that free models are toys. Both are wrong: open-weight models clear a real, sizeable band of work, but their ceiling is real, and retrying cannot raise a model above it, so quality-creating or quality-judging work pushed onto them produces confident garbage that poisons everything downstream.
+
+**Grounding**
+- Mode: `hybrid`
+- Truth sources: `skills/agent-ops/opencode-free-models/references/model-facts.md`
 
 **Keywords**
 - `which free model to use`, `free agent models`, `opencode zen free tier`, `minimax nemotron glm routing`, `cheap model for mechanical work`, `model cost routing`, `when to escalate to frontier model`, `free model quality ceiling`, `route deterministic work to cheap model`

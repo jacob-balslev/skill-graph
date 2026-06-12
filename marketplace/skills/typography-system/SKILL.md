@@ -6,7 +6,7 @@ metadata:
   subject: design
   public: "true"
   scope: "Designing a typography system — typeface selection and pairing, a modular type scale, vertical rhythm, line-height and measure rules, and web font delivery (subsetting, font-display, variable fonts). Portable across any design system; principle-grounded, not repo-bound. Excludes body-copy writing, single-headline font pairing, and non-text design tokens."
-  stability: experimental
+  stability: stable
   keywords: "[\"type scale\",\"typeface pairing\",\"vertical rhythm\",\"line height\",\"measure line length\",\"web font delivery\",\"variable fonts\",\"font-display swap\",\"font subsetting\",\"modular scale\"]"
   triggers: "[\"typography system\",\"type scale\",\"font pairing\",\"variable fonts\",\"vertical rhythm\"]"
   examples: "[\"Build a type scale with seven steps using a 1.25 ratio and assign each step to a semantic token (display, h1, body, caption)\",\"Pair a serif display face with a sans-serif text face and document when to use each\",\"Self-host a variable font with WOFF2 subsetting and font-display: swap\"]"
@@ -22,7 +22,6 @@ metadata:
   skill_graph_canonical_skill: skills/design/typography-system/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Typography System
 
 ## Concept of the skill

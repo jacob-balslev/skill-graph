@@ -23,7 +23,6 @@ metadata:
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/suspense-patterns/SKILL.md
 ---
-
 ## Concept of the skill
 
 **What it is:** React Suspense boundary design: deciding which subtree waits, which fallback appears, and which content reveals together or progressively when code, data, or a Server Component render suspends.

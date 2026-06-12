@@ -10,10 +10,11 @@ metadata:
   public: "true"
   scope: "Deciding when to route a task to Google's fast/cheap Gemini Flash tier (Gemini 3 Flash / 3.5 Flash, Flash-Lite as the floor) — cheap gates, classification, extraction, structured output, high-throughput agentic steps — and identifying the quality-ceiling boundary where work must escalate to Gemini Pro or another frontier model (judging/grading, deep multi-step reasoning, hardest code). Portable model-routing knowledge, not anchored to any project. Excludes the frontier large-context Pro tier (gemini-pro), agent-system architecture (agent-engineering), and request-time dispatch among local skills (skill-router)."
   taxonomy_domain: agent/models
-  stability: experimental
+  stability: stable
   keywords: "[\"route to Gemini Flash\",\"cheap fast model for gates\",\"Gemini Flash classification extraction\",\"structured output cheap model\",\"Gemini 3 Flash vs 3.5 Flash pricing\",\"Flash-Lite cheapest tier\",\"when to escalate from Flash to Pro\",\"high volume cheap LLM\",\"quality ceiling cheap model\",\"agentic loop per-step model\"]"
   examples: "[\"I need to classify 50k support tickets cheaply — which model?\",\"what's the cheapest Gemini tier for bulk JSON extraction?\",\"is Gemini Flash good enough to grade these evals, or do I escalate?\",\"3 Flash Preview or 3.5 Flash for a high-volume agent loop?\"]"
   anti_examples: "[\"I need to reason over a 600K-token corpus in one call\",\"design the agent system that composes these models\",\"which of my local skills should handle this request?\"]"
+  grounding: "{\"subject_matter\":\"Gemini Flash model routing, context, pricing, and benchmark facts\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"skills/agent-ops/gemini-flash/references/model-facts.md\"],\"failure_modes\":[\"stale_model_id\",\"stale_context_window\",\"stale_pricing_or_rate_limit\",\"benchmark_claim_without_date\",\"capability_claim_quoted_from_memory\"],\"evidence_priority\":\"repo_code_first\"}"
   relations: "{\"related\":[\"gemini-pro\",\"agent-engineering\",\"autonomous-loop-patterns\",\"skill-router\"],\"suppresses\":[{\"skill\":\"gemini-pro\",\"reason\":\"I own the CHEAP/FAST/high-volume tier and the WHEN-to-escalate-up decision; gemini-pro owns the frontier large-context/multimodal-depth/hardest-reasoning tier on the other side of that boundary\"}],\"verify_with\":[\"gemini-pro\",\"agent-engineering\"]}"
   mental_model: "The cheap/fast model tier is a band with a floor, a workhorse, and a ceiling. The floor and workhorse absorb high-volume, throughput-bound, or low-per-item-complexity work. The ceiling is the kind of work the tier must NOT own: anything where the model's output IS the quality bar (grading, judging, scoring, verdicts) and deep multi-step reasoning where an early error compounds. The core decision is placing each task on the correct side of that ceiling."
   purpose: "Avoid two equal-but-opposite routing errors: over-routing cheap high-volume work UP to a frontier model and paying many times over for unused capability, and under-routing quality-deciding work DOWN to a cheap tier and poisoning every downstream decision built on its output."
@@ -152,6 +153,10 @@ Confirm a Gemini-Flash routing decision before committing to it — and confirm 
 - Boundary: Owns the cheap/fast tier selection and the escalate-up boundary. Does NOT own the frontier large-context tier decision, agent-system architecture that composes many models, or request-time dispatch among local skills — those are separate concepts on the other side of the boundary it defines.
 - Analogy: It is the line cook of the model kitchen — fast, cheap, and genuinely good at high-volume prep; you keep it on the line, but you do not hand it the dish whose taste is the restaurant's reputation, which goes to the head chef.
 - Common misconception: That 'cheap and fast' means 'only for throwaway work.' The cheap-tier quality ceiling is high — it can match or beat an earlier frontier tier on real coding benchmarks at a fraction of the cost. The true escalation boundary is not 'is this important?' but 'is the model's output the quality bar, or is this compounding-error-prone deep reasoning?' — those escalate; important high-volume production work does not.
+
+**Grounding**
+- Mode: `hybrid`
+- Truth sources: `skills/agent-ops/gemini-flash/references/model-facts.md`
 
 **Keywords**
 - `route to Gemini Flash`, `cheap fast model for gates`, `Gemini Flash classification extraction`, `structured output cheap model`, `Gemini 3 Flash vs 3.5 Flash pricing`, `Flash-Lite cheapest tier`, `when to escalate from Flash to Pro`, `high volume cheap LLM`, `quality ceiling cheap model`, `agentic loop per-step model`

@@ -19,7 +19,6 @@ metadata:
   skill_graph_canonical_skill: skills/software-engineering-method/debugging/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Debugging
 
 ## Concept of the skill

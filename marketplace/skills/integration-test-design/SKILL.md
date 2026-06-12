@@ -23,7 +23,6 @@ metadata:
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/integration-test-design/SKILL.md
 ---
-
 # Integration-Test Design
 
 ## Concept of the skill

@@ -15,6 +15,7 @@ metadata:
   misconception: "That the middle tier is 'the cheaper compromise you settle for.' It is not a compromise — it is the default, chosen affirmatively because most implementation work does not need the frontier tier's ceiling and is poorly served by the fast tier's limits."
   keywords: "[\"when to use Claude Sonnet\",\"balanced implementation model\",\"default coding model tier\",\"Sonnet vs Opus cost\",\"Sonnet vs Haiku\",\"feature work model\",\"test writing model\",\"cheaper than Opus\",\"1M context billing caveat\",\"default agent model lane\"]"
   stability: experimental
+  grounding: "{\"subject_matter\":\"Claude Sonnet model routing, pricing, context, and long-context caveat facts\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"skills/agent-ops/claude-sonnet/references/model-facts.md\"],\"failure_modes\":[\"stale_model_id\",\"stale_context_window\",\"stale_pricing_or_rate_limit\",\"benchmark_claim_without_date\",\"capability_claim_quoted_from_memory\"],\"evidence_priority\":\"repo_code_first\"}"
   relations: "{\"related\":[\"claude-opus\",\"claude-haiku\",\"autonomous-loop-patterns\",\"agent-engineering\",\"tool-call-strategy\"],\"suppresses\":[{\"skill\":\"claude-opus\",\"reason\":\"I own the default balanced-tier decision; claude-opus owns escalation to the frontier reasoning tier when a task is too hard for the balanced lane\"},{\"skill\":\"claude-haiku\",\"reason\":\"I own routing ordinary multi-step code; claude-haiku owns routing mechanical, high-volume, low-latency work below the implementation lane\"}],\"verify_with\":[\"claude-opus\",\"claude-haiku\"]}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
@@ -136,6 +137,10 @@ Before concluding "route this to Sonnet," confirm:
 - Boundary: It is not the tier for the hardest reasoning (that earns the frontier tier) nor for high-volume mechanical work (that drops to the fast tier or a script). It is not a quality compromise — for well-specified feature work it is the correct choice, not a budget concession. It is not the loop or harness the model runs inside.
 - Analogy: The balanced tier is the experienced generalist who handles the bulk of the caseload well — you escalate to the specialist only for the genuinely hard case and hand the routine paperwork to the assistant.
 - Common misconception: That the middle tier is 'the cheaper compromise you settle for.' It is not a compromise — it is the default, chosen affirmatively because most implementation work does not need the frontier tier's ceiling and is poorly served by the fast tier's limits.
+
+**Grounding**
+- Mode: `hybrid`
+- Truth sources: `skills/agent-ops/claude-sonnet/references/model-facts.md`
 
 **Keywords**
 - `when to use Claude Sonnet`, `balanced implementation model`, `default coding model tier`, `Sonnet vs Opus cost`, `Sonnet vs Haiku`, `feature work model`, `test writing model`, `cheaper than Opus`, `1M context billing caveat`, `default agent model lane`

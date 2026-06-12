@@ -27,7 +27,6 @@ metadata:
   skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
-
 ## Concept of the skill
 
 **What it is:** Cron scheduling is the backend discipline of starting recurring work on a time-based schedule while making the resulting execution safe, observable, and recoverable.
@@ -248,10 +247,10 @@ After applying this skill, verify:
 
 | Instead of this skill | Use | Why |
 |---|---|---|
-| Event-driven job orchestration (not time-based) | `inngest-orchestration` | Inngest covers event-driven patterns; this skill covers time-based triggers |
+| Event-driven job orchestration (not time-based) | `background-jobs` | Background jobs own worker/queue architecture; this skill owns time-triggered schedules. |
 | General background job queue patterns | `background-jobs` | Job queue architecture is broader than cron-specific scheduling |
-| Data synchronization strategies | `data-sync` | Data sync covers webhook ingestion and polling; cron is one trigger mechanism |
-| Alert rule evaluation and dispatch | `alert-dispatch` | Alert dispatch covers when and how to send alerts, not how to schedule the check |
+| Data synchronization triggered by incoming provider events | `webhook-integration` | Webhook integration owns inbound event contracts and idempotent ingestion; cron is only one polling trigger. |
+| Alert rule design, metrics, and missed-run detection | `observability-modeling` | Observability owns what to measure and alert on; this skill owns how a time-based check is scheduled and made idempotent. |
 
 ---
 

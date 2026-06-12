@@ -26,7 +26,6 @@ metadata:
   skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
-
 ## Concept of the skill
 
 **What it is:** Security fundamentals are the design principles and threat-modeling habits that decide whether a system can safely handle data, identity, and authority under adversarial conditions.

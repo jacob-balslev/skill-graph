@@ -23,7 +23,6 @@ metadata:
   skill_graph_canonical_skill: skills/design/visual-design-foundations/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
 ---
-
 # Visual Design Foundations
 
 ## Concept of the skill

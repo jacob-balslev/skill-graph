@@ -22,7 +22,6 @@ metadata:
   skill_graph_canonical_skill: skills/design/design-thinking/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
 ---
-
 # Design Thinking
 
 ## Concept of the skill

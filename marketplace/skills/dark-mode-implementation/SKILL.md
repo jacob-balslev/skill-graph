@@ -23,7 +23,6 @@ metadata:
   skill_graph_canonical_skill: skills/design/dark-mode-implementation/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Dark Mode Implementation
 
 ## Concept of the skill

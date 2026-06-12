@@ -1,6 +1,6 @@
 ---
 name: indexing-strategy
-description: "Use when designing the maintained index set for a relational, document, search, vector, or LSM-backed database. Covers index structures (B-tree, hash, bitmap, GIN, GiST, SP-GiST, BRIN, Bloom, columnstore, LSM-tree, HNSW, IVFFlat), matching structures to access patterns, composite index column order (equality, sort, range; not 'most selective first'), covering/INCLUDE indexes, partial and expression indexes, advisor-tested or hidden indexes, and index lifecycle tradeoffs: write amplification, storage, locks, bloat, monitoring, and safe retirement. Use for deciding which indexes should exist and why. Do NOT use for diagnosing one slow query (use query-optimization), applying a production index migration (use database-migration), choosing isolation levels (use transaction-isolation), schema design (use data-modeling), or distributed partitioning (use sharding-strategy)."
+description: "Use when designing or auditing the maintained index set for a database workload: choosing index structures, matching access patterns, setting composite order, balancing read speed against write/storage cost, and deciding when to add, keep, or drop indexes. Do NOT use for tuning one slow query (use query-optimization), applying production DDL (use database-migration), isolation choices, schema design, or sharding. Do NOT use for choose a database schema (use data-modeling). Do NOT use for decide how to partition data across nodes (use sharding-strategy)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
@@ -23,10 +23,8 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/data-engineering/indexing-strategy/SKILL.md
-  skill_graph_export_description: shortened for Agent Skills 1024-character description limit; canonical source keeps the full routing contract
-  skill_graph_canonical_description_length: "1157"
+  skill_graph_export_description_projection: anti_examples
 ---
-
 # Indexing Strategy
 
 ## Concept of the skill

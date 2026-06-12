@@ -15,6 +15,7 @@ metadata:
   misconception: "That the smartest model is always the safest choice. It is the safest only when the task needs it; for work a cheaper tier or a script handles deterministically, the frontier tier adds cost and latency with no quality gain, and the misallocation compounds across a workload."
   keywords: "[\"when to use Claude Opus\",\"frontier reasoning model\",\"Opus tier routing\",\"hardest model for architecture\",\"long-horizon agentic model\",\"Opus vs Sonnet\",\"1M context window model\",\"expensive reasoning model\",\"escalate to Opus\",\"max effort model\"]"
   stability: experimental
+  grounding: "{\"subject_matter\":\"Claude Opus model routing, pricing, context, and capability facts\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"skills/agent-ops/claude-opus/references/model-facts.md\"],\"failure_modes\":[\"stale_model_id\",\"stale_context_window\",\"stale_pricing_or_rate_limit\",\"benchmark_claim_without_date\",\"capability_claim_quoted_from_memory\"],\"evidence_priority\":\"repo_code_first\"}"
   relations: "{\"related\":[\"claude-sonnet\",\"claude-haiku\",\"autonomous-loop-patterns\",\"agent-engineering\",\"tool-call-strategy\"],\"suppresses\":[{\"skill\":\"claude-sonnet\",\"reason\":\"I own the decision to reach for the frontier reasoning tier; claude-sonnet owns the balanced implementation tier and is the right skill once the task is judged ordinary feature work\"},{\"skill\":\"claude-haiku\",\"reason\":\"I own routing the hardest reasoning work; claude-haiku owns routing fast/cheap mechanical work — the inverse decision\"}],\"verify_with\":[\"claude-sonnet\",\"claude-haiku\"]}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
@@ -38,6 +39,10 @@ metadata:
 **One-line analogy:** The frontier tier is the senior specialist you book for the genuinely hard case — overkill and overpriced for the routine appointment a generalist handles, indispensable for the one that would defeat the generalist.
 
 **Common misconception:** That the smartest model is always the safest choice. It is not — it is the safest *only when the task needs it*; for work a cheaper tier or a script handles deterministically, the frontier tier adds cost and latency with no quality gain, and the misallocation compounds across a workload.
+
+## Misconception
+
+The smartest model is not automatically the safest route. It is safest only when the task genuinely needs the frontier reasoning ceiling; for deterministic, well-specified, or high-volume work, a cheaper model tier or script can be equally correct with lower cost and latency.
 
 ## Coverage
 
@@ -134,6 +139,10 @@ Before concluding "route this to Opus," confirm:
 - Boundary: It is not 'the model to use when in doubt' — doubt routes down, not up, until the task proves it needs the ceiling. It is not a quality guarantee on its own (a frontier model on a vague prompt underperforms a cheaper model on a sharp one), and it is not the loop, harness, or prompt the model runs inside — those are separate concerns.
 - Analogy: The frontier tier is the senior specialist you book for the genuinely hard case — overkill and overpriced for the routine appointment a generalist handles, indispensable for the one that would defeat the generalist.
 - Common misconception: That the smartest model is always the safest choice. It is the safest only when the task needs it; for work a cheaper tier or a script handles deterministically, the frontier tier adds cost and latency with no quality gain, and the misallocation compounds across a workload.
+
+**Grounding**
+- Mode: `hybrid`
+- Truth sources: `skills/agent-ops/claude-opus/references/model-facts.md`
 
 **Keywords**
 - `when to use Claude Opus`, `frontier reasoning model`, `Opus tier routing`, `hardest model for architecture`, `long-horizon agentic model`, `Opus vs Sonnet`, `1M context window model`, `expensive reasoning model`, `escalate to Opus`, `max effort model`

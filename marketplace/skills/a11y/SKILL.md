@@ -31,7 +31,6 @@ metadata:
   skill_graph_canonical_skill: skills/quality-assurance/a11y/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Accessibility
 
 ## Concept of the skill

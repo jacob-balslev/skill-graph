@@ -23,7 +23,6 @@ metadata:
   skill_graph_canonical_skill: skills/frontend-engineering/frontend-architecture/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Frontend Architecture
 
 ## Concept of the skill

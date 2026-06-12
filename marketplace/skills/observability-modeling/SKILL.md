@@ -20,7 +20,6 @@ metadata:
   skill_graph_canonical_skill: skills/data-engineering/observability-modeling/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Observability Modeling
 
 ## Concept of the skill

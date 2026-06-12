@@ -19,7 +19,6 @@ metadata:
   skill_graph_canonical_skill: skills/software-architecture/event-contract-design/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Event Contract Design
 
 ## Concept of the skill

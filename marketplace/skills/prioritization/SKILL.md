@@ -7,9 +7,9 @@ allowed-tools: Read Grep Bash
 metadata:
   relations: "{\"related\":[\"constraint-awareness\",\"bayesian-reasoning\",\"playing-to-win\",\"porters-five-forces\",\"seven-powers\"]}"
   subject: software-engineering-method
+  subjects: "[\"software-engineering-method\",\"reasoning-strategy\"]"
   public: "true"
-  scope: "This skill provides prioritization frameworks for AI engineering: RICE-A (adding AI Ambiguity to RICE) for product features, ICE for research experiments, and MoSCoW for MVP/Release scoping. Use when ranking the backlog, deciding which model research path to follow, or defining the scope of a new feature. Do NOT use for one-off task sequencing (use task skill) or personal time management."
-  taxonomy_domain: quality/doctrine
+  scope: "Teaches work-ranking frameworks for AI-assisted engineering: RICE-A for product feature priority under ambiguity, ICE for research experiment ordering, MoSCoW for release scope, and human-vs-AI effort mapping. Portable across backlogs, roadmap choices, and model-research queues. Excludes within-session task sequencing, raw effort estimation, market-positioning strategy, and requirements definition."
   stability: experimental
   keywords: "[\"prioritization\",\"RICE\",\"ICE\",\"MoSCoW\",\"RICE-A\",\"AI ambiguity\",\"feature ranking\",\"research prioritization\",\"backlog management\",\"MVP scope\"]"
   triggers: "[\"prioritization-skill\",\"roadmap-skill\",\"priority-planning-mode\"]"
@@ -120,9 +120,9 @@ PRIORITIZATION CHECK
 
 | Instead of this skill | Use | Why |
 |---|---|---|
-| Sequencing tasks within a single sprint or session | `task` | Task skill owns execution ordering; prioritization owns which work to pick |
-| Estimating effort for individual tasks | `effort` | Effort calibration is a separate concern from priority ranking |
-| Competitive positioning or market strategy | `competitive-positioning` | Business strategy informs priority inputs but is not the framework itself |
+| Sequencing the steps inside one chosen task | `task-path-optimization` | Task-path optimization owns execution order; prioritization owns which work item should be selected. |
+| Estimating confidence under uncertainty | `bayesian-reasoning` | Bayesian reasoning owns evidence updates; prioritization consumes confidence as one scoring input. |
+| Competitive positioning or market strategy | `positioning` | Positioning shapes market claims and alternatives; prioritization ranks work after strategy inputs are known. |
 | Defining product requirements or specifications | `spec-driven-development` | Prioritization ranks work; SDD defines what the work contains |
 
 > **Source**: `REPORTS/Report_UI-UX-Thesis-Audit_Gemini-3-Flash_13-03-2026-05-15.md`
@@ -132,10 +132,9 @@ PRIORITIZATION CHECK
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `software-engineering-method`
+- Subject: `software-engineering-method` (also: `reasoning-strategy`)
 - Public: `true`
-- Domain: `quality/doctrine`
-- Scope: This skill provides prioritization frameworks for AI engineering: RICE-A (adding AI Ambiguity to RICE) for product features, ICE for research experiments, and MoSCoW for MVP/Release scoping. Use when ranking the backlog, deciding which model research path to follow, or defining the scope of a new feature. Do NOT use for one-off task sequencing (use task skill) or personal time management.
+- Scope: Teaches work-ranking frameworks for AI-assisted engineering: RICE-A for product feature priority under ambiguity, ICE for research experiment ordering, MoSCoW for release scope, and human-vs-AI effort mapping. Portable across backlogs, roadmap choices, and model-research queues. Excludes within-session task sequencing, raw effort estimation, market-positioning strategy, and requirements definition.
 
 **When to use**
 - Triggers: `prioritization-skill`, `roadmap-skill`, `priority-planning-mode`

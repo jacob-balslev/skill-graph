@@ -14,13 +14,12 @@ metadata:
   triggers: "[\"lint-overlay\"]"
   examples: "[\"plan ESLint rule introduction for a monorepo that has never had linting\",\"which lint rules should block CI and which should warn-only for now?\",\"migrate these legacy noImplicitAny violations in phased gates\",\"decide whether this new rule runs pre-commit or in CI only\"]"
   anti_examples: "[\"decide whether to unit-test or integration-test this handler\",\"extract this repeated code pattern into a shared util\"]"
-  grounding: "{\"subject_matter\":\"Lint-specific verification planning in the Skill Graph starter library\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"scripts/skill-lint.js\",\"scripts/lint/check-routing-quality.js\",\"scripts/lint/check-routing-eval.js\",\"examples/evals/lint-overlay.json\",\"skills/testing-strategy/SKILL.md\"],\"failure_modes\":[\"lint_failure_triaged_as_strategy_problem\",\"overlay_loaded_without_base_testing_strategy\",\"rule_migration_lacks_gate_placement\",\"routing_eval_claim_not_backed_by_harness\"],\"evidence_priority\":\"repo_code_first\"}"
+  grounding: "{\"subject_matter\":\"Lint-specific verification planning in the Skill Graph starter library\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"scripts/skill-lint.js\",\"scripts/check-routing-config.js\",\"scripts/skill-graph-routing-eval.js\",\"examples/evals/lint-overlay.json\",\"skills/quality-assurance/testing-strategy/SKILL.md\"],\"failure_modes\":[\"lint_failure_triaged_as_strategy_problem\",\"overlay_loaded_without_base_testing_strategy\",\"rule_migration_lacks_gate_placement\",\"routing_eval_claim_not_backed_by_harness\"],\"evidence_priority\":\"repo_code_first\"}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/lint-overlay/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Lint Overlay
 
 ## Concept of the skill
@@ -119,7 +118,7 @@ After applying this skill, verify:
 
 **Grounding**
 - Mode: `hybrid`
-- Truth sources: `scripts/skill-lint.js`, `scripts/lint/check-routing-quality.js`, `scripts/lint/check-routing-eval.js`, `examples/evals/lint-overlay.json`, `skills/testing-strategy/SKILL.md`
+- Truth sources: `scripts/skill-lint.js`, `scripts/check-routing-config.js`, `scripts/skill-graph-routing-eval.js`, `examples/evals/lint-overlay.json`, `skills/quality-assurance/testing-strategy/SKILL.md`
 
 **Keywords**
 - `lint`, `lint rules`, `new rule`, `pre-commit`, `CI only`, `lint integration`, `static analysis`, `eslint`, `noImplicitAny`, `phased lint rollout`

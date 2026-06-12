@@ -26,7 +26,6 @@ metadata:
   skill_graph_export_description: shortened for Agent Skills 1024-character description limit; canonical source keeps the full routing contract
   skill_graph_canonical_description_length: "1053"
 ---
-
 # Code Review
 
 ## Concept of the skill

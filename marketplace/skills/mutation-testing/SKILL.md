@@ -23,7 +23,6 @@ metadata:
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/mutation-testing/SKILL.md
 ---
-
 # Mutation Testing
 
 ## Concept of the skill

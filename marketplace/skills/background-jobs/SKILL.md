@@ -25,7 +25,6 @@ metadata:
   skill_graph_canonical_skill: skills/backend-engineering/background-jobs/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Background Jobs
 
 ## Concept of the skill

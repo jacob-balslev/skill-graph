@@ -23,7 +23,6 @@ metadata:
   skill_graph_canonical_skill: skills/frontend-engineering/design-system-architecture/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Design System Architecture
 
 ## Concept of the skill

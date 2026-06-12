@@ -2,7 +2,7 @@
 name: gpt-5-5
 description: "Use when deciding whether to route a task to OpenAI's GPT-5.5 frontier model versus Claude Opus or Sonnet — picking the model lane for infrastructure scripts, CI pipelines, concrete implementation, analytical code review, security review, or CLI/terminal-heavy work, and weighing GPT-5.5's context window, pricing, and per-benchmark strengths against the Claude tiers for the same task. Covers the decision-useful capability and pricing facts, and the boundary against the Claude routing skills. Do NOT use for running the GPT model through a harness (use `codex`), for choosing among the Claude tiers themselves (use `claude-opus` / `claude-sonnet`), or for routing among local skills at request time (use `skill-router`). Do NOT use for resume my last Codex session and keep going. Do NOT use for is Opus or Sonnet the right Claude tier for this? Do NOT use for which of my skills handles webhook tasks?"
 license: MIT
-compatibility: "Model-routing knowledge skill. Facts current as of 2026-06-08 (GPT-5.5 generation). OpenAI iterates point releases fast — verify the current GPT-5 generation, context window, and pricing against OpenAI's docs before relying on a specific number."
+compatibility: "Model-routing knowledge skill. Facts current as of 2026-06-08 (GPT-5.5 generation). OpenAI iterates point releases fast — verify the current GPT-5.5 generation, context window, and pricing against OpenAI's docs before relying on a specific number."
 allowed-tools: Read Grep
 metadata:
   subject: agent-ops
@@ -12,8 +12,9 @@ metadata:
   taxonomy_domain: agent/models
   stability: experimental
   keywords: "[\"when to use gpt-5.5\",\"gpt-5.5 vs claude opus\",\"route task to gpt\",\"gpt-5.5 for code review\",\"gpt-5.5 infrastructure scripts\",\"gpt-5.5 context window pricing\",\"gpt-5.5 security review\",\"model routing gpt claude\",\"swe-bench gpt vs claude\",\"gpt-5.5 terminal bench\"]"
-  examples: "[\"should this CI pipeline script go to GPT-5 or Opus?\",\"is GPT-5 or Claude better for an analytical code review of this diff?\",\"what's GPT-5's context window and how does its pricing compare to Opus?\"]"
+  examples: "[\"should this CI pipeline script go to GPT-5.5 or Opus?\",\"is GPT-5.5 or Claude better for an analytical code review of this diff?\",\"what's GPT-5.5's context window and how does its pricing compare to Opus?\"]"
   anti_examples: "[\"resume my last Codex session and keep going\",\"is Opus or Sonnet the right Claude tier for this?\",\"which of my skills handles webhook tasks?\"]"
+  grounding: "{\"subject_matter\":\"GPT-5.5 model routing, pricing, context, and benchmark facts\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"skills/agent-ops/gpt-5-5/references/model-facts.md\"],\"failure_modes\":[\"stale_model_id\",\"stale_context_window\",\"stale_pricing_or_rate_limit\",\"benchmark_claim_without_date\",\"capability_claim_quoted_from_memory\"],\"evidence_priority\":\"repo_code_first\"}"
   relations: "{\"related\":[\"codex\",\"claude-opus\",\"claude-sonnet\",\"gemini-pro\",\"claude-code\"],\"suppresses\":[{\"skill\":\"codex\",\"reason\":\"I own routing the task to the GPT MODEL vs Claude; codex owns running GPT through its CLI harness\"},{\"skill\":\"claude-opus\",\"reason\":\"I own the GPT-vs-Claude routing decision; claude-opus owns the choice among Claude tiers\"}],\"verify_with\":[\"claude-opus\",\"codex\"]}"
   mental_model: "Frontier models are specialists with overlapping but non-identical edges. Two near-equal models still diverge by task TYPE, so routing means matching a task's dominant axis to the model that owns that axis — not crowning one model 'best overall'."
   purpose: "An explicit per-task model-routing rule exists because 'just use the strongest model' ignores that strength is task-shaped and ignores cost. The rule captures real per-benchmark splits so concrete-implementation, CLI/terminal, and analytical-review work lands on the model that leads those axes while architecture-heavy work stays on the model that leads there."
@@ -34,13 +35,13 @@ metadata:
 
 **Mental model:** Treat frontier models as specialists with overlapping but non-identical edges. GPT-5.5 and Claude Opus are within a couple of points on aggregate coding benchmarks, but they diverge by task *type*: GPT-5.5 leads on terminal/CLI workflows and precise tool-use; Claude Opus leads on architecture and complex multi-file resolution. Routing is matching the task's dominant axis to the model that owns that axis — not crowning one model "best."
 
-**Why it exists:** "Just use the strongest model" is the wrong default — it ignores that strength is task-shaped, and it ignores cost. An explicit per-task routing rule captures the real per-benchmark splits so concrete-implementation and review work lands on GPT-5 while architecture work stays on Opus, instead of being decided by habit.
+**Why it exists:** "Just use the strongest model" is the wrong default — it ignores that strength is task-shaped, and it ignores cost. An explicit per-task routing rule captures the real per-benchmark splits so concrete-implementation and review work lands on GPT-5.5 while architecture work stays on Opus, instead of being decided by habit.
 
-**What it is NOT:** It is not the Codex CLI (that is the *harness* that runs GPT — a separate decision), not the OpenAI SDK/API, and not a claim that GPT-5 beats Claude everywhere. It is a model-lane selector, not a leaderboard.
+**What it is NOT:** It is not the Codex CLI (that is the *harness* that runs GPT — a separate decision), not the OpenAI SDK/API, and not a claim that GPT-5.5 beats Claude everywhere. It is a model-lane selector, not a leaderboard.
 
 **Adjacent concepts:** the Codex CLI (the harness for GPT), the Claude tier skills (`claude-opus`, `claude-sonnet`, `claude-haiku`), `gemini-pro` (the third frontier lane), and `skill-router` (request-time dispatch among local skills, a different layer).
 
-**One-line analogy:** Routing GPT-5 vs Opus is choosing a surgeon by procedure, not by overall reputation — the more decorated surgeon is still the wrong pick for the operation the other one specializes in.
+**One-line analogy:** Routing GPT-5.5 vs Opus is choosing a surgeon by procedure, not by overall reputation — the more decorated surgeon is still the wrong pick for the operation the other one specializes in.
 
 **Common misconception:** That the higher SWE-bench Verified score makes GPT-5.5 the universal coding choice. The aggregate margin is within noise and benchmark-contamination caveats; on complex multi-file resolution (SWE-bench Pro) Claude Opus leads, so the verified-bench headline does not generalize to architecture-heavy work.
 
@@ -51,13 +52,13 @@ metadata:
 - The decision-useful capability and pricing facts: ~1M context window, the >272K-token surcharge, standard / Pro / cached pricing, and how they compare to the Claude tiers
 - The subscription-vs-API distinction: why headline per-token USD is notional on a flat subscription and must not drive routing alone
 - The boundary against adjacent skills: the Codex harness (running GPT), the Claude tier skills (intra-Claude routing), `gemini-pro` (the third frontier lane), and `skill-router` (request-time local-skill dispatch)
-- What this skill is NOT: the Codex CLI, the OpenAI SDK, a leaderboard, or a claim that GPT-5 beats Claude everywhere
+- What this skill is NOT: the Codex CLI, the OpenAI SDK, a leaderboard, or a claim that GPT-5.5 beats Claude everywhere
 
 ## Philosophy of the skill
 
 Routing is matching, not ranking. The tempting shortcut — "use the strongest model and stop thinking" — is wrong twice over: it treats model strength as a single scalar when it is actually a profile of task-shaped edges, and it ignores cost entirely. This skill refuses both errors. It insists the routing primitive is the task's *dominant axis*, not a model's aggregate benchmark rank, because two near-equal models split by task type and the per-task winner can flip even when one model leads on paper. It also refuses to let headline price be the primitive: on a flat subscription the per-token USD is notional, and even on API the capability-per-task delta usually dominates the price delta. The discipline is to name the task's dominant axis first, route to the model that owns that axis, and treat both "always strongest" and "always cheapest" as reflexes to override.
 
-## When to route to GPT-5 (decision)
+## When to route to GPT-5.5 (decision)
 
 Send a task to GPT-5.5 when its **dominant axis** is one GPT-5.5 owns:
 
@@ -136,9 +137,9 @@ Use this checklist to confirm a GPT-vs-Claude routing decision is correct and cu
 - Scope: Deciding when to route a task to OpenAI's GPT-5.5 frontier tier versus Claude Opus or Sonnet: the ~1M context window and its 272K pricing cliff, the $5/$30 standard rates and Pro tier, and the per-benchmark split that says GPT-5.5 leads SWE-bench Verified and Terminal-Bench (CLI/tool-use, infra, concrete implementation, analytical review) while Claude Opus leads SWE-bench Pro and architectural reasoning across large codebases. Portable model-routing knowledge, not anchored to any project. Excludes running GPT through the Codex harness (codex), choosing among Claude tiers (claude-opus/claude-sonnet), and request-time dispatch among local skills (skill-router).
 
 **When to use**
-- should this CI pipeline script go to GPT-5 or Opus?
-- is GPT-5 or Claude better for an analytical code review of this diff?
-- what's GPT-5's context window and how does its pricing compare to Opus?
+- should this CI pipeline script go to GPT-5.5 or Opus?
+- is GPT-5.5 or Claude better for an analytical code review of this diff?
+- what's GPT-5.5's context window and how does its pricing compare to Opus?
 
 **Not for**
 - resume my last Codex session and keep going
@@ -157,6 +158,10 @@ Use this checklist to confirm a GPT-vs-Claude routing decision is correct and cu
 - Boundary: This decides WHICH frontier MODEL gets a task (the GPT line vs the Claude tiers). It is NOT the CLI harness that runs the model, NOT the model's SDK/API, NOT intra-Claude tier selection, and NOT request-time dispatch among local skills.
 - Analogy: Choosing the model is choosing a surgeon by procedure, not by overall reputation — the more decorated surgeon is still the wrong pick for the operation the other one specializes in.
 - Common misconception: That a higher headline coding-benchmark score makes one model the universal coding choice. Aggregate margins are often within noise and carry contamination caveats; on complex multi-file resolution the ranking can flip, so a single verified-bench headline does not generalize to architecture-heavy work.
+
+**Grounding**
+- Mode: `hybrid`
+- Truth sources: `skills/agent-ops/gpt-5-5/references/model-facts.md`
 
 **Keywords**
 - `when to use gpt-5.5`, `gpt-5.5 vs claude opus`, `route task to gpt`, `gpt-5.5 for code review`, `gpt-5.5 infrastructure scripts`, `gpt-5.5 context window pricing`, `gpt-5.5 security review`, `model routing gpt claude`, `swe-bench gpt vs claude`, `gpt-5.5 terminal bench`

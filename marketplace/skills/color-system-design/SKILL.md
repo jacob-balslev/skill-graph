@@ -24,7 +24,6 @@ metadata:
   skill_graph_canonical_skill: skills/design/color-system-design/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
 ---
-
 # Color System Design
 
 ## Concept of the skill

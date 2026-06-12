@@ -5,10 +5,10 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  relations: "{\"related\":[\"keywords\",\"content-monitor\",\"etsy\"]}"
+  relations: "{\"related\":[\"keywords\",\"content-monitor\",\"etsy\",\"information-architecture\",\"microcopy\"]}"
   subject: quality-assurance
   public: "true"
-  scope: "SEO implementation strategy for building pages that rank -- covering content strategy, programmatic SEO at scale, marketplace-specific SEO, and AI search optimization."
+  scope: "Teaches proactive SEO implementation strategy: page-type selection, content-cluster planning, programmatic template design, structured data choice, marketplace-specific ranking mechanics, and AI-search citation readiness. Portable across SaaS, e-commerce, marketplace, and content sites. Excludes keyword clustering as its own task, information-architecture/navigation design, monitoring trend sources, and conversion copy optimization."
   subjects: "[\"quality-assurance\",\"product-domain\"]"
   taxonomy_domain: quality/display
   stability: experimental
@@ -55,10 +55,11 @@ Load this skill when:
 - Adapting content for AI search (AI Overviews, chatbot citations)
 
 Do NOT use for:
-- Diagnosing existing SEO problems (use **seo-audit**)
-- Keyword research and clustering (use **keywords**)
-- Page hierarchy and navigation design (use **site-architecture**)
-- Conversion rate optimization (use **page-cro**)
+- Keyword research and clustering (use `keywords`)
+- Page hierarchy, navigation, or findability structure (use `information-architecture`)
+- Monitoring source feeds for trend discovery (use `content-monitor`)
+- Conversion-focused headline, CTA, or in-page copy wording (use `microcopy`)
+- Product or marketplace research before SEO decisions (use `user-research`)
 
 ---
 
@@ -278,13 +279,13 @@ After applying this skill, verify:
 - Subject: `quality-assurance` (also: `product-domain`)
 - Public: `true`
 - Domain: `quality/display`
-- Scope: SEO implementation strategy for building pages that rank -- covering content strategy, programmatic SEO at scale, marketplace-specific SEO, and AI search optimization.
+- Scope: Teaches proactive SEO implementation strategy: page-type selection, content-cluster planning, programmatic template design, structured data choice, marketplace-specific ranking mechanics, and AI-search citation readiness. Portable across SaaS, e-commerce, marketplace, and content sites. Excludes keyword clustering as its own task, information-architecture/navigation design, monitoring trend sources, and conversion copy optimization.
 
 **When to use**
 - Triggers: `seo-strategy-skill`, `seo-skill`, `programmatic-seo-skill`
 
 **Related skills**
-- Related: `keywords`, `content-monitor`, `etsy`
+- Related: `keywords`, `content-monitor`, `etsy`, `information-architecture`, `microcopy`
 
 **Keywords**
 - `seo strategy`, `programmatic seo`, `content strategy`, `comparison page`, `alternative page`, `schema markup`, `structured data`, `ai seo`, `marketplace seo`, `etsy seo`

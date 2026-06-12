@@ -24,7 +24,6 @@ metadata:
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/ai-engineering/prompt-injection-defense/SKILL.md
 ---
-
 # Prompt-Injection Defense
 
 ## Concept of the skill

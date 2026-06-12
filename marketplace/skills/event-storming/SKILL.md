@@ -19,7 +19,6 @@ metadata:
   skill_graph_canonical_skill: skills/software-architecture/event-storming/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Event Storming
 
 ## Concept of the skill

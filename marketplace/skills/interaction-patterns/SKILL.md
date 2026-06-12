@@ -24,7 +24,6 @@ metadata:
   skill_graph_canonical_skill: skills/design/interaction-patterns/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
 ---
-
 # Interaction Patterns
 
 ## Concept of the skill

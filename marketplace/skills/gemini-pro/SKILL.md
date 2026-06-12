@@ -14,6 +14,7 @@ metadata:
   keywords: "[\"route to Gemini Pro\",\"Gemini 3.1 Pro vs Claude Opus\",\"Gemini Pro 1M context window\",\"large context model routing\",\"long document reasoning model\",\"multimodal model audio video PDF\",\"Gemini Pro pricing per token\",\"which frontier model for big context\",\"Gemini 3.5 Pro frontier\",\"whole codebase analysis model\"]"
   examples: "[\"I need to reason over a 600K-token codebase in one shot — which model?\",\"should I send this to Gemini 3.1 Pro or Claude Opus?\",\"what's the cheapest frontier model that can take a 1M-token context?\",\"I have audio + PDFs + images in one task — which model handles all of it natively?\"]"
   anti_examples: "[\"I just need a cheap classifier for 10k rows\",\"design the multi-agent orchestration for this system\",\"which of my local skills should handle this request?\"]"
+  grounding: "{\"subject_matter\":\"Gemini Pro model routing, context, pricing, and benchmark facts\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"skills/agent-ops/gemini-pro/references/model-facts.md\"],\"failure_modes\":[\"stale_model_id\",\"stale_context_window\",\"stale_pricing_or_rate_limit\",\"benchmark_claim_without_date\",\"capability_claim_quoted_from_memory\"],\"evidence_priority\":\"repo_code_first\"}"
   relations: "{\"related\":[\"gemini-flash\",\"agent-engineering\",\"autonomous-loop-patterns\",\"skill-router\"],\"suppresses\":[{\"skill\":\"gemini-flash\",\"reason\":\"I own the FRONTIER Gemini tier (large context, hardest reasoning, multimodal depth); gemini-flash owns the cheap/fast tier and the escalation boundary up to me\"}],\"verify_with\":[\"gemini-flash\",\"agent-engineering\"]}"
   mental_model: "A frontier model is a routing destination chosen by the dominant constraint of the task, not by habit. The largest-context tier wins specifically when the input is too big to fit any other model in one call, or is mixed-multimodal, or needs frontier reasoning at the best capability-per-dollar — and loses when another frontier model owns the task's lane (hardest agentic code, or needle-precise long-context retrieval and hard math)."
   purpose: "Replace 'use my usual model' with an evidence-based, per-lane routing decision, so a task lands on the model whose strength its dominant constraint actually needs — and budget is not spent on capability the task never uses."
@@ -154,6 +155,10 @@ Confirm a Gemini-Pro routing decision before committing to it — and confirm th
 - Boundary: Owns single-model selection of the large-context frontier tier and the comparison against its peer frontier models. Does NOT own the cheap/fast tier decision, agent-system architecture that composes many models, or request-time dispatch among local skills — those are separate concepts.
 - Analogy: It is the wide-load freight truck of frontier models — when the cargo is too big to fit any other vehicle in one trip, it wins by capacity, even though a sports car is faster on the specific stretch of road it owns.
 - Common misconception: That holding a very large context window means being best at finding the needle inside it. Context capacity and long-context retrieval quality are different properties; route to the large-context tier to FIT the context cheaply, and verify a needle-precise retrieval need against the model that leads retrieval quality.
+
+**Grounding**
+- Mode: `hybrid`
+- Truth sources: `skills/agent-ops/gemini-pro/references/model-facts.md`
 
 **Keywords**
 - `route to Gemini Pro`, `Gemini 3.1 Pro vs Claude Opus`, `Gemini Pro 1M context window`, `large context model routing`, `long document reasoning model`, `multimodal model audio video PDF`, `Gemini Pro pricing per token`, `which frontier model for big context`, `Gemini 3.5 Pro frontier`, `whole codebase analysis model`

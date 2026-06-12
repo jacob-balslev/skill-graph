@@ -24,7 +24,6 @@ metadata:
   skill_graph_canonical_skill: skills/reasoning-strategy/second-order-thinking/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 ## Concept Card
 
 **What it is:** Second-order thinking is the discipline of evaluating what happens after the immediate result of a decision: actor responses, delayed effects, feedback loops, displaced costs, and compounding consequences.

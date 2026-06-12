@@ -24,7 +24,6 @@ metadata:
   skill_graph_canonical_skill: skills/knowledge-organization/taxonomy-design/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Taxonomy Design
 
 ## Concept of the skill

@@ -25,7 +25,6 @@ metadata:
   skill_graph_export_description: shortened for Agent Skills 1024-character description limit; canonical source keeps the full routing contract
   skill_graph_canonical_description_length: "1133"
 ---
-
 ## Concept Card
 
 **What it is:** Cognitive Load Theory (CLT) is a psychological framework originating with John Sweller (1988) that explains how human working memory processes new information and what design decisions help or hinder schema formation. It is the scientific backbone behind "keep it simple" intuitions — but with actionable precision about *which* complexity to cut and which to preserve.

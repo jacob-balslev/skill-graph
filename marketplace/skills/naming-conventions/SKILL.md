@@ -24,7 +24,6 @@ metadata:
   skill_graph_canonical_skill: skills/software-engineering-method/naming-conventions/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 ## Concept of the skill
 
 **What it is:** Naming conventions are the rules that make artifact names truthful, predictable, and searchable across code, routes, data, configuration, and documentation-adjacent developer surfaces.

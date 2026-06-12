@@ -24,7 +24,6 @@ metadata:
   skill_graph_canonical_skill: skills/design/interaction-feedback/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
 ---
-
 # Interaction Feedback
 
 ## Concept of the skill

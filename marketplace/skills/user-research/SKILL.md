@@ -22,7 +22,6 @@ metadata:
   skill_graph_canonical_skill: skills/design/user-research/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # User Research
 
 ## Concept of the skill

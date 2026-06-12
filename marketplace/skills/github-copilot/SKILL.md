@@ -10,10 +10,11 @@ metadata:
   public: "true"
   scope: "When to route work to GitHub Copilot and when not to: its metered cost model (premium requests pre-June-2026 with per-model multipliers; AI credits at 1 credit = $0.01 with token-based billing after the June 1 2026 shift), plan allowances and the no-rollover rule, the always-free completions/next-edit surface, what Copilot is good at (IDE-native completions + frontier-model chat) vs expensive at (agentic multi-file flows), and when a cheaper/free lane is preferable. Portable knowledge about a public product's published billing — no private budget config. Out: the OpenCode runtime (opencode), specific free-model choice (opencode-free-models), agent-loop authoring (autonomous-loop-patterns)."
   taxonomy_domain: agent/harness
-  stability: experimental
+  stability: stable
   keywords: "[\"github copilot\",\"copilot premium requests\",\"copilot ai credits\",\"copilot usage-based billing\",\"copilot pro vs pro plus\",\"when to use copilot\",\"copilot premium request cost\",\"copilot model multipliers\",\"cheaper lane than copilot\"]"
   examples: "[\"is this task worth spending a Copilot premium request on?\",\"how does Copilot's AI-credit billing work after June 2026?\",\"should I run this agent flow on Copilot or a free lane?\"]"
   anti_examples: "[\"how do I invoke the opencode CLI non-interactively?\",\"which free model fits this bulk job?\",\"how do I write the agent's retry loop?\"]"
+  grounding: "{\"subject_matter\":\"GitHub Copilot model roster, billing, and plan allowance facts\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"skills/agent-ops/github-copilot/references/model-facts.md\"],\"failure_modes\":[\"stale_model_id\",\"stale_context_window\",\"stale_pricing_or_rate_limit\",\"benchmark_claim_without_date\",\"capability_claim_quoted_from_memory\"],\"evidence_priority\":\"repo_code_first\"}"
   relations: "{\"related\":[\"opencode\",\"opencode-free-models\",\"autonomous-loop-patterns\",\"ai-native-development\"],\"suppresses\":[{\"skill\":\"opencode-free-models\",\"reason\":\"I own Copilot's paid premium-request / AI-credit lane and when to avoid it; opencode-free-models owns the free open-weight model alternatives\"},{\"skill\":\"opencode\",\"reason\":\"I own Copilot's IDE-native economics; opencode owns the open-source multi-provider runtime\"}],\"verify_with\":[\"opencode-free-models\"]}"
   mental_model: "A metered AI coding assistant has two glued-together cost surfaces: an always-free completion/next-edit surface that is unmetered, and a metered chat/agent surface drawn from a finite, non-rolling allowance. Routing well means keeping low-complexity and high-volume work off the metered surface and spending the capped allowance only where an in-editor frontier model genuinely earns it."
   purpose: "Prevent waste of a finite, non-rolling metered budget by deciding, per task, whether the work belongs on the free completion surface, on the metered surface, or off the assistant entirely on a cheaper/free lane or a script."
@@ -146,6 +147,10 @@ Use this checklist to confirm a Copilot spend decision was made correctly.
 - Boundary: Owns the spend/route decision for a metered IDE coding assistant's published billing. Does NOT own choosing or operating an open-source multi-provider runtime, picking a specific free model, or authoring an agent loop — those are separate concepts.
 - Analogy: It is a prepaid toll lane bundled with a free service road — the service road (completions) is unlimited, the toll lane (agent/chat credits) is fast but metered and the balance does not roll over, so you only take the toll lane when the trip is worth it.
 - Common misconception: That paying a subscription makes the assistant free or unlimited. The subscription buys unmetered completions plus a capped, non-rolling metered allowance — agent flows consume that allowance fastest, and cost is token-based at a per-model rate, not governed by the retired flat per-request multipliers.
+
+**Grounding**
+- Mode: `hybrid`
+- Truth sources: `skills/agent-ops/github-copilot/references/model-facts.md`
 
 **Keywords**
 - `github copilot`, `copilot premium requests`, `copilot ai credits`, `copilot usage-based billing`, `copilot pro vs pro plus`, `when to use copilot`, `copilot premium request cost`, `copilot model multipliers`, `cheaper lane than copilot`

@@ -22,7 +22,6 @@ metadata:
   skill_graph_canonical_skill: skills/design/usability-testing/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Usability Testing
 
 ## Concept of the skill

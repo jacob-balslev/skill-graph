@@ -22,7 +22,6 @@ metadata:
   skill_graph_canonical_skill: skills/design/visual-hierarchy/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Visual Hierarchy
 
 ## Concept of the skill

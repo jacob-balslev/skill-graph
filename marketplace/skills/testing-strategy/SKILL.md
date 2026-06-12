@@ -26,7 +26,6 @@ metadata:
   skill_graph_canonical_skill: skills/quality-assurance/testing-strategy/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 ## Concept of the skill
 
 **What it is:** Testing strategy is the discipline of choosing which behavior needs verification, which test level can observe it honestly, and what evidence proves the change is protected.

@@ -24,7 +24,6 @@ metadata:
   skill_graph_canonical_skill: skills/reasoning-strategy/first-principles-thinking/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 ## Concept Card
 
 **What it is:** First-principles thinking is a reasoning discipline that breaks a problem down to propositions, definitions, constraints, and values that cannot be derived from deeper premises inside the relevant domain, then rebuilds a solution from those primitives.

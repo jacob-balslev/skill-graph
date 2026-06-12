@@ -20,7 +20,6 @@ metadata:
   skill_graph_canonical_skill: skills/software-architecture/system-interface-contracts/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # System Interface Contracts
 
 ## Concept of the skill

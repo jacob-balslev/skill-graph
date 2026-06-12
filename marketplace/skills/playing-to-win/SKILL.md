@@ -14,7 +14,7 @@ metadata:
   keywords: "[\"playing to win\",\"strategy cascade\",\"strategic choice cascade\",\"winning aspiration\",\"where to play\",\"how to win\",\"strategy choices\",\"capability system\",\"management systems\",\"lafley martin\"]"
   examples: "[\"turn this vague growth plan into a Playing to Win cascade\",\"we need a product strategy for a narrow segment; help choose where to play and how to win\",\"our strategy doc has goals and initiatives but no trade-offs; apply Lafley/Martin\",\"pressure-test whether these capabilities actually support our how-to-win choice\",\"rewrite this market-entry plan as winning aspiration, where to play, how to win, capabilities, and systems\"]"
   anti_examples: "[\"analyze whether this industry has attractive supplier power and threat of substitutes\",\"score these ten backlog items by impact and effort\",\"design a quality gate process for this multi-step implementation\",\"write OKRs for this strategy after it has already been chosen\"]"
-  grounding: "{\"subject_matter\":\"Playing to Win strategy cascade by A.G. Lafley and Roger L. Martin\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://hbr.org/books/playing-to-win\",\"https://hbr.org/webinar/2013/04/a-playbook-for-winning\",\"https://www-2.rotman.utoronto.ca/insightshub/strategy-value-creation/playing-to-win-how-strategy-re\",\"skills/meta-methods/playing-to-win/references/playing-to-win-sources.md\",\"skills/meta-methods/playing-to-win/references/upstream-displacement-2026-05-26.md\"],\"failure_modes\":[\"goal_list_without_choice\",\"where_to_play_too_broad\",\"how_to_win_not_differentiated\",\"capabilities_not_tied_to_advantage\",\"management_systems_missing\",\"cascade_choices_do_not_reinforce\",\"strategy_confused_with_planning\"],\"evidence_priority\":\"general_knowledge_first\"}"
+  grounding: "{\"subject_matter\":\"Playing to Win strategy cascade by A.G. Lafley and Roger L. Martin\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://hbr.org/books/playing-to-win\",\"https://hbr.org/webinar/2013/04/a-playbook-for-winning\",\"https://www-2.rotman.utoronto.ca/insightshub/strategy-value-creation/playing-to-win-how-strategy-re\",\"skills/reasoning-strategy/playing-to-win/references/playing-to-win-sources.md\",\"skills/reasoning-strategy/playing-to-win/references/upstream-displacement-2026-05-26.md\"],\"failure_modes\":[\"goal_list_without_choice\",\"where_to_play_too_broad\",\"how_to_win_not_differentiated\",\"capabilities_not_tied_to_advantage\",\"management_systems_missing\",\"cascade_choices_do_not_reinforce\",\"strategy_confused_with_planning\"],\"evidence_priority\":\"general_knowledge_first\"}"
   mental_model: "Playing to Win treats strategy as five mutually reinforcing choices, not as a plan, goal list, or analysis deck. The primitives are a winning aspiration, a chosen playing field, a differentiated way to win there, the capabilities required to deliver that advantage, and the management systems that build and sustain those capabilities. The cascade works only when the answers fit together and force trade-offs."
   purpose: "This skill prevents agents from producing strategy-shaped prose that lacks choices. It replaces broad aspirations, market summaries, and initiative lists with an explicit cascade that says what the organization will do, what it will not do, why it can win in the chosen arena, and what must be true operationally for the choice to work."
   concept_boundary: "Playing to Win is for strategy formulation and choice integration. It is not Porter's Five Forces industry-structure diagnosis, Seven Powers moat taxonomy, OKR execution tracking, generic prioritization, scenario planning, or full financial valuation. Those tools may feed or follow the cascade, but they do not replace the five integrated choices."
@@ -25,7 +25,6 @@ metadata:
   skill_graph_canonical_skill: skills/reasoning-strategy/playing-to-win/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Playing to Win
 
 ## Concept of the skill
@@ -283,7 +282,7 @@ Use another skill when the task falls outside the declared `scope`, matches an `
 
 **Grounding**
 - Mode: `universal`
-- Truth sources: `https://hbr.org/books/playing-to-win`, `https://hbr.org/webinar/2013/04/a-playbook-for-winning`, `https://www-2.rotman.utoronto.ca/insightshub/strategy-value-creation/playing-to-win-how-strategy-re`, `skills/meta-methods/playing-to-win/references/playing-to-win-sources.md`, `skills/meta-methods/playing-to-win/references/upstream-displacement-2026-05-26.md`
+- Truth sources: `https://hbr.org/books/playing-to-win`, `https://hbr.org/webinar/2013/04/a-playbook-for-winning`, `https://www-2.rotman.utoronto.ca/insightshub/strategy-value-creation/playing-to-win-how-strategy-re`, `skills/reasoning-strategy/playing-to-win/references/playing-to-win-sources.md`, `skills/reasoning-strategy/playing-to-win/references/upstream-displacement-2026-05-26.md`
 
 **Keywords**
 - `playing to win`, `strategy cascade`, `strategic choice cascade`, `winning aspiration`, `where to play`, `how to win`, `strategy choices`, `capability system`, `management systems`, `lafley martin`

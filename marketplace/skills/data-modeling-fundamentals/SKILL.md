@@ -1,6 +1,6 @@
 ---
 name: data-modeling-fundamentals
-description: "Use when reasoning about the foundational theory beneath data modeling: Codd's relational model (1970) and the algebra it sits on, the normal forms (1NF, 2NF, 3NF, BCNF, 4NF, 5NF) as a precise sequence of constraint-elimination steps, functional dependencies and the closure algorithm, Chen's entity-relationship model (1976) as a higher-abstraction layer above relations, the principled case for and against denormalization, the relational-vs-document tradeoff at the conceptual level, the immutable-data-model alternative (event sourcing, append-only tables), and the historical and theoretical literature that grounds modern database design. Do NOT use for practical persistence design and method (use data-modeling), for safely applying changes to an existing schema (use schema-evolution), for choosing what indexes to maintain (use indexing-strategy), or for the conceptual-modeling layer above the data model (use conceptual-modeling)."
+description: "Use when reasoning about the theory beneath data modeling: Codd's relational model and algebra, normal forms from 1NF through 5NF/BCNF, functional dependencies and closure, Chen ER modeling, principled denormalization, relational-vs-document tradeoffs, and immutable-data alternatives such as event sourcing or append-only tables. Do NOT use for practical persistence design (use data-modeling), applying schema changes (use schema-evolution), index choices (use indexing-strategy), or conceptual modeling above the data model (use conceptual-modeling)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
@@ -23,7 +23,6 @@ metadata:
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/data-engineering/data-modeling-fundamentals/SKILL.md
 ---
-
 # Data Modeling Fundamentals
 
 ## Concept of the skill

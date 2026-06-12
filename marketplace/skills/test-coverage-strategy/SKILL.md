@@ -23,7 +23,6 @@ metadata:
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/test-coverage-strategy/SKILL.md
 ---
-
 # Test-Coverage Strategy
 
 ## Concept of the skill

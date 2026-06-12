@@ -5,7 +5,7 @@ metadata:
   relations: "{\"related\":[\"prompt-craft\",\"tool-call-strategy\",\"context-management\",\"agent-engineering\",\"observability-modeling\"],\"verify_with\":[\"observability-modeling\",\"agent-engineering\"]}"
   subject: agent-ops
   public: "true"
-  scope: "Use when designing, reviewing, or debugging an autonomous AI agent loop: repeated agent execution, completion signals, checkpoints, supervisor respawn, stall detection, safety caps, and human handoff rules. Covers the core loop patterns from simple bounded runs through sentinel-based continuation, checkpoint-resume, and external supervisor loops. Do NOT use for choosing a specific agent product command (use agent-engineering or the product's docs), writing ordinary task instructions (use prompt-craft), or optimizing individual tool calls (use tool-call-strategy)."
+  scope: "Teaches the control design of autonomous agent loops: trigger ownership, worker boundaries, progress evidence, stop conditions, durable state, restart policy, stall detection, safety caps, and human handoff. Portable across agent runtimes; principle-grounded, not product-command-specific. Excludes individual worker prompt wording, per-tool efficiency, and broad multi-agent architecture outside the loop-control surface."
   taxonomy_domain: agent/loop-design
   triggers: "[\"autonomous-loop-skill\",\"loop-patterns-skill\",\"agent-loop-design\"]"
   keywords: "[\"autonomous agent loop\",\"agent loop pattern\",\"completion signal\",\"checkpoint resume loop\",\"supervisor respawn\",\"stall detection\",\"safety cap\",\"agent watchdog\",\"human handoff\"]"
@@ -19,7 +19,6 @@ metadata:
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/autonomous-loop-patterns/SKILL.md
 ---
-
 # Autonomous Loop Patterns
 
 ## Concept of the skill
@@ -298,7 +297,7 @@ After applying this skill, verify:
 - Subject: `agent-ops`
 - Public: `true`
 - Domain: `agent/loop-design`
-- Scope: Use when designing, reviewing, or debugging an autonomous AI agent loop: repeated agent execution, completion signals, checkpoints, supervisor respawn, stall detection, safety caps, and human handoff rules. Covers the core loop patterns from simple bounded runs through sentinel-based continuation, checkpoint-resume, and external supervisor loops. Do NOT use for choosing a specific agent product command (use agent-engineering or the product's docs), writing ordinary task instructions (use prompt-craft), or optimizing individual tool calls (use tool-call-strategy).
+- Scope: Teaches the control design of autonomous agent loops: trigger ownership, worker boundaries, progress evidence, stop conditions, durable state, restart policy, stall detection, safety caps, and human handoff. Portable across agent runtimes; principle-grounded, not product-command-specific. Excludes individual worker prompt wording, per-tool efficiency, and broad multi-agent architecture outside the loop-control surface.
 
 **When to use**
 - Triggers: `autonomous-loop-skill`, `loop-patterns-skill`, `agent-loop-design`

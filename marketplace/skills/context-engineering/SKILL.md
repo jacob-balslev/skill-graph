@@ -26,7 +26,6 @@ metadata:
   skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
-
 # Context Engineering
 
 ## Concept of the skill
@@ -148,11 +147,11 @@ The agent has too much information. The signal is diluted by noise; the model's 
 
 **Diagnostic question:** "Did the agent have so much context that it couldn't focus on the right information?"
 
-**Prevention:** measure injection precision. If more than 30% of injected skills are irrelevant to the task, the injection system needs tuning.
+**Prevention:** measure injection precision. Treat "more than roughly 30% irrelevant injections" as a local tuning alarm, not a universal law; calibrate the threshold against the workspace's router, task mix, and cost of false positives.
 
 ## Context Quality Metrics
 
-Four metrics measure the health of a context engineering system. Track these over time to identify systemic issues.
+Four metrics measure the health of a context engineering system. The bands below are starting heuristics for a local trend dashboard, not externally standardized thresholds. Calibrate them against known-good and known-bad task runs before using them as gates.
 
 ### Injection Precision
 
@@ -220,7 +219,7 @@ Freshness Score = (skills with drift_check inside window / total injected skills
 
 FIC is a proactive context-management strategy. Instead of waiting for the window to fill and reacting with an emergency compact, plan compaction points into the workflow.
 
-**Target utilization:** 40–60% of the context window during steady-state work.
+**Target utilization:** use 40-60% of the context window during steady-state work as an initial heuristic, then adjust based on observed answer quality, tool-output volume, and compaction loss.
 
 **When to compact:** at natural breakpoints, not when forced by pressure.
 

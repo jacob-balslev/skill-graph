@@ -23,7 +23,6 @@ metadata:
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/property-based-testing/SKILL.md
 ---
-
 # Property-Based Testing
 
 ## Concept of the skill

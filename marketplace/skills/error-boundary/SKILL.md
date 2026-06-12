@@ -24,7 +24,6 @@ metadata:
   skill_graph_canonical_skill: skills/frontend-engineering/error-boundary/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Error Boundary
 
 ## Concept of the skill

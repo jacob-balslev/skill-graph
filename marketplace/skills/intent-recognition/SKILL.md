@@ -19,7 +19,6 @@ metadata:
   skill_graph_canonical_skill: skills/ai-engineering/intent-recognition/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Intent Recognition
 
 ## Concept of the skill

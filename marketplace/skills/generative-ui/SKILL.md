@@ -28,7 +28,6 @@ metadata:
   skill_graph_canonical_description_length: "1082"
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Generative UI
 
 ## Concept of the skill

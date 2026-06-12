@@ -8,7 +8,7 @@ metadata:
   relations: "{\"related\":[\"context-engineering\",\"refactor\",\"debugging\",\"prompt-craft\",\"autonomous-loop-patterns\"],\"suppresses\":[\"prompt-craft\"],\"verify_with\":[\"code-review\",\"pattern-recognition\",\"problem-locating-solving\"]}"
   subject: ai-engineering
   public: "true"
-  scope: "Use when an agent is making too many tool calls, when context is filling from verbose tool outputs, when the same operation could be a script instead of N individual calls, or when designing a tool-use protocol for a new agent or harness. Covers the three costs of every call (token, latency, context pollution), the script-vs-call decision gate, tool-selection decision trees (file-search vs content-search vs targeted-read vs full-read), call batching and parallelization, redundancy avoidance, the poka-yoke principle, subagent delegation for context protection, and cost-benchmark heuristics by task type. Do NOT use for prompt wording (use `prompt-craft`), broader context stack design across the five layers (use `context-engineering`), runtime tool failures or production debugging (use `debugging`), or behaviour-preserving refactor mechanics (use `refactor`)."
+  scope: "Teaches efficient tool-use protocol design for agents: cost accounting across tokens, latency, and context pollution; script-vs-call decisions; search/read selection; batching and parallelization; redundancy avoidance; output-shaping; and delegation when exploration would overflow the main context. Portable across CLI, MCP, and harness-driven agents. Excludes prompt wording, broader context-stack architecture, runtime failure debugging, and behavior-preserving refactor mechanics."
   taxonomy_domain: ai-engineering/tool-use
   stability: experimental
   keywords: "[\"tool call optimization\",\"reduce tool calls\",\"too many tool calls\",\"script vs tool call\",\"batching tool calls\",\"parallel tool calls\",\"parallelize calls\",\"independent calls\",\"redundant reads\",\"re-reading file\"]"
@@ -26,7 +26,6 @@ metadata:
   skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
-
 # Tool Call Strategy
 
 ## Concept of the skill
@@ -332,7 +331,7 @@ After applying this skill, verify:
 - Subject: `ai-engineering`
 - Public: `true`
 - Domain: `ai-engineering/tool-use`
-- Scope: Use when an agent is making too many tool calls, when context is filling from verbose tool outputs, when the same operation could be a script instead of N individual calls, or when designing a tool-use protocol for a new agent or harness. Covers the three costs of every call (token, latency, context pollution), the script-vs-call decision gate, tool-selection decision trees (file-search vs content-search vs targeted-read vs full-read), call batching and parallelization, redundancy avoidance, the poka-yoke principle, subagent delegation for context protection, and cost-benchmark heuristics by task type. Do NOT use for prompt wording (use `prompt-craft`), broader context stack design across the five layers (use `context-engineering`), runtime tool failures or production debugging (use `debugging`), or behaviour-preserving refactor mechanics (use `refactor`).
+- Scope: Teaches efficient tool-use protocol design for agents: cost accounting across tokens, latency, and context pollution; script-vs-call decisions; search/read selection; batching and parallelization; redundancy avoidance; output-shaping; and delegation when exploration would overflow the main context. Portable across CLI, MCP, and harness-driven agents. Excludes prompt wording, broader context-stack architecture, runtime failure debugging, and behavior-preserving refactor mechanics.
 
 **When to use**
 - the agent made 17 read_file calls when 3 greps would have done — what should it have done?

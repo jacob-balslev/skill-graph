@@ -23,7 +23,6 @@ metadata:
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/rendering-models/SKILL.md
 ---
-
 # Rendering Models
 
 ## Concept of the skill

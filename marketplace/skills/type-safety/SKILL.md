@@ -24,7 +24,6 @@ metadata:
   skill_graph_canonical_skill: skills/quality-assurance/type-safety/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Type Safety
 
 ## Concept of the skill

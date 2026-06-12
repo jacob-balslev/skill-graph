@@ -19,7 +19,6 @@ metadata:
   skill_graph_canonical_skill: skills/software-architecture/architecture-decision-records/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Architecture Decision Records
 
 ## Concept of the skill

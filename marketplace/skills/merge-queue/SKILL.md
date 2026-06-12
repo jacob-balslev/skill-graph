@@ -8,7 +8,7 @@ metadata:
   relations: "{\"related\":[\"version-control\"],\"suppresses\":[\"version-control\"]}"
   subject: software-engineering-method
   public: "true"
-  scope: "Use when serializing merges across multiple agent branches, resolving conflicts between agent outputs, or cleaning stale task branches. Covers atomic locking, idempotency checks, non-fast-forward handling, and worktree cleanup. Do NOT use for ordinary git operations outside an agent merge queue (use `version-control`)."
+  scope: "Teaches serialized merge control for parallel agent branches: exclusive merge locking, idempotent retry, branch freshness checks, non-fast-forward merge discipline, stale worktree cleanup, and queue event recording. Project-oriented but portable to any multi-agent git workflow. Excludes ordinary single-branch git operations and commit-message/history policy outside a shared merge queue."
   taxonomy_domain: engineering/git
   stability: experimental
   keywords: "[\"merge queue\",\"atomic lock\",\"idempotency\",\"no-ff merge\",\"worktree cleanup\",\"agent branch\",\"master merge\"]"
@@ -94,7 +94,10 @@ To prevent merge conflicts and history pollution, all agents must submit their f
 
 | Instead of this skill | Use | Why |
 |---|---|---|
-| (To be filled during next audit pass) | — | — |
+| Ordinary branching, rebasing, committing, or tag management | `version-control` | Version-control owns general git history shape; this skill owns only serialized agent-branch integration. |
+| Reviewing whether a branch's code is correct before merge | `code-review` | Code-review owns behavioral approval; this skill owns the queue mechanics after a branch is ready. |
+| Explaining what changed in a branch or patch | `diff-analysis` | Diff-analysis owns patch interpretation; this skill owns merge ordering, locks, and cleanup. |
+| Investigating a failed test or production bug after merge | `debugging` | Debugging owns failure localization; this skill only preserves merge order and records queue state. |
 
 
 ## Verification
@@ -111,7 +114,7 @@ After applying this skill, verify:
 - Subject: `software-engineering-method`
 - Public: `true`
 - Domain: `engineering/git`
-- Scope: Use when serializing merges across multiple agent branches, resolving conflicts between agent outputs, or cleaning stale task branches. Covers atomic locking, idempotency checks, non-fast-forward handling, and worktree cleanup. Do NOT use for ordinary git operations outside an agent merge queue (use `version-control`).
+- Scope: Teaches serialized merge control for parallel agent branches: exclusive merge locking, idempotent retry, branch freshness checks, non-fast-forward merge discipline, stale worktree cleanup, and queue event recording. Project-oriented but portable to any multi-agent git workflow. Excludes ordinary single-branch git operations and commit-message/history policy outside a shared merge queue.
 
 **When to use**
 - Triggers: `merge-queue`, `agent-merge`

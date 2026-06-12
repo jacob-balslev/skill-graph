@@ -25,7 +25,6 @@ metadata:
   skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
-
 ## Concept of the skill
 
 **What it is:** State management is the frontend architecture discipline of deciding where each changing value lives, who owns it, how it propagates to consumers, and how it stays consistent over time.

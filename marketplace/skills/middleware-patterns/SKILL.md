@@ -27,7 +27,6 @@ metadata:
   skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
-
 # Middleware Patterns
 
 > **Next.js 16 rename.** The root request-preprocessing file is now **`proxy.ts`** (exported function **`proxy`**). The `middleware.ts`/`middleware` convention is **deprecated** — it still works (a build warning, no error) and is retained specifically for **Edge Runtime** use cases, but Vercel's recommended path is `proxy.ts`. This skill uses **"proxy/middleware"** for the shared concept and names the file explicitly when the distinction matters. If you are on Next.js 15 or earlier, everything here applies under the `middleware.ts` name. See [§ The File Contract](#the-file-contract) and [§ Migrating middleware.ts → proxy.ts](#migrating-middlewarets--proxyts).

@@ -24,7 +24,6 @@ metadata:
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/owasp-security/SKILL.md
 ---
-
 # OWASP Security
 
 ## Concept of the skill

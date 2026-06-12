@@ -23,7 +23,6 @@ metadata:
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/performance-budgets/SKILL.md
 ---
-
 # Performance Budgets
 
 ## Concept of the skill

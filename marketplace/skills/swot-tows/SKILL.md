@@ -15,7 +15,7 @@ metadata:
   triggers: "[\"swot-tows\",\"SWOT\",\"TOWS\",\"swot-analysis\",\"tows-matrix\"]"
   examples: "[\"Build a SWOT and TOWS matrix for this product strategy.\",\"Turn these strengths, weaknesses, opportunities, and threats into strategic options.\",\"We have a SWOT table but no actions; convert it into SO, WO, ST, and WT options.\",\"Check whether this SWOT analysis confuses internal weaknesses with external threats.\",\"Use TOWS to generate strategy hypotheses from this planning workshop output.\"]"
   anti_examples: "[\"Analyze supplier power, buyer power, entrants, substitutes, and rivalry.\",\"Classify this company's durable moat source.\",\"Create a strategy canvas and ERRC grid for a new market space.\",\"Turn this strategy into winning aspiration, where to play, how to win, capabilities, and systems.\",\"Calculate the expected value of these strategic options.\"]"
-  grounding: "{\"subject_matter\":\"SWOT analysis and the TOWS matrix as portable situational-analysis and strategy-option methods\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://cir.nii.ac.jp/crid/1361137044448123776\",\"https://business.gov.au/planning/business-plans/do-a-swot-analysis\",\"https://hbr.org/2007/03/from-swot-to-tows-answering-a-readers-strategy-question\",\"skills/skills/reasoning-strategy/swot-tows/references/swot-tows-sources.md\",\"skills/skills/reasoning-strategy/swot-tows/references/upstream-displacement-2026-06-02.md\"],\"failure_modes\":[\"laundry_list_without_strategy_options\",\"internal_external_factor_mixup\",\"opportunity_confused_with_strength\",\"threat_confused_with_weakness\",\"generic_actions_not_crossed_from_quadrants\",\"unsupported_assertions_or_missing_evidence\",\"treating_swot_as_final_strategy\",\"quantified_choice_needed_but_not_escalated\"],\"evidence_priority\":\"general_knowledge_first\"}"
+  grounding: "{\"subject_matter\":\"SWOT analysis and the TOWS matrix as portable situational-analysis and strategy-option methods\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://cir.nii.ac.jp/crid/1361137044448123776\",\"https://business.gov.au/planning/business-plans/do-a-swot-analysis\",\"https://hbr.org/2007/03/from-swot-to-tows-answering-a-readers-strategy-question\",\"skills/reasoning-strategy/swot-tows/references/swot-tows-sources.md\",\"skills/reasoning-strategy/swot-tows/references/upstream-displacement-2026-06-02.md\"],\"failure_modes\":[\"laundry_list_without_strategy_options\",\"internal_external_factor_mixup\",\"opportunity_confused_with_strength\",\"threat_confused_with_weakness\",\"generic_actions_not_crossed_from_quadrants\",\"unsupported_assertions_or_missing_evidence\",\"treating_swot_as_final_strategy\",\"quantified_choice_needed_but_not_escalated\"],\"evidence_priority\":\"general_knowledge_first\"}"
   mental_model: "SWOT/TOWS is a two-step strategy method: first inventory internal factors and external conditions, then cross them into options. The primitives are a defined decision context, strengths, weaknesses, opportunities, threats, evidence confidence, factor priority, SO options that use strengths to exploit opportunities, WO options that overcome weaknesses to pursue opportunities, ST options that use strengths to reduce threats, and WT options that reduce weakness-threat exposure. SWOT names the situation; TOWS converts the situation into candidate moves."
   purpose: "This skill prevents agents from producing a four-box SWOT list and stopping there. It forces internal/external classification, evidence tagging, prioritization of the most decision-relevant factors, and TOWS crossing so the output becomes testable strategic options rather than a decorative planning worksheet."
   concept_boundary: "SWOT/TOWS is for situational factor inventory and strategy-option generation. It is not industry-structure diagnosis, moat taxonomy, macro-environment scanning, value innovation, integrated strategy-choice design, OKR execution management, or quantitative valuation. Those methods may feed the factor list or follow the option set, but they do not replace the internal/external factor crossing that SWOT/TOWS owns."
@@ -188,8 +188,8 @@ SWOT/TOWS outputs candidates, not final commitments. Choose the next method by t
 
 This skill includes sibling eval files:
 
-- `skills/skills/reasoning-strategy/swot-tows/evals/comprehension.json` checks concept definition, mental model, purpose, boundary, taxonomy, analogy, and application.
-- `skills/skills/reasoning-strategy/swot-tows/evals/evals.json` checks applied behavior on realistic SWOT/TOWS prompts and hard negatives.
+- `skills/reasoning-strategy/swot-tows/evals/comprehension.json` checks concept definition, mental model, purpose, boundary, taxonomy, analogy, and application.
+- `skills/reasoning-strategy/swot-tows/evals/evals.json` checks applied behavior on realistic SWOT/TOWS prompts and hard negatives.
 
 Keep `eval_state: unverified` in `audit-state.json` until a grader run produces a receipt.
 
@@ -209,8 +209,8 @@ After applying this skill, verify:
 - Heinz Weihrich, "The TOWS Matrix - A Tool for Situational Analysis", *Long Range Planning*, 15(2), 54-66, 1982. DOI: `10.1016/0024-6301(82)90120-0`.
 - Australian Government business.gov.au, "Do a SWOT analysis".
 - Michael D. Watkins, "From SWOT to TOWS: Answering a Reader's Strategy Question", Harvard Business Review, 2007.
-- `skills/skills/reasoning-strategy/swot-tows/references/swot-tows-sources.md`
-- `skills/skills/reasoning-strategy/swot-tows/references/upstream-displacement-2026-06-02.md`
+- `skills/reasoning-strategy/swot-tows/references/swot-tows-sources.md`
+- `skills/reasoning-strategy/swot-tows/references/upstream-displacement-2026-06-02.md`
 
 ## Skill Graph context
 
@@ -250,7 +250,7 @@ After applying this skill, verify:
 
 **Grounding**
 - Mode: `universal`
-- Truth sources: `https://cir.nii.ac.jp/crid/1361137044448123776`, `https://business.gov.au/planning/business-plans/do-a-swot-analysis`, `https://hbr.org/2007/03/from-swot-to-tows-answering-a-readers-strategy-question`, `skills/skills/reasoning-strategy/swot-tows/references/swot-tows-sources.md`, `skills/skills/reasoning-strategy/swot-tows/references/upstream-displacement-2026-06-02.md`
+- Truth sources: `https://cir.nii.ac.jp/crid/1361137044448123776`, `https://business.gov.au/planning/business-plans/do-a-swot-analysis`, `https://hbr.org/2007/03/from-swot-to-tows-answering-a-readers-strategy-question`, `skills/reasoning-strategy/swot-tows/references/swot-tows-sources.md`, `skills/reasoning-strategy/swot-tows/references/upstream-displacement-2026-06-02.md`
 
 **Keywords**
 - `SWOT`, `TOWS`, `SWOT analysis`, `TOWS matrix`, `strengths weaknesses opportunities threats`, `SO strategies`, `WO strategies`, `ST strategies`, `WT strategies`, `situational analysis`

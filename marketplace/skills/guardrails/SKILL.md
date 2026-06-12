@@ -8,7 +8,7 @@ metadata:
   relations: "{\"related\":[\"version-control\",\"database-migration\",\"intent-recognition\",\"code-review\",\"cognitive-load-theory\"],\"verify_with\":[\"intent-recognition\",\"code-review\",\"prompt-craft\"]}"
   subject: ai-engineering
   public: "true"
-  scope: "Use when planning or executing agent/tool operations that touch protected files, credentials, destructive git commands, destructive SQL, PII, secrets, deployments, package publication, or irreversible system mutations. Covers proactive safety policy, tool-call tripwires, blocking vs advisory enforcement, secret-exposure prevention, and excessive-agency containment. Do NOT use for application input validation, routine git workflow design, migration authoring, or general code correctness review (use `code-review`, `version-control`, or `database-migration`)."
+  scope: "Teaches proactive safety control for agent and tool operations: protected-surface recognition, tripwire placement, block-vs-advise decisions, secret and PII exposure prevention, destructive-operation containment, and excessive-agency limits. Portable across tool-using agent workflows. Excludes ordinary application validation, git workflow design, migration authoring, and general correctness review."
   taxonomy_domain: quality/safety
   stability: experimental
   keywords: "[\"guardrails\",\"tool guardrails\",\"tripwire\",\"safety gate\",\"force push\",\"secret detection\",\"destructive action\",\"protected files\",\"circuit breaker\",\"excessive agency\"]"
@@ -152,7 +152,7 @@ Guardrails for tool-using agents must cover LLM-specific risks as well as classi
 - Subject: `ai-engineering`
 - Public: `true`
 - Domain: `quality/safety`
-- Scope: Use when planning or executing agent/tool operations that touch protected files, credentials, destructive git commands, destructive SQL, PII, secrets, deployments, package publication, or irreversible system mutations. Covers proactive safety policy, tool-call tripwires, blocking vs advisory enforcement, secret-exposure prevention, and excessive-agency containment. Do NOT use for application input validation, routine git workflow design, migration authoring, or general code correctness review (use `code-review`, `version-control`, or `database-migration`).
+- Scope: Teaches proactive safety control for agent and tool operations: protected-surface recognition, tripwire placement, block-vs-advise decisions, secret and PII exposure prevention, destructive-operation containment, and excessive-agency limits. Portable across tool-using agent workflows. Excludes ordinary application validation, git workflow design, migration authoring, and general correctness review.
 
 **When to use**
 - Triggers: `guardrails-skill`, `tool-guardrails`, `tripwire-skill`, `agent-safety-guardrails`

@@ -24,7 +24,6 @@ metadata:
   skill_graph_canonical_skill: skills/reasoning-strategy/inversion/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 ## Concept Card
 
 **What it is:** Inversion is a reasoning technique that examines a desired outcome by reversing it: ask how to cause failure, how the opposite claim could be true, or what would prevent the goal from happening.

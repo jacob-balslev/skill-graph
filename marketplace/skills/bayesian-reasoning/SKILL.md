@@ -14,7 +14,7 @@ metadata:
   keywords: "[\"bayesian reasoning\",\"bayes theorem\",\"bayesian update\",\"base rate\",\"prior probability\",\"posterior probability\",\"likelihood ratio\",\"evidence strength\",\"confidence calibration\",\"probabilistic reasoning\"]"
   examples: "[\"use Bayesian reasoning to update our confidence after this new evidence\",\"we have a rare bug signal; account for the base rate before concluding the cause\",\"separate prior, likelihood, and posterior for this diagnosis\",\"how should this customer interview change our belief in the product hypothesis?\",\"calibrate my confidence instead of giving a binary yes/no answer\"]"
   anti_examples: "[\"calculate the expected value of these three options\",\"turn this growth plan into a strategy cascade\",\"analyze supplier power and substitutes in this industry\",\"rank these roadmap items by impact and effort\",\"build a statistical model from a dataset\"]"
-  grounding: "{\"subject_matter\":\"Bayesian reasoning for decision-making under uncertainty\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://plato.stanford.edu/entries/bayes-theorem/\",\"https://plato.stanford.edu/entries/epistemology-bayesian/\",\"https://pubmed.ncbi.nlm.nih.gov/17835457/\",\"skills/meta-methods/bayesian-reasoning/references/bayesian-reasoning-sources.md\",\"skills/meta-methods/bayesian-reasoning/references/upstream-displacement-2026-05-26.md\"],\"failure_modes\":[\"base_rate_neglect\",\"likelihood_confused_with_posterior\",\"anecdote_overweighted\",\"correlated_evidence_double_counted\",\"prior_hidden_or_smuggled\",\"false_precision_from_weak_inputs\",\"binary_answer_given_under_uncertainty\"],\"evidence_priority\":\"general_knowledge_first\"}"
+  grounding: "{\"subject_matter\":\"Bayesian reasoning for decision-making under uncertainty\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://plato.stanford.edu/entries/bayes-theorem/\",\"https://plato.stanford.edu/entries/epistemology-bayesian/\",\"https://pubmed.ncbi.nlm.nih.gov/17835457/\",\"skills/reasoning-strategy/bayesian-reasoning/references/bayesian-reasoning-sources.md\",\"skills/reasoning-strategy/bayesian-reasoning/references/upstream-displacement-2026-05-26.md\"],\"failure_modes\":[\"base_rate_neglect\",\"likelihood_confused_with_posterior\",\"anecdote_overweighted\",\"correlated_evidence_double_counted\",\"prior_hidden_or_smuggled\",\"false_precision_from_weak_inputs\",\"binary_answer_given_under_uncertainty\"],\"evidence_priority\":\"general_knowledge_first\"}"
   mental_model: "Bayesian reasoning treats belief as a state that changes when evidence arrives. The primitives are a hypothesis, prior probability or base rate, evidence, likelihood of seeing that evidence if the hypothesis were true, likelihood of seeing it if the hypothesis were false, posterior belief, residual uncertainty, and update history. The key move is comparing how much better the evidence is explained by one hypothesis than by alternatives, then updating from the prior instead of starting from the vividness of the evidence."
   purpose: "This skill prevents agents from jumping from a salient signal to a confident conclusion. It replaces binary diagnosis, anecdote-weighting, and base-rate neglect with an explicit update loop: start with the prior, estimate evidential force, adjust belief in the right direction, avoid double-counting correlated evidence, and state what would change the posterior next."
   concept_boundary: "Bayesian reasoning updates probabilities and confidence; it does not by itself choose the action with the best payoff, produce an expected value table, fit a statistical model, create a strategy cascade, analyze industry structure, or rank a backlog. Those downstream tools may consume Bayesian probabilities, but this skill owns the belief update."
@@ -25,7 +25,6 @@ metadata:
   skill_graph_canonical_skill: skills/reasoning-strategy/bayesian-reasoning/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Bayesian Reasoning
 
 ## Concept of the skill
@@ -195,8 +194,8 @@ Before finishing, verify:
 
 ## References
 
-- `skills/skills/meta-methods/bayesian-reasoning/references/bayesian-reasoning-sources.md`
-- `skills/skills/meta-methods/bayesian-reasoning/references/upstream-displacement-2026-05-26.md`
+- `skills/reasoning-strategy/bayesian-reasoning/references/bayesian-reasoning-sources.md`
+- `skills/reasoning-strategy/bayesian-reasoning/references/upstream-displacement-2026-05-26.md`
 
 ## Do NOT Use When
 
@@ -239,7 +238,7 @@ Use another skill when the task falls outside the declared `scope`, matches an `
 
 **Grounding**
 - Mode: `universal`
-- Truth sources: `https://plato.stanford.edu/entries/bayes-theorem/`, `https://plato.stanford.edu/entries/epistemology-bayesian/`, `https://pubmed.ncbi.nlm.nih.gov/17835457/`, `skills/meta-methods/bayesian-reasoning/references/bayesian-reasoning-sources.md`, `skills/meta-methods/bayesian-reasoning/references/upstream-displacement-2026-05-26.md`
+- Truth sources: `https://plato.stanford.edu/entries/bayes-theorem/`, `https://plato.stanford.edu/entries/epistemology-bayesian/`, `https://pubmed.ncbi.nlm.nih.gov/17835457/`, `skills/reasoning-strategy/bayesian-reasoning/references/bayesian-reasoning-sources.md`, `skills/reasoning-strategy/bayesian-reasoning/references/upstream-displacement-2026-05-26.md`
 
 **Keywords**
 - `bayesian reasoning`, `bayes theorem`, `bayesian update`, `base rate`, `prior probability`, `posterior probability`, `likelihood ratio`, `evidence strength`, `confidence calibration`, `probabilistic reasoning`

@@ -13,6 +13,7 @@ metadata:
   stability: experimental
   keywords: "[\"compression\",\"Zstd\",\"Brotli\",\"Gzip\",\"context window\",\"token efficiency\",\"semantic summarization\",\"payload reduction\",\"DB TOAST\"]"
   triggers: "[\"compression-skill\",\"context-compression\",\"payload-optimization\"]"
+  grounding: "{\"subject_matter\":\"Portable data and context compression across HTTP content negotiation, web codecs, database TOAST storage, and agent context summarization\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://www.rfc-editor.org/info/rfc8878\",\"https://datatracker.ietf.org/doc/html/rfc7932\",\"https://www.rfc-editor.org/rfc/rfc1952\",\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Accept-Encoding\",\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Encoding\",\"https://www.postgresql.org/docs/current/storage-toast.html\",\"https://www.postgresql.org/docs/current/runtime-config-client.html#GUC-DEFAULT-TOAST-COMPRESSION\"],\"failure_modes\":[\"algorithm_priority_claim_ignores_client_accept_encoding\",\"compression_applied_to_tiny_payloads_that_grow_after_headers\",\"vary_accept_encoding_omitted_and_cache_polluted\",\"postgres_toast_misstated_as_zstd_native_instead_of_pglz_or_lz4\",\"context_summary_drops_evidence_paths_or_decisions\",\"file_archiving_or_media_transcoding_misrouted_to_general_data_compression\"],\"evidence_priority\":\"equal\"}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/compression/SKILL.md
@@ -28,20 +29,13 @@ Data and context compression — SaaS payload optimization (Zstd, Brotli, Gzip),
 
 **What is this skill?** This skill provides expertise in data and context compression: SaaS payload optimization (Zstd, Brotli, Gzip), database storage compression, and AI context window compression (Semantic Summarization, Token Pruning). Use when optimizing API latency, reducing storage costs, or managing long-running agent sessions near context limits. Do NOT use for image/video lossy compression (use product-photo) or file archiving.
 
-## Key Files
+## Grounding Sources
 
-| File                                                 | Purpose                                                                                  |
-| ---------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `skills/token-efficiency/SKILL.md`                   | Adjacent authority for prompt and token-budget compression strategy.                     |
-| `skills/context-window/SKILL.md`                     | Adjacent authority for compaction timing and context-budget math.                        |
-| `scripts/hooks/pre-compact-hook.py`                  | Pre-compaction persistence hook that preserves state before context compression.         |
-| `scripts/session/session-ctl.js`                     | Session-control CLI that exposes wrap, clear, and continue operations around compaction. |
-| `docs/reference/session-control-wrapper-contract.md` | Canonical session-control contract covering wrap, clear, compact, and resume semantics.  |
-| `agent-orchestration/ONBOARDING.md`                  | Workflow context for how session-control and continuation fit the orchestration flow.    |
+Use primary codec and platform references for factual claims: RFC 8878 for Zstandard, RFC 7932 for Brotli, RFC 1952 for Gzip, MDN and HTTP docs for `Accept-Encoding` / `Content-Encoding`, and PostgreSQL's TOAST and `default_toast_compression` documentation for database storage behavior. Keep agent context-compression guidance separate from HTTP/database codec facts: summaries are correct only when they preserve intent, outcome, and evidence paths.
 
 ## Coverage
 
-SaaS payload compression (Zstd, Brotli, Gzip algorithm selection, level tuning, content negotiation), PostgreSQL storage compression (TOAST with Zstd, application-layer blob compression), and AI context window compression (semantic summarization, token pruning, dead context identification, state re-injection). Covers the decision tree for matching algorithms to data types, the `Accept-Encoding` negotiation order, and the three-phase token pruning workflow.
+SaaS payload compression (Zstd, Brotli, Gzip algorithm selection, level tuning, content negotiation), PostgreSQL storage compression (TOAST with pglz/lz4 where supported, plus deliberate application-layer blob compression), and AI context window compression (semantic summarization, token pruning, dead context identification, state re-injection). Covers the decision tree for matching algorithms to data types, the `Accept-Encoding` negotiation order, and the three-phase token pruning workflow.
 
 ## Philosophy of the skill
 Compression is the science of increasing information density. In a modern SaaS, it applies at two layers: the **Infrastructure Layer** (reducing bytes on the wire/disk) and the **Intelligence Layer** (reducing tokens in the context window). Without this skill, agents default to generic compression advice that ignores the specific algorithm-to-data-type mapping (e.g., using Gzip everywhere instead of Zstd for dynamic API payloads) and fail to recognize that sub-1KB payloads should skip compression entirely. On the intelligence side, agents routinely let context windows bloat with dead research turns instead of applying structured summarization that preserves evidence paths.
@@ -55,7 +49,7 @@ Match the compression algorithm to the data type and lifecycle.
 | **Static Assets** (JS/CSS) | Brotli (Level 11)        | Highest ratio for web strings; slow build-time OK.         |
 | **Dynamic API** (JSON)     | Zstd (Level 3)           | Fastest decompression; lower TTFB than Gzip.               |
 | **Small Payloads** (<1KB)  | None / Custom Dictionary | Compression overhead often increases size for small items. |
-| **Large DB Columns**       | Zstd (TOAST)             | Postgres 14+ native support; high speed/low I/O.           |
+| **Large DB Columns**       | PostgreSQL TOAST pglz/lz4, or explicit application-layer compression | PostgreSQL TOAST supports pglz and lz4 when built with lz4; use application-layer Zstd only when you own encode/decode and query tradeoffs. |
 
 ### Implementation Rules
 
@@ -84,7 +78,7 @@ Protect the context window by maximizing token density.
 
 Optimize for cost and performance at the database layer.
 
-- **TOAST Compression**: Set `default_toast_compression = 'zstd'` for large JSONB fields.
+- **TOAST Compression**: PostgreSQL TOAST can compress large values with `pglz` by default and `lz4` when PostgreSQL is built with lz4 support. Do not claim native TOAST Zstd unless the deployed database explicitly provides it.
 - **Blob Compression**: For extremely large blobs (>10MB), compress in the application layer (Node.js `zstd` bindings) before storing as `BYTEA`.
 
 ## 4. Verification Checklist
@@ -97,7 +91,7 @@ COMPRESSION CHECK
 [ ] Vary: Accept-Encoding header present
 [ ] AI context summary preserves Evidence Paths
 [ ] redundant research/file reads pruned from session
-[ ] DB compression matches Postgres version (Zstd if 14+)
+[ ] DB compression matches the deployed database's actual TOAST options (`pglz` / `lz4`) or a deliberate application-layer codec
 [ ] Payloads < 1KB skip compression to avoid overhead
 ```
 
@@ -105,7 +99,7 @@ COMPRESSION CHECK
 
 After applying this skill, verify:
 
-- [ ] Algorithm matches data type per the decision tree (static=Brotli, dynamic API=Zstd, DB=TOAST Zstd)
+- [ ] Algorithm matches data type per the decision tree (static=Brotli, dynamic API=Zstd when supported, DB=TOAST pglz/lz4 or explicit application-layer codec)
 - [ ] `Accept-Encoding` negotiation respects the `zstd > br > gzip` priority order
 - [ ] `Vary: Accept-Encoding` header is set to prevent cache pollution
 - [ ] Small payloads (<1KB) are not compressed (overhead exceeds savings)
@@ -136,6 +130,10 @@ After applying this skill, verify:
 
 **Related skills**
 - Related: `context-window`, `context-management`, `summarization`, `cognitive-load-theory`
+
+**Grounding**
+- Mode: `universal`
+- Truth sources: `https://www.rfc-editor.org/info/rfc8878`, `https://datatracker.ietf.org/doc/html/rfc7932`, `https://www.rfc-editor.org/rfc/rfc1952`, `https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Accept-Encoding`, `https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Encoding`, `https://www.postgresql.org/docs/current/storage-toast.html`, `https://www.postgresql.org/docs/current/runtime-config-client.html#GUC-DEFAULT-TOAST-COMPRESSION`
 
 **Keywords**
 - `compression`, `Zstd`, `Brotli`, `Gzip`, `context window`, `token efficiency`, `semantic summarization`, `payload reduction`, `DB TOAST`

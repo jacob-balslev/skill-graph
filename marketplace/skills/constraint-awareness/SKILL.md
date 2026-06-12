@@ -24,7 +24,6 @@ metadata:
   skill_graph_canonical_skill: skills/reasoning-strategy/constraint-awareness/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Constraint Awareness
 
 ## Concept of the skill

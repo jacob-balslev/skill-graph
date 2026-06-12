@@ -26,7 +26,6 @@ metadata:
   skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
-
 ## Concept of the skill
 
 **What it is:** Seven Powers is Hamilton Helmer's framework for identifying durable firm-level sources of Power: scale economies, network economies, counter-positioning, switching costs, branding, cornered resource, and process power.

@@ -19,7 +19,6 @@ metadata:
   skill_graph_canonical_skill: skills/software-architecture/bounded-context-mapping/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Bounded Context Mapping
 
 ## Concept of the skill

@@ -18,7 +18,6 @@ metadata:
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/product-domain/etsy/SKILL.md
 ---
-
 # Etsy
 
 ## Concept of the skill

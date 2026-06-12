@@ -25,7 +25,6 @@ metadata:
   skill_graph_canonical_skill: skills/frontend-engineering/server-actions-design/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Server Actions Design
 
 ## Concept of the skill

@@ -12,7 +12,7 @@ metadata:
   taxonomy_domain: agent/skill-system
   stability: experimental
   keywords: "[\"skill authoring\",\"new skill\",\"writing a skill\",\"skill scaffold\",\"skill template\",\"skill frontmatter\",\"skill metadata protocol\",\"v8 classification\",\"description vs coverage\",\"routing eval\"]"
-  examples: "[\"I'm writing a new skill from scratch — where do I start?\",\"how do I choose subject and public for a new skill?\",\"what's the difference between description and the ## Coverage section?\",\"scaffold a new skill that teaches react component composition patterns\",\"I copied skill-metadata-template.md but my new skill won't pass lint — help\",\"draft frontmatter for a skill that owns deployment rollback\",\"how do I strip teaching annotations from the template before commit?\",\"should I flip routing_eval to present on my new skill?\"]"
+  examples: "[\"I'm writing a new skill from scratch — where do I start?\",\"how do I choose subject and public for a new skill?\",\"what's the difference between description and the ## Coverage section?\",\"scaffold a new skill that teaches react component composition patterns\",\"I copied skill-metadata-template.md but my new skill won't pass lint — help\"]"
   anti_examples: "[\"refactor my existing skill to be more concise\",\"my skill's routing isn't activating — why?\",\"audit my skill library for stale frontmatter\",\"write a developer guide for the contributor docs\",\"review this skill's content for correctness\"]"
   grounding: "{\"subject_matter\":\"Authoring a new SKILL.md against Skill Metadata Protocol v8\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://github.com/jacob-balslev/skill-graph/blob/main/examples/skill-metadata-template.md\",\"https://github.com/jacob-balslev/skill-graph/blob/main/skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md\",\"https://github.com/jacob-balslev/skill-graph/blob/main/schemas/SKILL_METADATA_PROTOCOL_schema.json\",\"https://github.com/jacob-balslev/skill-graph/blob/main/skill-metadata-protocol/field-reference.md\"],\"failure_modes\":[\"placeholder_sludge\",\"cargo_cult_meta_sections\",\"description_coverage_collapse\",\"authoring_gate_skipped\",\"inflated_routing_eval\",\"retired_field_reintroduced\"],\"evidence_priority\":\"equal\"}"
   mental_model: "Skill scaffolding is protocol-backed authoring, not free-form prompt writing. The scaffold separates the routing contract, field contract, concept model, grounding evidence, body sections, and verification gates so a new skill becomes a routable graph node rather than a decorative Markdown file."
@@ -25,7 +25,6 @@ metadata:
   skill_graph_canonical_skill: skills/agent-ops/skill-scaffold/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Skill Scaffold
 
 ## Concept of the skill
@@ -150,9 +149,6 @@ Use this checklist as the authoring gate before committing a skill. Every item m
 - what's the difference between description and the ## Coverage section?
 - scaffold a new skill that teaches react component composition patterns
 - I copied skill-metadata-template.md but my new skill won't pass lint — help
-- draft frontmatter for a skill that owns deployment rollback
-- how do I strip teaching annotations from the template before commit?
-- should I flip routing_eval to present on my new skill?
 
 **Not for**
 - refactor my existing skill to be more concise

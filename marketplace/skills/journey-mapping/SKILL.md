@@ -11,7 +11,7 @@ metadata:
   triggers: "[\"journey map\",\"service blueprint\",\"map the user experience\",\"customer journey\",\"touchpoints\"]"
   examples: "[\"Build a journey map for first-time tax filers from awareness through filing to refund.\",\"Add a service-blueprint layer below this journey map showing the back-stage support steps.\",\"Identify the emotional low points in this onboarding journey and the opportunities at each.\",\"Map the cross-channel experience of returning an online order to a physical store.\"]"
   anti_examples: "[\"Break down the steps a user takes inside the upload modal.\",\"Draw the microservice call graph for the checkout API.\",\"Diagram the database schema for the order entity.\"]"
-  relations: "{\"related\":[\"research-synthesis\",\"information-architecture\",\"design-thinking\",\"problem-framing\",\"task-analysis\",\"bounded-context-mapping\"]}"
+  relations: "{\"related\":[\"research-synthesis\",\"information-architecture\",\"design-thinking\",\"problem-framing\",\"task-analysis\",\"bounded-context-mapping\",\"event-storming\",\"ideation\",\"user-research\"],\"suppresses\":[\"information-architecture\",\"ideation\"],\"verify_with\":[\"user-research\",\"research-synthesis\"]}"
   mental_model: "|"
   purpose: "|"
   concept_boundary: "|"
@@ -22,7 +22,6 @@ metadata:
   skill_graph_canonical_skill: skills/design/journey-mapping/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Journey Mapping
 
 ## Concept of the skill
@@ -91,7 +90,8 @@ The practice resists two failure modes. The first is the **anodyne happy-path ma
 - Diagram the database schema for the order entity.
 
 **Related skills**
-- Related: `research-synthesis`, `information-architecture`, `design-thinking`, `problem-framing`, `task-analysis`, `bounded-context-mapping`
+- Verify with: `user-research`, `research-synthesis`
+- Related: `research-synthesis`, `information-architecture`, `design-thinking`, `problem-framing`, `task-analysis`, `bounded-context-mapping`, `event-storming`, `ideation`, `user-research`
 
 **Concept**
 - Mental model: |

@@ -1,6 +1,6 @@
 ---
 name: project-knowledge-extraction
-description: "Use when extracting durable project knowledge from code, docs, issues, incidents, reports, screenshots, or conversations into reusable context such as skills, ADRs, glossaries, context docs, or memory. Do NOT use for writing a new skill contract (use `skill-scaffold`), maintaining library tooling (use `skill-infrastructure`), or generic documentation polish (use `documentation`). Do NOT use for design an agent-eval rubric to grade project knowledge extraction groundedness. Do NOT use for harden an agent against prompt injection in untrusted incident notes. Do NOT use for write a reusable prompt template for extracting facts from repos."
+description: "Use when extracting durable project knowledge from code, docs, issues, incidents, reports, screenshots, or conversations into reusable context such as skills, ADRs, glossaries, context docs, or memory. Do NOT use for writing a new skill contract (use `skill-scaffold`), maintaining library tooling (use `skill-infrastructure`), or generic documentation polish (use `documentation`). Do NOT use for design an agent-eval rubric to grade project knowledge extraction groundedness. Do NOT use for harden an agent against prompt injection in untrusted incident notes. Do NOT use for write a reusable prompt template for a future extraction workflow without extracting evidence now."
 license: MIT
 compatibility: Portable extraction workflow for turning project evidence into durable agent context without hallucinated project claims.
 allowed-tools: Read Grep
@@ -13,7 +13,7 @@ metadata:
   stability: experimental
   keywords: "[\"context extraction\",\"repeated discoveries\",\"grounded skills\",\"ADRs context docs\",\"context doc\",\"agent memory\",\"source-of-truth files\",\"project vocabulary\",\"reusable agent context\",\"incident notes\"]"
   examples: "[\"read this repo and extract durable project knowledge an agent should know next time\",\"extract durable project knowledge from incident notes into reusable context without copying noise\",\"mine the code and docs for source-of-truth files, project vocabulary, and reusable agent context\",\"convert repeated discoveries from recent tasks into grounded skills, ADRs, or context docs\"]"
-  anti_examples: "[\"design an agent-eval rubric to grade project knowledge extraction groundedness\",\"harden an agent against prompt injection in untrusted incident notes\",\"write a reusable prompt template for extracting facts from repos\"]"
+  anti_examples: "[\"design an agent-eval rubric to grade project knowledge extraction groundedness\",\"harden an agent against prompt injection in untrusted incident notes\",\"write a reusable prompt template for a future extraction workflow without extracting evidence now\"]"
   grounding: "{\"subject_matter\":\"Extracting durable project knowledge into Skill Graph context artifacts\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"skill-metadata-protocol/PRIMER.md\",\"docs/ADOPTION.md\",\"docs/recommended-skills.md\",\"../skills/skills/agent-ops/skill-scaffold/SKILL.md\",\"../skills/skills/agent-ops/context-graph/SKILL.md\"],\"failure_modes\":[\"session_noise_promoted_to_durable_context\",\"project_claims_without_truth_sources\",\"artifact_type_chosen_before_evidence_is_classified\",\"extracted_knowledge_not_linked_into_graph\",\"untrusted_incident_or_conversation_text_treated_as_instructions\"],\"evidence_priority\":\"repo_code_first\"}"
   mental_model: "Project knowledge extraction is a grounded distillation workflow. Start from evidence, classify each retained claim by durability and source, decide the right destination artifact, and link it so future agents can retrieve it. The primitives are evidence packet, stable claim, volatile note, vocabulary, decision, failure pattern, artifact destination, grounding, freshness trigger, and discoverability link."
   purpose: "This skill prevents agents from rediscovering the same project facts every session or, worse, preserving noisy session notes as durable truth. It turns code, docs, issues, incidents, and conversations into reusable context while preserving the distinction between evidence-backed facts, hypotheses, decisions, procedures, and short-lived observations."
@@ -25,7 +25,6 @@ metadata:
   skill_graph_canonical_skill: skills/ai-engineering/project-knowledge-extraction/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Project Knowledge Extraction
 
 ## Concept of the skill
@@ -101,7 +100,7 @@ Durable knowledge must be evidence-backed. If it cannot be tied to code, docs, d
 **Not for**
 - design an agent-eval rubric to grade project knowledge extraction groundedness
 - harden an agent against prompt injection in untrusted incident notes
-- write a reusable prompt template for extracting facts from repos
+- write a reusable prompt template for a future extraction workflow without extracting evidence now
 
 **Related skills**
 - Verify with: `knowledge-modeling`, `context-graph`, `epistemic-grounding`

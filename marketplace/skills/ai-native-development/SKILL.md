@@ -21,7 +21,6 @@ metadata:
   skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
-
 # AI-Native Development
 
 ## Concept of the skill

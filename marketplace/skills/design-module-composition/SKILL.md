@@ -22,7 +22,6 @@ metadata:
   skill_graph_canonical_skill: skills/design/design-module-composition/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # Design Module Composition
 
 ## Concept of the skill

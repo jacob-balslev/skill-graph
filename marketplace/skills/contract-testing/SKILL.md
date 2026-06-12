@@ -9,12 +9,12 @@ metadata:
   scope: "Teaching contract testing as a portable interface-verification technique for consumer-driven contracts, provider replay, broker-backed deploy gates, API-spec-driven contract checks, and schema-versus-behavior boundaries."
   public: "true"
   taxonomy_domain: quality/testing
-  stability: experimental
+  stability: stable
   keywords: "[\"contract testing\",\"consumer-driven contracts\",\"Pact\",\"Spring Cloud Contract\",\"Specmatic\",\"contract broker\",\"provider verification\",\"consumer test\",\"CDC\",\"OpenAPI conformance\"]"
   triggers: "[\"should this be a contract test or an integration test\",\"Pact vs OpenAPI\",\"how do we decouple deploys between services\",\"the consumer broke when the provider changed\",\"should we e2e test across services\"]"
   examples: "[\"design a consumer-driven contract test between a frontend and a backend service\",\"decide whether to use Pact or schema-only validation for a new API\",\"diagnose a contract test that passes consumer-side but fails provider-side — implementation drift\",\"explain how the contract broker decouples deploy schedules between consumer and provider teams\"]"
   anti_examples: "[\"test internal seams of a system (use integration-test-design)\",\"validate an HTTP response against an OpenAPI schema (use API-spec tooling)\",\"test a complete user journey through the UI (use e2e-test-design)\"]"
-  grounding: "{\"subject_matter\":\"Consumer-driven and API-spec-driven contract testing for service, API, and message compatibility.\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://martinfowler.com/articles/consumerDrivenContracts.html\",\"https://docs.pact.io/implementation_guides/javascript/docs/provider\",\"https://docs.pact.io/pact_broker\",\"https://docs.pact.io/pact_broker/can_i_deploy\",\"https://docs.spring.io/spring-cloud-contract/docs/current/reference/html/index.html\",\"https://docs.specmatic.io/contract_driven_development/contract_testing\",\"references/upstream-displacement-2026-06-09.md\"],\"failure_modes\":[\"pact_used_as_mock_library_only\",\"schema_validation_treated_as_behavior_contract\",\"broker_or_verification_results_omitted\",\"provider_replay_not_run_against_real_provider\",\"contract_tests_replacing_in_service_integration_tests\",\"cross_service_e2e_kept_as_primary_boundary_check\"],\"evidence_priority\":\"equal\"}"
+  grounding: "{\"subject_matter\":\"Consumer-driven and API-spec-driven contract testing for service, API, and message compatibility.\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://martinfowler.com/articles/consumerDrivenContracts.html\",\"https://docs.pact.io/implementation_guides/javascript/docs/provider\",\"https://docs.pact.io/pact_broker\",\"https://docs.pact.io/pact_broker/can_i_deploy\",\"https://docs.spring.io/spring-cloud-contract/docs/current/reference/html/index.html\",\"https://docs.specmatic.io/contract_driven_development/contract_testing\",\"skills/quality-assurance/contract-testing/references/upstream-displacement-2026-06-09.md\"],\"failure_modes\":[\"pact_used_as_mock_library_only\",\"schema_validation_treated_as_behavior_contract\",\"broker_or_verification_results_omitted\",\"provider_replay_not_run_against_real_provider\",\"contract_tests_replacing_in_service_integration_tests\",\"cross_service_e2e_kept_as_primary_boundary_check\"],\"evidence_priority\":\"equal\"}"
   mental_model: "|"
   purpose: "|"
   concept_boundary: "|"
@@ -26,7 +26,6 @@ metadata:
   skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
-
 ## Concept of the skill
 
 **What it is:** Contract testing verifies that consumers and providers remain compatible by turning interface expectations into executable contracts that providers replay and publish as verification results.
@@ -186,7 +185,7 @@ After applying this skill, verify:
 
 **Grounding**
 - Mode: `universal`
-- Truth sources: `https://martinfowler.com/articles/consumerDrivenContracts.html`, `https://docs.pact.io/implementation_guides/javascript/docs/provider`, `https://docs.pact.io/pact_broker`, `https://docs.pact.io/pact_broker/can_i_deploy`, `https://docs.spring.io/spring-cloud-contract/docs/current/reference/html/index.html`, `https://docs.specmatic.io/contract_driven_development/contract_testing`, `references/upstream-displacement-2026-06-09.md`
+- Truth sources: `https://martinfowler.com/articles/consumerDrivenContracts.html`, `https://docs.pact.io/implementation_guides/javascript/docs/provider`, `https://docs.pact.io/pact_broker`, `https://docs.pact.io/pact_broker/can_i_deploy`, `https://docs.spring.io/spring-cloud-contract/docs/current/reference/html/index.html`, `https://docs.specmatic.io/contract_driven_development/contract_testing`, `skills/quality-assurance/contract-testing/references/upstream-displacement-2026-06-09.md`
 
 **Keywords**
 - `contract testing`, `consumer-driven contracts`, `Pact`, `Spring Cloud Contract`, `Specmatic`, `contract broker`, `provider verification`, `consumer test`, `CDC`, `OpenAPI conformance`

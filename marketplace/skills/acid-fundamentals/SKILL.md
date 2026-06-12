@@ -24,7 +24,6 @@ metadata:
   skill_graph_canonical_skill: skills/backend-engineering/acid-fundamentals/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
-
 # ACID Fundamentals
 
 ## Concept of the skill
@@ -44,7 +43,7 @@ ACID is the precise vocabulary the database industry uses to describe transactio
 
 The frame's defining property is that it names four *orthogonal* axes. A system can be atomic without being isolated; it can be durable without being consistent in the CAP sense; it can be consistent (database constraints satisfied) without being consistent across replicas. The four-letter frame is not a one-dimensional rating; it is a vector.
 
-The discipline is in the configuration. "Postgres is ACID" is a vague claim; "Postgres at read committed isolation with synchronous_commit on with foreign-key constraints enforced gives us A, I (at read-committed level), D, and C" is the precise statement. Knowing what your specific database guarantees in your specific configuration is operational hygiene; assuming the default is a class of incident.
+The discipline is in the configuration. "This database is ACID" is a vague claim; "this engine at this isolation level, with these durability settings and constraints enforced, gives us A, C, I-at-this-level, and D-to-this-boundary" is the precise statement. Knowing what your specific database guarantees in your specific configuration is operational hygiene; assuming the default is a class of incident.
 
 ## The Four Properties — Precise Definitions
 
@@ -76,19 +75,19 @@ A database can be ACID-Consistent and CAP-Inconsistent (constraints hold; replic
 | D | Durability | Eventually consistent |
 | Trade | Strong guarantees, limited throughput/availability under partition | High throughput/availability, weaker correctness guarantees |
 | Typical use | Transactional cores: orders, payments, accounts | High-throughput non-transactional: streams, analytics, caches |
-| Examples | Postgres, Oracle, SQL Server, MongoDB transactions | Cassandra, Riak (default), DynamoDB (default) |
+| Examples | PostgreSQL, MySQL/InnoDB, Oracle, SQL Server, SQLite, MongoDB transactions, distributed SQL with strong transaction mode | Cassandra, Riak (default), DynamoDB eventually consistent reads/writes, cache and stream projections |
 
 Most production architectures use both, picking per component.
 
 ## Configuration Matters
 
-Three configuration knobs that change what your database actually guarantees:
+Three categories of configuration knobs that change what your database actually guarantees:
 
-| Knob | Default in Postgres | Effect when changed |
+| Knob | Example surfaces | Effect when changed |
 |---|---|---|
-| `synchronous_commit` | `on` (durable) | `off` → commit acknowledged before WAL flush; last few commits lost on crash |
-| Isolation level | `read committed` | `serializable` is strongest; Postgres maps `read uncommitted` to read committed, while some engines permit dirty reads |
-| Replication mode | none | Synchronous replication = D guarantees include replica; async = primary-only |
+| Commit flush / journal / fsync policy | PostgreSQL `synchronous_commit`, MySQL/InnoDB flush settings, SQLite journal mode | Relaxed settings can acknowledge commit before durable media; recent commits may be lost on crash |
+| Isolation level | read committed, repeatable read, snapshot isolation, serializable, engine-specific read-uncommitted behavior | Changes which concurrent anomalies the application must handle |
+| Replication mode | synchronous replica acknowledgment, semi-sync, async replicas, quorum commit | Synchronous replication can extend D to replicas; async means the primary may be the only durable copy at commit time |
 
 Knowing your production configuration — not assuming the default — is operational hygiene.
 

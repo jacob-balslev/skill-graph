@@ -27,7 +27,6 @@ metadata:
   skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
-
 # Evaluation
 
 ## Concept of the skill

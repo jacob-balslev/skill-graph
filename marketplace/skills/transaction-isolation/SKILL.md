@@ -23,7 +23,6 @@ metadata:
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/transaction-isolation/SKILL.md
 ---
-
 # Transaction Isolation
 
 ## Concept of the skill

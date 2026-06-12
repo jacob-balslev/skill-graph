@@ -27,7 +27,6 @@ metadata:
   skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
-
 # Real-Time Updates
 
 ## Concept of the skill
@@ -179,6 +178,34 @@ export async function GET(request: Request) {
 ```
 
 SSE has built-in reconnect, but that does not guarantee the browser received every update. Use `Last-Event-ID`, a version field, or a timestamp to fetch missed state after reconnect.
+
+On the browser side, keep the live stream small and treat it as an invalidation signal. Store the last event ID, show connection state, and reconcile from durable server state after reconnect.
+
+```typescript
+let lastEventId: string | null = null;
+
+function subscribeToOrderUpdates(refetchSince: (id: string | null) => Promise<void>) {
+  const events = new EventSource('/api/order-events');
+
+  events.onopen = async () => {
+    setConnectionState('live');
+    await refetchSince(lastEventId);
+  };
+
+  events.addEventListener('order.updated', async (event) => {
+    lastEventId = event.lastEventId || JSON.parse(event.data).version;
+    invalidateOrderCache(JSON.parse(event.data).orderId);
+  });
+
+  events.onerror = () => {
+    setConnectionState('reconnecting');
+  };
+
+  return () => events.close();
+}
+```
+
+If the server cannot replay from `Last-Event-ID`, use the remembered event ID, version, cursor, or timestamp as a catch-up query parameter on reconnect. If even that is unavailable, perform a full refetch before marking the view live again.
 
 ## Bidirectional Sockets
 
