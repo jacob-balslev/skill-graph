@@ -228,7 +228,7 @@ Fix verified small or medium-risk drift in-session when the evidence is strong:
 - missing `## Concept of the skill` section (was `## Concept Card` pre-2026-05-26) or the five flat top-level Understanding fields (mental_model, purpose, boundary, analogy, misconception)
 - incomplete coverage/domain wording
 - outdated tool/API claims
-- weak or missing comprehension evals
+- weak or missing Comprehension cases
 - directly related source/doc drift discovered by self-assessment
 
 Do not do broad rewrites, public/private repo boundary changes, mass regenerations, or unrelated

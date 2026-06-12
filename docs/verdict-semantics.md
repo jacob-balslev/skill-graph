@@ -65,11 +65,11 @@ If a future skill carries a DISPLACEMENT finding with a `requiredAction: follow-
 
 | Value | Meaning | Earned by |
 |---|---|---|
-| `PASS` | With-skill answers measurably deeper than baseline on the rubric dimensions. | Independent dual-run grader. |
+| `PASS` | With-skill answers measurably deeper than baseline on Comprehension criteria. | Independent dual-run grader. |
 | `PROVISIONAL` | A single competent model ran the comprehension assessment and recorded a real result. Lower confidence than `PASS` because not yet confirmed by the independent dual-run grader, but distinct from `UNVERIFIED` which means no assessment has run. | Single-model audit run. |
 | `SHALLOW` | Skill recites the concept but does not deepen agent understanding. | Grader (single or dual). |
 | `REDUNDANT` | Baseline already saturated — skill adds no comprehension lift. | Grader (single or dual). |
-| `SKIPPED_BASELINE_HIGH` | Early-skip: `avg_primary_baseline >= 1.0` after the first 2 evals so the dual-run was aborted. | Procedural — no grader signal. |
+| `SKIPPED_BASELINE_HIGH` | Early-skip: `avg_primary_baseline >= 90` after the first 2 cases so the dual-run was aborted. | Procedural — no grader signal. |
 | `NA` | Skill carries no `evals/comprehension.json` by design (the comprehension layer doesn't apply to this archetype). | Author's declaration. |
 | `UNVERIFIED` | Initial state before any grader run. | Default for skills not yet assessed by the comprehension grader. |
 
@@ -83,13 +83,17 @@ If a future skill carries a DISPLACEMENT finding with a `requiredAction: follow-
 |---|---|---|
 | `APPLICABLE` | Loading the skill changes agent behavior on real artifacts in the expected direction (flags, fixes, generative trajectory). | Independent dual-run grader. |
 | `PROVISIONAL` | single-model self-assessment audit found useful behavior but the independent application grader has not confirmed it. | Single-model audit run. |
-| `REDUNDANT` | No behavioral delta — agent behaves the same with or without the skill loaded. | Grader. |
+| `NOT_DISCRIMINATED_CEILING` | The eval was inconclusive because baseline behavior already saturated the pointwise rubric; there was not enough headroom to measure marginal lift. | Application runner from pointwise baseline saturation plus no blind-pairwise with-skill preference. |
+| `EQUIVALENT_ON_FRONTIER` | The measured frontier model had headroom but behaved equivalently with and without the skill on this case set. This is a scoped no-lift finding, not a deletion verdict. | Application runner from blind pairwise tie/no preference plus unsaturated baseline. |
+| `REDUNDANT` | Legacy no-visible-delta verdict. New runs should prefer `NOT_DISCRIMINATED_CEILING` or `EQUIVALENT_ON_FRONTIER` so no-lift evidence is interpretable. | Grader or historical runner. |
 | `HARMFUL` | Negative delta — agent makes worse decisions with the skill loaded. SkillsBench arXiv 2602.12670 found 19% of evaluated skills exhibit this. | Grader. |
 | `MIXED` | Delta varies across cases — some applicable, some redundant or false-positive. | Grader. |
 | `FALSE_POSITIVE` | Skill over-triggers — applies on cases where its expertise does not apply. | Grader. |
 | `UNVERIFIED` | No application assessment has run. | Default. |
 
-**Application graded set:** `{APPLICABLE, MIXED, HARMFUL}` is what the verifier currently considers "high-stakes" graded results. The full graded set (excluding `UNVERIFIED`) includes `REDUNDANT`, `PROVISIONAL`, and `FALSE_POSITIVE` as well; future application-artifact gates will use the full set.
+**Application graded set:** every application verdict except `UNVERIFIED` is a graded claim and requires `skills/<name>/evals/application.json` on disk. The verifier at `skill-graph/scripts/check-audit-manifest.js` enforces this full set: `{APPLICABLE, PROVISIONAL, NOT_DISCRIMINATED_CEILING, EQUIVALENT_ON_FRONTIER, REDUNDANT, MIXED, HARMFUL, FALSE_POSITIVE}`.
+
+**No-lift verdicts are scoped evidence.** `NOT_DISCRIMINATED_CEILING` and `EQUIVALENT_ON_FRONTIER` do not mean "delete this skill" or "never route this skill." They mean the specific measured model, task set, and raw-injection eval did not show marginal lift. Router consumers may avoid boosting them as certified-useful skills, but they must not treat them as equivalent to `HARMFUL` or `FALSE_POSITIVE`.
 
 ## Disjointness rule (binding)
 
@@ -97,7 +101,7 @@ If a future skill carries a DISPLACEMENT finding with a `requiredAction: follow-
 
 Specifically:
 
-- `APPLICABLE`, `HARMFUL`, `MIXED`, `FALSE_POSITIVE` are **application-only**. They must never appear in `comprehension_verdict`.
+- `APPLICABLE`, `NOT_DISCRIMINATED_CEILING`, `EQUIVALENT_ON_FRONTIER`, `HARMFUL`, `MIXED`, `FALSE_POSITIVE` are **application-only**. They must never appear in `comprehension_verdict`.
 - `PASS`, `SHALLOW`, `SKIPPED_BASELINE_HIGH`, `NA` are **comprehension-only**. They must never appear in `application_verdict`.
 - `REDUNDANT` appears in both enums but means subtly different things (no comprehension lift vs no behavioral delta).
 - `UNVERIFIED` and `PROVISIONAL` appear in both with identical semantics.
@@ -124,13 +128,15 @@ PASS / APPLICABLE  >  PROVISIONAL  >  UNVERIFIED
 - **`PROVISIONAL` is NOT a failure.** It is a real, lower-confidence result. A skill recorded as `PROVISIONAL` was actually assessed by a competent single model that produced a real grader output. The independent dual-run grader has not yet confirmed it. See `.claude/rules/version-schema-contract.md` § 5 for the canonical statement.
 - **`UNVERIFIED` is honest absence.** No model ran the assessment. The skill has not been graded.
 - **Never present "carries the vN label" as "verified."** A skill that is "fully v8" but never assessed at all is still `UNVERIFIED` — but it becomes `PROVISIONAL` the moment a single model assesses it. Never stuck at `UNVERIFIED` out of process purity.
-- **The negative verdicts (`SHALLOW` / `REDUNDANT` / `HARMFUL` / `MIXED` / `FALSE_POSITIVE`) are also lower-confidence when produced by a single model**, but record the negative grader signal honestly. They are NOT downgraded to `PROVISIONAL` when single-model — the verdict label captures the grader output, the confidence tier is implicit in whether a dual-run confirmed it.
+- **The non-certifying verdicts (`SHALLOW` / `REDUNDANT` / `NOT_DISCRIMINATED_CEILING` / `EQUIVALENT_ON_FRONTIER` / `HARMFUL` / `MIXED` / `FALSE_POSITIVE`) are also lower-confidence when produced by a single model**, but record the grader signal honestly. They are NOT downgraded to `PROVISIONAL` when single-model — the verdict label captures the grader output, the confidence tier is implicit in whether a dual-run confirmed it.
 
 ## Two-frontier bidirectional reconciliation (how a dual-run verdict is earned)
 
 The dual-run that earns `PASS` / `APPLICABLE` is the **two-frontier bidirectional eval** (`lib/audit/run-bidirectional-eval.js`). The two directions are named by which model GENERATES: the **Claude** direction (Claude/opus answers → Codex/gpt grades) and the **Codex** direction (the swap), reconciled **conservatively** — the more-skeptical verdict wins (`lib/audit-shared/synthesize-bidirectional.js`). So a strong verdict requires BOTH cross-family directions to reach it independently.
 
-**Procedural carve-out (one direction did not grade).** A `SKIPPED_BASELINE_HIGH` / `NA` direction carries no graded signal, so only ONE direction actually graded. A single graded direction can support **at most `PROVISIONAL`** — it may not certify `PASS` / `APPLICABLE`, because the second corroborating direction is missing (the conservative rule forbids single-direction certification). The cap never inflates a weak verdict: a lone `SHALLOW` / `REDUNDANT` / `MIXED` / `UNVERIFIED` stays as-is. An **unknown / invalid** direction verdict (a grader returned a label outside the enum) is normalized to `UNVERIFIED` and never surfaces as the synthesized verdict. (`synthesize-bidirectional.capAtProvisional` / `normalizeKnown`; SH-6679 / SH-6678.)
+**Procedural carve-out (one direction did not grade).** A `SKIPPED_BASELINE_HIGH` / `NA` direction carries no graded signal, so only ONE direction actually graded. A single graded direction can support **at most `PROVISIONAL`** — it may not certify `PASS` / `APPLICABLE`, because the second corroborating direction is missing (the conservative rule forbids single-direction certification). The cap never inflates a weak verdict: a lone `SHALLOW` / `REDUNDANT` / `NOT_DISCRIMINATED_CEILING` / `EQUIVALENT_ON_FRONTIER` / `MIXED` / `UNVERIFIED` stays as-is. An **unknown / invalid** direction verdict (a grader returned a label outside the enum) is normalized to `UNVERIFIED` and never surfaces as the synthesized verdict. (`synthesize-bidirectional.capAtProvisional` / `normalizeKnown`; SH-6679 / SH-6678.)
+
+**Single-available-frontier degraded panel run.** When the multi-model Skill Audit Loop explicitly runs with one available mandatory frontier because another frontier has an active exhausted-lock, the receipt uses `reconciliation: single-frontier-provisional`, sets `regrade_required: true`, and caps any `PASS` / `APPLICABLE` signal to `PROVISIONAL`. This is lower-confidence evidence that keeps the corpus drain moving; it is not certification and must be replaced by a later full two-frontier re-grade before the skill can claim `PASS` / `APPLICABLE`.
 
 A strong verdict additionally requires the run to be **certifying-clean**, or it is capped to `PROVISIONAL`:
 

@@ -61,7 +61,7 @@ This fusion has three costs:
 2. **It clutters the agent-facing surface with state the agent ignores.** The 2026-05-29 behavioral
    A/B confirmed stripping exactly this set changes nothing for the agent (p=0.65).
 3. **It conflates the *evaluation* of comprehension with the *actual* comprehension.** The Understanding
-   prose (what the skill teaches) and the comprehension eval/verdict (the measurement) are different
+   prose (what the skill teaches) and the Comprehension verdict (the measurement) are different
    artifacts wrongly co-located.
 
 The classification is **conceptual** — derived from which consumer reads each field, not from any
@@ -90,7 +90,7 @@ agent-facing file without leaving the system.
   pre-commit check becomes a backstop, not the primary guard.
 - The agent-facing `SKILL.md` shrinks to what the agent actually consumes — closer to the public
   Agent-Skills shape, smaller context footprint.
-- Comprehension prose (frontmatter) and comprehension evaluation (sidecar) are cleanly separated.
+- Comprehension prose (frontmatter) and Comprehension measurement (sidecar verdict) are cleanly separated.
 
 **Costs / risks:**
 - **Breaking schema change** touching the frontmatter schema, a new sidecar schema, the manifest

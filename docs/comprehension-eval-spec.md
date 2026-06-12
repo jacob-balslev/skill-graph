@@ -1,17 +1,17 @@
-# Comprehension Eval Spec — `skills/<name>/evals/comprehension.json`
+# Comprehension Spec — `skills/<name>/evals/comprehension.json`
 
 > Type: Reference (binding spec)
 > Authored: 2026-05-25 (closes the highest-priority canonicalization gap from the 2026-05-25 multi-model review: Opus G2#3 CRITICAL, GPT-5.5 G3#1 PARTIAL)
 > Schema: [`skill-graph/schemas/comprehension.schema.json`](../schemas/comprehension.schema.json)
-> Provenance: ADR-0011 (four-verdict Audit Status) defines `comprehension_verdict`; this doc defines the artifact the comprehension grader (gate 8) evaluates against; ADR-0015 + the false-canonicality verifier at `skill-graph/scripts/check-audit-manifest.js` enforce its presence when `comprehension_verdict ∈ {PROVISIONAL, PASS, SHALLOW, REDUNDANT}`.
+> Provenance: ADR-0011 (four-verdict Audit Status) defines `comprehension_verdict`; this doc defines the artifact the Comprehension grader evaluates against; ADR-0015 + the false-canonicality verifier at `skill-graph/scripts/check-audit-manifest.js` enforce its presence when `comprehension_verdict ∈ {PROVISIONAL, PASS, SHALLOW, REDUNDANT}`.
 
 ## What this artifact is
 
-`comprehension.json` is a per-skill **gradeable comprehension eval**. It enumerates 5+ realistic scenarios that exercise the skill's specific judgment across the rubric dimensions, dimension-tagged so the grader can score per-dimension and produce a `comprehension_verdict` (PASS / SHALLOW / REDUNDANT / PROVISIONAL). Seven to eight cases is the normal practitioner range: seven is enough for most skills when taxonomy or analogy is not load-bearing; eight covers every rubric dimension including `misconception`.
+`comprehension.json` is the per-skill **Comprehension artifact**. It enumerates 5+ realistic cases that exercise the skill's specific judgment across named Comprehension criteria. The JSON field is called `dimension` for compatibility, but the user-facing step is **Comprehension**, not "dimensions" or a raw-score denominator. The grader scores each case and produces a `comprehension_verdict` (PASS / SHALLOW / REDUNDANT / PROVISIONAL).
 
 **File location:** `skills/<name>/evals/comprehension.json` (workspace canonical; the skill-graph verifier resolves this path via `--workspace` flag).
 
-**Reader:** gate 8 (the comprehension grader at `skill-graph/lib/audit/graders/concept-grader-prompt.md`).
+**Reader:** the Comprehension grader at `skill-graph/lib/audit/graders/concept-grader-prompt.md`.
 
 **Enforcement:** `skill-graph/scripts/check-audit-manifest.js` fails with exit 1 if the SKILL.md's `comprehension_verdict` is in the graded set `{PROVISIONAL, PASS, SHALLOW, REDUNDANT}` but the file is absent or unparseable.
 
@@ -26,7 +26,7 @@ The shape is normative — `skill-graph/schemas/comprehension.schema.json` is th
 | `skill_name` | yes | kebab-case string | MUST match the parent directory and the SKILL.md `name:` field. |
 | `subject` | yes | string | Human-readable subject (e.g., "Methodical Execution"). Used by the grader prompt header. |
 | `adjacent_concepts` | no | string[] | Related skill names for boundary-check cases. Recommended. |
-| `evals` | yes | array | 5+ eval cases. Seven to eight cases is the practitioner default; eight gives one case per rubric dimension. |
+| `evals` | yes | array | 5+ Comprehension cases. The field name is `evals[]` for schema compatibility. |
 
 ### Per-case fields
 
@@ -42,11 +42,11 @@ The shape is normative — `skill-graph/schemas/comprehension.schema.json` is th
 | `criticality` | yes | enum | `critical` / `high` / `medium` / `low`. |
 | `negative_expectation` | no | string | What the answer must NOT say. Recommended for `boundary` + `critical` cases. |
 
-## Two eval shapes — `comprehension.json` vs `application.json` (NOT interchangeable)
+## `comprehension.json` vs `application.json` (NOT interchangeable)
 
-The comprehension and application evals are **different schemas with different array keys and a different `criticality` enum.** The most common authoring error is reusing one shape — or the wrong `criticality` value — for the other.
+Comprehension and Application are **different behavior checks with different schemas, array keys, and `criticality` enums.** The most common authoring error is reusing one shape — or the wrong `criticality` value — for the other.
 
-| | `comprehension.json` (this doc) | `application.json` |
+| | `comprehension.json` (Comprehension) | `application.json` (Application) |
 |---|---|---|
 | Array key | `evals[]` | `cases[]` (`--mode application` throws if it sees `evals[]`) |
 | Per-item fields | `id, dimension, prompt, substance, calibration, truth_mode, skill_type, criticality, expected_elements` / `negative_expectation` | `id, scenario_type, criticality, red_herring, scenario, context, question, expected_flags, expected_fix_hints, absent_signals` |
@@ -57,11 +57,11 @@ The comprehension and application evals are **different schemas with different a
 
 > ⚠ **`criticality` differs between the two:** comprehension uses `medium`, application uses `normal`. Writing `criticality: medium` in an application case fails `check-application-evals.js`. Full application contract: [`application-eval-spec.md`](./application-eval-spec.md).
 
-## Rubric Dimensions
+## Comprehension Criteria
 
-Each dimension probes a different layer of comprehension. A complete eval set covers the core dimensions that matter for the skill, with the 5-case hard floor and 7-8 case practitioner default below:
+Each criterion probes a different layer of comprehension. The `dimension` field in `comprehension.json` names the primary criterion for a case; it is a schema field, not the name of the step.
 
-| Dimension | What it tests | When to write a case |
+| Criterion (`dimension` value) | What it tests | When to write a case |
 |---|---|---|
 | **definition** | Does the agent know what the skill is? | Always — first case in most files. |
 | **mental_model** | Does the agent have the right mental model of the concept? | Always — the model is what transfers, not the prose. |
@@ -74,10 +74,20 @@ Each dimension probes a different layer of comprehension. A complete eval set co
 
 The schema's `dimension` enum includes `misconception`. New authoring SHOULD include a misconception case when the skill has a common wrong reading.
 
+## Grader scoring contract
+
+The artifact accounts for the cases and their primary criteria. The grader scores the generated answers.
+
+- Each scored criterion is an integer `0..100`; the primary criterion for the case is always scored.
+- Non-primary criteria can be `null` when the answer does not address them; absence is not treated as failure.
+- `raw_score` is the sum of scored criteria and `max_raw_score` is `100 × scored_criterion_count`, so raw totals are evidence, not a fixed pass bar.
+- The active gates use `avg_primary_baseline`, `avg_primary_with_skill`, `primary_delta_avg`, and `avg_with_skill_score_ratio`.
+- Meaningful lift starts at `primary_delta_avg ≥ 10`; strong lift starts at `primary_delta_avg ≥ 25`; high-baseline saturation starts at `avg_primary_baseline ≥ 90`.
+
 ## Minimum vs. recommended
 
-- **Hard floor: 5 cases.** Per skill-audit-loop/SKILL_AUDIT_LOOP.md § Part 3 — Per-Skill Audit Runbook § 4c. Below 5, the verifier fails with a dimension-coverage error.
-- **Practitioner default: 7–8 cases.** Seven covers the core dimensions for most skills; eight gives one case per rubric dimension, including `misconception`. This catches per-dimension `SHALLOW` failures the 5-case minimum cannot.
+- **Hard floor: 5 cases.** Per skill-audit-loop/SKILL_AUDIT_LOOP.md § Part 3 — Per-Skill Audit Runbook § 4c. Below 5, the verifier fails with a criteria-coverage error.
+- **Practitioner default: enough cases to cover the skill's important Comprehension criteria.** Do not report the retired raw-denominator form or use criteria counts as the step name. The cases are scenarios; the criteria are grading axes.
 - **Robust: 9–12 cases.** Adds 1–4 application cases probing different novel scenarios.
 
 ## Worked example (abbreviated)
@@ -113,7 +123,7 @@ The schema's `dimension` enum includes `misconception`. New authoring SHOULD inc
 }
 ```
 
-Full live example: `skills/methodical/evals/comprehension.json` (7 cases, 6 dimensions covered).
+Full live example: `skills/methodical/evals/comprehension.json`.
 
 ## Validation
 
@@ -124,21 +134,21 @@ node -e "const schema=require('./skill-graph/schemas/comprehension.schema.json')
 node skill-graph/scripts/check-audit-manifest.js --limit 1
 ```
 
-The verifier walks every skill's most-recent verdicts; a graded comprehension_verdict without this artifact is a FAIL.
+The verifier walks every skill's most-recent verdicts; a graded `comprehension_verdict` without this artifact is a FAIL.
 
 ## Anti-patterns
 
 | Anti-pattern | Why it fails |
 |---|---|
-| Single-dimension file (all cases `definition`) | Misses 6 rubric dimensions; grader will record `SHALLOW`. |
-| Eval that paraphrases SKILL.md back to itself | Tests the prose, not comprehension; will record `REDUNDANT`. |
+| Single-criterion file (all cases `definition`) | Misses the rest of Comprehension; grader will record `SHALLOW`. |
+| Case that paraphrases SKILL.md back to itself | Tests the prose, not comprehension; will record `REDUNDANT`. |
 | Below 5 cases | Below the hard floor; verifier fails. |
 | `criticality: critical` without `negative_expectation` | Critical cases must be unambiguous about what disqualifies an answer. |
 | `dimension: application` case that's a known-from-body scenario | Application MUST be novel — not a quoted use-case from the skill body. |
 
 ## Related
 
-- [`skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md`](../skill-audit-loop/SKILL_AUDIT_LOOP.md) — gate 8 (comprehension grader) doctrine.
+- [`skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md`](../skill-audit-loop/SKILL_AUDIT_LOOP.md) — Comprehension grader doctrine.
 - [`skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`](../skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook) § Step 4c — the audit-loop step that authors / refreshes this file.
 - [`skill-graph/lib/audit/graders/concept-grader-prompt.md`](../lib/audit/graders/concept-grader-prompt.md) — the grader the verdict is earned against.
 - ADR-0011 — four-verdict Audit Status; defines `comprehension_verdict` semantics.

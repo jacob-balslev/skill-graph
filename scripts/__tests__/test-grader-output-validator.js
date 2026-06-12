@@ -14,7 +14,111 @@ function check(name, fn) {
   console.log(`  PASS    ${name}`);
 }
 
-console.log('1. application grader 0-100 scale');
+console.log('1. concept grader 0-100 scale');
+
+check('accepts 0-100 integer Comprehension scores and computes scored-criterion denominator', () => {
+  const data = {
+    score_scale: '0-100',
+    max_score_per_dimension: 100,
+    primary_dimension: 'definition',
+    dimension_scores: {
+      definition: 90,
+      mental_model: 75,
+      purpose: null,
+      boundary: null,
+      taxonomy: null,
+      analogy: null,
+      application: 85,
+    },
+    raw_score: 250,
+    max_raw_score: 300,
+    weighted_score: 0.8278,
+    score_ratio: 0.8333,
+    passed: true,
+  };
+  const result = validator.validateConceptGrader(data);
+  assert.strictEqual(result.valid, true);
+  assert.strictEqual(result.computed.raw_score, 250);
+  assert.strictEqual(result.computed.max_raw_score, 300);
+  assert.strictEqual(result.computed.weighted_score, 0.8278);
+  assert.strictEqual(result.computed.score_ratio, 0.8333);
+  assert.strictEqual(result.computed.passed, true);
+  assert.strictEqual(result.computed.score_scale, '0-100');
+  assert.strictEqual(result.computed.max_score_per_dimension, 100);
+});
+
+check('rejects out-of-range and non-integer concept scores', () => {
+  const result = validator.validateConceptGrader({
+    primary_dimension: 'definition',
+    dimension_scores: {
+      definition: 101,
+      mental_model: -1,
+      purpose: 99.5,
+      boundary: null,
+      taxonomy: null,
+      analogy: null,
+      application: 60,
+    },
+  });
+  assert.strictEqual(result.valid, false);
+  const invalidDims = result.issues
+    .filter((issue) => issue.code === 'invalid_dim_value')
+    .map((issue) => issue.dim)
+    .sort();
+  assert.deepStrictEqual(invalidDims, ['definition', 'mental_model', 'purpose']);
+});
+
+check('correct() writes 0-100 concept math and denominator back onto grader output', () => {
+  const data = {
+    primary_dimension: 'application',
+    dimension_scores: {
+      definition: null,
+      mental_model: 80,
+      purpose: null,
+      boundary: null,
+      taxonomy: null,
+      analogy: null,
+      application: 70,
+    },
+    raw_score: 3,
+    max_raw_score: 4,
+    weighted_score: 1,
+    score_ratio: 1,
+    passed: false,
+  };
+  const validation = validator.validateConceptGrader(data);
+  const corrected = validator.correct(data, validation);
+  assert.strictEqual(corrected.raw_score, 150);
+  assert.strictEqual(corrected.max_raw_score, 200);
+  assert.strictEqual(corrected.weighted_score, 0.7429);
+  assert.strictEqual(corrected.score_ratio, 0.75);
+  assert.strictEqual(corrected.passed, true);
+  assert.strictEqual(corrected.score_scale, '0-100');
+  assert.strictEqual(corrected.max_score_per_dimension, 100);
+});
+
+check('flags likely retired 0/1/2 concept outputs when no 0-100 scale is declared', () => {
+  const result = validator.validateConceptGrader({
+    primary_dimension: 'definition',
+    dimension_scores: {
+      definition: 2,
+      mental_model: 1,
+      purpose: null,
+      boundary: null,
+      taxonomy: null,
+      analogy: null,
+      application: 2,
+    },
+    raw_score: 5,
+    max_raw_score: 6,
+    score_ratio: 0.8333,
+    passed: true,
+  });
+  assert.strictEqual(result.valid, false);
+  assert.ok(result.issues.some((issue) => issue.code === 'legacy_concept_scale_suspected'));
+});
+
+console.log('\n2. application grader 0-100 scale');
 
 check('accepts 0-100 integer axis scores and computes normalized weighted score', () => {
   const data = {

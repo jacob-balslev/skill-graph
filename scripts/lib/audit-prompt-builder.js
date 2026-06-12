@@ -22,11 +22,11 @@ const { resolveSkillRoots, resolveTruthSourcePath, collectSkillFiles } = require
 const { readSidecar, joinSidecar } = require('./audit-state-sidecar');
 
 // ---------------------------------------------------------------------------
-// Dimension registry
+// Qualitative scorecard row registry
 // ---------------------------------------------------------------------------
 
 /**
- * The seven dimensions mirror the scorecard rows in
+ * The seven qualitative scorecard rows mirror
  * SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist § Standard Artifact Structure, so the
  * grader output slots directly into the existing scorecard.md shape.
  *

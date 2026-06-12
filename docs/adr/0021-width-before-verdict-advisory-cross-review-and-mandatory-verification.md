@@ -49,23 +49,25 @@ load-bearing (quality).
 **Width (all tiers, binding):** every panel agent — mandatory frontier AND every
 advisory model — does the COMPLETE independent research (byte-identical agenda, no
 splitting) and cross-evaluates every other agent's work, *including the frontier's*.
-Advisory critique and dissent against Opus/GPT are first-class input.
+Advisory critique, dissent against Opus/GPT, and next-iteration suggestions are
+first-class input.
 
 **The verify-then-decide gate (frontier only, binding):**
 1. Every surfaced claim/finding (any tier) is recorded in the merge-ledger (anti-loss).
 2. A frontier model VERIFIES each relied-on claim before it is load-bearing — re-run the
    command, read the `file:line`, reproduce the evidence — **bidirectionally** (Opus
    checks GPT, GPT checks Opus, both check advisory). Never load-bearing on authority.
-3. Every finding is dispositioned: incorporated-with-reason / deferred-to-eval /
+3. Every proposal finding, cross-review finding, and advisory iteration suggestion is dispositioned: incorporated-with-reason / deferred-to-eval /
    rejected-with-reason. Silence is not permission to ignore.
 4. Only the two mandatory frontier models cast the deciding verdict, and they must agree
    (else it caps at PROVISIONAL per `docs/verdict-semantics.md`).
 
 **Operationalized in the panel phases** (`SKILL_AUDIT_LOOP.md`):
 - **Phase 3 (curate) made contractual** — the curator MUST examine and disposition
-  *every* advisory cross-review finding in the merge-ledger (incorporated/deferred/
-  rejected, each with a reason). The discretion is over *whether to fold a finding in*,
-  not over *whether to consider it*. An undispositioned advisory finding is a coverage gap.
+  *every* advisory proposal finding, iteration suggestion, and cross-review finding in
+  the merge-ledger (incorporated/deferred/rejected, each with a reason). The discretion
+  is over *whether to fold a finding in*, not over *whether to consider it*. An
+  undispositioned advisory finding is a coverage gap.
 - **New Phase 3.1 (mandatory verification gate)** — before eval, each mandatory frontier
   independently verifies (a) its own proposal is correctly represented / not silently
   dropped, (b) advisory dispositions are honest, (c) no relied-on claim is load-bearing

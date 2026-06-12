@@ -105,9 +105,19 @@ check('buildEnrichPrompt embeds the current SKILL.md so cross-tree FS access is 
   assert.ok(!/embedded/i.test(p2));
 });
 check('buildCuratePrompt forbids "did not move a score" drops + names ledger path', () => {
-  const p = d.buildCuratePrompt({ skill: 's', proposals: [{ model: 'opus', proposalPath: '/r/a', noveltyMemoPath: '/r/an' }], currentSkillPath: '/s/SKILL.md', mergedSkillPath: '/r/m.md', mergeLedgerPath: '/r/l.json', mergeProtocolRef: 'P' });
+  const p = d.buildCuratePrompt({
+    skill: 's',
+    proposals: [{ model: 'opus', proposalPath: '/r/a', noveltyMemoPath: '/r/an' }],
+    advisoryProposals: [{ model: 'gemini', proposalPath: '/r/g', noveltyMemoPath: '/r/gn', iterationSuggestionsPath: '/r/g.iteration-suggestions.json' }],
+    currentSkillPath: '/s/SKILL.md',
+    mergedSkillPath: '/r/m.md',
+    mergeLedgerPath: '/r/l.json',
+    mergeProtocolRef: 'P',
+  });
   assert.ok(/did not move a score/i.test(p));
   assert.ok(p.includes('/r/l.json'));
+  assert.ok(p.includes('/r/g.iteration-suggestions.json'));
+  assert.ok(/iteration-suggestions files are first-class advisory input/i.test(p));
   assert.ok(p.includes('UNION'));
   // B7: with no verify gaps, no verification block is rendered.
   assert.ok(!/MANDATORY VERIFICATION GAPS/.test(p), 'no verify-gap block when verifyGaps empty');

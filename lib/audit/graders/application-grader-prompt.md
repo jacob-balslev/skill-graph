@@ -249,7 +249,7 @@ Assigned by the **runner** after pairing baseline + with-skill runs. The grader 
 
 ## Why this layer exists
 
-The Concept Comprehension Layer (sister grader: `concept-grader-prompt.md`) tests whether a model UNDERSTANDS a concept — definition, mental model, boundary, taxonomy, analogy, taxonomy placement, and (dim 7) application of primitives to a novel scenario. The 2026-05-17 user directive surfaced a gap: even dim 7's "novel scenario" is a DEFINITIONAL prompt ("how would X apply here and why?"), which the model can answer well without changing its operational behavior on real code.
+Comprehension (sister grader: `concept-grader-prompt.md`) tests whether a model UNDERSTANDS a concept — definition, mental model, boundary, taxonomy, analogy, and application of primitives to a novel scenario. The 2026-05-17 user directive surfaced a gap: even the Application-from-first-principles criterion's "novel scenario" is a definitional prompt ("how would X apply here and why?"), which the model can answer well without changing its operational behavior on real code.
 
 This grader tests the operational gap. The question is not "does the model understand binary floating-point arithmetic?" — the model already does. The question is: "given a broken money component, does the loaded skill change which bug the model flags first and what fix it recommends?" The answer is observable, not definitional.
 

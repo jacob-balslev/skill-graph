@@ -47,11 +47,13 @@ INPUTS (provided to you)
 - The skill's slug + directory and its current canonical SKILL.md.
 - The MANDATORY proposals (opus + gpt-5.5), each a full curated SKILL.md candidate.
 - The ADVISORY proposals (gemini / opencode free models), each a candidate, plus the
-  cross-review findings (keep/wrong/missing) every agent emitted on every proposal.
+  iteration-suggestions sidecar when present and the cross-review findings
+  (keep/wrong/missing) every agent emitted on every proposal.
 
 CURATE — REQUIRED STEPS
 1. Read the current SKILL.md, then read BOTH mandatory proposals and EVERY advisory
-   proposal in full, plus every cross-review finding.
+   proposal in full, plus advisory iteration-suggestions sidecars when present and
+   every cross-review finding.
 2. Build the merged SKILL.md as the UNION of correct, non-duplicated knowledge:
    - Keep every distinct, correct contribution. Organize overlapping material into one
      coherent section rather than dropping a duplicate's unique facets.
@@ -67,11 +69,11 @@ CURATE — REQUIRED STEPS
    the ledger (`surfaced_by` / `accepted_by` / dropped) on at least one contribution.
    `validateMandatoryCoverage` rejects the merge otherwise.
 5. ADVISORY DISPOSITION (silence is not permission to ignore): for EVERY advisory
-   proposal that survived the proposal phase AND every advisory cross-review finding,
-   record an explicit disposition in the ledger — `incorporated`, `deferred-to-eval`, or
-   `rejected` — each with a concrete reason. You MAY decline to fold an advisory finding
-   in; you may NOT leave it un-dispositioned. Advisory content is discretionary in the
-   merge; it is NOT optional to consider.
+   proposal that survived the proposal phase, every advisory iteration suggestion, AND
+   every advisory cross-review finding, record an explicit disposition in the ledger —
+   `incorporated`, `deferred-to-eval`, or `rejected` — each with a concrete reason. You
+   MAY decline to fold an advisory finding in; you may NOT leave it un-dispositioned.
+   Advisory content is discretionary in the merge; it is NOT optional to consider.
 6. Do not author from authority: before relying on any surfaced claim (advisory's or the
    other frontier's), confirm it against its evidence. An unverifiable claim is dropped
    or flagged, never silently merged in as fact.

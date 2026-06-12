@@ -56,7 +56,7 @@ check('keep: records Integrity + Behavior gates (receipt verdict + canonical com
   assert.strictEqual(w.last_changed, '2026-06-07');
   // integrity = skill-audit.js subprocess; comprehension = evaluate-skill.js subprocess
   assert.ok(d.spawns.some((s) => s.includes('skill-audit.js')), 'spawned Integrity Gate');
-  assert.ok(d.spawns.some((s) => s.includes('evaluate-skill.js') && s.includes('comprehension')), 'spawned comprehension evaluate');
+  assert.ok(d.spawns.some((s) => s.includes('evaluate-skill.js') && s.includes('comprehension')), 'spawned Comprehension');
 });
 
 check('model_run_coverage: records mandatory and advisory model participation separately from verdicts', () => {

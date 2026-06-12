@@ -47,7 +47,7 @@ Apply the deterministic fixes `audit` detects. Properties:
 
 ### Path B (folded, not a new operation) — eval cold-start
 
-For the 136 never-graded skills, `improve`/`evaluate` can't run because **no eval test exists** — a grader *runs the skill against a pre-written test set*; it does not invent the test. This does **not** need a separate `initial_run` operation. Fold the capability into the graded path: **`audit --graded` / `evaluate` authors `evals/comprehension.json` when absent (LLM, judgment work — per the Part 3 runbook minimum: ≥5 evals across ≥5 of 7 dimensions), then grades it.** One command takes a skill `UNVERIFIED` → graded.
+For the 136 never-graded skills, `improve`/`evaluate` can't run because **no test artifact exists** — a grader *runs the skill against pre-written cases*; it does not invent the test. This does **not** need a separate `initial_run` operation. Fold the capability into the graded path: **`audit --graded` / `evaluate` authors `evals/comprehension.json` when absent (LLM, judgment work — per the Part 3 runbook minimum: ≥5 Comprehension cases across ≥5 criteria), then grades it.** One command takes a skill `UNVERIFIED` → graded.
 
 - LLM-driven (eval authoring is inherently judgment) → this is the planned, ongoing L0→L1 lift.
 - **NOT required for `npm run verify`** (verify checks shape: lint/manifest/routing/status — never eval presence). So Path B must never gate the shape migration.

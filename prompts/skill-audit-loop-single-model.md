@@ -116,11 +116,12 @@ SKILL AUDIT LOOP LIFECYCLE (run the full v2.2 contract, as YOU, one model)
         analogy, misconception — plus comprehension_state: present, AND a
         matching `## Concept of the skill` body section (renamed from the
         v6 `## Concept Card`; mirror the `agents` skill for shape).
-      - Author/repair a GRADEABLE comprehension.json: dimension-tagged cases covering all
-        seven dimensions in canonical order — definition, mental_model, purpose, boundary,
-        taxonomy, analogy, application. (The legacy expectations[]-array shape is
-        ungradeable and does not count; verify with `node -e` that every case has a
-        `dimension` field.)
+      - Author/repair a GRADEABLE comprehension.json: cases covering the important
+        Comprehension criteria — definition, mental_model, purpose, boundary,
+        taxonomy, analogy, application, and misconception when relevant. The JSON
+        field is still named `dimension` for schema compatibility; it names the
+        primary criterion for that case. The legacy expectations[]-array shape is
+        ungradeable and does not count.
       - Fix all verified drift; preserve all existing capability (improve = ENRICH, never
         trim). Fix adjacent doc drift in the SAME commit, and grep *.md for stale refs to
         anything you renamed.

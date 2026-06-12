@@ -131,7 +131,7 @@ function validateApplicationEval(relFile, data) {
 
   // mode discriminator.
   if (data.mode !== undefined && data.mode !== 'application') {
-    findings.push(makeFinding(relFile, 'CRITICAL', 'bad-mode', `mode must be the literal "application" (got ${JSON.stringify(data.mode)}). An evals[]-shaped file is a comprehension eval — run --mode comprehension instead.`));
+    findings.push(makeFinding(relFile, 'CRITICAL', 'bad-mode', `mode must be the literal "application" (got ${JSON.stringify(data.mode)}). An evals[]-shaped file is Comprehension — run --mode comprehension instead.`));
   }
 
   // schema_version, if present, must be a positive integer.

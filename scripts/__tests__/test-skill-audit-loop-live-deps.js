@@ -152,9 +152,18 @@ check('advisory propose retries once when stdout is not a document and second at
     skillGraphRoot: root,
     advisoryDispatch: () => {
       calls += 1;
-      return calls === 1
-        ? { ok: true, stdout: 'I will produce the document next.', stderr: '' }
-        : { ok: true, stdout: validDoc, stderr: '' };
+      if (calls === 1) return { ok: true, stdout: 'I will produce the document next.', stderr: '' };
+      if (calls === 2) return { ok: true, stdout: validDoc, stderr: '' };
+      return {
+        ok: true,
+        stdout: JSON.stringify({
+          skill: 's',
+          model: 'minimax',
+          suggestions: [{ priority: 'high', type: 'eval', suggestion: 'Add an application eval case.', evidence: 'proposal has no eval coverage', next_step: 'Draft evals/application.json case.' }],
+          limits: [],
+        }),
+        stderr: '',
+      };
     },
   });
   const runDir = path.join(root, '.opencode', 'progress', 'agenttool', 's', 'minimax');
@@ -162,8 +171,11 @@ check('advisory propose retries once when stdout is not a document and second at
   const r = deps.researchAndProposeAdvisory({ skill: 's', skillDir, model: 'minimax', brief: 'b', artifactsDir: runDir });
   assert.strictEqual(r.ok, true);
   assert.strictEqual(r.via, 'stdout-capture-retry');
-  assert.strictEqual(calls, 2);
+  assert.strictEqual(calls, 3);
   assert.ok(fs.readFileSync(r.proposalPath, 'utf8').startsWith('---\nname: s'));
+  assert.ok(fs.existsSync(r.iterationSuggestionsPath), 'iteration suggestions sidecar exists');
+  assert.match(fs.readFileSync(r.iterationSuggestionsPath, 'utf8'), /Add an application eval case/);
+  assert.ok(fs.existsSync(r.diagnosticsPath), 'advisory diagnostics file exists');
   assert.ok(fs.existsSync(path.join(runDir, 's.minimax.dispatch.log')));
   assert.ok(fs.existsSync(path.join(runDir, 's.minimax.dispatch.retry.log')));
   fs.rmSync(root, { recursive: true, force: true });

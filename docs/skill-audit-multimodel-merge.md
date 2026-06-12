@@ -36,7 +36,7 @@ claim → [per-model audit ×N → proposal] → union-curate merge → verify (
 ```
 
 ### Phase A — Per-model audit (auditor; one model)
-Run the full **v2.2 contract** (deep catalog, test runner, read, audit-as-contract, concept card, comprehension evals, fix-drift reasoning, external research). The only change: **write a proposal, do not commit the canonical files.** Emit per-model artifacts:
+Run the full **v2.2 contract** (deep catalog, test runner, read, audit-as-contract, concept card, Comprehension artifact, fix-drift reasoning, external research). The only change: **write a proposal, do not commit the canonical files.** Emit per-model artifacts:
 
 ```
 skill-graph/skill-audit-loop/progress/skill-audits/<slug>.<model>.catalog.json

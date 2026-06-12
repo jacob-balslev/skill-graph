@@ -332,7 +332,7 @@ const APPLICATION_AXES = [
 ];
 
 function analyzeCorpus(entries, dimList, valueScale, label, opts = {}) {
-  // entries: array of grader records with per-dimension numeric scores (0/1/2 or weighted 0..1)
+  // entries: array of grader records with per-dimension numeric scores (0..100 or weighted 0..1)
   // dimList: list of dimension keys to analyze
   // valueScale: { min, max } for ceiling/floor and histogram bins
   // returns per-dimension stats + cross-dim Cronbach
@@ -490,7 +490,7 @@ function analyzeCronbachFromCache(cacheEntries, skillFilter) {
       const row = {};
       for (const dim of COMPREHENSION_DIMS) {
         const v = ws[dim];
-        // Use 0/1/2 directly. Drop nulls — Cronbach requires complete cases per dim.
+        // Use 0..100 directly. Drop nulls — Cronbach requires complete cases per dim.
         if (typeof v === 'number') row[dim] = v;
       }
       rows.push(row);

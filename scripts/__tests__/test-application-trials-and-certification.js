@@ -344,6 +344,23 @@ assert(dry.trials === 4 && dry.certification_tier === 'provisional', '5q. dry-ru
 assert(dry.planned_pairwise_grader_calls === 2 * 4 * 2, '5q-2. dry-run reports pairwise grader calls separately (both orders ×2 per trial)');
 assert(dry.planned_history_records === 2 * 2 * 4, '5q-3. dry-run history records count pointwise run records, not pairwise calls');
 
+// 5q-4. Partial errors make the run incomplete: the completed subset verdict is
+// retained for debugging, but the aggregate verdict is not certifying evidence.
+const partialErrorSummary = runApplicationEval(evalPath, {
+  trials: 1,
+  deps: {
+    getEvalResponse(prompt) {
+      if (/React list/.test(prompt)) throw new Error('simulated generator failure on case 2');
+      return mockGetEvalResponse(prompt);
+    },
+    runGraderPrompt: mockRunGraderPrompt,
+  },
+});
+assert(partialErrorSummary.completed === 1 && partialErrorSummary.errors === 1, '5q-4a. partial-error run records completed + errors');
+assert(partialErrorSummary.incomplete === true, '5q-4b. partial-error run is marked incomplete');
+assert(partialErrorSummary.completed_subset_aggregate_verdict === 'applicable', '5q-4c. completed-subset verdict remains available for diagnosis');
+assert(partialErrorSummary.aggregate_verdict === 'unverified', '5q-4d. aggregate verdict is UNVERIFIED when any case errors');
+
 // 5r. A certifying run is reachable end-to-end and tier propagates to the summary.
 const certifyingSummary = runApplicationEval(evalPath, {
   trials: 1,
@@ -573,6 +590,20 @@ fs.writeFileSync(stampSkillMd, STAMP_SKILL);
   stampApplicationVerdict(stampEval, result, false, { artifactPath: writeApplicationReceipt(tmpStampDir, result) });
 }
 assert(readVerdict(stampSkillMd) === 'PROVISIONAL', '6c-4. certifying + zero red_herring:true cases → PROVISIONAL');
+
+// 6c-5. Partial-error run must not stamp at all, even when the completed subset
+// would otherwise look applicable.
+const partialStampDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sg-partial-stamp-'));
+fs.mkdirSync(path.join(partialStampDir, 'evals'), { recursive: true });
+const partialSkillMd = path.join(partialStampDir, 'SKILL.md');
+const partialEval = path.join(partialStampDir, 'evals', 'application.json');
+fs.writeFileSync(partialSkillMd, STAMP_SKILL);
+fs.writeFileSync(partialEval, JSON.stringify({ skill: 'partial-stamp-skill', cases: [] }));
+{
+  const result = { dryRun: false, aggregate_verdict: 'applicable', skillName: 'stamp-skill', total: 2, errors: 1 };
+  stampApplicationVerdict(partialEval, result, false, { artifactPath: writeApplicationReceipt(partialStampDir, result) });
+}
+assert(readVerdict(partialSkillMd) === null, '6c-5. partial-error application run does not stamp a verdict');
 
 // 6d. certifying tier but --single-model forces PROVISIONAL.
 fs.writeFileSync(stampSkillMd, STAMP_SKILL);
