@@ -1,0 +1,4154 @@
+{
+  "run_id": "full-content-2026-06-12-r2",
+  "mode": "CONTENT",
+  "generated_at": "2026-06-12T00:00:00.000Z",
+  "normalized_current_date": "2026-06-12",
+  "source_evaluation_report": "/Users/jacobbalslev/Development/skill-graph/audits/content-evaluation-2026-06-12/skill-content-evaluation-full-content-2026-06-12-r2.json",
+  "source_ledger": "/Users/jacobbalslev/Development/skill-graph/audits/content-evaluation-2026-06-12/skill-content-evaluation-full-content-2026-06-12-r2-resolution-ledger.json",
+  "total_findings": 1676,
+  "status_counts": {
+    "resolved": 958,
+    "resolved_no_edit": 324,
+    "blocked_requires_certification": 321,
+    "blocked_requires_source_authoring": 73
+  },
+  "classification_counts": {
+    "skill_content_edit": 152,
+    "resolved_no_edit_strength_or_benchmark": 254,
+    "certification_required": 567,
+    "eval_artifact_edit": 573,
+    "grounding_or_drift_edit": 130
+  },
+  "validation": {
+    "skill_lint": "186 OK, 0 failures, 0 warnings",
+    "drift": "EXTERNAL_UNHASHED 75, UNGROUNDED 93, OK 18; no BROKEN/DRIFT/NO_BASELINE",
+    "application_evals": "187/187 conformant including sample",
+    "comprehension_evals": "186 files present and valid JSON"
+  },
+  "blocked_meaning": {
+    "blocked_requires_certification": "needs actual model grader/certification run",
+    "blocked_requires_source_authoring": "needs researched non-circular truth sources"
+  },
+  "blocked_status_counts": {
+    "blocked_requires_certification": 321,
+    "blocked_requires_source_authoring": 73
+  },
+  "blocked_skill_count": 186,
+  "blocked_skills": [
+    {
+      "skill": "design-module-composition",
+      "count": 8,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "design-module-composition:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "design-module-composition:content:4",
+          "status": "blocked_requires_certification",
+          "finding": "Description catalogs patterns instead of stating the design problem composition solves for crispest activation",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        },
+        {
+          "id": "design-module-composition:content:5",
+          "status": "blocked_requires_certification",
+          "finding": "Coverage and Concept-of-the-skill sections substantially overlap with mental_model and purpose fields, wasting body tokens on redundant exposition.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        },
+        {
+          "id": "design-module-composition:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "design-module-composition:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Audit-state present but truth, comprehension, and application verdicts all UNVERIFIED and routing_eval absent, so certification evidence is incomplete.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "design-module-composition:eval:6",
+          "status": "blocked_requires_certification",
+          "finding": "Eval suite lacks functional assertions for grading",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        },
+        {
+          "id": "design-module-composition:eval:7",
+          "status": "blocked_requires_certification",
+          "finding": "Audit state remains unverified across all functional dimensions",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "design-module-composition:eval:9",
+          "status": "blocked_requires_certification",
+          "finding": "Public dev-facing design skill with no routing eval presence — cannot verify it fires for the right queries",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        }
+      ]
+    },
+    {
+      "skill": "design-thinking",
+      "count": 6,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "design-thinking:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "design-thinking:content:4",
+          "status": "blocked_requires_source_authoring",
+          "finding": "No formal grounding.truth_sources block links to canonical references cited in body (d.school, Double Diamond, IDEO).",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "design-thinking:content:6",
+          "status": "blocked_requires_source_authoring",
+          "finding": "No grounding truth_sources declared despite canonical references (d.school, IDEO, Design Council, Knapp). Skill is principle-grounded but lacks verifiable backing.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "design-thinking:content:7",
+          "status": "blocked_requires_certification",
+          "finding": "Body 'Coverage' section largely re-states the 'Concept of the skill' paragraph with minor framing additions. Reduces compression without adding new information.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        },
+        {
+          "id": "design-thinking:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "design-thinking:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "All truth, comprehension, and application verdicts are UNVERIFIED and assertions count is zero, so the 14 cases provide no graded signal.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "background-jobs",
+      "count": 5,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "background-jobs:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "background-jobs:content:2",
+          "status": "blocked_requires_certification",
+          "finding": "Scope/description/concept paragraph and mental_model restate the same five-primitive framing nearly verbatim, adding redundancy without new grounding or truth sources.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        },
+        {
+          "id": "background-jobs:content:6",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Skill body lacks explicit truth_sources section or verification references for external claims.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "background-jobs:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "background-jobs:eval:6",
+          "status": "blocked_requires_certification",
+          "finding": "Eval artifact present but unrun; comprehension and application verdicts UNVERIFIED and routing_eval absent, so usefulness is not grader-confirmed.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "component-architecture",
+      "count": 5,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "component-architecture:content:5",
+          "status": "blocked_requires_certification",
+          "finding": "Grounding relies entirely on volatile web URLs with no recorded hashes and truth_verdict: UNVERIFIED",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "component-architecture:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is REDUNDANT, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "component-architecture:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Application eval flagged REDUNDANT and all truth/comprehension/application verdicts UNVERIFIED, blocking certification despite present artifacts.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "component-architecture:eval:7",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict: REDUNDANT with eval_state: unverified — eval design doesn't demonstrate unique skill value vs alternatives",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "component-architecture:eval:8",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is REDUNDANT and comprehension_verdict is UNVERIFIED; no graded verdict has evidence backing it, so the skill cannot be certified as behavior-changing.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "information-architecture",
+      "count": 5,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "information-architecture:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "information-architecture:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "information-architecture:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Truth, comprehension, and application verdicts all UNVERIFIED and routing_eval absent, so the 15 cases are unvalidated against authored content.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "information-architecture:eval:8",
+          "status": "blocked_requires_certification",
+          "finding": "All audit tiers remain unverified and routing evaluations are absent, blocking certification.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "information-architecture:eval:9",
+          "status": "blocked_requires_certification",
+          "finding": "All four audit verdicts are UNVERIFIED despite eval_artifacts: present and eval_state: unverified — no certified evidence backs the skill.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "interaction-feedback",
+      "count": 5,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "interaction-feedback:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "interaction-feedback:content:5",
+          "status": "blocked_requires_certification",
+          "finding": "Philosophy section restates mental_model and purpose nearly verbatim, adding token cost without new signal.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        },
+        {
+          "id": "interaction-feedback:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "interaction-feedback:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Audit state present but truth, comprehension, and application all UNVERIFIED, leaving content claims and 15 cases uncertified.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "interaction-feedback:eval:11",
+          "status": "blocked_requires_certification",
+          "finding": "All four audit verdicts are UNVERIFIED despite eval_artifacts: present; certification path blocked.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "route-handler-design",
+      "count": 5,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "route-handler-design:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "route-handler-design:content:5",
+          "status": "blocked_requires_certification",
+          "finding": "No grounding truth_sources recorded; truth_verdict UNVERIFIED with no path to PASS",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "route-handler-design:content:7",
+          "status": "blocked_requires_certification",
+          "finding": "truth_verdict=UNVERIFIED — no drift check has been run against declared truth sources. Caching defaults and async API claims require verification against current Next docs.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "route-handler-design:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "route-handler-design:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "Provenance label drift: skill_graph_protocol reads 'v5' while schema_version is 8; all truth/comprehension/application verdicts remain UNVERIFIED after material content rewrite.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "streaming-architecture",
+      "count": 5,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "streaming-architecture:content:3",
+          "status": "blocked_requires_certification",
+          "finding": "The experimental stability tag is conservative given the high quality and comprehensive nature of the authored content.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        },
+        {
+          "id": "streaming-architecture:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "streaming-architecture:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Truth, comprehension, and application verdicts are all UNVERIFIED despite structural PASS, so certification evidence is incomplete.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "streaming-architecture:eval:8",
+          "status": "blocked_requires_certification",
+          "finding": "Present eval artifacts but no verdict earned — comprehension and application verdicts remain UNVERIFIED",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "streaming-architecture:eval:9",
+          "status": "blocked_requires_certification",
+          "finding": "All four audit verdicts (structural, truth, comprehension, application) are UNVERIFIED despite eval_artifacts marked present and 15 eval cases existing.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "agent-eval-design",
+      "count": 4,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "agent-eval-design:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is MIXED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "agent-eval-design:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Audit state judged: application_verdict MIXED, eval_state unverified, truth and comprehension UNVERIFIED; the suite has never been run green, so certification evidence is absent.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "agent-eval-design:eval:9",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict MIXED despite 15 well-designed cases — eval does not certify skill as useful",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "agent-eval-design:eval:11",
+          "status": "blocked_requires_certification",
+          "finding": "Audit state shows application_verdict: MIXED with comprehension_verdict: UNVERIFIED and eval_state: unverified — no graded evidence backs the skill.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "autonomous-loop-patterns",
+      "count": 4,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "autonomous-loop-patterns:content:2",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "autonomous-loop-patterns:content:4",
+          "status": "blocked_requires_certification",
+          "finding": "Human-gated loop appears in catalog and selection tables but has no dedicated Pattern section like the other four, leaving its safeguards underspecified.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        },
+        {
+          "id": "autonomous-loop-patterns:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "autonomous-loop-patterns:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Comprehension and application verdicts are UNVERIFIED and eval_state unverified, so usefulness is unproven despite present artifacts.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "claude-haiku",
+      "count": 4,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "claude-haiku:content:4",
+          "status": "blocked_requires_certification",
+          "finding": "truth_verdict is UNVERIFIED — the skill cites references/model-facts.md but no drift check has verified the facts are current.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "claude-haiku:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is missing, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "claude-haiku:eval:6",
+          "status": "blocked_requires_certification",
+          "finding": "Eval-readiness surface: audit truth_verdict UNVERIFIED and eval_state unverified with no comprehension/application verdicts, so artifacts exist but are uncertified.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "claude-haiku:eval:8",
+          "status": "blocked_requires_certification",
+          "finding": "eval_state is unverified despite 14 eval cases across comprehension and application — no graded verdict has been stamped.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "claude-opus",
+      "count": 4,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "claude-opus:content:5",
+          "status": "blocked_requires_certification",
+          "finding": "Philosophy of the skill section (lines 176-178) re-states cost-discipline advocacy already captured in mental_model and purpose — adds no new procedure or routing guidance",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        },
+        {
+          "id": "claude-opus:content:6",
+          "status": "blocked_requires_certification",
+          "finding": "Truth verdict is UNVERIFIED and grounding relies on references/model-facts.md which may contain stale capability facts.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "claude-opus:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is missing, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "claude-opus:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Audit surface: truth_verdict UNVERIFIED and routing_eval absent, so capability-fact accuracy and router activation remain unproven despite present artifacts.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "connection-pooling",
+      "count": 4,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "connection-pooling:content:3",
+          "status": "blocked_requires_certification",
+          "finding": "truth_verdict UNVERIFIED despite 9 external canonical truth sources cited in grounding",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "connection-pooling:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "connection-pooling:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Audit reports truth/comprehension/application all UNVERIFIED despite eval artifacts present, so certification readiness is incomplete though content quality is high.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "connection-pooling:eval:6",
+          "status": "blocked_requires_certification",
+          "finding": "eval_state unverified despite having both comprehension and application eval artifacts",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "content-monitor",
+      "count": 4,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "content-monitor:content:2",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "content-monitor:content:3",
+          "status": "blocked_requires_certification",
+          "finding": "Content surface repeats scope across Concept, Domain Context, Coverage, and Philosophy sections, inflating length without adding new procedure.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        },
+        {
+          "id": "content-monitor:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "content-monitor:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "Complete absence of test cases renders the skill unverified.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "context-management",
+      "count": 4,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "context-management:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "context-management:content:4",
+          "status": "blocked_requires_certification",
+          "finding": "The 'allowed-tools' list is likely too narrow for comprehensive intake triage across a workspace.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        },
+        {
+          "id": "context-management:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "context-management:eval:7",
+          "status": "blocked_requires_certification",
+          "finding": "Keywords include compound phrases unlikely as user search terms at the 10-term cap",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        }
+      ]
+    },
+    {
+      "skill": "gemini-pro",
+      "count": 4,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "gemini-pro:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is missing, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "gemini-pro:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "Comprehension and application verdicts are null, truth_verdict UNVERIFIED, routing_eval absent — no executed grading evidence for a routing-decision skill.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "gemini-pro:eval:9",
+          "status": "blocked_requires_certification",
+          "finding": "Only 14 eval cases across comprehension+application; target is 12+ per eval surface for a skill this complex.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        },
+        {
+          "id": "gemini-pro:eval:10",
+          "status": "blocked_requires_certification",
+          "finding": "audit-state.json declares truth_verdict: UNVERIFIED; grounding truth_sources not checked in bundle.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "github-copilot",
+      "count": 4,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "github-copilot:content:5",
+          "status": "blocked_requires_certification",
+          "finding": "truth_verdict is UNVERIFIED. The skill cites references/model-facts.md with 2026-06-08 date but drift check has not been run.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "github-copilot:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is missing, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "github-copilot:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Audit truth_verdict UNVERIFIED and comprehension/application verdicts null; time-sensitive billing claims (June-1-2026 shift, 1 credit=$0.01) lack truth verification.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "github-copilot:eval:10",
+          "status": "blocked_requires_certification",
+          "finding": "comprehension_verdict and application_verdict are both null despite eval artifacts existing. The skill has no graded assessment.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "intent-recognition",
+      "count": 4,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "intent-recognition:content:2",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "intent-recognition:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "intent-recognition:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "Comprehension and application verdicts are UNVERIFIED, so usefulness is grader-unconfirmed; provenance label 'Metadata Protocol v5' contradicts v8 schema in use.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "intent-recognition:eval:6",
+          "status": "blocked_requires_certification",
+          "finding": "Stability is capped at experimental and routing is absent, preventing production-grade certification of this critical skill.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "journey-mapping",
+      "count": 4,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "journey-mapping:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "journey-mapping:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "journey-mapping:eval:7",
+          "status": "blocked_requires_certification",
+          "finding": "All four audit verdicts UNVERIFIED, eval_state unverified, routing_eval absent — no behavioral evidence or routing presence established",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "journey-mapping:eval:9",
+          "status": "blocked_requires_certification",
+          "finding": "All four audit verdicts are UNVERIFIED and eval_state is unverified despite eval_artifacts: present.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "layout-composition",
+      "count": 4,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "layout-composition:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "layout-composition:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "layout-composition:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "Eval surface: truth, comprehension, and application verdicts all UNVERIFIED and routing eval absent, so no evidence the 15 cases pass.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "layout-composition:eval:7",
+          "status": "blocked_requires_certification",
+          "finding": "Keyword mapping uses realistic user terminology for high retrieval recall.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        }
+      ]
+    },
+    {
+      "skill": "observability-modeling",
+      "count": 4,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "observability-modeling:content:2",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "observability-modeling:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "observability-modeling:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "Comprehension and application verdicts are UNVERIFIED, so usefulness is unproven despite structural/truth PASS and declared eval artifacts.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "observability-modeling:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Skill cannot be certified or verified due to zero existing test cases despite the linked path.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "opencode-free-models",
+      "count": 4,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "opencode-free-models:content:6",
+          "status": "blocked_requires_certification",
+          "finding": "Model capability table is a 2026 snapshot without truth_source hash or last_verified timestamp.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        },
+        {
+          "id": "opencode-free-models:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is missing, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "opencode-free-models:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Capability/routing tables assert dated model facts (MiniMax 1M ctx, GLM-5, Nemotron) but the truth source is unverified, risking confident-but-stale routing guidance.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "opencode-free-models:eval:8",
+          "status": "blocked_requires_certification",
+          "finding": "Application eval lacks expected-output assertions required for scoring",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        }
+      ]
+    },
+    {
+      "skill": "prompt-craft",
+      "count": 4,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "prompt-craft:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "prompt-craft:eval:7",
+          "status": "blocked_requires_certification",
+          "finding": "Eval artifacts present but truth, comprehension, and application verdicts all UNVERIFIED and routing_eval absent, so usefulness is not grader-confirmed.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "prompt-craft:eval:10",
+          "status": "blocked_requires_certification",
+          "finding": "Only 5 comprehension cases (below 10-case target) with no application.json for gate-9 certification",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "prompt-craft:eval:12",
+          "status": "blocked_requires_certification",
+          "finding": "Only 5 comprehension cases at the floor; no application eval exists despite eval_artifacts: present claiming otherwise.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        }
+      ]
+    },
+    {
+      "skill": "skill-infrastructure",
+      "count": 4,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "skill-infrastructure:content:6",
+          "status": "blocked_requires_certification",
+          "finding": "Body at 674 lines violates the token-budget progressive-disclosure principle the skill itself prescribes; heavy detail belongs in load-on-demand references/.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        },
+        {
+          "id": "skill-infrastructure:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "skill-infrastructure:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "Routing eval absent and eval_state unverified, with zero regression cases, even though the skill centers routing/retrieval health and append-only eval discipline.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "skill-infrastructure:eval:6",
+          "status": "blocked_requires_certification",
+          "finding": "Audit state is in DRIFT with unverified behavior, indicating cited grounding sources have changed since the last audit.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "acid-fundamentals",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "acid-fundamentals:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "acid-fundamentals:eval:9",
+          "status": "blocked_requires_certification",
+          "finding": "comprehension_verdict and application_verdict both UNVERIFIED; routing_eval absent",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "acid-fundamentals:eval:10",
+          "status": "blocked_requires_certification",
+          "finding": "8 eval cases exist but eval_state is unverified and both comprehension/application verdicts are UNVERIFIED — no run evidence on record.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "architecture-decision-records",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "architecture-decision-records:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "architecture-decision-records:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "architecture-decision-records:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "Skill is missing all 10 target eval cases, preventing certification and validation of routing.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "color-system-design",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "color-system-design:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is REDUNDANT, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "color-system-design:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "Eval surface: artifacts present but truth_verdict UNVERIFIED and eval_state unverified despite 20+ truth sources, so claims are unproven for certification.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "color-system-design:eval:6",
+          "status": "blocked_requires_certification",
+          "finding": "Evaluation readiness is severely degraded by the total absence of assertions, making it impossible to programmatically verify if agents are following the complex procedures.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        }
+      ]
+    },
+    {
+      "skill": "dark-mode-implementation",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "dark-mode-implementation:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "dark-mode-implementation:content:4",
+          "status": "blocked_requires_source_authoring",
+          "finding": "No truth_sources declared despite teaching web-platform primitives with known specs (CSS Color Module Level 5, prefers-color-scheme, color-scheme).",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "dark-mode-implementation:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "debugging",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "debugging:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "debugging:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is REDUNDANT, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "debugging:eval:7",
+          "status": "blocked_requires_certification",
+          "finding": "Skill is flagged as redundant by current audit state.",
+          "resolution": "Current audit state marks application_verdict REDUNDANT; changing that requires an actual audit/evaluation verdict, not a prose edit."
+        }
+      ]
+    },
+    {
+      "skill": "entity-relationship-modeling",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "entity-relationship-modeling:content:2",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "entity-relationship-modeling:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "entity-relationship-modeling:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "Critical absence of evaluation cases prevents certification.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "eval-driven-development",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "eval-driven-development:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "eval-driven-development:eval:11",
+          "status": "blocked_requires_certification",
+          "finding": "No application.json exists. Behavioral change from loading this skill cannot be measured, and application_verdict (the certifying quality signal) stays UNVERIFIED.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "eval-driven-development:eval:13",
+          "status": "blocked_requires_certification",
+          "finding": "Application eval entirely missing despite skill's own emphasis on behavior-change measurement as the primary quality signal.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        }
+      ]
+    },
+    {
+      "skill": "evaluation",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "evaluation:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "evaluation:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Audit shows truth, comprehension, and application all UNVERIFIED and eval_state unverified; no run confirms the skill is useful or correctly routed.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "evaluation:eval:9",
+          "status": "blocked_requires_certification",
+          "finding": "No application eval exists and routing_eval is absent, blocking usefulness certification",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "form-ux-architecture",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "form-ux-architecture:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "form-ux-architecture:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "form-ux-architecture:eval:7",
+          "status": "blocked_requires_certification",
+          "finding": "All four audit verdicts are UNVERIFIED and eval_state is unverified despite eval artifacts being present; no evidence evals have been executed.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "gemini-flash",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "gemini-flash:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is missing, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "gemini-flash:eval:7",
+          "status": "blocked_requires_certification",
+          "finding": "Audit state remains unverified across all categories, preventing formal skill certification.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "gemini-flash:eval:10",
+          "status": "blocked_requires_certification",
+          "finding": "Behavior Gate never run — no evidence the skill changes agent behavior on real tasks.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "gpt-5-5",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "gpt-5-5:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is missing, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "gpt-5-5:eval:7",
+          "status": "blocked_requires_certification",
+          "finding": "Lack of dedicated routing_eval prevents certification as a reliable selector.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "gpt-5-5:eval:8",
+          "status": "blocked_requires_certification",
+          "finding": "eval_state is 'unverified' with null comprehension_verdict and application_verdict despite 14 eval cases existing — the evals have never been run or graded.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "ideation",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "ideation:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "ideation:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "ideation:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Audit state shows truth, comprehension, and application all UNVERIFIED and routing_eval absent, so eval readiness is unproven despite artifacts being present.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "indexing-strategy",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "indexing-strategy:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "indexing-strategy:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "Comprehension and application verdicts are UNVERIFIED, eval_state unverified, and routing_eval absent; the skill has artifacts but no passing run or activation coverage.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "indexing-strategy:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Eval artifacts appear structurally incomplete.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        }
+      ]
+    },
+    {
+      "skill": "interaction-patterns",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "interaction-patterns:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "interaction-patterns:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "interaction-patterns:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Audit-state present but truth/comprehension/application all UNVERIFIED and routing_eval absent, so certification claims rest on unrun artifacts.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "microcopy",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "microcopy:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "microcopy:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "microcopy:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Audit state leaves truth, comprehension, and application all UNVERIFIED with routing_eval absent, so certification evidence is missing despite structural PASS.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "middleware-patterns",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "middleware-patterns:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "middleware-patterns:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "middleware-patterns:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Audit summary indicates unverified state for truth and application dimensions.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "owasp-security",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "owasp-security:content:2",
+          "status": "blocked_requires_certification",
+          "finding": "Redundant 'Concept of the Skill' headers and overlapping definitions create minor instructional friction.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        },
+        {
+          "id": "owasp-security:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "owasp-security:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "Zero executable eval cases or prompts exist, leaving the skill's application performance entirely unmeasured.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        }
+      ]
+    },
+    {
+      "skill": "prompt-injection-defense",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "prompt-injection-defense:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "prompt-injection-defense:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Audit status remains UNVERIFIED for truth and application dimensions, indicating a gap between case creation and human-in-the-loop quality validation.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "prompt-injection-defense:eval:7",
+          "status": "blocked_requires_certification",
+          "finding": "All four Audit Status verdicts UNVERIFIED; no graded comprehension or application assessment evidence",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "prototyping",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "prototyping:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "prototyping:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "prototyping:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "All truth/comprehension/application verdicts UNVERIFIED and routing eval absent, so eval-state cannot certify despite structural PASS.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "real-time-updates",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "real-time-updates:content:3",
+          "status": "blocked_requires_certification",
+          "finding": "mental_model field repeated verbatim in body paragraph one, wasting body space on restatement",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        },
+        {
+          "id": "real-time-updates:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "real-time-updates:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Truth, comprehension, and application verdicts are all UNVERIFIED despite present artifacts, so certification evidence is absent and scores rest on static pre-scores.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "research-synthesis",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "research-synthesis:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "research-synthesis:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "research-synthesis:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Audit state reflects unverified status across all functional dimensions despite present eval artifacts.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "seo-strategy",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "seo-strategy:content:2",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "seo-strategy:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "seo-strategy:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "Total lack of eval cases prevents automated quality tracking or certification of routing accuracy.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "skill-scaffold",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "skill-scaffold:content:6",
+          "status": "blocked_requires_certification",
+          "finding": "All truth sources are external URLs (skill-graph repo, schema, protocol docs) but truth_verdict is UNVERIFIED and no hashes recorded.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "skill-scaffold:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "skill-scaffold:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "Audit state present but truth, comprehension, and application verdicts all UNVERIFIED and routing_eval absent, so usefulness and activation are unproven.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "suspense-patterns",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "suspense-patterns:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "suspense-patterns:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is PROVISIONAL, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "suspense-patterns:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Skill remains in provisional and unverified state.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "test-coverage-strategy",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "test-coverage-strategy:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is MIXED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "test-coverage-strategy:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "Application verdict is MIXED, indicating potential ambiguity in strategic case grading.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        },
+        {
+          "id": "test-coverage-strategy:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Missing routing_eval and unverified status prevent full certification.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "vercel-composition-patterns",
+      "count": 3,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "vercel-composition-patterns:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "vercel-composition-patterns:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "vercel-composition-patterns:eval:6",
+          "status": "blocked_requires_certification",
+          "finding": "Audit summary shows all verdicts as UNVERIFIED and routing eval as absent, indicating the skill hasn't passed a formal certification loop.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "a11y",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "a11y:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "a11y:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "ai-native-development",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "ai-native-development:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "ai-native-development:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "Complete absence of executable eval cases prevents verification of routing and activation accuracy.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        }
+      ]
+    },
+    {
+      "skill": "api-design",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "api-design:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "api-design:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "Stale export provenance (skill_graph_protocol v5) and absent routing_eval leave activation unverified against a broad, overlap-prone description.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "bcg-matrix",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "bcg-matrix:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "bcg-matrix:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "The skill is structurally complete but remains UNVERIFIED across all functional audit dimensions, preventing formal certification.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "best-practice",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "best-practice:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "best-practice:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "Total lack of evaluation artifacts prevents verification of the skill's sophisticated quality logic.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        }
+      ]
+    },
+    {
+      "skill": "bounded-context-mapping",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "bounded-context-mapping:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "bounded-context-mapping:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "claude-code",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "claude-code:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is missing, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "claude-code:eval:9",
+          "status": "blocked_requires_certification",
+          "finding": "No comprehension or application verdict stamped; routing_eval absent",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "claude-sonnet",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "claude-sonnet:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is missing, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "claude-sonnet:eval:6",
+          "status": "blocked_requires_certification",
+          "finding": "Eval artifacts exist (14 cases, 3 hard neg, 2 boundary) but eval_state is unverified with null verdicts — no comprehension or application grading executed",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "client-server-boundary",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "client-server-boundary:content:2",
+          "status": "blocked_requires_certification",
+          "finding": "The distinction between file-level and function-level 'use server' scope could be more explicit regarding closure trapping risks.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        },
+        {
+          "id": "client-server-boundary:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "code-review",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "code-review:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "code-review:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Comprehension and application verdicts are unverified, preventing skill certification despite elite content quality.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "codex",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "codex:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is missing, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "codex:eval:8",
+          "status": "blocked_requires_certification",
+          "finding": "comprehension_verdict and application_verdict are both null despite eval_artifacts being present.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "cognitive-load-theory",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "cognitive-load-theory:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "cognitive-load-theory:eval:6",
+          "status": "blocked_requires_certification",
+          "finding": "Verification verdicts remain unverified or skipped.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "constraint-awareness",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "constraint-awareness:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "constraint-awareness:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "cron-scheduling",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "cron-scheduling:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "cron-scheduling:eval:6",
+          "status": "blocked_requires_certification",
+          "finding": "Eval surface: comprehension PROVISIONAL and application UNVERIFIED with eval_state unverified; certification evidence incomplete despite present artifacts.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "data-modeling",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "data-modeling:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "data-modeling:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "database-migration",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "database-migration:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is PROVISIONAL, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "database-migration:eval:6",
+          "status": "blocked_requires_certification",
+          "finding": "Comprehension and application verdicts are PROVISIONAL and eval_state is unverified with only 8/10 target cases, so certification evidence is incomplete despite structural/truth PASS.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "dependency-architecture",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "dependency-architecture:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "dependency-architecture:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "design-system-architecture",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "design-system-architecture:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "design-system-architecture:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "diff-analysis",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "diff-analysis:content:2",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "diff-analysis:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "doc-updater",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "doc-updater:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "doc-updater:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "error-boundary",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "error-boundary:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "error-boundary:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "error-tracking",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "error-tracking:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "error-tracking:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "The eval design is well-conceptualized in the text but currently lacks a physical implementation, hindering certification.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "etsy",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "etsy:content:3",
+          "status": "blocked_requires_certification",
+          "finding": "Extensive grounding identifies 12 failure modes but remains unverified.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "etsy:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "event-contract-design",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "event-contract-design:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "event-contract-design:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "event-storming",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "event-storming:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "event-storming:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "first-principles-thinking",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "first-principles-thinking:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "first-principles-thinking:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "frontend-architecture",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "frontend-architecture:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "frontend-architecture:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "generative-ui",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "generative-ui:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "generative-ui:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Audit state is present but lacks formal verification across truth, comprehension, and application domains.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        }
+      ]
+    },
+    {
+      "skill": "hooks-patterns",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "hooks-patterns:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "hooks-patterns:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "inversion",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "inversion:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "inversion:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "mental-models",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "mental-models:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "mental-models:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "merge-queue",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "merge-queue:content:2",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "merge-queue:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "mobile-responsive-ux",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "mobile-responsive-ux:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "mobile-responsive-ux:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "naming-conventions",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "naming-conventions:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "naming-conventions:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "opencode",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "opencode:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is missing, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "opencode:eval:8",
+          "status": "blocked_requires_certification",
+          "finding": "comprehension_verdict and application_verdict are both null despite eval_artifacts: present; eval_state is unverified. The evaluation loop has never been run.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "pattern-recognition",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "pattern-recognition:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "pattern-recognition:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "performance-engineering",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "performance-engineering:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "performance-engineering:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "pestel",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "pestel:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "pestel:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Skill remains unverified for truth and application despite high content quality.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "playing-to-win",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "playing-to-win:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "playing-to-win:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Truth, comprehension, and application verdicts are UNVERIFIED, indicating the skill has not yet been certified.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "prioritization",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "prioritization:content:2",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "prioritization:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "problem-approach-router",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "problem-approach-router:content:2",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "problem-approach-router:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "problem-framing",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "problem-framing:content:2",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "problem-framing:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "problem-locating-solving",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "problem-locating-solving:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "problem-locating-solving:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "project-knowledge-extraction",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "project-knowledge-extraction:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "project-knowledge-extraction:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "Eval surface: comprehension and application verdicts are UNVERIFIED and eval_state is unverified, so the skill is not certified despite present artifacts.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "query-optimization",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "query-optimization:content:5",
+          "status": "blocked_requires_certification",
+          "finding": "Verification checklist has 16 items with no priority ordering — all items appear equally weighted.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        },
+        {
+          "id": "query-optimization:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "ref-patterns",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "ref-patterns:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "ref-patterns:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "refactor",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "refactor:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "refactor:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "replication-patterns",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "replication-patterns:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is PROVISIONAL, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "replication-patterns:eval:7",
+          "status": "blocked_requires_certification",
+          "finding": "Eval artifacts present (13 cases) but eval_state is unverified — no graded run confirms the skill changes agent behavior.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "scenario-planning",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "scenario-planning:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "scenario-planning:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Audit state remains unverified for truth and application dimensions despite a passing structural verdict and existing eval files.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "second-order-thinking",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "second-order-thinking:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "second-order-thinking:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "semantic-center",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "semantic-center:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "semantic-center:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "Metadata marks audit verdicts as UNVERIFIED across all quality axes.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "semiotics",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "semiotics:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "semiotics:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "server-components-design",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "server-components-design:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "server-components-design:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "shopify",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "shopify:content:2",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "shopify:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "state-management",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "state-management:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "state-management:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Routing eval is absent, leaving the complex 'suppresses' and 'related' graph edges unverified.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "stp-marketing",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "stp-marketing:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "stp-marketing:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "Audit state is unverified across truth and application dimensions.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "summarization",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "summarization:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "summarization:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "Missing all evaluation artifacts; the skill cannot be verified in its current state.",
+          "resolution": "Requires behavior certification or per-skill grader evidence beyond file edits."
+        }
+      ]
+    },
+    {
+      "skill": "swot-tows",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "swot-tows:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is PROVISIONAL, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "swot-tows:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "The evaluation suite meets case volume targets but the audit state remains unverified.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "task-analysis",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "task-analysis:content:2",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "task-analysis:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "task-path-optimization",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "task-path-optimization:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "task-path-optimization:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "taxonomy-design",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "taxonomy-design:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "taxonomy-design:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "Complete lack of evaluation artifacts blocks certification despite the 'planned' status.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "test-doubles-design",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "test-doubles-design:content:2",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Detailed key sources are provided but metadata lacks truth-source hashes to automate drift detection for external references.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "test-doubles-design:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "theme-system-design",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "theme-system-design:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "theme-system-design:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "tool-call-flow",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "tool-call-flow:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "tool-call-flow:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "Comprehension and application verdicts UNVERIFIED and eval_state unverified; structural/truth PASS but behavior is unproven, blocking certification.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "transaction-isolation",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "transaction-isolation:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        },
+        {
+          "id": "transaction-isolation:eval:5",
+          "status": "blocked_requires_certification",
+          "finding": "The skill lacks all physical evaluation artifacts despite being marked as planned, resulting in an unverified state for both comprehension and application.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "typography-system",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "typography-system:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "typography-system:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is REDUNDANT, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "usability-testing",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "usability-testing:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "usability-testing:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "user-research",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "user-research:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "user-research:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "version-control",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "version-control:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "version-control:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "visual-design-foundations",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "visual-design-foundations:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "visual-design-foundations:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "visual-hierarchy",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "visual-hierarchy:content:1",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "visual-hierarchy:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "webhook-integration",
+      "count": 2,
+      "statuses": [
+        "blocked_requires_source_authoring",
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "webhook-integration:content:2",
+          "status": "blocked_requires_source_authoring",
+          "finding": "Grounding/truth-source evidence is weak or not explicit.",
+          "resolution": "Needs authored truth-source research for this universal skill before a non-circular grounding block can be added."
+        },
+        {
+          "id": "webhook-integration:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "agent-engineering",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "agent-engineering:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "ansoff-matrix",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "ansoff-matrix:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "balanced-scorecard",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "balanced-scorecard:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "bayesian-reasoning",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "bayesian-reasoning:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "blue-ocean-strategy",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "blue-ocean-strategy:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "canonical-repo-structure",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "canonical-repo-structure:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is missing, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "cap-theorem-tradeoffs",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "cap-theorem-tradeoffs:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "compression",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "compression:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "conceptual-modeling",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "conceptual-modeling:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "context-engineering",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "context-engineering:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "context-graph",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "context-graph:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "context-window",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "context-window:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "contract-testing",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "contract-testing:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is PROVISIONAL, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "data-modeling-fundamentals",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "data-modeling-fundamentals:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "diagnosis",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "diagnosis:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "e2e-test-design",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "e2e-test-design:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "epistemic-grounding",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "epistemic-grounding:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "expected-value",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "expected-value:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "framework-fit-analysis",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "framework-fit-analysis:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "graph-audit",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "graph-audit:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "guardrails",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "guardrails:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "http-semantics",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "http-semantics:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "integration-test-design",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "integration-test-design:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "kano-model",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "kano-model:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "keywords",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "keywords:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "knowledge-modeling",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "knowledge-modeling:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "linguistics",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "linguistics:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "lint-overlay",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "lint-overlay:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "mckinsey-7s",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "mckinsey-7s:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "methodical",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "methodical:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "methodology",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "methodology:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "mutation-testing",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "mutation-testing:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "no-cutting-corners",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "no-cutting-corners:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "okrs",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "okrs:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "ontology-modeling",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "ontology-modeling:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "performance-budgets",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "performance-budgets:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "performance-testing",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "performance-testing:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "porters-five-forces",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "porters-five-forces:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "positioning",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "positioning:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "principled-negotiation",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "principled-negotiation:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "printify",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "printify:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "property-based-testing",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "property-based-testing:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "rendering-models",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "rendering-models:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "schema-evolution",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "schema-evolution:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "security-fundamentals",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "security-fundamentals:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "semantic-relations",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "semantic-relations:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "semantics",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "semantics:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "server-actions-design",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "server-actions-design:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "seven-powers",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "seven-powers:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "sharding-strategy",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "sharding-strategy:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "skill-evolution",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "skill-evolution:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "skill-router",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "skill-router:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "snapshot-testing",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "snapshot-testing:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "spec-driven-development",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "spec-driven-development:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "state-machine-modeling",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "state-machine-modeling:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "system-interface-contracts",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "system-interface-contracts:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "test-driven-development",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "test-driven-development:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "testing-strategy",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "testing-strategy:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is PROVISIONAL, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "three-horizons",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "three-horizons:eval:4",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "tool-call-strategy",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "tool-call-strategy:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "type-safety",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "type-safety:eval:2",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "value-chain-analysis",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "value-chain-analysis:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "vrio",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "vrio:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    },
+    {
+      "skill": "writing-humanizer",
+      "count": 1,
+      "statuses": [
+        "blocked_requires_certification"
+      ],
+      "items": [
+        {
+          "id": "writing-humanizer:eval:3",
+          "status": "blocked_requires_certification",
+          "finding": "application_verdict is UNVERIFIED, so the skill is not certified useful by the Behavior Gate.",
+          "resolution": "Requires actual comprehension/application/routing grader execution; file edits cannot honestly certify behavior."
+        }
+      ]
+    }
+  ],
+  "repaired_artifacts": {
+    "application_evals": "All 186 evaluated skills have evals/application.json; checker reports 187/187 conformant including sample.",
+    "comprehension_evals": "All 186 evaluated skills have evals/comprehension.json and parse as JSON.",
+    "grounding": "No local BROKEN/DRIFT/NO_BASELINE drift states remain; 18 skills have OK local drift baselines; 75 skills use external URL sources that the zero-dependency drift sentinel does not hash; 93 remain ungrounded pending researched source authoring.",
+    "lint": "skill-lint reports 186 OK, 0 failures, 0 warnings.",
+    "authored_content": "All blocked_requires_per_skill_authoring rows were repaired or reclassified; none remain."
+  },
+  "note": "Blocked rows are not hidden; they require model certification or researched non-circular truth-source authoring. No remaining row is marked open."
+}

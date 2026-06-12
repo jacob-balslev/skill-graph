@@ -1,11 +1,1605 @@
 {
   "run_id": "full-content-2026-06-12-r2",
   "mode": "CONTENT",
-  "partial": true,
-  "generated_at": "2026-06-12T18:24:28.440Z",
+  "generated_at": "2026-06-12T18:24:28.449Z",
   "target": "/Users/jacobbalslev/Development/skills/skills",
-  "total_completed": 186,
-  "last_completed": "version-control",
+  "total_skills_evaluated": 186,
+  "agents_used": [
+    "opus",
+    "gemini-flash",
+    "deepseek-flash",
+    "mimo"
+  ],
+  "configured_advisory_note": "Current Skill Audit Loop ADVISORY_MODELS are gemini, deepseek-flash, mimo, gemini-flash; this run used the free agents among them plus Opus. Gemini Pro smoke was unhealthy and is not a free agent.",
+  "reviewer_timeout_ms": 180000,
+  "reviewer_timeouts_ms": {
+    "opus": 180000,
+    "gemini-flash": 180000,
+    "deepseek-flash": 60000,
+    "mimo": 60000
+  },
+  "docs_read": [
+    {
+      "path": "/Users/jacobbalslev/Development/CLAUDE.md",
+      "exists": true,
+      "lines": 49,
+      "sha256_16": "c8e62ec66d209681"
+    },
+    {
+      "path": "/Users/jacobbalslev/Development/AGENTS.md",
+      "exists": true,
+      "lines": 869,
+      "sha256_16": "40c6a984d3aa5ddc"
+    },
+    {
+      "path": "/Users/jacobbalslev/Development/SKILL-SYSTEM-CHEAT-SHEET.md",
+      "exists": true,
+      "lines": 150,
+      "sha256_16": "fc4221367b41a16f"
+    },
+    {
+      "path": "/Users/jacobbalslev/Development/skill-graph/AGENTS.md",
+      "exists": true,
+      "lines": 840,
+      "sha256_16": "4e42abf1584eb667"
+    },
+    {
+      "path": "/Users/jacobbalslev/Development/skill-graph/SKILL_GRAPH.md",
+      "exists": true,
+      "lines": 490,
+      "sha256_16": "d00f461b42bee5ca"
+    },
+    {
+      "path": "/Users/jacobbalslev/Development/skill-graph/skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md",
+      "exists": true,
+      "lines": 831,
+      "sha256_16": "b624d0deb70393bd"
+    },
+    {
+      "path": "/Users/jacobbalslev/Development/skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md",
+      "exists": true,
+      "lines": 1189,
+      "sha256_16": "1574963dccf5bdec"
+    },
+    {
+      "path": "/Users/jacobbalslev/Development/skill-graph/prompts/skill-audit-loop-codex-panel-supervisor-v1.md",
+      "exists": true,
+      "lines": 300,
+      "sha256_16": "ef9cc2d1d7906de0"
+    },
+    {
+      "path": "/Users/jacobbalslev/Development/skill-graph/prompts/skill-audit-loop-opencode-panel-supervisor-v1.md",
+      "exists": true,
+      "lines": 255,
+      "sha256_16": "ddba3340b081162d"
+    },
+    {
+      "path": "/Users/jacobbalslev/Development/skill-graph/prompts/skill-audit-loop-claude-panel-supervisor-v1.md",
+      "exists": true,
+      "lines": 164,
+      "sha256_16": "3656f27e94c25cf5"
+    },
+    {
+      "path": "/Users/jacobbalslev/Development/skill-graph/docs/skill-audit-multimodel-merge.md",
+      "exists": true,
+      "lines": 85,
+      "sha256_16": "ff6d885aea181722"
+    },
+    {
+      "path": "/Users/jacobbalslev/Development/skill-graph/docs/skill-audit-multimodel-merge-v2.md",
+      "exists": true,
+      "lines": 192,
+      "sha256_16": "513b52d211ab7930"
+    },
+    {
+      "path": "/Users/jacobbalslev/Development/skill-graph/audits/lanes.json",
+      "exists": true,
+      "lines": 66,
+      "sha256_16": "42a96dd92e93f9fe"
+    },
+    {
+      "path": "/Users/jacobbalslev/Development/skill-graph/audits/merge-protocol.md",
+      "exists": true,
+      "lines": 69,
+      "sha256_16": "b777f9e433a7373d"
+    },
+    {
+      "path": "/Users/jacobbalslev/Development/agent-orchestration/config/org-chart.json",
+      "exists": true,
+      "lines": 145,
+      "sha256_16": "08eadb5f2e821bce"
+    }
+  ],
+  "external_sources": [
+    {
+      "url": "https://agentskills.io/skill-creation/evaluating-skills",
+      "note": "Agent Skills eval guidance: realistic prompts, with/without baseline, assertions, grading evidence, aggregation, pattern analysis."
+    },
+    {
+      "url": "https://agentskills.io/skill-creation/optimizing-descriptions",
+      "note": "Agent Skills description guidance: activation depends on precise descriptions, should-trigger and should-not-trigger queries, realistic trigger eval prompts."
+    },
+    {
+      "url": "https://developers.openai.com/blog/eval-skills",
+      "note": "OpenAI guidance: evals are prompt plus captured run plus checks plus score over time; define measurable success and avoid vibe-based assessment."
+    },
+    {
+      "url": "https://www.langchain.com/blog/evaluating-skills",
+      "note": "LangChain guidance: evaluate skills with clean environments, with/without comparisons, concrete tasks, clear metrics, and observability."
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=C1WRly9nmnU",
+      "note": "YouTube title/description verified: Claude Skills 2.0 Breakdown: Measure, Test, Improve; timedtext captions exposed but signed endpoint returned 404 in this environment."
+    },
+    {
+      "url": "https://sonusahani.com/blogs/claude-skills-measure-test-improve",
+      "note": "Accessible article matching the video topic: evaluation cycle, model drift, pass/fail criteria, dry runs, audits, human review, token pruning."
+    }
+  ],
+  "raw_reviewer_dir": "/Users/jacobbalslev/Development/skill-graph/audits/content-evaluation-2026-06-12/raw-reviewers-full-content-2026-06-12-r2",
+  "parallel_proof": {
+    "method": "For each public skill, reviewer child processes are spawned before awaiting Promise.all; per-reviewer spawn_requested_at/started_at/ended_at are recorded. OpenCode reviewers use isolated temporary model CLI homes and attached per-skill review bundles in scratch directories to avoid shared SQLite locks and broad workspace reads.",
+    "unit_test": "node skill-graph/scripts/__tests__/test-advisory-panel.js passed 30 checks, including worker panel starts advisory models in parallel."
+  },
+  "score_distribution": {
+    "A": 94,
+    "B": 68,
+    "C": 23,
+    "D": 1,
+    "F": 0
+  },
+  "score_summary": {
+    "min": 69,
+    "max": 99,
+    "avg": 88
+  },
+  "blocked_skills": [
+    {
+      "name": "claude-haiku",
+      "blockers": [
+        "gemini-flash: exit 0"
+      ]
+    },
+    {
+      "name": "claude-sonnet",
+      "blockers": [
+        "opus: exit 0"
+      ]
+    },
+    {
+      "name": "codex",
+      "blockers": [
+        "gemini-flash: exit 0"
+      ]
+    },
+    {
+      "name": "gemini-pro",
+      "blockers": [
+        "deepseek-flash: exit 0"
+      ]
+    },
+    {
+      "name": "gpt-5-5",
+      "blockers": [
+        "deepseek-flash: exit 0"
+      ]
+    },
+    {
+      "name": "opencode",
+      "blockers": [
+        "gemini-flash: exit 0"
+      ]
+    },
+    {
+      "name": "skill-router",
+      "blockers": [
+        "public:false; external reviewer panel skipped for privacy/publication boundary",
+        "opus: public:false; external dispatch skipped",
+        "gemini-flash: public:false; external dispatch skipped",
+        "deepseek-flash: public:false; external dispatch skipped",
+        "mimo: public:false; external dispatch skipped"
+      ]
+    },
+    {
+      "name": "prompt-injection-defense",
+      "blockers": [
+        "opus: exit 0"
+      ]
+    },
+    {
+      "name": "api-design",
+      "blockers": [
+        "gemini-flash: exit 0"
+      ]
+    },
+    {
+      "name": "connection-pooling",
+      "blockers": [
+        "gemini-flash: exit 0"
+      ]
+    },
+    {
+      "name": "cron-scheduling",
+      "blockers": [
+        "mimo: exit 0"
+      ]
+    },
+    {
+      "name": "schema-evolution",
+      "blockers": [
+        "mimo: exit 0"
+      ]
+    },
+    {
+      "name": "dark-mode-implementation",
+      "blockers": [
+        "opus: exit 0",
+        "mimo: exit 0"
+      ]
+    },
+    {
+      "name": "form-ux-architecture",
+      "blockers": [
+        "opus: exit 0"
+      ]
+    },
+    {
+      "name": "information-architecture",
+      "blockers": [
+        "deepseek-flash: exit 0"
+      ]
+    },
+    {
+      "name": "journey-mapping",
+      "blockers": [
+        "opus: exit 0"
+      ]
+    },
+    {
+      "name": "layout-composition",
+      "blockers": [
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "microcopy",
+      "blockers": [
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "prototyping",
+      "blockers": [
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "research-synthesis",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "semiotics",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "typography-system",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "usability-testing",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "user-research",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "visual-design-foundations",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "visual-hierarchy",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "writing-humanizer",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "client-server-boundary",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "design-system-architecture",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "error-boundary",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "frontend-architecture",
+      "blockers": [
+        "opus: exit 1",
+        "gemini-flash: exit 0",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "generative-ui",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "hooks-patterns",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "middleware-patterns",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "mobile-responsive-ux",
+      "blockers": [
+        "opus: exit 1",
+        "gemini-flash: exit 0",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "ref-patterns",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "rendering-models",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "server-actions-design",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "server-components-design",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "state-management",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "suspense-patterns",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "theme-system-design",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "vercel-composition-patterns",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "keywords",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "knowledge-modeling",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "linguistics",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "ontology-modeling",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "semantic-center",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "semantic-relations",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "semantics",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "skill-evolution",
+      "blockers": [
+        "public:false; external reviewer panel skipped for privacy/publication boundary",
+        "opus: public:false; external dispatch skipped",
+        "gemini-flash: public:false; external dispatch skipped",
+        "deepseek-flash: public:false; external dispatch skipped",
+        "mimo: public:false; external dispatch skipped"
+      ]
+    },
+    {
+      "name": "taxonomy-design",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "etsy",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "printify",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "shopify",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "a11y",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "best-practice",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "code-review",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "cognitive-load-theory",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "contract-testing",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "diff-analysis",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "e2e-test-design",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "error-tracking",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "graph-audit",
+      "blockers": [
+        "public:false; external reviewer panel skipped for privacy/publication boundary",
+        "opus: public:false; external dispatch skipped",
+        "gemini-flash: public:false; external dispatch skipped",
+        "deepseek-flash: public:false; external dispatch skipped",
+        "mimo: public:false; external dispatch skipped"
+      ]
+    },
+    {
+      "name": "integration-test-design",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "lint-overlay",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "mutation-testing",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "owasp-security",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "performance-budgets",
+      "blockers": [
+        "opus: exit 1",
+        "gemini-flash: timeout",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "performance-engineering",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "performance-testing",
+      "blockers": [
+        "opus: exit 1",
+        "gemini-flash: exit 0",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "property-based-testing",
+      "blockers": [
+        "opus: exit 1",
+        "gemini-flash: exit 0",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "security-fundamentals",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "seo-strategy",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "snapshot-testing",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "test-coverage-strategy",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "test-doubles-design",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "test-driven-development",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "testing-strategy",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "type-safety",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "ansoff-matrix",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "balanced-scorecard",
+      "blockers": [
+        "opus: exit 1",
+        "gemini-flash: exit 0",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "bayesian-reasoning",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "bcg-matrix",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "blue-ocean-strategy",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "constraint-awareness",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "epistemic-grounding",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "expected-value",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "first-principles-thinking",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "inversion",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "kano-model",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "mckinsey-7s",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "mental-models",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "okrs",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "pattern-recognition",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "pestel",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "playing-to-win",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "porters-five-forces",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "positioning",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "principled-negotiation",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "problem-framing",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "scenario-planning",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "second-order-thinking",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "seven-powers",
+      "blockers": [
+        "opus: exit 1",
+        "gemini-flash: exit 0",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "stp-marketing",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "swot-tows",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "task-analysis",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "three-horizons",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "value-chain-analysis",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "vrio",
+      "blockers": [
+        "opus: exit 1",
+        "gemini-flash: exit 0",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "agent-engineering",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "architecture-decision-records",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "bounded-context-mapping",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "conceptual-modeling",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "data-modeling",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "dependency-architecture",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "entity-relationship-modeling",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "event-contract-design",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "event-storming",
+      "blockers": [
+        "opus: exit 1",
+        "gemini-flash: exit 0",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "framework-fit-analysis",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "state-machine-modeling",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "system-interface-contracts",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "canonical-repo-structure",
+      "blockers": [
+        "public:false; external reviewer panel skipped for privacy/publication boundary",
+        "opus: public:false; external dispatch skipped",
+        "gemini-flash: public:false; external dispatch skipped",
+        "deepseek-flash: public:false; external dispatch skipped",
+        "mimo: public:false; external dispatch skipped"
+      ]
+    },
+    {
+      "name": "debugging",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "diagnosis",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "doc-updater",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "merge-queue",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "methodical",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "methodology",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "naming-conventions",
+      "blockers": [
+        "opus: exit 1",
+        "gemini-flash: exit 0",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "no-cutting-corners",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "prioritization",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "problem-approach-router",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "problem-locating-solving",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "refactor",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "spec-driven-development",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "task-path-optimization",
+      "blockers": [
+        "opus: exit 1",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    },
+    {
+      "name": "version-control",
+      "blockers": [
+        "opus: exit 1",
+        "gemini-flash: timeout",
+        "deepseek-flash: timeout",
+        "mimo: timeout"
+      ]
+    }
+  ],
+  "strong_but_uncertified": [
+    "ai-native-development",
+    "autonomous-loop-patterns",
+    "claude-code",
+    "claude-haiku",
+    "claude-opus",
+    "claude-sonnet",
+    "codex",
+    "context-engineering",
+    "context-graph",
+    "context-management",
+    "context-window",
+    "gemini-flash",
+    "gemini-pro",
+    "github-copilot",
+    "gpt-5-5",
+    "opencode-free-models",
+    "opencode",
+    "skill-infrastructure",
+    "skill-router",
+    "skill-scaffold",
+    "agent-eval-design",
+    "eval-driven-development",
+    "evaluation",
+    "intent-recognition",
+    "project-knowledge-extraction",
+    "prompt-craft",
+    "prompt-injection-defense",
+    "summarization",
+    "tool-call-flow",
+    "tool-call-strategy",
+    "acid-fundamentals",
+    "api-design",
+    "background-jobs",
+    "connection-pooling",
+    "cron-scheduling",
+    "http-semantics",
+    "real-time-updates",
+    "route-handler-design",
+    "streaming-architecture",
+    "transaction-isolation",
+    "cap-theorem-tradeoffs",
+    "data-modeling-fundamentals",
+    "database-migration",
+    "indexing-strategy",
+    "observability-modeling",
+    "query-optimization",
+    "replication-patterns",
+    "schema-evolution",
+    "sharding-strategy",
+    "color-system-design",
+    "component-architecture",
+    "dark-mode-implementation",
+    "design-module-composition",
+    "design-thinking",
+    "form-ux-architecture",
+    "ideation",
+    "information-architecture",
+    "interaction-feedback",
+    "interaction-patterns",
+    "journey-mapping",
+    "layout-composition",
+    "microcopy",
+    "prototyping",
+    "research-synthesis",
+    "semiotics",
+    "typography-system",
+    "usability-testing",
+    "user-research",
+    "visual-design-foundations",
+    "visual-hierarchy",
+    "writing-humanizer",
+    "client-server-boundary",
+    "design-system-architecture",
+    "error-boundary",
+    "generative-ui",
+    "hooks-patterns",
+    "middleware-patterns",
+    "mobile-responsive-ux",
+    "ref-patterns",
+    "rendering-models",
+    "server-actions-design",
+    "server-components-design",
+    "state-management",
+    "suspense-patterns",
+    "theme-system-design",
+    "vercel-composition-patterns",
+    "keywords",
+    "knowledge-modeling",
+    "linguistics",
+    "ontology-modeling",
+    "semantic-center",
+    "semantic-relations",
+    "semantics",
+    "skill-evolution",
+    "taxonomy-design",
+    "etsy",
+    "a11y",
+    "best-practice",
+    "code-review",
+    "cognitive-load-theory",
+    "contract-testing",
+    "e2e-test-design",
+    "error-tracking",
+    "graph-audit",
+    "integration-test-design",
+    "lint-overlay",
+    "mutation-testing",
+    "owasp-security",
+    "performance-budgets",
+    "performance-engineering",
+    "performance-testing",
+    "property-based-testing",
+    "security-fundamentals",
+    "snapshot-testing",
+    "test-coverage-strategy",
+    "test-doubles-design",
+    "test-driven-development",
+    "testing-strategy",
+    "type-safety",
+    "ansoff-matrix",
+    "balanced-scorecard",
+    "bayesian-reasoning",
+    "bcg-matrix",
+    "blue-ocean-strategy",
+    "constraint-awareness",
+    "epistemic-grounding",
+    "expected-value",
+    "first-principles-thinking",
+    "inversion",
+    "kano-model",
+    "mckinsey-7s",
+    "mental-models",
+    "okrs",
+    "pattern-recognition",
+    "pestel",
+    "playing-to-win",
+    "porters-five-forces",
+    "positioning",
+    "principled-negotiation",
+    "scenario-planning",
+    "second-order-thinking",
+    "seven-powers",
+    "stp-marketing",
+    "swot-tows",
+    "three-horizons",
+    "value-chain-analysis",
+    "vrio",
+    "agent-engineering",
+    "conceptual-modeling",
+    "framework-fit-analysis",
+    "state-machine-modeling",
+    "system-interface-contracts",
+    "canonical-repo-structure",
+    "diagnosis",
+    "doc-updater",
+    "methodical",
+    "methodology",
+    "naming-conventions",
+    "no-cutting-corners",
+    "problem-locating-solving",
+    "task-path-optimization",
+    "version-control"
+  ],
+  "skills_missing_eval_artifacts": [
+    "ai-native-development",
+    "content-monitor",
+    "context-engineering",
+    "context-graph",
+    "context-management",
+    "context-window",
+    "skill-scaffold",
+    "guardrails",
+    "intent-recognition",
+    "summarization",
+    "tool-call-flow",
+    "tool-call-strategy",
+    "api-design",
+    "compression",
+    "http-semantics",
+    "route-handler-design",
+    "transaction-isolation",
+    "webhook-integration",
+    "cap-theorem-tradeoffs",
+    "data-modeling-fundamentals",
+    "observability-modeling",
+    "query-optimization",
+    "sharding-strategy",
+    "knowledge-modeling",
+    "linguistics",
+    "ontology-modeling",
+    "semantic-center",
+    "semantic-relations",
+    "semantics",
+    "taxonomy-design",
+    "etsy",
+    "printify",
+    "shopify",
+    "best-practice",
+    "diff-analysis",
+    "e2e-test-design",
+    "error-tracking",
+    "integration-test-design",
+    "lint-overlay",
+    "mutation-testing",
+    "owasp-security",
+    "performance-budgets",
+    "performance-engineering",
+    "property-based-testing",
+    "seo-strategy",
+    "test-doubles-design",
+    "test-driven-development",
+    "type-safety",
+    "constraint-awareness",
+    "problem-framing",
+    "task-analysis",
+    "agent-engineering",
+    "architecture-decision-records",
+    "bounded-context-mapping",
+    "conceptual-modeling",
+    "data-modeling",
+    "dependency-architecture",
+    "entity-relationship-modeling",
+    "event-contract-design",
+    "event-storming",
+    "framework-fit-analysis",
+    "state-machine-modeling",
+    "system-interface-contracts",
+    "canonical-repo-structure",
+    "diagnosis",
+    "merge-queue",
+    "prioritization",
+    "problem-locating-solving",
+    "refactor",
+    "spec-driven-development",
+    "version-control"
+  ],
+  "skills_weak_eval_artifacts": [
+    "autonomous-loop-patterns",
+    "claude-code",
+    "claude-haiku",
+    "claude-opus",
+    "claude-sonnet",
+    "codex",
+    "gemini-flash",
+    "gemini-pro",
+    "github-copilot",
+    "gpt-5-5",
+    "opencode-free-models",
+    "opencode",
+    "skill-infrastructure",
+    "skill-router",
+    "agent-eval-design",
+    "eval-driven-development",
+    "evaluation",
+    "project-knowledge-extraction",
+    "prompt-craft",
+    "prompt-injection-defense",
+    "acid-fundamentals",
+    "background-jobs",
+    "connection-pooling",
+    "cron-scheduling",
+    "real-time-updates",
+    "streaming-architecture",
+    "database-migration",
+    "indexing-strategy",
+    "replication-patterns",
+    "schema-evolution",
+    "color-system-design",
+    "component-architecture",
+    "dark-mode-implementation",
+    "design-module-composition",
+    "design-thinking",
+    "form-ux-architecture",
+    "ideation",
+    "information-architecture",
+    "interaction-feedback",
+    "interaction-patterns",
+    "journey-mapping",
+    "layout-composition",
+    "microcopy",
+    "prototyping",
+    "research-synthesis",
+    "semiotics",
+    "typography-system",
+    "usability-testing",
+    "user-research",
+    "visual-design-foundations",
+    "visual-hierarchy",
+    "writing-humanizer",
+    "client-server-boundary",
+    "design-system-architecture",
+    "error-boundary",
+    "frontend-architecture",
+    "generative-ui",
+    "hooks-patterns",
+    "middleware-patterns",
+    "mobile-responsive-ux",
+    "ref-patterns",
+    "rendering-models",
+    "server-actions-design",
+    "server-components-design",
+    "state-management",
+    "suspense-patterns",
+    "theme-system-design",
+    "vercel-composition-patterns",
+    "keywords",
+    "skill-evolution",
+    "a11y",
+    "code-review",
+    "cognitive-load-theory",
+    "contract-testing",
+    "graph-audit",
+    "performance-testing",
+    "security-fundamentals",
+    "snapshot-testing",
+    "test-coverage-strategy",
+    "testing-strategy",
+    "ansoff-matrix",
+    "balanced-scorecard",
+    "bayesian-reasoning",
+    "bcg-matrix",
+    "blue-ocean-strategy",
+    "epistemic-grounding",
+    "expected-value",
+    "first-principles-thinking",
+    "inversion",
+    "kano-model",
+    "mckinsey-7s",
+    "mental-models",
+    "okrs",
+    "pattern-recognition",
+    "pestel",
+    "playing-to-win",
+    "porters-five-forces",
+    "positioning",
+    "principled-negotiation",
+    "scenario-planning",
+    "second-order-thinking",
+    "seven-powers",
+    "stp-marketing",
+    "swot-tows",
+    "three-horizons",
+    "value-chain-analysis",
+    "vrio",
+    "debugging",
+    "doc-updater",
+    "methodical",
+    "methodology",
+    "naming-conventions",
+    "no-cutting-corners",
+    "problem-approach-router",
+    "task-path-optimization"
+  ],
   "results": [
     {
       "name": "ai-native-development",
