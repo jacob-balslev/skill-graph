@@ -9,9 +9,12 @@
  * source of truth for the gate criteria) and, for every scenario, runs the
  * named EXISTING gate script against the scenario's fixture, asserting the exit
  * code and output. This runner adds NO gate logic of its own — it orchestrates
- * the deterministic scripts that already implement each gate
- * (`skill-lint.js`, `skill-graph-drift.js`, `check-audit-manifest.js`,
- * `check-application-evals.js`). Negative fixtures live under
+ * the gate scripts the scenarios reference (currently `skill-lint.js` for the
+ * structural gate and `skill-graph-drift.js` for the truth gate; see the WHEN
+ * map below). The corpus-scoped gates (`check-audit-manifest.js`,
+ * `check-application-evals.js`) read the manifest / skill_roots rather than a
+ * single fixture and are covered by their own unit tests, not driven here — see
+ * `audits/gate-conformance/README.md` § gate→coverage map. Negative fixtures live under
  * `audits/gate-conformance/fixtures/invalid/<rule>/`, deliberately outside every
  * corpus lint/manifest/eval sweep so they can never redden `verify`.
  *
@@ -92,18 +95,29 @@ function runScenario(scenario) {
       `scenario ${id}: expected exit ${then.exit}, got ${res.status}\n--- output ---\n${output}`
     );
   }
-  if (then.output_contains !== undefined) {
+  // `output_contains` / `output_absent` accept a string OR an array of strings.
+  // For an array, EVERY element must (or must not) appear. Asserting multiple
+  // path-independent substrings from the gate's actual diagnostic is how a
+  // scenario avoids passing for the wrong reason — a single substring that also
+  // appears in the fixture path or echoed source is a weak assertion.
+  for (const needle of asList(then.output_contains)) {
     assert(
-      output.includes(String(then.output_contains)),
-      `scenario ${id}: expected output to contain "${then.output_contains}"\n--- output ---\n${output}`
+      output.includes(needle),
+      `scenario ${id}: expected output to contain "${needle}"\n--- output ---\n${output}`
     );
   }
-  if (then.output_absent !== undefined) {
+  for (const needle of asList(then.output_absent)) {
     assert(
-      !output.includes(String(then.output_absent)),
-      `scenario ${id}: expected output to NOT contain "${then.output_absent}"\n--- output ---\n${output}`
+      !output.includes(needle),
+      `scenario ${id}: expected output to NOT contain "${needle}"\n--- output ---\n${output}`
     );
   }
+}
+
+/** Normalize a scalar-or-array `then` field to an array of strings (or []). */
+function asList(value) {
+  if (value === undefined || value === null) return [];
+  return (Array.isArray(value) ? value : [value]).map(String);
 }
 
 function main() {

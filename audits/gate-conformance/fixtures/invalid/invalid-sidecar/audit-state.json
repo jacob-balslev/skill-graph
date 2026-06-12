@@ -1,0 +1,11 @@
+{
+  "schema_version": 8,
+  "version": "1.0.0",
+  "freshness": "2026-06-12",
+  "drift_check": {
+    "last_verified": "2026-06-12"
+  },
+  "eval_artifacts": "none",
+  "eval_state": "unverified",
+  "routing_eval": "absent"
+}

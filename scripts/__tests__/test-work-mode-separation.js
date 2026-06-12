@@ -102,6 +102,27 @@ process.stdout.write('\n7. examples/audits/<skill>/ is CONTENT, not SYSTEM\n');
   assert('7b. Warning fires (examples/audits/ treated as CONTENT)', r.stderr.includes(WARN_NEEDLE));
 }
 
+// ── 8. audits/gate-conformance/** classifies as SYSTEM, not CONTENT ──
+process.stdout.write('\n8. audits/gate-conformance/** is SYSTEM (gate-conformance test infra, not a per-skill audit dir)\n');
+{
+  // The suite's negative fixtures are SKILL.md files living under
+  // audits/gate-conformance/fixtures/invalid/<rule>/. The generic audits/<child>/
+  // rule would classify them as per-skill CONTENT; the classifier allowlists
+  // `gate-conformance` as SYSTEM (alongside prompts/_state). Pair a fixture
+  // SKILL.md with a real per-skill CONTENT path: the warning must fire (proving
+  // the gate-conformance side is SYSTEM, not CONTENT — otherwise the mix would be
+  // CONTENT-only and stay quiet).
+  const mixed = runWithFiles('audits/gate-conformance/spec.yaml,audits/gate-conformance/fixtures/invalid/missing-scope/SKILL.md,audits/a11y/findings.md');
+  assert('8a. Exit 0', mixed.status === 0);
+  assert('8b. Warning fires (gate-conformance treated as SYSTEM)', mixed.stderr.includes(WARN_NEEDLE), `stderr: ${mixed.stderr.slice(0, 400)}`);
+  assert('8c. Fixture SKILL.md listed (on the SYSTEM side)', mixed.stderr.includes('audits/gate-conformance/fixtures/invalid/missing-scope/SKILL.md'));
+
+  // And a gate-conformance-only mix (fixtures + runner, all SYSTEM) must stay
+  // quiet — if a fixture SKILL.md were misclassified as CONTENT, this would warn.
+  const systemOnly = runWithFiles('audits/gate-conformance/spec.yaml,audits/gate-conformance/fixtures/invalid/missing-scope/SKILL.md,scripts/__tests__/test-gate-conformance.js');
+  assert('8d. gate-conformance-only is SYSTEM-only — no warning', !systemOnly.stderr.includes(WARN_NEEDLE), `stderr: ${systemOnly.stderr.slice(0, 400)}`);
+}
+
 // ── Summary ──────────────────────────────────────────────────────────
 process.stdout.write(`\nResults: ${passCount} passed, ${failCount} failed\n`);
 process.exit(failCount === 0 ? 0 : 1);

@@ -50,7 +50,10 @@ scenarios:
     rule: "Required v8 field `scope` must be present; lint FAILS when it is absent."
     given: fixtures/invalid/missing-scope
     when: skill-lint
-    then: { exit: 1, output_contains: scope }
+    # Assert the diagnostic text, not the bare word `scope` (which also appears
+    # in the fixture path). The backtick-wrapped `scope` only appears in the gate
+    # message, pinning the field path-independently.
+    then: { exit: 1, output_contains: ["v8 classification field missing", "`scope`"] }
 
   - id: structural-invalid-subject
     gate: structural
@@ -71,7 +74,16 @@ scenarios:
     rule: "When the sidecar declares `comprehension_state: present`, the five flat Understanding fields are required; the cross-file lint gate FAILS when they are absent."
     given: fixtures/invalid/comprehension-present-missing-understanding
     when: skill-lint
-    then: { exit: 1, output_contains: comprehension_state }
+    # Assert the full cross-file diagnostic, not the bare token `comprehension_state`
+    # (which is echoed from the fixture source in lint's code frame).
+    then: { exit: 1, output_contains: ["audit-state.json declares comprehension_state: present", "missing required Understanding field"] }
+
+  - id: structural-invalid-sidecar
+    gate: structural
+    rule: "The audit-state.json sidecar is validated against schemas/skill-audit-state.schema.json; lint FAILS when a required sidecar field (here `owner`) is missing."
+    given: fixtures/invalid/invalid-sidecar
+    when: skill-lint
+    then: { exit: 1, output_contains: ["required-missing", "`owner`"] }
 
   # --- Truth Gate (skill-graph-drift.js) ---
   - id: truth-source-broken

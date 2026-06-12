@@ -43,7 +43,7 @@ path/positional argument:
 
 | Gate | Verdict | Driven by | Covered here |
 |---|---|---|---|
-| Structural Integrity | `structural_verdict` | `../../scripts/skill-lint.js` | ✅ missing required field, out-of-enum `subject`, dangling `relations.*` target, `comprehension_state`→Understanding cross-file rule |
+| Structural Integrity | `structural_verdict` | `../../scripts/skill-lint.js` | ✅ missing required field, out-of-enum `subject`, dangling `relations.*` target, `comprehension_state`→Understanding cross-file rule, invalid `audit-state.json` sidecar (missing required field) |
 | Truth | `truth_verdict` | `../../scripts/skill-graph-drift.js` | ✅ BROKEN on a missing declared truth source |
 
 The **corpus-scoped** gates read the manifest / `skill_roots`, not a single
@@ -61,8 +61,17 @@ not modeled as conformance scenarios.
 
 ## Adding a scenario
 
+> "Broken in exactly one way" means **one contract-relevant error**, not zero
+> warnings. The negative fixtures still emit incidental lint *warnings* (e.g. the
+> missing field-purpose-comment warning), which are not part of the conformance
+> contract. Assert the gate's specific *error* diagnostic, and prefer
+> path-independent substrings — a substring that also appears in the fixture path
+> or echoed source can make a scenario pass for the wrong reason. `output_contains`
+> accepts a list (all must appear); use it to pin both the gate phrase and the
+> field (e.g. a backtick-wrapped `` `scope` `` that the bare path can't match).
+
 1. Add (or reuse) a fixture under `fixtures/invalid/<rule>/` broken in exactly
-   one way.
+   one contract-relevant way.
 2. Add a `scenario` row to `spec.yaml` with its `given` / `when` / `then`.
 3. If the scenario needs a gate not yet wired, add a one-line builder to the
    `WHEN` map in the runner — never inline gate logic in the runner.
@@ -74,4 +83,5 @@ not modeled as conformance scenarios.
 |---|---|
 | Putting invalid fixtures under `examples/fixture-skills/` | `verify:system` runs `skill-lint.js --path examples/fixture-skills` and would fail on them. Keep them here, out of every sweep. |
 | Adding gate logic to the runner | The runner only orchestrates existing gate scripts. New checks belong in the gate script; the runner just calls it. |
-| A fixture broken in two ways | The failing assertion stops isolating one rule. One broken thing per fixture. |
+| A fixture broken in two ways | The failing assertion stops isolating one rule. One broken (error-level) thing per fixture; incidental warnings are fine. |
+| A weak `output_contains` (substring also in the fixture path / echoed source) | The scenario can pass even if the intended gate stops firing. Assert a path-independent diagnostic substring (use the list form to pin the field too). |
