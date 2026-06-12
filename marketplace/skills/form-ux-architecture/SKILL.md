@@ -13,7 +13,7 @@ metadata:
   triggers: "[\"form ux\",\"validation timing\",\"client server validation\",\"multi-step form\",\"form recovery\"]"
   examples: "[\"design the validation lifecycle for this signup form\",\"audit this checkout form for grouping, required fields, and recovery\",\"should this be one form, a wizard, or progressive disclosure?\",\"split client-side and server-side validation responsibilities for this form\"]"
   anti_examples: "[\"add labels so assistive tech can read each field\",\"rewrite the inline validation messages\",\"define the request and response schema for the form submit endpoint\",\"model the database columns that store these inputs\"]"
-  relations: "{\"related\":[\"interaction-patterns\",\"interaction-feedback\",\"task-analysis\",\"a11y\",\"microcopy\",\"api-design\",\"data-modeling\"],\"boundary\":[{\"skill\":\"microcopy\",\"reason\":\"microcopy owns validation-message wording; form-ux-architecture owns when validation appears and how users recover\"}],\"verify_with\":[\"a11y\",\"microcopy\"]}"
+  relations: "{\"related\":[\"interaction-patterns\",\"interaction-feedback\",\"task-analysis\",\"a11y\",\"microcopy\",\"api-design\",\"data-modeling\"],\"suppresses\":[{\"skill\":\"microcopy\",\"reason\":\"microcopy owns validation-message wording; form-ux-architecture owns when validation appears and how users recover\"}],\"verify_with\":[\"a11y\",\"microcopy\"]}"
   mental_model: "|"
   purpose: "|"
   concept_boundary: "|"

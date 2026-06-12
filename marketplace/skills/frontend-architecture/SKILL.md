@@ -12,7 +12,7 @@ metadata:
   triggers: "[\"frontend architecture\",\"component boundaries\",\"folder structure\",\"state shape\",\"where should this code live\"]"
   examples: "[\"Decide whether a new modal lives in the shared component library or inside a feature folder\",\"Reorganize a frontend that has mixed presentational components and data-fetching components in the same files\",\"Choose a state shape that doesn't force every consumer to re-render on unrelated changes\"]"
   anti_examples: "[\"Pick the brand color palette for a marketing site\",\"Design the REST endpoint shape for the orders resource\",\"Decide whether to use CSS-in-JS or Tailwind\"]"
-  relations: "{\"related\":[\"design-system-architecture\",\"design-module-composition\",\"refactor\",\"testing-strategy\",\"api-design\"],\"boundary\":[{\"skill\":\"design-system-architecture\",\"reason\":\"design-system-architecture covers token layering, primitive component contracts, and library publishing; this skill covers application-side organization that consumes those primitives.\"}]}"
+  relations: "{\"related\":[\"design-system-architecture\",\"design-module-composition\",\"refactor\",\"testing-strategy\",\"api-design\"],\"suppresses\":[{\"skill\":\"design-system-architecture\",\"reason\":\"design-system-architecture covers token layering, primitive component contracts, and library publishing; this skill covers application-side organization that consumes those primitives.\"}]}"
   mental_model: "|"
   purpose: "|"
   concept_boundary: "|"

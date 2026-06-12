@@ -13,7 +13,7 @@ metadata:
   triggers: "[\"interaction feedback\",\"loading and error states\",\"optimistic update\",\"perceived latency\",\"design feedback states\"]"
   examples: "[\"design loading, success, error, and retry feedback for this async action\",\"should this save be optimistic, pending, blocked, or undoable?\",\"the sync takes 30 seconds - what should users see at each stage?\",\"add feedback states so the UI does not feel frozen after clicking Export\"]"
   anti_examples: "[\"rewrite the toast and validation text\",\"make sure the status update is announced to screen readers\",\"model the order lifecycle and legal transitions\",\"profile the endpoint that makes this action slow\"]"
-  relations: "{\"related\":[\"interaction-patterns\",\"microcopy\",\"task-analysis\",\"a11y\",\"performance-engineering\",\"state-machine-modeling\"],\"boundary\":[{\"skill\":\"microcopy\",\"reason\":\"microcopy owns the words inside feedback states; interaction-feedback owns timing, placement, persistence, and recovery behavior\"}],\"verify_with\":[\"a11y\",\"microcopy\"]}"
+  relations: "{\"related\":[\"interaction-patterns\",\"microcopy\",\"task-analysis\",\"a11y\",\"performance-engineering\",\"state-machine-modeling\"],\"suppresses\":[{\"skill\":\"microcopy\",\"reason\":\"microcopy owns the words inside feedback states; interaction-feedback owns timing, placement, persistence, and recovery behavior\"}],\"verify_with\":[\"a11y\",\"microcopy\"]}"
   mental_model: "|"
   purpose: "|"
   concept_boundary: "|"

@@ -328,7 +328,7 @@ Use this checklist when designing a new skill, debugging a failure, or auditing 
 - [ ] Skills involved in any failure now have keywords that match how users actually phrased the request
 - [ ] Skill content cites specific files and line numbers, not generic advice
 - [ ] `drift_check.last_verified` is inside the lifecycle window for every active skill
-- [ ] No two skills give contradictory advice on the same topic (`relations.boundary` is honest about ownership)
+- [ ] No two skills give contradictory advice on the same topic (`relations.suppresses` is honest about ownership)
 - [ ] Context utilization is tracked at task breakpoints; FIC fires at natural boundaries
 - [ ] Injection precision is above 80% (most injected skills are actually consulted)
 - [ ] Injection recall is above 90% (most needed skills are injected)

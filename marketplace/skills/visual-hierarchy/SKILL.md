@@ -11,7 +11,7 @@ metadata:
   triggers: "[\"visual hierarchy\",\"type as hierarchy\",\"what should the eye go to first\",\"establishing focus\",\"attention hierarchy\"]"
   examples: "[\"Decide the H1/H2/H3 size ratios and weight contrast for a long-form article layout\",\"Reduce visual noise on a dashboard where every element competes for attention\",\"Establish a clear primary call-to-action on a page with multiple secondary actions\"]"
   anti_examples: "[\"Write the H1 copy that should appear at the top of the landing page\",\"Choose between sans-serif and serif typefaces for the brand\",\"Pick the brand's primary color\"]"
-  relations: "{\"related\":[\"typography-system\",\"color-system-design\",\"layout-composition\",\"visual-design-foundations\"],\"boundary\":[{\"skill\":\"typography-system\",\"reason\":\"typography-system defines the scale and the typefaces; this skill decides how to deploy them as hierarchy signals on a given surface.\"},{\"skill\":\"layout-composition\",\"reason\":\"layout-composition handles grid, alignment, and spatial structure; this skill handles the prioritization within a layout.\"}]}"
+  relations: "{\"related\":[\"typography-system\",\"color-system-design\",\"layout-composition\",\"visual-design-foundations\"],\"suppresses\":[{\"skill\":\"typography-system\",\"reason\":\"typography-system defines the scale and the typefaces; this skill decides how to deploy them as hierarchy signals on a given surface.\"},{\"skill\":\"layout-composition\",\"reason\":\"layout-composition handles grid, alignment, and spatial structure; this skill handles the prioritization within a layout.\"}]}"
   mental_model: "|"
   purpose: "|"
   concept_boundary: "|"

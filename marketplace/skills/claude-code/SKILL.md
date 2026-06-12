@@ -1,6 +1,6 @@
 ---
 name: claude-code
-description: "Use when deciding whether to run a task in the Claude Code agent harness, when scoping work to its native capabilities (skills, hooks, subagents, MCP, plan mode, 1M-context Opus, background tasks, slash commands), or when choosing Claude Code versus a different harness (Codex, OpenCode, Copilot) for a given piece of work. Covers what the harness is good at, the extensibility stack and when each layer earns its keep, and the decision boundaries against rival harnesses. Do NOT use for writing Anthropic SDK / API code (use `claude-api`), for choosing which Claude MODEL to route a task to versus GPT (use `gpt-5`), or for designing a generic autonomous agent loop (use `autonomous-loop-patterns`). Do NOT use for write a Python script that calls the Anthropic Messages API. Do NOT use for is GPT-5 or Opus better for this code review? Do NOT use for design a resumable autonomous loop with a supervisor."
+description: "Use when deciding whether to run a task in the Claude Code agent harness, when scoping work to its native capabilities (skills, hooks, subagents, MCP, plan mode, 1M-context Opus, background tasks, slash commands), or when choosing Claude Code versus a different harness (Codex, OpenCode, Copilot) for a given piece of work. Covers what the harness is good at, the extensibility stack and when each layer earns its keep, and the decision boundaries against rival harnesses. Do NOT use for writing Anthropic SDK / API code (use `claude-api`), for choosing which Claude MODEL to route a task to versus GPT (use `gpt-5-5`), or for designing a generic autonomous agent loop (use `autonomous-loop-patterns`). Do NOT use for write a Python script that calls the Anthropic Messages API. Do NOT use for is GPT-5.5 or Opus better for this code review? Do NOT use for design a resumable autonomous loop with a supervisor."
 license: MIT
 compatibility: "Harness-knowledge skill. Facts current as of 2026-06-08 (Claude Opus 4.8 era); the harness ships new features fast, so verify capability claims against current Claude Code docs before relying on a specific version detail."
 allowed-tools: Read Grep
@@ -8,7 +8,7 @@ metadata:
   subject: agent-ops
   subjects: "[\"agent-ops\",\"ai-engineering\"]"
   public: "true"
-  scope: "Choosing and scoping work for the Claude Code agent/CLI harness — its capability surface (the skills + hooks + subagents extensibility stack, MCP, plan mode, 1M-context Opus, run_in_background tasks, slash commands), what it is decisively good at, and how to decide between it and a rival harness (Codex, OpenCode, Copilot) for a task. Portable across any project that uses Claude Code; principle- and capability-grounded, not repo-bound. Excludes Anthropic SDK/API coding (claude-api), Claude-vs-GPT model routing (gpt-5), and generic agent-loop design (autonomous-loop-patterns)."
+  scope: "Choosing and scoping work for the Claude Code agent/CLI harness — its capability surface (the skills + hooks + subagents extensibility stack, MCP, plan mode, 1M-context Opus, run_in_background tasks, slash commands), what it is decisively good at, and how to decide between it and a rival harness (Codex, OpenCode, Copilot) for a task. Portable across any project that uses Claude Code; principle- and capability-grounded, not repo-bound. Excludes Anthropic SDK/API coding (claude-api), Claude-vs-GPT model routing (gpt-5-5), and generic agent-loop design (autonomous-loop-patterns)."
   taxonomy_domain: agent/harness
   mental_model: "The harness is the body; the model is the brain. The model decides what to do; the harness decides what the model is allowed to do and how its actions are gated, rendered, parallelized, and persisted. Choosing this harness is choosing that body — its permission model, extensibility layers, and context budget — not just the underlying model."
   purpose: "A frontier model alone cannot safely operate a codebase. The harness supplies the missing scaffolding — typed tool surfaces the host can gate, lifecycle hooks for automation and security, isolated subagent context windows, on-demand skill loading, and a plan-before-act mode — so a long-horizon coding task can run autonomously without losing control or context."
@@ -18,8 +18,8 @@ metadata:
   stability: experimental
   keywords: "[\"claude code harness\",\"when to use claude code\",\"claude code skills hooks subagents\",\"claude code vs codex\",\"claude code plan mode\",\"1M context opus\",\"run_in_background tasks\",\"claude code mcp\",\"agent harness comparison\",\"claude code slash commands\"]"
   examples: "[\"should I run this refactor in Claude Code or hand it to Codex?\",\"what is Claude Code actually good at compared to other agent CLIs?\",\"do I need a hook, a subagent, or a skill for this?\"]"
-  anti_examples: "[\"write a Python script that calls the Anthropic Messages API\",\"is GPT-5 or Opus better for this code review?\",\"design a resumable autonomous loop with a supervisor\"]"
-  relations: "{\"related\":[\"codex\",\"gpt-5\",\"claude-opus\",\"autonomous-loop-patterns\",\"agent-eval-design\"],\"suppresses\":[{\"skill\":\"gpt-5\",\"reason\":\"I own the Claude Code harness decision; gpt-5 owns routing a task to the GPT MODEL vs Claude\"},{\"skill\":\"codex\",\"reason\":\"I own the Claude Code harness scope; codex owns the rival Codex harness decision\"}],\"verify_with\":[\"codex\",\"gpt-5\"]}"
+  anti_examples: "[\"write a Python script that calls the Anthropic Messages API\",\"is GPT-5.5 or Opus better for this code review?\",\"design a resumable autonomous loop with a supervisor\"]"
+  relations: "{\"related\":[\"codex\",\"gpt-5-5\",\"claude-opus\",\"autonomous-loop-patterns\",\"agent-eval-design\"],\"suppresses\":[{\"skill\":\"gpt-5-5\",\"reason\":\"I own the Claude Code harness decision; gpt-5-5 owns routing a task to the GPT MODEL vs Claude\"},{\"skill\":\"codex\",\"reason\":\"I own the Claude Code harness scope; codex owns the rival Codex harness decision\"}],\"verify_with\":[\"codex\",\"gpt-5-5\"]}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/claude-code/SKILL.md
@@ -51,7 +51,7 @@ metadata:
 - The capability surface that drives the choice: 1M-context Opus inside the harness, cross-session context, typed host-gatable tools, the permission model
 - The decision boundaries against rival harnesses, framed by each rival's specific strength (terminal-bench leadership, provider-agnostic model routing)
 - The strengths and watch-outs (Anthropic-first model routing, fast-moving feature surface that ages version claims, background-dispatch git-permission caveat)
-- Out of scope and where it routes instead: Anthropic SDK/API coding (`claude-api`), Claude-vs-GPT model routing (`gpt-5`), generic agent-loop topology (`autonomous-loop-patterns`)
+- Out of scope and where it routes instead: Anthropic SDK/API coding (`claude-api`), Claude-vs-GPT model routing (`gpt-5-5`), generic agent-loop topology (`autonomous-loop-patterns`)
 
 ## When to use Claude Code (routing decision)
 
@@ -104,7 +104,7 @@ Harness choice is an axis people routinely collapse into model choice, and that 
 
 Before concluding "run this in Claude Code," confirm:
 
-- [ ] The decision is about the HARNESS (which body runs the task), not about the model (Claude vs GPT → `gpt-5`) or the SDK call (→ `claude-api`).
+- [ ] The decision is about the HARNESS (which body runs the task), not about the model (Claude vs GPT → `gpt-5-5`) or the SDK call (→ `claude-api`).
 - [ ] The task genuinely wants a native capability the harness owns (a specific layer of the skills/hooks/subagents/MCP/plan-mode/background/1M-context stack) — name the layer, not just "it's a coding task."
 - [ ] No rival harness's differentiator is the actual point of the task (terminal-command leadership → `codex`; non-Anthropic-model routing → OpenCode). If one is, route there.
 - [ ] Any version-specific capability claim used in the decision (hook count, effort tiers, flags, 1M-context behavior) was checked against current Claude Code docs, not quoted from memory — the harness ages claims fast.
@@ -114,14 +114,14 @@ Before concluding "run this in Claude Code," confirm:
 | Instead of `claude-code` | Use | Why |
 |---|---|---|
 | Writing code that calls the Anthropic Messages API / SDK | `claude-api` | That is application code, not a harness-selection decision |
-| Deciding whether GPT-5 or Claude should do the task | `gpt-5` | That is a MODEL-routing decision, orthogonal to the harness |
+| Deciding whether GPT-5.5 or Claude should do the task | `gpt-5-5` | That is a MODEL-routing decision, orthogonal to the harness |
 | Choosing the resumable-session, `exec`-piping GPT harness | `codex` | When the task wants Codex's specific differentiators |
 | Designing a generic resumable/supervised agent loop | `autonomous-loop-patterns` | That is loop topology, below any specific harness |
 
 ## References
 
 - `references/model-facts.md` — verified capability + model facts (Opus 4.8 era, 2026-06-08) with sources
-- Sibling skills `codex` and `gpt-5` — the rival-harness and model-routing decisions this skill defers to
+- Sibling skills `codex` and `gpt-5-5` — the rival-harness and model-routing decisions this skill defers to
 
 ## Skill Graph context
 
@@ -131,7 +131,7 @@ Before concluding "run this in Claude Code," confirm:
 - Subject: `agent-ops` (also: `ai-engineering`)
 - Public: `true`
 - Domain: `agent/harness`
-- Scope: Choosing and scoping work for the Claude Code agent/CLI harness — its capability surface (the skills + hooks + subagents extensibility stack, MCP, plan mode, 1M-context Opus, run_in_background tasks, slash commands), what it is decisively good at, and how to decide between it and a rival harness (Codex, OpenCode, Copilot) for a task. Portable across any project that uses Claude Code; principle- and capability-grounded, not repo-bound. Excludes Anthropic SDK/API coding (claude-api), Claude-vs-GPT model routing (gpt-5), and generic agent-loop design (autonomous-loop-patterns).
+- Scope: Choosing and scoping work for the Claude Code agent/CLI harness — its capability surface (the skills + hooks + subagents extensibility stack, MCP, plan mode, 1M-context Opus, run_in_background tasks, slash commands), what it is decisively good at, and how to decide between it and a rival harness (Codex, OpenCode, Copilot) for a task. Portable across any project that uses Claude Code; principle- and capability-grounded, not repo-bound. Excludes Anthropic SDK/API coding (claude-api), Claude-vs-GPT model routing (gpt-5-5), and generic agent-loop design (autonomous-loop-patterns).
 
 **When to use**
 - should I run this refactor in Claude Code or hand it to Codex?
@@ -140,14 +140,14 @@ Before concluding "run this in Claude Code," confirm:
 
 **Not for**
 - write a Python script that calls the Anthropic Messages API
-- is GPT-5 or Opus better for this code review?
+- is GPT-5.5 or Opus better for this code review?
 - design a resumable autonomous loop with a supervisor
-- Owned by `gpt-5`
+- Owned by `gpt-5-5`
 - Owned by `codex`
 
 **Related skills**
-- Verify with: `codex`, `gpt-5`
-- Related: `codex`, `gpt-5`, `claude-opus`, `autonomous-loop-patterns`, `agent-eval-design`
+- Verify with: `codex`, `gpt-5-5`
+- Related: `codex`, `gpt-5-5`, `claude-opus`, `autonomous-loop-patterns`, `agent-eval-design`
 
 **Concept**
 - Mental model: The harness is the body; the model is the brain. The model decides what to do; the harness decides what the model is allowed to do and how its actions are gated, rendered, parallelized, and persisted. Choosing this harness is choosing that body — its permission model, extensibility layers, and context budget — not just the underlying model.

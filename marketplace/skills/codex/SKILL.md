@@ -1,6 +1,6 @@
 ---
 name: codex
-description: "Use when deciding whether to run a task in the Codex CLI agent harness (which drives a frontier GPT model), when scoping work to its native capabilities (resumable `codex exec resume` sessions, non-interactive `exec` stdout-piping, in-process dispatch, `/permissions` sandbox modes, MCP, on-demand subagents, the `/review` code-review agent), or when choosing Codex versus the Claude Code harness for a piece of work — and when avoiding its known failure modes (non-autonomous subagents, Full-Access network reach, cold-one-shot context loss). Do NOT use for routing a task to the GPT MODEL versus Claude (use `gpt-5`), for the Claude Code harness decision (use `claude-code`), or for designing a generic resumable agent loop (use `autonomous-loop-patterns`). Do NOT use for is GPT-5 or Opus the better model for this task? Do NOT use for what is Claude Code good at? Do NOT use for design a resumable supervised loop from scratch."
+description: "Use when deciding whether to run a task in the Codex CLI agent harness (which drives a frontier GPT model), when scoping work to its native capabilities (resumable `codex exec resume` sessions, non-interactive `exec` stdout-piping, in-process dispatch, `/permissions` sandbox modes, MCP, on-demand subagents, the `/review` code-review agent), or when choosing Codex versus the Claude Code harness for a piece of work — and when avoiding its known failure modes (non-autonomous subagents, Full-Access network reach, cold-one-shot context loss). Do NOT use for routing a task to the GPT MODEL versus Claude (use `gpt-5-5`), for the Claude Code harness decision (use `claude-code`), or for designing a generic resumable agent loop (use `autonomous-loop-patterns`). Do NOT use for is GPT-5.5 or Opus the better model for this task? Do NOT use for what is Claude Code good at? Do NOT use for design a resumable supervised loop from scratch."
 license: MIT
 compatibility: "Harness-knowledge skill. Facts current as of 2026-06-08 (GPT-5.5 generation). The Codex CLI ships features fast — verify command names, flags, and the served GPT model against current OpenAI Codex docs before relying on a specific detail."
 allowed-tools: Read Grep
@@ -8,13 +8,13 @@ metadata:
   subject: agent-ops
   subjects: "[\"agent-ops\",\"ai-engineering\"]"
   public: "true"
-  scope: "Choosing and scoping work for the Codex CLI agent harness (runs a frontier GPT model) — its capability surface (resumable codex exec resume sessions that retain transcript/plan/approvals, non-interactive exec stdout-piping for in-process dispatch, /permissions Auto/Read-only/Full-Access sandbox modes, MCP, explicit-only subagents, the /review code-review agent), what it is good at versus the Claude Code harness, and its known failure modes. Portable across any project that uses Codex; harness-knowledge, not repo-bound. Excludes GPT-vs-Claude model routing (gpt-5), the Claude Code harness decision (claude-code), and generic agent-loop design (autonomous-loop-patterns)."
+  scope: "Choosing and scoping work for the Codex CLI agent harness (runs a frontier GPT model) — its capability surface (resumable codex exec resume sessions that retain transcript/plan/approvals, non-interactive exec stdout-piping for in-process dispatch, /permissions Auto/Read-only/Full-Access sandbox modes, MCP, explicit-only subagents, the /review code-review agent), what it is good at versus the Claude Code harness, and its known failure modes. Portable across any project that uses Codex; harness-knowledge, not repo-bound. Excludes GPT-vs-Claude model routing (gpt-5-5), the Claude Code harness decision (claude-code), and generic agent-loop design (autonomous-loop-patterns)."
   taxonomy_domain: agent/harness
   stability: experimental
   keywords: "[\"codex cli harness\",\"when to use codex\",\"codex exec resume\",\"resumable codex session\",\"codex vs claude code\",\"codex permissions sandbox\",\"codex review agent\",\"codex in-process dispatch\",\"codex mcp subagents\",\"codex failure modes\"]"
   examples: "[\"should I run this through Codex or Claude Code?\",\"how do I resume my last Codex session non-interactively?\",\"what are Codex's permission modes and when is Full Access risky?\"]"
-  anti_examples: "[\"is GPT-5 or Opus the better model for this task?\",\"what is Claude Code good at?\",\"design a resumable supervised loop from scratch\"]"
-  relations: "{\"related\":[\"claude-code\",\"gpt-5\",\"autonomous-loop-patterns\",\"agent-eval-design\",\"claude-opus\"],\"suppresses\":[{\"skill\":\"gpt-5\",\"reason\":\"I own running GPT through the Codex CLI harness; gpt-5 owns routing the task to the GPT MODEL vs Claude\"},{\"skill\":\"claude-code\",\"reason\":\"I own the Codex harness decision; claude-code owns the Claude Code harness decision\"}],\"verify_with\":[\"claude-code\",\"gpt-5\"]}"
+  anti_examples: "[\"is GPT-5.5 or Opus the better model for this task?\",\"what is Claude Code good at?\",\"design a resumable supervised loop from scratch\"]"
+  relations: "{\"related\":[\"claude-code\",\"gpt-5-5\",\"autonomous-loop-patterns\",\"agent-eval-design\",\"claude-opus\"],\"suppresses\":[{\"skill\":\"gpt-5-5\",\"reason\":\"I own running GPT through the Codex CLI harness; gpt-5-5 owns routing the task to the GPT MODEL vs Claude\"},{\"skill\":\"claude-code\",\"reason\":\"I own the Codex harness decision; claude-code owns the Claude Code harness decision\"}],\"verify_with\":[\"claude-code\",\"gpt-5-5\"]}"
   mental_model: "An agent CLI is a HARNESS (the body: loop, tool use, session, permissions) wrapping a swappable frontier MODEL (the brain). What distinguishes this harness among bodies is statefulness — a session is a durable object holding transcript, plan, and approvals that can be resumed by id — plus a non-interactive exec mode that pipes results to stdout for scripting and in-process dispatch."
   purpose: It exists to operate a codebase with a frontier model under a controllable permission boundary while making runs RESUMABLE and SCRIPTABLE — so a long task can be continued across invocations (keeping its plan and approval history) and automated into pipelines instead of restarting cold every time.
   concept_boundary: "This is the HARNESS decision — which agent CLI runs the work, and how to scope its native capabilities and avoid its failure modes. It is NOT routing the task to a model versus another model, NOT the rival harness's decision, and NOT designing a generic resumable agent loop from scratch."
@@ -38,7 +38,7 @@ metadata:
 
 **What it is NOT:** It is not the GPT model itself (the model is selectable inside Codex via `/model`), not the OpenAI SDK/API, and not the Claude Code harness — choosing Codex is a harness decision distinct from the GPT-vs-Claude model-routing decision.
 
-**Adjacent concepts:** Claude Code (the rival harness), `gpt-5` (the model-routing decision for the GPT the harness runs), the OpenAI API (the SDK surface), and generic resumable-loop patterns (the topology underneath).
+**Adjacent concepts:** Claude Code (the rival harness), `gpt-5-5` (the model-routing decision for the GPT the harness runs), the OpenAI API (the SDK surface), and generic resumable-loop patterns (the topology underneath).
 
 **One-line analogy:** Codex is a cockpit with a flight recorder and autopilot resume — you can land, walk away, and later climb back into the exact same flight with its plan and clearances intact.
 
@@ -114,7 +114,7 @@ Use this checklist to confirm a Codex harness decision is correct and current.
 
 | Instead of `codex` | Use | Why |
 |---|---|---|
-| Deciding whether GPT-5 or Claude should do the task | `gpt-5` | That is a MODEL-routing decision, orthogonal to the harness |
+| Deciding whether GPT-5.5 or Claude should do the task | `gpt-5-5` | That is a MODEL-routing decision, orthogonal to the harness |
 | Choosing/scoping the Claude Code harness | `claude-code` | The rival-harness decision |
 | Writing code against the OpenAI/Anthropic API | `claude-api` (Anthropic) or the OpenAI SDK directly | That is application code, not harness selection |
 | Designing a generic resumable/supervised agent loop | `autonomous-loop-patterns` | Loop topology below any specific harness |
@@ -122,7 +122,7 @@ Use this checklist to confirm a Codex harness decision is correct and current.
 ## References
 
 - `references/model-facts.md` — verified Codex capability + failure-mode facts (2026-06-08) with sources
-- Sibling skills `claude-code` (the rival harness) and `gpt-5` (the GPT model-routing decision this harness choice defers to)
+- Sibling skills `claude-code` (the rival harness) and `gpt-5-5` (the GPT model-routing decision this harness choice defers to)
 
 ## Skill Graph context
 
@@ -132,7 +132,7 @@ Use this checklist to confirm a Codex harness decision is correct and current.
 - Subject: `agent-ops` (also: `ai-engineering`)
 - Public: `true`
 - Domain: `agent/harness`
-- Scope: Choosing and scoping work for the Codex CLI agent harness (runs a frontier GPT model) — its capability surface (resumable codex exec resume sessions that retain transcript/plan/approvals, non-interactive exec stdout-piping for in-process dispatch, /permissions Auto/Read-only/Full-Access sandbox modes, MCP, explicit-only subagents, the /review code-review agent), what it is good at versus the Claude Code harness, and its known failure modes. Portable across any project that uses Codex; harness-knowledge, not repo-bound. Excludes GPT-vs-Claude model routing (gpt-5), the Claude Code harness decision (claude-code), and generic agent-loop design (autonomous-loop-patterns).
+- Scope: Choosing and scoping work for the Codex CLI agent harness (runs a frontier GPT model) — its capability surface (resumable codex exec resume sessions that retain transcript/plan/approvals, non-interactive exec stdout-piping for in-process dispatch, /permissions Auto/Read-only/Full-Access sandbox modes, MCP, explicit-only subagents, the /review code-review agent), what it is good at versus the Claude Code harness, and its known failure modes. Portable across any project that uses Codex; harness-knowledge, not repo-bound. Excludes GPT-vs-Claude model routing (gpt-5-5), the Claude Code harness decision (claude-code), and generic agent-loop design (autonomous-loop-patterns).
 
 **When to use**
 - should I run this through Codex or Claude Code?
@@ -140,15 +140,15 @@ Use this checklist to confirm a Codex harness decision is correct and current.
 - what are Codex's permission modes and when is Full Access risky?
 
 **Not for**
-- is GPT-5 or Opus the better model for this task?
+- is GPT-5.5 or Opus the better model for this task?
 - what is Claude Code good at?
 - design a resumable supervised loop from scratch
-- Owned by `gpt-5`
+- Owned by `gpt-5-5`
 - Owned by `claude-code`
 
 **Related skills**
-- Verify with: `claude-code`, `gpt-5`
-- Related: `claude-code`, `gpt-5`, `autonomous-loop-patterns`, `agent-eval-design`, `claude-opus`
+- Verify with: `claude-code`, `gpt-5-5`
+- Related: `claude-code`, `gpt-5-5`, `autonomous-loop-patterns`, `agent-eval-design`, `claude-opus`
 
 **Concept**
 - Mental model: An agent CLI is a HARNESS (the body: loop, tool use, session, permissions) wrapping a swappable frontier MODEL (the brain). What distinguishes this harness among bodies is statefulness — a session is a durable object holding transcript, plan, and approvals that can be resumed by id — plus a non-interactive exec mode that pipes results to stdout for scripting and in-process dispatch.

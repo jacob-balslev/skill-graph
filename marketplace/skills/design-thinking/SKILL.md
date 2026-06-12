@@ -11,7 +11,7 @@ metadata:
   triggers: "[\"design thinking\",\"human-centered design\",\"double diamond\",\"which stage\",\"design process\"]"
   examples: "[\"We have user interviews done but no synthesis yet — which design-thinking stage are we in and what's next?\",\"Plan a full design-thinking arc for a four-week project on rural healthcare access.\",\"We just finished a usability test and three findings broke our framing — should we loop back to define?\",\"Route this brief to the right stage-specific skill: 'help us figure out what to build for new homeowners'.\"]"
   anti_examples: "[\"Run a single crazy-8s round on this specific how-might-we.\",\"Write the React component for the dashboard widget.\",\"Model the bounded contexts for the order-fulfillment domain.\"]"
-  relations: "{\"related\":[\"problem-framing\",\"user-research\",\"research-synthesis\",\"journey-mapping\",\"ideation\",\"prototyping\",\"usability-testing\",\"event-storming\",\"problem-locating-solving\"],\"boundary\":[{\"skill\":\"ideation\",\"reason\":\"ideation owns single-stage divergent/convergent concept generation; design-thinking owns the whole arc and routes to ideation when the open question is concept generation.\"}]}"
+  relations: "{\"related\":[\"problem-framing\",\"user-research\",\"research-synthesis\",\"journey-mapping\",\"ideation\",\"prototyping\",\"usability-testing\",\"event-storming\",\"problem-locating-solving\"],\"suppresses\":[{\"skill\":\"ideation\",\"reason\":\"ideation owns single-stage divergent/convergent concept generation; design-thinking owns the whole arc and routes to ideation when the open question is concept generation.\"}]}"
   mental_model: "|"
   purpose: "|"
   concept_boundary: "|"

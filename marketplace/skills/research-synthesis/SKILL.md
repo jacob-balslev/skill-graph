@@ -11,7 +11,7 @@ metadata:
   triggers: "[\"synthesize research\",\"affinity map\",\"empathy map\",\"find themes in interviews\",\"insight statements\"]"
   examples: "[\"Cluster these 14 interview transcripts into themes using affinity mapping.\",\"Build an empathy map for the 'first-time buyer' segment from these field notes.\",\"Turn this set of observations into three insight statements I can take into ideation.\",\"Draft a jobs-to-be-done statement from this user research corpus.\"]"
   anti_examples: "[\"Run more interviews with five additional participants.\",\"Calculate the response rate of the survey.\",\"Summarize this single PDF document.\"]"
-  relations: "{\"related\":[\"user-research\",\"journey-mapping\",\"problem-framing\",\"design-thinking\",\"conceptual-modeling\"],\"boundary\":[{\"skill\":\"user-research\",\"reason\":\"research-synthesis owns transforming a corpus of collected qualitative evidence into themes and insights; user-research owns collecting the primary data in the first place. Both are needed, in that order.\"}],\"verify_with\":[\"usability-testing\"]}"
+  relations: "{\"related\":[\"user-research\",\"journey-mapping\",\"problem-framing\",\"design-thinking\",\"conceptual-modeling\"],\"suppresses\":[{\"skill\":\"user-research\",\"reason\":\"research-synthesis owns transforming a corpus of collected qualitative evidence into themes and insights; user-research owns collecting the primary data in the first place. Both are needed, in that order.\"}],\"verify_with\":[\"usability-testing\"]}"
   mental_model: "|"
   purpose: "|"
   concept_boundary: "|"

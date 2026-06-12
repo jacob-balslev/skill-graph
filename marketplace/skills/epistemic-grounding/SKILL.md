@@ -178,7 +178,7 @@ Use the smallest form that exposes the warrant.
 | Form | Use when | Example |
 |---|---|---|
 | `Claim (source, qualifier). Warrant.` | The source directly supports the claim. | "OpenAI Responses web search returns URL citation annotations by default (OpenAI docs, checked 2026-06-06). So UI output using those web results needs visible clickable citations." |
-| `Observed: … Evidence: … Inferred: …` | You need to separate fact from impact. | "Observed: `relations.boundary` suppresses co-routing when this skill wins (`SKILL.md:66-75`). Inferred: a reversed reason phrase can mislead authors even if runtime behavior is correct." |
+| `Observed: … Evidence: … Inferred: …` | You need to separate fact from impact. | "Observed: `relations.suppresses` removes sibling skills from co-routing when this skill wins (`SKILL.md:66-75`). Inferred: a reversed reason phrase can mislead authors even if runtime behavior is correct." |
 | `I checked X/Y/Z; not found in that scope.` | Making an absence claim. | "Not found in `src/**`, `docs/**`, or `package.json` via `rg \"legacyRouter\"` on 2026-06-06; I did not check generated artifacts." |
 | `The source says X; it does not establish Y.` | Preventing overgeneralization. | "The paper reports overgeneralization in tested summarization tasks; it does not prove all LLM summaries are unreliable." |
 | `Source A conflicts with Source B; prefer A because…` | Sources disagree. | "The release note says the model is deprecated, while an older guide still names it. Prefer the release note because it is newer and owns lifecycle status." |

@@ -11,7 +11,7 @@ metadata:
   triggers: "[\"interview users\",\"user research plan\",\"what to ask users\",\"contextual inquiry\",\"diary study\"]"
   examples: "[\"Draft an interview guide for SMB founders adopting their first accounting software.\",\"How do I observe ICU nurses on shift without disturbing the workflow?\",\"Review my interview script for leading questions and solution-prompts.\",\"Plan a two-week diary study for commuters using public transit apps.\"]"
   anti_examples: "[\"Analyze last quarter's NPS results and produce a dashboard.\",\"Classify whether this agent request from the user is high-risk before executing.\",\"Set up an A/B test of two onboarding flows.\"]"
-  relations: "{\"related\":[\"problem-framing\",\"research-synthesis\",\"usability-testing\",\"design-thinking\",\"intent-recognition\"],\"boundary\":[{\"skill\":\"usability-testing\",\"reason\":\"usability-testing is evaluative — it watches users attempt tasks on an artifact to find usability defects. user-research is generative — it studies users before any artifact exists, to discover needs and context.\"}],\"verify_with\":[\"research-synthesis\",\"problem-framing\"]}"
+  relations: "{\"related\":[\"problem-framing\",\"research-synthesis\",\"usability-testing\",\"design-thinking\",\"intent-recognition\"],\"suppresses\":[{\"skill\":\"usability-testing\",\"reason\":\"usability-testing is evaluative — it watches users attempt tasks on an artifact to find usability defects. user-research is generative — it studies users before any artifact exists, to discover needs and context.\"}],\"verify_with\":[\"research-synthesis\",\"problem-framing\"]}"
   mental_model: "|"
   purpose: "|"
   concept_boundary: "|"
