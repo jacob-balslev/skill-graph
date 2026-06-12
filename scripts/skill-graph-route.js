@@ -9,6 +9,12 @@
  *
  *   - activation.keywords / activation.triggers — scoring signal
  *   - activation.paths                          — optional `--path` boost
+ *   - activation.dependencies                   — optional package/tool boost
+ *   - activation.codebase_layer                 — optional architecture-layer boost
+ *   - activation.applicable_tasks               — optional task-intent boost
+ *   - activation.environment                    — optional environment boost
+ *   - activation.internal_tools                 — optional private-tool boost
+ *   - project_adoption_stage                    — optional project-pattern boost
  *   - project[].handle                          — project-fit filter
  *   - relations.depends_on                      — transitive co-load
  *   - relations.suppresses                     — anti-ownership exclusion
@@ -46,6 +52,7 @@
  *   node scripts/skill-graph-route.js "ssr hydration" --max 5
  *   node scripts/skill-graph-route.js "types" --min-eval-state passing
  *   node scripts/skill-graph-route.js "css" --path src/components/Header.tsx
+ *   node scripts/skill-graph-route.js "server action" --dependency next --layer api --task debugging
  *   node scripts/skill-graph-route.js --manifest examples/skills.manifest.sample.json "css"
  *   node scripts/skill-graph-route.js --json "css"
  *
@@ -141,6 +148,27 @@ function normalizePhrase(text) {
     .replace(/\s+/g, ' ');
 }
 
+function normalizeActivationValue(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function listify(value) {
+  if (Array.isArray(value)) return value.flatMap(listify);
+  if (typeof value !== 'string') return [];
+  return value
+    .split(',')
+    .map(v => normalizeActivationValue(v))
+    .filter(Boolean);
+}
+
+function matchedActivationValues(authored, requested) {
+  const wanted = new Set(listify(requested));
+  if (wanted.size === 0 || !Array.isArray(authored)) return [];
+  return authored
+    .map(normalizeActivationValue)
+    .filter(v => v && wanted.has(v));
+}
+
 /**
  * Score a skill's activation against a query. Higher is better.
  *
@@ -152,11 +180,14 @@ function normalizePhrase(text) {
  *   - keyword substring match: 1 (per distinct query token, also deduped
  *     against tokens already credited as exact matches)
  *   - path match on --path arg: 2
+ *   - project-relevance matches from explicit route context:
+ *     dependencies +4, internal_tools +4, codebase_layer +3,
+ *     applicable_tasks +3, environment +2, project_adoption_stage +2
  *
  * Returns { score, matchedBecause } where matchedBecause is a short tag list
  * used to explain the routing decision back to the user.
  */
-function scoreSkill(skill, queryTokens, pathArg, rawQuery) {
+function scoreSkill(skill, queryTokens, pathArg, rawQuery, routeContext = {}) {
   let score = 0;
   const reasons = [];
 
@@ -164,6 +195,14 @@ function scoreSkill(skill, queryTokens, pathArg, rawQuery) {
   const triggers = activation.triggers || [];
   const keywords = activation.keywords || [];
   const paths = activation.paths || [];
+
+  const addContextMatches = (field, requested, weight, reasonPrefix) => {
+    const matches = matchedActivationValues(activation[field], requested);
+    for (const value of matches) {
+      score += weight;
+      reasons.push(`${reasonPrefix}:${value}`);
+    }
+  };
 
   // Triggers: exact match on the full raw query OR on any retained query token.
   // Full-sentence triggers must compare against the raw query, not the
@@ -240,6 +279,19 @@ function scoreSkill(skill, queryTokens, pathArg, rawQuery) {
       score += 2;
       reasons.push(`path:${pathMatch.pattern}`);
     }
+  }
+
+  addContextMatches('dependencies', routeContext.dependencies, 4, 'dependency');
+  addContextMatches('internal_tools', routeContext.internalTools, 4, 'internal_tool');
+  addContextMatches('codebase_layer', routeContext.codebaseLayers, 3, 'codebase_layer');
+  addContextMatches('applicable_tasks', routeContext.applicableTasks, 3, 'applicable_task');
+  addContextMatches('environment', routeContext.environments, 2, 'environment');
+
+  const requestedStages = new Set(listify(routeContext.projectAdoptionStages));
+  const stage = normalizeActivationValue(skill.project_adoption_stage);
+  if (stage && requestedStages.has(stage)) {
+    score += 2;
+    reasons.push(`project_adoption_stage:${stage}`);
   }
 
   return { score, reasons };
@@ -505,6 +557,12 @@ function routeSkills(manifest, options) {
     maxResults,
     minEvalState,
     pathArg,
+    dependencies,
+    codebaseLayers,
+    applicableTasks,
+    environments,
+    internalTools,
+    projectAdoptionStages,
     todayISO,
   } = options;
 
@@ -527,7 +585,14 @@ function routeSkills(manifest, options) {
       excludedByProject.push({ skill, reason: projectCheck.reason });
       continue;
     }
-    const { score, reasons } = scoreSkill(skill, queryTokens, pathArg, query);
+    const { score, reasons } = scoreSkill(skill, queryTokens, pathArg, query, {
+      dependencies,
+      codebaseLayers,
+      applicableTasks,
+      environments,
+      internalTools,
+      projectAdoptionStages,
+    });
     if (score > 0) {
       // Decision A rank-weight: a gentle additive boost for a certified
       // application_verdict (APPLICABLE/PROVISIONAL). Folded into the sort key
@@ -595,9 +660,11 @@ function routeSkills(manifest, options) {
     // `suppresses` is the canonical routing-exclusion edge (ADR-0018); fall back
     // to the deprecated `boundary` alias for skills not yet migrated.
     if (!skill.relations) continue;
-    const suppressEdges = Array.isArray(skill.relations.suppresses)
+    const hasCanonicalSuppresses = Array.isArray(skill.relations.suppresses);
+    const suppressEdges = hasCanonicalSuppresses
       ? skill.relations.suppresses
       : (Array.isArray(skill.relations.boundary) ? skill.relations.boundary : null);
+    const suppressSource = hasCanonicalSuppresses ? 'suppresses' : 'boundary';
     if (!suppressEdges) continue;
     for (const b of suppressEdges) {
       const bName = relItemName(b);
@@ -616,8 +683,8 @@ function routeSkills(manifest, options) {
         boundaryExcluded.push({
           skill: bSkill,
           reason: reason
-            ? `in boundary[] of ${skill.name}: ${reason}`
-            : `in boundary[] of ${skill.name}`,
+            ? `in ${suppressSource}[] of ${skill.name}: ${reason}`
+            : `in ${suppressSource}[] of ${skill.name}`,
           role: 'boundary_excluded',
         });
         selectedNames.delete(bName);
@@ -877,6 +944,19 @@ function argValue(args, flag) {
   return i !== -1 && args[i + 1] ? args[i + 1] : null;
 }
 
+function argList(args, flags) {
+  const values = [];
+  const flagSet = new Set(Array.isArray(flags) ? flags : [flags]);
+  for (let i = 0; i < args.length; i++) {
+    if (!flagSet.has(args[i])) continue;
+    if (args[i + 1]) {
+      values.push(...listify(args[i + 1]));
+      i++;
+    }
+  }
+  return values;
+}
+
 function resolveManifestPath(manifestArg) {
   if (manifestArg) return path.resolve(manifestArg);
 
@@ -906,13 +986,40 @@ function main() {
   const maxResults = parseInt(argValue(args, '--max') || '10', 10);
   const minEvalState = argValue(args, '--min-eval-state') || 'unverified';
   const pathArg = argValue(args, '--path');
+  const dependencies = argList(args, ['--dependency', '--dependencies']);
+  const codebaseLayers = argList(args, ['--layer', '--codebase-layer', '--codebase-layers']);
+  const applicableTasks = argList(args, ['--task', '--applicable-task', '--applicable-tasks']);
+  const environments = argList(args, ['--environment', '--environments']);
+  const internalTools = argList(args, ['--internal-tool', '--internal-tools']);
+  const projectAdoptionStages = argList(args, ['--project-adoption-stage', '--project-adoption-stages']);
 
   // Everything that is not a flag and not a flag argument is treated as the query.
+  const valueFlags = new Set([
+    '--manifest',
+    '--project',
+    '--max',
+    '--min-eval-state',
+    '--path',
+    '--dependency',
+    '--dependencies',
+    '--layer',
+    '--codebase-layer',
+    '--codebase-layers',
+    '--task',
+    '--applicable-task',
+    '--applicable-tasks',
+    '--environment',
+    '--environments',
+    '--internal-tool',
+    '--internal-tools',
+    '--project-adoption-stage',
+    '--project-adoption-stages',
+  ]);
   const nonFlag = [];
   for (let i = 0; i < args.length; i++) {
     const a = args[i];
     if (a.startsWith('--')) {
-      if (['--manifest', '--project', '--max', '--min-eval-state', '--path'].includes(a)) i++;
+      if (valueFlags.has(a)) i++;
       continue;
     }
     nonFlag.push(a);
@@ -920,7 +1027,7 @@ function main() {
   const query = nonFlag.join(' ').trim();
 
   if (!query) {
-    console.error('Usage: skill-graph-route.js <query> [--project P] [--max N] [--min-eval-state unverified|passing|monitored] [--path FILE] [--manifest PATH] [--json]');
+    console.error('Usage: skill-graph-route.js <query> [--project P] [--max N] [--min-eval-state unverified|passing|monitored] [--path FILE] [--dependency PKG] [--layer NAME] [--task NAME] [--environment NAME] [--internal-tool NAME] [--project-adoption-stage STAGE] [--manifest PATH] [--json]');
     process.exit(1);
   }
 
@@ -941,7 +1048,20 @@ function main() {
   }
 
   const todayISO = new Date().toISOString().slice(0, 10);
-  const result = routeSkills(manifest, { query, project, maxResults, minEvalState, pathArg, todayISO });
+  const result = routeSkills(manifest, {
+    query,
+    project,
+    maxResults,
+    minEvalState,
+    pathArg,
+    dependencies,
+    codebaseLayers,
+    applicableTasks,
+    environments,
+    internalTools,
+    projectAdoptionStages,
+    todayISO,
+  });
 
   if (outputJson) {
     process.stdout.write(renderJson(result, query) + '\n');

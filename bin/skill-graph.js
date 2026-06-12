@@ -115,10 +115,21 @@ Options:
   --manifest <path>  Path to compiled manifest (default: skills.manifest.json).
   --json             Emit JSON output.
   --min-eval-state   Minimum eval state filter (unverified|passing|monitored).
+  --path <file>      Boost skills whose activation.paths match the file.
+  --dependency <pkg> Boost skills whose activation.dependencies match the package/tool.
+  --layer <name>     Boost skills whose activation.codebase_layer matches.
+  --task <name>      Boost skills whose activation.applicable_tasks matches.
+  --environment <name>
+                    Boost skills whose activation.environment matches.
+  --internal-tool <name>
+                    Boost skills whose activation.internal_tools matches.
+  --project-adoption-stage <stage>
+                    Boost skills whose project_adoption_stage matches.
 
 Examples:
   skill-graph route "audit my skills for schema conformance"
   skill-graph route "debug a failing eval" --max 3
+  skill-graph route "debug server action" --dependency next --layer api --task debugging
 `,
   },
   drift:   {

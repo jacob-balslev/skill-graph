@@ -1,6 +1,6 @@
 {
-  "_comment": "JSON-LD @context for Skill Graph v8 frontmatter. Maps authored fields to W3C standard vocabularies so a Skill Graph SKILL.md can be projected into RDF/OWL/SKOS consumers without changing the authoring surface. v8 authored fields (subject, public, taxonomy_domain, scope, project, repo, keywords, relations, grounding.subject_matter) are projected through this context.",
-  "_version": "3.2.0",
+  "_comment": "JSON-LD @context for Skill Graph v8 frontmatter. Maps authored fields to W3C standard vocabularies so a Skill Graph SKILL.md can be projected into RDF/OWL/SKOS consumers without changing the authoring surface. v8 authored fields (subject, public, taxonomy_domain, scope, project, repo, keywords, relations, grounding.subject_matter, and project-relevance activation fields) are projected through this context.",
+  "_version": "3.3.0",
   "_schema_version_target": 8,
   "_references": {
     "skos": "https://www.w3.org/TR/skos-reference/",
@@ -91,6 +91,30 @@
     "dependencies": {
       "@id": "schema:softwareRequirements",
       "@container": "@set"
+    },
+    "codebase_layer": {
+      "@id": "sg:codebaseLayer",
+      "@container": "@set",
+      "_note": "Architectural or system layer this skill applies to. Used as a project-relevance activation signal alongside paths, dependencies, tasks, environments, and internal tools."
+    },
+    "applicable_tasks": {
+      "@id": "sg:applicableTask",
+      "@container": "@set",
+      "_note": "Concrete task types this skill assists with. Complements free-text scope with deterministic task-intent activation."
+    },
+    "project_adoption_stage": {
+      "@id": "sg:projectAdoptionStage",
+      "_note": "Project-local pattern lifecycle: legacy, current-standard, experimental-migration, or deprecated. Distinct from document stability."
+    },
+    "environment": {
+      "@id": "sg:targetEnvironment",
+      "@container": "@set",
+      "_note": "Project environment or runtime context where this skill applies."
+    },
+    "internal_tools": {
+      "@id": "sg:internalTool",
+      "@container": "@set",
+      "_note": "Private/team-specific tools whose presence makes the skill relevant. Distinct from public registry dependencies."
     },
     "allowed-tools": "sg:allowedTools",
     "relations": {

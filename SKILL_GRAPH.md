@@ -251,7 +251,7 @@ flowchart LR
 
 | File | Role |
 |---|---|
-| `scripts/skill-graph-route.js` | Graph-aware selector. Uses every unique Skill Graph field: `relations.depends_on` transitive closure, `relations.verify_with` co-loading, `relations.suppresses` anti-ownership exclusion (with legacy `boundary` fallback), `eval_state` quality gate, `lifecycle.stale_after_days` staleness annotation, and `project[]` project-fit filtering. Emits per-skill reasons. |
+| `scripts/skill-graph-route.js` | Graph-aware selector. Uses every unique Skill Graph routing field: `activation.keywords` / `triggers`, `activation.paths`, `activation.dependencies`, `activation.codebase_layer`, `activation.applicable_tasks`, `activation.environment`, `activation.internal_tools`, `project_adoption_stage`, `project[]` project-fit filtering, `relations.depends_on` transitive closure, `relations.verify_with` co-loading, `relations.suppresses` anti-ownership exclusion (with legacy `boundary` fallback), `eval_state` quality gate, and `lifecycle.stale_after_days` staleness annotation. Emits per-skill reasons. |
 | `scripts/skill-graph-drift.js` | Drift sentinel. Hashes every `grounding.truth_sources` entry with SHA-256, including line-range and anchor object entries; compares against the recorded `drift_check.truth_source_hashes` baseline; reports DRIFT / BROKEN / STALE / NO_BASELINE. `--record --apply` updates the SKILL.md in place with fresh hashes. |
 
 These tools are the *proof* that Tier 1's schema earns its complexity. If you ever doubt whether `relations.suppresses`, `grounding.truth_sources`, or `lifecycle` is worth the field count, run these scripts against a real skill library and watch them change routing decisions.

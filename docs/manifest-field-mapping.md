@@ -58,6 +58,7 @@ Every top-level authored field in `schemas/SKILL_METADATA_PROTOCOL_schema.json` 
 | 20 | `eval_last_run` | grouped under parent | `health.eval_last_run`. |
 | 21 | `eval` | grouped under parent | `health.eval`; nested compatibility form for the Evaluation Status fields. |
 | 22 | `stability` | copied through unchanged | `stability`. |
+| 22a | `project_adoption_stage` | copied through unchanged | Project-local pattern lifecycle (`legacy`, `current-standard`, `experimental-migration`, `deprecated`). Distinct from document `stability`. |
 | 23 | `superseded_by` | copied through unchanged | `superseded_by`. |
 | 24 | `license` | copied through unchanged | `license`. |
 | 25 | `compatibility` | copied through unchanged | `compatibility`. |
@@ -69,6 +70,10 @@ Every top-level authored field in `schemas/SKILL_METADATA_PROTOCOL_schema.json` 
 | 32 | `anti_examples` | grouped under parent | `activation.anti_examples`. |
 | 33 | `paths` | grouped under parent | `activation.paths`. |
 | 33b | `dependencies` | grouped under parent | `activation.dependencies` (added 2026-06-10 — codebase-fingerprint signal: packages a target repo must use for this skill to be relevant; distinct from `relations.depends_on` and `compatibility`). |
+| 33c | `codebase_layer` | grouped under parent | `activation.codebase_layer` — architectural/system layer activation signal. |
+| 33d | `applicable_tasks` | grouped under parent | `activation.applicable_tasks` — deterministic task-intent activation signal. |
+| 33e | `environment` | grouped under parent | `activation.environment` — target environment/runtime activation signal. |
+| 33f | `internal_tools` | grouped under parent | `activation.internal_tools` — team/private-tool activation signal, distinct from public package `dependencies`. |
 | 34a | `project` | copied through unchanged | Belonging-entity references for project-anchored skills. Array of `{handle, role}`. Replaces `workspace_tags`. |
 | 34b | `repo` | copied through unchanged | Repo-level belonging-entity references. Array of `{handle, url}`. |
 | 36 | `relations` | copied through unchanged | `relations`. Includes the eight edge keys AND the optional non-edge `relations.io_contract` (`{inputs, outputs}` of abstract artifact-type tokens — SKI-52). The manifest copies `io_contract` through verbatim; the derived `depends_on` edges and broken-chain/cycle findings are NOT projected into the manifest — they are computed at graph-build time and surfaced under `io_composition` in `scripts/discovery/skill-graph.json` (the consumer-side graph), not in `skills.manifest.json`. |
@@ -446,8 +451,8 @@ Each arrow corresponds to one row of the rename map.
 - `name` → `path` — the generator records the source file path; this is the only way a consumer can trace a manifest entry back to its authored source without re-scanning the repo.
 - `description`, `subject`, `public`, `scope`, and `stability` come from `SKILL.md`; `version` and `owner` come from `audit-state.json`. The joined manifest entry preserves them at the top level. `subject` is enum-checked in the manifest (closed 12-value enum); `public` is type-checked (boolean); `scope` is free-text, passed through unchanged. (Historical note: v2 `family` was renamed to `browse_category` in v3, then to `category` in v4, then replaced by `subject` + `public` in v8 — see § Migration Note — v2 → v3.)
 - `license`, `compatibility`, `allowed-tools` — straight copies (post-SH-5776). The three SKILL.md base-standard optional fields flow through unchanged; a consumer that only speaks SKILL.md sees them at the expected keys.
-- `triggers`, `keywords`, `paths` → `activation.triggers`, `activation.keywords`, `activation.paths` — three sibling authored fields are grouped under a single `activation` object. This matches the semantic: they are all activation signals. The grouping is a presentation choice, not a loss.
-- `relations` → `relations` — copied through with the full sub-key set (`adjacent`, `related`, `broader`, `narrower`, `boundary`, `disjoint_with`, `verify_with`, `depends_on`). Same shape on both sides.
+- `triggers`, `keywords`, `paths`, `dependencies`, `codebase_layer`, `applicable_tasks`, `environment`, and `internal_tools` → `activation.*` — sibling authored fields are grouped under a single `activation` object. This matches the semantic: they are all activation signals. The grouping is a presentation choice, not a loss.
+- `relations` → `relations` — copied through with the full sub-key set (`adjacent`, `related`, `broader`, `narrower`, `suppresses`, legacy `boundary`, `disjoint_with`, `verify_with`, `depends_on`). Same shape on both sides.
 - `grounding` → `grounding` — copied through unchanged. The authored field was renamed from `domain_frame` to `grounding` in SH-5779 (2026-04-16), aligning the authored field name with its long-standing manifest projection key. The internal sub-field `evaluation_mode` was renamed to `grounding_mode` in the same change. The grounding sub-field `subject_matter` (renamed from `domain_object` in v8) is passed through unchanged inside the `grounding` block.
 - `portability` → `portability` — copied through with the v2 sub-key set (`readiness`, `targets`). Renamed from v1 (`level`, `exports`) in SH-5784.
 - `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, and `lifecycle` come from `audit-state.json` and project to `health.*`. The three Evaluation Status fields replaced the v1 `health.eval_status` in SH-5784 and stay enum-checked in the manifest. `has_grounding` and `has_relations` are generated boolean flags that summarize presence of the corresponding authored blocks, so a consumer can filter on "grounded skills" without re-parsing the full `grounding` object.

@@ -72,7 +72,7 @@ The four relation keys serve distinct purposes. Using the wrong key creates misl
 | Field | Use when | Do NOT use when |
 |---|---|---|
 | `related` | Another skill is useful next reading or common co-loading | You need ordering or verification |
-| `boundary` | Users commonly confuse this skill with another | You only want related reading |
+| `suppresses` | Users commonly confuse this skill with another and this skill owns that use-case when both match | You only want related reading or deference to the other skill |
 | `verify_with` | A second skill materially increases confidence on the same task | The other skill is merely adjacent |
 | `depends_on` | This skill cannot be applied correctly before another one | You just want a recommended pairing |
 
@@ -86,7 +86,7 @@ The distinction between these relation types is best illustrated by existing usa
 
 - **`related`** — `refactor` can declare `related: [debugging, testing-strategy]` because readers of the refactor skill would benefit from understanding debugging and testing approaches. These are topically related but not mandatory dependencies. `adjacent` remains a back-compat alias, but new skills should use `related`.
 
-- **`boundary`** — `refactor` declares `boundary: [documentation]` to assert exclusive ownership of the refactor use-case over documentation. When refactor wins a query that also matched documentation, this entry excludes documentation from co-routing. **Note:** the field name implies "defer to documentation" but the mechanic is "exclude documentation when refactor wins." Write reason text using ownership framing: `"refactor owns this use-case exclusively; documentation does not."` See WARNING in `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Relations § boundary`.
+- **`suppresses`** — `refactor` declares `suppresses: [documentation]` to assert exclusive ownership of the refactor use-case over documentation. When refactor wins a query that also matched documentation, this entry excludes documentation from co-routing. Write reason text using ownership framing: `"refactor owns this use-case exclusively; documentation does not."` Legacy `relations.boundary` means the same thing and is accepted only for unmigrated skills.
 
 When a skill is a specialisation of a more general skill, use `relations.broader` to express that generalisation.
 
@@ -96,7 +96,7 @@ When a skill is a specialisation of a more general skill, use `relations.broader
 relations:
   related:
     - webhook-integration   # related: reader may want this context
-  boundary:
+  suppresses:
     - fulfillment           # I own this exclusively over fulfillment; excludes fulfillment when I win
   verify_with:
     - test-coverage         # co-load during audits
