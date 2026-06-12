@@ -252,7 +252,7 @@ The field name was misleading — it suggested URL routing. The semantics are un
 
 ### Migration Note — v2 → v3 (v0.4.0)
 
-Schema_version 3 is a breaking bump. Four coordinated shape changes and one rename ship together, plus four new optional fields. The v2 field names are hard errors under the v3 schema (the schema's `additionalProperties: false` rejects them) and the old scalar shapes are rejected by the type constraints. Authors must migrate in one pass via `node scripts/migrate-skill-v2-to-v3.js`.
+Schema_version 3 is a breaking bump. Four coordinated shape changes and one rename shipped together, plus four new optional fields. The v2 field names are hard errors under the v3 schema (the schema's `additionalProperties: false` rejects them) and the old scalar shapes are rejected by the type constraints. The one-time v2-to-v3 migration script is retired to git history.
 
 **1. `family` -> `browse_category` (rename; values unchanged).**
 
@@ -307,7 +307,7 @@ The bare-string form remains valid (`- fulfillment`). The object form is opt-in 
 | `relations.depends_on: [str]` | `relations.depends_on: [str | {skill, min_version}]` | extended (back-compat) |
 | *(none)* | `relations.io_contract: {inputs:[token], outputs:[token]}` | new optional field (SKI-52) — opt-in, no migration |
 
-**Consumer impact.** The manifest projection shape changed in lockstep. `health.drift_check` is now always an object; `compatibility` is always an object; `browse_category` replaces `family` at every reference (including `summary.by_browse_category` vs v2's `summary.by_family`). Consumers pinned to v2 must regenerate against v3 or continue using `schemas/manifest.v2.schema.json`.
+**Consumer impact.** The manifest projection shape changed in lockstep. `health.drift_check` is now always an object; `compatibility` is always an object; `browse_category` replaces `family` at every reference (including `summary.by_browse_category` vs v2's `summary.by_family`). Consumers pinned to v2 had to regenerate against v3 or keep a private copy of the retired v2 manifest schema.
 
 ---
 

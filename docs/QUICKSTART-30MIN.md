@@ -301,7 +301,7 @@ Expected:
 
 (`UNGROUNDED` = skills with no `grounding` block; that's normal for `public: true` (portable) skills.)
 
-Now edit `lib/content/schema.ts` (any change — add a comment) and re-run drift:
+Now edit `<project>/lib/content/schema.ts` (any change — add a comment) and re-run drift:
 
 ```bash
 node scripts/skill-graph-drift.js

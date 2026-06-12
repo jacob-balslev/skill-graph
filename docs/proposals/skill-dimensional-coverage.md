@@ -85,7 +85,7 @@ comprehension grader's X dimension (weight N)." That double-duty is the muddle.
 ## Consequences if accepted (cascade targets — do NOT edit until decided)
 
 - `schemas/SKILL_METADATA_PROTOCOL_schema.json` — add `philosophy`; clarify Understanding-field descriptions.
-- `SKILL_METADATA_PROTOCOL.md`, `docs/SKILL_METADATA_PROTOCOL_field-reference.md`, `docs/field-rationale.md`, `docs/concept-map.md` — document the new dimension + the authored-vs-measured split.
+- `SKILL_METADATA_PROTOCOL.md`, `skill-metadata-protocol/field-reference.md`, `docs/field-rationale.md`, `docs/concept-map.md` — document the new dimension + the authored-vs-measured split.
 - `docs/comprehension-eval-spec.md` — clarify the eval is the measurement, the authored field is its input.
 - Corpus migration via `/audit:*` (version-earned gate), one skill at a time — never a schema+corpus mega-commit.
 

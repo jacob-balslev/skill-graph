@@ -280,6 +280,10 @@ Note: evolve depends on lib/audit-shared/auto-improve.js (bundled with @skill-gr
     script: 'lib/audit/skill-status.js',
     help: `Usage: skill-graph status <skill-name> [options]\n\nRead-only view of a skill's Audit Status (loop-stamped audit-state.json fields joined with SKILL.md).\n\nArguments:\n  <skill-name>      Skill directory name.\n\nOptions:\n  --json            Emit JSON instead of a human-readable table.\n  --audit-root <p>  Root directory for SKILL.md lookup (default: auto-detect).\n\nExit codes:\n  0  Success (including the graceful no-Audit-Status case).\n  1  Fatal error (manifest unreadable, unexpected parse failure).\n\nSee: skill-audit-loop/SKILL_AUDIT_LOOP.md § The Audit Status — state lives in audit-state.json\n`,
   },
+  doc: {
+    script: 'scripts/check-doc-freshness.js',
+    help: `Usage: skill-graph doc [options]\n\nAudit active docs for stale code references and rewrite questions.\n\nChecks active Markdown docs against local files, node scripts, package scripts,\nand the public skill-graph command map. Historical records (ADRs, migrations,\nresearch, plans, audits, examples, generated docs, CHANGELOG) are skipped.\n\nOptions:\n  --strict                    Exit 1 when error-class findings exist.\n  --errors-only               Omit review-question findings from the report.\n  --json                      Emit JSON.\n  --quiet                     Print only the summary line.\n  --max-paragraph-words <n>   Rewrite-question threshold (default: 420).\n  --max-paragraph-chars <n>   Rewrite-question threshold (default: 3000).\n\nFinding classes:\n  error      Missing local file, script, package script, or skill-graph command.\n  question   Unqualified stale wording, actionable TODO markers, vague taxonomy headings, or long prose.\n`,
+  },
 
   // ─── Legacy / additional subcommands (backward compat) ───────────────────
   manifest: {
@@ -322,6 +326,10 @@ Examples:
   skill-graph eval-staleness --skill graph-audit
   skill-graph eval-staleness --all --json
 `,
+  },
+  'doc-freshness': {
+    script: 'scripts/check-doc-freshness.js',
+    help: `Usage: skill-graph doc-freshness [options]\n\nAlias for 'doc'. Audit active docs for stale code references and rewrite questions.\n`,
   },
   'marketplace-export': {
     script: 'scripts/export-marketplace-skills.js',
@@ -374,6 +382,7 @@ Commands:
   evaluate         Run the eval suite for one skill and stamp comprehension_verdict / application_verdict
   evaluate:gpt-5.5 Run evaluate through Codex CLI + GPT-5.5 with tools-on, PROVISIONAL-only evidence
   status <skill>   Print the Audit Status for a skill (read-only)
+  doc              Audit active docs for stale code references and rewrite questions
   route <query>    Select and explain skills for a natural-language query
   drift            Check or record grounding truth-source hashes (drift sentinel)
   export           Generate and validate the public marketplace export surface
@@ -390,6 +399,7 @@ Additional commands (retained for backward compatibility):
   routing-eval     Run routing examples / anti_examples through the router
   export-verify    Verify exported skills against the plain SKILL.md export shape
   eval-staleness   Check eval artifacts for stale path and symbol claims
+  doc-freshness    Alias for doc
   marketplace-export
                    Alias for export
   protocol-check   Check cross-artifact protocol consistency
@@ -399,6 +409,7 @@ Examples:
   skill-graph add debugging
   skill-graph lint --include-template
   skill-graph audit my-skill --graded
+  skill-graph doc
   skill-graph evaluate:gpt-5.5 --comprehension skills/my-skill/evals/comprehension.json
   skill-graph route "audit my skills for schema conformance"
   skill-graph drift --record --apply skills/graph-audit
