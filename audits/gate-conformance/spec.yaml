@@ -1,0 +1,82 @@
+# Gate & Protocol Conformance Spec
+#
+# The single declarative statement of the Skill Audit Loop's per-skill gate
+# criteria and the Skill Metadata Protocol's validation rules. Each scenario is
+# a Given/When/Then row: GIVEN a fixture, WHEN a named EXISTING gate check runs,
+# THEN it must produce the expected exit/output.
+#
+# This file is the source of truth for "input X -> gate yields Y". The runner
+# `scripts/__tests__/test-gate-conformance.js` executes every scenario against
+# the existing gate scripts (it adds NO gate logic) and asserts the outcome.
+# Negative fixtures live under `fixtures/invalid/<rule>/` — outside every corpus
+# lint/manifest/eval sweep, so they can never redden `verify`.
+#
+# SCOPE: this suite covers the gates a single skill can be driven through by
+# path/positional argument — the STRUCTURAL gate (`skill-lint.js`) and the TRUTH
+# gate (`skill-graph-drift.js`). The corpus-scoped gates (the verdict-honesty
+# gate `check-audit-manifest.js`, the application-eval floor `check-application-
+# evals.js`) read the manifest / skill_roots, not a single fixture, and are
+# already covered by `scripts/__tests__/test-application-verdict-write-back.js`,
+# `test-application-artifact-enforcement.js`, and `test-check-application-evals.js`.
+# See `README.md` in this directory for the full gate→coverage map.
+#
+# Fields per scenario:
+#   id              unique kebab-case identifier
+#   gate            structural | truth | comprehension | application | protocol
+#   rule            one-line human statement of the criterion under test
+#   given           fixture skill dir, relative to this file's directory
+#   when            which gate check runs (see the runner's WHEN map)
+#   then            inline map of expected outcome:
+#                     exit              expected process exit code (integer)
+#                     output_contains   substring required in stdout+stderr
+#                     output_absent     substring that must NOT appear (optional)
+#
+# Authored in YAML and read via the repo's existing parse-frontmatter.js
+# (no new dependency). Keep `then` an inline map (leaf-level) so the minimal
+# parser handles it.
+
+scenarios:
+  # --- Positive control: a valid skill must PASS, so the runner can never be a no-op ---
+  - id: structural-valid-baseline
+    gate: structural
+    rule: "A minimal, fully-valid v8 skill passes the structural lint gate (exit 0)."
+    given: ../../examples/fixture-skills/minimal-capability
+    when: skill-lint
+    then: { exit: 0 }
+
+  # --- Structural Integrity Gate (skill-lint.js) ---
+  - id: structural-missing-scope
+    gate: structural
+    rule: "Required v8 field `scope` must be present; lint FAILS when it is absent."
+    given: fixtures/invalid/missing-scope
+    when: skill-lint
+    then: { exit: 1, output_contains: scope }
+
+  - id: structural-invalid-subject
+    gate: structural
+    rule: "`subject` must be one of the twelve closed competency shelves; lint FAILS on an out-of-enum value."
+    given: fixtures/invalid/invalid-subject
+    when: skill-lint
+    then: { exit: 1, output_contains: enum-fail }
+
+  - id: structural-dangling-verify-with
+    gate: structural
+    rule: "Every `relations.*` target must resolve; lint FAILS on a dangling `verify_with` target."
+    given: fixtures/invalid/dangling-verify-with
+    when: skill-lint
+    then: { exit: 1, output_contains: does not match any known skill }
+
+  - id: protocol-comprehension-present-missing-understanding
+    gate: protocol
+    rule: "When the sidecar declares `comprehension_state: present`, the five flat Understanding fields are required; the cross-file lint gate FAILS when they are absent."
+    given: fixtures/invalid/comprehension-present-missing-understanding
+    when: skill-lint
+    then: { exit: 1, output_contains: comprehension_state }
+
+  # --- Truth Gate (skill-graph-drift.js) ---
+  - id: truth-source-broken
+    gate: truth
+    rule: "A declared local truth source that does not exist on disk makes the drift sentinel report BROKEN (exit non-zero)."
+    given: fixtures/invalid/truth-source-broken
+    when: drift
+    then: { exit: 1, output_contains: BROKEN }

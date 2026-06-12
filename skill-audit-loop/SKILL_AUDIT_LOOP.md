@@ -80,7 +80,7 @@ The loop has two gates. They must not be blended into one PASS/FAIL label:
 | **Integrity Gate** | The skill is structurally valid, grounded, routable, and export-safe. | Deterministic CI-safe checks: canonical-source lint, schema/protocol consistency, manifest, links, export shape, routing assertions, overlap, and drift. | `structural_verdict`, `truth_verdict`, `lint_verdict`, `drift_status` |
 | **Behavior Gate** | The skill changes agent behavior in the way it claims. | Behavioral evals against realistic positives, hard negatives, prior failures, and boundary cases. | `comprehension_verdict`, `application_verdict`, `eval_score`, `eval_failed_ids` |
 
-The Integrity Gate is required before release because broken metadata poisons the graph. It never certifies skill usefulness. The Behavior Gate is what certifies teaching efficacy; a skill with `application_verdict: UNVERIFIED` is unassessed, not approved — eligibility (passing structural/truth) is not the same as assessment (running and clearing the behavior gates). A skill is audit-complete only when the Integrity Gate passes and the Behavior Gate is either passed or explicitly left `UNVERIFIED` / `NA` with evidence explaining why behavioral certification was not run. For canonical verdict definitions, enum values, confidence-tier ordering, and the eligibility-vs-assessment doctrine, see [`docs/verdict-semantics.md`](../docs/verdict-semantics.md).
+The Integrity Gate is required before release because broken metadata poisons the graph. It never certifies skill usefulness. The Behavior Gate is what certifies teaching efficacy; a skill with `application_verdict: UNVERIFIED` is unassessed, not approved — eligibility (passing structural/truth) is not the same as assessment (running and clearing the behavior gates). A skill is audit-complete only when the Integrity Gate passes and the Behavior Gate is either passed or explicitly left `UNVERIFIED` / `NA` with evidence explaining why behavioral certification was not run. For canonical verdict definitions, enum values, confidence-tier ordering, and the eligibility-vs-assessment doctrine, see [`docs/verdict-semantics.md`](../docs/verdict-semantics.md). The structural and truth gates' pass/fail criteria are additionally stated as executable Given/When/Then scenarios in [`audits/gate-conformance/spec.yaml`](../audits/gate-conformance/spec.yaml) (run by `scripts/__tests__/test-gate-conformance.js` inside `npm run test:unit`), so the criteria described here cannot silently drift from what the gate scripts actually enforce.
 
 ### Current maturity — honest self-location (updated 2026-05-26 post-F14)
 
@@ -373,7 +373,7 @@ Priority reads the Audit Status directly: the walker looks at `application_verdi
 
 ## Loop Outputs
 
-Two kinds. The Audit Status (state) and the audit artifacts (evidence):
+Three kinds. The Audit Status (state), audit artifacts (evidence), and per-agent telemetry (cost/change evidence):
 
 **Audit Status** — written back into the skill's sibling `audit-state.json`. This is the state.
 
@@ -387,6 +387,23 @@ audits/<skill-name>/
 ```
 
 These remain append-only evidence files for any audit run that needs long-form output. The skill's Audit Status lets a reader skip them entirely if all they need is the verdict.
+
+**Per-agent telemetry** — beside the skill itself:
+
+```text
+<skill-folder>/
+    SKILL.md
+    audit-state.json
+    agent-telemetry.jsonl
+```
+
+Every evaluation and iteration agent action appends one JSONL receipt with `operation`, `phase`, `agent`/`model`, `backend`, `tier`, `started_at`, `ended_at`, `duration_ms`, token usage, line delta, status, and artifact paths. Token counts are honest backend receipts: when a CLI exposes usage in JSON output the receipt records it; when a CLI only returns text, the token fields stay `null` with `source: "unavailable"`. `audit-state.json.runtime_telemetry` points at this sibling feed and summarizes the latest run so quality/cost problems can be spotted without scraping transient progress dirs.
+
+Why this is mandatory loop evidence:
+- It separates **quality** from **activity**. A model can spend many tokens and change many lines without improving a skill; the receipt lets reviewers compare that cost against the eval verdict and merge ledger.
+- It exposes weak-agent failure modes. Empty output, malformed JSON, no-document replies, permission denials, timeouts, and skipped suggestion passes must appear as receipts instead of disappearing into transient logs.
+- It makes advisory suggestions measurable. Free/advisory agents are expected to propose next-iteration suggestions as well as candidate skill changes; their suggestion phase is recorded even when it produces no SKILL.md line delta.
+- It prevents guessed accounting. If a backend does not expose token usage, the receipt records `null` token counts with `source: "unavailable"` so the missing measurement itself is visible.
 
 ## Quick start
 
