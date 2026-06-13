@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Provider-agnostic prompt-design discipline for OpenAI, Anthropic, Google Gemini, open-weight models, and agent runtimes; provider-specific APIs, role names, structured-output features, and reasoning controls must be checked before implementation."
 allowed-tools: Read Grep Bash Edit
 metadata:
-  relations: "{\"related\":[\"context-engineering\",\"agent-eval-design\",\"evaluation\",\"guardrails\",\"debugging\",\"code-review\",\"skill-scaffold\",\"skill-router\"],\"suppresses\":[\"agent-eval-design\"],\"verify_with\":[\"evaluation\",\"guardrails\",\"agent-eval-design\"]}"
+  relations: "{\"related\":[\"context-engineering\",\"evaluation\",\"guardrails\",\"debugging\",\"code-review\",\"skill-scaffold\",\"skill-router\"],\"suppresses\":[],\"verify_with\":[\"evaluation\",\"guardrails\"]}"
   subject: ai-engineering
   scope: "Writing, tightening, evaluating, and repairing LLM prompts and reusable prompt templates for completion, agent dispatch, grading, structured extraction, tool use, and prompt-engineered workflows — instruction hierarchy, message roles, context placement, few-shot examples, structured output, positive constraints, reasoning guidance, prompt-injection resistance, provider differences, and eval-driven iteration. Portable across any LLM provider; principle-grounded, not repo-bound. Excludes whole context-system design (context-engineering), eval dataset or grader design (agent-eval-design), reviewing generated code (code-review), authoring SKILL.md files (skill-scaffold), choosing which skill or agent activates (skill-router), and root-causing a deployed failure after outputs exist (debugging)."
   public: "true"
@@ -291,8 +291,8 @@ After applying this skill, verify:
 - write a doc explaining our prompt conventions for humans only
 
 **Related skills**
-- Verify with: `evaluation`, `guardrails`, `agent-eval-design`
-- Related: `context-engineering`, `agent-eval-design`, `evaluation`, `guardrails`, `debugging`, `code-review`, `skill-scaffold`, `skill-router`
+- Verify with: `evaluation`, `guardrails`
+- Related: `context-engineering`, `evaluation`, `guardrails`, `debugging`, `code-review`, `skill-scaffold`, `skill-router`
 
 **Concept**
 - Mental model: A prompt is an executable instruction contract: stable rules and examples define the function, variable user content supplies arguments, and evals decide whether revisions improved behavior.

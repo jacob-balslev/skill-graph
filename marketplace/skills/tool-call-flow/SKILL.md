@@ -4,7 +4,7 @@ description: "Use when reasoning about the protocol-level cycle by which a langu
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"related\":[\"agent-engineering\",\"api-design\",\"type-safety\",\"client-server-boundary\",\"tool-call-strategy\"],\"suppresses\":[\"tool-call-strategy\"],\"verify_with\":[\"agent-eval-design\",\"tool-call-strategy\"]}"
+  relations: "{\"related\":[\"agent-engineering\",\"api-design\",\"type-safety\",\"client-server-boundary\",\"tool-call-strategy\"],\"suppresses\":[\"tool-call-strategy\"],\"verify_with\":[\"tool-call-strategy\"]}"
   subject: ai-engineering
   scope: "The protocol-level cycle by which a language model uses external tools: the four phases (declaration, request, execution, continuation), the state contract that carries requests/results across turns, the structural differences between Anthropic tool use, OpenAI Responses / Chat Completions function calling, OpenAI grammar-constrained custom tools, MCP, Gemini generateContent / Interactions function calling, SDK-managed loops, hosted tools, deferred tool loading, programmatic tool calling, and computer-use/browser-control loops, plus parallelism, streaming, strict schemas, in-cycle failure handling, untrusted-output handling, and model-produces-intent / runtime-executes-intent separation. Portable across tool-using LLM runtimes; principle-grounded, not repo-bound. Excludes the decision of when and how many tool calls to make (tool-call-strategy), agent-system architecture and coordination (agent-engineering), prompt wording (prompt-craft), and designing evals for tool-use behavior (agent-eval-design)."
   public: "true"
@@ -457,7 +457,7 @@ After applying this skill, verify:
 - design an eval suite that tests tool-call correctness (use agent-eval-design)
 
 **Related skills**
-- Verify with: `agent-eval-design`, `tool-call-strategy`
+- Verify with: `tool-call-strategy`
 - Related: `agent-engineering`, `api-design`, `type-safety`, `client-server-boundary`, `tool-call-strategy`
 
 **Concept**

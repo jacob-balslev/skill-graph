@@ -20,7 +20,7 @@ metadata:
   examples: "[\"should I run this refactor in Claude Code or hand it to Codex?\",\"what is Claude Code actually good at compared to other agent CLIs?\",\"do I need a hook, a subagent, or a skill for this?\"]"
   anti_examples: "[\"write a Python script that calls the Anthropic Messages API\",\"is GPT-5.5 or Opus better for this code review?\",\"design a resumable autonomous loop with a supervisor\"]"
   grounding: "{\"subject_matter\":\"Claude Code model routing and command/runtime capability facts\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"skills/agent-ops/claude-code/references/model-facts.md\"],\"failure_modes\":[\"stale_model_id\",\"stale_context_window\",\"stale_pricing_or_rate_limit\",\"benchmark_claim_without_date\",\"capability_claim_quoted_from_memory\"],\"evidence_priority\":\"repo_code_first\"}"
-  relations: "{\"related\":[\"codex\",\"gpt-5-5\",\"claude-opus\",\"autonomous-loop-patterns\",\"agent-eval-design\"],\"suppresses\":[{\"skill\":\"gpt-5-5\",\"reason\":\"I own the Claude Code harness decision; gpt-5-5 owns routing a task to the GPT MODEL vs Claude\"},{\"skill\":\"codex\",\"reason\":\"I own the Claude Code harness scope; codex owns the rival Codex harness decision\"}],\"verify_with\":[\"codex\",\"gpt-5-5\"]}"
+  relations: "{\"related\":[\"codex\",\"gpt-5-5\",\"claude-opus\",\"autonomous-loop-patterns\"],\"suppresses\":[{\"skill\":\"gpt-5-5\",\"reason\":\"I own the Claude Code harness decision; gpt-5-5 owns routing a task to the GPT MODEL vs Claude\"},{\"skill\":\"codex\",\"reason\":\"I own the Claude Code harness scope; codex owns the rival Codex harness decision\"}],\"verify_with\":[\"codex\",\"gpt-5-5\"]}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/claude-code/SKILL.md
@@ -148,7 +148,7 @@ Before concluding "run this in Claude Code," confirm:
 
 **Related skills**
 - Verify with: `codex`, `gpt-5-5`
-- Related: `codex`, `gpt-5-5`, `claude-opus`, `autonomous-loop-patterns`, `agent-eval-design`
+- Related: `codex`, `gpt-5-5`, `claude-opus`, `autonomous-loop-patterns`
 
 **Concept**
 - Mental model: The harness is the body; the model is the brain. The model decides what to do; the harness decides what the model is allowed to do and how its actions are gated, rendered, parallelized, and persisted. Choosing this harness is choosing that body — its permission model, extensibility layers, and context budget — not just the underlying model.

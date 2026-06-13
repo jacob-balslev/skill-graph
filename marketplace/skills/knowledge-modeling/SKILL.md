@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Theory-level skill. Applies to any AI-coding workspace that maintains structured knowledge artefacts: skill libraries, reference docs, decision records, runbooks, agent memory systems, RAG/GraphRAG pipelines."
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"related\":[\"skill-infrastructure\",\"data-modeling\",\"context-graph\",\"context-engineering\",\"conceptual-modeling\",\"ontology-modeling\",\"taxonomy-design\",\"semantic-relations\"],\"suppresses\":[\"ontology-modeling\",\"semantic-relations\",\"taxonomy-design\"],\"verify_with\":[\"conceptual-modeling\",\"ontology-modeling\",\"project-knowledge-extraction\"]}"
+  relations: "{\"related\":[\"skill-infrastructure\",\"data-modeling\",\"context-graph\",\"context-engineering\",\"conceptual-modeling\",\"ontology-modeling\",\"taxonomy-design\",\"semantic-relations\"],\"suppresses\":[\"ontology-modeling\",\"semantic-relations\",\"taxonomy-design\"],\"verify_with\":[\"conceptual-modeling\",\"ontology-modeling\"]}"
   subject: knowledge-organization
   scope: "Teaches choosing and maintaining the representation paradigm for domain knowledge: graphs, frames, semantic networks, production rules, concept maps, procedural ontologies, GraphRAG, or hybrids. Excludes stakeholder-readable conceptual modeling, database schema design, pure taxonomy hierarchy, formal ontology axioms, exact semantic edge labeling, and live skill-library tooling."
   public: "true"
@@ -282,7 +282,7 @@ Rules:
 - abstract the domain into entities and relationships in human-readable terms before any database talk
 
 **Related skills**
-- Verify with: `conceptual-modeling`, `ontology-modeling`, `project-knowledge-extraction`
+- Verify with: `conceptual-modeling`, `ontology-modeling`
 - Related: `skill-infrastructure`, `data-modeling`, `context-graph`, `context-engineering`, `conceptual-modeling`, `ontology-modeling`, `taxonomy-design`, `semantic-relations`
 
 **Concept**

@@ -4,7 +4,7 @@ description: "Use when reasoning about systems that pass untrusted content to a 
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"related\":[\"type-safety\",\"http-semantics\",\"tool-call-flow\",\"api-design\",\"owasp-security\",\"security-fundamentals\",\"guardrails\",\"agent-eval-design\",\"prompt-craft\"],\"suppresses\":[\"tool-call-flow\",\"agent-eval-design\",\"prompt-craft\"],\"verify_with\":[\"api-design\",\"tool-call-flow\",\"guardrails\",\"owasp-security\"]}"
+  relations: "{\"related\":[\"type-safety\",\"http-semantics\",\"tool-call-flow\",\"api-design\",\"owasp-security\",\"security-fundamentals\",\"guardrails\",\"prompt-craft\"],\"suppresses\":[\"tool-call-flow\",\"prompt-craft\"],\"verify_with\":[\"api-design\",\"tool-call-flow\",\"guardrails\",\"owasp-security\"]}"
   subject: ai-engineering
   scope: "Reasoning about prompt-injection defense for systems that pass untrusted content to language models: data-vs-instruction collapse, direct and indirect injection, exfiltration, action-trigger attacks, untrusted content surfaces, and defense-in-depth through capability constraint, origin tracking, separated planning/execution, human approval, and least authority. Portable across LLM-integrated products and agent architectures. Excludes model jailbreaking/policy bypass, general API security, non-LLM input validation, and ordinary tool-call protocol design."
   public: "true"
@@ -176,7 +176,7 @@ After applying this skill, verify:
 
 **Related skills**
 - Verify with: `api-design`, `tool-call-flow`, `guardrails`, `owasp-security`
-- Related: `type-safety`, `http-semantics`, `tool-call-flow`, `api-design`, `owasp-security`, `security-fundamentals`, `guardrails`, `agent-eval-design`, `prompt-craft`
+- Related: `type-safety`, `http-semantics`, `tool-call-flow`, `api-design`, `owasp-security`, `security-fundamentals`, `guardrails`, `prompt-craft`
 
 **Concept**
 - Mental model: |

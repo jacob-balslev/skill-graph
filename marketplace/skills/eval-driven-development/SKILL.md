@@ -4,7 +4,7 @@ description: "Use when building language-model-integrated systems by writing eva
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"related\":[\"error-tracking\",\"tool-call-flow\",\"observability-modeling\",\"type-safety\",\"agent-eval-design\",\"evaluation\",\"testing-strategy\",\"prompt-injection-defense\"],\"suppresses\":[\"agent-eval-design\",\"evaluation\",\"prompt-injection-defense\"],\"verify_with\":[\"agent-eval-design\",\"evaluation\",\"testing-strategy\"]}"
+  relations: "{\"related\":[\"error-tracking\",\"tool-call-flow\",\"observability-modeling\",\"type-safety\",\"evaluation\",\"testing-strategy\",\"prompt-injection-defense\"],\"suppresses\":[\"evaluation\",\"prompt-injection-defense\"],\"verify_with\":[\"evaluation\",\"testing-strategy\"]}"
   subject: ai-engineering
   scope: "Building language-model-integrated systems by writing evaluations before and alongside the system — the statistical (not binary) nature of LLM evals, the five primitives (dataset, evaluation function, aggregation, iteration loop, regression budget), the judgment-mechanism taxonomy (programmatic, model-graded, human-graded, preference comparison, trace/hybrid), the eval-surface stack (final response, trajectory/tool-use, retrieval/RAG, safety, side effects, cost/latency), continuous evals and model/vendor-upgrade gates, system-specific evals vs canonical benchmarks (MMLU, HumanEval, BIG-bench, GAIA), how evals drive prompt/model/scaffolding/tooling changes, the statistical-significance discipline (paired difference tests, McNemar's test for paired binary outcomes, bootstrap confidence intervals on the delta, minimum-detectable-effect, clustered standard errors, slice vetoes), trajectory-vs-final-output evaluation for multi-step agents, RAG eval surfaces (context recall/precision, faithfulness, answer relevance), model-grader calibration and bias mitigation, eval-awareness and benchmark-contamination risk, Goodhart's Law and suite saturation, cost-aware regression budgets, and the offline-eval-vs-production-telemetry distinction with its graded rollout spectrum. Portable across any LLM-integrated system; principle-grounded, not repo-bound. Excludes deterministic unit testing and general TDD (testing-strategy), production monitoring (evaluation, error-tracking, observability-modeling), and constructing individual eval rubrics, task sets, graders, hard negatives, and traces (agent-eval-design owns construction; this skill owns iteration discipline)."
   public: "true"
@@ -550,8 +550,8 @@ After applying this skill, verify:
 - interpret this scorecard or benchmark result without changing an LLM-system eval loop (use evaluation)
 
 **Related skills**
-- Verify with: `agent-eval-design`, `evaluation`, `testing-strategy`
-- Related: `error-tracking`, `tool-call-flow`, `observability-modeling`, `type-safety`, `agent-eval-design`, `evaluation`, `testing-strategy`, `prompt-injection-defense`
+- Verify with: `evaluation`, `testing-strategy`
+- Related: `error-tracking`, `tool-call-flow`, `observability-modeling`, `type-safety`, `evaluation`, `testing-strategy`, `prompt-injection-defense`
 
 **Concept**
 - Mental model: |

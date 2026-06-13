@@ -4,7 +4,7 @@ description: "Use when authoring any artifact that makes claims — skill conten
 license: MIT
 allowed-tools: Read Grep WebSearch WebFetch
 metadata:
-  relations: "{\"related\":[\"semantics\",\"methodology\",\"evaluation\",\"agent-eval-design\",\"best-practice\",\"context-engineering\",\"bayesian-reasoning\",\"first-principles-thinking\"],\"verify_with\":[\"evaluation\",\"best-practice\",\"context-engineering\",\"methodology\"]}"
+  relations: "{\"related\":[\"semantics\",\"methodology\",\"evaluation\",\"best-practice\",\"context-engineering\",\"bayesian-reasoning\",\"first-principles-thinking\"],\"verify_with\":[\"evaluation\",\"best-practice\",\"context-engineering\",\"methodology\"]}"
   subject: reasoning-strategy
   scope: "Portable claim-grounding discipline for skill content, documentation, audit findings, architecture proposals, code review comments, research summaries, and other artifacts that assert facts. Teaches Toulmin claim/data/warrant/backing/qualifier/rebuttal structure, the verified/source-supported/inferred/asserted/unverified/contradicted claim-state labels, the chain-of-verification procedure for upgrading a claim's grounding state, RFC 2119/RFC 8174 modality, source-to-claim warrants, citation faithfulness, native citation-tool limits, source-priority (primary over secondary), scoped absence/negative claims, conflict handling, currentness checks, and honest hedging. Excludes execution-level evidence receipts and output completeness (methodology), naming precision (semantics), retrieval/context architecture (context-engineering), and grader/rubric design (evaluation or agent-eval-design)."
   public: "true"
@@ -330,7 +330,7 @@ After applying this skill, verify:
 
 **Related skills**
 - Verify with: `evaluation`, `best-practice`, `context-engineering`, `methodology`
-- Related: `semantics`, `methodology`, `evaluation`, `agent-eval-design`, `best-practice`, `context-engineering`, `bayesian-reasoning`, `first-principles-thinking`
+- Related: `semantics`, `methodology`, `evaluation`, `best-practice`, `context-engineering`, `bayesian-reasoning`, `first-principles-thinking`
 
 **Concept**
 - Mental model: |

@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  relations: "{\"related\":[\"testing-strategy\",\"guardrails\",\"best-practice\",\"agent-eval-design\",\"code-review\"],\"suppresses\":[\"refactor\"],\"verify_with\":[\"best-practice\",\"agent-eval-design\",\"okrs\"]}"
+  relations: "{\"related\":[\"testing-strategy\",\"guardrails\",\"best-practice\",\"code-review\"],\"suppresses\":[\"refactor\"],\"verify_with\":[\"best-practice\",\"okrs\"]}"
   subject: software-engineering-method
   scope: "Portable methodology design for rigorous agent work: planning multi-step implementations, designing quality gates, establishing verification protocols, and building checklists calibrated to known failure modes. Covers methodology/method/process distinctions, Cleanroom defect prevention, PSP/TSP measurement discipline, hypothesis-driven development, DMAIC/PDCA quality management, checklist design, V&V frameworks, EDDOps, and hard-stop quality gates. Excludes concrete PR review (code-review), behavior-preserving implementation changes (refactor), test-level selection (testing-strategy), eval-case/rubric authoring (agent-eval-design), and high-risk action blocking (guardrails)."
   public: "true"
@@ -374,8 +374,8 @@ After applying this skill, verify:
 - block this dangerous git command or secret-bearing tool call
 
 **Related skills**
-- Verify with: `best-practice`, `agent-eval-design`, `okrs`
-- Related: `testing-strategy`, `guardrails`, `best-practice`, `agent-eval-design`, `code-review`
+- Verify with: `best-practice`, `okrs`
+- Related: `testing-strategy`, `guardrails`, `best-practice`, `code-review`
 
 **Grounding**
 - Mode: `universal`

@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Markdown, Git, any codebase"
 allowed-tools: Read Grep Bash
 metadata:
-  relations: "{\"related\":[\"generative-ui\",\"test-driven-development\",\"testing-strategy\",\"agent-eval-design\",\"tool-call-strategy\"],\"suppresses\":[\"refactor\"],\"verify_with\":[\"testing-strategy\",\"observability-modeling\"]}"
+  relations: "{\"related\":[\"generative-ui\",\"test-driven-development\",\"testing-strategy\",\"tool-call-strategy\"],\"suppresses\":[\"refactor\"],\"verify_with\":[\"testing-strategy\",\"observability-modeling\"]}"
   subject: software-engineering-method
   scope: "Portable failure-reproduction and root-cause isolation discipline for software work: turning an observed broken behavior, failing test, or contradictory runtime output into a deterministic reproduction; narrowing scope; capturing evidence at the moment of failure; separating symptoms from causes; verifying the fix against the same evidence path; and adding a regression test. Excludes feature planning, architecture design, behavior-preserving refactor, general documentation, and choosing test coverage when no active failure is being investigated."
   public: "true"
@@ -108,7 +108,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/debugging.jso
 
 **Related skills**
 - Verify with: `testing-strategy`, `observability-modeling`
-- Related: `generative-ui`, `test-driven-development`, `testing-strategy`, `agent-eval-design`, `tool-call-strategy`
+- Related: `generative-ui`, `test-driven-development`, `testing-strategy`, `tool-call-strategy`
 
 **Keywords**
 - `debugging`, `tests fail in CI`, `used to work`, `reproduce failure`, `failing test`, `root cause`, `symptom vs cause`, `minimum reproduction`, `regression`, `what changed`

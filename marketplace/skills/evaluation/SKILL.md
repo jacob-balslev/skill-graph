@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Portable completion-evaluation discipline for AI agent work, documentation, skill upgrades, and software deliverables. It assumes the evaluator can inspect the request, artifact, changed files or report, and verification evidence; substitute local tools and acceptance criteria as needed."
 allowed-tools: Read Grep Bash
 metadata:
-  relations: "{\"related\":[\"methodology\",\"debugging\",\"best-practice\",\"agent-eval-design\",\"testing-strategy\",\"code-review\",\"epistemic-grounding\",\"eval-driven-development\"],\"suppresses\":[\"agent-eval-design\",\"eval-driven-development\"],\"verify_with\":[\"epistemic-grounding\",\"code-review\",\"best-practice\",\"testing-strategy\"]}"
+  relations: "{\"related\":[\"methodology\",\"debugging\",\"best-practice\",\"testing-strategy\",\"code-review\",\"epistemic-grounding\",\"eval-driven-development\"],\"suppresses\":[\"eval-driven-development\"],\"verify_with\":[\"epistemic-grounding\",\"code-review\",\"best-practice\",\"testing-strategy\"]}"
   subject: ai-engineering
   scope: "Evidence-based evaluation of completed agent tasks, implementations, documents, skill upgrades, and other deliverables against the original request, acceptance criteria, verification evidence, quality rubric, and residual risks before calling the work done. Portable across software, documentation, and agent-output review when the evaluator can inspect the request, artifact, and evidence. Excludes designing eval datasets or graders (agent-eval-design), line-by-line diff review (code-review), choosing test levels (testing-strategy), designing the process before work starts (methodology), and root-cause investigation of known failures (debugging)."
   public: "true"
@@ -207,7 +207,7 @@ After applying this skill, verify:
 
 **Related skills**
 - Verify with: `epistemic-grounding`, `code-review`, `best-practice`, `testing-strategy`
-- Related: `methodology`, `debugging`, `best-practice`, `agent-eval-design`, `testing-strategy`, `code-review`, `epistemic-grounding`, `eval-driven-development`
+- Related: `methodology`, `debugging`, `best-practice`, `testing-strategy`, `code-review`, `epistemic-grounding`, `eval-driven-development`
 
 **Concept**
 - Mental model: Evaluation is a gate, not a compliment: compare the requested outcome, produced artifact, evidence trail, and meaningful failure modes before deciding whether the work is done.

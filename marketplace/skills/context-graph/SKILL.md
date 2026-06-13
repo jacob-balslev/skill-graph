@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Architecture-level skill. Applies to any agent-coding workspace that has more than one skill / doc-routing / memory artifact and any way to traverse them — Claude Code, OpenCode, Cursor, Aider, Continue, Copilot Workspace, or a custom harness. The four-graph model and the orphan / connectivity metrics are independent of the specific runtime."
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"related\":[\"skill-router\",\"skill-infrastructure\",\"skill-scaffold\",\"knowledge-modeling\",\"refactor\"],\"suppresses\":[\"skill-router\",\"skill-infrastructure\",\"skill-scaffold\",\"context-management\",\"context-window\"],\"verify_with\":[\"skill-infrastructure\",\"project-knowledge-extraction\",\"taxonomy-design\"]}"
+  relations: "{\"related\":[\"skill-router\",\"skill-infrastructure\",\"skill-scaffold\",\"knowledge-modeling\",\"refactor\"],\"suppresses\":[\"skill-router\",\"skill-infrastructure\",\"skill-scaffold\",\"context-management\",\"context-window\"],\"verify_with\":[\"skill-infrastructure\",\"taxonomy-design\"]}"
   subject: agent-ops
   scope: "Designing and auditing the multi-graph context architecture of an AI-coding workspace: skill graph, document routing graph, memory index, script registry, and the cross-graph edges between them. Covers edge typing, orphan detection, connectivity health, deterministic graph-synthesis signals, change-propagation checks, and drift or hub-and-spoke anti-patterns. Excludes authoring one SKILL.md, validating one skill, live routing decisions, context-window budgeting, and session load/drop choices."
   public: "true"
@@ -217,7 +217,7 @@ Each step exercises a different edge type. Skipping a step leaves a stale edge s
 - review this AI-generated PR for correctness
 
 **Related skills**
-- Verify with: `skill-infrastructure`, `project-knowledge-extraction`, `taxonomy-design`
+- Verify with: `skill-infrastructure`, `taxonomy-design`
 - Related: `skill-router`, `skill-infrastructure`, `skill-scaffold`, `knowledge-modeling`, `refactor`
 
 **Concept**

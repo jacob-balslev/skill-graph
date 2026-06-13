@@ -6,7 +6,7 @@ compatibility: "Library- and harness-agnostic. Patterns apply to any skill-style
 allowed-tools: Read Grep Bash Edit Write
 metadata:
   grounding: "{\"subject_matter\":\"Deterministic health tooling for Skill Graph libraries\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"package.json\",\"bin/skill-graph.js\",\"scripts/skill-lint.js\",\"scripts/lib/roots.js\",\"scripts/check-schema-constants.js\",\"scripts/check-protocol-consistency.js\",\"scripts/generate-manifest.js\",\"scripts/check-manifest-freshness.js\",\"scripts/check-audit-manifest.js\",\"scripts/check-application-evals.js\",\"lib/audit/eval-staleness-checker.js\",\"scripts/skill-audit-preflight.js\",\"scripts/skill-graph-drift.js\",\"scripts/skill-overlap.js\",\"scripts/skill-graph-routing-eval.js\",\"scripts/export-marketplace-skills.js\",\"scripts/verify-skill-md-export.js\",\"docs/manifest-field-mapping.md\",\"docs/verdict-semantics.md\",\"SKILL_GRAPH.md\",\"skill-audit-loop/SKILL_AUDIT_LOOP.md\"],\"failure_modes\":[\"health_tooling_categories_missing_from_ci\",\"checker_ownership_overclaimed\",\"protocol_mapping_drift\",\"relation_target_integrity_unguarded\",\"eval_thresholds_become_self_attested\",\"audit_verdicts_claim_artifacts_that_do_not_exist\",\"overlap_or_drift_checks_not_run_after_batch_changes\",\"export_surface_or_marketplace_index_drift\"],\"evidence_priority\":\"repo_code_first\"}"
-  relations: "{\"related\":[\"lint-overlay\",\"skill-scaffold\",\"graph-audit\",\"testing-strategy\",\"project-knowledge-extraction\"],\"suppresses\":[\"skill-scaffold\"],\"verify_with\":[\"testing-strategy\",\"code-review\",\"graph-audit\"]}"
+  relations: "{\"related\":[\"lint-overlay\",\"skill-scaffold\",\"graph-audit\",\"testing-strategy\"],\"suppresses\":[\"skill-scaffold\"],\"verify_with\":[\"testing-strategy\",\"code-review\",\"graph-audit\"]}"
   subject: agent-ops
   scope: "Designing deterministic health tooling for skill libraries, including source/schema inventory, protocol/projection consistency, conflict/overlap/relation integrity, routing and retrieval health, drift sentinels and export/mirror parity, safety/supply-chain scanning, audit/eval evidence-state honesty, release/publication gates, and maintenance workflows after batch skill changes. Portable across Skill Graph, Claude skills, OpenAI/Codex skills, Cursor rules, OpenCode skills, and custom in-house skill systems. Excludes authoring a single SKILL.md (skill-scaffold), running this repo's conformance audit (graph-audit), selecting general codebase lint rules (lint-overlay), and reviewing the health-tooling implementation itself (code-review)."
   public: "true"
@@ -374,7 +374,7 @@ Before any batch skill commit or public release, verify:
 
 **Related skills**
 - Verify with: `testing-strategy`, `code-review`, `graph-audit`
-- Related: `lint-overlay`, `skill-scaffold`, `graph-audit`, `testing-strategy`, `project-knowledge-extraction`
+- Related: `lint-overlay`, `skill-scaffold`, `graph-audit`, `testing-strategy`
 
 **Grounding**
 - Mode: `hybrid`
