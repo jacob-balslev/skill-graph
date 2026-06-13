@@ -318,7 +318,7 @@ function checkSkill(skillMdPath, skillRoots = [], options = {}) {
     const recorded = recordedHashes[sourceKey];
 
     let entryStatus;
-    if (hashed.external) { entryStatus = 'EXTERNAL_UNHASHED'; anyExternal = true; }
+    if (hashed.external && liveHash === null) { entryStatus = 'EXTERNAL_UNHASHED'; anyExternal = true; }
     else if (liveHash === null) { entryStatus = 'BROKEN'; anyBroken = true; }
     else if (!recorded) { entryStatus = 'NO_BASELINE'; anyMissingHash = true; }
     else if (liveHash !== recorded) { entryStatus = 'DRIFT'; anyDrift = true; }
