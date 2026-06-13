@@ -288,7 +288,7 @@ function renderAuditHealthSection(summary, skillCount) {
   const comprGraded = total - frameworkOrNa - comprUnassessed;
 
   const harmfulCallout = harmful > 0
-    ? `\n> **⚠️ HARMFUL skills detected:** \`${harmful}\` skill${harmful === 1 ? '' : 's'} carry \`application_verdict: HARMFUL\` — they make agents worse than running without the skill (SkillsBench arXiv 2602.12670 found 19% of evaluated skills fall in this band). These are not warnings to skim; they are removal candidates pending the deprecate/fold/reframe decision per \`code-preservation\` rules.\n`
+    ? `\n> **HARMFUL skills detected:** \`${harmful}\` active skill${harmful === 1 ? '' : 's'} carry \`application_verdict: HARMFUL\` — they make agents worse than running without the skill. This is an active-corpus violation: remove the skill, or replace it with a fixed skill that earns a new non-HARMFUL application verdict.\n`
     : '';
 
   return `## Audit Health

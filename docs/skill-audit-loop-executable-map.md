@@ -61,7 +61,7 @@ The lowercase `audit` operation is only the report-only **Verify** command insid
 | 2 | Cross-review / revise (panel) | `prompts/skill-audit-loop-cross-review-pass.md`, `prompts/skill-audit-loop-revise-pass.md` | revised proposals + review JSON | Mandatory frontier quorum and convergence required. |
 | 3 | Curate | `curate()` in live deps; anti-loss validators in `run-skill-audit-loop-lite.js` / `run-skill-audit-loop.js` | merged candidate + merge ledger | Every contribution is kept or dropped with a wrong/redundant/harmful reason. |
 | 4 | Use + evaluate candidate | `run-bidirectional-eval.js` | eval receipt | Missing/invalid/capped evals are inconclusive and do not cause revert. |
-| 5 | Grade | `decideKeepOrRevert()` | on keep, canonical `SKILL.md`; on revert, no body write | Revert only `HARMFUL`, `FALSE_POSITIVE`, or a certifying-clean verdict measurably worse than the prior verdict. Flat/non-lift/UNVERIFIED is not a regression. |
+| 5 | Grade | `decideKeepOrRevert()` | on keep, canonical `SKILL.md`; on revert, no body write | Revert only `HARMFUL`, `FALSE_POSITIVE`, or a certifying-clean verdict measurably worse than the prior verdict. Flat/non-lift/UNVERIFIED is not a regression. A canonical active skill already stamped `HARMFUL` must be removed from the active corpus or replaced by a newly evaluated non-HARMFUL version. |
 | 6 | Record full loop | `recordFullLoop()` in `run-skill-audit-loop.js` | Integrity sidecar fields and `model_run_coverage` always; behavior sidecar fields only after keep + receipt | Revert records an explicit finding and does not stamp candidate behavior onto unchanged canonical skill. Model coverage records participation/failure evidence, not quality certification. |
 
 ## `evolve` pipeline

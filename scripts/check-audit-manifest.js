@@ -22,7 +22,8 @@
 //
 // Exit codes:
 //   0 — all checked verdicts are honest about their gradeable artifact
-//   1 — at least one verdict makes a graded claim without the artifact on disk
+//   1 — at least one verdict makes a graded claim without the artifact on disk,
+//       or the active skills manifest still contains application_verdict:HARMFUL
 //   2 — operational error (manifest missing, etc.)
 //
 // Flags:
@@ -368,10 +369,12 @@ function main() {
   }
 
   // Corpus-wide application_verdict scan per ADR-0011 § Addendum 2026-05-27.
-  // HARMFUL is the SkillsBench-19% case the gate exists to catch — it must be
-  // loud, not buried in a generic facet. PROVISIONAL is real single-model
-  // signal awaiting dual-run confirmation; previously invisible because the
-  // verifier collapsed it into the broader graded-set check.
+  // HARMFUL is the SkillsBench-19% case the gate exists to catch. It is not a
+  // warning: an active skill proven to make agents worse must be removed from
+  // the active corpus or replaced by a fixed skill that earns a new verdict.
+  // PROVISIONAL is real single-model signal awaiting dual-run confirmation;
+  // previously invisible because the verifier collapsed it into the broader
+  // graded-set check.
   // Read the skills-with-health manifest (skills.manifest.json), NOT audits/manifest.json.
   const skillsManifest = loadSkillsManifest(args.workspace);
   const manifestSkills = skillsManifest.skills;
@@ -413,10 +416,8 @@ function main() {
         console.log(`  ${f.skill}/${f.runId}: ${missing}`);
       }
     }
-    // Surface HARMFUL loudly even when failures.length === 0 — these are
-    // skills that make agents WORSE, not skills with missing artifacts.
     if (harmful_skills.length > 0) {
-      console.log(`[check-audit-manifest] ⚠️  HARMFUL — ${harmful_skills.length} skill(s) carry application_verdict: HARMFUL (SkillsBench 19%-band):`);
+      console.log(`[check-audit-manifest] FAIL — ${harmful_skills.length} active skill(s) carry application_verdict: HARMFUL and must be removed from the active corpus:`);
       for (const s of harmful_skills) console.log(`  ${s.name}`);
     }
     if (provisional_skills.length > 0) {
@@ -439,7 +440,7 @@ function main() {
     }
   }
 
-  process.exit((failures.length > 0 || manifestPaths.failures.length > 0) ? 1 : 0);
+  process.exit((failures.length > 0 || manifestPaths.failures.length > 0 || harmful_skills.length > 0) ? 1 : 0);
 }
 
 try {

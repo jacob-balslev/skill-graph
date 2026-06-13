@@ -86,7 +86,7 @@ If a future skill carries a DISPLACEMENT finding with a `requiredAction: follow-
 | `NOT_DISCRIMINATED_CEILING` | The eval was inconclusive because baseline behavior already saturated the pointwise rubric; there was not enough headroom to measure marginal lift. | Application runner from pointwise baseline saturation plus no blind-pairwise with-skill preference. |
 | `EQUIVALENT_ON_FRONTIER` | The measured frontier model had headroom but behaved equivalently with and without the skill on this case set. This is a scoped no-lift finding, not a deletion verdict. | Application runner from blind pairwise tie/no preference plus unsaturated baseline. |
 | `REDUNDANT` | Legacy no-visible-delta verdict. New runs should prefer `NOT_DISCRIMINATED_CEILING` or `EQUIVALENT_ON_FRONTIER` so no-lift evidence is interpretable. | Grader or historical runner. |
-| `HARMFUL` | Negative delta — agent makes worse decisions with the skill loaded. SkillsBench arXiv 2602.12670 found 19% of evaluated skills exhibit this. | Grader. |
+| `HARMFUL` | Negative delta — agent makes worse decisions with the skill loaded. Active skills with this verdict must be removed from the corpus or replaced by a newly evaluated non-HARMFUL version. SkillsBench arXiv 2602.12670 found 19% of evaluated skills exhibit this. | Grader. |
 | `MIXED` | Delta varies across cases — some applicable, some redundant or false-positive. | Grader. |
 | `FALSE_POSITIVE` | Skill over-triggers — applies on cases where its expertise does not apply. | Grader. |
 | `UNVERIFIED` | No application assessment has run. | Default. |
@@ -94,6 +94,8 @@ If a future skill carries a DISPLACEMENT finding with a `requiredAction: follow-
 **Application graded set:** every application verdict except `UNVERIFIED` is a graded claim and requires `skills/<name>/evals/application.json` on disk. The verifier at `skill-graph/scripts/check-audit-manifest.js` enforces this full set: `{APPLICABLE, PROVISIONAL, NOT_DISCRIMINATED_CEILING, EQUIVALENT_ON_FRONTIER, REDUNDANT, MIXED, HARMFUL, FALSE_POSITIVE}`.
 
 **No-lift verdicts are scoped evidence.** `NOT_DISCRIMINATED_CEILING` and `EQUIVALENT_ON_FRONTIER` do not mean "delete this skill" or "never route this skill." They mean the specific measured model, task set, and raw-injection eval did not show marginal lift. Router consumers may avoid boosting them as certified-useful skills, but they must not treat them as equivalent to `HARMFUL` or `FALSE_POSITIVE`.
+
+**HARMFUL is removal, not quarantine.** An active skill with `application_verdict: HARMFUL` is a corpus violation because the best available behavior evidence says the skill makes agents worse. The correct resolution is to remove that skill from the active library or replace it with a corrected skill that earns a fresh non-HARMFUL application verdict. The `check-audit-manifest.js` gate fails while any active manifest entry still carries `HARMFUL`.
 
 ## Disjointness rule (binding)
 

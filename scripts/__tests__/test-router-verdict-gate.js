@@ -125,24 +125,37 @@ assert(rTieNoBoost.selected.length === 1 && rTieNoBoost.selected[0].skill.name =
   'UNVERIFIED skill routes when it is the only candidate (no popularity-contest penalty)');
 
 // ---------------------------------------------------------------------------
-// 6: dangerous-verdict expiry — by age and by post-grade change.
+// 6: HARMFUL is permanent active-corpus block; FALSE_POSITIVE expiry remains.
 // ---------------------------------------------------------------------------
 const expirySkills = [
-  // HARMFUL but the grade is 150 days old (> 90d) → expired → routes again.
+  // HARMFUL must not become routable again by age or post-grade edit. The
+  // resolution is removal from active corpus or a fresh non-HARMFUL eval.
   widgetSkill('harmful-old', { application_verdict: 'HARMFUL', eval_last_run: staleReceipt }),
-  // HARMFUL but the skill changed 5 days AFTER the grade → expired → routes again.
   widgetSkill('harmful-changed', {
     application_verdict: 'HARMFUL',
+    eval_last_run: recentReceipt,
+    last_changed: '2026-05-25',
+  }),
+  // FALSE_POSITIVE keeps the historical expiry behavior because a retargeted
+  // routing boundary can make the old over-trigger verdict obsolete.
+  widgetSkill('false-positive-old', { application_verdict: 'FALSE_POSITIVE', eval_last_run: staleReceipt }),
+  widgetSkill('false-positive-changed', {
+    application_verdict: 'FALSE_POSITIVE',
     eval_last_run: recentReceipt,
     last_changed: '2026-05-25',
   }),
 ];
 const rExp = route(expirySkills);
 const expSelected = new Set(rExp.selected.map(e => e.skill.name));
-assert(expSelected.has('harmful-old'),
-  'a HARMFUL verdict older than the expiry window no longer tombstones (routes again)');
-assert(expSelected.has('harmful-changed'),
-  'a HARMFUL verdict is expired when the skill changed after the grade (routes again)');
+const expExcluded = new Set(rExp.excluded.map(e => e.skill.name));
+assert(expExcluded.has('harmful-old'),
+  'a HARMFUL verdict older than the expiry window still blocks routing');
+assert(expExcluded.has('harmful-changed'),
+  'a HARMFUL verdict still blocks routing when the skill changed after the grade');
+assert(expSelected.has('false-positive-old'),
+  'a FALSE_POSITIVE verdict older than the expiry window no longer tombstones (routes again)');
+assert(expSelected.has('false-positive-changed'),
+  'a FALSE_POSITIVE verdict is expired when the skill changed after the grade (routes again)');
 
 // ---------------------------------------------------------------------------
 if (failures > 0) {

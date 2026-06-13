@@ -37,11 +37,12 @@
  *     the skill (genuinely broken). UNVERIFIED structural/truth — the corpus default —
  *     stays routable; gating on PASS would remove ~the whole library (the kill-switch
  *     error Decision A explicitly avoids).
- *   - BEHAVIOR gate-out: a proven-dangerous application_verdict
- *     (HARMFUL / FALSE_POSITIVE) excludes the skill, UNLESS the verdict
+ *   - BEHAVIOR gate-out: a HARMFUL application_verdict excludes the skill until
+ *     it is removed from the active corpus or replaced by a newly evaluated
+ *     non-HARMFUL version. FALSE_POSITIVE excludes the skill unless the verdict
  *     has expired (skill changed since the grade, or the grade is older than
- *     NEGATIVE_VERDICT_EXPIRY_DAYS) — so a since-fixed skill is not tombstoned.
- *     MIXED and no-lift verdicts stay routable with no boost.
+ *     NEGATIVE_VERDICT_EXPIRY_DAYS). MIXED and no-lift verdicts stay routable
+ *     with no boost.
  *   - RANK-WEIGHT: APPLICABLE / PROVISIONAL get a gentle additive boost
  *     (< one keyword hit) so a certified skill wins ties; UNVERIFIED stays neutral
  *     and routable. The boost is a tiebreaker, never an override of keyword relevance.
@@ -554,6 +555,9 @@ function verdictExclusion(skill, today) {
     return { role: 'integrity_excluded', reason: `truth_verdict=${h.truth_verdict} (broken — hard block)` };
   }
   const av = h.application_verdict;
+  if (av === 'HARMFUL') {
+    return { role: 'behavior_excluded', reason: 'application_verdict=HARMFUL (proven harmful — remove from active corpus or replace with a newly evaluated non-HARMFUL skill)' };
+  }
   if (NEGATIVE_APPLICATION_VERDICTS.has(av)) {
     const exp = negativeVerdictExpired(h, today);
     if (!exp.expired) {

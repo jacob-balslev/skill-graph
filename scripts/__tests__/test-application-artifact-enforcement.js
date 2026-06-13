@@ -12,6 +12,8 @@
  *   2. SATISFIED: same verdict WITH evals/application.json on disk → gate PASSES.
  *   3. HONEST DOWNGRADE: orphan run-record but the SKILL.md application_verdict
  *      is UNVERIFIED → gate PASSES (downgrade is the documented resolution path).
+ *   4. HARMFUL: any active skill in skills.manifest.json with
+ *      application_verdict:HARMFUL → gate FAILS until removed from active corpus.
  *
  * Symmetric to the long-standing comprehension-artifact gate.
  */
@@ -61,6 +63,14 @@ function mkWorkspace({ withApplicationJson, skillMdApplicationVerdict }) {
   return ws;
 }
 
+function writeSkillsManifest(ws, skills) {
+  fs.writeFileSync(path.join(ws, 'skills.manifest.json'), JSON.stringify({
+    schema_version: 4,
+    generated_at: '2026-06-13T00:00:00.000Z',
+    skills,
+  }, null, 2));
+}
+
 function runGate(ws) {
   const res = spawnSync('node', [GATE, '--workspace', ws, '--json'], { encoding: 'utf8' });
   let parsed = null;
@@ -102,6 +112,23 @@ function cleanup(ws) {
     f.skill === 'fixture-skill' && /application\.json/.test(f.reason || ''));
   assert(r.code === 0, 'honest downgrade to UNVERIFIED in SKILL.md resolves the orphan (exit 0)');
   assert(!appFailure, 'no application failure after honest downgrade');
+  cleanup(ws);
+}
+
+// 4. HARMFUL — active manifest entry with application_verdict:HARMFUL → must FAIL.
+{
+  const ws = mkWorkspace({ withApplicationJson: true, skillMdApplicationVerdict: null });
+  writeSkillsManifest(ws, [{
+    name: 'harmful-skill',
+    path: 'skills/harmful-skill/SKILL.md',
+    health: { application_verdict: 'HARMFUL' },
+  }]);
+  const r = runGate(ws);
+  assert(r.code === 1, 'active HARMFUL skill fails the gate (exit 1)');
+  assert(
+    r.json && Array.isArray(r.json.harmful_skills) && r.json.harmful_skills.some(s => s.name === 'harmful-skill'),
+    'JSON output names the harmful skill that must be removed',
+  );
   cleanup(ws);
 }
 

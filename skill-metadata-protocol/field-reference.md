@@ -580,7 +580,7 @@ comprehension_verdict: SKIPPED_BASELINE_HIGH
 | `NOT_DISCRIMINATED_CEILING` | Baseline saturated on the real cases, so the eval had no measurement headroom; inconclusive, not a deprecation signal |
 | `EQUIVALENT_ON_FRONTIER` | Baseline had measurement headroom but the skill produced no marginal lift for the measured frontier model on this case set |
 | `REDUNDANT` | Legacy no-delta bucket retained for old receipts; new runner output should prefer the two scoped no-lift values above |
-| `HARMFUL` | Negative delta — the agent makes worse decisions with the skill loaded. SkillsBench (arXiv 2602.12670) found 19% of evaluated skills exhibit this; the v7 schema makes this verdict surfaceable |
+| `HARMFUL` | Negative delta — the agent makes worse decisions with the skill loaded. SkillsBench (arXiv 2602.12670) found 19% of evaluated skills exhibit this. Active skills with this verdict must be removed from the corpus or replaced by a newly evaluated non-HARMFUL version. |
 | `MIXED` | Verdict varies across cases — some applicable, some redundant or false-positive |
 | `FALSE_POSITIVE` | The skill over-triggers — applies on cases where its expertise does not apply |
 | `UNVERIFIED` | Default for the v6→v7 corpus migration — no application audit has run on this skill yet |
@@ -590,6 +590,7 @@ comprehension_verdict: SKIPPED_BASELINE_HIGH
 - Written by the application grader (`scripts/skill/evaluate-skill.js --application` → ported to `skill-graph/lib/audit/evaluate-skill.js` per ADR 0011); do not hand-author.
 - Cases authored in `evals/application.json` must come from external anchors (real PR diffs, real agent failures, real audit findings) — never auto-generated from the skill body. Per the SYNTHESIS roundtable (2026-05-19), auto-generation creates a closed-loop synthetic-eval lie.
 - `application_verdict == APPLICABLE` is the **only** verdict that certifies a skill is useful. The other three verdicts (`structural`, `truth`, `comprehension`) are necessary infrastructure but not sufficient.
+- `application_verdict == HARMFUL` is an active-corpus violation, not a warning. Remove the skill from the active library, or replace it with a fixed skill that earns a fresh non-HARMFUL application verdict.
 
 **Example.**
 ```yaml
