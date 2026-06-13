@@ -45,6 +45,37 @@ check('unknown disposition => violation', () => {
   const r = enrich.validateAntiLoss({ contributions: [{ id: 1, disposition: 'maybe' }] });
   assert.strictEqual(r.ok, false);
 });
+// Regression (2026-06-13): the curate prompt mandates a 5-value disposition vocabulary
+// (kept|incorporated|dropped|rejected|deferred-to-eval); the validator previously accepted
+// only kept|dropped and aborted every real panel run at the merge-ledger gate.
+check('incorporated (advisory folded in) => ok, counts as kept', () => {
+  const r = enrich.validateAntiLoss({ contributions: [{ id: 1, disposition: 'incorporated' }, { id: 2, disposition: 'kept' }] });
+  assert.strictEqual(r.ok, true);
+  assert.strictEqual(r.kept, 2);
+});
+check('rejected WITH a reason => ok, counts as dropped', () => {
+  const r = enrich.validateAntiLoss({ contributions: [{ id: 1, disposition: 'rejected', reason: 'redundant with an already-kept claim' }] });
+  assert.strictEqual(r.ok, true);
+  assert.strictEqual(r.dropped, 1);
+});
+check('rejected with NO reason => violation', () => {
+  const r = enrich.validateAntiLoss({ contributions: [{ id: 1, disposition: 'rejected' }] });
+  assert.strictEqual(r.ok, false);
+  assert.ok(/NO recorded reason/.test(r.violations[0].reason));
+});
+check('deferred-to-eval WITH a reason => ok (explicit non-silent disposition)', () => {
+  const r = enrich.validateAntiLoss({ contributions: [{ id: 1, disposition: 'deferred-to-eval', reason: 'let the A/B eval decide if this case helps' }] });
+  assert.strictEqual(r.ok, true);
+  assert.strictEqual(r.deferred, 1);
+});
+check('deferred-to-eval with NO reason => violation', () => {
+  const r = enrich.validateAntiLoss({ contributions: [{ id: 1, disposition: 'deferred-to-eval' }] });
+  assert.strictEqual(r.ok, false);
+});
+check('rejected for an unscored/delta reason => violation (curate-not-strip)', () => {
+  const r = enrich.validateAntiLoss({ contributions: [{ id: 1, disposition: 'rejected', reason: "didn't move the eval score" }] });
+  assert.strictEqual(r.ok, false);
+});
 check('F10: empty / missing ledger => violation (a union of 2 proposals must record contributions)', () => {
   assert.strictEqual(enrich.validateAntiLoss({ contributions: [] }).ok, false);
   assert.strictEqual(enrich.validateAntiLoss({}).ok, false);
