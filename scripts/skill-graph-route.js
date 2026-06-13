@@ -7,7 +7,7 @@
  * query using every graph field that differentiates Skill Graph from plain
  * SKILL.md:
  *
- *   - activation.keywords / activation.triggers — scoring signal
+ *   - activation.keywords / activation.triggers / activation.examples / activation.anti_examples — scoring signal
  *   - activation.paths                          — optional `--path` boost
  *   - activation.dependencies                   — optional package/tool boost
  *   - activation.codebase_layer                 — optional architecture-layer boost
@@ -194,6 +194,8 @@ function scoreSkill(skill, queryTokens, pathArg, rawQuery, routeContext = {}) {
   const activation = skill.activation || {};
   const triggers = activation.triggers || [];
   const keywords = activation.keywords || [];
+  const examples = activation.examples || [];
+  const antiExamples = activation.anti_examples || [];
   const paths = activation.paths || [];
 
   const addContextMatches = (field, requested, weight, reasonPrefix) => {
@@ -218,6 +220,22 @@ function scoreSkill(skill, queryTokens, pathArg, rawQuery, routeContext = {}) {
     } else if (t && t === normalizedQuery) {
       score += 5;
       reasons.push(`trigger:${t}`);
+    }
+  }
+
+  for (const example of examples) {
+    const ex = normalizePhrase(example);
+    if (ex && ex === normalizedQuery) {
+      score += 5;
+      reasons.push('example:exact');
+    }
+  }
+
+  for (const antiExample of antiExamples) {
+    const anti = normalizePhrase(antiExample);
+    if (anti && anti === normalizedQuery) {
+      score -= 100;
+      reasons.push('anti_example:exact');
     }
   }
 

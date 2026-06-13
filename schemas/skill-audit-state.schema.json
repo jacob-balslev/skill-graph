@@ -317,8 +317,8 @@
               "description": "Path/ref to the enrichment merge-ledger that produced the skill version this eval graded, so enrichment and eval provenance are one record. Null when the eval ran standalone (not after an enrich)."
             },
             "provisional_reason": {
-              "type": "string",
-              "description": "Reason a degraded/non-certifying receipt is capped at PROVISIONAL, e.g. the unavailable frontier or unresolved model provenance."
+              "type": ["string", "null"],
+              "description": "Reason a degraded/non-certifying receipt is capped at PROVISIONAL, e.g. the unavailable frontier or unresolved model provenance. Null means no provisional cap reason applied."
             },
             "missing_frontiers": {
               "type": "array",

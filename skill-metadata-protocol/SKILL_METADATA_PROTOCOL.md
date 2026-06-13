@@ -502,7 +502,8 @@ Required when `comprehension_state: present`. No protocol length cap on any of t
 **`eval_last_run`**
 - Optional evidence receipt for the most recent eval run.
 - Required sub-fields when present: `at` (ISO date-time) and `status` (`pass`, `fail`, or `mixed`).
-- Optional sub-fields: `runner`, `model`, `receipt`, `receipt_hash`.
+- Optional sub-fields: `runner`, `model`, `receipt`, `receipt_hash`, and `bidirectional`.
+- `bidirectional` preserves the Skill Audit Loop's two-direction eval receipt: frontier pair, measured generator, reconciliation, certification/parity flags, per-direction verdicts, execution profile, and optional merge-ledger reference.
 - Use this to support `eval_state: passing` or `eval_state: monitored` with a concrete scorecard, grader history, or CI receipt.
 
 ### Audit Status (v6+, flat — written by the audit loop into `audit-state.json`)

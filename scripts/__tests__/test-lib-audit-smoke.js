@@ -15,6 +15,8 @@
 'use strict';
 
 const path = require('path');
+const fs = require('fs');
+const os = require('os');
 const { spawnSync } = require('node:child_process');
 
 const REPO_ROOT = path.resolve(__dirname, '..', '..');
@@ -97,6 +99,36 @@ for (const rel of RUNNERS) {
     !crashy,
     (r.stderr || '').slice(0, 300),
   );
+}
+
+// ── 3. Current eval artifact resolver for improve loop ───────────────
+process.stdout.write('\n3. Improve loop accepts current eval artifact names\n');
+{
+  const { resolveImprovementEvalFile } = require('../../lib/audit/run-skill-improvement-loop');
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'skill-improve-evals-'));
+  const skillDir = path.join(tmp, 'demo-skill');
+  const evalsDir = path.join(skillDir, 'evals');
+  fs.mkdirSync(evalsDir, { recursive: true });
+
+  assert('  no eval artifact returns null', resolveImprovementEvalFile(skillDir) === null);
+
+  fs.writeFileSync(path.join(evalsDir, 'application.json'), '{}\n');
+  let resolved = resolveImprovementEvalFile(skillDir);
+  assert('  application-only artifact is detected as unsupported by legacy gate',
+    resolved && resolved.kind === 'application' && resolved.unsupportedByLegacyGate === true,
+    JSON.stringify(resolved));
+
+  fs.writeFileSync(path.join(evalsDir, 'comprehension.json'), '{}\n');
+  resolved = resolveImprovementEvalFile(skillDir);
+  assert('  current comprehension.json is selected for the keep/revert gate',
+    resolved && resolved.kind === 'comprehension' && resolved.path.endsWith('evals/comprehension.json'),
+    JSON.stringify(resolved));
+
+  fs.writeFileSync(path.join(evalsDir, 'evals.json'), '{}\n');
+  resolved = resolveImprovementEvalFile(skillDir);
+  assert('  legacy evals.json remains preferred when present',
+    resolved && resolved.kind === 'legacy' && resolved.path.endsWith('evals/evals.json'),
+    JSON.stringify(resolved));
 }
 
 process.stdout.write(`\nResults: ${passCount} passed, ${failCount} failed\n`);

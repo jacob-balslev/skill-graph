@@ -78,5 +78,42 @@ assert(!includedRoute.selected[0].reasons.some(r => r.startsWith('path:!')), 'ro
 const excludedRoute = route('src/components/Button.test.tsx');
 assert(excludedRoute.selected.length === 0, 'router should not select a11y for excluded test path');
 
-pass('activation.paths negations subtract only from prior positive includes');
+const exampleSkill = {
+  id: 'routing-owner',
+  name: 'routing-owner',
+  path: 'skills/routing-owner/SKILL.md',
+  health: { eval_state: 'unverified' },
+  activation: {
+    keywords: [],
+    triggers: [],
+    examples: ['design reconnect and catch-up behavior after an EventSource disconnect'],
+    anti_examples: ['generate quarterly OKRs from this scorecard'],
+    paths: [],
+  },
+};
+
+const exampleRoute = routeSkills({
+  skills: [exampleSkill],
+}, {
+  query: 'design reconnect and catch-up behavior after an EventSource disconnect',
+  project: null,
+  maxResults: 5,
+  minEvalState: 'unverified',
+  todayISO: '2026-05-13',
+});
+assert(exampleRoute.selected.length === 1, 'router should select a skill on an exact activation example');
+assert(exampleRoute.selected[0].reasons.includes('example:exact'), 'router should cite exact example activation');
+
+const antiExampleRoute = routeSkills({
+  skills: [exampleSkill],
+}, {
+  query: 'generate quarterly OKRs from this scorecard',
+  project: null,
+  maxResults: 5,
+  minEvalState: 'unverified',
+  todayISO: '2026-05-13',
+});
+assert(antiExampleRoute.selected.length === 0, 'router should not select a skill on its exact anti-example');
+
+pass('activation.paths negations subtract only from prior positive includes; examples and anti_examples affect exact routing');
 process.exit(0);

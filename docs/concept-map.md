@@ -82,7 +82,7 @@ Three independent axes of eval status. A skill can be at any point in the 3×3×
 | `routing_eval` | Is routing explicitly evaluated? | `absent` \| `present` |
 | `comprehension_state` | Is concept comprehension explicitly evaluated? | `absent` \| `present` |
 | `concept` | Legacy concept model accepted only in historical skills | retired seven-field teaching block |
-| `eval_last_run` | What concrete run supports the current eval claim? | `{ at, status, receipt? }` |
+| `eval_last_run` | What concrete run supports the current eval claim? | `{ at, status, receipt?, bidirectional? }` |
 
 ### Activation & routing (7 optional fields)
 

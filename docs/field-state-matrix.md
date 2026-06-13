@@ -123,7 +123,7 @@ The five Understanding fields are **human-authored** in `SKILL.md`. The sidecar'
 | `lifecycle.review_cadence` | enum | human-authored in `audit-state.json` | `per-commit` / `weekly` / `quarterly` / `on-truth-source-change`. |
 | `runtime_telemetry` | object | human-authored in `audit-state.json` | Points at a JSONL feed of run receipts. Optional. |
 | `model_run_coverage` | object | loop-written in `audit-state.json` | Per-model Skill Audit Loop participation matrix. Records model aliases, phase status, failures, and receipts; not a quality verdict. |
-| `eval_last_run` | object | earned-with-receipt in `audit-state.json` | Receipt for the most recent eval run. Supports `eval_state: passing` / `monitored` with a real receipt. |
+| `eval_last_run` | object | earned-with-receipt in `audit-state.json` | Receipt for the most recent eval run, including optional bidirectional eval evidence. Supports `eval_state: passing` / `monitored` with a real receipt. |
 
 ## Audit Status (v7+, loop-written)
 

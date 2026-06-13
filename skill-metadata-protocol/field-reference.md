@@ -920,6 +920,7 @@ misconception: "A table diagram is not a domain model unless the relationships h
 - `at` is an ISO date-time for the run that supports the current eval claim.
 - `status` is one of `pass`, `fail`, or `mixed`.
 - `runner`, `model`, `receipt`, and `receipt_hash` are optional evidence details.
+- `bidirectional` is optional Skill Audit Loop evidence from `lib/audit/run-bidirectional-eval.js`: frontier pair, measured generator, reconciliation mode, certification/parity flags, per-direction verdicts, execution profile, and optional merge-ledger reference.
 - Do not set `eval_state: passing` solely because this object exists; the run still needs to satisfy the skill's eval contract.
 
 **Example.**
@@ -929,6 +930,11 @@ eval_last_run:
   status: pass
   runner: "node scripts/skill-audit.js --graded"
   receipt: "examples/audits/documentation/scorecard.md"
+  bidirectional:
+    frontier_pair: ["opus", "gpt-5.5"]
+    measured_generator: "representative-generator"
+    reconciliation: "conservative"
+    parity_ok: true
 ```
 
 **When to use.** When a skill's eval has actually run and there is a scorecard, grader history, CI run, or other receipt worth preserving.
@@ -1056,6 +1062,7 @@ superseded_by: new-skill-name
 - 2–5 entries is the sweet spot. Fewer than 2 gives the router no discrimination signal; more than 5 dilutes the vector-search centroid.
 - Write the examples in the user's voice — the prompt they would actually type — not in imperative abstract form.
 - Each example should be a self-contained prompt, not a fragment (router embeddings cover the full string).
+- The reference router gives an exact-match boost when the current query matches an authored example; semantic recall still belongs in `keywords`.
 - Groups under `activation.examples` in the manifest projection.
 
 **Example.**
@@ -1082,6 +1089,7 @@ examples:
 - Optional array of strings.
 - Pair with `relations.suppresses` — every `anti_examples` entry should correspond to a concrete other skill the router should route to. Name that skill in `relations.suppresses` with an object-form `{skill, reason}` explaining why this skill owns its territory over that target. Legacy `relations.boundary` is accepted for unmigrated skills only.
 - Do not dump generic off-topic prompts here — this is not a blocklist. Use it only for near-misses the router keeps getting wrong.
+- The reference router gives an exact-match penalty when the current query matches an authored anti-example, so the declaring skill cannot win that known negative case.
 - Groups under `activation.anti_examples` in the manifest projection.
 
 **Example.**

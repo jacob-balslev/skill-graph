@@ -669,6 +669,165 @@
                   "receipt_hash": {
                     "type": "string",
                     "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "bidirectional": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "description": "Eval provenance projected from audit-state.json eval_last_run.bidirectional.",
+                    "properties": {
+                      "frontier_pair": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 1,
+                        "maxItems": 2
+                      },
+                      "measured_generator": {
+                        "type": "string"
+                      },
+                      "generator_population": {
+                        "type": "string",
+                        "enum": [
+                          "deployment-representative",
+                          "frontier",
+                          "advisory"
+                        ]
+                      },
+                      "reconciliation": {
+                        "type": "string",
+                        "enum": [
+                          "conservative",
+                          "single-frontier-provisional"
+                        ]
+                      },
+                      "agreement": {
+                        "type": "boolean"
+                      },
+                      "parity_ok": {
+                        "type": "boolean"
+                      },
+                      "certifying_clean": {
+                        "type": "boolean"
+                      },
+                      "synthesized_verdict": {
+                        "type": "string"
+                      },
+                      "eval_slice": {
+                        "type": "string",
+                        "enum": [
+                          "all",
+                          "iteration",
+                          "certification"
+                        ]
+                      },
+                      "applicable_for": {
+                        "type": "string",
+                        "enum": [
+                          "representative",
+                          "anthropic",
+                          "openai",
+                          "both",
+                          "neither"
+                        ]
+                      },
+                      "registry_version": {
+                        "type": "string"
+                      },
+                      "merge_ledger_ref": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "provisional_reason": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "missing_frontiers": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "regrade_required": {
+                        "type": "boolean"
+                      },
+                      "fence_caveat": {
+                        "type": "string"
+                      },
+                      "execution_profile": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "tools": {
+                            "type": "string"
+                          },
+                          "research": {
+                            "type": "string"
+                          },
+                          "repoScope": {
+                            "type": "string"
+                          },
+                          "cwd": {
+                            "type": "string"
+                          },
+                          "fence": {
+                            "type": "string",
+                            "enum": [
+                              "os-isolated",
+                              "prompt-level"
+                            ]
+                          }
+                        }
+                      },
+                      "directions": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 2,
+                        "items": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "role": {
+                              "type": "string",
+                              "enum": [
+                                "Claude",
+                                "Codex",
+                                "Single"
+                              ]
+                            },
+                            "generator_model": {
+                              "type": "string"
+                            },
+                            "grader_model": {
+                              "type": "string"
+                            },
+                            "generator_family": {
+                              "type": "string"
+                            },
+                            "grader_family": {
+                              "type": "string"
+                            },
+                            "resolved_model": {
+                              "type": "string"
+                            },
+                            "verdict": {
+                              "type": "string"
+                            },
+                            "certification_tier": {
+                              "type": "string",
+                              "enum": [
+                                "certifying",
+                                "provisional"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               },

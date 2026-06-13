@@ -55,7 +55,7 @@ Every top-level authored field in `schemas/SKILL_METADATA_PROTOCOL_schema.json` 
 | 17 | `routing_eval` | grouped under parent | `health.routing_eval`; manifest schema enforces `absent` / `present`. |
 | 18 | `comprehension_state` | grouped under parent | `health.comprehension_state`. |
 | 19 | `concept` | copied through unchanged | `concept`; required when `comprehension_state: present`. |
-| 20 | `eval_last_run` | grouped under parent | `health.eval_last_run`. |
+| 20 | `eval_last_run` | grouped under parent | `health.eval_last_run`; preserves nested `bidirectional` receipts from the audit-state sidecar. |
 | 21 | `eval` | grouped under parent | `health.eval`; nested compatibility form for the Evaluation Status fields. |
 | 22 | `stability` | copied through unchanged | `stability`. |
 | 22a | `project_adoption_stage` | copied through unchanged | Project-local pattern lifecycle (`legacy`, `current-standard`, `experimental-migration`, `deprecated`). Distinct from document `stability`. |
