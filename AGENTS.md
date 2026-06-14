@@ -840,6 +840,19 @@ Before publishing to npm, tagging a release, pushing, or otherwise making code p
 - Review for secrets, PII, private paths, and local agent telemetry.
 - Verify the canonical URL contract above — every public-facing URL emitted by this release points at `https://www.skills.sh/jacob-balslev/skills/` and `https://github.com/jacob-balslev/skills`, never at the stale URLs.
 
-## When Unsure
+## When Unsure — Anti-Hallucination Protocol
 
 Verify from source files and scripts before claiming behavior. If an API, command, file path, version, schema rule, or validation result has not been checked in this repo, say so and inspect it first.
+
+This applies with special force to **auditing and reviewing** this project — the most common failure mode is a confident claim grounded in nothing. The rules:
+
+1. **Ground every claim in evidence you actually read or ran.** Cite a `file:line` you opened or the output of a command you executed in the same pass. No claim from memory, no claim from "it's probably structured like X." A finding without a reproducible citation is not a finding.
+2. **Never invent paths, line numbers, schema fields, counts, or percentages.** If you state a number — corpus size, "% migrated", field count, verdict distribution — it MUST come from a command you ran (`find … -name SKILL.md | wc -l`, the manifest's `by_schema_version` / `by_subject` facets, `node -e 'Object.keys(schema.properties).length'`, `node scripts/build-status-doc.js`), NEVER an estimate. "About 30% are migrated" with no count is a hallucination, not a finding.
+3. **"I can't find X" ≠ "X does not exist."** Search exhaustively before claiming absence (see the workspace `exhaustive-search-before-blocked` rule). Two layout facts trip up almost every fresh auditor:
+   - **The canonical skill corpus is NOT in this repo.** It lives in the sibling `../skills/skills/**` (per [ADR-0009](docs/adr/0009-sibling-repo-deprecation.md)); `.skill-graph/config.json` → `skill_roots` is the source of truth. An empty `skill-graph/skills/` is **expected**, never a finding. To count or inspect skills, resolve the real root first.
+   - **`SKILL-SYSTEM-CHEAT-SHEET.md` is at the workspace root** (`../SKILL-SYSTEM-CHEAT-SHEET.md`), not inside `skill-graph/`. AGENT_CONTEXT.yaml references it with the `../` prefix on purpose.
+4. **Corpus-migration state is never a design defect, and its numbers are never estimated.** Per § "The Latest Canonical Schema IS the Product", un-migrated skills / `UNVERIFIED` verdicts / sparse sidecars are backlog (INFO), not flaws — and you may only report their magnitude from a real count, never a guess.
+5. **In a multi-model audit, a claim is load-bearing only after a frontier model REPRODUCES its evidence.** Advisory (free-tier) findings add breadth, but each is verified — re-open the `file:line`, re-run the command — before it drives any action. An advisory claim that cannot be reproduced is **dropped, not escalated** (per § "Width before verdict" in `~/Development/.claude/rules/no-lesser-models-for-quality.md`).
+6. **If you cannot verify, say "I could not verify this."** Never assert. Retract a claim the moment its evidence fails to materialize.
+
+> **Motivating incident (2026-06-15).** A free advisory model audited this repo and reported "only ~30% of skills migrated to v8" as a P0 — a pure hallucination. It had searched `skill-graph/skills/` (empty; the corpus is in the sibling repo), invented the percentage, and never ran a count. The manifest's `by_schema_version: {8: <all>}` showed 100% on v8. Another model claimed `SKILL-SYSTEM-CHEAT-SHEET.md` "doesn't exist" (it's at `../`). Both errors are exactly what rules 2–3 above prevent. Companion: `skill-audit-loop/SKILL_AUDIT_LOOP.md § Charter Rule 11`.
