@@ -8,11 +8,13 @@ Dual-licensing
 
 This package contains TWO bodies of work under different licenses:
 
-1. CODE — everything outside `skills/**`
+1. CODE — everything in this repository outside `marketplace/skills/**`
    Licensed under the Apache License, Version 2.0.
    See LICENSE for the full text. http://www.apache.org/licenses/LICENSE-2.0
 
-2. SKILL CONTENT — markdown files under `skills/**`
+2. SKILL CONTENT — the `SKILL.md` markdown files under `marketplace/skills/**`
+   (the generated public mirror in this repo; canonical source is the sibling
+   library `github.com/jacob-balslev/skills` per ADR-0009).
    Licensed under the Creative Commons Attribution 4.0 International License
    (CC-BY-4.0). See https://creativecommons.org/licenses/by/4.0/ for the full
    text.
@@ -57,6 +59,7 @@ TypeScript Apache-2.0, etc.).
 Skill content provenance
 ================================================================================
 
-Skills under `skills/**` are the public subset intended for reuse in open
-source SKILL.md libraries. Private, customer-specific, and project-specific
-skills were intentionally excluded from this distribution.
+Skills under `marketplace/skills/**` (the generated public mirror; canonical
+source `github.com/jacob-balslev/skills`) are the public subset intended for
+reuse in open source SKILL.md libraries. Private, customer-specific, and
+project-specific skills were intentionally excluded from this distribution.
