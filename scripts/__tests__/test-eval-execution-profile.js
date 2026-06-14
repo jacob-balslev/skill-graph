@@ -97,7 +97,7 @@ check('a missing profile cannot be proven equal => parity_ok false', () => {
   assert.strictEqual(ep.assertParity(null, a).parity_ok, false);
 });
 
-console.log('4. runBidirectionalEval — sequencing, swap, conservative reconcile, parity gate');
+console.log('4. runBidirectionalEval — representative generator, frontier judges, conservative reconcile, parity gate');
 
 // A faithful injected runDirection: echoes back the profile it was handed (so
 // parity holds) and a per-direction verdict from a lookup keyed by direction.
@@ -117,12 +117,15 @@ function fakeRunner(verdictByDirection, { breakParity = false, calibrated = true
   });
 }
 
-check('swaps generator/grader across directions (Claude: opus→gpt-5.5, Codex: gpt-5.5→opus)', () => {
+check('uses representative generator with both frontier judges (Claude judge + Codex judge)', () => {
   const seen = [];
+  const caseIds = new Set([1, 5]);
   runBidirectionalEval({
     mode: 'application',
     skill: 's',
     cwd: '/x/skill-graph',
+    caseIds,
+    trials: 1,
     deps: {
       runDirection: (params) => {
         seen.push(params);
@@ -139,13 +142,17 @@ check('swaps generator/grader across directions (Claude: opus→gpt-5.5, Codex: 
   });
   const A = seen.find((s) => s.direction === 'Claude');
   const B = seen.find((s) => s.direction === 'Codex');
-  assert.strictEqual(A.generatorModel, 'opus');
-  assert.strictEqual(A.graderModel, 'gpt-5.5');
-  assert.strictEqual(B.generatorModel, 'gpt-5.5');
-  assert.strictEqual(B.graderModel, 'opus');
+  assert.strictEqual(A.generatorModel, 'representative-generator');
+  assert.strictEqual(A.graderModel, 'opus');
+  assert.strictEqual(B.generatorModel, 'representative-generator');
+  assert.strictEqual(B.graderModel, 'gpt-5.5');
+  assert.strictEqual(A.caseIds, caseIds);
+  assert.strictEqual(B.caseIds, caseIds);
+  assert.strictEqual(A.trials, 1);
+  assert.strictEqual(B.trials, 1);
 });
 
-check('both APPLICABLE + parity OK + cross-family => APPLICABLE, certifying_clean', () => {
+check('both frontier judges APPLICABLE + parity OK => APPLICABLE, certifying_clean', () => {
   const r = runBidirectionalEval({
     mode: 'application', skill: 's', cwd: '/x/skill-graph',
     deps: { runDirection: fakeRunner({ Claude: 'APPLICABLE', Codex: 'APPLICABLE' }) },
@@ -178,17 +185,17 @@ check('parity break => strong verdict capped to PROVISIONAL, certifying_clean fa
 });
 
 check('A7: resolved model family != declared family caps APPLICABLE to PROVISIONAL', () => {
-  // The Claude direction declares an `opus` (anthropic) generator but RESOLVES to a
-  // gpt id (openai) — a stale alias / registry drift. The cross-family certifying
-  // decision was computed from the DECLARED family, so the run must not certify.
+  // The Claude judge direction declares an `opus` (anthropic) grader but RESOLVES to a
+  // gpt id (openai) — a stale alias / registry drift. The certifying decision was
+  // computed from the DECLARED family, so the run must not certify.
   const runDirection = ({ direction, generatorModel, graderModel, executionProfile }) => ({
     direction,
     generator_model: generatorModel,
     grader_model: graderModel,
     generator_family: generatorModel,
     grader_family: graderModel,
-    // Claude direction's generator alias is `opus` (anthropic) but resolves to a GPT id.
-    resolved_generator_model: direction === 'Claude' ? 'gpt-5.4' : undefined,
+    // Claude direction's grader alias is `opus` (anthropic) but resolves to a GPT id.
+    resolved_model: direction === 'Claude' ? 'gpt-5.4' : undefined,
     verdict: 'APPLICABLE',
     certification_tier: 'certifying',
     calibrated: true,
@@ -215,8 +222,8 @@ check('A7: resolved family == declared family stays certifying_clean', () => {
     grader_model: graderModel,
     generator_family: generatorModel,
     grader_family: graderModel,
-    // opus→claude-opus id (anthropic), gpt-5.5→gpt-5.4 id (openai): both agree with declared.
-    resolved_generator_model: generatorModel === 'opus' ? 'claude-opus-4-8' : 'gpt-5.4',
+    // representative-generator is a role receipt id; frontier graders resolve to their families.
+    resolved_generator_model: 'representative-generator:sonnet',
     resolved_model: graderModel === 'opus' ? 'claude-opus-4-8' : 'gpt-5.4',
     verdict: 'APPLICABLE',
     certification_tier: 'certifying',
@@ -280,22 +287,22 @@ check('comprehension mode: both PASS => PASS', () => {
   assert.strictEqual(r.certifying_clean, true);
 });
 
-check('SH-6682: per-family applicable_for — both certifying => "both", aggregate kept', () => {
+check('SKI-306: both frontier judges certify => applicable_for "representative", aggregate kept', () => {
   const r = runBidirectionalEval({
     mode: 'application', skill: 's', cwd: '/x/skill-graph',
     deps: { runDirection: fakeRunner({ Claude: 'APPLICABLE', Codex: 'APPLICABLE' }) },
   });
-  assert.strictEqual(r.applicable_for, 'both');
+  assert.strictEqual(r.applicable_for, 'representative');
   assert.strictEqual(r.synthesized_verdict, 'APPLICABLE'); // aggregate unchanged
 });
-check('SH-6682: divergent — only the anthropic (Claude/opus) direction certifies => "anthropic"', () => {
-  // Claude (opus → anthropic) APPLICABLE, Codex (gpt → openai) MIXED. The conservative
-  // aggregate caps to MIXED, but the per-family field surfaces that the skill helps Anthropic.
+check('SKI-306: divergent frontier judges => no representative certification', () => {
+  // The representative generator is the measured subject in both directions. If the
+  // frontier judges disagree, the conservative aggregate caps and the population is not certified.
   const r = runBidirectionalEval({
     mode: 'application', skill: 's', cwd: '/x/skill-graph',
     deps: { runDirection: fakeRunner({ Claude: 'APPLICABLE', Codex: 'MIXED' }) },
   });
-  assert.strictEqual(r.applicable_for, 'anthropic');
+  assert.strictEqual(r.applicable_for, 'neither');
   assert.strictEqual(r.synthesized_verdict, 'MIXED');
 });
 check('SH-6682: not certifying-clean (parity break) => "neither" even with both APPLICABLE', () => {
@@ -306,12 +313,12 @@ check('SH-6682: not certifying-clean (parity break) => "neither" even with both 
   assert.strictEqual(r.certifying_clean, false);
   assert.strictEqual(r.applicable_for, 'neither');
 });
-check('SH-6682: comprehension — only Codex (openai) PASS => "openai"', () => {
+check('SKI-306: comprehension — one frontier judge PASS is not representative certification', () => {
   const r = runBidirectionalEval({
     mode: 'comprehension', skill: 's', cwd: '/x/skill-graph',
     deps: { runDirection: fakeRunner({ Claude: 'SHALLOW', Codex: 'PASS' }) },
   });
-  assert.strictEqual(r.applicable_for, 'openai');
+  assert.strictEqual(r.applicable_for, 'neither');
 });
 
 check('rejects a bad mode', () => {
@@ -340,7 +347,7 @@ check('F6: an unresolved direction model caps APPLICABLE to PROVISIONAL (cannot 
   assert.ok(/unresolved/.test(r.cap_reason));
 });
 check('F8: toSidecarReceipt projects ONLY schema-allowed keys', () => {
-  const allowed = new Set(['frontier_pair', 'reconciliation', 'agreement', 'parity_ok', 'certifying_clean', 'synthesized_verdict', 'eval_slice', 'applicable_for', 'registry_version', 'merge_ledger_ref', 'provisional_reason', 'missing_frontiers', 'regrade_required', 'fence_caveat', 'execution_profile', 'directions']);
+  const allowed = new Set(['frontier_pair', 'measured_generator', 'generator_population', 'reconciliation', 'agreement', 'parity_ok', 'certifying_clean', 'synthesized_verdict', 'eval_slice', 'applicable_for', 'registry_version', 'merge_ledger_ref', 'provisional_reason', 'missing_frontiers', 'regrade_required', 'fence_caveat', 'execution_profile', 'directions']);
   const dirKeys = new Set(['role', 'generator_model', 'grader_model', 'generator_family', 'grader_family', 'resolved_model', 'verdict', 'certification_tier']);
   const epKeys = new Set(['tools', 'research', 'repoScope', 'cwd', 'fence']);
   const runDirection = ({ direction, generatorModel, graderModel, generatorFamily, graderFamily, executionProfile }) => ({
@@ -379,7 +386,8 @@ check('A6: an os-isolated profile records no fence_caveat', () => {
   const r = {
     frontier_pair: ['opus', 'gpt-5.5'], reconciliation: 'conservative', agreement: true,
     parity: { parity_ok: true }, certifying_clean: true, synthesized_verdict: 'APPLICABLE',
-    applicable_for: 'both', registry_version: 'x', merge_ledger_ref: null,
+    applicable_for: 'representative', registry_version: 'x', merge_ledger_ref: null,
+    measured_generator: 'representative-generator', generator_population: 'deployment-representative',
     direction_claude: { verdict: 'APPLICABLE' }, direction_codex: { verdict: 'APPLICABLE' },
     fence: 'os-isolated', fence_caveat: null,
     execution_profile: { tools: 'full', research: 'repo', repoScope: 'skill-graph + skills ONLY', cwd: '/tmp/skill-eval-ws/skill-graph', fence: 'os-isolated' },

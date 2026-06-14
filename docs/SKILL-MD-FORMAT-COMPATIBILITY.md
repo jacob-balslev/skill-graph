@@ -44,7 +44,7 @@ Export rules:
 | `name` | Top-level `name`. |
 | `description` | Top-level `description`. |
 | `license` | Top-level `license` when present. |
-| `compatibility` object | Top-level `compatibility` string, flattened from `runtimes`, `node`, and `notes`. |
+| `compatibility` object | Top-level `compatibility` string, flattened from `agent_runtimes`, `node_version`, and `notes`. |
 | `allowed-tools` or `allowed_tools` | Top-level `allowed-tools` string. |
 | All protocol extension fields | `metadata.<field>` string values. Objects and arrays are JSON-encoded strings. |
 

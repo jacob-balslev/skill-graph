@@ -204,7 +204,7 @@ RUN (the driver owns claim -> panel -> eval-guarded apply -> CONTENT commit -> r
   the drain.
 - Timing expectation: a panel skill runs up to the 90-minute watchdog (--timeout 5400),
   but INDIVIDUAL model calls inside it cap earlier — ~30 min per mandatory-frontier call
-  (SKILL_ENRICH_CLI_TIMEOUT_MS default) and ~20 min per advisory call. A single timed-out
+  (SKILL_AUDIT_CLI_TIMEOUT_MS default) and ~20 min per advisory call. A single timed-out
   advisory call is a degraded-but-valid panel; a timed-out mandatory call fails the skill.
 - Full advisory panel is the default. Do not pass --no-advisory for this automation unless the
   user explicitly asks for a fast floor-only run.
@@ -226,7 +226,7 @@ RUN (the driver owns claim -> panel -> eval-guarded apply -> CONTENT commit -> r
 
 POST-RUN VERIFICATION (after each attempted skill before reporting success)
 - Find the per-skill result JSON/log paths from the driver output (`$WORK_ROOT/<slug>.result.json`
-  and `$WORK_ROOT/<slug>.log`, default work-root `/tmp/enrich-loop` unless overridden).
+  and `$WORK_ROOT/<slug>.log`, default work-root `/tmp/skill-audit-loop` unless overridden).
 - If the terminal marker is COMPLETE and keep=true, verify all of the following before
   reporting success:
   1. The result JSON says `applied: true` and names the mandatory/advisory models that ran.

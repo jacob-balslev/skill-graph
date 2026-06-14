@@ -13,6 +13,7 @@ Use this page when you know the kind of answer you need but not the owning file 
 | Understand verdicts | [`verdict-semantics.md`](verdict-semantics.md) | Canonical enum meanings and confidence ordering. |
 | Design or audit eval artifacts | [`comprehension-eval-spec.md`](comprehension-eval-spec.md) and [`application-eval-spec.md`](application-eval-spec.md) | Separate contracts for concept comprehension and behavior-change evidence. |
 | Check audit-loop execution surfaces | [`skill-audit-loop-executable-map.md`](skill-audit-loop-executable-map.md) | Maps checks, scripts, artifacts, and write surfaces. |
+| Audit active docs for stale code references and rewrite questions | [`doc-freshness-audit.md`](doc-freshness-audit.md) | Explains `skill-graph doc`, `npm run docs:freshness`, strict mode, and how to treat findings without deleting context. |
 | Follow current plans | [`plans/PLANS.md`](plans/PLANS.md) | Active and in-flight plans index. Completed plans are removed to git history. |
 | Read accepted decisions | [`adr/`](adr/) | Architecture decision records, including status updates and supersessions. |
 | Review research and audits | [`research/`](research/) | Dated analysis, evidence reviews, and multi-model audit reports. |

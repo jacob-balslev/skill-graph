@@ -42,6 +42,11 @@ const SKILL_ROOTS = resolveSkillRoots(REPO_ROOT, WORKSPACE_CONFIG);
 // Primary skill root — first configured root, or local skills/ as fallback.
 const DEFAULT_SOURCE_DIR = SKILL_ROOTS[0].absPath;
 const DEFAULT_OUTPUT_ROOT = path.join(REPO_ROOT, 'marketplace');
+// Verified 2026-06-13 against the published `skills@1.5.11` CLI package:
+// its SKILL.md validator rejects descriptions over 1024 characters
+// (`dist/cli.mjs`: `e.description.length > 1024`). Keep the canonical Skill
+// Metadata Protocol description full; this limit applies only to exported
+// Agent Skills marketplace descriptions.
 const MARKETPLACE_DESCRIPTION_LIMIT = 1024;
 const SKILL_GRAPH_SOURCE_REPO = 'https://github.com/jacob-balslev/skill-graph';
 // SKILL_GRAPH_PROTOCOL removed 2026-05-26 per F8 in
@@ -115,9 +120,6 @@ const EXPORT_DESCRIPTION_OVERRIDES = {
   // Canonical description is 1223 chars. Keep runtime-selection triggers,
   // invocation/config surfaces, extension layers, and nearby-runtime boundaries.
   'opencode': "Use when deciding whether to run a task on the OpenCode agent runtime, how to invoke it non-interactively, how to pick a provider/model string, or how OpenCode differs from Claude Code and Codex. Covers terminal TUI, opencode run, ACP/IDE bridge, desktop beta, web UI, opencode serve, provider/model routing, OpenCode Zen and OpenCode Go lanes, config precedence, JSONL output, CLI command surface, build/plan agents, LSP code intelligence, permissions, Agent Skills, MCP, references, commands, plugins, local models, and scripting/automation. Do NOT use for choosing which free model fits a task (use opencode-free-models), writing the agent loop itself (use autonomous-loop-patterns), or GitHub Copilot premium-request economics (use github-copilot).",
-  // Canonical description is 1244 chars. Keep cross-surface meaning encoding,
-  // LLM/tool/telemetry signals, and boundaries.
-  'semantics': "Use when choosing or auditing meaning encoded by names and signals across code, APIs, design tokens, HTTP responses, UI labels, error codes, branded types, tool schemas, telemetry attributes, and domain terms, especially when a name feels ambiguous, misleading, or stale. Covers naming smells, DDD ubiquitous language, SemVer, Conventional Commits type choice, branded/semantic types, parse-don't-validate, semantic design tokens/CSS/API signals, semantic UI affordances, machine-reader truthfulness for LLM tools and telemetry, and anti-patterns where syntax is valid but the signal lies. Do NOT use for morphology/register (use linguistics), casing/format or rename mechanics (use naming-conventions or refactor), typed concept-edge analysis (use semantic-relations), UI copy (use microcopy), taxonomy (use taxonomy-design), accessibility (use a11y), API/protocol design (use api-design or http-semantics), LLM tool design (use agent-engineering or tool-call-flow), or telemetry strategy (use observability-modeling).",
   // Canonical description is 1103 chars. Keep Porter value-chain scope,
   // activity-system lenses, cost/differentiation drivers, and strategic boundaries.
   'value-chain-analysis': "Use when decomposing how an organization, business unit, product, service, platform, or operating model creates value and cost through Porter's Value Chain and adjacent activity-system lenses. Covers primary and support activities, value configurations, virtual information activities, value-system dependencies, activity-level cost and differentiation drivers, linkages, fit, margin, mapping activities, comparing activity configuration to rivals or alternatives, and diagnosing cost or differentiation opportunities. Do NOT use for industry profit-pressure diagnosis (use porters-five-forces), resource/capability advantage testing (use vrio), durable moat classification (use seven-powers), full strategy-cascade design (use playing-to-win), market-boundary reconstruction (use blue-ocean-strategy), portfolio allocation (use bcg-matrix), product-market growth paths (use ansoff-matrix), macro scanning (use pestel), or quantified option valuation (use expected-value).",
@@ -894,11 +896,27 @@ function checkSurface(outputRoot, expectedFiles) {
   return errors;
 }
 
+function checkDescriptionBudget(skills = collectCanonicalSkills()) {
+  const errors = [];
+  for (const skill of skills) {
+    try {
+      const result = exportDescriptionForSkill(skill);
+      if (typeof result.description !== 'string' || result.description.length > MARKETPLACE_DESCRIPTION_LIMIT) {
+        errors.push(`${skill.fm.name}: exported description length ${(result.description || '').length} exceeds ${MARKETPLACE_DESCRIPTION_LIMIT}`);
+      }
+    } catch (error) {
+      errors.push(`${skill.fm && skill.fm.name ? skill.fm.name : skill.sourceRelPath}: ${error.message}`);
+    }
+  }
+  return { ok: errors.length === 0, errors, skillCount: skills.length };
+}
+
 function parseArgs(argv) {
   const options = {
     outputRoot: DEFAULT_OUTPUT_ROOT,
     check: false,
     validateOnly: false,
+    descriptionBudget: false,
     json: false,
     quiet: false,
   };
@@ -911,6 +929,8 @@ function parseArgs(argv) {
       options.check = true;
     } else if (arg === '--validate-only') {
       options.validateOnly = true;
+    } else if (arg === '--description-budget') {
+      options.descriptionBudget = true;
     } else if (arg === '--json') {
       options.json = true;
     } else if (arg === '--quiet') {
@@ -933,6 +953,9 @@ Options:
   --output <dir>    Marketplace output root. Default: marketplace
   --check           Do not write; fail if generated files are missing or stale
   --validate-only   Validate an existing generated surface only
+  --description-budget
+                    Build exported descriptions in memory and fail only when any
+                    description exceeds the marketplace character budget
   --json            Print JSON summary
   --quiet           Suppress success text
   --help            Show this help
@@ -945,6 +968,27 @@ function main() {
     if (options.help) {
       printHelp();
       process.exit(0);
+    }
+
+    if (options.descriptionBudget) {
+      const budget = checkDescriptionBudget();
+      const result = {
+        output: null,
+        canonical_skills: budget.skillCount,
+        exported_skills: budget.skillCount,
+        ok: budget.ok,
+        errors: budget.errors,
+        marketplace_description_limit: MARKETPLACE_DESCRIPTION_LIMIT,
+      };
+      if (options.json) {
+        process.stdout.write(JSON.stringify(result, null, 2) + '\n');
+      } else if (!options.quiet) {
+        for (const error of budget.errors) process.stderr.write(`FAIL ${error}\n`);
+        if (budget.ok) {
+          process.stdout.write(`OK   marketplace description budget: ${budget.skillCount} projected description(s) <= ${MARKETPLACE_DESCRIPTION_LIMIT} chars\n`);
+        }
+      }
+      process.exit(budget.ok ? 0 : 1);
     }
 
     const outputRoot = assertSafeOutputRoot(options.outputRoot);
@@ -1000,6 +1044,7 @@ module.exports = {
   buildMarketplaceSkillText,
   collectCanonicalSkills,
   collectMentionedSlugs,
+  checkDescriptionBudget,
   exportDescriptionForSkill,
   extractBoundaryOwnsClause,
   provenanceForSkill,

@@ -106,12 +106,12 @@ If a generated export already nests protocol fields under `metadata`, keep these
 
 The Skill Graph has two consumers of `description:` data and they read different things at routing time.
 
-| Consumer | What it sees at routing time | Where the boundary signal can live |
+| Consumer | What it sees at routing time | Where the negative-use signal can live |
 |---|---|---|
-| Workspace router (`scripts/skill-graph-route.js`) | Full manifest: `description`, `keywords`, `triggers`, `anti_examples`, `relations.boundary`, `scope`, `type`, etc. | Typed fields (`anti_examples`, `relations.boundary`) — the router reads them directly. |
+| Workspace router (`scripts/skill-graph-route.js`) | Full manifest: `description`, `keywords`, `triggers`, `anti_examples`, `relations.suppresses`, `scope`, etc. | Typed fields (`anti_examples`, `relations.suppresses`) — the router reads them directly. |
 | Anthropic auto-invocation runtime (claude.ai, claude-code, skills.sh) | **Only `name` + `description`** pre-loaded at startup; the SKILL.md body loads on-demand AFTER trigger; named fields are read by name, not position. (Per [Anthropic Agent Skills overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview): "Claude loads this metadata at startup and includes it in the system prompt.") | The exported `description:` itself — typed fields are invisible at routing time. |
 
-The asymmetry: the workspace's typed-field discipline (`anti_examples`, `relations.boundary`) does the negative-boundary work natively for the workspace router but is invisible to Anthropic's auto-invocation runtime. Reordering frontmatter does NOT fix this — the runtime reads named fields by name, not position.
+The asymmetry: the workspace's typed-field discipline (`anti_examples`, `relations.suppresses`) does the negative-use work natively for the workspace router but is invisible to Anthropic's auto-invocation runtime. Reordering frontmatter does NOT fix this — the runtime reads named fields by name, not position.
 
 ### What the projection does
 
@@ -120,15 +120,17 @@ The asymmetry: the workspace's typed-field discipline (`anti_examples`, `relatio
 **Substrate read (in priority order):**
 
 1. **`anti_examples:`** — array of strings. Each phrase is projected as `Do NOT use for <phrase>.` Most anti-example phrases already carry a trailing `(use <slug>)` reference, so the projected sentence is well-formed.
-2. **`relations.boundary:`** — array of `{ skill, reason }` objects (Shape B) or bare slugs (Shape A). Only Shape B is projected: the `reason` is parsed for an `<slug> owns <X>` clause, and the projection becomes `Do NOT use for <X> (use <slug>).` Shape A is skipped silently — a bare slug carries too little context to compose meaningful prose; populate the `reason` field to make a boundary entry projectable.
+2. **`relations.suppresses:`** — array of `{ skill, reason }` objects (Shape B) or bare slugs (Shape A). Only Shape B is projected: the `reason` is parsed for an `<slug> owns <X>` clause, and the projection becomes `Do NOT use for <X> (use <slug>).` Shape A is skipped silently — a bare slug carries too little context to compose meaningful prose; populate the `reason` field to make a suppression entry projectable.
 
-**Deduplication.** Before synthesizing, the projector scans the base description for `(use <slug>)` mentions. Any slug already named in the canonical/override description is excluded from the projected tail, so the same `(use <slug>)` reference is never stacked twice in the exported text. The dedupe set is shared across `anti_examples` and `relations.boundary` so cross-source duplication is also prevented.
+**Deduplication.** Before synthesizing, the projector scans the base description for `(use <slug>)` mentions. Any slug already named in the canonical/override description is excluded from the projected tail, so the same `(use <slug>)` reference is never stacked twice in the exported text. The dedupe set is shared across `anti_examples` and `relations.suppresses` so cross-source duplication is also prevented.
 
-**Doctrine fit — augment, not replace.** The workspace's existing mandate that canonical descriptions include their own `Do NOT use for X (use Y).` clause (per `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` § Identity and `AGENTS.md` § Skill Metadata Protocol — Quick Reference) is unchanged. The projection runs **on top of** the canonical clause and only adds entries the canonical clause did not already name.
+**Doctrine fit — augment, not replace.** Canonical source keeps negative-use evidence in typed fields (`anti_examples`, `relations.suppresses`). The projection turns that evidence into description text only for runtimes that cannot see typed fields at startup.
 
 ### 1024-character ceiling enforcement
 
 The marketplace export must stay under `MARKETPLACE_DESCRIPTION_LIMIT = 1024` characters. The base description (canonical text, or the hand-written `EXPORT_DESCRIPTION_OVERRIDES` entry when the canonical is over-limit) is **never truncated**. Only the projected tail is truncated:
+
+This limit was re-verified on 2026-06-13 against the published `skills@1.5.11` CLI package, whose SKILL.md validator rejects descriptions over 1024 characters. Do not raise the limit without checking the currently published installer or marketplace validator again.
 
 - If the canonical/override base + full projection fits in 1024, the full projection lands.
 - If it does not fit, the projection is truncated at the last `.` (sentence boundary) that fits the remaining budget. The marketplace provenance metadata records `skill_graph_export_description_projection_truncated: "true"` for that skill.
@@ -140,7 +142,7 @@ When projection runs, the exported skill's `metadata` carries:
 
 ```yaml
 metadata:
-  skill_graph_export_description_projection: "boundary" | "anti_examples" | "anti_examples+boundary"
+  skill_graph_export_description_projection: "suppresses" | "anti_examples" | "anti_examples+suppresses"
   # Present only when the projected tail was truncated to fit 1024 chars:
   skill_graph_export_description_projection_truncated: "true"
 ```
@@ -149,38 +151,37 @@ When no projection runs (typed fields empty, or every projected slug was already
 
 ### What stays canonical
 
-- SKILL.md source files are unchanged. The 158-skill canonical library is untouched by the projection.
-- The workspace router never sees the projected tail. It reads `anti_examples` and `relations.boundary` directly from the typed fields in the canonical source.
+- SKILL.md source files are unchanged. The canonical library is untouched by the projection.
+- The workspace router never sees the projected tail. It reads `anti_examples` and `relations.suppresses` directly from the typed fields in the canonical source.
 - The protocol's typed-field discipline is preserved. Projection is a publish-time concern only.
 
 ### Limits and known gaps
 
-- **`anti_examples` is corpus-empty today.** 1 of 158 skills (`task-path-optimization`) has `anti_examples` populated. Projection wires the read path so a future corpus-wide `anti_examples` population pass needs no exporter change.
-- **`relations.boundary` Shape A entries do not project.** A bare-slug entry (`boundary: [foo, bar]`) has no `reason:` clause to extract context from. ~50% of corpus boundary entries are Shape A; populate `reason:` to make them projectable.
-- **Slug-based dedupe is mechanical, not semantic.** If the canonical description mentions a concept by name (e.g., "Server Actions") but not by slug (`(use server-actions-design)`), the projector cannot tell and will project the boundary slug anyway. The result reads fine but technically duplicates the concept across canonical prose and projected tail. Reducing this is a separate, harder problem (semantic linking) — out of scope for this projection layer.
+- **`anti_examples` population is a corpus concern.** Projection wires the read path so a future corpus-wide `anti_examples` population pass needs no exporter change.
+- **`relations.suppresses` Shape A entries do not project.** A bare-slug entry (`suppresses: [foo, bar]`) has no `reason:` clause to extract context from. Populate `reason:` to make it projectable.
+- **Slug-based dedupe is mechanical, not semantic.** If the canonical description mentions a concept by name (e.g., "Server Actions") but not by slug (`(use server-actions-design)`), the projector cannot tell and will project the suppression slug anyway. The result reads fine but technically duplicates the concept across canonical prose and projected tail. Reducing this is a separate, harder problem (semantic linking) — out of scope for this projection layer.
 
 ## Export-Time Body Projection — Skill Graph Context Section (Added 2026-05-29)
 
-### Motivation — the description projection covers only the boundary signal
+### Motivation — the description projection covers only the negative-use signal
 
-The description projection above surfaces the negative-boundary signal, but it is bounded by the 1024-character ceiling and is, by design, only about `Do NOT use for X`. Every *other* meaningful protocol field — `subject`, `subjects[]`, `public`, `taxonomy_domain`, `scope`, the positive activation signal (`examples`, `triggers`), the full `relations` graph (`depends_on` / `verify_with` / `related` / `broader` / `narrower` / `disjoint_with`), the Understanding fields, `grounding`, lifecycle (`stability` / `freshness` / `superseded_by`), the four Audit Status verdicts, and `keywords` — is carried JSON-encoded under the exported `metadata:` map. **Vendor auto-loaders (Claude, Codex, OpenCode, Gemini) do not read the `metadata:` map.** They read `name` + `description` at startup and the SKILL.md **body** on activation. So the graph was invisible to a consuming agent even though it was present in the file.
+The description projection above surfaces the negative-use signal, but it is bounded by the 1024-character ceiling and is, by design, only about `Do NOT use for X`. Every *other* meaningful protocol field — `subject`, `subjects[]`, `public`, `taxonomy_domain`, `scope`, the positive activation signal (`examples`, `triggers`), the full `relations` graph (`depends_on` / `verify_with` / `related` / `broader` / `narrower` / `disjoint_with`), the Understanding fields, `grounding`, lifecycle (`stability` / `freshness` / `superseded_by`), the four Audit Status verdicts, and `keywords` — is carried JSON-encoded under the exported `metadata:` map. **Vendor auto-loaders (Claude, Codex, OpenCode, Gemini) do not read the `metadata:` map.** They read `name` + `description` at startup and the SKILL.md **body** on activation. So the graph was invisible to a consuming agent even though it was present in the file.
 
 ### What the projection does
 
 The shared `scripts/lib/render-skill-context.js::renderSkillGraphContext()` projects those fields into a generated `## Skill Graph context` Markdown section appended to the exported body (via the `bodySuffix` hook added to `scripts/export-skill.js::buildExportedSkill()`). It is the single compile core used by **both** this marketplace export and the local `skill-graph render` command (`scripts/render-skills.js`) — marketplace export is just the public-publish profile of the same renderer. The body is read by the vendor on activation (progressive-disclosure level 2), so the graph becomes readable prose for any consuming agent — not just for the workspace router and audit tooling. The section is fenced by stable `<!-- skill-graph-context:start/end -->` markers so it is regenerable, and supports a `full` (default) or `runtime` field profile.
 
-The rendered section has eight sub-blocks, emitted only when their fields are present, in fixed order:
+The rendered section has seven sub-blocks, emitted only when their fields are present, in fixed order:
 
 | Block | Fields rendered |
 |---|---|
 | **Classification** | `subject` (+ secondary `subjects[]`), `public`, `taxonomy_domain`, `scope` |
 | **When to use** | `examples`, `triggers` |
-| **Not for** | `anti_examples`, `relations.boundary` (with the `owns` clause from each Shape-B reason) |
-| **Related skills** | `relations.depends_on` / `verify_with` / `related` (+`adjacent`) / `broader` / `narrower` / `disjoint_with` |
-| **Concept** | the five Understanding fields: `mental_model`, `purpose`, `boundary`, `analogy`, `misconception` |
+| **Not for** | `anti_examples`, `relations.suppresses` (with the `owns` clause from each Shape-B reason) |
+| **Related skills** | `relations.depends_on` / `verify_with` / `related` / `broader` / `narrower` / `disjoint_with` |
+| **Concept** | the five Understanding fields: `mental_model`, `purpose`, `concept_boundary`, `analogy`, `misconception` |
 | **Grounding** | `grounding.grounding_mode`, `grounding.truth_sources` |
-| **Lifecycle & audit status** | `stability`, `freshness`, `superseded_by`, `eval_state` (+`eval_score`), `routing_eval`, the four verdicts, `last_audited` |
-| **Provenance** | `version`, `schema_version`, `owner`, `keywords` |
+| **Keywords** | `keywords` |
 
 ### Doctrine fit — augment, not replace; lossless round-trip
 
@@ -204,7 +205,7 @@ The public skills library (`jacob-balslev/skills`) is defended by four independe
 | Layer | Where | What it blocks |
 |---|---|---|
 | **L1 — Working tree `.gitignore`** | `jacob-balslev/skills` `.gitignore` — allowlist model (`/*` + re-include only public-safe paths) | `git add -A` or `git add .` picks up internal content |
-| **L2 — Export pipeline publication gate** | `scripts/export-marketplace-skills.js` — excludes `public: false` (primary; back-compat also catches `deployment_target: project`), legacy internal scope values, and `grounding_mode: repo_specific\|repo_internal`; scans generated surface for `PRIVACY_PATTERNS` | Internal skills flowing through the export pipeline |
+| **L2 — Export pipeline publication gate** | `scripts/export-marketplace-skills.js` — excludes `public: false`, internal `grounding_mode` values, privacy-pattern matches, and structurally failing skills; scans generated surface for `PRIVACY_PATTERNS` | Internal skills flowing through the export pipeline |
 | **L3 — Pre-push hook** | `jacob-balslev/skills` repo: `hooks/pre-push` + `hooks/install.js` | Any push — scans changed `SKILL.md` files for `PRIVACY_PATTERNS` hits before the push leaves the local machine |
 | **L4 — CI workflow** | `jacob-balslev/skills` repo: `.github/workflows/privacy-scan.yml` + `scripts/ci-privacy-scan.js` | Any PR or push to `main` — runs the full-tree scan on the remote side |
 
@@ -400,7 +401,7 @@ Run this loop periodically, especially before outreach or a release.
    - `out-of-scope`: The gap belongs to a hosted service, proprietary workflow, prompt library, runtime implementation, or other excluded area.
 5. For `thin` and `gap`, write a short skill spec and plan before authoring content.
 6. Add the new skill under `skills/<skill-name>/SKILL.md` with the full Skill Metadata Protocol contract.
-7. Add `examples`, `anti_examples`, and `relations.boundary` so the new skill improves the graph instead of creating duplicate activation.
+7. Add `examples`, `anti_examples`, and `relations.suppresses` so the new skill improves the graph instead of creating duplicate activation.
 8. Run lint, routing evals, overlap checks, and manifest validation.
 9. Re-export the full library and repeat the marketplace search to confirm the gap is now discoverable.
 

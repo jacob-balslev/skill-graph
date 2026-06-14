@@ -18,13 +18,13 @@ Each axis below is *named* here and *specified* in [`field-reference.md`](field-
 |------|----------|------------------|
 | `subject` | yes | Primary browse shelf — one of twelve closed values (`backend-engineering`, `frontend-engineering`, `software-architecture`, `data-engineering`, `agent-ops`, `ai-engineering`, `quality-assurance`, `design`, `reasoning-strategy`, `software-engineering-method`, `knowledge-organization`, `product-domain`). |
 | `public` | yes | boolean — `true` (publishable/shareable) or `false` (private to one project). Project anchoring is carried by `project[]`. |
-| `scope` | yes | Free-text PRD-style statement of what the skill teaches and where it deploys. |
+| `scope` | yes | Free-text PRD-style statement of what the skill teaches and what it excludes. |
 | `subjects[]` | when it applies | Polyhierarchy (max 2, primary first) for a skill that genuinely spans two shelves. |
 | `taxonomy_domain` | optional | Slash-delimited sub-path that subdivides an over-subscribed `subject`. |
 | `keywords` | recommended | Up to 10 fuzzy activation terms (capped to prevent keyword stuffing). |
 | `relations` | when it applies | Typed edges to sibling skills — see [Relations, Briefly](#relations-briefly). |
 | `grounding` | when `project[]` is non-empty | `truth_sources`, `grounding_mode`, `failure_modes` — what the skill is checked against. |
-| Understanding fields | when `comprehension_state: present` | `mental_model`, `purpose`, `boundary`, `analogy`, `misconception`. |
+| Understanding fields | when `comprehension_state: present` | `mental_model`, `purpose`, `concept_boundary`, `analogy`, `misconception`. |
 | Audit Status | written by the loop | `structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict` — see [`../docs/verdict-semantics.md`](../docs/verdict-semantics.md). |
 
 The binding `required` set and every enum live in [`../schemas/SKILL_METADATA_PROTOCOL_schema.json`](../schemas/SKILL_METADATA_PROTOCOL_schema.json); the live version and corpus counts live in [`../SKILL_GRAPH.md` § Current State](../SKILL_GRAPH.md#current-state--single-source-of-truth) (never restated here, so they cannot go stale).
@@ -48,14 +48,14 @@ flowchart LR
   Norm["normalizeFrontmatter()<br/>flat ↔ nested → one contract"]:::tool
   Man["skills.manifest.json<br/>typed nodes + edges"]:::artifact
   Q(["query"]):::input
-  Route{"router<br/>match subject / keywords,<br/>honor relations.boundary"}:::gate
+  Route{"router<br/>match subject / keywords,<br/>honor relations.suppresses"}:::gate
   Sel["selected + co-loaded<br/>(related / verify_with)"]:::artifact
-  Exc["excluded<br/>(boundary owners win)"]:::err
+  Exc["excluded<br/>(suppression owners win)"]:::err
   FM --> Norm --> Man
   Q --> Route
   Man --> Route
   Route -->|wins| Sel
-  Route -->|boundary excludes| Exc
+  Route -->|suppresses excludes| Exc
   classDef input fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
   classDef tool fill:#ecfdf5,stroke:#047857,color:#064e3b
   classDef gate fill:#fce7f3,stroke:#db2777,color:#831843
@@ -65,9 +65,9 @@ flowchart LR
 
 ## Relations, Briefly
 
-`relations` is a typed map with seven edge kinds: `related` (browse/expansion adjacency), `boundary` (exclusion guard), `verify_with` (cross-check), `depends_on` (composition), `broader` / `narrower` (hierarchy), and `disjoint_with` (mutual exclusion). Choosing among them is covered in [`field-decision-guide.md`](field-decision-guide.md).
+`relations` is a typed map with seven edge kinds: `related` (browse/expansion adjacency), `suppresses` (exclusion guard), `verify_with` (cross-check), `depends_on` (composition), `broader` / `narrower` (hierarchy), and `disjoint_with` (mutual exclusion). Choosing among them is covered in [`field-decision-guide.md`](field-decision-guide.md).
 
-**`relations.boundary` is named inversely to its mechanic.** `boundary: [skill-B]` does **not** mean "defer to B" — it means "when this skill wins a query, exclude B from co-routing." Write the reason as ownership ("I own this exclusively over B"), never as deference ("use B instead"). This is the single most error-prone field in the protocol; the full warning is in [`SKILL_METADATA_PROTOCOL.md` § Relations](SKILL_METADATA_PROTOCOL.md).
+**`relations.suppresses` is an ownership exclusion, not a handoff.** `suppresses: [skill-B]` means "when this skill wins a query, exclude B from co-routing." Write the reason as ownership ("I own this exclusively over B"), never as deference ("use B instead"). This is the single most error-prone relation in the protocol; the full warning is in [`SKILL_METADATA_PROTOCOL.md` § Relations](SKILL_METADATA_PROTOCOL.md).
 
 ## Where To Go Next
 
@@ -75,7 +75,7 @@ flowchart LR
 |---|---|
 | The binding contract (required/optional, enums, gates) | [`SKILL_METADATA_PROTOCOL.md`](SKILL_METADATA_PROTOCOL.md) |
 | Per-field authoring prose (when to use, value criteria, anti-patterns) | [`field-reference.md`](field-reference.md) |
-| Decide between two values (`portable` vs `project`, which relation) | [`field-decision-guide.md`](field-decision-guide.md) |
+| Decide between two values (`public: true` vs `public: false`, which relation) | [`field-decision-guide.md`](field-decision-guide.md) |
 | Learn the model from scratch | [`PRIMER.md`](PRIMER.md) |
 | Why the fields are shaped this way (rationale, migration history) | [`design-rationale.md`](design-rationale.md) |
 | The machine contract | [`../schemas/SKILL_METADATA_PROTOCOL_schema.json`](../schemas/SKILL_METADATA_PROTOCOL_schema.json) |

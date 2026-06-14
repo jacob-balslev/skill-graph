@@ -282,6 +282,7 @@ function buildSkillEntry(fm, filePath, skillId, _projectFromRoot) {
   if (aliasErrors.length > 0) {
     throw new Error(`alias contract violation: ${aliasErrors.join('; ')}`);
   }
+  fm = normalizeFrontmatter(fm) || fm;
 
   const entry = {};
 
@@ -334,6 +335,9 @@ function buildSkillEntry(fm, filePath, skillId, _projectFromRoot) {
   if (fm.stability !== undefined && fm.stability !== null) {
     entry.stability = fm.stability;
   }
+  if (fm.project_adoption_stage !== undefined && fm.project_adoption_stage !== null) {
+    entry.project_adoption_stage = fm.project_adoption_stage;
+  }
   if (fm.superseded_by !== undefined && fm.superseded_by !== null) {
     entry.superseded_by = fm.superseded_by;
   }
@@ -341,7 +345,19 @@ function buildSkillEntry(fm, filePath, skillId, _projectFromRoot) {
     entry.license = fm.license;
   }
   if (fm.compatibility !== undefined && fm.compatibility !== null && typeof fm.compatibility === 'object') {
-    entry.compatibility = fm.compatibility;
+    const compatibility = {};
+    if (Array.isArray(fm.compatibility.agent_runtimes) && fm.compatibility.agent_runtimes.length > 0) {
+      compatibility.agent_runtimes = fm.compatibility.agent_runtimes;
+    }
+    if (typeof fm.compatibility.node_version === 'string' && fm.compatibility.node_version.length > 0) {
+      compatibility.node_version = fm.compatibility.node_version;
+    }
+    if (typeof fm.compatibility.notes === 'string' && fm.compatibility.notes.length > 0) {
+      compatibility.notes = fm.compatibility.notes;
+    }
+    if (Object.keys(compatibility).length > 0) {
+      entry.compatibility = compatibility;
+    }
   }
   if (fm['allowed-tools'] !== undefined && fm['allowed-tools'] !== null) {
     entry['allowed-tools'] = fm['allowed-tools'];
@@ -374,29 +390,44 @@ function buildSkillEntry(fm, filePath, skillId, _projectFromRoot) {
   if (Array.isArray(fm.anti_examples) && fm.anti_examples.length > 0) {
     activation.anti_examples = fm.anti_examples;
   }
+  if (Array.isArray(fm.codebase_layer) && fm.codebase_layer.length > 0) {
+    activation.codebase_layer = fm.codebase_layer;
+  }
+  if (Array.isArray(fm.applicable_tasks) && fm.applicable_tasks.length > 0) {
+    activation.applicable_tasks = fm.applicable_tasks;
+  }
+  if (Array.isArray(fm.environment) && fm.environment.length > 0) {
+    activation.environment = fm.environment;
+  }
+  if (Array.isArray(fm.internal_tools) && fm.internal_tools.length > 0) {
+    activation.internal_tools = fm.internal_tools;
+  }
   if (Object.keys(activation).length > 0) {
     entry.activation = activation;
   }
 
-  // --- Copied-through: relations (with v3 union-type items preserved as-is) ---
-  // Predicate set per ADR 0001 (v3.1 SKOS additions: related/broader/narrower) and ADR 0006
-  // (boundary stays canonical for routing-layer exclusion; disjoint_with is a separate orthogonal
-  // relation for formal OWL class-disjointness). All seven keys flow through to the manifest;
-  // back-compat is preserved by keeping `adjacent` valid as an alias for `related`.
+  // --- Copied-through: relations (with union-type items preserved as-is) ---
+  // Predicate set per ADR 0001 (SKOS additions), ADR 0006 (disjoint_with split),
+  // ADR 0018 (suppresses rename), and the composition contract (`io_contract`).
+  // Deprecated aliases are normalized before this point; the manifest emits
+  // only canonical relation keys.
   if (fm.relations !== null && fm.relations !== undefined && typeof fm.relations === 'object') {
     const rel = {};
     for (const kind of [
-      // v3.1 SKOS additions (preferred names; ADR 0001 Decisions #1 + #3)
       'related', 'broader', 'narrower',
-      // v3.0 stable + canonical. `suppresses` is the canonical routing-exclusion
-      // edge (ADR-0018); `boundary` is its retained deprecated alias.
-      'adjacent', 'suppresses', 'boundary', 'verify_with', 'depends_on',
-      // v3.1 separate orthogonal relation per ADR 0006 Option B
+      'suppresses', 'verify_with', 'depends_on',
       'disjoint_with',
     ]) {
       if (Array.isArray(fm.relations[kind]) && fm.relations[kind].length > 0) {
         rel[kind] = fm.relations[kind];
       }
+    }
+    if (fm.relations.io_contract !== null &&
+        fm.relations.io_contract !== undefined &&
+        typeof fm.relations.io_contract === 'object' &&
+        !Array.isArray(fm.relations.io_contract) &&
+        Object.keys(fm.relations.io_contract).length > 0) {
+      rel.io_contract = fm.relations.io_contract;
     }
     if (Object.keys(rel).length > 0) {
       entry.relations = rel;

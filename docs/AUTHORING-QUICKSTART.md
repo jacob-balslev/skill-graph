@@ -37,16 +37,16 @@ Required in `SKILL.md`:
 | # | Field | Type | Value rule |
 |---|---|---|---|
 | 1 | `name` | string | Lowercase alphanumerics, hyphens, slashes, colons. Must match parent directory name. Used as routing target by other skills. |
-| 2 | `description` | string | Short description of what the skill is about. Activation signals belong to `keywords`/`triggers`/`examples`/`anti_examples`; boundary semantics belong to `relations.boundary`. |
+| 2 | `description` | string | Short description of what the skill is about. Activation signals belong to `keywords`/`triggers`/`examples`/`anti_examples`; exclusion semantics belong to `relations.suppresses`. |
 | 3 | `subject` | enum | One of the closed 12-value enum (3 bands, ADR-0020): `backend-engineering`, `frontend-engineering`, `software-architecture`, `data-engineering`, `agent-ops`, `ai-engineering`, `quality-assurance`, `design`, `reasoning-strategy`, `software-engineering-method`, `knowledge-organization`, `product-domain`. Primary classification — what the skill teaches. |
 | 4 | `public` | boolean | `true` = publishable/shareable; `false` = private to one project (project-anchored skills also set `project[]` + `grounding`). |
-| 5 | `scope` | string | Required free-text PRD-style description of the deployment context. Not an enum. |
+| 5 | `scope` | string | Required free-text PRD-style description of what the skill teaches and what it excludes. Not an enum. |
 
 Required in sibling `audit-state.json`:
 
 | # | Field | Type | Value rule |
 |---|---|---|---|
-| 1 | `schema_version` | integer/string enum | Always `8` for v8 skills (prior contract retrievable via `git show schema-v7:schemas/skill-audit-state.schema.json`). |
+| 1 | `schema_version` | integer/string enum | Always `8` for current skills. |
 | 2 | `owner` | string | Team handle, GitHub username, or tool name. Used for review routing and stale-skill alerts. |
 | 3 | `freshness` | ISO date | `YYYY-MM-DD`. Review date for the skill. |
 | 4 | `drift_check` | object | At minimum `{ "last_verified": "YYYY-MM-DD" }`. `truth_source_hashes` is added later by `node scripts/skill-graph-drift.js --record --apply <skill-dir>`. |
@@ -98,7 +98,7 @@ keywords:
 relations:
   related:
     - api-design
-  boundary: []
+  suppresses: []
 ---
 
 # Conway's Law for API Boundary Design
@@ -138,15 +138,15 @@ Same skill, different physical shape. Note structured fields are JSON-string-enc
 ```yaml
 ---
 name: example-agent-skills-compatible
-description: "Use when explaining how to apply Conway's Law to API boundary design. Activates for prompts mentioning team topologies, organizational coupling, or domain ownership boundaries. Do NOT use for individual service-design questions (use api-design) or for static org charts (use org-modeling)."
+description: "Conway's Law applied as a forward design constraint for API boundary placement."
 license: MIT
 allowed-tools: Read Grep
 metadata:
   subject: software-architecture
   public: true
-  scope: "Portable reasoning skill for applying Conway's Law to API boundary placement, team topology decisions, and organizational coupling analysis. Excludes individual service design and static org-chart documentation."
+  scope: "Reasoning skill for applying Conway's Law to API boundary placement, team topology decisions, and organizational coupling analysis. Excludes individual service design and static org-chart documentation."
   keywords: "[\"Conway's Law\",\"team topologies\",\"API boundary\",\"organizational coupling\"]"
-  relations: "{\"related\":[\"api-design\"],\"boundary\":[]}"
+  relations: "{\"related\":[\"api-design\"],\"suppresses\":[]}"
 ---
 
 # Conway's Law for API Boundary Design
@@ -189,10 +189,10 @@ Neither blocks first commit. A new skill ships honestly with `eval_state: unveri
 | Mistake | What it looks like | Fix |
 |---|---|---|
 | Picking a broad subject because the skill feels meta | `subject: software-engineering-method` when the skill could plausibly fit `backend-engineering` / `frontend-engineering` / `software-architecture` / `agent-ops` / `quality-assurance` | Pick `software-engineering-method` for engineering process skills, `reasoning-strategy` for decision/reasoning frameworks, and `knowledge-organization` for taxonomy/semantics work; otherwise use the concrete engineering, design, AI, QA, or architecture shelf. |
-| Description is a summary, not a routing contract | "This skill teaches Conway's Law" | Rewrite as routing instructions: "Use when..." + "Do NOT use for..." with concrete examples. |
+| Description is trying to carry activation and exclusion rules | "Use when... Do NOT use for..." | Keep `description` topical; put activation in `keywords` / `triggers` / `examples`, exclusions in `anti_examples` and `relations.suppresses`, and coverage/exclusions in `scope`. |
 | Setting `eval_state: passing` without a receipt | New skill optimistically claims passing evals in `audit-state.json` | Default to `unverified`. Flip to `passing` only after a real grader run produces a receipt. Same rule for `routing_eval: present`. |
 | Stamping Audit Status fields by hand | Author writes `structural_verdict: PASS` on first commit | Leave the Audit Status absent. The audit loop writes those sidecar fields; hand-edits will be overwritten on the next `audit` run. |
-| Cross-domain `boundary[]` entries | `boundary: [skill-from-different-category]` | Move to `anti_examples` + `relations.related`. The `boundary` field is for same-domain routing exclusions only (see `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Cross-domain boundary doctrine`). |
+| Cross-domain `suppresses[]` entries | `suppresses: [skill-from-different-subject]` | Move to `anti_examples` + `relations.related`. `suppresses` is for same-domain routing exclusions only (see `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Cross-domain suppression doctrine`). |
 | Placeholder sludge | `your-skill-name`, `path/to/file`, `todo` leftover from the template | Strip all template scaffolding before commit. The verification checklist in the template covers this. |
 
 ## What "valid" actually means at three levels

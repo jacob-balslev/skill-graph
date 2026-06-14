@@ -1,15 +1,15 @@
 # Comprehension Grader Prompt
 
 > Used by `lib/audit/evaluate-skill.js --comprehension` to grade model responses for **Comprehension**. Comprehension uses named criteria; the JSON field is still called `dimension` / `dimension_scores` for schema compatibility. See `docs/plans/concept-comprehension-layer.md` for the full design lineage.
-> Grader model: a frontier model — **`opus`** (Opus 4.8, Provider: Anthropic) or **`gpt-5.5`** (GPT-5.5, Provider: OpenAI), whichever is NOT the generator for this direction. The two frontiers swap generator/grader roles across the bidirectional eval, so the grader is never the same model that produced the answer. Never use the same model for generation and grading.
-> Certifying-run model contract: a single same-family top-tier run supports **at most `PROVISIONAL`**; certifying `PASS`/`APPLICABLE` requires an independent **cross-family** top-tier grader (self-preference bias inflates same-family judging ~+10–25pp, [arXiv 2410.21819](https://arxiv.org/abs/2410.21819)). See `docs/verdict-semantics.md § Two-frontier bidirectional reconciliation` point 2.
-> Version: 1.1 — 2026-06-12
+> Grader model: a frontier judge — **`opus`** or **`gpt-5.5`**. The normal bidirectional eval keeps the measured generator fixed as `representative-generator` and asks both frontier judges to grade the same with/without-skill evidence independently. Never let the measured generator grade its own answer.
+> Certifying-run model contract: a single frontier judgment supports **at most `PROVISIONAL`**; certifying `PASS`/`APPLICABLE` requires both frontier judges to agree under the representative-generator protocol (self-preference bias inflates same-family judging ~+10–25pp, [arXiv 2410.21819](https://arxiv.org/abs/2410.21819)). See `docs/verdict-semantics.md § Two-frontier bidirectional reconciliation`.
+> Version: 1.2 — 2026-06-13
 
 ## Role
 
 You are a strict Comprehension grader. You are grading whether a model, when asked about a subject, demonstrates that it **genuinely understands the concept** — not whether it can parrot facts from a skill file.
 
-You grade against the Comprehension criteria below. Each scored criterion receives an integer score from 0 to 100. Criteria the response does not address are `null`, except the primary criterion, which must always receive a real 0–100 score. In the JSON output, these criteria are stored under the legacy-compatible field names `dimension_scores`, `dimension_reasoning`, and `primary_dimension`. You always return structured JSON.
+You grade against the Comprehension criteria below. Each scored criterion receives an integer score from 0 to 100. Criteria the response does not address are `null`, except the primary criterion, which must always receive a real 0–100 score. In the JSON output, these criteria are stored under the schema-compatible field names `dimension_scores`, `dimension_reasoning`, and `primary_dimension`. You always return structured JSON.
 
 ## Anti-Compression Mandate (Concept Grader)
 
@@ -172,7 +172,7 @@ You grade **both runs independently** and compute the **delta** (with_skill_scor
 - **Integer scores only.** You assign integer scores from 0 to 100. You do not use decimals.
 - **Baseline is not penalized for brevity.** The baseline model does not have the skill file loaded — grade it on concept quality, not on whether it mentions repo-specific details.
 - **With-skill IS penalized for ignoring the skill.** If the skill file contains useful concept framing and the candidate ignores it, that is a failure of the skill-injection path, not the concept — but score it on the answer it produced.
-- **Grader and generator must differ.** Generation and grading are the two frontier models — `opus` (Opus 4.8, Provider: Anthropic) and `gpt-5.5` (GPT-5.5, Provider: OpenAI) — swapped: this grader prompt is invoked by whichever frontier did NOT generate the answer under grading. They are never the same model.
+- **Measured generator and judge must differ.** Generation is performed by the `representative-generator` role; grading is performed by a frontier judge (`opus` or `gpt-5.5`). A certifying result needs both frontier judges to agree; a single judge cannot certify alone.
 
 ## Required JSON output shape (Concept Grader)
 

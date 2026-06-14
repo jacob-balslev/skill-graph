@@ -8,7 +8,7 @@ A plain `SKILL.md` gives an agent a procedure to load. The Skill Metadata Protoc
 
 ## Is this for me?
 
-**Yes, if** you have **more than ~5 skills** that have started to depend on, verify, or exclude one another; you want **deterministic checks** for skill correctness (schema, paths, Evaluation Status) rather than only LLM-as-grader; you want a **single audit loop** that reports the Integrity Gate separately from the Behavior Gate via per-skill Audit Status fields (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`, `eval_score`, `drift_status`); or you want **graph queries** over the library ("what depends on this?", "what's the boundary between X and Y?", "which skills verify this one?").
+**Yes, if** you have **more than ~5 skills** that have started to depend on, verify, or exclude one another; you want **deterministic checks** for skill correctness (schema, paths, Evaluation Status) rather than only LLM-as-grader; you want **a single audit loop** that reports the Integrity Gate separately from the Behavior Gate via per-skill Audit Status fields (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`, `eval_score`, `drift_status`); or you want **graph queries** over the library ("what depends on this?", "which skills suppress one another?", "which skills verify this one?").
 
 **No, if** you have 1–3 skills and a plain folder is enough; you want a hosted skill marketplace ([Smithery](https://smithery.ai), [agentskills.io](https://agentskills.io)); you want an agent runtime (Claude Code, Cursor, Codex); or you want a tool-execution platform ([Composio](https://docs.composio.dev), your runtime's tool layer).
 
@@ -124,8 +124,6 @@ Skill Metadata Protocol makes these questions explicit:
 | Can it move to another runtime? | `portability`, `compatibility`, `allowed-tools` |
 
 Once those fields exist, a skill library stops being a flat folder of Markdown files. It becomes a map of project knowledge that humans can browse and agents can route through.
-
-Tooling still accepts `relations.adjacent` as a deprecated alias for `relations.related`; new skills author `relations.related`.
 
 ## Skill Metadata Protocol
 
@@ -291,8 +289,8 @@ For skills, the loop is:
 
 1. Pick a skill or project area.
 2. Gather evidence: the `SKILL.md`, eval files, manifest entry, related skills, and `grounding.truth_sources`.
-3. Run the **Integrity Gate** first. The `npm run verify` chain runs: schema lint, protocol-consistency, doc-link + doc-drift, mirror freeze, charter parity, stability promotion, manifest validation, routing eval (regenerated each run), SKILL.md export shape, marketplace freshness, status doc freshness, audit-manifest verification, overlap, and unit tests. **Drift sentinel** (`npm run drift`) remains separate because it currently surfaces CONTENT-side truth-source debt that is being drained through the audit loop. For SYSTEM-only changes, `npm run verify:system` is the blocking gate; the GitHub workflow also runs full `verify` as an informational corpus gate.
-4. Run the **Behavior Gate** when certification is needed: realistic positive evals, hard negatives, prior failure regressions, and boundary cases that show whether the skill changes agent behavior.
+3. Run the **Integrity Gate** first. The `npm run verify` chain runs: schema lint, protocol-consistency, doc-link + doc-drift, mirror freeze, charter parity, stability promotion, manifest validation, routing eval (regenerated each run), SKILL.md export shape, marketplace freshness, status doc freshness, audit-manifest verification, overlap, and unit tests. **Drift sentinel** (`npm run drift`) remains separate because it currently surfaces CONTENT-side truth-source debt that is being drained through the audit loop. For SYSTEM-only changes, `npm run verify:system` is the blocking gate; for public release readiness, run `npm run release:ready` and the corpus-heavy `npm run release:check`. The GitHub workflow also runs full `verify` as an informational corpus gate.
+4. Run the **Behavior Gate** when certification is needed: realistic positive evals, hard negatives, prior failure regressions, and edge cases that show whether the skill changes agent behavior.
 5. Fix the skill or its metadata when the evidence supports the change.
 6. Re-run checks and record the new state.
 7. Move to the next skill or loop back if the fix changed the graph.
@@ -370,6 +368,7 @@ skill-graph init my-skill            # Scaffold a new SKILL.md from the template
 skill-graph add debugging            # Install a skill from the marketplace
 skill-graph lint                     # Validate all SKILL.md files
 skill-graph audit my-skill           # Seed or run a single-skill audit
+skill-graph doc                      # Audit active docs for stale code references and rewrite questions
 skill-graph route "schema drift"     # Select skills for a query
 skill-graph drift                    # Check truth-source hashes
 skill-graph eval-staleness           # Check eval file/path/symbol claims
@@ -378,7 +377,7 @@ skill-graph export                   # Generate public marketplace export surfac
 skill-graph evolve --top 5           # PREVIEW: continuous improvement loop (standalone; see Standalone Installation section)
 ```
 
-Run `skill-graph --help` to see all commands (including legacy aliases).
+Run `skill-graph --help` to see all commands.
 
 ## Standalone Installation and Usage
 
@@ -449,6 +448,7 @@ Exit codes for `skill-graph evolve`:
 |---|---|
 | `scripts/skill-lint.js` | Canonical-source schema gate: valid frontmatter, `schemas/SKILL_METADATA_PROTOCOL_schema.json` validation, identifier shape, non-empty description, and parent-directory/name alignment. Routing quality, relation existence, drift, export, and eval checks live in the dedicated tools below. |
 | `scripts/check-protocol-consistency.js` | Cross-artifact checks so schemas, docs, generated field references, and sample manifests stay aligned. |
+| `scripts/check-doc-freshness.js` | Read-only doc freshness audit: missing local paths, `node scripts/...`, `npm run ...`, public `skill-graph ...` commands, plus rewrite questions for legacy wording and high-load prose. |
 | `scripts/generate-manifest.js` | Compiles all skills into a deterministic manifest for routing and downstream tooling. |
 | `scripts/skill-graph-route.js` | Reference router that explains selected, co-loaded, and excluded skills. |
 | `scripts/skill-graph-routing-eval.js` | Checks `examples` and `anti_examples` against router behavior. |
@@ -483,10 +483,11 @@ Exit codes for `skill-graph evolve`:
 | [`skill-metadata-protocol/field-reference.md`](skill-metadata-protocol/field-reference.md) | Field-by-field reference. |
 | [`skill-metadata-protocol/field-decision-guide.md`](skill-metadata-protocol/field-decision-guide.md) | Decision tables for hard field choices. |
 | [`docs/quality-doctrine.md`](docs/quality-doctrine.md) | Quality bar for preserving scope, readable names, organization-over-trimming, compression, and verification. |
+| [`docs/doc-freshness-audit.md`](docs/doc-freshness-audit.md) | How to run and interpret the read-only documentation freshness audit. |
 | [`docs/SKILL-MD-FORMAT-COMPATIBILITY.md`](docs/SKILL-MD-FORMAT-COMPATIBILITY.md) | How export maps protocol-enriched skills back to plain `SKILL.md`. |
 | [`docs/marketplace-syndication.md`](docs/marketplace-syndication.md) | Syndication workflow for public `SKILL.md` marketplaces. |
 | [`docs/adr/`](docs/adr/) | Architecture Decision Records, including [ADR 0009 — sibling repo deprecation](docs/adr/0009-sibling-repo-deprecation.md). |
-| git history (per [ADR 0014](docs/adr/0014-canonical-only-schema-files.md)) | Per-bump author migration procedures (v4→v5, v5→v6, v6→v7). |
+| git history (per [ADR 0014](docs/adr/0014-canonical-only-schema-files.md)) | Prior author migration procedures and schema cuts. |
 
 **Related repos:**
 
@@ -565,7 +566,7 @@ For project framing context, see [GitHub Discussion #1](https://github.com/jacob
 
 ## Status
 
-In-repo version: **`@skill-graph/cli@0.5.10`** (2026-05-25) — the "canonical-shape sweep" release closing the 2026-05-25 multi-model restructure review backlog. **npm-published `latest` is `0.5.8`**: `0.5.9` and `0.5.10` are committed version bumps not yet pushed through the manually-gated CI publish workflow, so `npm install -g @skill-graph/cli` currently installs `0.5.8` until a maintainer runs the publish workflow for `v0.5.10` (see [`CHANGELOG.md § [0.5.10]`](CHANGELOG.md) npm-publish-status note and the publish runbook below). See [`CHANGELOG.md`](CHANGELOG.md) and the generated [`docs/status.generated.md`](docs/status.generated.md). The current contract is `schema_version: 8` (v7 classification fields are historical and rejected by the live schema — see [`SKILL_GRAPH.md § Current State`](SKILL_GRAPH.md#current-state--single-source-of-truth) and [`schemas/SKILL_METADATA_PROTOCOL_schema.json`](schemas/SKILL_METADATA_PROTOCOL_schema.json) for the authoritative shape). Per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md) (canonical-only schema files), only `SKILL_METADATA_PROTOCOL_schema.json` lives on disk; prior contract versions are recoverable from git history (`git show <commit>:schemas/SKILL_METADATA_PROTOCOL_schema.json`) and external consumers pinning a historical version should resolve against a tag rather than a duplicate file. The schema's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier.
+In-repo version: **`@skill-graph/cli@0.5.10`** (2026-05-25) — the "canonical-shape sweep" release closing the 2026-05-25 multi-model restructure review backlog. **npm-published `latest` is `0.5.8`**: `0.5.9` and `0.5.10` are committed version bumps not yet pushed through the manually-gated CI publish workflow, so `npm install -g @skill-graph/cli` currently installs `0.5.8` until a maintainer runs the publish workflow for `v0.5.10` (see [`CHANGELOG.md § [0.5.10]`](CHANGELOG.md) npm-publish-status note and the publish runbook below). See [`CHANGELOG.md`](CHANGELOG.md) and the generated [`docs/status.generated.md`](docs/status.generated.md). The current contract is `schema_version: 8`; see [`SKILL_GRAPH.md § Current State`](SKILL_GRAPH.md#current-state--single-source-of-truth), [`schemas/SKILL_METADATA_PROTOCOL_schema.json`](schemas/SKILL_METADATA_PROTOCOL_schema.json), and [`schemas/skill-audit-state.schema.json`](schemas/skill-audit-state.schema.json) for the authoritative shape. Per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md), prior contract versions are recoverable from git history and external consumers pinning a historical version should resolve against a tag rather than a duplicate file. The schema's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier.
 
 ## Contributing & Trust
 

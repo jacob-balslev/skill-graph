@@ -3,7 +3,7 @@
 // Unit test: the eval baseline-arm answer-key fence (plan E).
 //
 // Covers (1) the pure fence predicate/assertion (lib/audit/baseline-fence.js) and
-// (2) the prepareEnrichedEval baseline-twin production (lib/audit/skill-audit-loop-lite-deps.js):
+// (2) the prepareCandidateEval baseline-twin production (lib/audit/skill-audit-loop-lite-deps.js):
 // the baseline arm must run in a working dir that does NOT contain the candidate
 // SKILL.md, while research tools stay ON. The fence is enforced ONLY when tools are
 // ON (a tools-OFF baseline has no filesystem access — vacuously safe).
@@ -61,7 +61,7 @@ check('tools-ON baseline passes when the candidate is fenced out (sibling/temp d
   }));
 });
 
-console.log('3. prepareEnrichedEval — produces a skill-ABSENT baseline twin');
+console.log('3. prepareCandidateEval — produces a skill-ABSENT baseline twin');
 check('baselineEvalSkillDir exists, lacks SKILL.md; evalSkillDir has the curated SKILL.md', () => {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'fence-prep-'));
   const skill = 'demo-skill';
@@ -73,7 +73,7 @@ check('baselineEvalSkillDir exists, lacks SKILL.md; evalSkillDir has the curated
   fs.writeFileSync(mergedSkillPath, '---\nname: demo-skill\n---\n# Demo (CURATED)\n');
 
   const deps = d.createSkillAuditLoopLiteDeps({ skillGraphRoot: tmp, workspaceRoot: tmp, dryRun: true });
-  const prepared = deps.prepareEnrichedEval({ skill, skillDir, mergedSkillPath });
+  const prepared = deps.prepareCandidateEval({ skill, skillDir, mergedSkillPath });
 
   // with-skill arm dir has the curated SKILL.md
   assert.ok(fs.existsSync(prepared.evalSkillDir), 'evalSkillDir exists');

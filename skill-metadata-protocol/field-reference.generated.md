@@ -7,13 +7,13 @@
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld) (frontmatter fields only — the sidecar is not exported/RDF'd).
 > **Two-file split:** per [ADR-0019](../docs/adr/0019-audit-state-sidecar-separation.md), agent-facing fields live in `SKILL.md` frontmatter; audit/eval/provenance fields live in the `audit-state.json` sidecar.
 
-Schema version: **8** · Total fields: **57**
+Schema version: **8** · Total fields: **61**
 
 ---
 
 ## Frontmatter fields (`SKILL.md`)
 
-> Source schema: `schemas/SKILL_METADATA_PROTOCOL_schema.json`. Field count: **27** · Required: **5**.
+> Source schema: `schemas/SKILL_METADATA_PROTOCOL_schema.json`. Field count: **31** · Required: **5**.
 
 ---
 
@@ -136,16 +136,6 @@ Things commonly confused with the concept but that are NOT it. Express each diff
 
 ---
 
-### `boundary` *(optional)*
-
-**Type:** string
-
-DEPRECATED alias of `concept_boundary` (renamed per ADR-0018 to remove the token collision with the routing edge `relations.suppresses` / legacy `relations.boundary`). Retained ONLY for skills not yet migrated; the normalizer presents it as `concept_boundary` and `concept_boundary` wins when both are present. New skills MUST author `concept_boundary`. Structural removal of this alias is CONTENT-mode work the audit loop drains per-skill.
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#boundary`](field-reference.md#boundary)
-
----
-
 ### `analogy` *(optional)*
 
 **Type:** string
@@ -160,7 +150,7 @@ Analogy that preserves the core mechanism. Translates the concept for a non-expe
 
 **Type:** string
 
-The wrong mental model people bring and why it misleads. Authored hint to inoculate the agent against the common error trap. No length cap. Not directly graded; complements `boundary`. Replaces nested `concept.misconception` in v6.
+The wrong mental model people bring and why it misleads. Authored hint to inoculate the agent against the common error trap. No length cap. Not directly graded; complements `concept_boundary`. Replaces nested `concept.misconception` in v6.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#misconception`](field-reference.md#misconception)
 
@@ -200,13 +190,11 @@ SPDX license identifier (e.g., `MIT`, `Apache-2.0`, `CC-BY-4.0`). Resolved again
 
 **Type:** object
 
-Cross-runtime compatibility envelope. `runtimes` lists target agent runtimes with version constraints; `node` is the Node.js version requirement; `notes` is free-text overflow. Distinct from `relations.depends_on` (sibling skill dependency).
+Cross-runtime compatibility envelope. `agent_runtimes` lists target agent runtimes with version constraints; `node_version` is the Node.js version requirement; `notes` is free-text overflow. Distinct from `relations.depends_on` (sibling skill dependency).
 
 **Sub-fields:**
 
-- `runtimes` *optional* — Target agent runtimes with optional version constraints (e.
-- `agent_runtimes` *optional* — Target agent runtimes (v3.
-- `node` *optional* — Node.
+- `agent_runtimes` *optional* — Target agent runtimes with optional version constraints (e.
 - `node_version` *optional* — Node.
 - `notes` *optional* — Free-text additional compatibility notes.
 
@@ -258,7 +246,7 @@ Positive-class activation examples — realistic user prompts the skill SHOULD a
 
 **Type:** array of string
 
-Negative-class activation examples — realistic user prompts that look topically related but a DIFFERENT skill should handle. Used as hard-negative training signal. Pair with `relations.suppresses` to name the skill that should activate instead; legacy `relations.boundary` is read only for unmigrated skills. Groups under `activation.anti_examples` in the manifest.
+Negative-class activation examples — realistic user prompts that look topically related but a DIFFERENT skill should handle. Used as hard-negative training signal. Pair with `relations.suppresses` to name the skill that should activate instead. Runtime compatibility readers may still understand historical `relations.boundary`, but new authored skills must use `relations.suppresses`. Groups under `activation.anti_examples` in the manifest.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#anti_examples`](field-reference.md#anti_examples)
 
@@ -284,18 +272,66 @@ Package/tool/framework names a codebase must use for this skill to be relevant (
 
 ---
 
+### `codebase_layer` *(optional)*
+
+**Type:** array of string
+
+Architectural or system layer this skill applies to (e.g., `presentation`, `domain`, `infrastructure`, `api-gateway`, `persistence`). Complements `subject` by routing skills based on the specific directory or logical tier the agent is working in.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#codebase_layer`](field-reference.md#codebase_layer)
+
+---
+
+### `applicable_tasks` *(optional)*
+
+**Type:** array of string
+
+Specific types of work this skill is scoped to (e.g., `feature-creation`, `debugging`, `refactoring`, `testing`, `architecture-design`, `migration`). Complements `scope` by providing deterministic enum filtering for task-intent routing.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#applicable_tasks`](field-reference.md#applicable_tasks)
+
+---
+
+### `project_adoption_stage` *(optional)*
+
+**Type:** `legacy` | `current-standard` | `experimental-migration` | `deprecated`
+
+Within a specific project, whether this pattern is the current standard, a legacy pattern to be maintained but not propagated, or an experimental migration target. Distinct from the document `stability` field.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#project_adoption_stage`](field-reference.md#project_adoption_stage)
+
+---
+
+### `environment` *(optional)*
+
+**Type:** array of string
+
+Project environments or target constraints this skill applies to (e.g., `local`, `ci`, `production`, `staging`, `ambient`). Prevents misapplying production-debugging skills to local feature code.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#environment`](field-reference.md#environment)
+
+---
+
+### `internal_tools` *(optional)*
+
+**Type:** array of string
+
+Custom CLI tools or internal project scripts whose presence makes the skill applicable (e.g., `scripts/sync-db.sh`). Complements `allowed-tools` (agent tools) and `dependencies` (external packages).
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#internal_tools`](field-reference.md#internal_tools)
+
+---
+
 ### `relations` *(optional)*
 
 **Type:** object
 
-Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W3C-vocabulary mapping is provided via schemas/skill.context.jsonld (JSON-LD @context). `suppresses` is the routing-layer asymmetric exclusion edge (renamed from the deprecated `boundary` alias per ADR-0018); `disjoint_with` is the optional OWL class-disjointness predicate — they are distinct, not aliases.
+Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W3C-vocabulary mapping is provided via schemas/skill.context.jsonld (JSON-LD @context). `suppresses` is the routing-layer asymmetric exclusion edge; `disjoint_with` is the optional OWL class-disjointness predicate — they are distinct, not aliases.
 
 **Sub-fields:**
 
-- `adjacent` *optional* — Legacy alias of `related` (skos:related).
 - `related` *optional* — Symmetric associative relation (skos:related).
 - `suppresses` *optional* — Score-aware routing exclusion edge — directional.
-- `boundary` *optional* — DEPRECATED alias of `suppresses` (renamed per ADR-0018 — the name `boundary` read as deference but the mechanic is exclusion).
 - `disjoint_with` *optional* — Optional OWL class-disjointness assertion.
 - `broader` *optional* — Cross-skill generalisation (skos:broader).
 - `narrower` *optional* — Cross-skill specialisation (skos:narrower).
@@ -530,7 +566,7 @@ Comprehension-layer verdict produced by gate 8 (the comprehension grader on `eva
 
 **Type:** `APPLICABLE` | `REDUNDANT` | `NOT_DISCRIMINATED_CEILING` | `EQUIVALENT_ON_FRONTIER` | `HARMFUL` | `MIXED` | `FALSE_POSITIVE` | `UNVERIFIED` | `PROVISIONAL`
 
-Application-layer verdict produced by gate 9 (the application grader on `evals/application.json`). `APPLICABLE` (loading the skill changes agent behavior on real artifacts in the expected direction — flags, fixes, generative trajectory), `NOT_DISCRIMINATED_CEILING` (baseline saturated on the real cases, so the eval had no measurement headroom; inconclusive, not a deprecation signal), `EQUIVALENT_ON_FRONTIER` (baseline had measurement headroom but the skill produced no marginal lift for the measured frontier model on this case set), `REDUNDANT` (legacy no-delta bucket retained for old receipts; new runner output should prefer the two scoped no-lift values), `HARMFUL` (negative delta — agent makes worse decisions with the skill loaded; SkillsBench arXiv 2602.12670 found 19% of evaluated skills exhibit this), `MIXED` (delta varies across cases — some applicable, some equivalent, or false-positive), `FALSE_POSITIVE` (skill over-triggers — applies on cases where its expertise does not apply), `UNVERIFIED` (no application assessment has run), `PROVISIONAL` (single-model self-assessment audit found useful behavior but the independent application grader has not confirmed it). This is the aggregate-quality field: a skill is only behaviorally certified when this verdict is `APPLICABLE`. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
+Application-layer verdict produced by gate 9 (the application grader on `evals/application.json`). `APPLICABLE` (loading the skill changes agent behavior on real artifacts in the expected direction — flags, fixes, generative trajectory), `NOT_DISCRIMINATED_CEILING` (baseline saturated on the real cases, so the eval had no measurement headroom; inconclusive, not a deprecation signal), `EQUIVALENT_ON_FRONTIER` (baseline had measurement headroom but the skill produced no marginal lift for the measured generator on this case set; legacy name retained for existing receipts), `REDUNDANT` (legacy no-delta bucket retained for old receipts; new runner output should prefer the two scoped no-lift values), `HARMFUL` (negative delta — agent makes worse decisions with the skill loaded; SkillsBench arXiv 2602.12670 found 19% of evaluated skills exhibit this), `MIXED` (delta varies across cases — some applicable, some equivalent, or false-positive), `FALSE_POSITIVE` (skill over-triggers — applies on cases where its expertise does not apply), `UNVERIFIED` (no application assessment has run), `PROVISIONAL` (single-model self-assessment audit found useful behavior but the independent application grader has not confirmed it). This is the aggregate-quality field: a skill is only behaviorally certified when this verdict is `APPLICABLE`. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#application_verdict`](field-reference.md#application_verdict)
 
@@ -590,7 +626,7 @@ Optional receipt for the most recent eval run. Complements `eval_state` so `pass
 - `model` *optional* — Optional grader/model identifier when an LLM grader was used.
 - `receipt` *optional* — Path or URL to the eval receipt, scorecard, grader history, or CI run.
 - `receipt_hash` *optional* — Optional SHA-256 digest of the receipt artifact.
-- `bidirectional` *optional* — Two-frontier bidirectional eval provenance (Opus 4.
+- `bidirectional` *optional* — Eval provenance from lib/audit/run-bidirectional-eval.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#eval_last_run`](field-reference.md#eval_last_run)
 
@@ -668,12 +704,14 @@ Per-skill maintenance policy consumed by the drift sentinel. Audit/freshness sch
 
 **Type:** object
 
-Optional pointer to a real-world success/failure feed. Consumers may use telemetry to corroborate or override `eval_state`. Runtime-feedback that corroborates audit verdicts — moved to the sidecar in ADR-0019.
+Optional pointer to real-world success/failure feedback and audit/eval agent-run receipts. Consumers may use feedback telemetry to corroborate or override `eval_state`; operators use run receipts to compare agents by duration, token usage, delivery status, and SKILL.md line delta. Runtime-feedback and loop-run telemetry that corroborate audit verdicts — moved to the sidecar in ADR-0019.
 
 **Sub-fields:**
 
-- `feedback_source` *required* — Path or URL to a JSONL of run receipts.
+- `feedback_source` *required* — Backward-compatible path or URL to a JSONL of run receipts or real-world feedback.
+- `run_receipts_source` *optional* — Path or URL, usually the skill-folder sibling `agent-telemetry.
 - `last_updated` *optional*
+- `last_run` *optional* — Small summary of the latest audit/eval agent-run receipt.
 - `metrics` *optional*
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#runtime_telemetry`](field-reference.md#runtime_telemetry)
@@ -691,7 +729,7 @@ Per-model Skill Audit Loop participation matrix. This is not a verdict and never
 - `schema_version` *required* (`1`) — Shape version for this coverage sub-record.
 - `updated_at` *required* — Timestamp when this coverage matrix was last updated.
 - `registry_version` *required* — Model registry epoch from `lib/audit-shared/model-provider.
-- `models` *required* — Map keyed by stable model alias (`opus`, `codex-current`, `gemini`, `deepseek-flash`, etc.
+- `models` *required* — Map keyed by stable model alias (`opus`, `gpt-5.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#model_run_coverage`](field-reference.md#model_run_coverage)
 

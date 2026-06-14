@@ -4,7 +4,7 @@
 > Purpose: every protocol field tagged by ownership state, so authors, reviewers, and the audit loop never confuse "who writes this" with "what this means."
 > Source of truth: [../SKILL_METADATA_PROTOCOL.md](../skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md) (semantics), [../schemas/SKILL_METADATA_PROTOCOL_schema.json](../schemas/SKILL_METADATA_PROTOCOL_schema.json) (enforcement), [SKILL_METADATA_PROTOCOL_field-reference.md](../skill-metadata-protocol/field-reference.md) (per-field detail).
 
-## The six states
+## The four states
 
 | State | Meaning | Who writes it | When |
 |---|---|---|---|
@@ -12,8 +12,6 @@
 | **loop-written** | The Skill Audit Loop stamps this in the skill's sibling `audit-state.json` sidecar. Hand-edits are overwritten on the next `audit` / `evaluate` run. | `audit` / `improve` / `evaluate` and the graders. | On every audit/eval run that touches the skill. |
 | **earned-with-receipt** | Author writes the value, but the protocol expects it to be backed by a runnable artifact (eval, drift hash, routing eval). Setting it without the receipt is dishonest attestation. | The author, after the receipt exists. | When the supporting artifact is created and verified. |
 | **generated** | Lives in `skills.manifest.json` (NOT in `SKILL.md`). Computed from authored fields by `generate-manifest.js`. Authors never edit. | `scripts/generate-manifest.js`. | On every manifest rebuild. |
-| **deprecated** | Was part of an older schema version. Still accepted for back-compat; should not be added to new skills. | n/a (legacy). | Phased out per the schema migration plan. |
-| **compatibility-alias** | An alternative name or value the normalizer maps to the canonical shape. Accepted on read; new skills should use the canonical form. | n/a (legacy / workspace convention). | Normalized at parse time. |
 
 ## Required (5 `SKILL.md` fields + 7 `audit-state.json` sidecar fields, v8 gates)
 
@@ -70,7 +68,6 @@ All **human-authored** unless tagged otherwise.
 | `anti_examples` | string[] | human-authored | Negative class. Prompts that look related but a different skill should handle. |
 | `project` | `{handle, role}[]` | human-authored | Belonging-entity references for project-anchored skills. Absent = ambient skill (applies across all projects). Replaces old `workspace_tags`. |
 | `repo` | `{handle, url}[]` | human-authored | Repo-level belonging-entity references. Complements `project[]`. |
-| `routing_bundles` | string[] | **RETIRED (SKI-286)** | Per-skill routing group membership — removed (zero acting consumer). Library-level batch-activation is served by the skill-injector routing config (`bundles`/`bundleTypes`). Do not author. |
 | `taxonomy_domain` | string | human-authored | Slash-delimited hierarchical sub-path within a `subject` (e.g. `engineering/api-design`). Complements `subject`. Renamed from `domain`. |
 
 ### Classification (taxonomy)
@@ -81,7 +78,7 @@ All **human-authored** unless tagged otherwise.
 |---|---|---|---|
 | `subjects` | enum[] | human-authored | Polyhierarchy for skills that genuinely span two browse shelves. Max 2, primary first; the primary entry MUST equal `subject`. Same closed 12-enum as `subject`. |
 
-### Understanding fields (v6+, flat)
+### Understanding fields
 
 The five Understanding fields are **human-authored** in `SKILL.md`. The sidecar's `comprehension_state: present` claim requires the group to exist.
 
@@ -90,10 +87,9 @@ The five Understanding fields are **human-authored** in `SKILL.md`. The sidecar'
 | `comprehension_state` | enum | human-authored in `audit-state.json` | `absent` (default) or `present`. When `present`, the five Understanding fields below are required. |
 | `mental_model` | string | human-authored | Primitives + relationships. Graded by comprehension grader's `mental_model` dimension (weight 1.5). |
 | `purpose` | string | human-authored | Problem + prior alternative. Comprehension dimension (weight 1.0). |
-| `boundary` | string | human-authored | Things commonly confused with the concept. Comprehension dimension (weight 1.5). **Note:** field name shared with `relations.boundary`; disambiguated by nesting depth. |
+| `concept_boundary` | string | human-authored | Things commonly confused with the concept. Comprehension dimension (weight 1.5). |
 | `analogy` | string | human-authored | One-sentence analogy preserving the core mechanism. Comprehension dimension (weight 0.5). |
-| `misconception` | string | human-authored | The wrong mental model people bring. Complements `boundary`; not directly graded. |
-| `concept` | object | **deprecated** | v5 nested teaching block. Accepted for v5/v6 back-compat. Lint warns when populated alongside missing flat fields. |
+| `misconception` | string | human-authored | The wrong mental model people bring. Complements `concept_boundary`; not directly graded. |
 
 ### Grounding (required when project[] is non-empty)
 
@@ -112,7 +108,7 @@ The five Understanding fields are **human-authored** in `SKILL.md`. The sidecar'
 | `portability.readiness` | enum | human-authored in `audit-state.json` | `declared` / `scripted` / `verified`. `verified` requires an export receipt. |
 | `portability.targets` | enum[] | human-authored in `audit-state.json` | Only `skill-md` is valid today. |
 | `urn` | string | human-authored in `audit-state.json` | Format: `urn:skill:<repo-slug>:<skill-name>`. The skill-name segment must equal `name`. |
-| `compatibility` | object | human-authored | `{ runtimes?, node?, notes? }`. Plain string accepted in Agent-Skills-compatible encoding. |
+| `compatibility` | object | human-authored | `{ agent_runtimes?, node_version?, notes? }`. Plain string accepted in Agent-Skills-compatible encoding. |
 | `allowed-tools` | string | human-authored | Space-separated tool allowlist. |
 
 ### Lifecycle and telemetry
@@ -121,11 +117,11 @@ The five Understanding fields are **human-authored** in `SKILL.md`. The sidecar'
 |---|---|---|---|
 | `lifecycle.stale_after_days` | int | human-authored in `audit-state.json` | When the drift sentinel flags the skill `STALE` after `drift_check.last_verified`. |
 | `lifecycle.review_cadence` | enum | human-authored in `audit-state.json` | `per-commit` / `weekly` / `quarterly` / `on-truth-source-change`. |
-| `runtime_telemetry` | object | human-authored in `audit-state.json` | Points at a JSONL feed of run receipts. Optional. |
+| `runtime_telemetry` | object | human-authored or loop-written in `audit-state.json` | Points at a JSONL feed of real-world feedback and audit/eval agent-run receipts. Optional. |
 | `model_run_coverage` | object | loop-written in `audit-state.json` | Per-model Skill Audit Loop participation matrix. Records model aliases, phase status, failures, and receipts; not a quality verdict. |
 | `eval_last_run` | object | earned-with-receipt in `audit-state.json` | Receipt for the most recent eval run, including optional bidirectional eval evidence. Supports `eval_state: passing` / `monitored` with a real receipt. |
 
-## Audit Status (v7+, loop-written)
+## Audit Status
 
 The Skill Audit Loop owns these in `audit-state.json`. **Do not hand-author.** Hand-edits are overwritten on the next `audit` / `evaluate` run.
 
@@ -135,8 +131,8 @@ The Skill Audit Loop owns these in `audit-state.json`. **Do not hand-author.** H
 | `last_changed` | ISO date | `improve` | Date the body or frontmatter was edited. |
 | `structural_verdict` | `PASS` / `PASS_WITH_FIXES` / `FAIL` / `UNVERIFIED` | `audit` | Form-layer (gates 1-2, 7). Rolled up from `lint_verdict`. Only external-mandate violations produce `FAIL`. |
 | `truth_verdict` | `PASS` / `DRIFT` / `BROKEN` / `UNVERIFIED` | `audit` | Truth-layer (gates 3-6). Rolled up from hashable drift evidence plus audit judgment; absent hash coverage requires explicit human/graded truth evidence before `PASS`. |
-| `comprehension_verdict` | `PASS` / `SHALLOW` / `REDUNDANT` / `UNVERIFIED` / `PROVISIONAL` / `SKIPPED_BASELINE_HIGH` / `NA` | comprehension grader | Demoted in v7 to cheap smoke test. Never alone certifies a skill. |
-| `application_verdict` | `APPLICABLE` / `REDUNDANT` / `HARMFUL` / `MIXED` / `FALSE_POSITIVE` / `UNVERIFIED` / `PROVISIONAL` | application grader | **The primary quality signal.** A skill is behaviorally certified only when this is `APPLICABLE`. |
+| `comprehension_verdict` | `PASS` / `SHALLOW` / `REDUNDANT` / `UNVERIFIED` / `PROVISIONAL` / `SKIPPED_BASELINE_HIGH` / `NA` | comprehension grader | A concept-understanding signal. Never alone certifies a skill. |
+| `application_verdict` | `APPLICABLE` / `PROVISIONAL` / `NOT_DISCRIMINATED_CEILING` / `EQUIVALENT_ON_FRONTIER` / `REDUNDANT` / `HARMFUL` / `MIXED` / `FALSE_POSITIVE` / `UNVERIFIED` | application grader | **The primary quality signal.** A skill is behaviorally certified only when this is `APPLICABLE`. No-lift verdicts are scoped evidence, not deletion instructions. |
 | `eval_score` | 0.0-5.0 | `evaluate` | Latest aggregate grade. |
 | `eval_failed_ids` | string[] | `evaluate` | Failed eval IDs. Empty when clean. |
 | `lint_verdict` | `PASS` / `FAIL` / `UNKNOWN` | `skill-lint.js` | Per-script signal. Rolls up into `structural_verdict`. |
@@ -165,20 +161,11 @@ The Skill Audit Loop owns these in `audit-state.json`. **Do not hand-author.** H
 
 For the complete authored-to-generated field rename map and loss policy see [manifest-field-mapping.md](./manifest-field-mapping.md).
 
-## Deprecated (do not add to new skills)
+## Generated Encoding Reconciliation
 
-| Field | Replaced by | Notes |
-|---|---|---|
-| `concept` (nested block) | The five flat Understanding fields (`mental_model`, `purpose`, `boundary`, `analogy`, `misconception`) | v5 legacy. Still accepted for back-compat. Lint warns when populated alongside missing flat fields. |
-| `audit_verdict` (single aggregate) | The four discrete v7 verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`) | Pre-v7 aggregate. v6→v7 codemod (`scripts/migrate-skill-v6-to-v7.js`) strips it. See [ADR 0011](./adr/0011-split-audit-verdict-into-four-verdicts.md). |
-| `relations.adjacent` | `relations.related` | Deprecated alias from v3.0. Tooling still accepts it. New authoring should use `related`. |
-| `eval_status` | The orthogonal triplet `eval_artifacts` + `eval_state` + `routing_eval` | Legacy single field replaced by the orthogonal triplet. |
+The only parse-time reconciliation described here is the two-physical-encoding bridge between authored protocol source and generated Agent-Skills-compatible exports. The authored source stays flat; the generated export nests structured values under `metadata:` for runtimes that require that shape.
 
-## Compatibility-alias (normalized at parse time)
-
-The only alias normalization still performed is the two-physical-encoding reconciliation below. The v7 field/value aliases (`primaryCategory`; `scope: operational|overlay|generic`; `type: doctrine|domain|framework|feedback`) are NOT normalized under the v8 clean cut — those fields and values are not declared in the live schema, so a skill still carrying them fails lint (CONTENT-mode migration work for `/audit:*`, not an auto-fixed alias).
-
-| Alias | Canonical form | Normalized by |
+| Input shape | Canonical form | Normalized by |
 |---|---|---|
 | Agent-Skills-compatible encoding (nested `metadata:`, JSON-string-encoded structured fields) | Protocol-native (top-level YAML keys, native objects/arrays) | `parse-frontmatter.js::normalizeFrontmatter()` lifts `metadata.*` to top level and `JSON.parse`s stringified values |
 
@@ -187,9 +174,8 @@ The only alias normalization still performed is the two-physical-encoding reconc
 ## Resolution rules when two states conflict
 
 1. **Top-level wins over `metadata.*`.** When the same field appears in both, the top-level entry is the canonical signal. (Author overrode the nested default deliberately.)
-2. **Flat Understanding fields win over `concept` block.** When both are present, the comprehension grader reads the flat fields and ignores the nested block.
-3. **`structural_verdict` from canonical lint wins over root lint.** The root `scripts/skill/skill-lint.js` writes legacy `lint_verdict`; the canonical `skill-graph/scripts/skill-lint.js` writes the Audit-Status-aligned signal. Per ADR 0009 the canonical version is authoritative; see SH-6198 for the in-progress deprecation of the root copy.
-4. **Loop-written fields are not authored in `SKILL.md`.** Hand-edits to Audit Status fields in `audit-state.json` are overwritten on the next `audit` / `evaluate` run. If you need a different verdict, run the audit; do not edit the sidecar by hand except when creating the initial template state.
+2. **`structural_verdict` from canonical lint wins over root lint.** The canonical `skill-graph/scripts/skill-lint.js` writes the Audit-Status-aligned signal. Per ADR 0009 the skill-graph implementation is authoritative.
+3. **Loop-written fields are not authored in `SKILL.md`.** Hand-edits to Audit Status fields in `audit-state.json` are overwritten on the next `audit` / `evaluate` run. If you need a different verdict, run the audit; do not edit the sidecar by hand except when creating the initial template state.
 
 ## Related
 

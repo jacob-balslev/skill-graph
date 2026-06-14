@@ -166,8 +166,9 @@ function readDisplacementCoverage() {
   return { checked, total: skillFiles.length };
 }
 
-// Count corpus usage of the deprecated/legacy frontmatter aliases the live
-// schema still accepts for unmigrated skills. The clean-cut doctrine
+// Count corpus usage of deprecated/legacy frontmatter aliases. Some aliases are
+// still accepted by the live schema for unmigrated skills; others have reached
+// zero usage and been removed from the canonical schema. The clean-cut doctrine
 // (AGENTS.md § Major Version Is a Clean Cut) bans permanent deprecated-alias
 // surfaces, and each alias's removal condition is: corpus usage reaches 0 →
 // one SYSTEM commit deletes the alias from the schema. This counter makes the
@@ -220,11 +221,28 @@ function readAliasDrain() {
     if (compatCandidates.some(compat => compat.runtimes !== undefined)) counts.compatibility_runtimes += 1;
     if (compatCandidates.some(compat => compat.node !== undefined)) counts.compatibility_node += 1;
   }
-  return { counts, total: skillFiles.length };
+  let schema = null;
+  try {
+    schema = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, 'schemas', 'SKILL_METADATA_PROTOCOL_schema.json'), 'utf8'));
+  } catch (_) {
+    schema = null;
+  }
+  const props = (schema && schema.properties) || {};
+  const relProps = (props.relations && props.relations.properties) || {};
+  const compatProps = (props.compatibility && props.compatibility.properties) || {};
+  const accepted = {
+    relations_boundary: Boolean(relProps.boundary),
+    relations_adjacent: Boolean(relProps.adjacent),
+    understanding_boundary: Boolean(props.boundary),
+    compatibility_runtimes: Boolean(compatProps.runtimes),
+    compatibility_node: Boolean(compatProps.node),
+  };
+
+  return { counts, total: skillFiles.length, accepted };
 }
 
-// Render the deprecated-alias drain table. Each row is a deprecated/legacy
-// alias the schema still accepts; the removal condition is mechanical.
+// Render the deprecated-alias drain table. Each row is a deprecated/legacy alias
+// the schema still accepts or recently removed; the removal condition is mechanical.
 function renderAliasDrainSection(aliasDrain) {
   if (!aliasDrain) {
     return `## Deprecated-alias drain
@@ -233,20 +251,31 @@ function renderAliasDrainSection(aliasDrain) {
 
 `;
   }
-  const { counts, total } = aliasDrain;
-  const row = (alias, canonical, count) =>
-    `| \`${alias}\` | \`${canonical}\` | \`${count}\` / \`${total}\` | ${count === 0 ? '**READY TO DELETE** — remove the alias from the schema in a SYSTEM commit' : 'CONTENT drain in progress (per-skill via `/audit:*`)'} |`;
+  const { counts, total, accepted = {} } = aliasDrain;
+  const row = (alias, canonical, count, isAccepted) => {
+    let state;
+    if (!isAccepted && count === 0) {
+      state = '**REMOVED FROM SCHEMA** — corpus usage is zero; runtime read fallbacks, if any, are compatibility-only';
+    } else if (!isAccepted) {
+      state = '**SCHEMA REMOVED BUT CORPUS STILL USES IT** — fix via `/audit:*` or restore a compatibility window';
+    } else if (count === 0) {
+      state = '**READY TO DELETE** — remove the alias from the schema in a SYSTEM commit';
+    } else {
+      state = 'CONTENT drain in progress (per-skill via `/audit:*`)';
+    }
+    return `| \`${alias}\` | \`${canonical}\` | \`${count}\` / \`${total}\` | ${state} |`;
+  };
   return `## Deprecated-alias drain
 
-> The live schema accepts these deprecated/legacy aliases only for unmigrated skills. **Removal condition (per \`AGENTS.md § Major Version Is a Clean Cut\`): when an alias's corpus usage reaches 0, one SYSTEM commit deletes it from the schema.** The per-skill rename is CONTENT-mode audit-loop work; this table makes the drain measurable instead of open-ended.
+> The live schema accepts remaining deprecated/legacy aliases only for unmigrated skills, and this table records recently removed aliases until the next status cleanup. **Removal condition (per \`AGENTS.md § Major Version Is a Clean Cut\`): when an alias's corpus usage reaches 0, one SYSTEM commit deletes it from the schema.** The per-skill rename is CONTENT-mode audit-loop work; this table makes the drain measurable instead of open-ended.
 
 | Deprecated alias | Canonical | Corpus usage | State |
 |---|---|---|---|
-${row('relations.boundary', 'relations.suppresses', counts.relations_boundary)}
-${row('relations.adjacent', 'relations.related', counts.relations_adjacent)}
-${row('boundary (top-level Understanding)', 'concept_boundary', counts.understanding_boundary)}
-${row('compatibility.runtimes', 'compatibility.agent_runtimes', counts.compatibility_runtimes)}
-${row('compatibility.node', 'compatibility.node_version', counts.compatibility_node)}
+${row('relations.boundary', 'relations.suppresses', counts.relations_boundary, accepted.relations_boundary)}
+${row('relations.adjacent', 'relations.related', counts.relations_adjacent, accepted.relations_adjacent)}
+${row('boundary (top-level Understanding)', 'concept_boundary', counts.understanding_boundary, accepted.understanding_boundary)}
+${row('compatibility.runtimes', 'compatibility.agent_runtimes', counts.compatibility_runtimes, accepted.compatibility_runtimes)}
+${row('compatibility.node', 'compatibility.node_version', counts.compatibility_node, accepted.compatibility_node)}
 
 `;
 }

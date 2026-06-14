@@ -1,7 +1,7 @@
 # ADR-0020: Twelve-Shelf Competency Re-Axis (`subject` enum)
 
 > Status: Accepted (2026-06-03)
-> Supersedes the 9-value `subject` enum decided in [ADR-0017](0017-five-axis-classification-model.md) (the rest of ADR-0017 — the five-axis model shape, `deployment_target`, free-text `scope`, `subjects[]` polyhierarchy, `taxonomy_domain` — stands).
+> Supersedes the 9-value `subject` enum decided in [ADR-0017](0017-five-axis-classification-model.md) (the rest of ADR-0017 — the v8 field shape as later amended: boolean `public`, free-text `scope`, `subjects[]` polyhierarchy, `taxonomy_domain`, and project anchoring through `project[]` — stands).
 > Schema/contract shape unchanged: this changes the enum **values** of `subject`, not the field set or `schema_version`. Per [AGENTS.md § Version Labels Are Earned, Not Bumped](../../AGENTS.md), an enum-value change is not a `schema_version` bump.
 
 ## Context
@@ -64,7 +64,7 @@ A one-time codemod (`scripts/migrate-subject-reaxis-v9.js`, retired after this m
 ## Consequences
 
 - **Positive:** every shelf answers one question; `ai-engineering` + `software-architecture` are first-class for the AI-agentic-web-dev identity; no phantom or sink shelf; `subject` and `taxonomy_domain` stop contradicting each other.
-- **Follow-up (CONTENT, via the audit loop):** re-shelving created cross-shelf `relations.boundary` edges (a boundary edge is a same-shelf exclusion guard) and left `taxonomy_domain` sub-paths un-normalized under the new shelves. Both are per-skill `relations`/`taxonomy_domain` cleanup for `/audit:*`, not schema violations.
+- **Follow-up (CONTENT, via the audit loop):** re-shelving created cross-shelf `relations.suppresses` edges (a suppression edge is a same-shelf exclusion guard; legacy corpus entries may still use `boundary`) and left `taxonomy_domain` sub-paths un-normalized under the new shelves. Both are per-skill `relations`/`taxonomy_domain` cleanup for `/audit:*`, not schema violations.
 - **Negative:** a large corpus migration (123 folder moves); `product-domain` rides at the floor pending recruitment — **resolved in favour of recruit, see the Addendum below (SKI-293).**
 
 ## Addendum — 2026-06-07: `product-domain` recruit-or-fold resolved → **RECRUIT** (SKI-293)

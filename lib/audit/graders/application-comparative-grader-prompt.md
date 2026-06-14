@@ -9,9 +9,9 @@
 > build (finding A1 of `docs/plans/skill-library-as-lens-review-2026-05-21.md`). The two-copy
 > path reconciliation (finding A5) is resolved: `lib/audit/graders/` is now the sole canonical
 > grader-prompt copy and `scripts/skill/graders/` was removed (SH-6603, 2026-05-28).
-> Certifying-run model contract: a single same-family top-tier run supports **at most
-> `PROVISIONAL`**; certifying `APPLICABLE` requires an independent **cross-family** top-tier
-> grader (self-preference bias inflates same-family judging ~+10–25pp,
+> Certifying-run model contract: a single frontier judgment supports **at most
+> `PROVISIONAL`**; certifying `APPLICABLE` requires the representative-generator protocol
+> and agreement from both frontier judges (self-preference bias inflates same-family judging ~+10–25pp,
 > [arXiv 2410.21819](https://arxiv.org/abs/2410.21819)). See
 > `docs/verdict-semantics.md § Two-frontier bidirectional reconciliation` point 2.
 > Design rationale: `docs/research/design-review-best-practices-2026-05-21.md § 3`.

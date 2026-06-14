@@ -12,7 +12,7 @@ Each section below has three parts: **Why this field exists**, **Common confusio
 
 ### Why this field exists
 
-`public` is the publishability gate — the single boolean that decides whether a skill is safe to release to the public marketplace (skills.sh). It replaced the v8 `deployment_target` enum (the ADR-0017 amendment): publishability — not deployment location — is what the export gate actually needs.
+`public` is the publishability gate — the single boolean that decides whether a skill is safe to release to the public marketplace (skills.sh). Publishability, not deployment location, is what the export gate needs.
 
 - `true` — the skill carries no private data: repo-agnostic patterns, public-repo grounding, or otherwise leak-free (e.g., `testing-strategy`, `webhook-integration`). Safe for the public release.
 - `false` — the skill carries private API keys, personal/customer/financial data, or internal-only operational doctrine, and must NEVER be published. This is the fail-safe default: `export-marketplace-skills.js` excludes `public: false` AND any skill with a missing/undefined `public` flag, so the privacy boundary fails CLOSED — nothing reaches the public surface unless affirmatively marked publishable.
@@ -25,7 +25,7 @@ Each section below has three parts: **Why this field exists**, **Common confusio
 
 ### Common confusion
 
-Authors previously leaned on `deployment_target` (or the older enum `scope: portable`) as a lazy default. In v8, set `public` deliberately: `true` only after a real check that the skill carries no private data, and `false` whenever it touches private/customer/internal material. If the skill is coupled to one project, also declare `project[]` + `grounding` — that is the project-fit signal, distinct from publishability.
+Set `public` deliberately: `true` only after a real check that the skill carries no private data, and `false` whenever it touches private/customer/internal material. If the skill is coupled to one project, also declare `project[]` + `grounding` — that is the project-fit signal, distinct from publishability.
 
 ### Worked example
 
@@ -167,6 +167,69 @@ The router co-loads `verify_with` partners as a one-hop expansion (Stage 4) — 
 
 ---
 
+## `relations.narrower`
+
+### Why this field exists
+
+`narrower` is the inverse of `relations.broader`: it lets a general skill point at more specific child skills when that edge is important enough to author explicitly. Tooling can infer many inverse edges from other skills' `broader` declarations, so low direct usage is expected. The field remains in the protocol because it supports authored browse trees, documentation maps, and graph exports where the parent is the natural place to maintain the relationship.
+
+### Common confusion
+
+Do not use `narrower` to pull arbitrary children into every route for a general topic. It is a graph relationship first; routing expansion should stay conservative so a broad parent does not flood the context with every specialization.
+
+### Worked example
+
+```yaml
+relations:
+  narrower:
+    - property-based-testing
+    - mutation-testing
+```
+
+---
+
+## `relations.disjoint_with`
+
+### Why this field exists
+
+`disjoint_with` is the formal ontology predicate for concepts that genuinely cannot both apply. It is intentionally rare. Most routing exclusions belong in `relations.suppresses`, because they are score-aware operational claims, not formal class-disjointness claims. Keeping `disjoint_with` prevents authors from overloading `suppresses` when they need to publish an ontology-level distinction.
+
+### Common confusion
+
+Low usage is not evidence that `disjoint_with` is dead. It is a precision field for the small number of cases where a formal incompatibility is true. If the claim is "when this skill wins, do not co-route that one," use `suppresses`; if the claim is "these concepts are mutually incompatible classes," use `disjoint_with`.
+
+### Worked example
+
+```yaml
+relations:
+  disjoint_with:
+    - skill-runtime-execution
+```
+
+---
+
+## `io_contract`
+
+### Why this field exists
+
+`io_contract` is the machine-checkable composition hook: it declares abstract artifact types a skill consumes and produces so tooling can derive safe `depends_on` edges without an LLM. Low usage is expected while the corpus is still gaining composition-aware skills. The field remains because it is the protocol's bridge from a hand-authored graph to deterministic workflow composition.
+
+### Common confusion
+
+`io_contract` does not name files and does not replace `relations.depends_on`. It names artifact types such as `audit-findings`, `skill-md`, or `routing-config`; the graph builder matches a producer's `outputs[]` to a consumer's `inputs[]`.
+
+### Worked example
+
+```yaml
+io_contract:
+  inputs:
+    - audit-findings
+  outputs:
+    - skill-md
+```
+
+---
+
 ## `grounding.evidence_priority`
 
 ### Why this field exists
@@ -213,7 +276,7 @@ Do not use `readiness` as a second taxonomy for project fit (that is `project[]`
 |---|---|
 | Schema-canonical field definitions (auto-generated) | [`SKILL_METADATA_PROTOCOL_field-reference.generated.md`](../skill-metadata-protocol/field-reference.generated.md) |
 | Full prose reference with examples and lint notes | [`SKILL_METADATA_PROTOCOL_field-reference.md`](../skill-metadata-protocol/field-reference.md) |
-| Decision tree for taxonomy fields (`subject`, `taxonomy_domain`, `public`, `project[]`, `routing_bundles`) | [`SKILL_METADATA_PROTOCOL_field-decision-guide.md`](../skill-metadata-protocol/field-decision-guide.md) |
+| Decision tree for taxonomy fields (`subject`, `taxonomy_domain`, `public`, `project[]`) | [`SKILL_METADATA_PROTOCOL_field-decision-guide.md`](../skill-metadata-protocol/field-decision-guide.md) |
 | Predicate semantics (relations) | [`glossary.md` § Relation predicates](glossary.md) |
 | Authoring template | [`../examples/skill-metadata-template.md`](../examples/skill-metadata-template.md) |
 | Why the Evaluation Status is orthogonal | [`adr/0001-predicate-set.md`](adr/0001-predicate-set.md) + [`adr/0006-revise-predicate-rename.md`](adr/0006-revise-predicate-rename.md) |

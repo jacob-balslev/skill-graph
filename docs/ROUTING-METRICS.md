@@ -50,7 +50,7 @@ OpenCode lanes, and design audit workers. It is a separate router from the
 This router uses activation `keywords`, `triggers`, and `paths` from the compiled
 manifest — NOT the embeddings file. Its Recall@1 decline from the prior
 2026-05-24 baseline (96.9% / 62/64) is due to corpus expansion (147→167 skills) and
-new skills whose `keywords`/`boundary` declarations need tuning. The body-text
+new skills whose `keywords`/`relations.suppresses` declarations need tuning. The body-text
 embedding change (SKI-53) does not affect this router.
 
 **Per-skill activation eval (asserted skills only, 2026-06-05):**
@@ -59,8 +59,8 @@ embedding change (SKI-53) does not affect this router.
 node scripts/skill-graph-routing-eval.js --only-asserted --confusion-matrix
 ```
 
-Result: 1/15 PASS, 14 FAIL — boundary and positive-case coverage gaps requiring
-per-skill `keywords`/`relations.boundary` updates (separate CONTENT-mode work).
+Result: 1/15 PASS, 14 FAIL — suppression-edge and positive-case coverage gaps requiring
+per-skill `keywords`/`relations.suppresses` updates (separate CONTENT-mode work).
 
 **Archived: 2026-05-24 Manifest Router Baseline**
 
@@ -110,7 +110,7 @@ Eligible (54 skills, alphabetical):
 | Precision@1 | The expected skill is the top-1 selected skill. | Main user-visible correctness signal. |
 | Precision@3 | The expected skill appears in the first three selections. | Useful when co-loading or human choice is acceptable. |
 | Positive recall by skill | Each skill's positive examples route back to that skill. | Finds invisible skills with weak descriptions or keywords. |
-| False-positive rate | Anti-examples route back to the skill they are meant to avoid. | Finds over-broad skills and missing `relations.boundary` edges. |
+| False-positive rate | Anti-examples route back to the skill they are meant to avoid. | Finds over-broad skills and missing `relations.suppresses` edges. |
 | Coverage gaps | Anti-examples avoid the wrong skill but route nowhere. | Finds missing sibling skills or weak target descriptions. |
 | Confusion pairs | `expected -> actual` misses between nearby skills. | Shows which boundary or description needs tightening. |
 
@@ -151,10 +151,10 @@ negative-case summary counts:
 
 | Count | Meaning |
 |---|---|
-| `pass_boundary_target` | Anti-example routed to a declared boundary target. |
+| `pass_boundary_target` | Anti-example routed to a declared suppression target. The output key is retained by the harness; the authored edge is `relations.suppresses`. |
 | `coverage_gap` | Anti-example avoided this skill but no other skill won. |
 | `self_hit` | Anti-example routed back to the skill under test. This is a hard false positive. |
-| `off_boundary_hit` | Anti-example routed to some other skill not named in `relations.boundary`. |
+| `off_boundary_hit` | Anti-example routed to some other skill not named in `relations.suppresses`. |
 
 ## Routing Architecture Recommendation
 
@@ -172,7 +172,7 @@ retrieve-and-rerank routing:
    and headings for precision, but the body must remain in the index.
 3. **Second-stage reranking:** rerank the top candidates with a cross-encoder,
    LLM judge, or task-trained reranker that can inspect the full skill record.
-4. **Graph post-processing:** apply `relations.boundary` to suppress wrong
+4. **Graph post-processing:** apply `relations.suppresses` to suppress wrong
    owners, co-load `verify_with`, respect `depends_on`, and surface coverage
    gaps where anti-examples route nowhere.
 5. **Evaluation:** report Precision@1, Precision@3, false-positive rate,
@@ -211,7 +211,7 @@ full skill text plus Skill Graph metadata and relations.
 
 For very large skill pools, metadata-only routing should not be the primary
 retrieval layer. Skill Graph metadata remains valuable as the contract,
-governance, filtering, boundary, eval, and trust layer around a full-text
+governance, filtering, suppression-edge, eval, and trust layer around a full-text
 retrieval system.
 
 Practical rule:

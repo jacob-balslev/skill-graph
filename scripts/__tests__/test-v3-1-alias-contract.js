@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Test: v3.1 preferred field aliases round-trip and mismatch gates.
+ * Test: historical field aliases normalize and mismatch gates still fire.
  */
 
 'use strict';
@@ -83,8 +83,10 @@ assert(entry.taxonomy_domain === fm.taxonomy_domain, 'taxonomy_domain should pas
 assert(entry.allowed_tools === fm.allowed_tools, 'allowed_tools alias should pass through');
 assert(entry.health.reviewed_at === fm.reviewed_at, 'reviewed_at alias should project to health.reviewed_at');
 assert(entry.health.eval && entry.health.eval.content_state === 'unverified', 'nested eval alias should project to health.eval');
-assert(entry.compatibility.agent_runtimes[0] === 'agent-runtime>=2.0', 'compatibility.agent_runtimes should pass through');
-assert(entry.compatibility.node_version === '>=20', 'compatibility.node_version should pass through');
+assert(entry.compatibility.agent_runtimes[0] === 'agent-runtime>=2.0', 'compatibility.agent_runtimes should be the emitted runtime key');
+assert(entry.compatibility.node_version === '>=20', 'compatibility.node_version should be the emitted Node key');
+assert(!('runtimes' in entry.compatibility), 'compatibility.runtimes should normalize away from generated manifests');
+assert(!('node' in entry.compatibility), 'compatibility.node should normalize away from generated manifests');
 assert(entry.grounding.subject_matter === 'Alias contract', 'grounding.subject_matter should pass through');
 assert(entry.grounding.grounding_mode === 'repo_specific', 'grounding.grounding_mode (canonical; claim_scope alias removed SKI-241) should pass through');
 assert(entry.portability.export_targets[0] === 'skill-md', 'portability.export_targets should pass through');
@@ -101,5 +103,5 @@ try {
 }
 assert(threw, 'manifest generator should refuse mismatched aliases');
 
-pass('v3.1 aliases pass through and mismatches fail');
+pass('historical aliases normalize and mismatches fail');
 process.exit(0);

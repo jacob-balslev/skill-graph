@@ -406,8 +406,10 @@ const EXPORT_PROVENANCE_FIELDS = new Set([
  *    the audit loop confirms it is leak-free). The old key is removed so the
  *    schema's `additionalProperties: false` does not reject it.
  *  - top-level `boundary` (Understanding string) → `concept_boundary`.
- *    Only the TOP-LEVEL string is touched; `relations.boundary` (the routing
- *    edge, an array under `relations`) is left untouched.
+ *  - `relations.adjacent` → `relations.related`.
+ *  - `relations.boundary` → `relations.suppresses`.
+ *  - `compatibility.runtimes` → `compatibility.agent_runtimes`.
+ *  - `compatibility.node` → `compatibility.node_version`.
  *
  * Canonical wins: if the canonical key is already present, the alias is dropped
  * rather than overwriting the explicit author signal.
@@ -428,6 +430,30 @@ function applyDeprecatedAliases(obj) {
       obj.concept_boundary = obj.boundary;
     }
     delete obj.boundary;
+  }
+  if (obj.relations && typeof obj.relations === 'object' && !Array.isArray(obj.relations)) {
+    const relations = { ...obj.relations };
+    if ('adjacent' in relations) {
+      if (!('related' in relations)) relations.related = relations.adjacent;
+      delete relations.adjacent;
+    }
+    if ('boundary' in relations) {
+      if (!('suppresses' in relations)) relations.suppresses = relations.boundary;
+      delete relations.boundary;
+    }
+    obj.relations = relations;
+  }
+  if (obj.compatibility && typeof obj.compatibility === 'object' && !Array.isArray(obj.compatibility)) {
+    const compatibility = { ...obj.compatibility };
+    if ('runtimes' in compatibility) {
+      if (!('agent_runtimes' in compatibility)) compatibility.agent_runtimes = compatibility.runtimes;
+      delete compatibility.runtimes;
+    }
+    if ('node' in compatibility) {
+      if (!('node_version' in compatibility)) compatibility.node_version = compatibility.node;
+      delete compatibility.node;
+    }
+    obj.compatibility = compatibility;
   }
   return obj;
 }

@@ -8,7 +8,7 @@
 
 ## 1. What `public` value do I use? (and when is a skill project-anchored?)
 
-`public` is a boolean **publishability / private-data gate** — is this skill safe to release to the public skills.sh marketplace? It replaced the old `deployment_target` enum because publishability, not deployment location, is what the export gate actually needs. **Publishability and project-anchoring are two independent axes:**
+`public` is a boolean **publishability / private-data gate** — is this skill safe to release to the public skills.sh marketplace? Publishability, not deployment location, is what the export gate needs. **Publishability and project-anchoring are two independent axes:**
 
 - **`public`** answers *"does this skill carry private data?"* — `false` keeps it out of the public release.
 - **`project[]` + `grounding`** answers *"is this skill anchored to a specific repo's truth?"* — non-empty `project[]` triggers the schema-enforced `grounding` requirement.
@@ -84,9 +84,9 @@ The distinction between these relation types is best illustrated by existing usa
 
 - **`verify_with`** — `skill-infrastructure` declares `verify_with: [skill-scaffold]` because running skill library maintenance checks alongside skill authoring patterns materially increases confidence in the skill's claims. They are commonly used together in audit pipelines.
 
-- **`related`** — `refactor` can declare `related: [debugging, testing-strategy]` because readers of the refactor skill would benefit from understanding debugging and testing approaches. These are topically related but not mandatory dependencies. `adjacent` remains a back-compat alias, but new skills should use `related`.
+- **`related`** — `refactor` can declare `related: [debugging, testing-strategy]` because readers of the refactor skill would benefit from understanding debugging and testing approaches. These are topically related but not mandatory dependencies.
 
-- **`suppresses`** — `refactor` declares `suppresses: [documentation]` to assert exclusive ownership of the refactor use-case over documentation. When refactor wins a query that also matched documentation, this entry excludes documentation from co-routing. Write reason text using ownership framing: `"refactor owns this use-case exclusively; documentation does not."` Legacy `relations.boundary` means the same thing and is accepted only for unmigrated skills.
+- **`suppresses`** — `refactor` declares `suppresses: [documentation]` to assert exclusive ownership of the refactor use-case over documentation. When refactor wins a query that also matched documentation, this entry excludes documentation from co-routing. Write reason text using ownership framing: `"refactor owns this use-case exclusively; documentation does not."`
 
 When a skill is a specialisation of a more general skill, use `relations.broader` to express that generalisation.
 
@@ -267,7 +267,7 @@ These three fields all group skills, but they answer different questions. Pickin
 | `taxonomy_domain` | Where does this skill sit in a hierarchy for tree browsing within its `subject`? | optional slash-delimited path (e.g., `backend-engineering/integrations/shopify`) | folder-tree UI, docs site navigation |
 | `project[]` / `repo[]` | Which specific project(s) or repo(s) is this skill anchored to? | array of `{handle, role}` objects | router project-fit filter, manifest `by_project` rollup |
 
-> **Batch-activation grouping is NOT a per-skill field.** The per-skill `routing_bundles` field was **retired** (SKI-286, see `SKILL_METADATA_PROTOCOL.md § routing_bundles`) — it accumulated zero acting consumer. Library-level batch-activation ("load all skills in group X") is served by the skill-injector routing config (`bundles` / `bundleTypes`), not by frontmatter. Do not author `routing_bundles` on a skill.
+> **Batch-activation grouping is NOT a per-skill frontmatter field.** Library-level batch activation ("load all skills in group X") is served by the skill-injector routing config (`bundles` / `bundleTypes`), not by `SKILL.md`.
 
 ### Two rules that prevent misuse
 

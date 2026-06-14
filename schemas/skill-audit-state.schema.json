@@ -189,7 +189,7 @@
         "UNVERIFIED",
         "PROVISIONAL"
       ],
-      "description": "Application-layer verdict produced by gate 9 (the application grader on `evals/application.json`). `APPLICABLE` (loading the skill changes agent behavior on real artifacts in the expected direction — flags, fixes, generative trajectory), `NOT_DISCRIMINATED_CEILING` (baseline saturated on the real cases, so the eval had no measurement headroom; inconclusive, not a deprecation signal), `EQUIVALENT_ON_FRONTIER` (baseline had measurement headroom but the skill produced no marginal lift for the measured frontier model on this case set), `REDUNDANT` (legacy no-delta bucket retained for old receipts; new runner output should prefer the two scoped no-lift values), `HARMFUL` (negative delta — agent makes worse decisions with the skill loaded; SkillsBench arXiv 2602.12670 found 19% of evaluated skills exhibit this), `MIXED` (delta varies across cases — some applicable, some equivalent, or false-positive), `FALSE_POSITIVE` (skill over-triggers — applies on cases where its expertise does not apply), `UNVERIFIED` (no application assessment has run), `PROVISIONAL` (single-model self-assessment audit found useful behavior but the independent application grader has not confirmed it). This is the aggregate-quality field: a skill is only behaviorally certified when this verdict is `APPLICABLE`. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md."
+      "description": "Application-layer verdict produced by gate 9 (the application grader on `evals/application.json`). `APPLICABLE` (loading the skill changes agent behavior on real artifacts in the expected direction — flags, fixes, generative trajectory), `NOT_DISCRIMINATED_CEILING` (baseline saturated on the real cases, so the eval had no measurement headroom; inconclusive, not a deprecation signal), `EQUIVALENT_ON_FRONTIER` (baseline had measurement headroom but the skill produced no marginal lift for the measured generator on this case set; legacy name retained for existing receipts), `REDUNDANT` (legacy no-delta bucket retained for old receipts; new runner output should prefer the two scoped no-lift values), `HARMFUL` (negative delta — agent makes worse decisions with the skill loaded; SkillsBench arXiv 2602.12670 found 19% of evaluated skills exhibit this), `MIXED` (delta varies across cases — some applicable, some equivalent, or false-positive), `FALSE_POSITIVE` (skill over-triggers — applies on cases where its expertise does not apply), `UNVERIFIED` (no application assessment has run), `PROVISIONAL` (single-model self-assessment audit found useful behavior but the independent application grader has not confirmed it). This is the aggregate-quality field: a skill is only behaviorally certified when this verdict is `APPLICABLE`. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md."
     },
     "lint_verdict": {
       "type": "string",
@@ -275,7 +275,16 @@
               "items": { "type": "string" },
               "minItems": 1,
               "maxItems": 2,
-              "description": "The frontier model role/aliases used. Two items is the normal certifying pair (e.g. [\"opus\", \"gpt-5.5\"]); one item is allowed only for explicit single-available-frontier degraded runs. Aliases, never dated versions (model-identity discipline)."
+              "description": "The frontier judge role/aliases used. Two items is the normal certifying judge pair (e.g. [\"opus\", \"gpt-5.5\"]); one item is allowed only for explicit single-available-frontier degraded runs. Aliases, never dated versions (model-identity discipline)."
+            },
+            "measured_generator": {
+              "type": "string",
+              "description": "The model role/alias that produced the baseline and with-skill answers. Normal certifying runs use `representative-generator`; frontier aliases here indicate an older receipt or an explicit non-default measurement."
+            },
+            "generator_population": {
+              "type": "string",
+              "enum": ["deployment-representative", "frontier", "advisory"],
+              "description": "The population represented by `measured_generator`. Normal certifying runs use `deployment-representative`: the eval measures skill lift on a representative agent while frontier models judge quality."
             },
             "reconciliation": {
               "type": "string",
@@ -292,7 +301,7 @@
             },
             "certifying_clean": {
               "type": "boolean",
-              "description": "True when parity_ok AND both directions are cross-family certifying. A strong verdict (PASS/APPLICABLE) stands only when this is true; otherwise it was capped to PROVISIONAL."
+              "description": "True when parity_ok AND both frontier judge directions are certifying-clean for the measured generator. A strong verdict (PASS/APPLICABLE) stands only when this is true; otherwise it was capped to PROVISIONAL."
             },
             "synthesized_verdict": {
               "type": "string",
@@ -305,8 +314,8 @@
             },
             "applicable_for": {
               "type": "string",
-              "enum": ["anthropic", "openai", "both", "neither"],
-              "description": "Per-family applicability (SH-6682). The generator is the measured agent, so each direction measures whether the skill helps THAT generator's model family. A family is listed only when the run is certifying-clean AND its direction reached the certifying verdict (APPLICABLE/PASS). The conservative `synthesized_verdict` stays THE verdict; this records the per-family nuance it hides — e.g. a skill that helps Anthropic's model but not OpenAI's is `applicable_for: 'anthropic'` while the aggregate caps below APPLICABLE. 'neither' = no family certified (or run not certifying-clean)."
+              "enum": ["representative", "anthropic", "openai", "both", "neither"],
+              "description": "Which measured population earned applicability. New SKI-306 receipts use `representative` when the deployment-representative generator reached the certifying verdict under both frontier judges; `neither` means no population certified or the run was not certifying-clean. The older `anthropic` / `openai` / `both` values remain accepted for pre-SKI-306 receipts that used frontier models as measured subjects."
             },
             "registry_version": {
               "type": "string",
@@ -349,7 +358,7 @@
               "type": "array",
               "minItems": 1,
               "maxItems": 2,
-              "description": "Eval directions, named by which model GENERATES (the measured agent). Direction 'Claude': Claude (opus) generates → Codex (gpt) grades. Direction 'Codex': the swap. One direction is allowed only for an explicit single-available-frontier degraded run.",
+              "description": "Eval directions. New SKI-306 receipts name directions by the frontier judge: role 'Claude' means the representative generator was graded by the Claude/Opus judge, and role 'Codex' means it was graded by the Codex/GPT judge. Older receipts used these roles for frontier-generator directions. One direction is allowed only for an explicit single-available-frontier degraded run.",
               "items": {
                 "type": "object",
                 "additionalProperties": false,
@@ -495,15 +504,76 @@
       "required": [
         "feedback_source"
       ],
-      "description": "Optional pointer to a real-world success/failure feed. Consumers may use telemetry to corroborate or override `eval_state`. Runtime-feedback that corroborates audit verdicts — moved to the sidecar in ADR-0019.",
+      "description": "Optional pointer to real-world success/failure feedback and audit/eval agent-run receipts. Consumers may use feedback telemetry to corroborate or override `eval_state`; operators use run receipts to compare agents by duration, token usage, delivery status, and SKILL.md line delta. Runtime-feedback and loop-run telemetry that corroborate audit verdicts — moved to the sidecar in ADR-0019.",
       "properties": {
         "feedback_source": {
           "type": "string",
-          "description": "Path or URL to a JSONL of run receipts. Each receipt is expected to carry `{ timestamp, skill, outcome }` at minimum."
+          "description": "Backward-compatible path or URL to a JSONL of run receipts or real-world feedback. Each receipt is expected to carry `{ timestamp, skill }` plus an outcome/status at minimum. When the feed is specifically audit/eval agent-run telemetry, `run_receipts_source` SHOULD carry the same path explicitly."
+        },
+        "run_receipts_source": {
+          "type": "string",
+          "description": "Path or URL, usually the skill-folder sibling `agent-telemetry.jsonl`, containing append-only audit/eval agent-run receipts. Each line records one agent action with operation, phase, model/backend, duration_ms, tokens, line_delta, status, and artifact/receipt paths."
         },
         "last_updated": {
           "type": "string",
           "format": "date"
+        },
+        "last_run": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Small summary of the latest audit/eval agent-run receipt. The append-only JSONL feed remains the durable evidence; this block exists so readers do not have to tail the feed for the newest measurement.",
+          "properties": {
+            "at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "operation": {
+              "type": ["string", "null"],
+              "description": "Loop operation or eval operation, e.g. `panel`, `evaluate`, `improve`, or `evolve`."
+            },
+            "phase": {
+              "type": ["string", "null"],
+              "description": "Phase within the operation, e.g. `propose`, `cross-review`, `revise`, `curate`, `verify`, `generator`, or `grader`."
+            },
+            "agent": {
+              "type": ["string", "null"],
+              "description": "Stable model alias or backend role for the agent that produced the receipt."
+            },
+            "status": {
+              "type": "string",
+              "description": "Receipt status, usually `completed`, `failed`, `skipped`, or `degraded`."
+            },
+            "duration_ms": {
+              "type": ["number", "null"],
+              "minimum": 0
+            },
+            "tokens": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "input_tokens": { "type": ["number", "null"], "minimum": 0 },
+                "output_tokens": { "type": ["number", "null"], "minimum": 0 },
+                "total_tokens": { "type": ["number", "null"], "minimum": 0 },
+                "source": { "type": "string" }
+              }
+            },
+            "line_delta": {
+              "type": ["object", "null"],
+              "additionalProperties": false,
+              "properties": {
+                "before_lines": { "type": "integer", "minimum": 0 },
+                "after_lines": { "type": "integer", "minimum": 0 },
+                "added_lines": { "type": "integer", "minimum": 0 },
+                "removed_lines": { "type": "integer", "minimum": 0 },
+                "net_lines": { "type": "integer" },
+                "algorithm": { "type": "string" }
+              }
+            },
+            "receipt": {
+              "type": "string",
+              "description": "Path or URL to the append-only run-receipt feed."
+            }
+          }
         },
         "metrics": {
           "type": "object",
@@ -517,6 +587,23 @@
               "type": "number",
               "minimum": 0,
               "maximum": 1
+            },
+            "agent_run_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "total_duration_ms": {
+              "type": "number",
+              "minimum": 0
+            },
+            "total_tokens": {
+              "type": ["number", "null"],
+              "minimum": 0
+            },
+            "tokens_observed_count": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of agent-run receipts whose backend exposed a concrete total token count. Null token totals are not estimated."
             }
           }
         }

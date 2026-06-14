@@ -46,8 +46,8 @@ if [ "$HERE" -eq 1 ] && [ "$NOHUP" -eq 1 ]; then
   echo "start-panel-drain: --here and --nohup are mutually exclusive." >&2; exit 64
 fi
 # Detached-launch destinations (SKI-279). Overridable via env for callers that manage their own dirs.
-DRAIN_PID_FILE="${DRAIN_PID_FILE:-/tmp/enrich-loop/drain.pid}"
-DRAIN_LOG="${DRAIN_LOG:-/tmp/enrich-loop/drain.log}"
+DRAIN_PID_FILE="${DRAIN_PID_FILE:-/tmp/skill-audit-loop/drain.pid}"
+DRAIN_LOG="${DRAIN_LOG:-/tmp/skill-audit-loop/drain.log}"
 
 echo "── panel-drain preflight ──────────────────────────────────────────" >&2
 

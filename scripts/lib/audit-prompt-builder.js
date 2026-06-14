@@ -102,6 +102,7 @@ const DEFAULT_SCHEMA_CHAR_LIMIT = 20000;
 const DEFAULT_NEIGHBOR_CHAR_LIMIT = 800;
 const EVAL_ARTIFACTS_DIR_REL = path.join('examples', 'evals');
 const SCHEMA_REL = path.join('schemas', 'SKILL_METADATA_PROTOCOL_schema.json');
+const SIDECAR_SCHEMA_REL = path.join('schemas', 'skill-audit-state.schema.json');
 const SKILLS_DIR_REL = 'skills';
 const EXPORT_SCRIPT_REL = path.join('scripts', 'export-skill.js');
 // The single-skill audit checklist lives in SKILL_AUDIT_LOOP.md § Part 2. The doc moved
@@ -110,6 +111,7 @@ const EXPORT_SCRIPT_REL = path.join('scripts', 'export-skill.js');
 // the repo root, which never existed — a latent ENOENT crash whenever this builder ran.
 const CHECKLIST_REL = path.join('skill-audit-loop', 'SKILL_AUDIT_LOOP.md');
 const CHECKLIST_SECTION_ANCHOR = '# Part 2 — Per-Skill Audit Checklist';
+const SIDECAR_CHECKLIST_ANCHOR = '1b. Sidecar validity (`audit-state.json` — ADR-0019)';
 
 /**
  * Read the skill, its truth sources, its eval artifacts, and the checklist.
@@ -131,6 +133,8 @@ const CHECKLIST_SECTION_ANCHOR = '# Part 2 — Per-Skill Audit Checklist';
  *   skillName: string,
  *   skillBody: string,
  *   frontmatter: object|null,
+ *   joinedMetadata: object|null,
+ *   auditState: object|null,
  *   truthSources: Array<{ path: string, content: string, truncated: boolean }>,
  *   evalArtifacts: Array<{ path: string, content: string, truncated: boolean }>,
  *   checklist: string,
@@ -196,6 +200,10 @@ function collectContext(opts) {
     path.join(repoRoot, SCHEMA_REL),
     DEFAULT_SCHEMA_CHAR_LIMIT
   );
+  const sidecarSchemaContent = readFileBounded(
+    path.join(repoRoot, SIDECAR_SCHEMA_REL),
+    DEFAULT_SCHEMA_CHAR_LIMIT
+  );
 
   // E2: neighbor skill summaries. Every skill referenced in
   // `relations.*` becomes a short
@@ -242,10 +250,12 @@ function collectContext(opts) {
     skillName,
     skillBody,
     frontmatter,
+    joinedMetadata: joined || null,
     auditState: sidecar || null,
     truthSources,
     evalArtifacts,
     schemaContent,
+    sidecarSchemaContent,
     neighborSummaries,
     exportTransformAvailable,
     checklist,
@@ -544,15 +554,27 @@ function buildDimensionPrompt(opts) {
   const {
     skillName,
     skillBody,
+    joinedMetadata,
     auditState,
     truthSources,
     evalArtifacts,
     schemaContent,
+    sidecarSchemaContent,
     neighborSummaries,
     exportTransformAvailable,
     checklist,
   } = context;
-  const criteria = sliceChecklist(checklist, dimension.checklistAnchor) || '[checklist anchor not found]';
+  let criteria = sliceChecklist(checklist, dimension.checklistAnchor) || '[checklist anchor not found]';
+  if (dimension.id === 'metadata') {
+    const sidecarCriteria = sliceChecklist(checklist, SIDECAR_CHECKLIST_ANCHOR);
+    if (sidecarCriteria) {
+      criteria = [
+        criteria,
+        `### ${SIDECAR_CHECKLIST_ANCHOR}`,
+        sidecarCriteria,
+      ].join('\n\n');
+    }
+  }
 
   const truthBlock = truthSources.length === 0
     ? '(no truth_sources declared in frontmatter — grounding block is absent or empty)'
@@ -579,15 +601,28 @@ function buildDimensionPrompt(opts) {
             '</eval-artifact>',
           ].join('\n')).join('\n\n'));
 
-  // E1: active schema. Embedded only on the `metadata` dimension — other
-  // dimensions don't need to re-verify field definitions and embedding 12KB
-  // of schema on every call would waste tokens.
+  // E1: active schemas. Embedded only on the `metadata` dimension — other
+  // dimensions don't need to re-verify field definitions and embedding both
+  // schemas on every call would waste tokens.
   const includeSchemaBlock = dimension.id === 'metadata';
   const schemaBlock = !includeSchemaBlock
     ? null
-    : (schemaContent
-        ? `<schema path="${SCHEMA_REL}">\n${schemaContent.trim()}\n</schema>`
-        : `<schema path="${SCHEMA_REL}">(schema file not found at this path — grader should flag this as infrastructure drift)</schema>`);
+    : [
+        schemaContent
+          ? `<schema path="${SCHEMA_REL}">\n${schemaContent.trim()}\n</schema>`
+          : `<schema path="${SCHEMA_REL}">(schema file not found at this path — grader should flag this as infrastructure drift)</schema>`,
+        sidecarSchemaContent
+          ? `<schema path="${SIDECAR_SCHEMA_REL}">\n${sidecarSchemaContent.trim()}\n</schema>`
+          : `<schema path="${SIDECAR_SCHEMA_REL}">(sidecar schema file not found at this path — grader should flag this as infrastructure drift)</schema>`,
+      ].join('\n\n');
+
+  // ADR-0019 joined source model. The metadata dimension must see the same
+  // SKILL.md + audit-state.json join that manifest generation uses, otherwise
+  // migrated skills look as though sidecar-only fields are missing.
+  const includeJoinedMetadataBlock = dimension.id === 'metadata';
+  const joinedMetadataBlock = !includeJoinedMetadataBlock
+    ? null
+    : `<joined-metadata source="SKILL.md + audit-state.json">\n${JSON.stringify(joinedMetadata || {}, null, 2)}\n</joined-metadata>`;
 
   // E2: neighbor summaries. Embedded only on the `relation` dimension so the
   // grader can judge semantic adjacency against actual peer metadata rather
@@ -615,17 +650,17 @@ function buildDimensionPrompt(opts) {
         ? `<export-transform path="${EXPORT_SCRIPT_REL}" available="true">\nThe export transform exists on disk. Run \`node ${EXPORT_SCRIPT_REL} skills/${skillName}\` to produce a SKILL.skill-md.md with only SKILL.md base fields at the top level. Only \`skill-md\` is a valid portability.targets value today; other runtimes (cursor, windsurf, copilot, agents-md) are deferred per v0.3.0 CHANGELOG.\n</export-transform>`
         : `<export-transform path="${EXPORT_SCRIPT_REL}" available="false">\nThe export transform script is missing from the repo. A skill declaring \`portability.readiness: scripted\` while the transform is absent is over-claiming — flag this as a contract violation.\n</export-transform>`);
 
-  // ADR-0019: the eval & portability graders must see the audit-state.json sidecar —
-  // eval_artifacts, eval_state, portability, and the four verdicts live there, NOT in the
-  // SKILL.md body embedded below. Without this block the grader inspects frontmatter only
-  // and false-reports "no portability block" / "eval_artifacts not present" for every
-  // migrated skill (A2). Embedded on the two dimensions that actually read those fields.
-  const includeAuditStateBlock = dimension.id === 'eval' || dimension.id === 'portability';
+  // ADR-0019: graders that inspect moved audit/eval/provenance fields must see
+  // the audit-state.json sidecar. Metadata uses it for sidecar validity;
+  // eval/portability use it for eval_artifacts, eval_state, portability, and
+  // the four verdicts. Without this block, migrated skills are falsely graded
+  // as missing fields that intentionally moved out of SKILL.md frontmatter.
+  const includeAuditStateBlock = dimension.id === 'metadata' || dimension.id === 'eval' || dimension.id === 'portability';
   const auditStateBlock = !includeAuditStateBlock
     ? null
     : (auditState
         ? `<audit-state path="audit-state.json">\n${JSON.stringify(auditState, null, 2)}\n</audit-state>`
-        : '<audit-state>(no audit-state.json sidecar on disk — this skill is not yet migrated to the ADR-0019 sidecar, so eval_artifacts / eval_state / portability / verdicts are genuinely absent. That is the honest unmigrated state, NOT over-claiming — judge accordingly.)</audit-state>');
+        : '<audit-state>(no audit-state.json sidecar on disk — this skill is not yet migrated to the ADR-0019 sidecar, so schema_version / owner / freshness / drift_check / eval_artifacts / eval_state / routing_eval / portability / verdicts are genuinely absent. That is the honest unmigrated state, NOT over-claiming — judge accordingly.)</audit-state>');
 
   // STEPS are composed dynamically per dimension so only the context sources
   // the grader actually has are referenced. This keeps the step count honest
@@ -637,7 +672,10 @@ function buildDimensionPrompt(opts) {
   ];
   let n = 3;
   if (includeSchemaBlock) {
-    steps.push(`${n++}. Read the embedded <schema> — this is the active Skill Graph JSON Schema that every field must conform to.`);
+    steps.push(`${n++}. Read the embedded <schema> blocks — these are the active Skill Graph JSON Schemas for SKILL.md frontmatter and audit-state.json sidecar fields.`);
+  }
+  if (includeJoinedMetadataBlock) {
+    steps.push(`${n++}. Read the <joined-metadata> block — it is the joined SKILL.md + audit-state.json source model. Use it to verify sidecar-owned fields without falsely requiring them in SKILL.md frontmatter.`);
   }
   if (includeNeighborBlock) {
     steps.push(`${n++}. Read the <neighbor-skills> summaries — each is a sibling skill this one links to via relations. Judge whether the linkage is semantically correct.`);
@@ -649,7 +687,7 @@ function buildDimensionPrompt(opts) {
     steps.push(`${n++}. Read the <export-transform> note — it states whether the SKILL.md export script actually ships and how to invoke it.`);
   }
   if (includeAuditStateBlock) {
-    steps.push(`${n++}. Read the <audit-state> block — it carries the skill's audit-state.json sidecar (eval_artifacts, eval_state, portability, the four verdicts). These fields live in the sidecar, NOT the SKILL.md body above; judge eval/portability claims against it, never against the body alone.`);
+    steps.push(`${n++}. Read the <audit-state> block — it carries the skill's audit-state.json sidecar. Sidecar-owned fields live there, NOT in the SKILL.md body above; judge metadata/eval/portability claims against it, never against the body alone.`);
   }
   steps.push(`${n++}. Read the pass criteria for dimension "${dimension.label}".`);
   steps.push(`${n++}. For each checklist bullet, mark PASS, PASS WITH FIXES, or FAIL with a quoted evidence snippet.`);
@@ -660,6 +698,7 @@ function buildDimensionPrompt(opts) {
   // grader is constrained to cite only what it can see.
   const evidenceParts = ['the skill', 'a truth source'];
   if (includeSchemaBlock)     evidenceParts.push('the schema');
+  if (includeJoinedMetadataBlock) evidenceParts.push('the joined metadata');
   if (includeNeighborBlock)   evidenceParts.push('a neighbor summary');
   if (includeEvalBlock)       evidenceParts.push('an eval artifact');
   if (includePortabilityBlock) evidenceParts.push('the export-transform note');
@@ -681,6 +720,9 @@ function buildDimensionPrompt(opts) {
   ];
   if (includeSchemaBlock) {
     inputSections.push('', schemaBlock);
+  }
+  if (includeJoinedMetadataBlock) {
+    inputSections.push('', joinedMetadataBlock);
   }
   if (includeNeighborBlock) {
     inputSections.push('', '<neighbor-skills>', neighborBlock, '</neighbor-skills>');

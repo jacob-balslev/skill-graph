@@ -2,31 +2,21 @@
 
 This is the rationale and deep explanation for the Skill Metadata Protocol. For normative authoring rules, start with [`SKILL_METADATA_PROTOCOL.md`](SKILL_METADATA_PROTOCOL.md); this document explains why the protocol has this shape and how the pieces fit together.
 
-Skill Metadata Protocol is the **skill-level contract** for AI SKILL.md. It defines the structured relevance metadata a skill should declare: activation signals, taxonomy, project/file scope, sibling-skill relations, grounding, drift checks, eval state, and portability.
+Skill Metadata Protocol is the **skill-level contract** for AI SKILL.md. It defines the structured relevance metadata a skill should declare: activation signals, taxonomy, project/file scope, sibling-skill relations, grounding, drift checks, eval state, and public export readiness.
 
 Skill Graph is the **library-level system** that works with this protocol. It indexes, routes, clusters, audits, and reverifies libraries of Skill-Metadata-Protocol-enriched skills.
 
-**Current contract: v8.** Every authored skill carries five required frontmatter fields: `name`, `description`, `subject` (12-enum browse shelf — the competency the skill teaches), `public` (boolean publishability/private-data gate), and `scope` (free-text PRD-style statement). Optional classification/routing fields include polyhierarchy (`subjects[]`, max 2), `taxonomy_domain`, capped activation keywords (`keywords`, ≤10), and typed routing edges (`relations`). Project anchoring is carried by non-empty `project[]` plus `grounding`, not by `public`. The v8 model replaces v7's `category`/`type`/`scope` triple (where 93% of skills shared `type: capability` and 67% shared `scope: portable`, leaving no useful discriminating power in the classification triple). See [`adr/0017-five-axis-classification-model.md`](../docs/adr/0017-five-axis-classification-model.md) for the five-axis design rationale (`operation` and the interim `deployment_target` axis were later retired by amendment); the `subject` enum was re-axed from 9 to 12 competency shelves on 2026-06-03 — see [`adr/0020-twelve-shelf-competency-reaxis.md`](../docs/adr/0020-twelve-shelf-competency-reaxis.md).
-
-> **Reading an older skill?** Historical migration notes for context:
-> - **`subject` re-axis (2026-06-03)** — the `subject` enum was re-derived from 9 to 12 competency shelves (an enum-value change, not a `schema_version` bump). `code-engineering` split into `backend-engineering` + `software-architecture` + `data-engineering`; `frontend-ui` → `frontend-engineering` (design members moved to `design`); `design-craft` → `design`; `meta-methods` split into `reasoning-strategy` + `software-engineering-method`; `agent-ops` split into `agent-ops` (runtime) + `ai-engineering` (features); `data-analytics` retired; `product-domain` shrunk to genuine verticals. A skill authored before this carried one of the old 9 values; the corpus was migrated per the reviewed mapping. See [`adr/0020-twelve-shelf-competency-reaxis.md`](../docs/adr/0020-twelve-shelf-competency-reaxis.md).
-> - **v7 → v8 (clean cut on 2026-05-27)** — replaced v7's `category` / `type` / `scope` triple with `subject` (closed 9-enum at launch, later 12-enum), `public` (boolean publishability/private-data gate), and required free-text `scope`. The first v8 draft briefly carried `operation` and `deployment_target`; the ADR-0017 amendment retired `operation`, replaced `deployment_target` with `public`, moved project anchoring to `project[]`, and kept `scope` as a PRD-style statement. Added polyhierarchy via `subjects[]` (max 2), optional `taxonomy_domain`, `project[]`/`repo[]` belonging-entity references, and `grounding.subject_matter` (renamed from `domain_object`). Capped `keywords` at 10. The v7 classification fields (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) and the v7 scope values (`codebase`, `reference`) are not declared in the live schema. The prior contract is retrievable via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json` and is not accepted by the live schema. Per [`AGENTS.md § Major Version Is a Clean Cut`](../AGENTS.md), the live tree describes v8 only; legacy skills carrying v7 fields are migrated per-skill through `/audit:*` (CONTENT-mode work).
-> - **v6 → v7** — splits the single v6 `audit_verdict` field into four discrete Audit Status verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`) so the audit fingerprint carries independent verdicts for each layer (form, truth, comprehension, behavior) instead of compressing them into one PASS/FAIL signal. `application_verdict` is the new primary quality signal — a skill is only behaviorally certified when this verdict is `APPLICABLE`. See [`adr/0011-split-audit-verdict-into-four-verdicts.md`](../docs/adr/0011-split-audit-verdict-into-four-verdicts.md). (The standalone `migrations/v6-to-v7.md` procedure was retired by [ADR 0014](../docs/adr/0014-canonical-only-schema-files.md); the narrative now lives in git history + ADR 0011.)
-> - **v5 → v6** — flattens the `concept` block to top-level `mental_model`, `purpose`, `boundary`, `analogy`, `misconception`; adds the Health block (`last_audited`, `last_changed`, `audit_verdict` *[deprecated in v7]*, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) so a skill's audit fingerprint lives in frontmatter in that historical contract. Legacy `concept` block remains accepted for v5 skills not yet migrated. The standalone migration procedure was retired by ADR 0014; retrieve it through git history if needed.
-> - **v4 → v5** — closes the `category` field to a 6-value enum
-> - [v2 → v3](../docs/manifest-field-mapping.md#migration-note--v2--v3-v040) — `drift_check` scalar → object, `compatibility` scalar → object, `family` → `category`, new optional fields
-> - [v1 → v2](../docs/manifest-field-mapping.md#migration-note--v1--v2-2026-04-17-sh-5784) — `scope` enum rename, `eval_status` split into three fields, `route_bundles` → `routing_bundles`
-> - Historical codemods (`scripts/migrate-skill-vN-to-vM.js`) ran once per bump and were retired by ADR 0014. Recover a prior codemod through git history only when investigating old data; do not reintroduce per-version migrators to the live tree.
+**Current contract: v8.** Every authored skill carries five required frontmatter fields: `name`, `description`, `subject` (12-enum browse shelf — the competency the skill teaches), `public` (boolean publishability/private-data gate), and `scope` (free-text PRD-style statement). Optional classification/routing fields include polyhierarchy (`subjects[]`, max 2), `taxonomy_domain`, capped activation keywords (`keywords`, ≤10), and typed routing edges (`relations`). Project anchoring is carried by non-empty `project[]` plus `grounding`, not by `public`. Audit/eval/provenance state lives in `audit-state.json`. See [`adr/0017-five-axis-classification-model.md`](../docs/adr/0017-five-axis-classification-model.md), [`adr/0019-audit-state-sidecar-separation.md`](../docs/adr/0019-audit-state-sidecar-separation.md), and [`adr/0020-twelve-shelf-competency-reaxis.md`](../docs/adr/0020-twelve-shelf-competency-reaxis.md) for design rationale. Historical migration notes live in ADRs, CHANGELOG, and git history, not in the live authoring path.
 
 ## Related Documents
 
 | Document | Purpose |
 |---|---|
-| [`skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md`](SKILL_METADATA_PROTOCOL.md) | Normative public spec: required fields, semantic rules, authored vs generated fields, migration notes |
+| [`skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md`](SKILL_METADATA_PROTOCOL.md) | Normative public spec: required fields, semantic rules, authored vs generated fields |
 | `skill-metadata-protocol/design-rationale.md` (this file) | Rationale and deep explanation: body structure, requiredness groups, schema strictness rules, design tradeoffs |
 | `skill-metadata-protocol/field-reference.md` | One section per authored field — purpose, rules, examples, when to use |
-| `skill-metadata-protocol/field-decision-guide.md` | Decision tables for `scope`, `relations.*`, and the Evaluation Status fields (`eval_artifacts`, `eval_state`, `routing_eval`) / `portability` |
-| `docs/concept-map.md` | Teaching map — 36 authored fields grouped by conceptual role; drift log vs earlier framings |
+| `skill-metadata-protocol/field-decision-guide.md` | Decision tables for `public`, `scope`, `relations.*`, and the Evaluation Status fields (`eval_artifacts`, `eval_state`, `routing_eval`) / `portability` |
+| `docs/concept-map.md` | Teaching map — current frontmatter and sidecar fields grouped by conceptual role |
 | `docs/manifest-field-mapping.md` | Authored-to-generated bridge: rename map, loss policy, worked example |
 | `docs/adr/` | Architecture decision records — 0001 predicate set, 0002 JSON-LD @context, 0003 OntoClean rigidity tags, 0004 persistent identifiers |
 | `schemas/skill.context.jsonld` | JSON-LD @context mapping every authored field to W3C vocabularies (SKOS, Dublin Core, PROV-O) |
@@ -45,9 +35,9 @@ This document is the public source of truth for the Skill Metadata Protocol fron
 
 ### What kind of graph is this?
 
-**In plain English:** Skill Metadata Protocol lets one skill say *"I depend on that one, verify me with this one, and stop co-routing that other one when this one owns the query."* The relation predicates (`depends_on`, `verify_with`, `suppresses`, the deprecated `boundary` alias, `adjacent`, `related`, `broader`, `narrower`, `disjoint_with`) are the typed edges that Skill Graph can use to turn a skill collection into a graph an agent can reason over.
+**In plain English:** Skill Metadata Protocol lets one skill say *"I depend on that one, verify me with this one, and stop co-routing that other one when this one owns the query."* The relation predicates (`depends_on`, `verify_with`, `suppresses`, `related`, `broader`, `narrower`, `disjoint_with`) are the typed edges that Skill Graph can use to turn a skill collection into a graph an agent can reason over.
 
-Skill Graph is a **property graph with a controlled-vocabulary set of typed predicates**, not an RDF knowledge graph. Nodes are skills; edges are keys inside `relations.*`; node attributes are the 36 canonical authored frontmatter fields. The JSON-LD `@context` at `schemas/skill.context.jsonld` projects the property graph into SKOS / Dublin Core Terms / PROV-O triples for consumers that want RDF semantics, but authoring stays in flat YAML.
+Skill Graph is a **property graph with a controlled-vocabulary set of typed predicates**, not an RDF knowledge graph. Nodes are skills; edges are keys inside `relations.*`; node attributes are the current frontmatter fields plus joined sidecar state. The JSON-LD `@context` at `schemas/skill.context.jsonld` projects the frontmatter property graph into SKOS / Dublin Core Terms / PROV-O triples for consumers that want RDF semantics, but authoring stays in flat YAML.
 
 Skill Graph does **not** promise:
 
@@ -72,13 +62,14 @@ A Skill-Metadata-Protocol-enriched `SKILL.md` is *not* automatically a valid SKI
 | Field | Source | Skill Metadata Protocol treatment |
 |---|---|---|
 | `name` | SKILL.md required | Kept as required; the protocol tightens the character pattern |
-| `description` | SKILL.md required | Kept as required; scoped to routing |
+| `description` | SKILL.md required | Kept as required; short topical summary |
 | `license` | SKILL.md optional | Kept top-level; strongly recommended for shared skills |
 | `compatibility` | SKILL.md optional | Kept top-level; optional |
 | `allowed-tools` | SKILL.md optional | Kept top-level as a space-separated string |
-| `metadata` | SKILL.md optional | Not used at the top level; the protocol promotes extensions to named fields |
-| `schema_version`, `version`, `subject`, `public`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` | Skill Metadata Protocol extension | Required by the protocol; additive to the base |
-| `relations`, `grounding`, `portability`, `triggers`, `keywords`, `examples`, `anti_examples`, `paths`, `project`, `repo`, `subjects`, `taxonomy_domain`, `routing_bundles`, `lifecycle`, `runtime_telemetry`, `stability`, `superseded_by` | Skill Metadata Protocol extension | Optional protocol enrichments; additive to the base |
+| `metadata` | SKILL.md optional | Used only by the generated Agent-Skills-compatible export shape; not hand-authored in the protocol-native source |
+| `subject`, `public`, `scope` | Skill Metadata Protocol frontmatter extension | Required by the protocol; additive to the base |
+| `relations`, `grounding`, `triggers`, `keywords`, `examples`, `anti_examples`, `paths`, `project`, `subjects`, `taxonomy_domain`, `stability`, `superseded_by` | Skill Metadata Protocol frontmatter extension | Optional protocol enrichments; additive to the base |
+| `schema_version`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, Audit Status fields | Skill Metadata Protocol sidecar extension | Required or loop-owned fields in `audit-state.json`; joined into the manifest but not authored in `SKILL.md` |
 
 A Skill-Metadata-Protocol-enriched `SKILL.md` is **not** a valid SKILL.md file as authored, because the protocol requires fields the base standard does not define. An export transform can produce an SKILL.md-valid file by moving every protocol extension field under the standard `metadata:` key. The transform is implemented as `scripts/export-skill.js`.
 
@@ -96,14 +87,20 @@ These groups are documentation categories only. They do not require nested YAML.
 
 ### Required for all skills
 
+`SKILL.md` frontmatter:
+
 ```yaml
-schema_version
 name
 description
-version
 subject
 public
 scope
+```
+
+`audit-state.json`:
+
+```yaml
+schema_version
 owner
 freshness
 drift_check
@@ -138,12 +135,10 @@ These improve portability, discoverability, and health tracking, but are not req
 ```yaml
 paths
 project
-repo
 taxonomy_domain
 subjects
 compatibility
 allowed-tools
-routing_bundles
 portability
 lifecycle
 runtime_telemetry
@@ -159,7 +154,7 @@ Two fields look similar but serve opposite layers — sibling levels of progress
 
 | Element | Layer | Purpose | Length |
 |---|---|---|---|
-| `description:` (frontmatter) | **Routing contract** | Tells the router "should this skill activate?" | ≤ 3 sentences |
+| `description:` (frontmatter) | **Subject summary** | Tells the reader and router what the skill is about; activation/exclusion details live in dedicated fields | ≤ 3 sentences |
 | `## Coverage` (body section) | **Scope map** | Tells the reader, once the skill is loaded, what topics the skill covers | Bulleted topic list, ≥ 4 items for non-trivial skills |
 
 If `description:` is bloated with scope detail, it will conflict with `## Coverage`. If `## Coverage` restates the description in one line, it has collapsed into the routing layer. Restore each to its proper layer when this happens.
@@ -174,7 +169,7 @@ Meta-commentary aimed at the template reader must never live in an H2 header slo
 
 ### When adapting the example template
 
-1. Restore `description:` to routing-only if it has drifted into scope description.
+1. Restore `description:` to a short topical summary if it has drifted into scope description.
 2. Keep the H2 structure demonstrated by the template (see **Body Structure** above).
 3. Replace example values only with equally real, context-correct values.
 4. Remove sections that are conditionally irrelevant rather than keeping them with fake content.
@@ -184,9 +179,9 @@ Meta-commentary aimed at the template reader must never live in an H2 header slo
 
 The H1 title at the top of each SKILL.md body is Title Case — every significant word capitalized — and it is the human-readable expansion of `name:`, not a duplicate. Single-word skills (`debugging` → `# Debugging`) capitalize the single word. Abbreviations and identifier-style names expand to their human form (`a11y` → `# Accessibility`, `graph-audit` → `# Graph Audit`). The `name:` field stays lowercase and hyphenated; the H1 is never used as a graph identifier.
 
-### Description opener convention
+### Description convention
 
-Every `description:` field leads with a trigger clause — `"Use when …"` or an equivalent imperative — and names at least one explicit negative boundary with `"Do NOT use for …"`. Do not lead with the skill's own name as a noun (`"Debugging skill for …"`); the router already knows the name from the `name:` field, so the opener should spend its budget on when the skill activates, not on self-reference. A good opener names (a) the triggering situation, (b) the scope the skill covers, and (c) at least one concrete case where a different skill is correct instead.
+Every `description:` field is a short topical summary of what the skill covers. Do not lead with the skill's own name as a noun (`"Debugging skill for …"`); the router already knows the name from the `name:` field. Activation examples, exact triggers, and negative-use cases belong in `examples`, `triggers`, `anti_examples`, and `relations.suppresses`, where the router and marketplace exporter can treat them as typed evidence.
 
 ## Anatomy
 
@@ -197,8 +192,8 @@ Every Skill Graph SKILL.md is the same shape: a YAML frontmatter, a Markdown bod
 ```mermaid
 flowchart LR
   Skill(["<b>SKILL.md</b>"])
-  FM["<b>YAML Frontmatter</b><br/>33 named fields · machine-validated"]
-  Body["<b>Markdown Body</b><br/>H2 sections depend on <code>type</code>"]
+  FM["<b>YAML Frontmatter</b><br/>agent-facing fields · machine-validated"]
+  Body["<b>Markdown Body</b><br/>H2 sections follow the authoring template"]
   Teach["<b>Teaching Layer</b><br/>TEMPLATE NOTE scaffolding<br/>template specimen only"]
 
   Skill --> FM
@@ -218,69 +213,30 @@ flowchart LR
 
 **Legend.** Blue = the file. Green = a required layer. Yellow dashed = an optional / specimen-only layer.
 
-### Authored fields, grouped by purpose
+### Current fields, grouped by source file
 
-The YAML frontmatter uses the current v8 schema, including the flat Understanding fields, the four-verdict Audit Status, and the two publication-facet fields (`secondary_categories`, `marketplace_tier`) added in the May 2026 skill-org reorganization. The schema is the authoritative source for types and requiredness (`schemas/SKILL_METADATA_PROTOCOL_schema.json`); the canonical per-field reference is [`skill-metadata-protocol/field-reference.md`](field-reference.md). The table below is a navigable index. `always` = required by the base schema; `if <condition>` = conditionally required; blank = optional enrichment.
+The current contract is two-file: `SKILL.md` carries agent-facing routing and teaching content; `audit-state.json` carries loop-owned audit/eval/provenance state. The schemas are the authoritative source for types and requiredness (`schemas/SKILL_METADATA_PROTOCOL_schema.json` and `schemas/skill-audit-state.schema.json`); the canonical per-field reference is [`skill-metadata-protocol/field-reference.md`](field-reference.md).
 
-**v6 simplification (2026-05-17).** v6 flattens the seven-field `concept` block to top-level so the Understanding fields read like every other field in the Protocol. It also adds the first flat **Audit Status** so a skill's audit fingerprint lives in its own frontmatter instead of scattered across `eval-history.jsonl`, `health-ledger.jsonl`, and `.opencode/progress/skill-audit-*`. **v7 split (2026-05-19).** v7 replaces the single aggregate `audit_verdict` with four verdicts: `structural_verdict`, `truth_verdict`, `comprehension_verdict`, and `application_verdict`. The Skill Audit Loop reads these Audit Status fields directly; no log-file crawl required.
+`SKILL.md` frontmatter:
 
-| Group | Field | Required? | Shape |
-|---|---|---|---|
-| **Identity** | [`name`](field-reference.md#name) | always | string |
-| | [`urn`](field-reference.md#urn) | | persistent `urn:skill:<repo>:<skill-name>` identifier |
-| | [`description`](field-reference.md#description) | always | string |
-| | [`version`](field-reference.md#version) | always | semver string |
-| | [`owner`](field-reference.md#owner) | always | string |
-| **Classification** | [`schema_version`](field-reference.md#schema_version) | always | integer `8` |
-| | [`subject`](field-reference.md#subject) | always | closed 12-value enum — primary classification |
-| | [`subjects`](field-reference.md#subjects) | | ordered polyhierarchy array; first item matches `subject` (max 2) |
-| | [`public`](field-reference.md#public) | always | `true` \| `false` |
-| | [`scope`](field-reference.md#scope) | always | free-text PRD-style statement |
-| | [`taxonomy_domain`](field-reference.md#taxonomy_domain) | | hierarchical path subdividing `subject` |
-| | [`stability`](field-reference.md#stability) | | `experimental` \| `stable` \| `deprecated` |
-| | [`superseded_by`](field-reference.md#superseded_by) | if `stability: deprecated` | skill name |
-| | [`marketplace_tier`](field-reference.md#marketplace_tier) | | `S` \| `A` \| `B` \| `C` (omit for unpublished; sourced from publication-priority docs) |
-| **Health & Drift** | [`freshness`](field-reference.md#freshness) | always | ISO date |
-| | [`drift_check`](field-reference.md#drift_check) | always | `{ last_verified, truth_source_hashes? }` |
-| | [`lifecycle`](field-reference.md#lifecycle) | | `{ stale_after_days, review_cadence }` |
-| | [`runtime_telemetry`](field-reference.md#runtime_telemetry) | | `{ feedback_source, metrics }` |
-| | [`model_run_coverage`](field-reference.md#model_run_coverage) | | per-model audit-loop participation matrix |
-| **Audit Status** (v7+, flat) | [`last_audited`](field-reference.md#last_audited) | | ISO date |
-| | [`last_changed`](field-reference.md#last_changed) | | ISO date |
-| | [`structural_verdict`](field-reference.md#structural_verdict) | | `PASS` \| `PASS_WITH_FIXES` \| `FAIL` \| `UNVERIFIED` (v7+; form gate roll-up) |
-| | [`truth_verdict`](field-reference.md#truth_verdict) | | `PASS` \| `DRIFT` \| `BROKEN` \| `UNVERIFIED` (v7+; truth-source roll-up) |
-| | [`comprehension_verdict`](field-reference.md#comprehension_verdict) | | `PASS` \| `PROVISIONAL` \| `SHALLOW` \| `REDUNDANT` \| `UNVERIFIED` \| `SKIPPED_BASELINE_HIGH` \| `NA` (v7+; gate 8, demoted) |
-| | [`application_verdict`](field-reference.md#application_verdict) | | `APPLICABLE` \| `PROVISIONAL` \| `NOT_DISCRIMINATED_CEILING` \| `EQUIVALENT_ON_FRONTIER` \| `REDUNDANT` \| `HARMFUL` \| `MIXED` \| `FALSE_POSITIVE` \| `UNVERIFIED` (v7+; **primary quality signal**) |
-| | [`eval_score`](field-reference.md#eval_score) | | number 0.0–5.0 |
-| | [`eval_failed_ids`](field-reference.md#eval_failed_ids) | | string[] |
-| | [`lint_verdict`](field-reference.md#lint_verdict) | | `PASS` \| `FAIL` \| `UNKNOWN` (per-script signal — `skill-lint.js`) |
-| | [`drift_status`](field-reference.md#drift_status) | | `OK` \| `DRIFT` \| `BROKEN` \| `STALE` \| `NO_BASELINE` \| `EXTERNAL_UNHASHED` \| `UNKNOWN` (per-script signal — `skill-graph-drift.js`) |
-| | [`audit_verdict`](field-reference.md#audit_verdict-deprecated) | | **DEPRECATED in v7** — `PASS` \| `PASS_WITH_FIXES` \| `PARTIAL` \| `FAIL` \| `UNKNOWN` (pre-v7 single aggregate; replaced by the four verdicts above) |
-| **Evaluation Status** (orthogonal triple) | [`eval_artifacts`](field-reference.md#eval_artifacts) | always | `present` \| `planned` \| `none` |
-| | [`eval_state`](field-reference.md#eval_state) | always | `unverified` \| `passing` \| `monitored` |
-| | [`routing_eval`](field-reference.md#routing_eval) | always | `present` \| `absent` |
-| | [`comprehension_state`](field-reference.md#comprehension_state) | | `present` \| `absent` |
-| **Understanding** (v6+, flat) | [`mental_model`](field-reference.md#mental_model) | if `comprehension_state: present` | string |
-| | [`purpose`](field-reference.md#purpose) | if `comprehension_state: present` | string |
-| | [`concept_boundary`](field-reference.md#concept_boundary) | if `comprehension_state: present` | string |
-| | [`analogy`](field-reference.md#analogy) | if `comprehension_state: present` | string |
-| | [`misconception`](field-reference.md#misconception) | if `comprehension_state: present` | string |
-| | [`eval_last_run`](field-reference.md#eval_last_run) | | `{ at, status, runner?, model?, receipt?, receipt_hash? }` |
-| **Activation & Routing** | [`keywords`](field-reference.md#keywords) | if routable | string[] |
-| | [`triggers`](field-reference.md#triggers) | | string[] |
-| | [`paths`](field-reference.md#paths) | | glob[] |
-| | [`examples`](field-reference.md#examples) | | string[] (positive prompts) |
-| | [`anti_examples`](field-reference.md#anti_examples) | | string[] (negative prompts) |
-| | [`project`](field-reference.md#project) | | { handle, role }[] (replaces `workspace_tags`) |
-| | `routing_bundles` _(retired SKI-286 — 0 acting consumer; see manifest-field-mapping.md)_ | | string[] |
-| **Relations** | [`relations`](field-reference.md#relations) | | `{ adjacent, related, broader, narrower, suppresses, boundary, disjoint_with, verify_with, depends_on }` |
-| **Grounding** | [`grounding`](field-reference.md#grounding) | if non-empty `project[]` | `{ subject_matter, grounding_mode, truth_sources, failure_modes, evidence_priority }` |
-| **Portability & Standards** | [`portability`](field-reference.md#portability) | | `{ readiness, targets }` |
-| | [`license`](field-reference.md#license) | | SPDX identifier |
-| | [`compatibility`](field-reference.md#compatibility) | | `{ runtimes?, node?, notes? }` |
-| | [`allowed-tools`](field-reference.md#allowed-tools) | | space-separated string |
+| Group | Fields |
+|---|---|
+| **Identity** | `name`, `description`, `license`, `compatibility`, `allowed-tools` |
+| **Classification** | `subject`, `subjects`, `public`, `scope`, `taxonomy_domain`, `stability`, `superseded_by` |
+| **Activation & Routing** | `keywords`, `triggers`, `paths`, `examples`, `anti_examples`, `project`, `relations`, `grounding` |
+| **Understanding** | `mental_model`, `purpose`, `concept_boundary`, `analogy`, `misconception` |
 
-**Conditional requiredness in one line:** `grounding` when `project[]` is non-empty, `superseded_by` when `stability: deprecated`, Understanding fields or `concept` when `comprehension_state: present`, and `eval_artifacts: present` when `eval_state` is `passing` or `monitored`. The schema enforces those rules via `allOf` / `anyOf`. `keywords` are recommended for routable skills and reviewed by routing review / routing evals, but they are not a required-field rule. For the decision tables that help you set `public: true` / `public: false` and decide project anchoring, see [`skill-metadata-protocol/field-decision-guide.md`](field-decision-guide.md).
+`audit-state.json` sidecar:
+
+| Group | Fields |
+|---|---|
+| **Identity & ownership** | `schema_version`, `version`, `owner`, `urn`, `repo` |
+| **Health & drift** | `freshness`, `drift_check`, `lifecycle`, `runtime_telemetry`, `model_run_coverage` |
+| **Evaluation Status** | `eval_artifacts`, `eval_state`, `routing_eval`, `eval_last_run`, `eval`, `comprehension_state` |
+| **Audit Status** | `last_audited`, `last_changed`, `structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status` |
+| **Publication support** | `marketplace_tier`, `portability`, `skill_graph_protocol` |
+
+**Conditional requiredness in one line:** `grounding` when `project[]` is non-empty, `superseded_by` when `stability: deprecated`, Understanding fields when `comprehension_state: present`, and `eval_artifacts: present` when `eval_state` is `passing` or `monitored`. The schemas and `skill-lint.js` split those checks by file ownership. `keywords` are recommended for routable skills and reviewed by routing review / routing evals, but they are not a required-field rule. For the decision tables that help you set `public: true` / `public: false` and decide project anchoring, see [`skill-metadata-protocol/field-decision-guide.md`](field-decision-guide.md).
 
 ## Why the Evaluation Status is orthogonal (ADR 0001 + ADR 0006)
 
@@ -319,17 +275,17 @@ The context is the source of truth for cross-vocabulary mapping. The most conseq
 | `version` | `dcterms:hasVersion` | Dublin Core | Skill content version (semver) |
 | `freshness` | `dcterms:modified` | Dublin Core (xsd:date) | Author's claim of last-meaningful-review date |
 | `taxonomy_domain` | `skos:broader` | SKOS | Hierarchical sub-path within a subject projects to a skos:broader chain |
-| `relations.related` / `adjacent` | `skos:related` | SKOS | Symmetric associative relation between concepts |
+| `relations.related` | `skos:related` | SKOS | Symmetric associative relation between concepts |
 | `relations.broader` | `skos:broader` | SKOS | Cross-skill generalisation (target is more general) |
 | `relations.narrower` | `skos:narrower` | SKOS | Cross-skill specialisation (target is more specific) |
-| `relations.suppresses` / deprecated `boundary` alias | `sg:disjointOwnership` | Skill-Graph custom | Routing-layer asymmetric exclusion — intentionally weaker than OWL class-disjointness (per ADR 0006 / ADR 0018) |
+| `relations.suppresses` | `sg:disjointOwnership` | Skill-Graph custom | Routing-layer asymmetric exclusion — intentionally weaker than OWL class-disjointness (per ADR 0006 / ADR 0018) |
 | `relations.disjoint_with` | `owl:disjointWith` | OWL | Formal class-theoretic disjointness — distinct from `suppresses` (per ADR 0006 / ADR 0018) |
 | `relations.verify_with` | `prov:wasInformedBy` | PROV-O | Verifier skill informs this skill's claims |
 | `relations.depends_on` | `dcterms:requires` | Dublin Core | Operational prerequisite |
 | `grounding.truth_sources` | `dcterms:source` | Dublin Core | Source resources from which claims are derived |
 | `urn` | `@id` | RFC 8141 + JSON-LD | Globally-unique persistent identifier |
 
-The `suppresses` vs `disjoint_with` split is the most semantically subtle entry. Per ADR 0006 and ADR 0018, `suppresses` operates at the **routing layer** (the router uses it as a score-aware exclusion guard when the declaring skill wins or ties — asymmetric, directional; legacy `boundary` is the deprecated alias) while `disjoint_with` operates at the **ontology layer** (formal class-disjointness — symmetric, reflexive). They are NOT aliases. Treating them as aliases — which ADR 0001 originally proposed — would force consumers to reason about routing claims as if they were ontological claims, which is unsound.
+The `suppresses` vs `disjoint_with` split is the most semantically subtle entry. Per ADR 0006 and ADR 0018, `suppresses` operates at the **routing layer** (the router uses it as a score-aware exclusion guard when the declaring skill wins or ties — asymmetric, directional) while `disjoint_with` operates at the **ontology layer** (formal class-disjointness — symmetric, reflexive). They are NOT aliases. Treating them as aliases would force consumers to reason about routing claims as if they were ontological claims, which is unsound.
 
 The `@context` also declares the `owl` namespace (since the v1.1.0 update) so the `disjoint_with` mapping resolves cleanly. The `_adr_anchors` block in the context file explicitly cross-references ADRs 0001, 0002, and 0006 so future maintainers see the reasoning for the split mapping in-tree, not only in commit history.
 
@@ -374,9 +330,13 @@ It also does not require a full private control plane. The OSS contract keeps on
 
 ### Authored in `SKILL.md`
 
-The 40 top-level authored fields are listed in `schemas/SKILL_METADATA_PROTOCOL_schema.json`; aliases are included there so consumers can validate duplicate declarations consistently.
+The agent-facing authored fields are listed in `schemas/SKILL_METADATA_PROTOCOL_schema.json`.
 
 For the purpose, rules, and examples for each field, see `skill-metadata-protocol/field-reference.md`.
+
+### Authored or stamped in `audit-state.json`
+
+The audit/eval/provenance fields are listed in `schemas/skill-audit-state.schema.json`. Human authors provide ownership and freshness state; audit-loop tooling stamps verdicts, eval receipts, drift status, and runtime telemetry.
 
 ### Generated in `skills.manifest.json`
 
@@ -392,28 +352,16 @@ See `docs/manifest-field-mapping.md` for the full rename map, loss policy, migra
 
 ## Schema Versioning Policy
 
-Skill Graph uses a single integer `schema_version` to signal authored skill contract evolution. Current authored skill version: **8** (bumped from 7 when `subject`, `public`, and free-text `scope` replaced the v7 `type` / `category` / `scope` triple; the briefly-introduced v8 `operation` and `deployment_target` axes were retired by the ADR-0017 amendment). The prior contract lives in git history; retrieve via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`. The five policy points together define when `schema_version` bumps, what consumers should expect, and where migration tooling lives:
+Skill Graph uses a single integer `schema_version` to signal authored skill contract evolution. Current authored skill version: **8**. The policy points below define when `schema_version` bumps, what consumers should expect, and where migration evidence lives:
 
 1. **Breaking changes bump `schema_version`.** Renamed fields, removed fields, retyped fields, removed enum values, or tightened required-ness constraints bump the integer. Consumers must migrate or pin.
 2. **Additive changes do not bump.** New optional fields, new enum values that extend (not replace) an enum, and new warning-only companion checks do not bump the version. Consumers on the prior minor release continue to pass.
-3. **Validate against the canonical schema.** Per [ADR-0014](../docs/adr/0014-canonical-only-schema-files.md), `schemas/SKILL_METADATA_PROTOCOL_schema.json` and `schemas/manifest.schema.json` are the only schema files on disk — they track the current contract (`schema_version: 8` today; `7` is rejected by the live schema). Prior contract versions live in git history; consumers that need to pin against a historical version resolve via `git show <commit>:schemas/SKILL_METADATA_PROTOCOL_schema.json` or a `git tag schema-vN` if one exists.
-4. **Manifest schema-file version and manifest root `schema_version` are separate surfaces.** The current manifest schema tracks v8 skill entries, but generated manifests still emit root field value `4` because earlier manifest changes were additive for consumers. `schemas/manifest.schema.json` validates that back-compatible root value explicitly.
-5. **One-version-overlap deprecation is preferred.** Companion checks emit warnings (not errors) during migration windows where a deprecated shape can still be interpreted safely. Authors get a warning window to migrate. Hard-error enum/shape changes are rejected by `additionalProperties: false` + type constraints in the schema itself, with migration docs pointing at the rename.
-6. **Migration tooling runs once per bump, then retires.** Per ADR-0014, line-based codemods (`scripts/migrate-skill-vN-to-vM.js`) walk the corpus once, then are deleted alongside their pinned-schema targets. The migration narrative for any historical bump lives in git log + the corresponding ADR; the codemod itself is not retained on disk.
+3. **Validate against the canonical schema.** Per [ADR-0014](../docs/adr/0014-canonical-only-schema-files.md), `schemas/SKILL_METADATA_PROTOCOL_schema.json`, `schemas/skill-audit-state.schema.json`, and `schemas/manifest.schema.json` are the schema files on disk. They track the current contract.
+4. **Manifest schema-file version and manifest root `schema_version` are separate surfaces.** The current manifest schema tracks v8 skill entries, but generated manifests still emit root field value `4` because earlier manifest changes did not require a root-version bump for consumers. `schemas/manifest.schema.json` validates that root value explicitly.
+5. **Major versions are clean cuts.** Per `AGENTS.md § Major Version Is a Clean Cut`, live schema and live docs describe the current version. Historical contracts live in ADRs, CHANGELOG, and git history.
+6. **Migration tooling runs once per bump, then retires.** Per ADR-0014, codemods walk the corpus once, then are deleted. The migration narrative for any historical bump lives in git log + the corresponding ADR; the codemod itself is not retained on disk.
 
-For the concrete v2→v3 mapping tables, see `docs/manifest-field-mapping.md § Migration Note — schema_version 2 → 3`. For the v1→v2 tables (historical), see the same document. For field-level before/after pairs, see `skill-metadata-protocol/field-decision-guide.md`.
-
-### Audit Status versioning (SH-6123)
-
-**Audit Status fields are v6+.** The flat Health fields were introduced in v6 (`last_audited`, `last_changed`, `audit_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) and expanded in v7 to split the single aggregate `audit_verdict` into four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`). Per ADR-0014, the canonical `schemas/SKILL_METADATA_PROTOCOL_schema.json` validates the v8 contract; prior contract versions (v5/v6/v7) live in git history. The historical compatibility points (for readers cross-checking older skills):
-
-- v5 used `additionalProperties: false` and did not define Audit Status properties.
-- v6 defined the seven-field aggregate Audit Status but did not include the four discrete verdicts.
-- v7 introduced the four-verdict Audit Status (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`). Skills on v5/v6 frontmatter that contain these Audit Status fields are mid-migration: either bump them to the current contract (per-version codemods ran once and retired per ADR-0014; for a stuck skill use `git show <retire-commit>:scripts/migrate-skill-v6-to-v7.js` to recover the codemod) or strip the incompatible fields.
-
-**Policy:** If the Skill Audit Loop walker stamps Audit Status fields onto a skill whose frontmatter declares a `schema_version` integer below 7 (v6 had a single aggregate `audit_verdict`, not the four-verdict block), the walker has written to the wrong schema tier. Correct the skill by migrating it to the current contract through the audit loop (per-version codemods retired alongside the pinned schemas per ADR-0014; the v5→v6, v6→v7, and v7→v8 transformations are documented in git history + the corresponding ADRs) rather than adding an exception to the schema. Audit Status fields are a v6+ contract; the four-verdict shape was introduced in v7.
-
-**v7 doctrine: form gates are demoted.** In v7, `structural_verdict: FAIL` is reserved for external-constraint violations only (Anthropic Agent Skills marketplace shape, required-fields, valid YAML). Internal style preferences (title length below the external limit, body section preferences, naming conventions beyond what the marketplace enforces) emit lint warnings but do not produce `FAIL`. See [ADR 0011](../docs/adr/0011-split-audit-verdict-into-four-verdicts.md) Change 2.
+For field-level current decision tables, see `skill-metadata-protocol/field-decision-guide.md`.
 
 ## Stability Promotion Criteria (SH-6109)
 

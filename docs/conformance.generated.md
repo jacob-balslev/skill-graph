@@ -4,21 +4,21 @@
 > "clean" = lints with 0 errors (warnings do not count). This is the incremental
 > signal the binary `verify` gate cannot give while the audit loop drains the corpus.
 
-**Corpus conformance: 56/170 skills lint clean (33%).**
+**Corpus conformance: 184/184 skills lint clean (100%).**
 
 | Shelf (`subject`) | Clean | Total | Clean % | With errors | With warnings |
 |---|---|---|---|---|---|
-| `agent-ops` | 5 | 10 | 50% | 5 | 7 |
-| `ai-engineering` | 6 | 11 | 55% | 5 | 6 |
-| `backend-engineering` | 4 | 12 | 33% | 8 | 8 |
-| `data-engineering` | 3 | 9 | 33% | 6 | 6 |
-| `design` | 3 | 22 | 14% | 19 | 19 |
-| `frontend-engineering` | 4 | 16 | 25% | 12 | 11 |
-| `knowledge-organization` | 7 | 9 | 78% | 2 | 8 |
-| `product-domain` | 0 | 3 | 0% | 3 | 3 |
-| `quality-assurance` | 6 | 25 | 24% | 19 | 18 |
-| `reasoning-strategy` | 11 | 25 | 44% | 14 | 15 |
-| `software-architecture` | 1 | 12 | 8% | 11 | 11 |
-| `software-engineering-method` | 6 | 16 | 38% | 10 | 12 |
+| `agent-ops` | 21 | 21 | 100% | 0 | 0 |
+| `ai-engineering` | 11 | 11 | 100% | 0 | 0 |
+| `backend-engineering` | 12 | 12 | 100% | 0 | 0 |
+| `data-engineering` | 9 | 9 | 100% | 0 | 0 |
+| `design` | 22 | 22 | 100% | 0 | 0 |
+| `frontend-engineering` | 16 | 16 | 100% | 0 | 0 |
+| `knowledge-organization` | 9 | 9 | 100% | 0 | 0 |
+| `product-domain` | 3 | 3 | 100% | 0 | 0 |
+| `quality-assurance` | 25 | 25 | 100% | 0 | 0 |
+| `reasoning-strategy` | 28 | 28 | 100% | 0 | 0 |
+| `software-architecture` | 12 | 12 | 100% | 0 | 0 |
+| `software-engineering-method` | 16 | 16 | 100% | 0 | 0 |
 
-_Total: 56/170 clean (33%)._
+_Total: 184/184 clean (100%)._

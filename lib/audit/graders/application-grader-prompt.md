@@ -2,7 +2,7 @@
 
 > Used by `scripts/skill/evaluate-skill.js --application` to grade whether a loaded skill changes what the candidate FLAGS / RECOMMENDS in a real scenario — not what the candidate understands definitionally. See `docs/plans/application-eval-architecture.md` for the full design.
 > **Model selection:** This script does NOT select models. The local claude CLI uses the operator's session model for both generator and grader. To use a different model for grader vs generator, run the grader from a different claude session. The "grader differs from generator" rule below is OPERATOR policy — not script policy.
-> **Certifying-run model contract:** a single same-family top-tier run supports **at most `PROVISIONAL`**; certifying `APPLICABLE` requires an independent **cross-family** top-tier grader (self-preference bias inflates same-family judging ~+10–25pp, [arXiv 2410.21819](https://arxiv.org/abs/2410.21819)). See `docs/verdict-semantics.md § Two-frontier bidirectional reconciliation` point 2.
+> **Certifying-run model contract:** a single frontier judgment supports **at most `PROVISIONAL`**; certifying `APPLICABLE` requires the representative-generator protocol and agreement from both frontier judges (self-preference bias inflates same-family judging ~+10–25pp, [arXiv 2410.21819](https://arxiv.org/abs/2410.21819)). See `docs/verdict-semantics.md § Two-frontier bidirectional reconciliation`.
 > **Sister grader:** `lib/audit/graders/concept-grader-prompt.md` (concept comprehension layer — definitional understanding). The two layers are complementary; this layer measures operational behavior.
 > **Version:** 1.1 — 2026-05-17 (model coupling removed)
 
@@ -229,7 +229,7 @@ Assigned by the **runner** after pairing baseline + with-skill runs. The grader 
 |----------|-------------|
 | `applicable` | With-skill outperforms baseline on a real case (meaningful lift ≥10 pts on flag or fix axes; false-positive axis stays clean) — or red-herring case where with-skill correctly stayed silent. |
 | `not_discriminated_ceiling` | No measurable delta because baseline already saturated the pointwise axes. The eval lacks headroom; this is inconclusive, not a deprecation signal. |
-| `equivalent_on_frontier` | No measurable delta even though baseline had headroom. The measured frontier model and case set did not show marginal lift. |
+| `equivalent_on_frontier` | No measurable delta even though baseline had headroom. The measured generator and case set did not show marginal lift. Legacy name retained for existing receipts. |
 | `redundant` | Legacy no-delta bucket retained for old receipts. New runner output should prefer `not_discriminated_ceiling` or `equivalent_on_frontier`. |
 | `harmful` | With-skill underperforms baseline (meaningful regression ≤ −10 pts on flag or fix axes). Skill is misleading. |
 | `false_positive` | Red-herring case, with-skill caused the candidate to invent skill-domain claims that aren't in the scenario. |

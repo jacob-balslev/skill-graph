@@ -17,6 +17,10 @@
 
 'use strict';
 
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+
 const { runBidirectionalEval, runAdvisoryPanel } = require('../../lib/audit/run-bidirectional-eval');
 const { ADVISORY_MODELS, FRONTIER_PAIR, resolveDisplayName } = require('../../lib/audit-shared/model-provider');
 
@@ -93,5 +97,58 @@ ok('advisory_panel attached when opted in', Array.isArray(withAdvisory.advisory_
 ok('advisory_panel null when not opted in', withoutAdvisory.advisory_panel === null);
 ok('synthesized_verdict identical with/without advisory', withAdvisory.synthesized_verdict === withoutAdvisory.synthesized_verdict);
 ok('verdict comes from the core (APPLICABLE), not advisory dissent', withAdvisory.synthesized_verdict === 'APPLICABLE');
+
+// 6. Live/default advisory execution fans out to workers instead of running the
+// free/advisory models one after another.
+const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'advisory-panel-test-'));
+const startsFile = path.join(tmpDir, 'starts.jsonl');
+const workerModule = path.join(tmpDir, 'fake-worker-runner.js');
+fs.writeFileSync(workerModule, `
+'use strict';
+const fs = require('fs');
+module.exports.runDirection = function runDirection({ direction, generatorModel, graderModel }) {
+  fs.appendFileSync(process.env.ADVISORY_PANEL_TEST_STARTS, JSON.stringify({ model: generatorModel, at: Date.now() }) + '\\n');
+  const done = new Int32Array(new SharedArrayBuffer(4));
+  Atomics.wait(done, 0, 0, 1000);
+  return {
+    direction,
+    generator_model: generatorModel,
+    grader_model: graderModel,
+    generator_family: generatorModel,
+    grader_family: graderModel,
+    resolved_model: graderModel,
+    verdict: 'APPLICABLE',
+    certification_tier: 'certifying',
+    calibrated: true,
+    red_herring_cases_total: 1,
+    execution_profile: { tools: true, research: true, repoScope: '.', cwd: '.' },
+  };
+};
+`);
+const oldStarts = process.env.ADVISORY_PANEL_TEST_STARTS;
+process.env.ADVISORY_PANEL_TEST_STARTS = startsFile;
+try {
+  const startedAt = Date.now();
+  const workerPanel = runAdvisoryPanel({
+    mode: 'application',
+    deps: { runDirectionModule: workerModule, workerTimeoutMs: 10000 },
+  });
+  const elapsedMs = Date.now() - startedAt;
+  const starts = fs.readFileSync(startsFile, 'utf8')
+    .trim()
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => JSON.parse(line));
+  const spreadMs = Math.max(...starts.map((s) => s.at)) - Math.min(...starts.map((s) => s.at));
+  ok('worker panel runs every advisory model', workerPanel.length === ADVISORY_MODELS.length);
+  ok('worker panel returned without errors', !workerPanel.some((e) => e.error));
+  ok('worker panel starts every advisory model', starts.length === ADVISORY_MODELS.length);
+  ok('worker panel starts advisory models in parallel', spreadMs < 1500);
+  ok('worker panel finishes faster than sequential one-second sleeps', elapsedMs < 3000);
+} finally {
+  if (oldStarts === undefined) delete process.env.ADVISORY_PANEL_TEST_STARTS;
+  else process.env.ADVISORY_PANEL_TEST_STARTS = oldStarts;
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
 
 console.log(`test-advisory-panel: ${passed} passed`);

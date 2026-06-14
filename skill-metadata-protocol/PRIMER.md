@@ -2,7 +2,7 @@
 
 > **Read this if:** you author SKILL.md and your library is large enough that skills have started to depend on, verify, or exclude one another. This primer is the conceptual introduction to Skill Metadata Protocol and Skill Graph. It is *explanation* documentation — it answers *what* and *why*. For reference material see `skill-metadata-protocol/field-reference.md`; for procedures see `CONTRIBUTING.md` and `skill-audit-loop/SKILL_AUDIT_LOOP.md`; for decision tables see `skill-metadata-protocol/field-decision-guide.md`.
 
-**Status.** Stable for `schema_version: 8`. The prior contract (v7) lives in git history; retrieve via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`.
+**Status.** Stable for `schema_version: 8`.
 **Audience.** Skill authors who need skills to declare their relevance: which area they cover, which angle they take, which project or stack they fit, which taxonomy / semantic cluster they belong to, and how they should be tested or reverified. Library size is a proxy for this — these questions usually start around 5 skills, sometimes earlier if you have multiple projects, sometimes later for a single small project.
 **Prerequisites.** Working familiarity with the [SKILL.md specification](https://agentskills.io/specification), including `SKILL.md` layout and the progressive-disclosure loading model.
 
@@ -52,8 +52,8 @@ Skill Metadata Protocol is the canonical contract, not the canonical template. T
 
 | | SKILL.md | Skill Metadata Protocol + Skill Graph |
 |---|---|---|
-| Required top-level fields | 2 (`name`, `description`) | 13 (includes the base `name` + `description`) |
-| Optional top-level fields | 3 standard (`license`, `compatibility`, `allowed-tools`) | 20, grouped into 5 metadata layers |
+| Required authored fields | 2 (`name`, `description`) | 5 `SKILL.md` frontmatter fields plus 7 `audit-state.json` sidecar fields |
+| Optional authored fields | 3 standard (`license`, `compatibility`, `allowed-tools`) | Frontmatter enrichment fields plus sidecar-owned audit/eval/provenance fields |
 | Validation | Not standardised | Deterministic schema + lint + manifest + drift |
 | Relevance model | Lexical (activation surface only) | Compound: activation, taxonomy, semantic relations, grounding, project fit, and eval state |
 | Grounding to real artifacts | — | SHA-256 baselines + time-boxed freshness |
@@ -91,7 +91,7 @@ Skill Metadata Protocol is materially more expensive to author and maintain than
 - **You need to know what a skill is relevant for** beyond its prose description: area, angle, project, stack, taxonomy, methodology, framework, semantic neighbours, and verification surface.
 - **You want library structure instead of a flat folder**. `subject`, `taxonomy_domain`, `keywords`, and `relations.*` give you taxonomy, semantic clustering, and retrieval surfaces.
 - **You want Karpathy-style eval loops for skills**. `examples`, `anti_examples`, `routing_eval`, `eval_state`, and `drift_check` give you repeatable cases and evidence instead of vibes.
-- **Two skills cover overlapping territory** and the agent routes to the wrong one on ambiguous prompts. `boundary` pushes the router off the wrong skill explicitly rather than relying on description re-ranking.
+- **Two skills cover overlapping territory** and the agent routes to the wrong one on ambiguous prompts. `relations.suppresses` pushes the router off the wrong skill explicitly rather than relying on description re-ranking.
 - **One skill is load-bearing for another** and you have silently broken the assumption by editing the parent. `depends_on` surfaces the breakage at lint time instead of at routing time.
 - **One or more skills are grounded in specific repo files** and you have noticed the skill get stale the day after the file is rewritten. `drift_check.truth_source_hashes` catches that on the next lint run.
 - **You run evals on skills** and want the router to respect quality, not just relevance. `eval_state` + `--min-eval-state passing` turns "we have evals" into "routing honours evals."
@@ -111,7 +111,7 @@ Skill Metadata Protocol organises the frontmatter into **four metadata layers**.
 flowchart TB
   L1["<b>Layer 1 — Activation surface</b><br/>description · keywords · triggers · examples · anti_examples<br/>paths · project[]"]
   L2["<b>Layer 2 — Taxonomy</b><br/>subject · subjects[] · taxonomy_domain"]
-  L3["<b>Layer 3 — Ontology</b><br/>relations.depends_on · verify_with · related · boundary"]
+  L3["<b>Layer 3 — Ontology</b><br/>relations.depends_on · verify_with · related · suppresses"]
   L4["<b>Layer 4 — Grounding</b><br/>grounding.* · drift_check · lifecycle · freshness · eval_state"]
 
   L1 --> L2 --> L3 --> L4
@@ -146,11 +146,11 @@ flowchart TB
 
 **Purpose.** Typed, machine-checkable relations between skills.
 
-**Fields.** `relations.depends_on` (load-bearing prerequisite), `relations.verify_with` (co-load for confidence), `relations.adjacent` (suggested co-reading, non-load-bearing), `relations.boundary` (anti-ownership — route elsewhere).
+**Fields.** `relations.depends_on` (load-bearing prerequisite), `relations.verify_with` (co-load for confidence), `relations.related` (suggested co-reading, non-load-bearing), `relations.suppresses` (anti-ownership — exclude a sibling when this skill owns the query).
 
-**What it answers.** *How does this skill relate to the rest of the library?* The four predicates are not synonyms. `depends_on` closure is transitive; the linter enforces that targets resolve. `verify_with` is additive at selection — the router co-loads the verifier when the primary skill is picked. `boundary` excludes — a prompt covered by a boundary-listed skill is pushed off the current skill and onto the boundary target. `adjacent` is a hint without routing consequences. This is the layer that turns a skill collection into a graph an agent can reason over.
+**What it answers.** *How does this skill relate to the rest of the library?* The four predicates are not synonyms. `depends_on` closure is transitive; the linter enforces that targets resolve. `verify_with` is additive at selection — the router co-loads the verifier when the primary skill is picked. `suppresses` excludes — when this skill owns a query, the listed sibling is removed from co-routing. `related` is a hint without routing consequences. This is the layer that turns a skill collection into a graph an agent can reason over.
 
-**What you do with this:** Add `boundary` when two skills cover the same prompt and you want the more-specific one to win. Add `verify_with` when one skill's verdict needs another skill's check before being trusted. Add `depends_on` when removing the target would silently break this skill at runtime. Use `adjacent` sparingly — most "often used together" links are better expressed as `verify_with` if the secondary skill should auto-co-load.
+**What you do with this:** Add `suppresses` when two skills cover the same prompt and this skill should own the result over the listed sibling. Add `verify_with` when one skill's verdict needs another skill's check before being trusted. Add `depends_on` when removing the target would silently break this skill at runtime. Use `related` sparingly — most "often used together" links are better expressed as `verify_with` if the secondary skill should auto-co-load.
 
 ### Layer 4. Grounding
 
@@ -169,7 +169,7 @@ The reference router (`scripts/skill-graph-route.js`) reads all four layers and 
 1. **Layer 1** matches against `description`, `keywords`, `triggers`, `paths`. Non-matches are filtered out.
 2. **`project[]`** (Layer 1 field) filters further by project belonging when `project[]` is present.
 3. **Layer 3** expands the `depends_on` closure — any skill whose dependency is also matched is boosted; co-loads `verify_with` targets of selected skills.
-4. **Layer 3** applies `boundary`: if a matched skill's boundary targets another skill that also matched, the boundary-owner absorbs the prompt and the boundary-loser is excluded.
+4. **Layer 3** applies `suppresses`: if a matched skill's suppression target also matched, the owner keeps the prompt and the listed sibling is excluded.
 5. **Layer 4** applies the quality gate. The default `--min-eval-state` is `unverified`, which admits everything; passing `--min-eval-state passing` excludes skills below that state. Staleness from `lifecycle.stale_after_days` is annotated on the result line (a `⚠ stale` marker), not used for exclusion.
 
 Section 6 shows this in action with a real query.
@@ -183,22 +183,20 @@ Beyond the four metadata layers that express *meaning*, a library needs four ind
 | Axis | Field | Cardinality | Purpose |
 |---|---|---|---|
 | **Publishability** | `public` | Boolean: `true` (publishable) or `false` (private) | *Is this safe to release publicly?* |
-| **Scope** | `scope` | Free-text string | *PRD-style description of the deployment context.* |
+| **Scope** | `scope` | Free-text string | *PRD-style description of coverage and exclusions.* |
 | **Taxonomy (hierarchy)** | `subject` + `taxonomy_domain` | Single position in the tree | *What kind of concern is this?* |
 | **Project belonging** | `project[]` | Many objects (handle + role) | *Which specific project(s) is this skill anchored to?* |
 
-> The per-skill `routing_bundles` field was **retired** (SKI-286) — see `SKILL_METADATA_PROTOCOL.md § routing_bundles`. Library-level batch-activation grouping is now served by the skill-injector routing config (`bundles` / `bundleTypes`), not per-skill frontmatter.
-
 The axes compose without nesting. A single skill can be `public: true` with `subject: backend-engineering` and `taxonomy_domain: backend-engineering/linting/eslint-rules` — each axis carries a different shape of answer, and the router uses them for different things.
 
-### 4.1 Deployment target — *where does this deploy?*
+### 4.1 Publishability — *can this be released publicly?*
 
-Two values, chosen at authoring time and enforced by the schema:
+One boolean, chosen at authoring time and enforced by the schema:
 
-- **`portable`** — applies to any project. Most reusable skills (for example the starter `refactor` and `testing-strategy`) use this value.
-- **`project`** — anchored to one specific project. Triggers Layer 4 (Grounding): `grounding.subject_matter`, `truth_sources`, and `drift_check.truth_source_hashes` become required, so the skill is pinned to the real artifacts it describes and the drift sentinel can catch silent divergence.
+- **`public: true`** — safe for public release.
+- **`public: false`** — not exported publicly because it carries private, personal, customer, internal-operational, or otherwise non-shareable content.
 
-`public` (with `subject`) gives the router broad stratum separation; `project[]` is the axis with body-structure implications (`grounding` is conditional on a non-empty `project[]`) and carries project-fit. The `scope` field is a free-text PRD-style description — it is not an enum. For the full decision tables, see `skill-metadata-protocol/field-decision-guide.md`.
+`public` is independent from project anchoring. `project[]` is the axis with body-structure implications (`grounding` is conditional on a non-empty `project[]`) and carries project-fit. The `scope` field is a free-text PRD-style description — it is not an enum. For the full decision tables, see `skill-metadata-protocol/field-decision-guide.md`.
 
 ### 4.2 Taxonomy — *what kind of concern is this?*
 
@@ -212,9 +210,9 @@ Skills reusable across projects use `public: true` and need no project belonging
 
 `project[]` names the *specific project* a skill is grounded in — **not** a keyword tag for routing. Routing remains driven by `keywords`, `triggers`, and `relations`.
 
-### 4.4 Batch-activation grouping — a library-level concern, not a per-skill field
+### 4.4 Batch-activation grouping — a library-level concern
 
-The per-skill `routing_bundles` field was **retired** (SKI-286): it accumulated zero acting consumer, since the router scores on `keywords` / `triggers` / `relations` and the manifest only copied the field through. Library-level batch-activation ("return the best skill in group X") is now served by the **skill-injector routing config** (`bundles` / `bundleTypes`), defined once per library rather than declared on each skill. Do not author `routing_bundles` on a skill. (Prior contract recoverable from git history; see `SKILL_METADATA_PROTOCOL.md § routing_bundles`.)
+Library-level batch activation ("return the best skill in group X") is served by the skill-injector routing config (`bundles` / `bundleTypes`), defined once per library rather than declared on each skill. Per-skill routing remains driven by `keywords`, `triggers`, `examples`, `anti_examples`, and `relations`.
 
 ### 4.5 When axes collide
 
@@ -245,43 +243,77 @@ The claim that authored edges buy the consumer something needs proof. This secti
 
 ### 6.1 The smallest conforming Skill Metadata Protocol skill
 
+`SKILL.md`:
+
 ```yaml
 ---
-schema_version: 8
 name: my-skill
-description: "Use when <concrete situation>. Covers <A, B, C>. Do NOT use for <D, E>."
+description: "Short topical description of what the skill is about."
+subject: software-engineering-method
+public: true
+scope: "Teaches <A, B, C>; does not cover <D, E>."
 ---
 # my-skill
 
 Body content...
 ```
 
-This validates. It is also a Skill-Metadata-Protocol-enriched skill in name only — no relations, no grounding, no Evaluation Status — and it routes exactly as a plain SKILL.md skill does. Skill Graph does not penalise you for authoring minimally.
+`audit-state.json`:
 
-### 6.2 A skill that uses Layers 3 and 5
+```json
+{
+  "schema_version": 8,
+  "owner": "skill-graph-maintainer",
+  "freshness": "2026-06-13",
+  "drift_check": {
+    "last_verified": "2026-06-13"
+  },
+  "eval_artifacts": "none",
+  "eval_state": "unverified",
+  "routing_eval": "absent"
+}
+```
 
-The `refactor` starter skill reduced to its load-bearing fields:
+This validates. It is also Skill-Metadata-Protocol-enriched in name only — no relations, no grounding, no positive/negative examples, no eval receipts — and it routes close to a plain SKILL.md skill. Skill Graph does not penalise you for authoring minimally.
+
+### 6.2 A skill that uses relations and sidecar quality state
+
+The `refactor` skill reduced to its load-bearing fields:
+
+`SKILL.md`:
 
 ```yaml
 ---
-schema_version: 8
 name: refactor
 description: "Reorganizing existing code without changing external behavior."
-version: 1.0.0
 subject: backend-engineering
 public: true
-owner: skill-graph-maintainer
-freshness: "2026-05-27"
-drift_check:
-  last_verified: "2026-05-27"
-eval_artifacts: present                   # M5 coherence: passing requires present
-eval_state: passing
-routing_eval: present
+scope: "Teaches behavior-preserving code reorganization; does not diagnose failing behavior or design new features."
+keywords: [refactor, cleanup, duplication, behavior-preserving]
+anti_examples:
+  - "debug this failing test"
+  - "write a test strategy"
 relations:
   depends_on: [testing-strategy]          # cannot refactor responsibly without a green suite
   verify_with: [testing-strategy]         # re-run after the refactor to prove behavior preserved
-  boundary: [debugging, testing-strategy] # these absorb prompts listed in anti_examples
+  suppresses: [debugging, testing-strategy] # this skill owns cleanup prompts over those adjacent skills
 ---
+```
+
+`audit-state.json`:
+
+```json
+{
+  "schema_version": 8,
+  "owner": "skill-graph-maintainer",
+  "freshness": "2026-06-13",
+  "drift_check": {
+    "last_verified": "2026-06-13"
+  },
+  "eval_artifacts": "present",
+  "eval_state": "passing",
+  "routing_eval": "present"
+}
 ```
 
 ### 6.3 Routing trace — prompt lands on `refactor`
@@ -296,21 +328,21 @@ Three things happened that a description-only retriever could not do:
 
 1. `refactor` was selected on Layer 1 lexical match.
 2. `testing-strategy` was co-loaded from Layer 3 because `refactor.relations.verify_with` names it. The agent now has the pre/post guard for behavior preservation in context without the user asking for it.
-3. No exclusion fired this run, but the `boundary` edge would have fired on a different prompt — see 6.4.
+3. No exclusion fired this run, but the `suppresses` edge would have fired on a different prompt — see 6.4.
 
 ### 6.4 Routing trace — same library, different prompt, different decision
 
 ```
 $ node scripts/skill-graph-route.js "the test is failing after my edit"
 SELECTED  debugging           eval_state=passing    triggers+paths match
-EXCLUDED  refactor            boundary: debugging absorbs this prompt
+EXCLUDED  refactor            suppresses: debugging absorbs this prompt
 ```
 
 Same library, same manifest, same metadata. Different compound decision. The router explains *why* one skill was chosen and another was not, in a form a human can audit and a CI check can assert on.
 
-### 6.5 Routing trace — boundary edge fires on a webhook prompt
+### 6.5 Routing trace — suppresses edge fires on a webhook prompt
 
-Same pattern, different domain. Imagine an adopter library with `markdown-post-frontmatter-review` (capability, codebase-grounded), `testing-strategy` (capability, listed as `verify_with` of the review skill), and `documentation` (capability, listed in `markdown-post-frontmatter-review.boundary` because docs would otherwise absorb the prompt).
+Same pattern, different domain. Imagine an adopter library with `markdown-post-frontmatter-review` (codebase-grounded), `testing-strategy` (listed as `verify_with` of the review skill), and `documentation` (listed in `markdown-post-frontmatter-review.relations.suppresses` because docs would otherwise absorb the prompt).
 
 A query about a specific frontmatter-validation failure routes like this:
 
@@ -318,14 +350,14 @@ A query about a specific frontmatter-validation failure routes like this:
 $ node scripts/skill-graph-route.js "review my post's frontmatter — the build is rejecting the date format"
 SELECTED  markdown-post-frontmatter-review   eval_state=passing    keyword:frontmatter, keyword:date format
 VERIFY    testing-strategy                   eval_state=passing    verify_with of markdown-post-frontmatter-review
-EXCLUDED  documentation                      —                     in boundary[] of markdown-post-frontmatter-review: documentation writes prose ABOUT the frontmatter format; markdown-post-frontmatter-review is the validation primitive in code
+EXCLUDED  documentation                      —                     in suppresses[] of markdown-post-frontmatter-review: documentation writes prose ABOUT the frontmatter format; markdown-post-frontmatter-review is the validation primitive in code
 ```
 
 Three layers fired in one query:
 
 1. **Layer 1** lexical match selected `markdown-post-frontmatter-review` on two keyword tokens.
 2. **Layer 3 `verify_with`** co-loaded `testing-strategy` because the review skill declares it as a verifier — the agent now has the test-coverage checklist alongside the validation primitive.
-3. **Layer 3 `boundary`** excluded `documentation` because the review skill's `boundary` explicitly says "documentation writes prose; this skill is the primitive in code." Without that boundary, `documentation` might have outscored the review skill on a query mentioning "review" — the boundary edge prevents that misroute.
+3. **Layer 3 `suppresses`** excluded `documentation` because the review skill's `suppresses` explicitly says "documentation writes prose; this skill is the primitive in code." Without that exclusion, `documentation` might have outscored the review skill on a query mentioning "review" — the suppression edge prevents that misroute.
 
 This trace pattern is how the `content-source-router` specimen at [`examples/projects/markdown-static-site/skills/content-source-router/`](../examples/projects/markdown-static-site/skills/content-source-router/SKILL.md) works in concept; install the specimens into your own `skills/` and the same trace runs against them.
 

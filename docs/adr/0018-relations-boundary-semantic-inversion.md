@@ -1,24 +1,28 @@
 # ADR-0018: Resolve `relations.boundary` Semantic Inversion + Name Collision
 
-> Status: **Both SYSTEM renames landed (2026-06-08)** — `relations.boundary` → `relations.suppresses` (2026-06-07) AND the Understanding-field `boundary` → `concept_boundary` (2026-06-08); each keeps a deprecated alias. Only the per-skill CONTENT corpus migration remains. (Original: Accepted 2026-05-25.)
+> Status: **Both SYSTEM renames landed (2026-06-08), and the zero-use aliases were removed from the canonical schema on 2026-06-13** — `relations.boundary` → `relations.suppresses` and the Understanding-field `boundary` → `concept_boundary`. Runtime readers may keep defensive compatibility fallbacks, but new authored `SKILL.md` frontmatter must use `relations.suppresses` and `concept_boundary`. (Original: Accepted 2026-05-25.)
 > Companion: [ADR 0017](0017-five-axis-classification-model.md) (Skill Metadata Protocol v8)
 > Source finding: 2026-05-25 multi-model restructure-review F8
 >
+> ### Update — 2026-06-13: zero-use aliases removed from canonical schema
+>
+> A direct corpus scan found 0/186 authored uses of `relations.boundary` and 0/186 authored uses of the top-level Understanding `boundary` alias. The canonical frontmatter schema and JSON-LD context no longer accept either alias; `relations.suppresses` and `concept_boundary` are the only authored names. Runtime readers may retain compatibility fallbacks for historical generated data, but those fallbacks are not authoring contract.
+>
 > ### Update — 2026-06-08: Understanding-field `boundary` → `concept_boundary` SYSTEM rename LANDED
 >
-> The second rename this ADR called for — the Understanding-field `boundary` → `concept_boundary` (resolving the name collision with `relations.boundary`/`suppresses`) — **landed in the v8 `public`-field schema commit** (`23e13dd`). `schemas/SKILL_METADATA_PROTOCOL_schema.json` now declares `concept_boundary` as the canonical Understanding field with the legacy top-level `boundary` retained as a DEPRECATED alias (flat fields win when both are present); `scripts/lib/parse-frontmatter.js` normalizes the alias, `lib/audit/evaluate-skill.js` + the concept grader read `concept_boundary`, and `skill-lint.js` checks it in the Understanding-field cross-file rule. The only remaining work is the per-skill CONTENT corpus rename (drained through `/audit:*`); a later SYSTEM commit removes the `boundary` alias once the corpus drains.
+> The second rename this ADR called for — the Understanding-field `boundary` → `concept_boundary` (resolving the name collision with `relations.boundary`/`suppresses`) — **landed in the v8 `public`-field schema commit** (`23e13dd`). At that point `schemas/SKILL_METADATA_PROTOCOL_schema.json` declared `concept_boundary` as the canonical Understanding field with the legacy top-level `boundary` retained as a DEPRECATED alias (flat fields won when both were present); `scripts/lib/parse-frontmatter.js` normalized the alias, `lib/audit/evaluate-skill.js` + the concept grader read `concept_boundary`, and `skill-lint.js` checked it in the Understanding-field cross-file rule. The alias remained only until the per-skill CONTENT corpus rename drained; the 2026-06-13 update above records its canonical-schema removal.
 >
 > ### Update — 2026-06-07: routing-field rename SYSTEM half LANDED (SKI-285)
 >
 > The `relations.boundary` → `relations.suppresses` rename's **SYSTEM half is implemented** as a deprecated-alias migration (mirroring the existing `relations.adjacent` → `relations.related` pattern), NOT the "v8.1 breaking deprecation-pair within a sunset window" originally drafted below — per `AGENTS.md § Major Version Is a Clean Cut`, intra-version relation renames drain through the audit loop per-skill rather than via a coordinated breaking PR. Landed in this commit:
 >
-> - **Schema** (`schemas/SKILL_METADATA_PROTOCOL_schema.json`, `schemas/manifest.schema.json`): `relations.suppresses` is the canonical routing-exclusion edge (same item shape as `boundary`); `relations.boundary` is retained as a DEPRECATED alias.
+> - **Schema** (`schemas/SKILL_METADATA_PROTOCOL_schema.json`, `schemas/manifest.schema.json`): `relations.suppresses` is the canonical routing-exclusion edge (same item shape as `boundary`); `relations.boundary` was retained as a DEPRECATED alias during the migration window.
 > - **Router** (`scripts/skill-graph-route.js` Stage 3): reads `relations.suppresses` first, falls back to `relations.boundary`.
 > - **Manifest / exporter / lint** (`generate-manifest.js`, `lib/render-skill-context.js`, `skill-lint.js`): all read `suppresses` with `boundary` fallback.
-> - **JSON-LD context** (`schemas/skill.context.jsonld`): both `suppresses` and `boundary` map to `sg:disjointOwnership` (property-scoped under `relations`).
+> - **JSON-LD context** (`schemas/skill.context.jsonld`): during the migration window, both `suppresses` and `boundary` mapped to `sg:disjointOwnership` (property-scoped under `relations`).
 > - **Docs**: `AGENTS.md § What the Skill Graph Is`, `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Relations`, and the generated field-reference updated to make `suppresses` canonical.
 >
-> **Still open:** the ~113-skill corpus renames — `relations.boundary` → `relations.suppresses` AND the Understanding-field `boundary` → `concept_boundary` (both CONTENT-mode work, drained per-skill through `/audit:*`). (The Understanding-field SYSTEM rename itself LANDED 2026-06-08 — see the update block above.) Once the corpus drains, a follow-up SYSTEM commit removes both deprecated aliases from schema/router/exporter/lint per § Phase 4.
+> **Historical open item at the time:** the ~113-skill corpus renames — `relations.boundary` → `relations.suppresses` AND the Understanding-field `boundary` → `concept_boundary` (both CONTENT-mode work, drained per-skill through `/audit:*`). The 2026-06-13 update above records the zero-use corpus state and canonical-schema alias removal.
 >
 > ### Update — 2026-05-27: temporal framing corrected
 >

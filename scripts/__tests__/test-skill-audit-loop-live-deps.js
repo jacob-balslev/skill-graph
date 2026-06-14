@@ -57,7 +57,7 @@ check('dry-run crossReview returns empty feedback; revise reports no change', ()
 });
 check('exposes the full panel deps interface', () => {
   const deps = live.createSkillAuditLoopDeps({ skillGraphRoot: os.tmpdir(), dryRun: true });
-  for (const fn of ['buildResearchBrief', 'claimSlot', 'releaseSlot', 'researchAndPropose', 'curate', 'prepareEnrichedEval', 'applyMerge', 'evalArtifactExists', 'hashProposal', 'claimAdvisorySlot', 'researchAndProposeAdvisory', 'crossReview', 'reviseProposal']) {
+  for (const fn of ['buildResearchBrief', 'claimSlot', 'releaseSlot', 'researchAndPropose', 'curate', 'prepareCandidateEval', 'applyMerge', 'evalArtifactExists', 'hashProposal', 'claimAdvisorySlot', 'researchAndProposeAdvisory', 'crossReview', 'reviseProposal']) {
     assert.strictEqual(typeof deps[fn], 'function', `deps.${fn} is a function`);
   }
 });
@@ -70,11 +70,20 @@ check('sandboxed reviser captures the emitted document (preamble stripped) and r
   const skillDir = path.join(root, 'skills', 's');
   fs.mkdirSync(skillDir, { recursive: true });
   fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: s\npublic: true\n---\n# s\nbody\n');
+  fs.writeFileSync(path.join(skillDir, 'audit-state.json'), `${JSON.stringify({
+    schema_version: 8,
+    owner: 'test',
+    freshness: '2026-06-12',
+    drift_check: { last_verified: '2026-06-12' },
+    eval_artifacts: 'none',
+    eval_state: 'unverified',
+    routing_eval: 'absent',
+  }, null, 2)}\n`);
   const runDir = path.join(root, '.opencode', 'progress', 'agenttool', 's', 'minimax');
   fs.mkdirSync(runDir, { recursive: true });
   const ownProposalPath = path.join(runDir, 's.minimax.proposed-SKILL.md');
   fs.writeFileSync(ownProposalPath, '---\nname: s\n---\n# s\nOLD proposal\n');
-  const revisedDoc = `---\nname: s\nschema_version: 8\n---\n# s — revised\n\n${'## Section\n\nEnriched content here. '.repeat(40)}`;
+  const revisedDoc = `---\nname: s\nschema_version: 8\n---\n# s — revised\n\n${'## Section\n\nImproved content here. '.repeat(40)}`;
   let dispatchedMode = null;
   const deps = live.createSkillAuditLoopDeps({
     skillGraphRoot: root,
@@ -132,9 +141,9 @@ check('a substantial no-frontmatter doc still passes via the heading fallback', 
 check('a short prose plan passes neither path', () => {
   assert.strictEqual(live.looksLikeSkillDoc('Here is my plan: do X then Y.'), false);
 });
-check('extractEnrichedDoc unwraps an embedded fenced SKILL.md after a preamble', () => {
+check('extractSkillDocument unwraps an embedded fenced SKILL.md after a preamble', () => {
   const doc = `---\nname: fenced-skill\n---\n# fenced\n${'body '.repeat(120)}`;
-  const extracted = live.extractEnrichedDoc(`Here is the file:\n\n\`\`\`markdown\n${doc}\n\`\`\`\n\nDone.`);
+  const extracted = live.extractSkillDocument(`Here is the file:\n\n\`\`\`markdown\n${doc}\n\`\`\`\n\nDone.`);
   assert.strictEqual(extracted, doc.trim());
 });
 
@@ -146,6 +155,15 @@ check('advisory propose retries once when stdout is not a document and second at
   const skillDir = path.join(root, 'skills', 's');
   fs.mkdirSync(skillDir, { recursive: true });
   fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: s\npublic: true\n---\n# s\nbody\n');
+  fs.writeFileSync(path.join(skillDir, 'audit-state.json'), `${JSON.stringify({
+    schema_version: 8,
+    owner: 'test',
+    freshness: '2026-06-12',
+    drift_check: { last_verified: '2026-06-12' },
+    eval_artifacts: 'none',
+    eval_state: 'unverified',
+    routing_eval: 'absent',
+  }, null, 2)}\n`);
   const validDoc = `---\nname: s\ndescription: retry test\n---\n# s\n\n${'## Section\n\nValid skill body. '.repeat(40)}`;
   let calls = 0;
   const deps = live.createSkillAuditLoopDeps({
@@ -178,6 +196,15 @@ check('advisory propose retries once when stdout is not a document and second at
   assert.ok(fs.existsSync(r.diagnosticsPath), 'advisory diagnostics file exists');
   assert.ok(fs.existsSync(path.join(runDir, 's.minimax.dispatch.log')));
   assert.ok(fs.existsSync(path.join(runDir, 's.minimax.dispatch.retry.log')));
+  const telemetryPath = path.join(skillDir, 'agent-telemetry.jsonl');
+  assert.ok(fs.existsSync(telemetryPath), 'agent telemetry JSONL exists beside SKILL.md');
+  const telemetry = fs.readFileSync(telemetryPath, 'utf8').trim().split('\n').map((line) => JSON.parse(line));
+  assert.ok(telemetry.some((entry) => entry.phase === 'propose' && entry.status === 'failed'), 'failed first proposal attempt recorded');
+  assert.ok(telemetry.some((entry) => entry.phase === 'propose' && entry.status === 'completed' && entry.line_delta.added_lines > 0), 'successful proposal line delta recorded');
+  assert.ok(telemetry.some((entry) => entry.phase === 'iteration-suggestions' && entry.status === 'completed'), 'iteration suggestions telemetry recorded');
+  const sidecar = JSON.parse(fs.readFileSync(path.join(skillDir, 'audit-state.json'), 'utf8'));
+  assert.strictEqual(sidecar.runtime_telemetry.run_receipts_source, 'agent-telemetry.jsonl');
+  assert.ok(sidecar.runtime_telemetry.metrics.agent_run_count >= 3, 'sidecar summarizes agent run count');
   fs.rmSync(root, { recursive: true, force: true });
 });
 

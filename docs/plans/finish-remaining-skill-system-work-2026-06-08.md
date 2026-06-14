@@ -55,17 +55,16 @@ double-quoted Linear comment strings (zsh executes them — use single quotes or
   re-enrich pass. Add a `--priority-mode importance` flag (raw importance order, no audited penalty).
 
 ### C. Explicitly deferred (user asked to skip 2026-06-08 — handle in a dedicated isolated pass)
-- **SKI-296** — rename 41 residual `*Enrich*` / `SKILL_ENRICH_*` symbols across 3 `lib/audit` files +
-  `loops.manifest.json` id. Large mechanical rename; do alone, run `test:unit` after.
-- **SKI-322** — `evaluate` write-back writes `eval_last_run.artifact`, an additionalProperties:false
-  violation (rename key to `receipt`; re-stamp affected sidecars).
-- **SKI-324** — dimension graders are sidecar-blind (ADR-0019): merge the `audit-state.json` view before
-  grading so portability/eval/comprehension_state fields are not reported "missing".
+- **SKI-296** — handled 2026-06-13 in a SYSTEM pass: internal `*Enrich*` / `SKILL_ENRICH_*`
+  runtime names were renamed to audit/improve terminology and `test:unit` passed.
+- **SKI-322** — already Done before the 2026-06-13 SYSTEM pass; no remaining SYSTEM action found.
+- **SKI-324** — handled 2026-06-13 in a SYSTEM pass: dimension grader prompt context now joins
+  `SKILL.md` frontmatter with `audit-state.json` and embeds the sidecar schema.
 
 ### D. DECISION — stop and ask the user (do NOT mechanically fix)
-- **SKI-306 (LOAD-BEARING)** — redefine APPLICABLE / the eval generator population. 0/170 APPLICABLE is
-  structural (frontier generator → ceiling effect). Resolving this unblocks SKI-303/224/225. Ask: *what
-  agent population does the library serve?*
+- **SKI-306 (LOAD-BEARING)** — decision received 2026-06-08 and implemented 2026-06-13 in a SYSTEM
+  pass: the eval generator population is the `representative-generator` role, and the frontier models
+  judge. See ADR-0022 and `docs/verdict-semantics.md`.
 - **SKI-319** — split corpus-completeness gates (manifest:fresh/status:check/marketplace:verify) out of
   `verify:system` into `verify:corpus`, so a parallel CONTENT session can't red the SYSTEM gate.
 - SKI-268 (compositeBundles create-vs-delete), 275/276 (broader/narrower & disjoint_with author-contract

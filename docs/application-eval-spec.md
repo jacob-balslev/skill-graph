@@ -74,7 +74,7 @@ Each axis is scored on a **0–100** free-continuous integer scale (the coarse 0
 
 **Web access — both arms run WITHOUT websearch by default (2026-06-11, owner directive).** The eval measures a skill's *deployment value* (search-elimination + curation — the skill delivers the one vetted approach so a deployed agent need not run an extended websearch), NOT "is the answer findable on the web." A web-enabled baseline could search its way to a passable answer and hide the skill's lift. So the eval generator's `research` allowance defaults to **repo-only (web OFF)** for BOTH arms (only the skill differs → parity preserved; repo/exec `tools` stay full). `SKILL_EVAL_WEB=on` restores the web-enabled baseline (the "is this un-googleable" filter). This is the EVAL generator's web access; the skill **authoring/curation** step keeps full web research ("research IS the curation mechanism"). NOTE: the single-direction CLI default currently runs the baseline tools-OFF (already no-web); giving it repo-on + web-off safely requires the panel's public-workspace isolation (`isolated-eval-workspace.js`) and is a tracked follow-up — the candidate's resolved workspace is the whole private Development tree, which a tools-on agent must never read.
 
-Per-case verdict from the paired evidence (real case): `applicable` if the with-skill arm is preferred with clean false-positive behavior; `not_discriminated_ceiling` if there is no visible lift because the pointwise baseline already saturated all axes; `equivalent_on_frontier` if there was headroom but this measured frontier model behaved the same with and without the skill; `harmful` if the baseline arm is preferred or flag/fix behavior regresses; `mixed` on split signals. Red-herring cases are graded primarily on false-positive avoidance. Aggregate per-skill verdict: `applicable` if ≥60% of real cases are applicable AND ≤20% of red-herrings false-positive; `harmful` if any real case is harmful or >20% red-herrings false-positive; otherwise the majority no-lift category is preserved instead of collapsing every no-lift outcome into `REDUNDANT`.
+Per-case verdict from the paired evidence (real case): `applicable` if the with-skill arm is preferred with clean false-positive behavior; `not_discriminated_ceiling` if there is no visible lift because the pointwise baseline already saturated all axes; `equivalent_on_frontier` if there was headroom but the measured generator behaved the same with and without the skill (legacy name retained for existing receipts); `harmful` if the baseline arm is preferred or flag/fix behavior regresses; `mixed` on split signals. Red-herring cases are graded primarily on false-positive avoidance. Aggregate per-skill verdict: `applicable` if ≥60% of real cases are applicable AND ≤20% of red-herrings false-positive; `harmful` if any real case is harmful or >20% red-herrings false-positive; otherwise the majority no-lift category is preserved instead of collapsing every no-lift outcome into `REDUNDANT`.
 
 Run completeness is a hard gate. If any case errors, the CLI exits non-zero, `aggregate_verdict` is `unverified`, and `completed_subset_aggregate_verdict` records what the completed subset would have said for debugging only. Write-back refuses to stamp `application_verdict` from an incomplete run.
 
@@ -82,37 +82,33 @@ Important scope boundary: this application eval measures **raw skill-body inject
 
 ## Verdict tiering — earned, not assumed (enforced in code)
 
-A single-model run records **`application_verdict: PROVISIONAL`** with an `eval_last_run` receipt — never `APPLICABLE`. `APPLICABLE` requires an **independent, cross-family** dual-run grader (a top-tier judge of a *different model family* than the generator — e.g. Opus generates, GPT-5.4 grades), because a same-family judge inflates its own family's outputs by +10–25pp (self-preference bias, verified 2026-05-30). Until the grader reaches ≥85% agreement with a human reviewer on a calibration set, verdicts are written with `calibrated: false` and MUST NOT certify a skill. See `.claude/rules/version-schema-contract.md` and `docs/verdict-semantics.md`.
+A single-model run records **`application_verdict: PROVISIONAL`** with an `eval_last_run` receipt — never `APPLICABLE`. The audit-loop certifying path uses the `representative-generator` role as the measured subject and requires both frontier judges to agree; one frontier judgment alone is at most `PROVISIONAL`. Until the grader reaches ≥85% agreement with a human reviewer on a calibration set, verdicts are written with `calibrated: false` and MUST NOT certify a skill. See `.claude/rules/version-schema-contract.md` and `docs/verdict-semantics.md`.
 
 This is **enforced in the runner, not just documented** (SH-6624). The runner stamps a `certification_tier` from operator declarations and `stampApplicationVerdict` caps `APPLICABLE → PROVISIONAL` for any tier that is not `certifying`:
 
-- **`provisional` (the default)** — no attestation, undeclared families, or same-family. `APPLICABLE` is unreachable. This is the in-code form of "never UNVERIFIED→APPLICABLE without evidence."
-- **`certifying`** — reached ONLY when the operator passes `--certifying` AND declares two *different* vendor families via `--generator-family <F>` and `--grader-family <G>` (e.g. `--generator-family opus --grader-family gpt-5.4`). These flags are a **declaration of provenance, not a model selector** — the runner never selects a model (the operator sets the session model). The declared families are recorded on every history record and on the run summary.
+- **`provisional` (the default)** — no attestation, undeclared identities, lesser grader, or a single-perspective run. `APPLICABLE` is unreachable. This is the in-code form of "never UNVERIFIED→APPLICABLE without evidence."
+- **`certifying`** — reached only when the operator passes `--certifying` and declares a valid measured-generator / grader pairing. The normal audit-loop pairing is `--generator-family representative-generator` plus a top-tier frontier `--grader-family` for each judge direction. These flags are a **declaration of provenance, not a model selector** — the runner never selects a model (the operator sets the session model or the bidirectional wrapper sets the roles). The declared identities are recorded on every history record and on the run summary.
 
 `--single-model` is an additional, stronger override that forces `PROVISIONAL` even on a `certifying` run. Provisional is the safe default; `APPLICABLE` is a deliberate, recorded cross-family act.
 
 ### Copy-paste certifying run (earns `APPLICABLE`)
 
-Earning `application_verdict: APPLICABLE` requires a cross-family dual-run: the `--certifying` flag plus two *different* declared vendor families. Omitting `--certifying`, or declaring the same family on both sides, silently caps the result at `PROVISIONAL`.
+Earning `application_verdict: APPLICABLE` through the audit-loop path requires the bidirectional wrapper: `representative-generator` answers the same cases twice under matched execution profiles, Opus judges one direction, GPT judges the other, and both judge directions must agree. Omitting `--certifying`, leaving model identities unresolved, or running only one judge direction caps the result at `PROVISIONAL`.
 
 ```bash
-# Cross-family certifying run. Model families named by ROLE, not dated version
-# (per workspace AGENTS.md § Model Identity Discipline). The generator and grader
-# MUST be different families (here: anthropic generates, openai/Codex grades).
-APPLICATION_GENERATOR_MODEL=opus APPLICATION_GRADER_MODEL=<codex-current> \
-  node bin/skill-graph.js evaluate \
-    --mode application \
-    --application <skill-dir> \
-    <skill-dir>/evals/application.json \
-    --certifying \
-    --generator-family anthropic --grader-family openai \
-    --grader codex --generator claude \
-    --trials 3
+# Run the normal audit-loop certifying path via the bidirectional wrapper.
+# Model identities are named by ROLE, not dated version.
+node lib/audit/run-bidirectional-eval.js \
+  --mode application \
+  --skill <skill-name> \
+  --skill-dir <skill-dir> \
+  --cwd <skill-graph-root>
 ```
 
-- Drop `--certifying` **or** make `--generator-family` == `--grader-family` → the runner caps `APPLICABLE → PROVISIONAL` (the in-code form of "never certify without cross-family evidence").
-- `--generator-family` / `--grader-family` are a **declaration of provenance, not a model selector** — set the actual models via the env vars / session model.
-- For a same-family PROVISIONAL spot-check (no certification), use the `skill-graph evaluate:gpt-5.5` profile or pass `--single-model`.
+- Direct `evaluate --mode application` calls are useful for spot checks, but one judge direction is lower confidence than the bidirectional wrapper and should be treated as `PROVISIONAL` unless the surrounding orchestration records the second frontier judge direction.
+- For a bounded pilot, the wrapper also accepts `--case-id 1,5` and `--trials 1`; use that only to prove wiring or gather a small sample, not as a final corpus verdict.
+- `--generator-family` / `--grader-family` are a **declaration of provenance, not a model selector** — set the actual models via the env vars / session model when calling the lower-level runner directly.
+- For a PROVISIONAL spot-check, use the `skill-graph evaluate:gpt-5.5` profile or pass `--single-model`.
 
 ## Comparative fields (`criteria[]`, `artifact`)
 

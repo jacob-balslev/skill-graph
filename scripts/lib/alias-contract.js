@@ -2,16 +2,17 @@
 /**
  * Preferred/legacy alias parity checks for Skill Graph frontmatter.
  *
- * The manifest generator supports several transition-period aliases. When both
- * spellings are present, they must carry the same value; otherwise downstream
- * consumers cannot know which spelling is authoritative.
+ * The manifest generator recognizes several historical read aliases. When both
+ * spellings are present, they must carry the same value; otherwise the
+ * canonicalizer cannot know which spelling is authoritative.
  */
 
 'use strict';
 
 // v9 (2026-05-27 per ADR-0019): the `grounding.domain_object` <-> `grounding.subject`
 // alias pair was removed. The single canonical name is now `grounding.subject_matter`.
-// Other v3.1 alias pairs are preserved.
+// Other historical read aliases are accepted by the canonicalizer, but generated
+// manifests emit the canonical names only.
 const ALIAS_PAIRS = [
   // ['type', 'archetype'] removed: both fields were dropped in the v7->v8 clean cut.
   ['freshness', 'reviewed_at'],

@@ -256,7 +256,7 @@ const evalFilePath = path.join(evalsDir, 'application.json');
 fs.writeFileSync(evalFilePath, JSON.stringify({ skill: 'test-skill', cases: [] }));
 
 // 4a. Non-dry-run stamps the verdict. APPLICABLE survives ONLY from a
-// cross-family certifying run with calibrated grading evidence and red-herring
+  // certifying run with calibrated grading evidence and red-herring
 // coverage — so this fixture declares all three evidence fields. Runs without
 // them cap APPLICABLE→PROVISIONAL (covered in test-application-trials-and-certification.js).
 const fakeResult = {

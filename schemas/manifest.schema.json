@@ -264,6 +264,15 @@
               "deprecated"
             ]
           },
+          "project_adoption_stage": {
+            "type": "string",
+            "enum": [
+              "legacy",
+              "current-standard",
+              "experimental-migration",
+              "deprecated"
+            ]
+          },
           "marketplace_tier": {
             "type": "string",
             "enum": ["S", "A", "B", "C"]
@@ -311,6 +320,30 @@
                 "items": {
                   "type": "string"
                 }
+              },
+              "codebase_layer": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "applicable_tasks": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "environment": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "internal_tools": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
               }
             }
           },
@@ -318,12 +351,6 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "adjacent": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
               "related": {
                 "type": "array",
                 "items": {
@@ -343,31 +370,6 @@
                 }
               },
               "suppresses": {
-                "type": "array",
-                "items": {
-                  "oneOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "object",
-                      "additionalProperties": false,
-                      "required": [
-                        "skill"
-                      ],
-                      "properties": {
-                        "skill": {
-                          "type": "string"
-                        },
-                        "reason": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  ]
-                }
-              },
-              "boundary": {
                 "type": "array",
                 "items": {
                   "oneOf": [
@@ -448,6 +450,27 @@
                       }
                     }
                   ]
+                }
+              },
+              "io_contract": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "Optional machine-checkable composition contract. Declares abstract artifact types this skill consumes (`inputs`) and produces (`outputs`). Pass-through from canonical frontmatter.",
+                "properties": {
+                  "inputs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+                    }
+                  },
+                  "outputs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+                    }
+                  }
                 }
               }
             }
@@ -544,25 +567,16 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "runtimes": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
               "agent_runtimes": {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "v3.1 preferred alias for `runtimes`. Pass-through."
-              },
-              "node": {
-                "type": "string"
+                "description": "Agent runtime names required or supported by the skill. Pass-through from canonical frontmatter."
               },
               "node_version": {
                 "type": "string",
-                "description": "v3.1 preferred alias for `node`. Pass-through."
+                "description": "Node.js version requirement. Pass-through from canonical frontmatter."
               },
               "notes": {
                 "type": "string",
@@ -1141,7 +1155,7 @@
                   "UNVERIFIED",
                   "PROVISIONAL"
                 ],
-                "description": "Application-layer verdict (gate 9). The primary quality signal — a skill is only behaviorally certified when this is `APPLICABLE`. `NOT_DISCRIMINATED_CEILING` means baseline saturation made the eval inconclusive; `EQUIVALENT_ON_FRONTIER` means no marginal lift for the measured frontier model on that case set. `UNVERIFIED` means no application assessment has run; `PROVISIONAL` means one model found useful behavior without grader confirmation. Joined from `audit-state.json` into the generated manifest."
+                "description": "Application-layer verdict (gate 9). The primary quality signal — a skill is only behaviorally certified when this is `APPLICABLE`. `NOT_DISCRIMINATED_CEILING` means baseline saturation made the eval inconclusive; `EQUIVALENT_ON_FRONTIER` means no marginal lift for the measured generator on that case set; the enum name is retained for existing receipts. `UNVERIFIED` means no application assessment has run; `PROVISIONAL` means one model found useful behavior without grader confirmation. Joined from `audit-state.json` into the generated manifest."
               },
               "audit_verdict": {
                 "type": "string",
@@ -1198,7 +1212,7 @@
               "definition",
               "mental_model",
               "purpose",
-              "boundary",
+              "concept_boundary",
               "taxonomy",
               "analogy",
               "misconception"
@@ -1215,10 +1229,6 @@
               "purpose": {
                 "type": "string",
                 "description": "What problem the concept solves and the alternative it replaced. Concrete pain point + prior alternative. No protocol length cap — explain as fully as the concept needs. Graded by the comprehension grader's `purpose` dimension (weight 1.0)."
-              },
-              "boundary": {
-                "type": "string",
-                "description": "DEPRECATED alias of `concept_boundary` (ADR-0018 renamed the top-level Understanding field to remove the token collision with the routing edge `relations.suppresses` and legacy `relations.boundary`). Retained for unmigrated skills; the normalizer presents it as `concept_boundary`."
               },
               "concept_boundary": {
                 "type": "string",

@@ -214,8 +214,8 @@ const FIELD_COMMENTS = {
     '# review_cadence — process commitment (quarterly / monthly / annual), not a calendar fact.',
   ],
   runtime_telemetry: [
-    '# runtime_telemetry: optional JSONL feed of real-world success/failure receipts',
-    '# so consumers can corroborate `eval_state`. Omit when no feedback pipeline exists.',
+    '# runtime_telemetry: optional JSONL feed of real-world feedback and audit/eval agent-run receipts',
+    '# so consumers can corroborate `eval_state` and operators can compare agent cost/change.',
   ],
   mental_model: [
     '# mental_model: the primitives of the concept and how they relate. One paragraph.',

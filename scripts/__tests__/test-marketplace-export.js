@@ -21,6 +21,7 @@ const {
   applyExportProjection,
   assertSourceRootIsPortable,
   buildMarketplaceSkillText,
+  checkDescriptionBudget,
   collectCanonicalSkills,
   collectMentionedSlugs,
   exportDescriptionForSkill,
@@ -94,6 +95,14 @@ if (CORPUS_MODE) {
   process.stdout.write(
     'SKIP corpus description-limit + override-parity checks (corpus-completeness — run via `npm run test:marketplace-corpus` / verify:corpus; marketplace:verify enforces the limit in the corpus lane)\n'
   );
+}
+
+{
+  const budget = checkDescriptionBudget([
+    { fm: { name: 'budget-fixture', description: 'Short export description.', relations: {} }, sourceRelPath: 'fixtures/budget-fixture/SKILL.md' },
+  ]);
+  assert(budget.ok === true, 'checkDescriptionBudget: in-memory budget check passes without generated files');
+  assert(budget.skillCount === 1, 'checkDescriptionBudget: reports checked skill count');
 }
 
 const a11y = skills.find(skill => skill.fm.name === 'a11y');

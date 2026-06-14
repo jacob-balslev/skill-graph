@@ -83,7 +83,7 @@ If any step fails, the error message names the rule and the file. Lint output is
 Re-evaluate the cost-benefit when:
 
 - **Your library exceeds 20 skills.** Implicit graph density is hitting; explicit relations start paying back the authoring cost.
-- **You hit a routing failure** that descriptions alone can't fix. `examples`, `anti_examples`, and `relations.boundary` exist for routing discrimination; `relations.disjoint_with` is reserved for formal class-disjointness claims.
+- **You hit a routing failure** that descriptions alone can't fix. `examples`, `anti_examples`, and `relations.suppresses` exist for routing discrimination; `relations.disjoint_with` is reserved for formal class-disjointness claims.
 - **An eval reveals a quality gradient** you want to express in metadata. `eval_state` + `eval_artifacts` + `routing_eval` are the three orthogonal axes.
 - **A grounded skill claims something the codebase no longer supports.** The drift sentinel will surface this — but only if you adopted it before the drift accumulated.
 - **You start authoring skills for a second project** that shares some and diverges on others. Multi-root workspace mode plus `project[]` / `repo[]` belonging references are built for this.
@@ -94,7 +94,7 @@ To set expectations honestly:
 
 - **Not a router.** Skill Graph ships a *reference* router (`scripts/skill-graph-route.js`) to demonstrate why the metadata exists. Production routers should consume the manifest and apply their own scoring. The reference router is intentionally simple.
 - **Not a runtime.** Skill Graph defines the contract and ships the validators. It does not load skills into an agent at request time — that's the consumer's job.
-- **Not a full ontology framework.** The relations are typed (boundary, related, broader, narrower, depends_on, verify_with) but Skill Graph does not implement OWL inference, satisfiability checking, or formal class subsumption. Use `ontology-modeling` if you need that.
+- **Not a full ontology framework.** The relations are typed (`suppresses`, `related`, `broader`, `narrower`, `depends_on`, `verify_with`, `disjoint_with`) but Skill Graph does not implement OWL inference, satisfiability checking, or formal class subsumption. Use `ontology-modeling` if you need that.
 - **Not a proprietary format.** The schema is JSON Schema; code and docs are Apache-2.0 and reusable skill content is CC-BY-4.0. The export transform projects protocol skills to the plain `SKILL.md` format.
 
 ## Where to go next

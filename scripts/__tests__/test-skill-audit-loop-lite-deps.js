@@ -1,6 +1,6 @@
 'use strict';
 
-// Unit test: the LIVE production deps for the bidirectional ENRICH orchestrator
+// Unit test: the LIVE production deps for the bidirectional Skill Audit Loop orchestrator
 // (lib/audit/skill-audit-loop-lite-deps.js). Covers the pure seams (arg builders, claim-output
 // parser, prompt assembly, proposal paths) AND a full DRY-RUN through the real
 // orchestrator (runSkillAuditLoopLite) in a temp dir — proving the wiring path
@@ -53,7 +53,7 @@ check('parseClaimOutput throws on empty / non-JSON output', () => {
 });
 
 console.log('2. Pure seams — paths + CLI routing + prompt assembly');
-check('proposalPaths + mergePaths follow the enrich-pass naming', () => {
+check('proposalPaths + mergePaths follow the improve-pass naming', () => {
   const pp = d.proposalPaths('/run', 'debugging', 'gpt-5.5');
   assert.strictEqual(pp.proposalPath, path.join('/run', 'debugging.gpt-5.5.proposed-SKILL.md'));
   assert.strictEqual(pp.noveltyMemoPath, path.join('/run', 'debugging.gpt-5.5.novelty-memo.md'));
@@ -71,37 +71,37 @@ check('cliForModel routes through the model registry', () => {
   assert.strictEqual(d.cliForModel('mimo'), 'opencode');
   assert.strictEqual(d.cliForModel('gemini'), 'gemini');
 });
-check('claude enrich args are write-capable (bypassPermissions)', () => {
-  const a = d.buildClaudeEnrichArgs('PROMPT', { model: 'opus' });
+check('claude audit args are write-capable (bypassPermissions)', () => {
+  const a = d.buildClaudeAuditArgs('PROMPT', { model: 'opus' });
   assert.ok(a.includes('--permission-mode'));
   assert.strictEqual(a[a.indexOf('--permission-mode') + 1], 'bypassPermissions');
   assert.ok(a.includes('-p') && a.includes('PROMPT'));
 });
-check('codex enrich args use workspace-write sandbox + narrow extra writable root', () => {
-  const a = d.buildCodexEnrichArgs('PROMPT');
+check('codex audit args use workspace-write sandbox + narrow extra writable root', () => {
+  const a = d.buildCodexAuditArgs('PROMPT');
   assert.ok(a.includes('workspace-write'));
   assert.ok(a.includes('--skip-git-repo-check'));
   assert.strictEqual(a[a.length - 1], 'PROMPT');
   // No writableRoots => no -c flag.
   assert.ok(!a.includes('-c'));
   // With a writable root => an explicit sandbox_workspace_write config naming ONLY it.
-  const b = d.buildCodexEnrichArgs('PROMPT', { writableRoots: ['/ws/skill-graph/skill-audit-loop/progress/skill-audits/s/runs/r1'] });
+  const b = d.buildCodexAuditArgs('PROMPT', { writableRoots: ['/ws/skill-graph/skill-audit-loop/progress/skill-audits/s/runs/r1'] });
   const ci = b.indexOf('-c');
   assert.ok(ci !== -1);
   assert.match(b[ci + 1], /sandbox_workspace_write=\{writable_roots=\["\/ws\/skill-graph\/skill-audit-loop\/progress\/skill-audits\/s\/runs\/r1"\]\}/);
 });
-check('buildEnrichPrompt names the exact output paths + private-content scope via template', () => {
-  const p = d.buildEnrichPrompt({ template: 'TEMPLATE', skill: 's', skillDir: '/s', model: 'opus', brief: 'B', proposalPath: '/r/p.md', noveltyMemoPath: '/r/m.md' });
+check('buildImprovePrompt names the exact output paths + private-content scope via template', () => {
+  const p = d.buildImprovePrompt({ template: 'TEMPLATE', skill: 's', skillDir: '/s', model: 'opus', brief: 'B', proposalPath: '/r/p.md', noveltyMemoPath: '/r/m.md' });
   assert.ok(p.includes('TEMPLATE'));
   assert.ok(p.includes('/r/p.md') && p.includes('/r/m.md'));
   assert.ok(p.includes('Your model role: opus'));
 });
-check('buildEnrichPrompt embeds the current SKILL.md so cross-tree FS access is unnecessary', () => {
-  const p = d.buildEnrichPrompt({ template: 'T', skill: 's', skillDir: '/s', model: 'gpt-5.5', brief: 'B', skillBody: '# THE SKILL BODY', proposalPath: '/r/p.md', noveltyMemoPath: '/r/m.md' });
+check('buildImprovePrompt embeds the current SKILL.md so cross-tree FS access is unnecessary', () => {
+  const p = d.buildImprovePrompt({ template: 'T', skill: 's', skillDir: '/s', model: 'gpt-5.5', brief: 'B', skillBody: '# THE SKILL BODY', proposalPath: '/r/p.md', noveltyMemoPath: '/r/m.md' });
   assert.ok(p.includes('# THE SKILL BODY'));
   assert.ok(/embedded/i.test(p));
   // No skillBody => no embedded block.
-  const p2 = d.buildEnrichPrompt({ template: 'T', skill: 's', skillDir: '/s', model: 'opus', brief: 'B', proposalPath: '/r/p.md', noveltyMemoPath: '/r/m.md' });
+  const p2 = d.buildImprovePrompt({ template: 'T', skill: 's', skillDir: '/s', model: 'opus', brief: 'B', proposalPath: '/r/p.md', noveltyMemoPath: '/r/m.md' });
   assert.ok(!/embedded/i.test(p2));
 });
 check('buildCuratePrompt forbids "did not move a score" drops + names ledger path', () => {
@@ -137,7 +137,7 @@ check('B7: buildCuratePrompt renders verifyGaps in a DISTINCT block, not cross-r
   assert.ok(crossIdx !== -1 && verifyIdx > crossIdx, 'verify block follows the cross-review block, not merged into it');
 });
 check('model dispatch uses injected model cwd and scratch env, not the claim cwd/env', () => {
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'enrich-model-env-'));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'audit-model-env-'));
   const modelCwd = path.join(tmp, 'public-skill-graph');
   const skillDir = path.join(tmp, 'skills', 'demo-skill');
   const runDir = path.join(tmp, 'skill-audit-loop', 'progress', 'skill-audits', 'demo-skill', 'runs', 'r1');
@@ -145,7 +145,7 @@ check('model dispatch uses injected model cwd and scratch env, not the claim cwd
   fs.mkdirSync(skillDir, { recursive: true });
   fs.mkdirSync(runDir, { recursive: true });
   fs.mkdirSync(path.join(tmp, 'prompts'), { recursive: true });
-  fs.writeFileSync(path.join(tmp, 'prompts', 'skill-audit-loop-improve-pass.md'), '```\nENRICH TEMPLATE\n```\n');
+  fs.writeFileSync(path.join(tmp, 'prompts', 'skill-audit-loop-improve-pass.md'), '```\nIMPROVE TEMPLATE\n```\n');
   fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: demo-skill\npublic: true\n---\n# Demo\n');
   const seen = [];
   const deps = d.createSkillAuditLoopLiteDeps({
@@ -180,7 +180,7 @@ check('defaults to the parent of skillGraphRoot, honors override', () => {
 
 console.log('4. DRY-RUN — full orchestrator wiring path offline (no LLM, no real SKILL.md)');
 check('dry-run runs claim → propose(both) → curate → anti-loss → keep', () => {
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'enrich-dry-'));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'audit-dry-'));
   const skill = 'demo-skill';
   const skillDir = path.join(tmp, 'skills', skill);
   fs.mkdirSync(skillDir, { recursive: true });
@@ -216,14 +216,14 @@ check('dry-run runs claim → propose(both) → curate → anti-loss → keep', 
 
 console.log('5. Claim ops — per-model PROPOSE = audit, curator = merge, distinct owners (SH-6687)');
 check('claimSlot claims --op audit per model; curate claims --op merge with a distinct AGENT_ID', () => {
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'enrich-claim-'));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'audit-claim-'));
   const skill = 'demo-skill';
   const skillDir = path.join(tmp, 'skills', skill);
   fs.mkdirSync(skillDir, { recursive: true });
   fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: demo-skill\npublic: true\n---\n# Demo\n');
-  // The live researchAndPropose loads the enrich-pass template from <root>/prompts/.
+  // The live researchAndPropose loads the improve-pass template from <root>/prompts/.
   fs.mkdirSync(path.join(tmp, 'prompts'), { recursive: true });
-  fs.writeFileSync(path.join(tmp, 'prompts', 'skill-audit-loop-improve-pass.md'), '```\nENRICH TEMPLATE\n```\n');
+  fs.writeFileSync(path.join(tmp, 'prompts', 'skill-audit-loop-improve-pass.md'), '```\nIMPROVE TEMPLATE\n```\n');
 
   const claims = [];
   const releases = [];
@@ -280,14 +280,14 @@ check('claimSlot claims --op audit per model; curate claims --op merge with a di
 
 console.log('6. applyMerge atomicity (B1) — merged bytes land via rename, no orphan temp');
 check('applyMerge writes merged content via .tmp+rename and leaves no .tmp behind', () => {
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'enrich-apply-'));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'audit-apply-'));
   const skill = 'demo-skill';
   const skillDir = path.join(tmp, 'skills', skill);
   fs.mkdirSync(skillDir, { recursive: true });
   const canonical = path.join(skillDir, 'SKILL.md');
   fs.writeFileSync(canonical, '---\nname: demo-skill\n---\n# Demo\nORIGINAL body.\n');
   const merged = path.join(tmp, 'merged-SKILL.md');
-  const MERGED = '---\nname: demo-skill\npublic: true\n---\n# Demo\nMERGED enriched body.\n';
+  const MERGED = '---\nname: demo-skill\npublic: true\n---\n# Demo\nMERGED improved body.\n';
   fs.writeFileSync(merged, MERGED);
 
   const deps = d.createSkillAuditLoopLiteDeps({ skillGraphRoot: tmp, workspaceRoot: tmp, dryRun: false, dispatch: () => '' });

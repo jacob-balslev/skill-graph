@@ -1,6 +1,6 @@
 # Skill Graph Field Reference
 
-> One section per authored field. Use this when writing or reviewing a `SKILL.md` file.
+> One section per current skill-package field. Use this when writing or reviewing `SKILL.md` plus `audit-state.json`.
 > For the "which value do I pick?" decisions, see [`skill-metadata-protocol/field-decision-guide.md`](field-decision-guide.md).
 > For field groups, conditional requiredness, and schema strictness rules, see [`skill-metadata-protocol/design-rationale.md`](design-rationale.md).
 
@@ -12,7 +12,7 @@ The field reference is split across three coordinated documents. Use whichever f
 
 | Doc | Genre | When to read |
 |---|---|---|
-| [`SKILL_METADATA_PROTOCOL_field-reference.md`](field-reference.md) (this doc) | **Hand-curated prose reference.** Field-by-field, with worked examples, lint notes, and cross-cutting guidance. | When authoring or reviewing a SKILL.md and you want examples and "when to use" rules alongside the schema-canonical definition. |
+| [`SKILL_METADATA_PROTOCOL_field-reference.md`](field-reference.md) (this doc) | **Hand-curated prose reference.** Field-by-field, with worked examples, lint notes, and cross-cutting guidance. | When authoring or reviewing a skill package and you want examples and "when to use" rules alongside the schema-canonical definition. |
 | [`SKILL_METADATA_PROTOCOL_field-reference.generated.md`](field-reference.generated.md) | **Auto-generated index.** Built from `schemas/SKILL_METADATA_PROTOCOL_schema.json` description strings by `scripts/build-field-reference.js`. Drift-free against the schema. | When you want the machine-guaranteed list of every field, every type, every pattern, every enum value. The fastest way to verify what the schema actually accepts today. |
 | [`field-rationale.md`](../docs/field-rationale.md) | **Hand-authored "why this field" rationale.** Covers the ~10 fields whose meaning is non-obvious from the schema description (`scope`, `eval_artifacts`, `eval_state`, `routing_eval`, `relations.depends_on`, `relations.verify_with`, `relations.broader`, `grounding.evidence_priority`, `lifecycle.review_cadence`, `portability.readiness`). | When you understand *what* a field stores but want to know *why the field exists at all* and *what the common confusion looks like*. |
 
@@ -27,8 +27,7 @@ The schema is the single source of truth for shape; this doc is the source of tr
 **Rules.**
 - Must be the integer `8` or the string `"8"` for current skills.
 - Start every new skill at the current schema version. Do not downgrade.
-- Prior contract shapes, including v7, live in git history and are not accepted by the live schema.
-- Older migration notes live in `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Schema contract`; do not restate old versions here as the current contract.
+- Historical contract shapes live in ADRs, CHANGELOG, and git history; this file describes the current authoring contract.
 
 **Versioning semantics (policy).** The integer signals *breaking vs non-breaking* evolution. A minor/patch axis is intentionally not surfaced on this field; additive schema changes do not require consumers to migrate, so no version bump is emitted.
 
@@ -118,7 +117,7 @@ name: shopify
 
 **Purpose.** A short description of what the skill is about. Identifies the subject; does not prescribe activation.
 
-Activation, trigger, and boundary semantics belong to the dedicated fields built for them:
+Activation, trigger, and exclusion semantics belong to the dedicated fields built for them:
 
 | Concern | Field |
 |---|---|
@@ -127,7 +126,7 @@ Activation, trigger, and boundary semantics belong to the dedicated fields built
 | Realistic prompts the skill should activate for | `examples` |
 | Near-miss prompts that should activate a different skill | `anti_examples` |
 | File-surface activation | `paths` |
-| Routing-layer exclusion edges to other skills | `relations.suppresses` (`boundary` legacy alias) |
+| Routing-layer exclusion edges to other skills | `relations.suppresses` |
 | Project-affiliation filter | `project` |
 
 **Rules.**
@@ -254,12 +253,10 @@ taxonomy_domain: ecommerce/integrations/shopify
 
 **Purpose.** PRD-style free-text statement of what this skill teaches and what it does not. Mirrors the body `## Coverage` plus `## Do NOT Use When` sections at the frontmatter level for fast scanning.
 
-**Repurpose.** Earlier, `scope` was a closed enum (`portable` / `workspace` / `project`) that classified deployment-targeting. The deployment-target role first moved to an interim `deployment_target` enum (with the `workspace` value removed), then to the boolean `public` gate (ADR-0017 amendment); `scope` was repurposed to a free-text PRD-style field. The repurpose resolves the long-standing collision with the PRD sense of "in/out of scope" used freely in body prose. See the ADR-0017 amendment of 2026-05-27.
-
 **Rules.**
 - Required. String. No enum constraint.
 - One paragraph or two. Author what the skill teaches and what it explicitly does not teach.
-- Do not duplicate `description` (the routing contract) or `## Coverage` (the bulleted scope map). `scope:` is the at-a-glance complement — a reader scanning frontmatter sees what's in/out without opening the body.
+- Do not duplicate `description` (the topical summary) or `## Coverage` (the bulleted scope map). `scope:` is the at-a-glance complement — a reader scanning frontmatter sees what's in/out without opening the body.
 
 **Example.**
 ```yaml
@@ -275,8 +272,6 @@ scope: "Controlled classification systems with explicit retrieval-task analysis.
 ## `public`
 
 **Purpose.** Publishability gate — is this skill safe for public release to the skills.sh marketplace? It is the single switch the marketplace exporter (`scripts/export-marketplace-skills.js`) filters on, and the machine enforcement of the HARD private-content boundary.
-
-**History.** Replaces the `deployment_target` enum (`portable` / `project`). Publishability — not deployment location — is what the export gate actually needs: a skill is excluded from the public surface because it carries private data, not because it happens to be project-coupled. Project-grounding is now carried independently by `grounding` + `project[]`. Migration alias (applied by the normalizer): `deployment_target: portable` → `public: true`; `deployment_target: project` → `public: false` (the conservative default — a project-grounded skill is assumed private until the audit loop confirms it is leak-free). See the ADR-0017 amendment.
 
 **Allowed values.** A boolean.
 
@@ -327,7 +322,7 @@ project:
 
 **When to use.** When the skill is meaningfully coupled to one or more projects. Required in practice when the skill is project-anchored (the `project[]` array names *which* projects it belongs to).
 
-**When NOT to use.** Truly ambient `portable` skills with no project affiliation.
+**When NOT to use.** Truly ambient skills with no project affiliation.
 
 ---
 
@@ -347,7 +342,7 @@ repo:
     url: https://github.com/jacob-balslev/skill-graph
 ```
 
-**When to use.** When the skill is sourced from a specific repo (the common case for project-targeted skills). Optional but recommended on portable skills too, since it makes belonging-entity identity queryable instead of buried in the URN.
+**When to use.** When the skill is sourced from a specific repo. Optional but recommended when it makes belonging-entity identity queryable instead of buried in the URN.
 
 **When NOT to use.** Truly ambient skills with no source repo (rare).
 
@@ -417,14 +412,12 @@ reviewed_at: "2026-05-12"
 
 **Purpose.** Records when the skill was last verified against its truth sources (code, docs, external specs) AND stores content hashes of those truth sources at the time of verification. The stored hashes turn `drift_check` from a self-asserted date into evidence the drift sentinel can verify. Distinct from `freshness` — a skill can be editorially fresh but technically drifted.
 
-**Shape change in v3.** The v2 field was a date string. The v3 field is an object with a required `last_verified` date and an optional `truth_source_hashes` map. The v2 scalar form is rejected as a type error under the current schema. Historical codemods were retired by ADR 0014; recover them from git history only when investigating old data.
-
 **Rules.**
 - Object with one required sub-field and one optional sub-field.
 - `last_verified`: ISO 8601 date string (`YYYY-MM-DD`).
 - `truth_source_hashes`: optional map of normalized truth-source key -> SHA-256 hex digest.
 - Keys must match the normalized form produced from `grounding.truth_sources`: `path` for whole-file sources, `path#Lstart-Lend` for line ranges, and `path#anchor` for anchor-only sources. The drift sentinel (`scripts/skill-graph-drift.js`) reports DRIFT when any live hash differs from the recorded hash, BROKEN when a local truth source is missing, STALE when the lifecycle window is exceeded, NO_BASELINE when `truth_source_hashes` is absent but local truth sources are declared, and EXTERNAL_UNHASHED when a URL truth source is valid but was not fetched on this run (URL fetching is opt-in via `--fetch-external`, curl-backed; the default run stays network-free).
-- For ambient/portable skills (no `project[]`) with no external truth sources, `drift_check.last_verified` equals `freshness` and `truth_source_hashes` is omitted.
+- For ambient skills (no `project[]`) with no external truth sources, `drift_check.last_verified` equals `freshness` and `truth_source_hashes` is omitted.
 - Record hashes with `node scripts/skill-graph-drift.js --record --apply <skill-path>`; preview without `--apply`.
 - A `drift_check.last_verified` date significantly older than `freshness` is a warning sign that editorial updates have outpaced verification.
 
@@ -448,13 +441,11 @@ drift_check:
 
 **When NOT to use.** Do not fabricate hashes. If you cannot compute them with the drift tool, omit `truth_source_hashes` and accept a NO_BASELINE state until you can run the tool. URL truth sources are valid grounding references, but the built-in drift sentinel reports them as EXTERNAL_UNHASHED unless a separate fetch-and-hash workflow records evidence.
 
-**Migration from v2.** v2 used a single date string: `drift_check: "2026-04-15"`. v3 requires an object: `drift_check:\n  last_verified: "2026-04-15"`. The codemod handles this transformation automatically.
-
 ---
 
 ## `last_audited`
 
-**Purpose.** ISO date of the most recent audit run that produced a recorded verdict for this skill. Introduced with the v6 Audit Status and retained in v7 — a flat set of top-level fields that surface audit state without requiring readers to parse nested audit artifact files.
+**Purpose.** ISO date of the most recent audit run that produced a recorded verdict for this skill.
 
 **Rules.**
 - Optional. ISO 8601 date string (`YYYY-MM-DD`).
@@ -474,7 +465,7 @@ last_audited: "2026-05-16"
 
 ## `last_changed`
 
-**Purpose.** ISO date of the last meaningful content change to the SKILL.md. Distinct from `freshness` (editorial review date) and `last_audited` (audit run date). Introduced with the v6 Audit Status and retained in v7.
+**Purpose.** ISO date of the last meaningful content change to the SKILL.md. Distinct from `freshness` (editorial review date) and `last_audited` (audit run date).
 
 **Rules.**
 - Optional. ISO 8601 date string (`YYYY-MM-DD`).
@@ -490,7 +481,7 @@ last_changed: "2026-05-14"
 
 ## `structural_verdict`
 
-**Purpose.** Form-layer verdict produced by gates 1–2 and 7 of the skill-audit loop (schema lint, manifest census, concept-card shape). Part of the v7 Audit Status. Replaces the structural slice of the v6 `audit_verdict` aggregate.
+**Purpose.** Form-layer verdict produced by gates 1–2 and 7 of the skill-audit loop (schema lint, manifest census, concept-section shape).
 
 **Allowed values.**
 
@@ -515,7 +506,7 @@ structural_verdict: PASS
 
 ## `truth_verdict`
 
-**Purpose.** Truth-layer verdict produced by gates 3–6 of the skill-audit loop (truth-source catalog, drift sentinel, test coverage, claim verification). Part of the v7 Audit Status. Replaces the truth slice of the v6 `audit_verdict` aggregate.
+**Purpose.** Truth-layer verdict produced by gates 3–6 of the skill-audit loop (truth-source catalog, drift sentinel, test coverage, claim verification).
 
 **Allowed values.**
 
@@ -540,7 +531,7 @@ truth_verdict: PASS
 
 ## `comprehension_verdict`
 
-**Purpose.** Comprehension-layer verdict produced by gate 8 (the comprehension grader on `evals/comprehension.json`). Part of the v7 Audit Status. Demoted in v7: never alone certifies a skill as useful.
+**Purpose.** Comprehension-layer verdict produced by gate 8 (the comprehension grader on `evals/comprehension.json`). Never alone certifies a skill as useful.
 
 **Allowed values.**
 
@@ -550,14 +541,14 @@ truth_verdict: PASS
 | `PROVISIONAL` | A single competent model ran the comprehension assessment; useful evidence, but lower confidence than the independent dual-run grader |
 | `SHALLOW` | The skill recites the concept but does not deepen agent understanding |
 | `REDUNDANT` | Baseline already saturated — the foundation model already knows the concept from training |
-| `SKIPPED_BASELINE_HIGH` | Early-skip: `avg_primary_baseline >= 1.0` after the first 2 evals, so the dual-run was aborted (v7 demotion behaviour) |
+| `SKIPPED_BASELINE_HIGH` | Early-skip: `avg_primary_baseline >= 1.0` after the first 2 evals, so the dual-run was aborted |
 | `NA` | The skill has no `evals/comprehension.json` |
 | `UNVERIFIED` | Initial state before any grader run |
 
 **Rules.**
 - Optional. Defaults to `UNVERIFIED` when absent.
 - Written by the comprehension grader or a documented single-model self-assessment audit; do not hand-author without evidence.
-- Demoted in v7: the comprehension grader runs on a cheap model (Haiku 4.5 / Gemini Flash) and exits early when baseline is already high. See ADR 0011 Change 3.
+- The comprehension grader runs on a cheap model (Haiku 4.5 / Gemini Flash) and may exit early when baseline is already high. See ADR 0011 Change 3.
 - This verdict is advisory. It never alone determines a skill's usefulness — that authority lives on `application_verdict`.
 
 **Example.**
@@ -569,7 +560,7 @@ comprehension_verdict: SKIPPED_BASELINE_HIGH
 
 ## `application_verdict`
 
-**Purpose.** Application-layer verdict produced by gate 9 (the application grader on `evals/application.json`). Part of the v7 Audit Status. The **primary quality signal** in v7 — a skill is only behaviorally certified when this is `APPLICABLE`.
+**Purpose.** Application-layer verdict produced by gate 9 (the application grader on `evals/application.json`). This is the **primary quality signal** — a skill is only behaviorally certified when this is `APPLICABLE`.
 
 **Allowed values.**
 
@@ -583,7 +574,7 @@ comprehension_verdict: SKIPPED_BASELINE_HIGH
 | `HARMFUL` | Negative delta — the agent makes worse decisions with the skill loaded. SkillsBench (arXiv 2602.12670) found 19% of evaluated skills exhibit this. Active skills with this verdict must be removed from the corpus or replaced by a newly evaluated non-HARMFUL version. |
 | `MIXED` | Verdict varies across cases — some applicable, some redundant or false-positive |
 | `FALSE_POSITIVE` | The skill over-triggers — applies on cases where its expertise does not apply |
-| `UNVERIFIED` | Default for the v6→v7 corpus migration — no application audit has run on this skill yet |
+| `UNVERIFIED` | No application audit has run on this skill yet |
 
 **Rules.**
 - Optional. Defaults to `UNVERIFIED` when absent.
@@ -599,21 +590,9 @@ application_verdict: APPLICABLE
 
 ---
 
-## `audit_verdict` *(deprecated)*
-
-**Purpose.** DEPRECATED in v7. Pre-v7 single aggregate verdict. Replaced by four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`). See [ADR 0011](../docs/adr/0011-split-audit-verdict-into-four-verdicts.md).
-
-**Why deprecated.** The single field compressed four independent layers — form, truth, comprehension, behavior — into one PASS/FAIL signal that masqueraded as a quality verdict. A skill could be lint-clean (`audit_verdict: PASS`) while being behaviorally redundant or harmful, and the reader had no way to tell. The four-verdict split lets each layer surface independently. See ADR 0014 (canonical-only schema files); the migration procedure lives in git history.
-
-**Read behavior post-v7.** Tools that read `audit_verdict` for back-compat on unmigrated v6 skills can continue to do so, but the canonical Audit Status surface is the four discrete verdicts. The codemod at `scripts/migrate-skill-v6-to-v7.js` strips `audit_verdict` from migrated skills.
-
-**Pre-v7 allowed values (historical).** `PASS` | `PASS_WITH_FIXES` | `PARTIAL` | `FAIL` | `UNKNOWN`.
-
----
-
 ## `eval_score`
 
-**Purpose.** Numeric score from the most recent eval run, on the 0.0–5.0 scale used by `scripts/skill-audit.js`. Introduced with the v6 Audit Status and retained in v7.
+**Purpose.** Numeric score from the most recent eval run, on the 0.0–5.0 scale used by the audit loop.
 
 **Rules.**
 - Optional. Float, range 0.0–5.0.
@@ -629,7 +608,7 @@ eval_score: 4.2
 
 ## `eval_failed_ids`
 
-**Purpose.** List of eval case IDs that failed in the most recent eval run. Introduced with the v6 Audit Status and retained in v7. Enables fast lookup of which specific cases a skill is failing without opening the full scorecard.
+**Purpose.** List of eval case IDs that failed in the most recent eval run. Enables fast lookup of which specific cases a skill is failing without opening the full scorecard.
 
 **Rules.**
 - Optional. Array of strings (eval case ID strings, matching `id` fields in the eval JSON).
@@ -645,7 +624,7 @@ eval_failed_ids: ["case-03", "case-07"]
 
 ## `lint_verdict`
 
-**Purpose.** The verdict from the most recent lint run against this skill. Introduced with the v6 Audit Status and retained in v7 as the per-script signal that can roll up into `structural_verdict`.
+**Purpose.** The verdict from the most recent lint run against this skill; the per-script signal can roll up into `structural_verdict`.
 
 **Allowed values.**
 
@@ -668,7 +647,7 @@ lint_verdict: PASS
 
 ## `drift_status`
 
-**Purpose.** The result of the most recent drift check for this skill. Introduced with the v6 Audit Status and retained in v7 as the per-script signal that can roll up into `truth_verdict`.
+**Purpose.** The result of the most recent drift check for this skill; the per-script signal can roll up into `truth_verdict`.
 
 **Allowed values.**
 
@@ -766,14 +745,14 @@ eval_state: passing
 - `present` implies the eval artifacts include routing or trigger assertions, not just content quality.
 - Most starter skills default to `absent` — routing coverage is a deeper authoring step.
 
-**Enforcement.** `routing_eval: present` is a verifiable claim. The harness at `scripts/skill-graph-routing-eval.js` runs every `examples[]` entry through `skill-graph-route.js` and asserts the skill wins; runs every `anti_examples[]` entry and asserts the winner is NOT this skill AND (if non-null) is named in `relations.suppresses[]` (or the legacy `boundary[]` alias). A skill that declares `present` must satisfy two harness gates:
+**Enforcement.** `routing_eval: present` is a verifiable claim. The harness at `scripts/skill-graph-routing-eval.js` runs every `examples[]` entry through `skill-graph-route.js` and asserts the skill wins; runs every `anti_examples[]` entry and asserts the winner is NOT this skill AND (if non-null) is named in `relations.suppresses[]`. A skill that declares `present` must satisfy two harness gates:
 
 1. Both `examples` and `anti_examples` are populated — the harness needs prompts to evaluate.
 2. Running `node scripts/skill-graph-routing-eval.js --skill <name>` returns verdict `PASS` for the skill.
 
 A skill whose harness run contains any `FAIL` case cannot honestly claim `present`; the routing-eval output surfaces each failing prompt with the router's actual decision. A `COVERAGE_GAP` verdict (the anti-example correctly avoids this skill but no other skill absorbs it) is informational and does not block `present` — the anti-example did its job; the coverage-gap signal is for the next authoring iteration. Prefer `absent` until the harness agrees — honesty over green checkmarks.
 
-**Current status of the starter library.** As of the `[Unreleased]` entry, all eight starters declare `routing_eval: present` and pass the harness 8-of-8 (verified by `node scripts/skill-graph-routing-eval.js --only-asserted`). Each starter's `examples[]` activate the skill correctly and each `anti_examples[]` route to the appropriate boundary owner. The route flips `present` were earned by tightening keywords, splitting `examples` from `anti_examples`, and populating `relations.suppresses[]` with explicit same-domain exclusion targets. New skills should default to `absent` until the harness agrees — honesty over green checkmarks remains the rule.
+**Current status.** New skills should default to `absent` until the harness agrees. A `present` value is earned by tightening keywords, splitting `examples` from `anti_examples`, and populating `relations.suppresses[]` with explicit same-domain exclusion targets.
 
 **Example (preferred — production starters).**
 ```yaml
@@ -800,12 +779,12 @@ routing_eval: absent
 | Value | Meaning |
 |---|---|
 | `absent` | No comprehension grading is declared |
-| `present` | A comprehension eval exists and the five flat Understanding fields are required (legacy nested `concept` block accepted for back-compat only) |
+| `present` | A comprehension eval exists and the five flat Understanding fields are required |
 
 **Rules.**
 - Optional in v3. Omitted means `absent`.
 - Independent of `routing_eval` and `eval_state`.
-- `present` requires the five flat Understanding fields (`mental_model`, `purpose`, `concept_boundary`, `analogy`, `misconception`) by schema rule; the legacy nested `concept` block is accepted for back-compat only (flat fields win when both are present).
+- `present` requires the five flat Understanding fields (`mental_model`, `purpose`, `concept_boundary`, `analogy`, `misconception`) by schema rule.
 
 **Example.**
 ```yaml
@@ -820,29 +799,29 @@ comprehension_state: present
 
 ## `mental_model`
 
-**Purpose.** v6 flat form of `concept.mental_model`. The primitives, metaphors, or operative principles an agent needs to reason about this subject. Describes *how* to think about the subject — the reasoning substrate, not a procedure.
+**Purpose.** The primitives, metaphors, or operative principles an agent needs to reason about this subject. Describes *how* to think about the subject — the reasoning substrate, not a procedure.
 
 **Rules.**
 - Optional. String.
-- Required when `comprehension_state: present` and using the v6 flat form (instead of nested `concept` block).
-- Must be distinct from `purpose` (which covers *why* the concept exists) and `boundary` (which covers *what it is not*).
+- Required when `comprehension_state: present`.
+- Must be distinct from `purpose` (which covers *why* the concept exists) and `concept_boundary` (which covers *what it is not*).
 
 **Example.**
 ```yaml
 mental_model: "Start from entities, cardinality, optionality, ownership, and lifecycle."
 ```
 
-**See also.** `concept` (v5 nested block), `purpose`, `boundary`.
+**See also.** `purpose`, `concept_boundary`.
 
 ---
 
 ## `purpose`
 
-**Purpose.** v6 flat form of `concept.purpose`. The problem this concept solves and what it replaced or improved upon. Answers "why does this concept exist?"
+**Purpose.** The problem this concept solves and what it replaced or improved upon. Answers "why does this concept exist?"
 
 **Rules.**
 - Optional. String.
-- Required when `comprehension_state: present` and using the v6 flat form.
+- Required when `comprehension_state: present`.
 
 **Example.**
 ```yaml
@@ -853,7 +832,7 @@ purpose: "It prevents persistence shape from smuggling in a false domain model."
 
 ## `concept_boundary`
 
-**Purpose.** An explicit statement of what the concept is **not** — adjacent concepts the agent might confuse it with. Canonical name as of ADR-0018, renamed from the top-level Understanding field `boundary` so the token no longer collides with the routing edge `relations.suppresses` and its legacy `relations.boundary` alias.
+**Purpose.** An explicit statement of what the concept is **not** — adjacent concepts the agent might confuse it with. This is the Understanding field, distinct from the routing edge `relations.suppresses`.
 
 **Rules.**
 - Optional. String.
@@ -868,23 +847,13 @@ concept_boundary: "It is not database tuning, UI information architecture, or AP
 
 ---
 
-## `boundary`
-
-**Purpose.** DEPRECATED alias of `concept_boundary` (renamed per ADR-0018 to remove the token collision with `relations.suppresses` / legacy `relations.boundary`). Retained only for skills not yet migrated; the normalizer presents it as `concept_boundary`, and `concept_boundary` wins when both are present. New skills author `concept_boundary`.
-
-**Rules.**
-- Optional. String. Do not author in new skills — use `concept_boundary`.
-- Structural removal of this alias is CONTENT-mode work the audit loop drains per-skill.
-
----
-
 ## `analogy`
 
-**Purpose.** v6 flat form of `concept.analogy`. A single structural analogy that helps an agent grasp the concept's shape. Graded on both correct application AND correct identification of the analogy's limits (C6 rubric).
+**Purpose.** A single structural analogy that helps an agent grasp the concept's shape. Graded on both correct application AND correct identification of the analogy's limits.
 
 **Rules.**
 - Optional. String.
-- Required when `comprehension_state: present` and using the v6 flat form.
+- Required when `comprehension_state: present`.
 - Weight 0.5 in the schema — the lowest of the concept-block fields. Analogy is a teaching aid, not a load-bearing primitive.
 
 **Example.**
@@ -896,13 +865,13 @@ analogy: "Like drawing load-bearing walls before choosing interior paint."
 
 ## `misconception`
 
-**Purpose.** v6 flat form of `concept.misconception`. The single most common wrong belief about the concept that agents and practitioners hold. Graded on whether the agent corrects it unprompted when the misconception is embedded in a probe (C7 rubric).
+**Purpose.** The single most common wrong belief about the concept that agents and practitioners hold. Graded on whether the agent corrects it unprompted when the misconception is embedded in a probe.
 
 **Rules.**
 - Optional. String.
-- Required when `comprehension_state: present` and using the v6 flat form.
-- Complements `boundary`: `boundary` describes adjacent concepts; `misconception` describes wrong beliefs *about this concept itself*.
-- Not directly weighted in the schema; complements `boundary` (weight 1.5).
+- Required when `comprehension_state: present`.
+- Complements `concept_boundary`: `concept_boundary` describes adjacent concepts; `misconception` describes wrong beliefs *about this concept itself*.
+- Not directly weighted in the schema; complements `concept_boundary` (weight 1.5).
 
 **Example.**
 ```yaml
@@ -1003,6 +972,32 @@ stability: stable
 
 ---
 
+## `project_adoption_stage`
+
+**Purpose.** Categorizes a skill's status within the local project context. Helps teams understand which patterns are active standards versus legacy or experimental migrations. Added 2026-06-12.
+
+**Allowed values.**
+
+| Value | Meaning |
+|---|---|
+| `legacy` | Old patterns being phased out |
+| `current-standard` | Active, recommended patterns |
+| `experimental-migration` | New patterns under test |
+| `deprecated` | Do not use |
+
+**Rules.**
+- Optional string enum.
+- Projects into the manifest under `skill.project_adoption_stage`.
+
+**Example.**
+```yaml
+project_adoption_stage: current-standard
+```
+
+**When to use.** For project-anchored skills where communicating the adoption lifecycle of the pattern is important for the team.
+
+---
+
 ## `marketplace_tier`
 
 **Purpose.** Publication priority for the public marketplace at `github.com/jacob-balslev/skills` / `skills.sh`. Drives which collection table or hero block a skill appears in. Omit entirely for skills that should not be published.
@@ -1088,7 +1083,7 @@ examples:
 
 **Rules.**
 - Optional array of strings.
-- Pair with `relations.suppresses` — every `anti_examples` entry should correspond to a concrete other skill the router should route to. Name that skill in `relations.suppresses` with an object-form `{skill, reason}` explaining why this skill owns its territory over that target. Legacy `relations.boundary` is accepted for unmigrated skills only.
+- Pair with `relations.suppresses` — every `anti_examples` entry should correspond to a concrete other skill the router should route to. Name that skill in `relations.suppresses` with an object-form `{skill, reason}` explaining why this skill owns its territory over that target.
 - Do not dump generic off-topic prompts here — this is not a blocklist. Use it only for near-misses the router keeps getting wrong.
 - The reference router gives an exact-match penalty when the current query matches an authored anti-example, so the declaring skill cannot win that known negative case.
 - Groups under `activation.anti_examples` in the manifest projection.
@@ -1099,7 +1094,7 @@ anti_examples:
   - "refactor this function to be more testable"     # → refactor skill, not this one
   - "why is my test failing after the refactor?"     # → debugging skill
 relations:
-  boundary:
+  suppresses:
     - skill: refactor
       reason: "refactor covers behavior-preserving code modification; this skill is test-strategy planning"
     - skill: debugging
@@ -1138,30 +1133,30 @@ license: MIT
 
 **Purpose.** Declares environment requirements for skills that have specific runtime needs — target agent runtimes, Node.js version, and free-text notes for anything else.
 
-**Shape in the logical contract.** Protocol-native frontmatter uses a structured object so consumers can parse `runtimes` and `node` without heuristics. The Agent-Skills-compatible physical encoding keeps `compatibility` as a top-level base-field string; `normalizeFrontmatter()` preserves that scalar while lifting the rest of `metadata:` back into protocol shape.
+**Shape in the logical contract.** Protocol-native frontmatter uses a structured object so consumers can parse `agent_runtimes` and `node_version` without heuristics. The Agent-Skills-compatible physical encoding keeps `compatibility` as a top-level base-field string; `normalizeFrontmatter()` preserves that scalar while lifting the rest of `metadata:` back into protocol shape.
 
 **Rules.**
 - Object with up to three optional sub-fields.
 - Omit the field entirely when the skill is fully generic with no environment requirements.
-- `runtimes`: array of strings naming target agent runtimes with optional version constraints (e.g., `claude-code>=2.0`, `cursor>=0.40`). Use short stable identifiers.
-- `node`: Node.js version constraint as a string (e.g., `>=18`).
+- `agent_runtimes`: array of strings naming target agent runtimes with optional version constraints (e.g., `claude-code>=2.0`, `cursor>=0.40`). Use short stable identifiers.
+- `node_version`: Node.js version constraint as a string (e.g., `>=18`).
 - `notes`: free-text supplement, capped at 500 characters.
 
 **Sub-fields.**
 
 | Sub-field | Type | Meaning |
 |---|---|---|
-| `runtimes` | string[] | Target agent runtimes with optional version constraints |
-| `node` | string | Node.js version constraint |
+| `agent_runtimes` | string[] | Target agent runtimes with optional version constraints |
+| `node_version` | string | Node.js version constraint |
 | `notes` | string (≤500 chars) | Free-text supplement |
 
 **Example.**
 ```yaml
 compatibility:
-  runtimes:
+  agent_runtimes:
     - claude-code>=2.0
     - cursor>=0.40
-  node: ">=18"
+  node_version: ">=18"
   notes: Requires PostgreSQL 15+ when using the `neon` adapter.
 ```
 
@@ -1260,7 +1255,7 @@ paths:
   - src/webhooks/shopify.ts
 ```
 
-**When to use.** For project-anchored skills that govern specific files or directories. Omit for ambient/portable skills.
+**When to use.** For project-anchored skills that govern specific files or directories. Omit for ambient, project-agnostic skills.
 
 **When NOT to use.** Generic skills with no specific file surfaces. Do not add paths as aspirational documentation — only add paths the skill actively covers.
 
@@ -1298,6 +1293,77 @@ dependencies:
 
 ---
 
+## `codebase_layer`
+
+**Purpose.** Classifies which layer of the application architecture the skill applies to. Helps agents and developers find skills relevant to a specific part of the stack. Added 2026-06-12.
+
+**Rules.**
+- Array of strings. Optional.
+- Free-text, but common values include `api`, `ui`, `database`, `infrastructure`, `tests`.
+- Projects into the manifest under `activation.codebase_layer`.
+
+**Example.**
+```yaml
+codebase_layer:
+  - api
+  - database
+```
+
+---
+
+## `applicable_tasks`
+
+**Purpose.** The concrete types of tasks the skill is meant to assist with. Added 2026-06-12.
+
+**Rules.**
+- Array of strings. Optional.
+- Free-text, but common values include `debugging`, `refactoring`, `code-generation`, `code-review`.
+- Projects into the manifest under `activation.applicable_tasks`.
+
+**Example.**
+```yaml
+applicable_tasks:
+  - code-generation
+  - debugging
+```
+
+---
+
+## `environment`
+
+**Purpose.** Target execution environment constraints. Helps distinguish between frontend, backend, or specific OS patterns. Added 2026-06-12.
+
+**Rules.**
+- Array of strings. Optional.
+- Free-text, but common values include `browser`, `node`, `edge`, `ios`, `android`.
+- Projects into the manifest under `activation.environment`.
+
+**Example.**
+```yaml
+environment:
+  - browser
+  - edge
+```
+
+---
+
+## `internal_tools`
+
+**Purpose.** Private, company-specific or team-specific tools required for the skill to be relevant. Added 2026-06-12.
+
+**Rules.**
+- Array of strings. Optional.
+- Distinct from `dependencies` which target public registry packages.
+- Projects into the manifest under `activation.internal_tools`.
+
+**Example.**
+```yaml
+internal_tools:
+  - acme-deploy-cli
+```
+
+---
+
 <!-- workspace_tags REMOVED (see ADR-0017 amendment, 2026-05-27).
      Use `project` (array of {handle, role}) for project belonging-entity identity.
      The former workspace_tags field + workspace.projects semantic-tag mapping were
@@ -1319,7 +1385,7 @@ These are **Claude Code native frontmatter fields**, not Skill Graph protocol fi
 **Rules.**
 - This is a Claude Code runtime control, not a Skill Graph routing or classification field. Routers, manifest generators, and lint scripts ignore it.
 - Only author on project-anchored skills where the project's runner infrastructure explicitly invokes the skill in an autonomous (non-interactive) mode.
-- Do not author on portable skills or skills invoked interactively.
+- Do not author on project-agnostic skills or skills invoked interactively.
 
 **Example.**
 ```yaml
@@ -1355,7 +1421,7 @@ disallowed-tools: AskUserQuestion
 **Purpose.** Graph semantics between skills. Each key in the `relations` object describes a different type of relationship. Together they form the edges of the skill graph.
 
 **Rules.**
-- Object with up to eight optional edge keys: `related` (preferred) / `adjacent` (deprecated alias), `broader`, `narrower`, `suppresses` (preferred) / `boundary` (deprecated alias), `disjoint_with`, `verify_with`, `depends_on` — plus one optional non-edge composition key, `io_contract` (see below).
+- Object with seven optional edge keys: `related`, `broader`, `narrower`, `suppresses`, `disjoint_with`, `verify_with`, `depends_on` — plus one optional non-edge composition key, `io_contract` (see below).
 - Every edge target must be the `name` of an existing skill. Use graph/manifest review and routing audits to catch dangling targets across all eight edge keys; `scripts/skill-lint.js` validates schema shape, not graph existence.
 - Relations are directional from the skill that declares them (A `depends_on` B means A depends on B, not the reverse). `related` is symmetric by SKOS convention; `suppresses` is asymmetric (A `suppresses: B` does not imply B `suppresses: A`).
 
@@ -1363,13 +1429,11 @@ disallowed-tools: AskUserQuestion
 
 | Key | Meaning | Item shape | W3C mapping |
 |---|---|---|---|
-| `related` *(v3.1 preferred)* | Related skills for discoverability and recommended co-reading. Symmetric; no dependency implied. | string | `skos:related` |
-| `adjacent` *(deprecated alias of `related`)* | v3.0 name; still valid in v3.x. Lint warns. Removed in v4. | string | `skos:related` |
-| `broader` *(v3.1)* | Cross-skill generalisation — target is more general than this skill. Triggers Stage 4b parent recall in `scripts/skill-graph-route.js`. | string | `skos:broader` |
-| `narrower` *(v3.1)* | Cross-skill specialisation — target is more specific than this skill. Inverse of `broader`; not used to drive co-load (a parent match should not pull in arbitrary children). | string | `skos:narrower` |
-| `suppresses` *(canonical, ADR 0018)* | Routing-layer score-aware exclusion guard — skills this skill suppresses from co-routing when this skill wins or ties. Not a defer-to-target pointer. | string OR `{skill, reason}` | `sg:disjointOwnership` |
-| `boundary` *(deprecated alias of `suppresses`)* | Legacy v3.1 name retained for unmigrated skills. Same mechanic and item shape as `suppresses`; new skills author `suppresses`. | string OR `{skill, reason}` | `sg:disjointOwnership` |
-| `disjoint_with` *(v3.1, separate orthogonal relation per ADR 0006)* | Optional formal OWL class-disjointness assertion. Use only when authors genuinely want to claim that no entity can simultaneously be an instance of both classes. Rare; most authors only need `suppresses`. | string OR `{skill, reason}` | `owl:disjointWith` |
+| `related` | Related skills for discoverability and recommended co-reading. Symmetric; no dependency implied. | string | `skos:related` |
+| `broader` | Cross-skill generalisation — target is more general than this skill. Triggers Stage 4b parent recall in `scripts/skill-graph-route.js`. | string | `skos:broader` |
+| `narrower` | Cross-skill specialisation — target is more specific than this skill. Inverse of `broader`; not used to drive co-load (a parent match should not pull in arbitrary children). | string | `skos:narrower` |
+| `suppresses` | Routing-layer score-aware exclusion guard — skills this skill suppresses from co-routing when this skill wins or ties. Not a defer-to-target pointer. | string OR `{skill, reason}` | `sg:disjointOwnership` |
+| `disjoint_with` | Optional formal OWL class-disjointness assertion. Use only when authors genuinely want to claim that no entity can simultaneously be an instance of both classes. Rare; most authors only need `suppresses`. | string OR `{skill, reason}` | `owl:disjointWith` |
 | `verify_with` | Skills that should be co-loaded for verification or that provide cross-checks | string | `prov:wasInformedBy` |
 | `depends_on` | Explicit dependency — this skill requires the target conceptually or operationally | string OR `{skill, min_version}` | `dcterms:requires` |
 | `io_contract` *(optional, non-edge)* | Machine-checkable composition contract — abstract artifact TYPES this skill consumes/produces. The builder derives `depends_on` edges from output→input compatibility (no LLM). | `{inputs: [token], outputs: [token]}` | — |
@@ -1381,16 +1445,16 @@ disallowed-tools: AskUserQuestion
 - `node scripts/skill/check-io-composition.js` (`npm run check:io-composition`) flags two failures: **broken chains** (an authored `depends_on` target whose outputs satisfy none of the dependent's inputs) and **cycles** (Tarjan SCC on the depends_on subgraph). Exit 1 on either.
 - The field is fully optional and forces no corpus migration: a skill without `io_contract` contributes no derived edges and is never flagged.
 
-**Suppresses vs disjoint_with — the ADR 0006 / ADR 0018 split.** ADR 0001 originally proposed renaming `boundary` to `disjoint_with` and treating them as aliases. ADR 0006 reversed that: the two predicates operate at different semantic layers and the schema keeps them distinct. ADR 0018 then renamed the everyday routing predicate from `boundary` to `suppresses` because the field's mechanic is exclusion, not deference.
+**Suppresses vs disjoint_with.** The two predicates operate at different semantic layers and the schema keeps them distinct.
 
-- `suppresses` is a **routing-layer exclusion guard**. When skill A wins a query, skills listed in A's `suppresses[]` are excluded from co-routing results (if A outscores them). The mechanic is "exclude B when A wins" — write reason text that reflects ownership ("I own this exclusively over B"), not deference ("use B instead"). Asymmetric; `reason` is strongly recommended; this is the canonical name for the everyday use case. The legacy `boundary` alias is read only for unmigrated skills. See `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Relations § suppresses`.
+- `suppresses` is a **routing-layer exclusion guard**. When skill A wins a query, skills listed in A's `suppresses[]` are excluded from co-routing results (if A outscores them). The mechanic is "exclude B when A wins" — write reason text that reflects ownership ("I own this exclusively over B"), not deference ("use B instead"). Asymmetric; `reason` is strongly recommended. See `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Relations § suppresses`.
 - `disjoint_with` is a **formal class-theory** claim. A and B name disjoint conceptual classes; no entity can simultaneously be an instance of both. Maps to OWL `owl:disjointWith` for RDF consumers that reason about class membership. Rare in practice — most skill libraries never need this.
 
 If you are unsure which to use, you want `suppresses`. Use `disjoint_with` only when you have an explicit reason to make a formal ontological claim that survives the JSON-LD projection into OWL.
 
 **Glossary.** See `docs/glossary.md § Relation predicates` for the formal definitions of each predicate. The JSON-LD `@context` at `schemas/skill.context.jsonld` projects these predicates to their W3C equivalents for RDF consumers.
 
-**Item shapes in v3.** `suppresses`, the deprecated alias `boundary`, `disjoint_with`, and `depends_on` accept both the bare-string form (v2-compatible) and the enriched object form (v3 addition). The bare form remains valid — upgrade item-by-item when a reason or version constraint is real.
+**Item shapes.** `suppresses`, `disjoint_with`, and `depends_on` accept both the bare-string form and the enriched object form. The bare form remains valid — upgrade item-by-item when a reason or version constraint is real.
 
 - `suppresses` and `disjoint_with` objects carry a `reason` string. The reason is what makes the relation self-documenting: `"fulfillment owns order state transitions; this skill only reads them"` beats `"fulfillment"` alone.
 - `depends_on` objects carry a `min_version` semver constraint. Useful when a skill depends on a specific version of another skill's contract.
@@ -1398,7 +1462,7 @@ If you are unsure which to use, you want `suppresses`. Use `disjoint_with` only 
 
 **When to use `broader`.** `broader` is cross-skill generalisation — use it when the target is a more general concept but this skill has its own standalone identity. Example: `react-best-practices` has `broader: [frontend]` because it specialises frontend knowledge, but `react-best-practices` remains a coherent skill even if the `frontend` skill were deleted.
 
-**Example (v3.1, SKOS-aligned preferred names + ADR 0018 suppresses canonical).**
+**Example.**
 ```yaml
 relations:
   related:
@@ -1422,21 +1486,6 @@ relations:
     outputs:
       - webhook-subscription
 ```
-
-**Example (back-compat — `adjacent` and `boundary` still validate with deprecation warnings).**
-```yaml
-relations:
-  adjacent:                                   # warns: rename to `related`
-    - webhook-integration
-  boundary:                                   # warns: rename to `suppresses`
-    - skill: fulfillment
-      reason: "fulfillment owns order state transitions; this skill only reads them"
-  verify_with:
-    - test-coverage
-  depends_on:
-    - api-key-management
-```
-
 **Example (rare — formal OWL class-disjointness assertion).**
 ```yaml
 relations:
@@ -1452,7 +1501,7 @@ relations:
 
 **When to use object form.** Use `{skill, reason}` whenever a `suppresses` or `disjoint_with` entry's rationale isn't obvious from the skill name alone. Use `{skill, min_version}` when a dependency's contract has versioned — without the constraint, a future update to the target skill can silently break this skill's claims.
 
-**When NOT to use.** Do not use `related` as a dumping ground for loosely related skills — keep it to the 2–4 most meaningful connections. Do not declare the same target under both `adjacent` and `related` (lint warns). Do not fabricate `min_version` values — if you don't know the constraint, omit it. Do not use `disjoint_with` as a more emphatic `suppresses`; the OWL semantics are real and reaching for them changes how RDF consumers reason about your skill graph.
+**When NOT to use.** Do not use `related` as a dumping ground for loosely related skills — keep it to the 2–4 most meaningful connections. Do not fabricate `min_version` values — if you don't know the constraint, omit it. Do not use `disjoint_with` as a more emphatic `suppresses`; the OWL semantics are real and reaching for them changes how RDF consumers reason about your skill graph.
 
 ---
 
@@ -1460,11 +1509,9 @@ relations:
 
 **Purpose.** Declares what the skill governs in the real world or codebase, and provides evidence anchors for repo-grounded verification. Required for project-anchored (non-empty `project[]`) skills.
 
-**Rename.** `grounding.domain_object` was renamed to `grounding.subject_matter`; the v3.1 `grounding.subject` alias was retired. See the ADR-0017 amendment of 2026-05-27.
-
 **Rules.**
 - Object with five required sub-fields: `subject_matter`, `grounding_mode`, `truth_sources`, `failure_modes`, `evidence_priority`.
-- Omit entirely for ambient/portable skills (unless you want to ground a portable skill in external specs — then keep `grounding_mode: universal`).
+- Omit entirely for ambient, project-agnostic skills unless you want to ground the skill in external specs; then keep `grounding_mode: universal`.
 - `grounding_mode` must be one of `repo_specific`, `universal`, or `hybrid`.
 - `evidence_priority` must be one of `repo_code_first`, `general_knowledge_first`, or `equal`.
 
@@ -1496,15 +1543,15 @@ grounding:
 ```
 
 **Truth source forms.**
-- String entries remain valid for v3 compatibility and mean "hash/review the whole resource."
+- String entries mean "hash/review the whole resource."
 - Object entries are preferred for repo-backed skills: `path` is required; `line_range`, `anchor`, and `note` are optional.
 - `line_range` hashes only the inclusive source slice after normalizing line endings to LF.
 - `anchor` is checked by lint as either a Markdown heading slug or literal text in the file.
 - `drift_check.truth_source_hashes` uses the normalized key: `path` for whole-file sources, `path#Lstart-Lend` for line ranges, and `path#anchor` for anchor-only sources.
 
-**When to use.** Required for project-anchored skills. Strongly recommended for any skill that makes concrete implementation claims, even if the skill is portable.
+**When to use.** Required for project-anchored skills. Strongly recommended for any skill that makes concrete implementation claims, even if the skill is project-agnostic.
 
-**When NOT to use.** Portable skills with no specific codebase claims. Omit the entire block rather than populating it with placeholder values.
+**When NOT to use.** Project-agnostic skills with no specific codebase claims. Omit the entire block rather than populating it with placeholder values.
 
 ---
 
@@ -1583,38 +1630,77 @@ lifecycle:
 
 ## `runtime_telemetry`
 
-**Purpose.** Pointer to a real-world success/failure feed for this skill. Consumers may use telemetry to corroborate or override the authored `eval_state`. New in v3.
+**Purpose.** Pointer to real-world success/failure feedback and audit/eval agent-run receipts for this skill. Consumers may use feedback telemetry to corroborate or override the authored `eval_state`; operators use agent-run receipts to compare duration, token usage, delivery status, and SKILL.md line delta across mandatory and advisory agents. New in v3, extended in v8 for loop-run observability.
 
-**Why it exists.** `eval_state` is self-reported — an author claims a skill's evals are passing. `runtime_telemetry` is external-reported — a feedback pipeline records actual success/failure rates from agents that ran the skill. Together they close the loop from "did the author claim this works?" to "does this actually work in the field?"
+**Why it exists.** `eval_state` is self-reported — an author claims a skill's evals are passing. `runtime_telemetry` is external-reported or loop-reported — a feedback pipeline records actual success/failure rates from agents that ran the skill, and the Skill Audit Loop records what each model spent and changed while evaluating or iterating the skill. Together they close the loop from "did the author claim this works?" to "does this actually work, and which agents are producing useful work at acceptable cost?"
 
 **Rules.**
 - Optional object.
-- `feedback_source` is required when the block is present. It is a path or URL to a JSONL of run receipts. Each receipt is expected to carry at minimum `{ timestamp, skill, outcome }`.
+- `feedback_source` is required when the block is present for backward compatibility. It is a path or URL to a JSONL of run receipts or field-feedback records. Each receipt is expected to carry at minimum `{ timestamp, skill }` plus `outcome` or `status`.
+- `run_receipts_source` names the audit/eval agent-run receipt feed. The canonical adjacent file is `agent-telemetry.jsonl` beside the skill's `SKILL.md`.
+- Agent-run receipt lines carry `schema_version`, `timestamp`, `skill`, `operation`, `phase`, `agent`, `model`, `backend`, `tier`, `status`, `ok`, `started_at`, `ended_at`, `duration_ms`, `tokens`, `line_delta`, and artifact/receipt paths. Token counts are recorded only when the backend exposes them; unavailable counts stay `null`, never estimated.
 - `last_updated` records when the block's `metrics` were last refreshed.
-- `metrics` is optional summary statistics derived from the feedback source. Consumers may read this pre-computed summary instead of re-parsing the JSONL.
+- `last_run` is a small summary of the latest agent-run receipt. The JSONL remains the durable evidence.
+- `metrics` is optional summary statistics derived from the feedback or run-receipt source. Consumers may read this pre-computed summary instead of re-parsing the JSONL.
+
+**Audit-loop writer responsibilities.**
+- Evaluation generators and graders append one receipt per model call so a behavior verdict can be read beside the time and token cost of earning it.
+- Iteration agents append one receipt per propose, suggestion, review, revise, curate, and verify action so the merge ledger can be compared against each agent's actual delivery.
+- Phases that edit or propose `SKILL.md` content record `line_delta`; phases that only judge or suggest record `line_delta: null`. Do not invent a line delta for feedback-only work.
+- A failed or malformed agent action still writes a receipt with `ok: false`, `status: "failed"`, and the failure reason. Missing receipts are treated as missing evidence, not success.
+- Do not estimate tokens from text length. The only honest states are concrete backend usage values or `null` values with `source: "unavailable"`.
 
 **Sub-fields.**
 
 | Sub-field | Type | Meaning |
 |---|---|---|
-| `feedback_source` | string | Path or URL to a JSONL of run receipts (required) |
+| `feedback_source` | string | Backward-compatible path or URL to a JSONL of feedback or run receipts (required when block is present) |
+| `run_receipts_source` | string | Path or URL to audit/eval agent-run receipts; normally sibling `agent-telemetry.jsonl` |
 | `last_updated` | string (date) | ISO date of the most recent metrics refresh |
+| `last_run` | object | Latest agent-run receipt summary: operation, phase, agent, status, duration, tokens, line delta, receipt |
 | `metrics.sample_size` | integer (≥0) | Number of recorded runs used for the summary |
 | `metrics.success_rate` | number (0–1) | Fraction of runs with a positive outcome |
+| `metrics.agent_run_count` | integer (≥0) | Count of agent-run receipts in `run_receipts_source` |
+| `metrics.total_duration_ms` | number (≥0) | Sum of recorded agent-run durations |
+| `metrics.total_tokens` | number or null | Sum of concrete total-token counts where exposed by a backend; null when none were exposed |
+| `metrics.tokens_observed_count` | integer (≥0) | Count of receipts with concrete token totals |
 
 **Example.**
 ```yaml
 runtime_telemetry:
-  feedback_source: "telemetry/skills/shopify.jsonl"
+  feedback_source: "agent-telemetry.jsonl"
+  run_receipts_source: "agent-telemetry.jsonl"
   last_updated: "2026-04-15"
+  last_run:
+    at: "2026-04-15T12:00:00.000Z"
+    operation: "panel"
+    phase: "propose"
+    agent: "gemini"
+    status: "completed"
+    duration_ms: 84231
+    tokens:
+      input_tokens: null
+      output_tokens: null
+      total_tokens: null
+      source: "unavailable"
+    line_delta:
+      before_lines: 120
+      after_lines: 148
+      added_lines: 35
+      removed_lines: 7
+      net_lines: 28
+      algorithm: "lcs"
+    receipt: "agent-telemetry.jsonl"
   metrics:
-    sample_size: 142
-    success_rate: 0.87
+    agent_run_count: 9
+    total_duration_ms: 912403
+    total_tokens: null
+    tokens_observed_count: 0
 ```
 
-**When to use.** When a telemetry pipeline actually exists for this skill and produces receipts the router or auditor can consume.
+**When to use.** When a telemetry pipeline actually exists for this skill, or when `/audit:*` / evaluation tooling has appended real agent-run receipts beside the skill.
 
-**When NOT to use.** Speculative feedback-source paths that do not yet exist. An empty `feedback_source` is worse than an absent block — it promises data that isn't there.
+**When NOT to use.** Speculative feedback-source paths that do not yet exist. An empty `feedback_source` or `run_receipts_source` is worse than an absent block — it promises data that isn't there.
 
 ---
 

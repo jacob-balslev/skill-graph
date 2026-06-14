@@ -1,6 +1,6 @@
 # ADR-0017: Five-Axis Classification Model (Skill Metadata Protocol v8)
 
-> **`subject` enum superseded by the 12-shelf competency re-axis ([ADR-0020](0020-twelve-shelf-competency-reaxis.md), 2026-06-03). See AGENTS.md § Major Version Is a Clean Cut.** The 9-value `subject` enum decided here (`agent-ops` · `code-engineering` · `frontend-ui` · `design-craft` · `data-analytics` · `quality-assurance` · `meta-methods` · `knowledge-organization` · `product-domain`) is no longer the live contract — read the 12-value enum in `schemas/SKILL_METADATA_PROTOCOL_schema.json`. The rest of this ADR (the five-axis *shape*: `subject` + `deployment_target` + free-text `scope` + `subjects[]` + `taxonomy_domain`, the operation-axis retirement, the v7→v8 cut) still stands.
+> **`subject` enum superseded by the 12-shelf competency re-axis ([ADR-0020](0020-twelve-shelf-competency-reaxis.md), 2026-06-03). See AGENTS.md § Major Version Is a Clean Cut.** The 9-value `subject` enum decided here (`agent-ops` · `code-engineering` · `frontend-ui` · `design-craft` · `data-analytics` · `quality-assurance` · `meta-methods` · `knowledge-organization` · `product-domain`) is no longer the live contract — read the 12-value enum in `schemas/SKILL_METADATA_PROTOCOL_schema.json`. The rest of this ADR (the v8 shape as later amended: `subject` + boolean `public` + free-text `scope` + `subjects[]` + `taxonomy_domain`, the operation-axis retirement, the v7→v8 cut) still stands.
 
 > Status: Accepted (2026-05-25), partially superseded (2026-05-27; `subject` enum superseded 2026-06-03 by ADR-0020; `deployment_target` enum replaced by boolean `public` 2026-06-08)
 > Supersedes the v7 category/categories/primaryCategory/family/layer/layerPrimary/routingRole tangle.
@@ -16,7 +16,7 @@
 >
 > ### Update — 2026-05-27: `operation` axis retired (commit f88603d)
 >
-> The `operation` axis (Bloom-grounded 4-enum: `know` / `do` / `decide` / `modify`) was retired from the live contract in commit `f88603d`. The current v8 classification carries `subject`, `deployment_target`, and free-text `scope` as required core fields, plus `subjects[]` (polyhierarchy, max 2), `keywords` (capped at 10), and `relations` (typed edges). This ADR's Decision table row 2 (`operation`), § Landing strategy step 4, and the operation-distribution figures in § Consequences are no longer in force.
+> The `operation` axis (Bloom-grounded 4-enum: `know` / `do` / `decide` / `modify`) was retired from the live contract in commit `f88603d`; the later 2026-06-08 amendment replaced `deployment_target` with boolean `public`. The current v8 classification carries `subject`, `public`, and free-text `scope` as required core fields, plus `subjects[]` (polyhierarchy, max 2), `keywords` (capped at 10), and `relations` (typed edges). This ADR's Decision table row 2 (`operation`), § Landing strategy step 4, and the operation-distribution figures in § Consequences are no longer in force.
 >
 > The "compatibility-mode" landing described in § Landing strategy is also obsolete: per [AGENTS.md § Major Version Is a Clean Cut](../../AGENTS.md), the live tree describes v8 only. The v7 → v8 cut is past-tense; v7 fields are deleted from the schema, the codemod history lives in git, and `git tag schema-v7` preserves the pre-cut contract for anyone needing it.
 >

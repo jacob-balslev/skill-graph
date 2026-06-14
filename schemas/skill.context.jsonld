@@ -14,12 +14,13 @@
   "_adr_anchors": {
     "0001": "Initial SKOS-aligned predicate set (related/broader/narrower additions; adjacent deprecation).",
     "0002": "JSON-LD @context coverage policy.",
-    "0006": "boundary stays canonical in v8.0 for a routing-layer asymmetric exclusion edge (sg:disjointOwnership); disjoint_with is a separate orthogonal relation for formal OWL class-disjointness (owl:disjointWith). Reverts the `boundary -> disjoint_with` rename proposed in ADR 0001 Decision #2.",
+    "0006": "Historical predicate decision: boundary stayed separate from disjoint_with because sg:disjointOwnership is routing-layer exclusion while disjoint_with is formal OWL class-disjointness. ADR 0018 later renamed the authored field to relations.suppresses while preserving the sg:disjointOwnership predicate.",
     "0011": "Four-verdict Audit Status (structural/truth/comprehension/application) replaces the single audit_verdict; audit_verdict retained for back-read of unmigrated manifests.",
-    "0017": "v8 entity-vocabulary completion: top-level `domain` renamed `taxonomy_domain`, `scope` repurposed as free-text PRD content, publishability moved to boolean `public`, `project[]` and `repo[]` added as belonging-entity fields, `workspace_tags` removed (finishing the original ADR-0017 promise), `grounding.domain_object` renamed `grounding.subject_matter`."
+    "0017": "v8 entity-vocabulary completion: top-level `domain` renamed `taxonomy_domain`, `scope` repurposed as free-text PRD content, publishability moved to boolean `public`, `project[]` and `repo[]` added as belonging-entity fields, `workspace_tags` removed (finishing the original ADR-0017 promise), `grounding.domain_object` renamed `grounding.subject_matter`.",
+    "0018": "relations.boundary renamed to relations.suppresses and top-level boundary renamed to concept_boundary; both aliases were removed from the canonical schema/context once corpus usage reached zero on 2026-06-13."
   },
   "_term_collisions": {
-    "boundary": "The token `boundary` has TWO distinct legacy senses: (1) the deprecated top-level Understanding alias for `concept_boundary` and (2) the deprecated `relations.boundary` alias for canonical `relations.suppresses`. JSON-LD term resolution is by key, not by nesting depth, so a single global term cannot serve both. Resolved via a JSON-LD 1.1 property-scoped @context: top-level `boundary` -> sg:conceptBoundary (the Understanding string); `boundary` appearing inside `relations` -> sg:disjointOwnership (the routing predicate). See https://www.w3.org/TR/json-ld11/#scoped-contexts."
+    "boundary": "The top-level Understanding alias `boundary` and the property-scoped `relations.boundary` alias were retired from the canonical schema on 2026-06-13. Canonical authored skills use `concept_boundary` for concept edges and `relations.suppresses` for routing-layer exclusion."
   },
   "@context": {
     "sg": "https://skillgraph.dev/vocab#",
@@ -120,28 +121,18 @@
     "relations": {
       "@id": "sg:relations",
       "@context": {
-        "_note": "Property-scoped context (JSON-LD 1.1). Within `relations`, the tokens `suppresses` and its deprecated alias `boundary` are the routing-layer anti-ownership predicate, NOT the Understanding-field string. See _term_collisions.boundary.",
+        "_note": "Property-scoped context (JSON-LD 1.1). Within `relations`, `suppresses` is the routing-layer anti-ownership predicate. Historical `boundary` aliases no longer appear in the canonical @context. See _term_collisions.boundary.",
         "suppresses": {
           "@id": "sg:disjointOwnership",
           "@container": "@set",
           "_note": "Routing-layer asymmetric exclusion edge — directional. Canonical name as of ADR-0018 (renamed from `boundary` so the name matches the mechanic). Maps to sg:disjointOwnership, a Skill-Graph-specific predicate intentionally weaker than OWL class-disjointness — it makes a routing claim, not a formal ontological one. See ADR 0018."
-        },
-        "boundary": {
-          "@id": "sg:disjointOwnership",
-          "@container": "@set",
-          "_note": "DEPRECATED alias of `suppresses` (ADR-0018). Same sg:disjointOwnership predicate; retained for unmigrated skills. The router reads `suppresses` first and falls back to `boundary`. See ADR 0006 and ADR 0018."
         }
       }
-    },
-    "adjacent": {
-      "@id": "skos:related",
-      "@container": "@set",
-      "_note": "SKOS associative relation — symmetric, non-hierarchical"
     },
     "related": {
       "@id": "skos:related",
       "@container": "@set",
-      "_note": "v3.1 preferred alias for `adjacent`; same SKOS mapping"
+      "_note": "SKOS associative relation — symmetric, non-hierarchical"
     },
     "broader": {
       "@id": "skos:broader",
@@ -155,16 +146,12 @@
     },
     "concept_boundary": {
       "@id": "sg:conceptBoundary",
-      "_note": "v6+ Understanding field (string) — things commonly confused with the concept but that are NOT it, expressed as a mechanism. Canonical name as of ADR-0018 (renamed from the top-level `boundary` so the token no longer collides with the routing-layer `relations.suppresses` predicate and legacy `relations.boundary` alias). See _term_collisions.boundary and SKILL_METADATA_PROTOCOL.md § Understanding."
-    },
-    "boundary": {
-      "@id": "sg:conceptBoundary",
-      "_note": "DEPRECATED top-level alias of `concept_boundary` (ADR-0018). Same sg:conceptBoundary mapping; retained for skills not yet migrated. The routing-layer `relations.suppresses` predicate and legacy `relations.boundary` alias (sg:disjointOwnership) are defined separately via the property-scoped @context on `relations`."
+      "_note": "v6+ Understanding field (string) — things commonly confused with the concept but that are NOT it, expressed as a mechanism. Canonical name as of ADR-0018 (renamed from the top-level `boundary` so the token no longer collides with the routing-layer `relations.suppresses` predicate). See _term_collisions.boundary and SKILL_METADATA_PROTOCOL.md § Understanding."
     },
     "disjoint_with": {
       "@id": "owl:disjointWith",
       "@container": "@set",
-      "_note": "Formal OWL class-disjointness assertion — symmetric. Use only when authors genuinely want to claim that no entity can simultaneously be an instance of both classes. Distinct from `boundary` (which is a weaker routing-layer relation). See ADR 0006."
+      "_note": "Formal OWL class-disjointness assertion — symmetric. Use only when authors genuinely want to claim that no entity can simultaneously be an instance of both classes. Distinct from `relations.suppresses`, which is a weaker routing-layer relation. See ADR 0006."
     },
     "verify_with": {
       "@id": "prov:wasInformedBy",
@@ -189,15 +176,10 @@
     },
     "evidence_priority": "sg:evidencePriority",
     "compatibility": "sg:compatibility",
-    "runtimes": {
-      "@id": "sg:compatibleRuntime",
-      "@container": "@set"
-    },
     "agent_runtimes": {
       "@id": "sg:compatibleRuntime",
       "@container": "@set"
     },
-    "node": "sg:nodeVersion",
     "node_version": "sg:nodeVersion",
     "notes": "sg:compatibilityNotes",
     "taxonomy_domain": {

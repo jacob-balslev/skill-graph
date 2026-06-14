@@ -104,13 +104,13 @@ check('requires a profilePath', () => {
 
 console.log('3. resolveOsFenceEnabled — explicit > env, default ON, =0 opts out');
 check('explicit option wins over env', () => {
-  assert.strictEqual(ic.resolveOsFenceEnabled(false, { SKILL_ENRICH_OS_FENCE: '1' }), false);
-  assert.strictEqual(ic.resolveOsFenceEnabled(true, { SKILL_ENRICH_OS_FENCE: '0' }), true);
+  assert.strictEqual(ic.resolveOsFenceEnabled(false, { SKILL_AUDIT_OS_FENCE: '1' }), false);
+  assert.strictEqual(ic.resolveOsFenceEnabled(true, { SKILL_AUDIT_OS_FENCE: '0' }), true);
 });
-check('defaults to enabled when unset; SKILL_ENRICH_OS_FENCE=0 disables', () => {
+check('defaults to enabled when unset; SKILL_AUDIT_OS_FENCE=0 disables', () => {
   assert.strictEqual(ic.resolveOsFenceEnabled(undefined, {}), true);
-  assert.strictEqual(ic.resolveOsFenceEnabled(undefined, { SKILL_ENRICH_OS_FENCE: '0' }), false);
-  assert.strictEqual(ic.resolveOsFenceEnabled(undefined, { SKILL_ENRICH_OS_FENCE: '1' }), true);
+  assert.strictEqual(ic.resolveOsFenceEnabled(undefined, { SKILL_AUDIT_OS_FENCE: '0' }), false);
+  assert.strictEqual(ic.resolveOsFenceEnabled(undefined, { SKILL_AUDIT_OS_FENCE: '1' }), true);
 });
 
 console.log('4. prepareOsFence — identity when disabled; lazy profile; idempotent cleanup');

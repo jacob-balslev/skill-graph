@@ -34,7 +34,7 @@ function makeDeps(overrides = {}) {
       mergeLedgerPath: 'merge-ledger.json',
       mergeLedger: { contributions: args.proposals.concat(args.advisoryProposals || []).map((p, i) => ({ id: i + 1, surfaced_by: p.model, disposition: 'kept' })) },
     }),
-    prepareEnrichedEval: ({ skillDir }) => ({ evalSkillDir: `${skillDir}/.enriched`, baselineEvalSkillDir: `${skillDir}/.baseline`, cleanup: () => {} }),
+    prepareCandidateEval: ({ skillDir }) => ({ evalSkillDir: `${skillDir}/.candidate`, baselineEvalSkillDir: `${skillDir}/.baseline`, cleanup: () => {} }),
     applyMerge: ({ skillDir }) => ({ applied: `${skillDir}/SKILL.md` }),
     evalArtifactExists: () => true,
     runEvalDirection: ({ direction, executionProfile }) => ({

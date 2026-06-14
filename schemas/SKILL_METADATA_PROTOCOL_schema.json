@@ -110,17 +110,13 @@
       "type": "string",
       "description": "Things commonly confused with the concept but that are NOT it. Express each difference as a mechanism (different primitives, purpose, or scope) — not just different names. No length cap. Authored input read by the comprehension grader's boundary dimension (weight 1.5). Canonical name as of ADR-0018, which renamed the top-level Understanding field from `boundary` to `concept_boundary` so the token no longer collides with the routing-layer `relations.suppresses` (formerly `relations.boundary`). New skills author `concept_boundary`."
     },
-    "boundary": {
-      "type": "string",
-      "description": "DEPRECATED alias of `concept_boundary` (renamed per ADR-0018 to remove the token collision with the routing edge `relations.suppresses` / legacy `relations.boundary`). Retained ONLY for skills not yet migrated; the normalizer presents it as `concept_boundary` and `concept_boundary` wins when both are present. New skills MUST author `concept_boundary`. Structural removal of this alias is CONTENT-mode work the audit loop drains per-skill."
-    },
     "analogy": {
       "type": "string",
       "description": "Analogy that preserves the core mechanism. Translates the concept for a non-expert without breaking the structural relationship between primitives. No length cap. Authored input read by the comprehension grader's `analogy` dimension (weight 0.5). Replaces nested `concept.analogy` in v6."
     },
     "misconception": {
       "type": "string",
-      "description": "The wrong mental model people bring and why it misleads. Authored hint to inoculate the agent against the common error trap. No length cap. Not directly graded; complements `boundary`. Replaces nested `concept.misconception` in v6."
+      "description": "The wrong mental model people bring and why it misleads. Authored hint to inoculate the agent against the common error trap. No length cap. Not directly graded; complements `concept_boundary`. Replaces nested `concept.misconception` in v6."
     },
     "stability": {
       "type": "string",
@@ -144,34 +140,23 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "runtimes": {
-          "type": "array",
-          "description": "Target agent runtimes with optional version constraints (e.g., `claude-code>=2.0`, `cursor>=0.40`). `agent_runtimes` is the v3.1 preferred/canonical name (it disambiguates from the Node/container runtime); `runtimes` is the legacy alias. When both are present they must match.",
-          "items": {
-            "type": "string"
-          }
-        },
         "agent_runtimes": {
           "type": "array",
-          "description": "Target agent runtimes (v3.1 preferred alias for `runtimes`). Disambiguates from Node runtime, container runtime, etc. When both are present they must match. ",
+          "description": "Target agent runtimes with optional version constraints (e.g., `claude-code>=2.0`, `cursor>=0.40`). Canonical protocol name; disambiguates from the Node/container runtime.",
           "items": {
             "type": "string"
           }
-        },
-        "node": {
-          "type": "string",
-          "description": "Node.js version constraint (e.g., `>=18`). `node_version` is the v3.1 preferred/canonical name (it disambiguates from `node` reading as a graph-node in a graph repo); `node` is the legacy alias. When both are present they must match."
         },
         "node_version": {
           "type": "string",
-          "description": "Node.js version constraint (v3.1 preferred alias for `node`). Disambiguates from `node` reading as graph-node in a graph repo. When both are present they must match. "
+          "description": "Node.js version constraint (e.g., `>=18`). Canonical protocol name; disambiguates from `node` reading as a graph node in a graph repo."
         },
         "notes": {
           "type": "string",
           "description": "Free-text additional compatibility notes. Use sparingly; prefer structured fields. No protocol length cap."
         }
       },
-      "description": "Cross-runtime compatibility envelope. `runtimes` lists target agent runtimes with version constraints; `node` is the Node.js version requirement; `notes` is free-text overflow. Distinct from `relations.depends_on` (sibling skill dependency)."
+      "description": "Cross-runtime compatibility envelope. `agent_runtimes` lists target agent runtimes with version constraints; `node_version` is the Node.js version requirement; `notes` is free-text overflow. Distinct from `relations.depends_on` (sibling skill dependency)."
     },
     "allowed-tools": {
       "type": "string",
@@ -201,7 +186,7 @@
     },
     "anti_examples": {
       "type": "array",
-      "description": "Negative-class activation examples — realistic user prompts that look topically related but a DIFFERENT skill should handle. Used as hard-negative training signal. Pair with `relations.suppresses` to name the skill that should activate instead; legacy `relations.boundary` is read only for unmigrated skills. Groups under `activation.anti_examples` in the manifest.",
+      "description": "Negative-class activation examples — realistic user prompts that look topically related but a DIFFERENT skill should handle. Used as hard-negative training signal. Pair with `relations.suppresses` to name the skill that should activate instead. Runtime compatibility readers may still understand historical `relations.boundary`, but new authored skills must use `relations.suppresses`. Groups under `activation.anti_examples` in the manifest.",
       "items": {
         "type": "string",
         "minLength": 1
@@ -225,21 +210,52 @@
         "pattern": "^[a-z0-9@][a-zA-Z0-9@/._-]*$"
       }
     },
+    "codebase_layer": {
+      "type": "array",
+      "description": "Architectural or system layer this skill applies to (e.g., `presentation`, `domain`, `infrastructure`, `api-gateway`, `persistence`). Complements `subject` by routing skills based on the specific directory or logical tier the agent is working in.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "applicable_tasks": {
+      "type": "array",
+      "description": "Specific types of work this skill is scoped to (e.g., `feature-creation`, `debugging`, `refactoring`, `testing`, `architecture-design`, `migration`). Complements `scope` by providing deterministic enum filtering for task-intent routing.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "project_adoption_stage": {
+      "type": "string",
+      "enum": [
+        "legacy",
+        "current-standard",
+        "experimental-migration",
+        "deprecated"
+      ],
+      "description": "Within a specific project, whether this pattern is the current standard, a legacy pattern to be maintained but not propagated, or an experimental migration target. Distinct from the document `stability` field."
+    },
+    "environment": {
+      "type": "array",
+      "description": "Project environments or target constraints this skill applies to (e.g., `local`, `ci`, `production`, `staging`, `ambient`). Prevents misapplying production-debugging skills to local feature code.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "internal_tools": {
+      "type": "array",
+      "description": "Custom CLI tools or internal project scripts whose presence makes the skill applicable (e.g., `scripts/sync-db.sh`). Complements `allowed-tools` (agent tools) and `dependencies` (external packages).",
+      "items": {
+        "type": "string"
+      }
+    },
     "relations": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W3C-vocabulary mapping is provided via schemas/skill.context.jsonld (JSON-LD @context). `suppresses` is the routing-layer asymmetric exclusion edge (renamed from the deprecated `boundary` alias per ADR-0018); `disjoint_with` is the optional OWL class-disjointness predicate — they are distinct, not aliases.",
+      "description": "Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W3C-vocabulary mapping is provided via schemas/skill.context.jsonld (JSON-LD @context). `suppresses` is the routing-layer asymmetric exclusion edge; `disjoint_with` is the optional OWL class-disjointness predicate — they are distinct, not aliases.",
       "properties": {
-        "adjacent": {
-          "type": "array",
-          "description": "Legacy alias of `related` (skos:related). Retained ONLY for skills that have not yet been migrated to the canonical `related` name; new skills MUST author `related`. Per AGENTS.md § Major Version Is a Clean Cut, structural removal of this alias is CONTENT-mode work the audit loop drains per-skill.",
-          "items": {
-            "type": "string"
-          }
-        },
         "related": {
           "type": "array",
-          "description": "Symmetric associative relation (skos:related). Use for skills that should be co-read because they teach the same surface from different angles. Max 5 entries recommended to avoid hub-and-spoke clutter. Preferred over the deprecated `adjacent` alias.",
+          "description": "Symmetric associative relation (skos:related). Use for skills that should be co-read because they teach the same surface from different angles. Max 5 entries recommended to avoid hub-and-spoke clutter.",
           "items": {
             "type": "string"
           }
@@ -247,32 +263,6 @@
         "suppresses": {
           "type": "array",
           "description": "Score-aware routing exclusion edge — directional. Skills this skill excludes from co-routing when this skill wins or ties; this is NOT a defer-to-target pointer (\"skill-A suppresses skill-B\" reads as \"when skill-A wins, skill-B is suppressed from the result set\", which IS the runtime mechanic). Canonical name as of ADR-0018, which renamed the routing field from `boundary` so the name matches the mechanic. Items may be bare skill names or `{skill, reason}` objects; reasons should use ownership wording. Maps to sg:disjointOwnership — a Skill-Graph-specific routing-layer predicate, intentionally weaker than OWL class-disjointness. For formal class-disjointness, use `disjoint_with`.",
-          "items": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "object",
-                "additionalProperties": false,
-                "required": [
-                  "skill"
-                ],
-                "properties": {
-                  "skill": {
-                    "type": "string"
-                  },
-                  "reason": {
-                    "type": "string"
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "boundary": {
-          "type": "array",
-          "description": "DEPRECATED alias of `suppresses` (renamed per ADR-0018 — the name `boundary` read as deference but the mechanic is exclusion). Retained ONLY for skills not yet migrated to the canonical `suppresses` name; new skills MUST author `suppresses`. Per AGENTS.md § Major Version Is a Clean Cut, structural removal of this alias is CONTENT-mode work the audit loop drains per-skill. Same mechanic, same item shape as `suppresses`; the router reads `suppresses` first and falls back to `boundary`.",
           "items": {
             "oneOf": [
               {

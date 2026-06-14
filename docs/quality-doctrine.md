@@ -136,11 +136,11 @@ If a check is relevant and not run, say that it was not run. Do not imply succes
 
 ### Reading `skill-overlap.js` output — shared keywords are recall, not defects
 
-Keyword overlap between related skills is **expected and desirable**. It is the recall substrate of the graph: a query about "foreign key" *should* reach both `data-modeling` and `entity-relationship-modeling`, and the router disambiguates by score plus the typed relation edges (`relations.boundary` / `related` / `verify_with`) between them. The overlap report prints shared keywords as **INFO**, not warnings, because shared vocabulary is normal graph density.
+Keyword overlap between related skills is **expected and desirable**. It is the recall substrate of the graph: a query about "foreign key" *should* reach both `data-modeling` and `entity-relationship-modeling`, and the router disambiguates by score plus typed relation edges such as `relations.suppresses`, `relations.related`, and `relations.verify_with`. The overlap report accepts shared keywords in the normal `OK [keywords]` line, not as warnings, because shared vocabulary is normal graph density. Use `--show-keywords` or `--json` only when diagnosing a concrete routing miss.
 
 A reported shared keyword requires no action by itself. If real routing ambiguity appears, confirm the co-activating skills declare an explicit relation edge. It is **not** a defect count to drive to zero.
 
-- **Correct response:** add or verify a `relations.boundary` ("use that skill instead, because…") or `relations.related` edge between the listed skills, or accept it as legitimate shared vocabulary.
+- **Correct response:** add or verify a `relations.suppresses` ownership edge or `relations.related` edge between the listed skills, or accept it as legitimate shared vocabulary.
 - **Forbidden response:** deleting a keyword from one skill to shrink the count. That strips routing recall and makes the product worse. Only change a keyword when it is genuinely *mis-assigned* to a skill, never to satisfy the report. Duplicate `triggers` are the only hard error here; shared `keywords` and `paths` are review signals.
 
 ## Improvement Checklist

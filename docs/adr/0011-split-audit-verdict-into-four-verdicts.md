@@ -42,7 +42,9 @@ truth_verdict:         PASS | DRIFT | BROKEN | UNVERIFIED
 comprehension_verdict: PASS | SHALLOW | REDUNDANT | UNVERIFIED |
                        SKIPPED_BASELINE_HIGH | NA
 application_verdict:   APPLICABLE | REDUNDANT | HARMFUL | MIXED |
-                       FALSE_POSITIVE | UNVERIFIED
+                       FALSE_POSITIVE | UNVERIFIED | PROVISIONAL |
+                       NOT_DISCRIMINATED_CEILING |
+                       EQUIVALENT_ON_FRONTIER
 ```
 
 | Field | Layer | What it certifies | Default for the v6 corpus |
@@ -71,7 +73,7 @@ This is a doctrine change, not just a schema change. Subsequent work (Linear fol
 
 The audit loop's authority shifts from form to behavior. Specifically:
 
-- The walker (`scripts/skill/skill-evolution-loop.js`) reads `application_verdict` first when picking the next skill to improve. `UNVERIFIED` or `REDUNDANT` skills with high routing centrality get priority.
+- The walker (`scripts/skill/skill-evolution-loop.js`) reads `application_verdict` first when picking the next skill to improve. `UNVERIFIED`, legacy `REDUNDANT`, `NOT_DISCRIMINATED_CEILING`, or `EQUIVALENT_ON_FRONTIER` skills with high routing centrality get priority.
 - The aggregate "is this skill good?" signal is `application_verdict == APPLICABLE`. No combination of structural/truth/comprehension verdicts produces a usefulness claim.
 - The marketplace publication pipeline does not promote a skill solely on form-clean checks. `application_verdict == UNVERIFIED` is published transparently as "behavior unvalidated" rather than rolled into PASS via the old aggregate.
 

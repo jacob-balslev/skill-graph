@@ -55,6 +55,8 @@ eq('opus → sentinel (resolves to sonnet)',
 // Concrete pinned ids are recorded as-is.
 eq('gemini → concrete gemini-3.1-pro-preview', resolveReceiptModelId('gemini'), 'gemini-3.1-pro-preview');
 eq('gpt-5.4 → concrete gpt-5.4', resolveReceiptModelId('gpt-5.4'), 'gpt-5.4');
+eq('representative-generator → stable representative role receipt id',
+  resolveReceiptModelId('representative-generator'), 'representative-generator:sonnet');
 
 // gpt-5.5 resolves to null (app-current) → sentinel unless a concrete id
 // was captured from the codex output header (SH-6680).

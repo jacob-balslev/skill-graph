@@ -170,7 +170,7 @@ MAX_SKILLS_PER_SESSION times (stop early at any stop condition):
   --fail-fast-budget --degrade-on-budget (above) absorbs it: a rate-limited frontier degrades to
   PROVISIONAL rather than hanging. (SKI-coordination, 2026-06-10)
 - Timing expectation: a panel skill runs up to 90 minutes, but INDIVIDUAL model calls
-  inside it cap earlier — ~30 min per mandatory-frontier call (SKILL_ENRICH_CLI_TIMEOUT_MS
+  inside it cap earlier — ~30 min per mandatory-frontier call (SKILL_AUDIT_CLI_TIMEOUT_MS
   default) and ~20 min per advisory call. A single timed-out advisory call is a
   degraded-but-valid panel; a timed-out mandatory call fails the skill.
 - Full advisory panel is the default (do not pass --no-advisory unless this session is

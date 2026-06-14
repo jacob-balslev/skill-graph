@@ -4,8 +4,8 @@
 >
 > The `type`/archetype axis (`capability`/`workflow`/`router`/`overlay`), the `extends` field,
 > and `category` were retired in the v7→v8 clean cut (see [ADR-0017](0017-five-axis-classification-model.md)
-> and `AGENTS.md § Major Version Is a Clean Cut`). v8 classifies by `subject` + `deployment_target`
-> only — there are no archetypes to tag and no `extends`/`overlay`. The OntoClean rigidity
+> and `AGENTS.md § Major Version Is a Clean Cut`). v8 classifies with `subject`, boolean `public`,
+> and free-text `scope` — there are no archetypes to tag and no `extends`/`overlay`. The OntoClean rigidity
 > analysis below is **historical**: it records why the archetype×`extends` combination was a
 > modelling hazard, which is part of why the axis was ultimately removed. Do NOT author
 > `type`/`archetype`/`extends`/`category` — they are not in the live contract. Prior contract:

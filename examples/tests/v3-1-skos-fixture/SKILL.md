@@ -1,7 +1,7 @@
 ---
 schema_version: 4
 name: v3-1-skos-fixture
-description: Test fixture exercising v3.1 SKOS predicates (related, broader, narrower) and the ADR 0006 split between boundary (routing-layer) and disjoint_with (OWL class-disjointness). Used by scripts/__tests__/test-v3-1-skos-runtime.js to verify that the manifest generator, lint, and router all recognize the full predicate set. Not a production skill.
+description: Test fixture exercising SKOS predicates (related, broader, narrower), routing-layer suppresses, the ADR 0006 split between routing exclusion and disjoint_with (OWL class-disjointness), and the io_contract composition hook. Used by scripts/__tests__/test-v3-1-skos-runtime.js to verify that the manifest generator, lint, and router all recognize the full canonical predicate set. Not a production skill.
 version: 1.0.0
 type: capability
 category: testing
@@ -33,7 +33,7 @@ relations:
     - debugging
   narrower:
     - a11y
-  boundary:
+  suppresses:
     - skill: skill-router
       reason: "skill-router owns dispatch decisions; this fixture only exercises predicates"
   disjoint_with:
@@ -43,6 +43,11 @@ relations:
     - lint-overlay
   depends_on:
     - graph-audit
+  io_contract:
+    inputs:
+      - skill-md
+    outputs:
+      - manifest
 
 eval_artifacts: none
 eval_state: untested
@@ -59,10 +64,11 @@ drift_check:
 ## Domain Context
 
 This fixture exists to verify that the runtime — `generate-manifest.js`, `skill-lint.js`,
-`skill-graph-route.js`, and the lint-target resolver — iterates the complete v3.1 predicate
-set defined in ADR 0001 (SKOS additions: `related`, `broader`, `narrower`) and ADR 0006
-(`boundary` canonical for routing-layer; `disjoint_with` separate orthogonal relation
-for formal OWL class-disjointness).
+`skill-graph-route.js`, and the lint-target resolver — iterates the complete canonical
+predicate set defined in ADR 0001 (SKOS additions: `related`, `broader`, `narrower`),
+ADR 0018 (`suppresses` for routing-layer exclusion), ADR 0006 (`disjoint_with` as
+the separate orthogonal relation for formal OWL class-disjointness), and the
+composition hook `io_contract`.
 
 The companion test `scripts/__tests__/test-v3-1-skos-runtime.js` builds a manifest entry
 from this file and asserts every predicate above appears in the resulting `relations`
@@ -75,13 +81,14 @@ Predicates exercised:
 - `related` — symmetric SKOS associative relation (skos:related)
 - `broader` — SKOS generalisation (skos:broader); triggers Stage 4b parent recall in router
 - `narrower` — SKOS specialisation (skos:narrower)
-- `boundary` — routing-layer asymmetric exclusion (sg:disjointOwnership)
+- `suppresses` — routing-layer asymmetric exclusion (sg:disjointOwnership)
 - `disjoint_with` — formal OWL class-disjointness (owl:disjointWith)
 - `verify_with` — PROV-O informational influence (prov:wasInformedBy)
 - `depends_on` — DCMI requirement (dcterms:requires)
+- `io_contract` — machine-checkable artifact inputs/outputs for composition
 
-`adjacent` is intentionally NOT exercised here — that's covered by the back-compat
-fixture (a separate test asserting the deprecated alias still validates).
+Retired aliases are intentionally NOT exercised in this fixture; the companion unit
+test checks in-memory alias normalization separately.
 
 ## Workflow
 

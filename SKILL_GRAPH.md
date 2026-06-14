@@ -35,13 +35,13 @@ Make a large AI-agent skill library coherent, project-aware, auditable, and expo
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| **Schema version enforced** | **v8**. The schema's global `required` array mandates `subject` + `public` + `scope` (`scope` is required free text, not an enum; `public` is the boolean publishability gate that replaced the `deployment_target` enum). The prior contract (v7) lives in git history; retrieve via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`; it is not accepted by the live schema. | `schemas/SKILL_METADATA_PROTOCOL_schema.json` + [ADR-0017](docs/adr/0017-five-axis-classification-model.md) |
-| Manifest schema file | tracks the v8 contract; v7 fields are not declared | `schemas/manifest.schema.json` |
+| **Schema version enforced** | **v8**. The schema's global `required` array mandates `name`, `description`, `subject`, `public`, and `scope`; `scope` is required free text, not an enum, and `public` is the boolean publishability gate. | `schemas/SKILL_METADATA_PROTOCOL_schema.json` + [ADR-0017](docs/adr/0017-five-axis-classification-model.md) |
+| Manifest schema file | tracks the v8 contract | `schemas/manifest.schema.json` |
 | Emitted manifest `schema_version` | **4** (root manifest contract; orthogonal to per-skill `schema_version`) | `scripts/generate-manifest.js`; `schemas/manifest.schema.json` `schema_version.const` |
 | Manifest summary facets | `by_subject`, `by_public`, `by_schema_version`, `by_stability`, `by_project` | `scripts/generate-manifest.js::computeSummary` |
 | Per-skill `schema_version` in manifest | **present** (top-level field on every skill entry — added 2026-05-25 per F4 finding) | `scripts/generate-manifest.js::buildSkillEntry` |
 | Canonical skill count | _Generated, never hand-stamped here_ — read it from [`docs/status.generated.md`](docs/status.generated.md) or the live command, so a corpus change never forces a doc sweep (enforced by `scripts/check-inline-skill-counts.js`). | live: `find ~/Development/skills/skills -name SKILL.md \| wc -l` (canonical); add `node scripts/generate-manifest.js --include-template --validate-only` for the +template count. |
-| Marketplace export count | _Generated, never hand-stamped here_ — see [`docs/status.generated.md`](docs/status.generated.md). The publication gate excludes private skills (`public: false`, plus legacy internal grounding modes); `graph-audit` (`public: false`, `grounding_mode: repo_specific`) is a gated exclusion. Any canonical−marketplace delta beyond gated exclusions is export staleness pending the next `marketplace:export` run. | live: `find skill-graph/marketplace/skills -name SKILL.md \| wc -l` |
+| Marketplace export count | _Generated, never hand-stamped here_ — see [`docs/status.generated.md`](docs/status.generated.md). The publication gate excludes private skills (`public: false`, plus internal grounding modes); `graph-audit` (`public: false`, `grounding_mode: repo_specific`) is a gated exclusion. Any canonical−marketplace delta beyond gated exclusions is export staleness pending the next `marketplace:export` run. | live: `find skill-graph/marketplace/skills -name SKILL.md \| wc -l` |
 | Canonical library location | sibling repo `jacob-balslev/skills` at `~/Development/skills/` | `.skill-graph/config.json` → `skill_roots: ["../skills/skills"]` |
 | This repo's role | tooling + protocol + schemas + docs (no `skills/` tree) | [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md) |
 | Audit Loop maturity | Integrity Gate ≈ MLOps L1 (write-back wired into `skill-graph audit` as of 2026-05-25 per SH-6481 F14); **Behavior Gate data remains sparse** — application verdicts stay `UNVERIFIED` until `evals/application.json` artifacts are authored and graders run. | [`skill-audit-loop/SKILL_AUDIT_LOOP.md:45-52`](skill-audit-loop/SKILL_AUDIT_LOOP.md) |
@@ -63,10 +63,10 @@ A common point of confusion: the canonical library and the in-repo `marketplace/
                                          (published to github.com/jacob-balslev/skills,
                                           indexed at skills.sh/jacob-balslev/skills)
 
-   ~/Development/skills/skills/<subject>/<name>/SKILL.md    AUTHORING SOURCE (nested, hand-edited)
+   ~/Development/skills/skills/<subject>/<name>/SKILL.md    AUTHORING SOURCE (flat protocol-native, hand-edited)
            │  scripts/export-marketplace-skills.js  (reads source, normalizes, applies publication gate)
            ▼
-   skill-graph/marketplace/skills/<name>/SKILL.md          GENERATED EXPORT (staging, never hand-edited; flat)
+   skill-graph/marketplace/skills/<name>/SKILL.md          GENERATED EXPORT (staging, never hand-edited; Agent-Skills-compatible metadata)
            │  two-step sync: copy marketplace/skills/* into ~/Development/skills/skills/, commit, push
            ▼
    github.com/jacob-balslev/skills  →  skills.sh           PUBLIC, installable
@@ -74,11 +74,11 @@ A common point of confusion: the canonical library and the in-repo `marketplace/
 
 **The two-hat insight:** the AUTHORING SOURCE and the PUBLIC RELEASE are the **same physical repo**. The pipeline above pushes the staging buffer (`skill-graph/marketplace/skills/`) into that repo, so writing to skill-graph and pushing the canonical library both eventually update `github.com/jacob-balslev/skills`. The `marketplace/` directory is the transform buffer between this tooling repo and the library repo, not a separate publication target.
 
-The export is **not** a copy. It (1) applies the **publication gate** — excludes `public: false` (plus legacy `deployment_target: project` / `scope: codebase|operational|project`) and `grounding_mode: repo_specific|repo_internal` skills and fails on private paths, so internal skills never publish; (2) **normalizes** the frontmatter (flattens the `compatibility` object, etc.); (3) historically **flattened** the directory layout; and (4) **projects** the meaningful protocol fields (classification, relations, Understanding fields, grounding, lifecycle, audit status) into a readable `## Skill Graph context` body section — see `docs/marketplace-syndication.md § Export-Time Body Projection` — so vendor auto-loaders that read the body on activation but never the `metadata:` map still see the graph as prose. Because the source library (`~/Development/skills/`) is *also* the public release repo (`jacob-balslev/skills`), source and release are the same repo; `marketplace/skills/` is the transform/staging buffer between this tooling repo and that one. See `AGENTS.md § Public Distribution` for the two-step sync protocol.
+The export is **not** a copy. It (1) applies the **publication gate** — excludes `public: false` and internal grounding modes and fails on private paths, so internal skills never publish; (2) **normalizes** the frontmatter into the public Agent-Skills-compatible shape; (3) flattens the directory layout for the public index; and (4) **projects** the meaningful protocol fields (classification, relations, Understanding fields, grounding, lifecycle, audit status) into a readable `## Skill Graph context` body section — see `docs/marketplace-syndication.md § Export-Time Body Projection` — so vendor auto-loaders that read the body on activation but never the `metadata:` map still see the graph as prose. Because the source library (`~/Development/skills/`) is *also* the public release repo (`jacob-balslev/skills`), source and release are the same repo; `marketplace/skills/` is the transform/staging buffer between this tooling repo and that one. See `AGENTS.md § Public Distribution` for the two-step sync protocol.
 
 > **Layout note (re-verified 2026-05-28):** the export is self-consistent after a regenerate — `node scripts/export-marketplace-skills.js --check` verifies the generated surface, and `npm run verify` includes `marketplace:verify`. `marketplace/skills/` uses a **flat** `<name>/` layout (the plain Agent Skills publish shape) while the authoring/release library is **nested** `<subject>/<name>/`. These layouts intentionally differ — authoring organization vs publish shape — so the flat export is current, not stale. Pre-release checks should compare recursive `SKILL.md` counts rather than top-level directory counts.
 
-> **Export-label note (2026-05-26):** `scripts/export-marketplace-skills.js` no longer emits `skill_graph_protocol` on exported skills — the previous hardcoded `Skill Metadata Protocol v7` constant conflated "exported by v7 tooling" with "content verified at v7" and was removed. Per-skill `schema_version` is the honest source contract signal. See `AGENTS.md § Version Labels Are Earned, Not Bumped`.
+> **Export-label note:** `scripts/export-marketplace-skills.js` does not emit a hardcoded `skill_graph_protocol` label on exported skills. Per-skill `schema_version` is the honest source contract signal. See `AGENTS.md § Version Labels Are Earned, Not Bumped`.
 
 ---
 
@@ -119,7 +119,7 @@ flowchart LR
   class Artifacts artifact
 ```
 
-**Legend.** Blue = authored input. Orange = loop-owned state. Green = tooling. Yellow = output artifact. Solid arrows are the data flow. The auditor closes the loop by stamping `audit-state.json` (`last_audited`, `lint_verdict`, `structural_verdict`, `truth_verdict`, and, in graded mode, behavior verdict fields). Hash-based drift evidence only supports the truth roll-up when declared truth sources are present and hashable; `UNGROUNDED` means there was no local truth-source baseline to compare. The manifest compiler joins `SKILL.md` plus `audit-state.json`, so consumers get one compiled view while the source representation stays split by ownership. Every entity in this diagram has its own deep-dive diagram: [§ Anatomy](skill-metadata-protocol/design-rationale.md#anatomy) for `SKILL.md`, [§ The Four Operations](skill-audit-loop/SKILL_AUDIT_LOOP.md#the-four-operations) for `skill-audit.js`, [§ Manifest Field Mapping](docs/manifest-field-mapping.md) for `skills.manifest.json`.
+**Legend.** Blue = authored input. Orange = loop-owned state. Green = tooling. Yellow = output artifact. Solid arrows are the data flow. The auditor closes the loop by stamping Integrity Gate state in `audit-state.json` (`last_audited`, `lint_verdict`, `structural_verdict`, `truth_verdict`); graded audit also writes qualitative artifacts such as `findings.md`, `scorecard.md`, and `verdict.md`. Behavior verdict fields are stamped by the Behavior Gate evaluators. Hash-based drift evidence only supports the truth roll-up when declared truth sources are present and hashable; `UNGROUNDED` means there was no local truth-source baseline to compare. The manifest compiler joins `SKILL.md` plus `audit-state.json`, so consumers get one compiled view while the source representation stays split by ownership. Every entity in this diagram has its own deep-dive diagram: [§ Anatomy](skill-metadata-protocol/design-rationale.md#anatomy) for `SKILL.md`, [§ The Four Operations](skill-audit-loop/SKILL_AUDIT_LOOP.md#the-four-operations) for `skill-audit.js`, [§ Manifest Field Mapping](docs/manifest-field-mapping.md) for `skills.manifest.json`.
 
 ---
 
@@ -160,7 +160,7 @@ Public docs that define or explain the protocol in prose. If a Tier 2 file disag
 
 | File | Role |
 |---|---|
-| [`skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md`](skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md) *(repo root)* | Normative spec: required fields, semantic rules, authored vs generated fields, migration notes. |
+| [`skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md`](skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md) *(repo root)* | Normative spec: required fields, semantic rules, authored vs generated fields. |
 | `skill-metadata-protocol/design-rationale.md` | Rationale and deep explanation: body structure, requiredness groups, strictness rules, schema versioning policy, design tradeoffs. |
 | `skill-metadata-protocol/field-reference.md` | One section per authored field. All current v8 top-level fields with purpose, rules, allowed values, examples. |
 | `skill-metadata-protocol/field-decision-guide.md` | Decision tables for the hard choices: `public`, `relations.*`, Evaluation Status, `portability`, `project[]` / `repo[]`, and the "taxonomy_domain vs. subject" question. |
@@ -183,7 +183,7 @@ Scripts that police Tier 1 (lint, consistency) or compile Tier 1's output (manif
 |---|---|
 | `scripts/skill-lint.js` | Canonical-source schema and structure validator: YAML parse, schema validation against `schemas/SKILL_METADATA_PROTOCOL_schema.json`, `name` syntax, non-empty `description`, parent-directory/name alignment, `subjects[0]`/`subject` alignment, required skill-content body sections, non-blank `scope`, compatibility alias equality, relation target existence, optional sidecar validation, and the comprehension-state cross-file check. Routing quality, drift freshness, marketplace export shape, eval quality, and stability promotion remain owned by their single-purpose gates. |
 | `scripts/lint/format-code-frame.js` | Babel/Rust-style diagnostic formatter. |
-| `scripts/lib/parse-frontmatter.js` | Minimal YAML parser. Handles quoted keys, block sequences, nested objects, block sequences of objects (v3 `boundary` / `depends_on` shape). |
+| `scripts/lib/parse-frontmatter.js` | Minimal YAML parser. Handles quoted keys, block sequences, nested objects, and block sequences of objects. |
 
 ### Cross-artifact enforcement (runs once per commit)
 
@@ -251,7 +251,7 @@ flowchart LR
 
 | File | Role |
 |---|---|
-| `scripts/skill-graph-route.js` | Graph-aware selector. Uses every unique Skill Graph routing field: `activation.keywords` / `triggers` / `examples` / `anti_examples`, `activation.paths`, `activation.dependencies`, `activation.codebase_layer`, `activation.applicable_tasks`, `activation.environment`, `activation.internal_tools`, `project_adoption_stage`, `project[]` project-fit filtering, `relations.depends_on` transitive closure, `relations.verify_with` co-loading, `relations.suppresses` anti-ownership exclusion (with legacy `boundary` fallback), `eval_state` quality gate, and `lifecycle.stale_after_days` staleness annotation. Emits per-skill reasons. |
+| `scripts/skill-graph-route.js` | Graph-aware selector. Uses every unique Skill Graph routing field: `activation.keywords` / `triggers` / `examples` / `anti_examples`, `activation.paths`, `activation.dependencies`, `activation.codebase_layer`, `activation.applicable_tasks`, `activation.environment`, `activation.internal_tools`, `project_adoption_stage`, `project[]` project-fit filtering, `relations.depends_on` transitive closure, `relations.verify_with` co-loading, `relations.suppresses` anti-ownership exclusion, `eval_state` quality gate, and `lifecycle.stale_after_days` staleness annotation. Emits per-skill reasons. |
 | `scripts/skill-graph-drift.js` | Drift sentinel. Hashes every `grounding.truth_sources` entry with SHA-256, including line-range and anchor object entries; compares against the recorded `drift_check.truth_source_hashes` baseline; reports DRIFT / BROKEN / STALE / NO_BASELINE. `--record --apply` updates the SKILL.md in place with fresh hashes. |
 
 These tools are the *proof* that Tier 1's schema earns its complexity. If you ever doubt whether `relations.suppresses`, `grounding.truth_sources`, or `lifecycle` is worth the field count, run these scripts against a real skill library and watch them change routing decisions.
@@ -360,22 +360,11 @@ Concrete artifacts that show adopters what "good" looks like. Every specimen is 
 | `examples/fixture-skills/` | Four in-repo specimen skills covering distinct shapes: `minimal-capability`, `with-grounding` (full `grounding` block + recorded `truth_source_hashes`), `with-relations`, and `comprehension-full` (populated Understanding fields). |
 | `examples/skills.manifest.sample.json` | Generator-produced sample. Drift-checked against live generator output by `skill-lint.js` check 8. |
 
-### Starter skills
+### Specimen skills
 
-> **Location note (post-ADR-0009 consolidation):** this repo no longer ships a `skills/` tree. The canonical skill library lives in the sibling repo at `~/Development/skills/` (nested `<subject>/[<taxonomy_domain>/]<name>/SKILL.md`, closed 12-subject enum), with a plain-Agent-Skills export mirror under `marketplace/skills/`. In-repo specimens live in `examples/fixture-skills/`. The table below is a **historical archetype-coverage reference** describing the original eight-starter specimen set chosen to cover every archetype × scope combination the schema permits; `skills/<name>` paths are illustrative of that set, not current in-repo paths. Entries marked _(archive)_ are no longer in the in-repo specimen set — their archetype coverage moved to `examples/fixture-skills/`. The relations diagram further below has been reauthored against the four in-repo `examples/fixture-skills/` (see § The fixture graph).
+> **Location note (post-ADR-0009 consolidation):** this repo no longer ships a production `skills/` tree. The canonical skill library lives in the sibling repo at `~/Development/skills/` (nested `<subject>/[<taxonomy_domain>/]<name>/SKILL.md`, closed 12-subject enum), with a plain-Agent-Skills export mirror under `marketplace/skills/`. In-repo specimens live in `examples/fixture-skills/`.
 
-> **Historical archetype labelling.** The `type` column below is the v7 archetype label (`capability` / `workflow` / `router` / `overlay`). Both the v7 `type` axis and the briefly-introduced v8 `operation` axis were **removed in v8** (ADR-0017 + its 2026-05-27 amendment) — v8 skills classify by `subject` + `public` with no archetype/operation axis. This table is retained only as a historical archetype-coverage reference; the `public` column shows the boolean that replaced the old `deployment_target` enum (`portable`→`true`, `project`→`false`).
-
-| Skill | Archetype (v7 `type` — retired in v8) | `public` | Unique thing it demonstrates |
-|---|---|---|---|
-| `a11y` | capability | true | Minimal routable capability, eval artifact present |
-| `debugging` | workflow | true | `## Workflow` section with numbered steps |
-| `documentation` _(archive)_ | capability | true | Eval artifact + worked audit both shipped — archetype coverage now in `examples/fixture-skills/` |
-| `refactor` | workflow | true | `relations.depends_on: [testing-strategy]` |
-| `testing-strategy` | capability | true | quality routing-bundle membership |
-| `skill-router` _(archive)_ | router | true | Router archetype with `## Routing Rules` — archetype coverage now in `examples/fixture-skills/` |
-| `lint-overlay` | overlay | true | Overlay archetype with `extends` + `## Overlay Rules` |
-| `graph-audit` _(archive)_ | capability | false | Full `grounding` block + recorded `truth_source_hashes` (this shape now demonstrated by `examples/fixture-skills/with-grounding`). |
+The live specimen set demonstrates the current contract directly: a minimal routable skill, a grounded private skill, a skill with typed relations, and a skill with the five Understanding fields. Historical starter/archetype coverage lives in git history and dated ADR/changelog entries, not in the live overview.
 
 ### Supporting artifacts
 
@@ -392,16 +381,16 @@ Concrete artifacts that show adopters what "good" looks like. Every specimen is 
 
 > **The question this diagram answers:** "How do `relations.*` edges resolve, and why does a dangling target fail confidently?"
 
-The relations graph cuts across all five tiers — declared in Tier 5 SKILL.md frontmatter, checked by Tier 3 tooling, and consumed by Tier 4 routing. Its worst failure mode is silent drift: the router fails *confidently* because a dangling target looks like a valid one. The in-repo `examples/fixture-skills/` set is a **closed reference graph** — `with-relations` exercises four representative relation edge types (`depends_on`, `verify_with`, `related`, and `suppresses`) against the other three fixtures, so the fixture checks resolve every target from this directory alone, with no dependency on the sibling `../skills/skills/` canonical library. The full schema also supports `broader`, `narrower`, and `disjoint_with`; tooling accepts `adjacent` only as the deprecated alias of `related`, and `boundary` only as the deprecated alias of `suppresses`. The diagram reads the authoritative edges from each fixture's frontmatter; it does not duplicate them.
+The relations graph cuts across all five tiers — declared in Tier 5 SKILL.md frontmatter, checked by Tier 3 tooling, and consumed by Tier 4 routing. Its worst failure mode is silent drift: the router fails *confidently* because a dangling target looks like a valid one. The in-repo `examples/fixture-skills/` set is a **closed reference graph** — `with-relations` exercises four representative relation edge types (`depends_on`, `verify_with`, `related`, and `suppresses`) against the other three fixtures, so the fixture checks resolve every target from this directory alone, with no dependency on the sibling `../skills/skills/` canonical library. The full schema also supports `broader`, `narrower`, and `disjoint_with`. The diagram reads the authoritative edges from each fixture's frontmatter; it does not duplicate them.
 
 > These four are **v8 hermetic test fixtures** (see `examples/fixture-skills/README.md`), not production exemplars — their job is to exercise the schema's conditional-requiredness rules and the `{skill, reason}` relation shape, not to model a realistic skill domain. The full, realistic relations graph lives in the sibling canonical library (`~/Development/skills/`) and is what `scripts/skill-graph-route.js` traverses at request time.
 
 ```mermaid
 flowchart LR
-  MIN["minimal-capability<br/><i>backend-engineering · portable</i>"]
-  GR["with-grounding<br/><i>knowledge-organization · project</i>"]
-  REL["with-relations<br/><i>knowledge-organization · portable</i>"]
-  COMP["comprehension-full<br/><i>knowledge-organization · portable</i>"]
+  MIN["minimal-capability<br/><i>backend-engineering · public: true</i>"]
+  GR["with-grounding<br/><i>knowledge-organization · public: false</i>"]
+  REL["with-relations<br/><i>knowledge-organization · public: true</i>"]
+  COMP["comprehension-full<br/><i>knowledge-organization · public: true</i>"]
 
   %% depends_on — thick solid, load-bearing
   REL ==>|depends_on| MIN

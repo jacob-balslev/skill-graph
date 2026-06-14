@@ -1,6 +1,6 @@
 'use strict';
 
-// Unit tests for the multi-agent PANEL enrich orchestrator (run-skill-audit-loop.js).
+// Unit tests for the multi-agent PANEL audit orchestrator (run-skill-audit-loop.js).
 // Pure DI — no real dispatch, no fs. Mirrors test-skill-audit-loop-lite.js patterns.
 
 const assert = require('assert');
@@ -170,7 +170,7 @@ function makeDeps(overrides = {}) {
         mergeLedger: { contributions: args.proposals.concat(args.advisoryProposals || []).map((p, i) => ({ id: i + 1, surfaced_by: p.model, disposition: 'kept' })) },
       };
     },
-    prepareEnrichedEval: ({ skillDir }) => ({ evalSkillDir: `${skillDir}/.enriched`, cleanup: () => {} }),
+    prepareCandidateEval: ({ skillDir }) => ({ evalSkillDir: `${skillDir}/.candidate`, cleanup: () => {} }),
     applyMerge: ({ skillDir }) => { calls.applied += 1; return { applied: `${skillDir}/SKILL.md` }; },
     evalArtifactExists: () => true,
     runEvalDirection: ({ direction, executionProfile, skillDir }) => {

@@ -20,16 +20,14 @@ What it does promise: deterministic lint, manifest generation, relation-aware ro
 
 The fields split into conceptual groups. This grouping is a teaching aid only — the schema groups by requiredness and conditional rules. See `skill-metadata-protocol/design-rationale.md § Requiredness Groups` for the authoritative grouping.
 
-The exact field count:
+The contract shape:
 
-- **25 agent-facing frontmatter fields** — the current `SKILL.md` surface authors maintain for routing and execution.
-- **30 audit-state sidecar fields** — the sibling `audit-state.json` surface the Skill Audit Loop owns.
+- **Agent-facing frontmatter fields** — the current `SKILL.md` surface authors maintain for routing and execution.
+- **Audit-state sidecar fields** — the sibling `audit-state.json` surface the Skill Audit Loop owns.
 - **5 required frontmatter fields** — every `SKILL.md` must populate `name`, `description`, `subject`, `public`, and `scope`.
 - **7 required sidecar fields** — every `audit-state.json` must populate `schema_version`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, and `routing_eval`.
-- **Conditionally-required fields** — `grounding` when `project[]` is non-empty, `superseded_by` when `stability: deprecated`, and the Understanding fields or `concept` when `comprehension_state: present`.
+- **Conditionally-required fields** — `grounding` when `project[]` is non-empty, `superseded_by` when `stability: deprecated`, and the five Understanding fields when `comprehension_state: present`.
 - **Optional enrichment fields** — including nested sub-fields inside `relations`, `grounding`, `portability`, `compatibility`, `lifecycle`, `runtime_telemetry`, `model_run_coverage`, and concept/eval receipts.
-
-When you see "possible fields" counted anywhere, that is the count including nested sub-fields and legacy aliases individually. The current contract is the two-file ADR-0019 shape, not the older single-frontmatter count.
 
 ### Identity (5 fields)
 
@@ -39,7 +37,7 @@ The identity of the skill — what it is, who it is, which version of itself.
 |---|---|---|---|
 | `name` | one | Stable identifier; the handle other skills point at | `dcterms:identifier` |
 | `urn` | one | Optional globally unique persistent identifier | `dcterms:identifier` |
-| `description` | one | Routing contract — *when* to activate, not *what* the skill covers | `dcterms:description` |
+| `description` | one | Short topical summary of what the skill covers | `dcterms:description` |
 | `version` | one | Semver of the skill content itself; sidecar field | `dcterms:hasVersion` |
 | `owner` | one | Maintenance accountability; sidecar field | `dcterms:creator` |
 
@@ -66,7 +64,7 @@ Whether the skill is fresh, verified, and monitored. The two required fields (`f
 | `freshness` | one ISO date | "When was this last editorially reviewed?" | always |
 | `drift_check` | one object (`last_verified` + `truth_source_hashes?`) | "When was this last verified against truth sources, and do the source hashes still match?" | always |
 | `lifecycle` | one object (`stale_after_days?` + `review_cadence?`) | "How fast does this rot, and how often should it be re-verified?" | optional |
-| `runtime_telemetry` | one object (`feedback_source` + `metrics?`) | "What do real-world runs say about whether this works?" | optional |
+| `runtime_telemetry` | one object (`feedback_source` + `run_receipts_source?` + `last_run?` + `metrics?`) | "What do real-world runs and audit/eval agent receipts say about whether this works and what it cost?" | optional |
 | `model_run_coverage` | one object (`models` keyed by model alias) | "Which models have actually run which audit-loop operation, and where is the receipt or failure evidence?" | optional |
 
 Historical proposal: collapse `freshness` + `drift_check.last_verified` + `lifecycle.stale_after_days` into two primitives (`asserted_at` + `stale_after`). That proposal did not land in v8; the current schema keeps the three-field shape above.
@@ -134,7 +132,7 @@ Artifact-level metadata.
 | Field | Cardinality | Role |
 |---|---|---|
 | `license` | one | SPDX identifier (e.g. `MIT`, `Apache-2.0`) |
-| `compatibility` | one object (`runtimes?`, `node?`, `notes?`) | Runtime environment |
+| `compatibility` | one object (`agent_runtimes?`, `node_version?`, `notes?`) | Runtime environment |
 | `allowed-tools` | one space-separated string | Pre-approved tool allowlist |
 | `portability.readiness` | one enum | `declared` \| `scripted` \| `verified` — operational export readiness |
 | `portability.targets` | many, currently `["skill-md"]` only | Export destinations |
@@ -147,11 +145,11 @@ Skill Graph keeps these classification and belonging dimensions distinct. Each r
 | Axis | Field | Orthogonality | Question |
 |---|---|---|---|
 | Publishability | `public` | boolean — `true` (shareable) / `false` (private) | Is this safe to publish? |
-| Scope | `scope` | Free-text, not an enum | PRD-style description of deployment context |
+| Scope | `scope` | Free-text, not an enum | PRD-style description of coverage and exclusions |
 | Taxonomy | `subject` + `taxonomy_domain` | Strict — one shelf, one optional tree path | What kind of concern is this? |
 | Project belonging | `project[]` | Strict — explicit belonging references, no hierarchy | Which specific project is this anchored to? |
 
-> The per-skill `routing_bundles` field was removed (SKI-286, 2026-06-07): it had no acting consumer. Library-level activation bundles (the "load all `quality` skills" ergonomic) live in the skill-injector routing config (`bundles` / `bundleTypes`), not in per-skill frontmatter. A second browse path for a skill is expressed with `subjects[]` (max 2) or `relations.related`.
+> Library-level activation bundles (the "load all `quality` skills" ergonomic) live in the skill-injector routing config (`bundles` / `bundleTypes`), not in per-skill frontmatter. A second browse path for a skill is expressed with `subjects[]` (max 2) or `relations.related`.
 
 ## Body structure
 

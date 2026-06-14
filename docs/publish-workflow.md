@@ -19,7 +19,7 @@ The Skill Graph ecosystem keeps authoring and publication separated:
 
 The staging surface in `marketplace/skills/` is the bridge. The exporter reads from the canonical source and writes there; the publish step syncs it into the release repo.
 
-This separation prevents v7 protocol frontmatter (internal fields: `skill_graph_source_repo`, `grounding`, `relations`, etc.) from leaking into the public surface, which only needs the six plain Agent Skills fields: `name`, `description`, `license`, `compatibility`, `allowed-tools`, `metadata`.
+This separation prevents protocol-native authoring fields and audit sidecar state from leaking into the public surface. The public surface only needs the plain Agent Skills fields: `name`, `description`, `license`, `compatibility`, `allowed-tools`, and generated `metadata`.
 
 ---
 
@@ -135,8 +135,8 @@ find ~/Development/skill-graph/marketplace/skills/ -name "SKILL.md" | wc -l
 find ~/Development/skills/skills/ -name "SKILL.md" | wc -l
 # Numbers must match
 
-# 3. No v6 protocol labels in the marketplace surface
-grep -rE 'schema_version:\s*6' ~/Development/skill-graph/marketplace/skills/ | wc -l
+# 3. No protocol-only sidecar files in the marketplace surface
+find ~/Development/skill-graph/marketplace/skills/ -name "audit-state.json" | wc -l
 # Must be 0
 
 # 4. No internal sales-hub references in committed SKILL.md files
@@ -172,7 +172,7 @@ The release repo has a flat structure under `skills/`:
 Each `SKILL.md` must carry:
 
 - `name` — kebab-case, matches directory name.
-- `description` — routing trigger + negative boundary, ≤ 1024 chars.
+- `description` — short topical summary, ≤ 1024 chars.
 - `license` — `MIT`.
 - `compatibility` — human-readable runtime compatibility note.
 - `allowed-tools` — space-separated tool list (e.g. `Read Grep Bash`).
@@ -181,7 +181,7 @@ Each `SKILL.md` must carry:
 - `metadata.skill_graph_source_repo` — `https://github.com/jacob-balslev/skill-graph`.
 - `metadata.skill_graph_project` — `Skill Graph`.
 - `metadata.skill_graph_canonical_skill` — path in the skill-graph repo.
-- `metadata.skill_graph_export_description_projection*` — optional export bookkeeping when the marketplace description includes projected anti-example or boundary text.
+- `metadata.skill_graph_export_description_projection*` — optional export bookkeeping when the marketplace description includes projected anti-example or suppression text.
 
 Protocol extension fields must not appear as extra top-level fields in the plain Agent Skills surface. When preserved for traceability, they appear under `metadata` as string values; generated body text must not surface audit/eval maintenance state as user-facing guidance.
 
@@ -191,13 +191,12 @@ Protocol extension fields must not appear as extra top-level fields in the plain
 
 The exporter automatically excludes skills with:
 
-- `public: false` — the primary publishability gate (a missing/undefined `public` is also excluded, so the boundary fails CLOSED); a legacy `deployment_target: project` is still excluded via back-compat
-- legacy closed-scope values `scope: codebase`, `scope: operational`, or `scope: project`
+- `public: false` — the primary publishability gate. A missing/undefined `public` is also excluded, so the publication boundary fails closed.
 - `grounding_mode: repo_specific` or `grounding_mode: repo_internal`
 - Any privacy pattern violation (see `scripts/lib/privacy-patterns.js`)
 - `structural_verdict: FAIL`
 
-The exporter emits the live export count and the full excluded list on every run (`EXCLUDED from marketplace export: <path> (deployment_target: …, scope: …, grounding_mode: …)`). As of 2026-05-28, exactly two project-grounded skills are excluded (by the `public: false` gate, or — for skills not yet migrated off the retired enum — the legacy `deployment_target: project` back-compat) — `agent-ops/skill-router` and `quality-assurance/graph-audit`, both carrying `grounding_mode: repo_specific`. The live exported-skill count is the single source of truth in `SKILL_GRAPH.md § Current State` and is not restated here to avoid drift.
+The exporter emits the live export count and the full excluded list with reasons on every run (for example, `public: false`, internal `grounding_mode`, privacy violation, or structural failure). The live exported-skill count and excluded list are runtime receipts; this document does not hand-stamp counts or skill names that can drift.
 
 ---
 

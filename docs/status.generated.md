@@ -1,6 +1,6 @@
 # Skill Graph — Generated Status
 
-> **Generated:** 2026-06-12T23:20:11.536Z
+> **Generated:** 2026-06-14T06:02:26.428Z
 > **Generator:** `node scripts/build-status-doc.js` (regenerate; never hand-edit)
 >
 > This file is the single-source-of-truth status snapshot for the project's
@@ -16,19 +16,19 @@
 | Package version | `0.5.10` | `package.json` |
 | Node engine | `>=20.0.0` | `package.json` |
 | Active schema version | `v8` | `schemas/skill-audit-state.schema.json` (moved from frontmatter schema per ADR-0019) |
-| Skill count (manifest) | `186` | `skills.manifest.json` |
-| Upstream-displacement coverage | `30` / `186` (16%) | skills with a `references/upstream-*.md` artifact (per `skill-audit-loop/SKILL_AUDIT_LOOP.md` § 6-displacement) |
+| Skill count (manifest) | `183` | `skills.manifest.json` |
+| Upstream-displacement coverage | `31` / `183` (17%) | skills with a `references/upstream-*.md` artifact (per `skill-audit-loop/SKILL_AUDIT_LOOP.md` § 6-displacement) |
 | Mirror status | docs-only mirrors per ADR 0009 (2026-05-18) | `docs/adr/0009-sibling-repo-deprecation.md` |
 
 ## Checks
 
 | Check | Status | Duration | Last line |
 |---|---|---|---|
-| check-markdown-links | ✅ PASS | 550 ms | OK   markdown links (1626 file(s)) |
-| check-protocol-consistency | ✅ PASS | 137 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
-| check-doc-drift | ✅ PASS | 226 ms | OK   doc drift sentinel: 88 active doc(s) scanned against schema v8 |
-| check-mirror-freeze | ✅ PASS | 55 ms | OK   mirror freeze: 20 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
-| marketplace-export-check | ✅ PASS | 217 ms | PROJECTION TRUNCATED for writing-humanizer: tail truncated from 503 to 465 chars to fit 1024 limit |
+| check-markdown-links | ✅ PASS | 328 ms | OK   markdown links (1646 file(s)) |
+| check-protocol-consistency | ✅ PASS | 124 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
+| check-doc-drift | ✅ PASS | 228 ms | OK   doc drift sentinel: 88 active doc(s) scanned against schema v8 |
+| check-mirror-freeze | ✅ PASS | 49 ms | OK   mirror freeze: 20 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
+| marketplace-export-check | ✅ PASS | 227 ms | PROJECTION TRUNCATED for writing-humanizer: tail truncated from 503 to 465 chars to fit 1024 limit |
 
 ## Audit Health
 
@@ -38,61 +38,61 @@
 
 | State | Count | What it means |
 |---|---|---|
-| Admitted | `70` / `186` | Structural + truth verdicts both PASS — skill is eligible for quality assessment. |
-| Not admitted | `116` | Structural or truth gate failing — skill is not yet eligible. |
+| Admitted | `83` / `183` | Structural + truth verdicts both PASS — skill is eligible for quality assessment. |
+| Not admitted | `100` | Structural or truth gate failing — skill is not yet eligible. |
 
 Per-verdict breakdown:
 
 | Verdict | structural | truth |
 |---|---|---|
-| PASS | `185` | `70` |
-| PASS_WITH_FIXES | `1` | — |
+| PASS | `183` | `83` |
+| PASS_WITH_FIXES | `0` | — |
 | FAIL | `0` | — |
-| DRIFT | — | `4` |
-| BROKEN | — | `2` |
-| UNVERIFIED | `0` | `110` |
+| DRIFT | — | `2` |
+| BROKEN | — | `0` |
+| UNVERIFIED | `0` | `98` |
 
 ### Assessment (has the behavior gate run?)
 
 | State | Count | Confidence tier |
 |---|---|---|
-| Admitted, unassessed | `63` | No gate 9 run — `pending — eligible only` |
-| Assessed (provisional) | `5` | Single-model assessment — awaiting dual-run grader |
+| Admitted, unassessed | `75` | No gate 9 run — `pending — eligible only` |
+| Assessed (provisional) | `6` | Single-model assessment — awaiting dual-run grader |
 | Assessed (graded) | `2` | Dual-run grader confirmed |
 
 Comprehension carve-out (per ADR-0011 § Addendum 2026-05-20):
 
 | State | Count | Note |
 |---|---|---|
-| Framework concept or no comprehension layer (`SKIPPED_BASELINE_HIGH` / `NA`) | `16` | Comprehension legitimately does not apply — model already knows the concept or the skill ships none. |
+| Framework concept or no comprehension layer (`SKIPPED_BASELINE_HIGH` / `NA`) | `22` | Comprehension legitimately does not apply — model already knows the concept or the skill ships none. |
 | Comprehension graded | `6` | Comprehension grader produced a real verdict. |
-| Comprehension unassessed | `164` | Repo-specific skill awaiting gate-8 run. |
+| Comprehension unassessed | `155` | Repo-specific skill awaiting gate-8 run. |
 
 ### Certification (the only number worth bragging about)
 
 | Outcome | Count |
 |---|---|
 | **APPLICABLE** (certified useful) | `0` |
-| PROVISIONAL (single-model APPLICABLE-equivalent) | `6` |
+| PROVISIONAL (single-model APPLICABLE-equivalent) | `9` |
 | NOT_DISCRIMINATED_CEILING (baseline saturated; inconclusive) | `0` |
 | EQUIVALENT_ON_FRONTIER (no marginal frontier lift) | `0` |
-| REDUNDANT (legacy no-delta bucket) | `4` |
+| REDUNDANT (legacy no-delta bucket) | `3` |
 | MIXED (delta varies by case) | `2` |
 | FALSE_POSITIVE (skill over-triggers) | `0` |
 | HARMFUL (makes agents worse) | `0` |
-| UNVERIFIED (no assessment) | `174` |
+| UNVERIFIED (no assessment) | `169` |
 
 ## Deprecated-alias drain
 
-> The live schema accepts these deprecated/legacy aliases only for unmigrated skills. **Removal condition (per `AGENTS.md § Major Version Is a Clean Cut`): when an alias's corpus usage reaches 0, one SYSTEM commit deletes it from the schema.** The per-skill rename is CONTENT-mode audit-loop work; this table makes the drain measurable instead of open-ended.
+> The live schema accepts remaining deprecated/legacy aliases only for unmigrated skills, and this table records recently removed aliases until the next status cleanup. **Removal condition (per `AGENTS.md § Major Version Is a Clean Cut`): when an alias's corpus usage reaches 0, one SYSTEM commit deletes it from the schema.** The per-skill rename is CONTENT-mode audit-loop work; this table makes the drain measurable instead of open-ended.
 
 | Deprecated alias | Canonical | Corpus usage | State |
 |---|---|---|---|
-| `relations.boundary` | `relations.suppresses` | `0` / `186` | **READY TO DELETE** — remove the alias from the schema in a SYSTEM commit |
-| `relations.adjacent` | `relations.related` | `0` / `186` | **READY TO DELETE** — remove the alias from the schema in a SYSTEM commit |
-| `boundary (top-level Understanding)` | `concept_boundary` | `0` / `186` | **READY TO DELETE** — remove the alias from the schema in a SYSTEM commit |
-| `compatibility.runtimes` | `compatibility.agent_runtimes` | `0` / `186` | **READY TO DELETE** — remove the alias from the schema in a SYSTEM commit |
-| `compatibility.node` | `compatibility.node_version` | `0` / `186` | **READY TO DELETE** — remove the alias from the schema in a SYSTEM commit |
+| `relations.boundary` | `relations.suppresses` | `0` / `183` | **REMOVED FROM SCHEMA** — corpus usage is zero; runtime read fallbacks, if any, are compatibility-only |
+| `relations.adjacent` | `relations.related` | `0` / `183` | **REMOVED FROM SCHEMA** — corpus usage is zero; runtime read fallbacks, if any, are compatibility-only |
+| `boundary (top-level Understanding)` | `concept_boundary` | `0` / `183` | **REMOVED FROM SCHEMA** — corpus usage is zero; runtime read fallbacks, if any, are compatibility-only |
+| `compatibility.runtimes` | `compatibility.agent_runtimes` | `0` / `183` | **REMOVED FROM SCHEMA** — corpus usage is zero; runtime read fallbacks, if any, are compatibility-only |
+| `compatibility.node` | `compatibility.node_version` | `0` / `183` | **REMOVED FROM SCHEMA** — corpus usage is zero; runtime read fallbacks, if any, are compatibility-only |
 
 ## How to refresh
 

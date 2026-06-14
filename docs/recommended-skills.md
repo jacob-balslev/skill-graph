@@ -22,20 +22,20 @@ Picks that fail any filter are deferred to project-specific Wave 2 batches (Tech
 
 These 12 skills form the credible baseline. Without them the library cannot honestly claim to help "all humans and AI agents." In the current repo, all Tier A skills are shipped; the original eight-starter subset remains the canonical minimal specimen set.
 
-| # | Skill | Status | Archetype | Scope | Why it's essential |
+| # | Skill | Status | Archetype | Publication | Why it's essential |
 |---:|---|---|---|---|---|
 | 1 | `skill-router` | shipped starter | router | reference | The entry point. Without a router skill, agents loading the library do not know how to dispatch among the rest. Demonstrates the unique value claim — graph-aware selection — at the same time. |
 | 2 | `skill-scaffold` | shipped | capability | reference | Without this, adopters cannot extend the library — they can only consume it. The whole "all humans and AI agents to use" mission requires that anyone can author a new skill correctly. This skill teaches the contract by example. |
-| 3 | `skill-infrastructure` | shipped | capability | portable | Library integrity matters as soon as you ship. Without this, drift accumulates silently. Operationally needed by anyone running the library more than 30 days. Covers maintenance discipline, audit tooling, and health monitoring. |
-| 4 | `documentation` | shipped starter | capability | portable | Every codebase, every agent. The most cross-cutting skill in any library. |
-| 5 | `naming-conventions` | shipped | capability | portable | Affects every file, function, variable, column, route, token. The single most cross-cutting authoring concern in any codebase, used by humans and agents at every commit. |
-| 6 | `testing-strategy` | shipped starter | capability | portable | Universal need; pyramid/trophy/honeycomb decisions apply across stacks. |
-| 7 | `debugging` | shipped starter | workflow | portable | Both humans and agents get stuck; both need the same triage discipline. |
-| 8 | `refactor` | shipped starter | workflow | portable | Behavior-preserving change discipline. The most-requested operation when adopters use AI agents to clean up legacy code. |
-| 9 | `code-review` | shipped | workflow | portable | Universal: humans review AI output, agents review human PRs, peers review peers. The most valuable skill an OSS library can ship to make AI-assisted coding production-safe. |
-| 10 | `prompt-craft` | shipped | capability | portable | The meta-skill of working with LLMs. Used by every human asking an agent to do anything; used by every agent composing sub-agent prompts. Universal in the AI-coding era. |
-| 11 | `owasp-security` | shipped | capability | portable | OWASP Top 10 is the universally-applicable security baseline. AI-generated code has 1.7–2.74× more security issues than human-written; a security skill in the library is non-negotiable. |
-| 12 | `a11y` | shipped starter | capability | portable | WCAG 2.2 is the universal accessibility floor. Every UI, every public-facing surface. |
+| 3 | `skill-infrastructure` | shipped | capability | public | Library integrity matters as soon as you ship. Without this, drift accumulates silently. Operationally needed by anyone running the library more than 30 days. Covers maintenance discipline, audit tooling, and health monitoring. |
+| 4 | `documentation` | shipped starter | capability | public | Every codebase, every agent. The most cross-cutting skill in any library. |
+| 5 | `naming-conventions` | shipped | capability | public | Affects every file, function, variable, column, route, token. The single most cross-cutting authoring concern in any codebase, used by humans and agents at every commit. |
+| 6 | `testing-strategy` | shipped starter | capability | public | Universal need; pyramid/trophy/honeycomb decisions apply across stacks. |
+| 7 | `debugging` | shipped starter | workflow | public | Both humans and agents get stuck; both need the same triage discipline. |
+| 8 | `refactor` | shipped starter | workflow | public | Behavior-preserving change discipline. The most-requested operation when adopters use AI agents to clean up existing code. |
+| 9 | `code-review` | shipped | workflow | public | Universal: humans review AI output, agents review human PRs, peers review peers. The most valuable skill an OSS library can ship to make AI-assisted coding production-safe. |
+| 10 | `prompt-craft` | shipped | capability | public | The meta-skill of working with LLMs. Used by every human asking an agent to do anything; used by every agent composing sub-agent prompts. Universal in the AI-coding era. |
+| 11 | `owasp-security` | shipped | capability | public | OWASP Top 10 is the universally-applicable security baseline. AI-generated code has 1.7–2.74× more security issues than human-written; a security skill in the library is non-negotiable. |
+| 12 | `a11y` | shipped starter | capability | public | WCAG 2.2 is the universal accessibility floor. Every UI, every public-facing surface. |
 
 **Current status:** Tier A is shipped. The original recommendation closed the gap from the eight-starter baseline by adding `skill-scaffold`, `naming-conventions`, `code-review`, `prompt-craft`, and `owasp-security`; `lint-overlay` remains because it is the worked `archetype: overlay` specimen.
 

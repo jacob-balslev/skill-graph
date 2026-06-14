@@ -1,8 +1,8 @@
 'use strict';
 
-// Unit test: two-frontier bidirectional eval — shared certification + conservative
-// synthesis (Opus 4.8 ⇄ GPT-5.5). Covers lib/audit-shared/{certification,
-// synthesize-bidirectional}.js and the model-provider frontier-pair helpers.
+// Unit test: bidirectional eval — shared certification + conservative synthesis.
+// Covers lib/audit-shared/{certification,synthesize-bidirectional}.js and the
+// model-provider frontier-pair helpers.
 
 const assert = require('assert');
 const cert = require('../../lib/audit-shared/certification');
@@ -28,13 +28,17 @@ check('otherFrontier throws for a non-frontier (no silent weak pairing)', () => 
   assert.throws(() => mp.otherFrontier('sonnet'), /not a frontier/);
 });
 
-console.log('2. Cross-family certification (both directions certifying)');
-check('opus⇄gpt-5.5 is cross-family certifying both ways', () => {
+console.log('2. Certification tiering');
+check('legacy cross-family pair is certifying both ways', () => {
   assert.strictEqual(cert.resolveCertificationTier({ certifying: true, generatorFamily: 'opus', graderFamily: 'gpt-5.5' }).tier, 'certifying');
   assert.strictEqual(cert.resolveCertificationTier({ certifying: true, generatorFamily: 'gpt-5.5', graderFamily: 'opus' }).tier, 'certifying');
 });
 check('same family caps at provisional (self-preference guard)', () => {
   assert.strictEqual(cert.resolveCertificationTier({ certifying: true, generatorFamily: 'opus', graderFamily: 'sonnet' }).tier, 'provisional');
+});
+check('representative-generator plus frontier judge is certifying per direction', () => {
+  assert.strictEqual(cert.resolveCertificationTier({ certifying: true, generatorFamily: 'representative-generator', graderFamily: 'opus' }).tier, 'certifying');
+  assert.strictEqual(cert.resolveCertificationTier({ certifying: true, generatorFamily: 'representative-generator', graderFamily: 'gpt-5.5' }).tier, 'certifying');
 });
 check('no certifying assertion => provisional', () => {
   assert.strictEqual(cert.resolveCertificationTier({ generatorFamily: 'opus', graderFamily: 'gpt-5.5' }).tier, 'provisional');
