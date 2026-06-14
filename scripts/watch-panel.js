@@ -14,10 +14,12 @@
 //   • piped    → print a collected block whenever the view changes (watchable in-session,
 //                e.g. as a Claude Code background task / Monitor, without ANSI cursor magic).
 //
-// It is an OBSERVER only — it never claims, dispatches, or mutates anything; it just reads
-// the heartbeat the runner writes. Terminal/flag states: COMPLETE (status.complete), STALL
-// (heartbeat `ts` frozen past --stale → runner hung/dead), and SLOW (an active agent's live
-// elapsed exceeds --slow), so a hung run can never look like a live one.
+// The default watch mode is an OBSERVER only — it never claims, dispatches, or mutates
+// anything; it just reads the heartbeat the runner writes. The explicit --review-findings
+// mode still leaves the runner heartbeat untouched, but writes a separate review-state JSON
+// file for human approve/disapprove decisions. Terminal/flag states: COMPLETE
+// (status.complete), STALL (heartbeat `ts` frozen past --stale → runner hung/dead), and SLOW
+// (an active agent's live elapsed exceeds --slow), so a hung run can never look like a live one.
 //
 // --fail-on-stall turns a STALL into a TERMINAL FAILURE: instead of printing STALL and
 // spinning forever (waiting for a heartbeat that will never come), the viewer prints a
@@ -36,28 +38,359 @@
 //
 // Usage:
 //   node scripts/watch-panel.js <status-file> [--poll SECS] [--stale SECS] [--slow SECS] [--tick SECS|0=off (default)] [--once] [--fail-on-stall]
+//   node scripts/watch-panel.js <status-file> --review-findings [--findings-file JSON] [--review-file JSON] [--views-file JSON] [--filter TEXT] [--skill TEXT] [--model TEXT] [--verdict TEXT] [--group-by none|skill|model|verdict|decision] [--sort disposition-priority|original|decision-status] [--select N]
+//
+// Findings review is per-finding by design: every finding is approved/disapproved individually
+// (keys a/d/u, mouse-click buttons, or a per-finding note via c). There is deliberately NO
+// bulk-approve — the review stays loudly INCOMPLETE until every finding is decided one at a time.
 
 const fs = require('fs');
 const path = require('path');
 const { renderCollected, fmtElapsed } = require('../lib/audit/panel-progress');
+const {
+  extractFindings,
+  loadFindingsFile,
+  mergeFindings,
+  filterFindings,
+  sortFindings,
+  loadReviewState,
+  writeReviewState,
+  applyFindingDecision,
+  decisionFor,
+  nextPendingIndex,
+  loadReviewViews,
+  renderFindingsReview,
+  normalizeGroupBy,
+  normalizeSort,
+  GROUP_BY,
+  SORT_BY,
+} = require('../lib/audit/finding-review');
 
 const ACTIVE = new Set(['proposing', 'reviewing', 'revising']);
+const VALUE_OPTIONS = new Set([
+  'poll',
+  'stale',
+  'slow',
+  'tick',
+  'review-file',
+  'findings-file',
+  'views-file',
+  'filter',
+  'skill',
+  'model',
+  'verdict',
+  'group-by',
+  'sort',
+  'select',
+]);
+
+function usage() {
+  return 'Usage: node scripts/watch-panel.js <status-file> [--poll SECS] [--stale SECS] [--slow SECS] [--tick SECS|0=off (default)] [--once] [--fail-on-stall] [--review-findings [--findings-file JSON] [--review-file JSON] [--views-file JSON] [--filter TEXT] [--skill TEXT] [--model TEXT] [--verdict TEXT] [--group-by none|skill|model|verdict|decision] [--sort disposition-priority|original|decision-status] [--select N]]\n';
+}
+
+function parseArgs(argv) {
+  const flags = new Set();
+  const values = {};
+  const positionals = [];
+  for (let i = 0; i < argv.length; i += 1) {
+    const arg = argv[i];
+    if (!arg.startsWith('--')) {
+      positionals.push(arg);
+      continue;
+    }
+    const eq = arg.indexOf('=');
+    if (eq > 2) {
+      const name = arg.slice(2, eq);
+      flags.add(name);
+      values[name] = arg.slice(eq + 1);
+      continue;
+    }
+    const name = arg.slice(2);
+    flags.add(name);
+    if (VALUE_OPTIONS.has(name)) {
+      values[name] = argv[i + 1];
+      i += 1;
+    }
+  }
+  return { flags, values, positionals };
+}
+
+function readJson(file) {
+  try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch (_) { return null; }
+}
+
+function renderReviewFrame({ absStatus, absFindingsFile, reviewState, selectedIndex, filters, groupBy, sortBy, viewName, reviewFile }) {
+  const status = readJson(absStatus) || {};
+  // The heartbeat carries findings[] inline (the runner emits them live during a run); the optional
+  // --findings-file is read by loadFindingsFile, which sniffs JSON (merge-ledger.json) vs markdown
+  // (single-model merge-ledger.md) so both ledger formats are viewer-readable.
+  const fileFindings = absFindingsFile ? loadFindingsFile(absFindingsFile) : [];
+  const allFindings = mergeFindings(
+    extractFindings(status),
+    fileFindings,
+  );
+  // Filter, then sort. The sorted array is the single ordered list everything downstream keys off —
+  // the rendered table, the selection index, the mouse hit-targets, and next/prev-pending navigation.
+  const visibleFindings = sortFindings(filterFindings(allFindings, filters), sortBy, reviewState);
+  const nextSelected = visibleFindings.length
+    ? Math.min(Math.max(0, selectedIndex), visibleFindings.length - 1)
+    : 0;
+  const frame = renderFindingsReview(visibleFindings, reviewState, {
+    selectedIndex: nextSelected,
+    width: process.stdout.columns || 100,
+    totalFindings: allFindings.length,
+    filters,
+    groupBy,
+    sort: sortBy,
+    viewName,
+    reviewFile,
+  });
+  return { frame, visibleFindings, selectedIndex: nextSelected };
+}
+
+function runFindingsReview({
+  absStatus,
+  absFindingsFile,
+  reviewFile,
+  filters,
+  groupBy: initialGroupBy,
+  sortBy: initialSortBy,
+  views,
+  pollMs,
+  once,
+  selectedIndex: initialSelectedIndex,
+}) {
+  const source = { status_file: absStatus };
+  if (absFindingsFile) source.findings_file = absFindingsFile;
+  let reviewState = loadReviewState(reviewFile, source);
+  reviewState.source = { ...source, ...(reviewState.source || {}) };
+  let selectedIndex = Math.max(0, initialSelectedIndex || 0);
+  let groupBy = normalizeGroupBy(initialGroupBy);
+  let sortBy = normalizeSort(initialSortBy);
+  const savedViews = Array.isArray(views) ? views : [];
+  let viewIndex = -1;        // -1 = no saved view active yet (CLI filters/sort in effect)
+  let viewName = null;
+  let activeFilters = { ...(filters || {}) };
+  let inputMode = false;     // true while typing a per-finding note (the `c` key)
+  let inputBuffer = '';
+  let current = null;
+  const interactive = Boolean(process.stdout.isTTY && process.stdin.isTTY) && !once;
+
+  const paint = () => {
+    current = renderReviewFrame({
+      absStatus,
+      absFindingsFile,
+      reviewState,
+      selectedIndex,
+      filters: activeFilters,
+      groupBy,
+      sortBy,
+      viewName,
+      reviewFile,
+    });
+    selectedIndex = current.selectedIndex;
+    let body = current.frame.lines.join('\n');
+    if (inputMode) {
+      const finding = current.visibleFindings[selectedIndex];
+      const label = finding ? `#${selectedIndex + 1} (${finding.id})` : '(no finding)';
+      body += `\n\nNote for ${label} — type, Enter to save, Esc to cancel, Backspace to edit:\n> ${inputBuffer}█`;
+    }
+    if (interactive) process.stdout.write(`\x1b[2J\x1b[H${body}\n`);
+    else process.stdout.write(`${body}\n`);
+    return current;
+  };
+
+  if (!interactive) {
+    paint();
+    return;
+  }
+
+  let done = false;
+  let jumpBuffer = '';
+  let jumpTimer = null;
+  const timer = setInterval(paint, pollMs);
+
+  const cleanup = (code = 0) => {
+    if (done) return;
+    done = true;
+    clearInterval(timer);
+    if (jumpTimer) clearTimeout(jumpTimer);
+    process.stdout.write('\x1b[?1000l\x1b[?1006l\x1b[?25h\n');
+    if (process.stdin.setRawMode) process.stdin.setRawMode(false);
+    process.stdin.pause();
+    process.exit(code);
+  };
+
+  const persistDecision = (decision, targetIndex = selectedIndex, targetFindingId = null) => {
+    const finding = current && current.visibleFindings[targetIndex];
+    const findingId = targetFindingId || (finding && finding.id);
+    if (!findingId) return;
+    selectedIndex = targetIndex;
+    reviewState = applyFindingDecision(reviewState, findingId, decision);
+    reviewState.source = { ...source, ...(reviewState.source || {}) };
+    try {
+      writeReviewState(reviewFile, reviewState);
+    } catch (err) {
+      process.stdout.write(`\nERROR: could not write findings review file: ${err.message}\n`);
+    }
+    paint();
+  };
+
+  const jumpTo = (digit) => {
+    jumpBuffer += digit;
+    const target = Number(jumpBuffer);
+    if (Number.isFinite(target) && target > 0 && current && current.visibleFindings.length) {
+      selectedIndex = Math.min(target - 1, current.visibleFindings.length - 1);
+      paint();
+    }
+    if (jumpTimer) clearTimeout(jumpTimer);
+    jumpTimer = setTimeout(() => { jumpBuffer = ''; }, 900);
+    if (jumpTimer.unref) jumpTimer.unref();
+  };
+
+  const cycleGroupBy = () => {
+    const currentIndex = GROUP_BY.indexOf(groupBy);
+    groupBy = GROUP_BY[(currentIndex + 1) % GROUP_BY.length];
+    paint();
+  };
+
+  const cycleSort = () => {
+    const currentIndex = SORT_BY.indexOf(sortBy);
+    sortBy = SORT_BY[(currentIndex + 1) % SORT_BY.length];
+    paint();
+  };
+
+  // Cycle through the saved review views (gh-dash-style presets). Each applies its own filter set,
+  // grouping, and sort. Selection resets to the top so the reviewer starts at the first item of the
+  // new view. No view performs any decision — views only change WHICH findings are shown and ordered.
+  const cycleView = () => {
+    if (!savedViews.length) return;
+    viewIndex = (viewIndex + 1) % savedViews.length;
+    const v = savedViews[viewIndex];
+    activeFilters = { text: v.filter || null, skill: v.skill || null, model: v.model || null, verdict: v.verdict || null };
+    if (v.group_by) groupBy = normalizeGroupBy(v.group_by);
+    if (v.sort) sortBy = normalizeSort(v.sort);
+    viewName = v.name;
+    selectedIndex = 0;
+    paint();
+  };
+
+  // Jump to the next (dir>0) / previous (dir<0) finding still pending. Anti-exploit navigation:
+  // walks every undecided finding so none is silently skipped — but each is still decided one at a time.
+  const gotoPending = (dir) => {
+    const list = current && current.visibleFindings;
+    if (!list || !list.length) return;
+    const idx = nextPendingIndex(list, reviewState, selectedIndex, dir);
+    if (idx >= 0) { selectedIndex = idx; paint(); }
+  };
+
+  // Commit (or clear) the per-finding note typed in input mode. Preserves the finding's existing
+  // decision — a note attaches to whatever approve/disapprove/pending state the finding already has.
+  const commitNote = () => {
+    const finding = current && current.visibleFindings[selectedIndex];
+    const findingId = finding && finding.id;
+    const note = inputBuffer;
+    inputMode = false;
+    inputBuffer = '';
+    if (findingId) {
+      const decision = decisionFor(finding, reviewState);
+      reviewState = applyFindingDecision(reviewState, findingId, decision, undefined, note);
+      reviewState.source = { ...source, ...(reviewState.source || {}) };
+      try {
+        writeReviewState(reviewFile, reviewState);
+      } catch (err) {
+        process.stdout.write(`\nERROR: could not write findings review file: ${err.message}\n`);
+      }
+    }
+    paint();
+  };
+
+  // While in note-input mode, all keystrokes feed the note buffer (Enter saves, Esc cancels,
+  // Backspace edits) — they do NOT trigger decision/navigation keys.
+  const handleInput = (text) => {
+    if (text.includes('\u0003')) { cleanup(130); return; }
+    for (const ch of text) {
+      if (ch === '\r' || ch === '\n') { commitNote(); return; }
+      if (ch === '\x1b') { inputMode = false; inputBuffer = ''; paint(); return; }
+      if (ch === '\x7f' || ch === '\b') { inputBuffer = inputBuffer.slice(0, -1); continue; }
+      if (ch >= ' ') inputBuffer += ch;
+    }
+    paint();
+  };
+
+  const handleMouse = (text) => {
+    const re = /\x1b\[<(\d+);(\d+);(\d+)([Mm])/g;
+    let matched = false;
+    let match = null;
+    while ((match = re.exec(text))) {
+      if (match[4] !== 'M') continue;
+      const col = Number(match[2]);
+      const row = Number(match[3]);
+      const target = current && current.frame.hitTargets.find((hit) => (
+        hit.row === row && col >= hit.colStart && col <= hit.colEnd
+      ));
+      if (!target) continue;
+      matched = true;
+      persistDecision(target.action, target.index, target.findingId);
+    }
+    return matched;
+  };
+
+  const onData = (chunk) => {
+    const text = chunk.toString('utf8');
+    // Note-input mode owns all keystrokes until the note is saved/cancelled.
+    if (inputMode) { handleInput(text); return; }
+    if (text.includes('\u0003')) cleanup(130);
+    handleMouse(text);
+    const keyText = text.replace(/\x1b\[<(\d+);(\d+);(\d+)([Mm])/g, '');
+    if (keyText.includes('\x1b[A') || keyText.includes('k')) {
+      selectedIndex = Math.max(0, selectedIndex - 1);
+      paint();
+    }
+    if (keyText.includes('\x1b[B') || keyText.includes('j')) {
+      const max = current && current.visibleFindings.length ? current.visibleFindings.length - 1 : 0;
+      selectedIndex = Math.min(max, selectedIndex + 1);
+      paint();
+    }
+    for (const ch of keyText) {
+      if (ch === 'q') cleanup(0);
+      else if (ch === 'a') persistDecision('approved');
+      else if (ch === 'd') persistDecision('disapproved');
+      else if (ch === 'u') persistDecision('pending');
+      else if (ch === 'n') gotoPending(1);
+      else if (ch === 'N') gotoPending(-1);
+      else if (ch === 'c') { inputMode = true; inputBuffer = ''; paint(); }
+      else if (ch === 'v') cycleView();
+      else if (ch === 's') cycleSort();
+      else if (ch === 'g') cycleGroupBy();
+      else if (/[0-9]/.test(ch)) jumpTo(ch);
+    }
+  };
+
+  process.stdout.write('\x1b[?1000h\x1b[?1006h\x1b[?25l');
+  if (process.stdin.setRawMode) process.stdin.setRawMode(true);
+  process.stdin.resume();
+  process.stdin.on('data', onData);
+  process.once('SIGINT', () => cleanup(130));
+  paint();
+}
 
 function main(argv) {
-  const args = argv.slice();
-  const statusFile = args.find((a) => !a.startsWith('--'));
+  const parsed = parseArgs(argv.slice());
+  const statusFile = parsed.positionals[0];
   if (!statusFile) {
-    process.stderr.write('Usage: node scripts/watch-panel.js <status-file> [--poll SECS] [--stale SECS] [--slow SECS] [--tick SECS|0=off (default)] [--once] [--fail-on-stall]\n');
+    process.stderr.write(usage());
     process.exit(2);
   }
   const optVal = (name, def) => {
-    const i = args.indexOf(`--${name}`);
-    return i >= 0 && args[i + 1] ? Number(args[i + 1]) : def;
+    if (!Object.prototype.hasOwnProperty.call(parsed.values, name)) return def;
+    const n = Number(parsed.values[name]);
+    return Number.isFinite(n) ? n : def;
   };
   const pollMs = optVal('poll', 1) * 1000;   // 1s → smooth live timer on a TTY
   // ts frozen > 45m ⇒ hang. MUST exceed the longest SINGLE blocking dispatch, because the
   // synchronous model-call dispatch cannot tick the heartbeat mid-call: a frontier call runs up to
-  // SKILL_ENRICH_CLI_TIMEOUT_MS (30m, skill-audit-loop-lite-deps.js) and an advisory call up to
+  // SKILL_AUDIT_CLI_TIMEOUT_MS (30m, skill-audit-loop-lite-deps.js) and an advisory call up to
   // advisoryTimeoutMs (20m). The prior 900s (15m) default was BELOW those, so a healthy-but-quiet
   // long call tripped a FALSE stall (the 2026-06-10 deepseek-flash false-abort: the drain was alive,
   // blocked in a 20m advisory call). 2700s matches the driver's own bridge (run-panel-loop.sh --stale
@@ -70,13 +403,43 @@ function main(argv) {
   // with --tick N (N>0) for a human tailing in a plain terminal who wants a visible countdown.
   const tickRaw = optVal('tick', 0);
   const tickMs = tickRaw > 0 ? tickRaw * 1000 : 0; // 0 ⇒ disabled (structural + STALL/SLOW/COMPLETE only)
-  const once = args.includes('--once');
+  const once = parsed.flags.has('once');
   // --fail-on-stall: on a STALL (heartbeat ts frozen past --stale and not complete), exit
   // non-zero (3) with a FAILED line instead of spinning forever. Turns a silent hang into a
   // terminal failure a Monitor/orchestrator can act on. Default off (back-compat).
-  const failOnStall = args.includes('--fail-on-stall');
+  const failOnStall = parsed.flags.has('fail-on-stall');
   const tty = Boolean(process.stdout.isTTY);
   const absStatus = path.resolve(statusFile);
+
+  if (parsed.flags.has('review-findings')) {
+    const absFindingsFile = parsed.values['findings-file'] ? path.resolve(parsed.values['findings-file']) : null;
+    const reviewFile = parsed.values['review-file']
+      ? path.resolve(parsed.values['review-file'])
+      : `${absStatus}.findings-review.json`;
+    // Saved views: explicit --views-file, else the repo default at skill-audit-loop/review-views.json.
+    // loadReviewViews falls back to the built-in default list when the file is missing/unreadable.
+    const viewsFile = parsed.values['views-file']
+      ? path.resolve(parsed.values['views-file'])
+      : path.join(__dirname, '..', 'skill-audit-loop', 'review-views.json');
+    runFindingsReview({
+      absStatus,
+      absFindingsFile,
+      reviewFile,
+      filters: {
+        text: parsed.values.filter || null,
+        skill: parsed.values.skill || null,
+        model: parsed.values.model || null,
+        verdict: parsed.values.verdict || null,
+      },
+      groupBy: parsed.values['group-by'] || 'none',
+      sortBy: parsed.values.sort || 'disposition-priority',
+      views: loadReviewViews(viewsFile),
+      pollMs,
+      once,
+      selectedIndex: Math.max(0, (Number(parsed.values.select) || 1) - 1),
+    });
+    return;
+  }
 
   let prevStructural = '';
   let started = false;

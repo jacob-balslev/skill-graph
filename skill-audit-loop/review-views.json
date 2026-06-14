@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "description": "Saved views for the findings-review TUI (node scripts/watch-panel.js --review-findings). Cycle with the `v` key. Each view sets a filter set, grouping, and sort — none performs any decision. Per-finding approve/disapprove stays individual; there is no bulk-approve. Override with --views-file <JSON>.",
+  "views": [
+    { "name": "All", "group_by": "none", "sort": "disposition-priority" },
+    { "name": "Pending first", "sort": "decision-status" },
+    { "name": "Kept (agent wants accepted)", "verdict": "kept", "sort": "disposition-priority" },
+    { "name": "By skill", "group_by": "skill", "sort": "disposition-priority" },
+    { "name": "By model", "group_by": "model", "sort": "disposition-priority" }
+  ]
+}

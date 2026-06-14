@@ -117,6 +117,72 @@
           }
         }
       }
+    },
+    "findings": {
+      "type": "array",
+      "description": "Optional reviewable findings/contributions surfaced by the audit loop or merge ledger. The viewer renders every item and lets a human approve or disapprove each finding in a separate review-state file.",
+      "items": {
+        "type": "object",
+        "required": ["id"],
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable finding identifier used as the key in the separate findings review-state file."
+          },
+          "title": {
+            "type": "string",
+            "description": "Short human-facing finding label."
+          },
+          "summary": {
+            "type": "string",
+            "description": "Short finding summary when title is not present."
+          },
+          "skill": {
+            "type": "string",
+            "description": "Skill slug or label the finding applies to."
+          },
+          "model": {
+            "type": "string",
+            "description": "Model or panel agent that surfaced the finding, when available."
+          },
+          "verdict": {
+            "type": "string",
+            "description": "Finding verdict or disposition, when available."
+          },
+          "severity": {
+            "type": "string",
+            "description": "Severity/priority/tier label, when available."
+          },
+          "note": {
+            "type": "string",
+            "description": "Merge-ledger contribution note — the substance of the finding. When no title/summary is present the viewer renders this as the finding title, so a real merge-ledger contribution is readable in the review list."
+          },
+          "evidence_strength": {
+            "type": "string",
+            "description": "Evidence tier (e.g. direct-file-line, command-output, external-source, inference, unsupported). Used as the secondary key of the disposition-priority sort and shown in the review peek view."
+          },
+          "corroborated_by": {
+            "type": ["array", "string"],
+            "description": "Model(s) that corroborated the finding, when available. Surfaced in the review peek view.",
+            "items": { "type": "string" }
+          },
+          "evidence": {
+            "description": "Evidence, rationale, or source detail used by the review peek view."
+          }
+        }
+      }
+    },
+    "findings_review": {
+      "type": "object",
+      "description": "Optional producer-supplied summary of human finding review state. The interactive viewer persists decisions in a separate JSON file; this field is a read-only heartbeat summary for producers that choose to emit one.",
+      "additionalProperties": true,
+      "properties": {
+        "approved": { "type": "integer", "minimum": 0 },
+        "disapproved": { "type": "integer", "minimum": 0 },
+        "pending": { "type": "integer", "minimum": 0 },
+        "review_file": { "type": "string" }
+      }
     }
   }
 }
