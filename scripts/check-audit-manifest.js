@@ -384,6 +384,15 @@ function main() {
   const manifestSkills = skillsManifest.skills;
   const harmful_skills = [];
   const provisional_skills = [];
+  // Advisory receipt-freshness scan (SKI board F11, 2026-06-14): a graded
+  // application_verdict asserts the skill was evaluated, but the gate above only
+  // proves the eval ARTIFACT exists — not that the receipt is still current. If the
+  // SKILL.md body was edited AFTER its `eval_last_run`, the recorded verdict describes
+  // a stale version of the skill. This is ADVISORY ONLY: it never adds to `failures`
+  // and never changes the exit code (most skills carry no receipt yet, and a stale
+  // receipt is migration signal, not a contract violation). Every step is guarded so a
+  // missing file / unparseable date can never break the verify-wired gate.
+  const stale_receipt_skills = [];
   for (const entry of manifestSkills) {
     const av = entry && entry.health && entry.health.application_verdict;
     if (av === 'HARMFUL') {
@@ -395,6 +404,27 @@ function main() {
     } else if (av === 'PROVISIONAL') {
       provisional_skills.push({ name: entry.name || entry.id, path: entry.path || null });
     }
+    try {
+      const lastRun = entry && entry.health && entry.health.eval_last_run;
+      if (av && GRADED_APPLICATION_VERDICTS.has(av) && lastRun && entry.path) {
+        const runMs = Date.parse(lastRun);
+        // Manifest paths are relative to the skill-graph dir (e.g. ../skills/skills/.../SKILL.md).
+        const skillMdPath = path.resolve(args.workspace, 'skill-graph', entry.path);
+        if (!Number.isNaN(runMs) && fs.existsSync(skillMdPath)) {
+          const mtimeMs = fs.statSync(skillMdPath).mtimeMs;
+          // 24h grace so a same-day edit+eval pair is not flagged.
+          if (mtimeMs - runMs > 24 * 60 * 60 * 1000) {
+            stale_receipt_skills.push({
+              name: entry.name || entry.id,
+              path: entry.path || null,
+              application_verdict: av,
+              eval_last_run: lastRun,
+              skill_mtime: new Date(mtimeMs).toISOString().slice(0, 10),
+            });
+          }
+        }
+      }
+    } catch (_) { /* advisory only — never break the gate on a stat/parse error */ }
   }
 
   if (args.json) {
@@ -410,6 +440,7 @@ function main() {
       skills_manifest_present: skillsManifest.present,
       harmful_skills,
       provisional_skills,
+      stale_receipt_skills,
     }, null, 2) + '\n');
   } else {
     console.log(`[check-audit-manifest] checked ${checks.length} verdicts across ${skills.length} skills (limit=${args.limit}${args.strictAll ? ', strict-all' : ''})`);
@@ -430,6 +461,10 @@ function main() {
     }
     if (provisional_skills.length > 0) {
       console.log(`[check-audit-manifest] PROVISIONAL — ${provisional_skills.length} skill(s) carry single-model application_verdict awaiting dual-run grader confirmation.`);
+    }
+    if (stale_receipt_skills.length > 0) {
+      console.log(`[check-audit-manifest] STALE-RECEIPT (advisory) — ${stale_receipt_skills.length} skill(s) were edited after their eval_last_run; the recorded verdict describes an older skill body and should be re-evaluated:`);
+      for (const s of stale_receipt_skills) console.log(`  ${s.name}: ${s.application_verdict} eval_last_run=${s.eval_last_run} < SKILL.md mtime=${s.skill_mtime}`);
     }
     if (!skillsManifest.present) {
       console.log('[check-audit-manifest] NOTE — skills.manifest.json not found at workspace root; HARMFUL/PROVISIONAL health scan skipped (standalone clone).');
