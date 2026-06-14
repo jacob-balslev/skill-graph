@@ -6,6 +6,8 @@
 **Parent:** SH-6281
 **Related:** SH-6286 (prior leak), SH-6323 (pre-push gate), SH-6324 (CONTRIBUTING.md gate docs), SH-6325 (CI enforcement)
 
+> **Note (2026-06-14):** the `SH-####` task IDs throughout are pre-migration historical Linear references — Skill Graph work moved to the dedicated `SKI` org on 2026-06-03. The 143-public / 162-internal skill counts are as-of 2026-05-21. The defense-in-depth boundary policy itself remains live.
+
 ## Hard Rule
 
 > **No Sales Hub / Sales Channels / Printify / Shopify / customer / personal API / bank / credential / PII data may enter the public `skills/` repo or the eval pipeline — ever.** This rule is not softened by process convenience, agent automation, or partial-path filters.

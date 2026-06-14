@@ -4,6 +4,8 @@
 > Date: 2026-05-18
 > Linear: SH-6132 / SH-6137
 
+> **Amendment (2026-06-14) — version-source-of-truth model superseded.** This ADR points at `skill-metadata-protocol/docs/adr/0007-version-source-of-truth.md` in the now-archived sibling mirror for the dual-versioning model. That model is superseded: schema files are canonical-only ([ADR-0014](0014-canonical-only-schema-files.md)) and per-skill `schema_version` lives in the `audit-state.json` sidecar ([ADR-0019](0019-audit-state-sidecar-separation.md)). The archived-mirror reference is historical.
+
 ## Context
 
 Per the SH-6132 monolith decision, schemas and source code from two sibling repos were consolidated into `@skill-graph/cli`:

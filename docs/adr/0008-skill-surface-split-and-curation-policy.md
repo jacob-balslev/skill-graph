@@ -6,6 +6,8 @@
 **Supersedes:** Portion of SH-6127 (Tier F mass migration)
 **Related:** SH-6114 (Finding F6), SH-6127 (rescoped)
 
+> **Note (2026-06-14):** the skill counts and percentages in this ADR's tables are as-of 2026-05-18; the live corpus count is generated in `docs/status.generated.md`. The surface-split + curation policy itself remains live.
+
 ## Context
 
 Two skill surfaces coexist in `~/Development/`:

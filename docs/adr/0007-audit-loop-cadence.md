@@ -4,6 +4,8 @@
 **Date:** 2026-05-18  
 **Task:** SH-6107
 
+> **Amendment (2026-06-14) — placement, invocation, and findings-tracking superseded.** Three operational details below are out of date: (1) `last_audited` and the four Audit Status verdicts moved from `SKILL.md` frontmatter to the `audit-state.json` sidecar per [ADR-0019](0019-audit-state-sidecar-separation.md) — the "Health Block field in `SKILL.md` frontmatter" wording is historical. (2) The canonical invocation is now `node bin/skill-graph.js audit <skill>` (the `scripts/skill-audit.js` path still resolves but is internal); run artifacts live under the run-root relocated by [ADR-0016](0016-operational-data-ownership.md). (3) Per-skill findings are no longer tracked as Linear sub-issues — they drain the file-based worklist + run ledger (Skill Graph Linear moved to org `SKI` on 2026-06-03; Linear now holds SYSTEM tasks only). The cadence decision itself stands.
+
 ## Context
 
 The skill-graph tooling repo and its sibling `skills` library repo need a formal cadence for running the Skill Audit Loop. Without a documented cadence, audits happen ad-hoc, P2+ findings accumulate without tracking, and there is no shared understanding of what "audited" means for a skill.

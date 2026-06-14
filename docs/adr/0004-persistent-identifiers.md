@@ -4,6 +4,8 @@
 - **Deciders:** Skill Graph maintainers
 - **Relates to:** ADR 0002 (JSON-LD @context), FAIR Findability
 
+> **Amendment (2026-06-14) — `urn` was never carried into the live contract.** This ADR's decision (add an optional `urn` persistent identifier, "required in v4") was never implemented: v4 was never cut, and the live v8 schema (`schemas/SKILL_METADATA_PROTOCOL_schema.json`) has **no `urn` field**. Treat this as Accepted-in-principle but not-implemented; cross-repo identity is currently carried by `name` + the `project[]` / `repo[]` belonging-entity references, not a URN. Re-opening URN requires a fresh ADR against the v8 contract.
+
 ## Context
 
 The external audit of 2026-04-20 found that Skill Graph covers FAIR Findability well *within a single repository* (via `name`, `keywords`, `triggers`, `examples`, `category`) but has **no globally unique persistent identifier**. `name` is unique only inside one repo; two workspaces both shipping a skill called `knowledge-graph` have no way to be told apart. This blocks cross-repo federation, registry publication, and long-term citation.

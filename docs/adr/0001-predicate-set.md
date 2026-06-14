@@ -6,6 +6,8 @@
 - **Deciders:** Skill Graph maintainers
 - **Consulted:** SKOS Reference (W3C 2009), PROV-O (W3C 2013), Gruber 1995 on ontology design, Guarino & Welty OntoClean, Wilkinson et al. 2016 on FAIR
 
+> **Amendment (2026-06-14) — routing-exclusion predicate renamed to `suppresses`.** ADR 0006 reverted the `boundary → disjoint_with` rename (Decision #2); [ADR-0018](0018-relations-boundary-semantic-inversion.md) then **renamed the routing-exclusion edge `boundary` → `suppresses` and removed `boundary` from the schema (2026-06-13)**. Read `suppresses` wherever this ADR says `boundary`.
+
 ## Context
 
 Skill Graph models inter-skill relationships with typed edges under `relations.*`. Through v3 the predicate set was four keys: `adjacent`, `boundary`, `verify_with`, `depends_on`. An external audit (2026-04-20) flagged that the chosen names diverge from established W3C vocabularies (SKOS, PROV-O, Dublin Core Terms), blocking FAIR Interoperability and making the graph harder to reuse in federated knowledge-graph tooling.
