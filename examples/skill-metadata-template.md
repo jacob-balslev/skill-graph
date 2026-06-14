@@ -1,18 +1,13 @@
 ---
 name: skill-metadata-template
-# TEMPLATE NOTE: Be pushy in your description — Claude tends to under-trigger
-# skills, so descriptions should read as commands ("Use when X", "Activate
-# this skill whenever Y") not as polite suggestions ("This skill provides Z").
-# State both WHAT the skill does AND WHEN to use it, and include an explicit
-# negative boundary ("Do NOT use for ..." with a pointer to the right
-# alternative skill). The 3-test quality gate for descriptions is:
-#   (1) names a real domain object (file path, function name, route),
-#   (2) has an explicit "Do NOT use for X (use Y)" exclusion clause,
-#   (3) names a concrete trigger (code pattern, file path, command).
-# Keep the description concise enough to route well, but do not treat runtime
-# wording guidelines as protocol limits.
-# for Anthropic's own guidance on pushy descriptions.
-description: "Use when creating a new SKILL.md from scratch, restructuring a draft before it becomes a stable skill, or teaching an author the canonical Skill Metadata Protocol frontmatter and body structure. Covers schema-conformant frontmatter, v8 classification, body layout by skill intent, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes and YAML comments), and the authoring gate. Do NOT use when modifying an already-written skill (edit that skill directly), writing general technical documentation, or debugging routing for an existing skill."
+# TEMPLATE NOTE: Write `description` as a short ABOUT-statement — what the skill
+# is about, not a routing command. The 2026-05-27 doctrine (commit f88603d)
+# retired the old "be pushy / Use when X / Do NOT use for Y" description style.
+# Activation signals now live in the dedicated fields (`keywords`, `triggers`,
+# `examples`, `anti_examples`); routing-exclusion lives in `relations.suppresses`
+# — NEVER as prose clauses inside `description`. Keep `description` descriptive,
+# topical, and concise; it carries no "Use when"/"Do NOT use" wording.
+description: "The canonical starting point for authoring a new SKILL.md: schema-conformant v8 frontmatter, body layout by skill intent, the semantic-layer discipline that separates description from the ## Coverage scope map, the teaching-layer mechanics (TEMPLATE NOTE blockquotes and YAML comments), and the pre-commit authoring gate."
 
 # === v8 Classification (subject + public; polyhierarchy via subjects[]) ===
 # See docs/adr/0020-twelve-shelf-competency-reaxis.md for the current shelf rationale.
@@ -128,9 +123,9 @@ anti_examples:
 # workspace_tags was removed. Project belonging-entity identity lives in the
 # `project[]` array near the top of the frontmatter.
 relations:
-  # TEMPLATE NOTE: `suppresses` is the canonical routing-exclusion edge (ADR-0018);
-  # `boundary` is its DEPRECATED alias, retained only for unmigrated skills — new
-  # skills author `suppresses`. Items may be bare skill names OR `{skill, reason}`
+  # TEMPLATE NOTE: `suppresses` is the canonical routing-exclusion edge (ADR-0018).
+  # Its former name `boundary` was removed from the schema on 2026-06-13 (ADR-0018);
+  # author `suppresses`. Items may be bare skill names OR `{skill, reason}`
   # objects. Reasons are strongly recommended — they make the exclusion
   # self-documenting. ⚠ The edge is INVERSE to a "defer-to" pointer: it EXCLUDES
   # the listed skills from co-routing when THIS skill wins. Write reasons as
@@ -242,7 +237,7 @@ Use this checklist as the authoring gate before committing a skill adapted from 
 - [ ] Every retained field has a real reason to exist in the new skill
 - [ ] Every removed field was removed because it is retired, irrelevant to the new skill, or replaced by the sidecar contract
 - [ ] Body sections match the skill's intent and expected agent use
-- [ ] `description:` is ≤ 3 sentences, contains pushy trigger phrases, and names an explicit negative boundary
+- [ ] `description:` is a short about-statement (no "Use when"/"Do NOT use" clauses — activation lives in `keywords`/`triggers`/`examples`/`anti_examples`, routing-exclusion in `relations.suppresses`)
 - [ ] `## Coverage` is a scope map of distinct topics, not a one-line restate of the description
 - [ ] `audit-state.json` exists and has the seven required fields: `schema_version`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, and `routing_eval`
 - [ ] `drift_check` is an object with `last_verified`; local `truth_source_hashes` are recorded only when the drift tool can compute them
