@@ -13,7 +13,9 @@
  *   3. HONEST DOWNGRADE: orphan run-record but the SKILL.md application_verdict
  *      is UNVERIFIED → gate PASSES (downgrade is the documented resolution path).
  *   4. HARMFUL: any active skill in skills.manifest.json with
- *      application_verdict:HARMFUL → gate FAILS until removed from active corpus.
+ *      application_verdict:HARMFUL → gate FAILS until removed from active corpus
+ *      with git history preserving the deleted content and the commit/report
+ *      explaining the harmful evidence.
  *
  * Symmetric to the long-standing comprehension-artifact gate.
  */
@@ -128,6 +130,15 @@ function cleanup(ws) {
   assert(
     r.json && Array.isArray(r.json.harmful_skills) && r.json.harmful_skills.some(s => s.name === 'harmful-skill'),
     'JSON output names the harmful skill that must be removed',
+  );
+  assert(
+    r.json && Array.isArray(r.json.harmful_skills) && r.json.harmful_skills.some(s =>
+      s.name === 'harmful-skill' &&
+      /git rm/.test(s.required_action || '') &&
+      /git history/.test(s.required_action || '') &&
+      /harmful eval\/verdict evidence/.test(s.required_action || '')
+    ),
+    'JSON output says HARMFUL skills are removed with git history plus an explanation',
   );
   cleanup(ws);
 }

@@ -55,6 +55,8 @@ const GRADED_APPLICATION_VERDICTS = new Set([
   'APPLICABLE', 'PROVISIONAL', 'NOT_DISCRIMINATED_CEILING',
   'EQUIVALENT_ON_FRONTIER', 'REDUNDANT', 'MIXED', 'HARMFUL', 'FALSE_POSITIVE',
 ]);
+const HARMFUL_REQUIRED_ACTION =
+  'git rm the active skill files so recovery lives in git history; explain the harmful eval/verdict evidence in the commit message and completion report. Do not quarantine or archive the harmful skill under another active path.';
 
 const APPLICATION_ONLY_VERDICTS = new Set([
   'APPLICABLE', 'NOT_DISCRIMINATED_CEILING', 'EQUIVALENT_ON_FRONTIER',
@@ -370,8 +372,10 @@ function main() {
 
   // Corpus-wide application_verdict scan per ADR-0011 § Addendum 2026-05-27.
   // HARMFUL is the SkillsBench-19% case the gate exists to catch. It is not a
-  // warning: an active skill proven to make agents worse must be removed from
-  // the active corpus or replaced by a fixed skill that earns a new verdict.
+  // warning: an active skill proven to make agents worse must be removed with
+  // `git rm` so recovery lives in git history, and the removal commit/report
+  // must explain the harmful evidence. Do not quarantine it under another
+  // active path. A replacement must earn a fresh non-HARMFUL verdict.
   // PROVISIONAL is real single-model signal awaiting dual-run confirmation;
   // previously invisible because the verifier collapsed it into the broader
   // graded-set check.
@@ -383,7 +387,11 @@ function main() {
   for (const entry of manifestSkills) {
     const av = entry && entry.health && entry.health.application_verdict;
     if (av === 'HARMFUL') {
-      harmful_skills.push({ name: entry.name || entry.id, path: entry.path || null });
+      harmful_skills.push({
+        name: entry.name || entry.id,
+        path: entry.path || null,
+        required_action: HARMFUL_REQUIRED_ACTION,
+      });
     } else if (av === 'PROVISIONAL') {
       provisional_skills.push({ name: entry.name || entry.id, path: entry.path || null });
     }
@@ -418,7 +426,7 @@ function main() {
     }
     if (harmful_skills.length > 0) {
       console.log(`[check-audit-manifest] FAIL — ${harmful_skills.length} active skill(s) carry application_verdict: HARMFUL and must be removed from the active corpus:`);
-      for (const s of harmful_skills) console.log(`  ${s.name}`);
+      for (const s of harmful_skills) console.log(`  ${s.name}: ${HARMFUL_REQUIRED_ACTION}`);
     }
     if (provisional_skills.length > 0) {
       console.log(`[check-audit-manifest] PROVISIONAL — ${provisional_skills.length} skill(s) carry single-model application_verdict awaiting dual-run grader confirmation.`);
