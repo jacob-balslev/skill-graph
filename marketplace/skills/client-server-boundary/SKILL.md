@@ -1,23 +1,23 @@
 ---
 name: client-server-boundary
-description: "Use when reasoning about the line at which execution context changes between a server runtime and a client runtime: what values can cross via serialization, what cannot, the directives that mark transitions (`'use client'`, `'use server'`), the difference between server-rendered HTML and a serialized component tree, the trust model that treats client input as adversarial, and the consequences of leaking server-only modules into client bundles. Do NOT use for when and where the UI is produced (use rendering-models), the HTTP wire protocol itself (use http-semantics), how to organize the frontend codebase (use frontend-architecture), or how to design the JSON shape of an API endpoint (use api-design)."
+description: "Use when reasoning about the line where execution context changes between server runtime and client runtime: what values can cross via the active serializer, what cannot, how `'use client'`, `'use server'`, guard imports, and server-only file conventions mark module/function transitions, how React Server Components differ from server-rendered HTML, why Server Functions / Server Actions are reachable network endpoints, why client input is adversarial, and how server-only modules, secrets, raw records, or closures leak into client bundles and payloads. Do NOT use for choosing when and where UI is produced (use rendering-models), full Server Component read-path placement (use server-components-design), full Server Action mutation/form/cache design (use server-actions-design), public Route Handler endpoint design (use route-handler-design), HTTP wire semantics (use http-semantics), frontend codebase organization (use frontend-architecture), or API JSON contract design (use api-design)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
   subject: frontend-engineering
   public: "true"
-  scope: "Reasoning about the line at which execution context changes between a server runtime and a client runtime — what values can cross via serialization and what cannot, the directives that mark transitions ('use client', 'use server'), the difference between server-rendered HTML and a serialized component tree, the trust model that treats client input as adversarial, and the consequences of leaking server-only modules into client bundles. Portable across any server/client web framework; principle-grounded, not repo-bound. Excludes when and where the UI is produced (rendering-models), the HTTP wire protocol itself (http-semantics), frontend codebase organization (frontend-architecture), and API JSON-shape design (api-design)."
+  scope: "Reasoning about the line where execution context changes between a server runtime and a client runtime: what values can cross via the active serializer, what cannot, how directives and file conventions mark module/function transitions (`'use client'`, `'use server'`, `.server` files, server-only directories), how React Server Components differ from server-rendered HTML, why Server Functions / Server Actions are reachable network endpoints, why client input is adversarial, and how server-only modules, secrets, raw records, or closures leak into client bundles and payloads. Portable across server/client web frameworks; principle-grounded, not repo-bound. Excludes rendering strategy choice (rendering-models), full RSC read-path placement (server-components-design), full Server Action mutation/form/cache design (server-actions-design), public Route Handler endpoint design (route-handler-design), HTTP wire semantics (http-semantics), frontend codebase organization (frontend-architecture), and API JSON contract design (api-design)."
   taxonomy_domain: engineering/frontend
   stability: experimental
-  keywords: "[\"client server boundary\",\"serialization boundary\",\"use client directive\",\"use server directive\",\"React Server Components\",\"server actions\",\"RPC\",\"serializable types\",\"structured clone\",\"secret leakage\"]"
-  triggers: "[\"can I pass this function as a prop\",\"why is my server-only module in the client bundle\",\"what does 'use client' actually do\",\"is it safe to put this secret in a server component\",\"why won't this Date / Map / class serialize\"]"
-  examples: "[\"decide whether a piece of data must cross the network or can stay server-only\",\"diagnose why a component marked as a server component is being shipped to the client\",\"review whether secrets in server code can leak through serialized props\",\"design which functions are exposed as server actions and which stay internal\"]"
-  anti_examples: "[\"decide whether a route should be SSG or SSR (use rendering-models)\",\"design HTTP authentication headers (use http-semantics)\",\"design the JSON shape of an API response body (use api-design)\"]"
-  relations: "{\"related\":[\"rendering-models\",\"http-semantics\",\"frontend-architecture\",\"type-safety\",\"api-design\"],\"suppresses\":[{\"skill\":\"rendering-models\",\"reason\":\"rendering-models owns the staging of work across build/request/stream/interaction. client-server-boundary owns the serialization frontier — what can cross between server code and client code. The two compose: any rendering model that emits a server-produced artifact for client consumption faces a boundary.\"}],\"verify_with\":[\"type-safety\",\"api-design\"]}"
+  keywords: "[\"client server boundary\",\"serialization boundary\",\"use client directive\",\"use server directive\",\"React Server Components\",\"Server Functions\",\"Server Actions\",\"serializable props\",\"server-only modules\",\"secret leakage\"]"
+  triggers: "[\"can I pass this function as a prop\",\"why is my server-only module in the client bundle\",\"what does 'use client' actually do\",\"is it safe to put this secret in a server component\",\"why won't this Date / Map / class serialize\",\"is this server action a public endpoint\",\"are params and searchParams trusted input\"]"
+  examples: "[\"decide whether a piece of data must cross the network or can stay server-only\",\"diagnose why a component marked as a server component is being shipped to the client\",\"review whether secrets or raw database records can leak through serialized props\",\"design which values are passed into a Server Function and which are re-derived on the server\",\"explain why TypeScript types do not validate a client-to-server call\"]"
+  anti_examples: "[\"decide whether a route should be SSG or SSR (use rendering-models)\",\"design a full Server Component data-fetching/caching tree (use server-components-design)\",\"design a form mutation with useActionState, revalidatePath, or updateTag (use server-actions-design)\",\"design a public route.ts endpoint for third-party callers (use route-handler-design)\",\"design HTTP authentication headers or status codes (use http-semantics)\",\"design the JSON shape of an API response body (use api-design)\"]"
+  relations: "{\"related\":[\"rendering-models\",\"server-components-design\",\"server-actions-design\",\"route-handler-design\",\"http-semantics\",\"frontend-architecture\",\"type-safety\",\"api-design\",\"security-fundamentals\"],\"suppresses\":[{\"skill\":\"rendering-models\",\"reason\":\"rendering-models owns the staging of work across build/request/stream/interaction. client-server-boundary owns the serialization frontier and trust transition between server code and client code. The two compose: any rendering model that emits a server-produced artifact for client consumption faces a boundary.\"}],\"verify_with\":[\"type-safety\",\"api-design\",\"server-components-design\",\"server-actions-design\",\"security-fundamentals\"]}"
   mental_model: "|"
   purpose: "|"
   concept_boundary: "|"
-  analogy: "The client-server boundary is to a unified codebase what an embassy boundary is to a city — both spaces exist at the same physical address, but inside the embassy the law of one country applies (server: full filesystem, secret access, database), outside the law of another applies (client: browser sandbox, no secrets), and everyone crossing must pass through documented customs (serialization) with their bags inspected (validation) and stamped (authentication)."
+  analogy: "The client-server boundary is a customs gate inside one codebase: both sides may share a language and address book, but the server side has vault keys and authority, the client side is public space, and every object crossing the gate must be packed in an allowed container, inspected, and stripped of anything the public side may not see or the server side may not trust."
   misconception: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
@@ -27,82 +27,144 @@ metadata:
 
 ## Concept of the skill
 
-The client-server boundary is the line in a unified codebase at which execution context changes between a server runtime (full filesystem, secret access, database connections, trusted by itself) and a client runtime (browser sandbox, no filesystem, no server secrets, untrusted by the server until validated). Anything that crosses must be *serialized* — encoded as bytes on one side, decoded into a value on the other — so the wire format (plain JSON, structured clone, the React Server Components payload, FormData) dictates which types survive and which must be reshaped. The boundary is governed by three interlocking properties: **serialization** (only byte-expressible values cross; closures, class instances, and host-bound objects do not), **direction** (server→client emits trusted payloads consumed as data, while client→server emits adversarial requests whose every byte must be parsed, validated, authenticated, authorized, and rate-limited), and **trust** (a categorical asymmetry — the server trusts itself, the client trusts what the server sent, the server trusts nothing the client said). Modern frameworks make this boundary *syntactically visible* through directives (`'use client'`, `'use server'`, `import 'server-only'`/`'client-only'`) rather than inventing it; the boundary was always there, but a unified file tree makes it trivially crossable by accident. The skill exists to turn that always-present, easy-to-ignore frontier into an object of explicit design so a codebase does not silently leak secrets into the client bundle, ship server-only modules to the browser, or treat a hostile RPC caller as a local function.
+The client-server boundary is the line in a unified codebase where execution context changes between a server runtime and a client runtime. The server runtime can hold secrets, reach databases, read files, and enforce authority. The client runtime is a browser or other public caller that can read any code and data shipped to it and can send arbitrary requests back.
+
+Anything that crosses this line is serialized. It is encoded by a wire format on one side and decoded into a value on the other. The active format matters: JSON, structured clone, React Server Component payloads, React Server Function arguments and returns, SvelteKit server-load data, and FormData are related but not interchangeable. The boundary is governed by three properties:
+
+- **Serialization** - only values the active serializer supports can cross. Ordinary closures, rich class instances, host-bound objects, DOM nodes, request/response objects, ORM entities, and prototype-dependent domain objects should not cross.
+- **Direction** - server -> client sends payloads the client can read; client -> server sends arguments, form data, cookies, headers, URL params, search params, and request bodies that the server must treat as adversarial.
+- **Trust** - the server trusts server-authoritative state, the client may trust server-sent data as UI input, and the server trusts nothing the client sends until it has parsed, validated, authenticated, authorized, and rate-limited it.
+
+Modern frameworks make this boundary syntactically visible through directives such as `'use client'` and `'use server'`, guard imports such as `import 'server-only'` and `import 'client-only'`, and file conventions such as SvelteKit's `.server` suffix, `$lib/server` directory, and `+page.server.js` / `+layout.server.js` load files. These marks do not invent the boundary. They expose an old boundary inside a shared module tree where it is otherwise easy to forget.
 
 ## Coverage
 
-The line in a unified codebase at which execution context changes between server and client. Covers the three governing properties (serialization, direction, trust), the wire formats currently in use (JSON, structured clone, RSC payload, FormData), the directives that mark the boundary (`'use client'`, `'use server'`, framework-specific equivalents), the trust asymmetry that makes client→server crossings categorically different from server→client, the leakage modes (server-only modules, secrets, hidden imports) that an unmarked boundary creates, and the misconceptions that arise from treating the boundary as either invisible or as a TypeScript-checked contract.
+This skill covers the serialization and trust transition between server and client code: directive semantics, import-graph reachability, what values may cross in common formats, how React Server Components and Server Functions encode values, why client-to-server calls are endpoint calls, how server-only code leaks into client bundles, how server-to-client payloads leak secrets or raw records, how URL-derived values remain client input, and how TypeScript stops at the runtime boundary.
+
+It is framework-portable, but it uses React Server Components and Next.js App Router as the modern canonical example because those systems put server and client modules in one file tree. SvelteKit is the compact cross-checking example: `.server` files and `$lib/server` modules are rejected from browser-running import graphs, while server `load` files (`+page.server.js`, `+layout.server.js`) return data that is serialized for the browser.
 
 ## Philosophy of the skill
 
-The boundary always exists. Even an old PHP application with a templated HTML response has a server runtime and a client runtime separated by a wire protocol; the boundary is the network. What modern frameworks add is not the boundary itself, but the markers that make it visible — directives that say "this code is for over there" and serializers that say "these bytes will arrive on the other side as this shape."
+The boundary always exists. A PHP template, a JSON API, a Remix / React Router action, a SvelteKit server load, a Next.js Server Component tree, and a React Server Function all have a server side and a client side separated by bytes. The difference in modern frameworks is that the code is colocated, so the boundary needs explicit marks and review questions.
 
-The discipline of the boundary is to take seriously the asymmetry between sides:
+The discipline is to stop asking "can I import this?" and ask:
 
-- Server code can read secrets; client code cannot.
-- Server code receives requests; client code makes them.
-- Server code trusts itself; client code is trusted by the server only after validation.
-- Server code can import any module; client code can import only what the bundler shipped.
+1. Which side executes this code?
+2. Which serializer carries this value?
+3. Who can read the resulting payload or bundle?
+4. Who can forge the request, argument, params, or search params?
+5. Which server-authoritative source re-derives identity, ownership, and permission?
+6. Which guard prevents a future refactor from moving this module across the boundary?
 
-A program that treats the two sides as interchangeable will leak secrets, ship broken code, and trust adversaries. A program that marks the boundary explicitly will pay a small upfront cost in ceremony and gain a large benefit in legibility and refactor safety.
+A program that treats both sides as interchangeable will leak secrets, publish internal fields, ship broken modules, and trust attackers. A program that designs with the boundary gets legible import graphs, smaller client bundles, explicit data transfer objects, and server-side authorization where it belongs.
 
-The goal of this skill is to make the boundary an object of explicit thought — not a thing to work around, but a thing to design with.
+## Boundary Markers
 
-## Directives — The Boundary Made Syntactic
+| Mark | Where it goes | What it means | Boundary risk |
+|---|---|---|---|
+| `'use client'` | Top of a module, before imports | This module is a client entry point when imported from server code. Its transitive dependency subtree is client code and is shipped/evaluated on the client. | Everything reachable from that entry point must be browser-safe: no secrets, server drivers, filesystem, privileged environment reads, or Node-only assumptions. |
+| `'use server'` | Top of an async function body, or top of a server module whose exports are async functions | The function is a React Server Function. When called from client code it makes a network request with serialized arguments and serialized return value. In forms and mutations this is commonly called a Server Action. | It is reachable from the client. Treat arguments as untrusted, authorize the operation, and return only what the UI needs. |
+| `import 'server-only'` | Top of a server-intended module | A guard that makes supported frameworks error if the module is pulled into a client graph. | Use on modules that read secrets, database clients, filesystem state, or server-only environment variables. |
+| `import 'client-only'` | Top of a browser-intended module | A guard that makes supported frameworks error if the module is imported into the server graph. | Use on modules that require `window`, `document`, browser storage, layout APIs, or client-only SDKs. |
+| SvelteKit `.server` modules / `$lib/server` | Filename suffix such as `secrets.server.ts`, or the `$lib/server` directory | A server-only module convention. SvelteKit rejects direct or indirect imports from browser-running code because the import chain could leak sensitive code or data. | Put private env, database, filesystem, and server SDK code behind these conventions; do not re-export them through shared utilities. |
+| SvelteKit `+page.server.js` / `+layout.server.js` | Route load files | Server-only `load` functions. Their return values are serialized before reaching browser code. | Return minimal DTOs that the browser may read; keep non-serializable objects and private credentials on the server side. |
 
-| Directive | Where it goes | What it means |
-|---|---|---|
-| `'use client'` | Top of a `.tsx` or `.ts` file | This file is the first client module in its import graph. Everything it imports becomes part of the client bundle. The framework will server-render it for first paint, then ship it to the client. |
-| `'use server'` | Top of a `.ts` file or first line of a function body | The functions in this file (or this specific function) become server actions — RPC handlers callable from the client. The function body executes on the server; the client invokes it via a network call. |
-| `import 'server-only'` | A line at the top of a server-intended module | A static import that causes the bundler to error if this module ends up in the client bundle. A guardrail, not a directive. |
-| `import 'client-only'` | A line at the top of a client-intended module | Symmetric: errors if the module ends up in the server bundle. Useful for code that touches `window`, `document`, or other browser-only globals. |
+`'use client'` is an entry-point directive, not a label required on every Client Component file. A component can become client-evaluated because it is a transitive dependency of a client entry. Conversely, a module without `'use client'` can still be evaluated on the client when imported below a client entry. Review the import graph, not just the first line of a file.
 
-The directives are not the boundary; they are the marks that make the boundary visible. A file without `'use client'` in an App Router project is implicitly a server component — the absence is meaningful.
+`'use server'` marks Server Functions, not Server Components. In React Server Components there is no "Server Component directive"; Server Components are the default unless a client module boundary is introduced.
 
-## Serialization — What Can Cross
+Next.js `proxy.ts` belongs to a different but adjacent network boundary: request interception before routing. In Next.js 16, `middleware.ts` is deprecated/renamed to `proxy.ts`, and Proxy uses the Node.js runtime. Use it for coarse decisions such as redirects, rewrites, and request shaping, but do not treat Proxy coverage as authorization for Server Functions or component data access. A matcher change, route refactor, or direct action invocation can bypass the place where Proxy ran; Server Functions still validate, authenticate, authorize, and rate-limit inside server code.
 
-| Wire format | Allowed types | Disallowed types |
-|---|---|---|
-| Plain JSON | string, number, boolean, null, plain objects, arrays | undefined, functions, Dates (become strings), Maps, Sets, Symbols, BigInts, class instances, circular references |
-| Structured clone (postMessage, IndexedDB) | All JSON + Date, RegExp, Blob, File, FileList, ImageData, Map, Set, ArrayBuffer, typed arrays | Functions, DOM nodes, Error objects (partial), class instances with non-cloneable internals |
-| RSC payload (React Server Components) | All structured-clone + Promises, JSX trees, server-action function references (as opaque tokens) | Arbitrary closures, classes with private fields, host-environment-bound objects |
-| FormData (multipart/form-data) | string key/value, File/Blob | Nested structure (must encode as JSON inside a string field), non-string non-file values |
+## Serialization - What Can Cross
 
-The practical rule: **if you cannot describe the value in terms of bytes, it cannot cross.** A `Map<string, User>` can cross structured-clone but not JSON; serialize to an array of `[key, value]` pairs for JSON.
+Use the exact serializer for the crossing. "Serializable" is not a universal type.
 
-## Trust — The Asymmetric Boundary
+| Crossing / wire format | Generally supported | Not supported / not safe | Review rule |
+|---|---|---|---|
+| Plain JSON | string, number, boolean, null, arrays, plain objects | `undefined`, functions, Symbols, BigInts, Maps, Sets, class instances, circular references; Dates become strings by convention | Convert to plain DTOs. Parse unknown JSON at the receiving side before trusting it. |
+| Structured clone | JSON-like values plus Date, RegExp, Blob, File, Map, Set, ArrayBuffer, typed arrays, many Error objects | Functions, DOM nodes, Symbols; prototypes, property descriptors, getters/setters, and class private fields are not preserved | Structured clone is not a domain-object transport. Treat cloned objects as data snapshots. |
+| React Server Component -> Client Component props | React-serializable primitives including `undefined` and `bigint`, globally registered symbols, iterables, Map, Set, Date, typed arrays/ArrayBuffer, Promises, JSX / React elements, and Server Function references | Ordinary functions, event objects, class instances, null-prototype objects, non-global symbols, host objects, raw Request/Response objects, ORM/domain entities | The serializer may support more than JSON, but the browser can still read every prop. Pass minimal UI-shaped DTOs. |
+| React Server Function / Server Action arguments | React-serializable arguments including primitives, plain objects, arrays/iterables, Map, Set, Date, typed arrays/ArrayBuffer, FormData, Promises, and Server Function references | React elements/JSX as arguments, ordinary functions, class instances, null-prototype objects, non-global symbols, event objects | Arguments are fully client-controlled. Validate and authorize inside the function. |
+| React Server Function / Server Action return values | Same return-value family as React-serializable props for boundary Client Components | Raw database records, secrets, internal flags, privileged objects, unvalidated error payloads | Return the smallest value the UI needs, often `{ success: true }` or a narrow state object. |
+| SvelteKit server `load` return values | Values serializable by `devalue`: JSON-representable data plus values such as BigInt, Date, Map, Set, RegExp, repeated/cyclical references, and promises for streamed data | Component constructors and other non-serializable custom values unless explicitly handled with transport hooks | Server `load` is still server -> browser data transfer. Shape output as browser-safe DTOs. |
+| FormData / multipart form submission | string fields and Blob/File values; repeated keys are allowed | Nested objects are not represented structurally; non-string non-Blob values are stringified by `append()` | Convert and validate after reading. If nesting is needed, encode one field deliberately and parse it as `unknown`. |
 
-The two directions across the boundary have categorically different trust profiles.
+The practical rule is not merely "can I encode this as bytes?" It is: **can this exact framework serializer encode it, can the other side reconstruct the expected data shape, and is the reconstructed shape safe for that side to see or trust?**
 
-**Server → client.** The server emits a payload. The payload is trusted by its producer (the server) and consumed as data by the client. The client cannot tamper with the payload in transit (TLS), but can read everything inside it and use the contents however the client code chooses.
+Do not use `structuredClone()` as the oracle for React Server Component props or Server Function arguments. React has its own allowlists: Server Component props can include JSX / React elements, while Server Function arguments explicitly cannot. Conversely, structured clone and React serialization differ on host objects and prototype behavior. Test the serializer that actually carries the value.
 
-Implications:
-- Do not put server secrets in the payload. The client will see them.
-- Do not assume the client will *not* call a function in the payload. If the payload says "this user is an admin," the client UI may render an admin panel; if a security check depends on it, that check must be repeated on the server.
-- The payload is a window into the server's state model. Keep it minimal.
+When data must cross through a narrower format, reshape at the boundary:
 
-**Client → server.** The client emits a request. The request crosses the trust boundary; every byte is adversarial. The server must:
+```typescript
+// JSON boundary: reshape rich server values before crossing.
+const serializedUserMap = Array.from(userMap.entries());
+const serializedDate = eventDate.toISOString();
 
-- Parse the request structurally (the bytes may not be the expected shape).
-- Validate the contents semantically (the values may not be in the expected range).
-- Authenticate the requester (cookies, tokens — themselves potentially forged).
-- Authorize the action (the authenticated requester may not have permission for this operation).
-- Rate-limit (the client may be a script).
+// Receiving side: reconstruct only as data, not as authority.
+const userMap = new Map(serializedUserMap);
+const eventDate = new Date(serializedDate);
+```
 
-Server actions look like local function calls when invoked from a client component. They are not. They are RPC handlers with a network in front of them and a hostile caller on the other side of the network.
+The "vanishing method" failure is a serialization smell: if client code expects `user.getFullName()` after `user` crossed the boundary, the design accidentally depended on a class/prototype, not on data. Pass `{ displayName }`, not a domain object with methods.
 
-## Common Leakage Modes
+## Server-to-Client Data Minimization
 
-| Leakage mode | What goes wrong | How to prevent |
-|---|---|---|
-| Secret in a shared module | `process.env.SECRET` is referenced in a module imported by both server and client; the secret name (and possibly value) ends up in the client bundle | Import the secret only in modules guarded by `import 'server-only'`; or read it inside a server action / route handler where the import graph cannot leak |
-| Server-only API in a client bundle | `fs.readFileSync` or `pg.Client` is imported into a `'use client'` component; build fails or runtime crashes | Mark client components with `'use client'`; mark server-only utilities with `import 'server-only'`; the bundler's static analysis catches the leak |
-| Untyped client→server validation gap | A server action accepts an argument typed as `{ userId: string }`; the client constructs a payload with `{ userId: 123 }`; the server crashes or, worse, queries with `123` and accidentally exposes another user's data | Validate every server-action argument with a runtime schema (Zod, valibot); never trust the TypeScript types of an RPC handler |
-| Trusted-by-default client claim | A server action checks `if (req.userRole === 'admin') ...` where `req.userRole` came from the client (via cookie, header, or body) | Re-derive trust from the server's authoritative source (the session record, the database, the IdP) — never from the client's self-report |
-| Non-serializable value in props | A `'use client'` component receives a server-built `Map<string, User>` as a prop; the RSC serializer can encode it, but a misconfigured project on plain JSON cannot — silent data loss or runtime crash | Test the serialization shape in code review; convert to plain objects at the boundary; or upgrade to a wire format that supports the type |
-| Closure leakage attempt | A server component constructs `() => doSomething()` and tries to pass it to a client component as a prop | Use a `'use server'` function (which serializes as an RPC reference) or pass the data the function uses and reconstruct the behavior on the client |
+The most common leak is not a secret literal in JavaScript. It is over-sharing server data:
 
-## RSC Server Actions — A Worked Example
+```typescript
+// Bad: a whole persistence record crosses into the browser.
+<ProfileCard user={userRow} />
+
+// Better: the server maps to the UI contract before the boundary.
+<ProfileCard user={{ displayName: userRow.name, avatarUrl: userRow.avatarUrl }} />
+```
+
+Use a server-only Data Access Layer for reusable reads:
+
+```typescript
+// lib/current-user.ts
+import 'server-only';
+
+import { z } from 'zod';
+import { auth } from '@/lib/auth';
+import { db } from '@/lib/db';
+
+const ProfileDto = z.object({
+  displayName: z.string(),
+  avatarUrl: z.string().url().nullable(),
+});
+
+export async function getCurrentUserProfile() {
+  const session = await auth();
+  if (!session?.userId) return null;
+
+  const row = await db.user.findUniqueOrThrow({
+    where: { id: session.userId },
+    select: { name: true, avatarUrl: true },
+  });
+
+  return ProfileDto.parse({
+    displayName: row.name,
+    avatarUrl: row.avatarUrl,
+  });
+}
+```
+
+React's experimental taint APIs can add a backstop: taint a specific object reference or high-entropy unique value so React errors if it reaches a Client Component. Tainting is useful for catching simple mistakes, but it is experimental and cloning or deriving a new value can bypass the original taint. Use it as defense in depth, not as a substitute for DTOs, server-only modules, and authorization.
+
+## Server Functions / Server Actions Are Endpoints
+
+React calls functions marked with `'use server'` **Server Functions**. A Server Function used as a form or mutation is commonly called a **Server Action**. Either way, when client code invokes it, the client sends a serialized request to the server and receives a serialized response.
+
+Security consequences:
+
+- Every argument is client-controlled, including hidden form fields, values passed through `bind`, route params, search params, cookies, and request bodies.
+- Exported module-level actions are reachable by client code; framework-generated secure action IDs and dead-code elimination reduce casual discovery but do not authorize callers.
+- Inline action closures may capture render-time values. In Next.js, captured values may be sent to the client and back encrypted. Encryption is defense in depth, not a reason to close over secrets or skip authorization.
+- Server Actions are mutation-oriented. Use Server Components / a server-only DAL for read-path data fetching, and Route Handlers for stable public HTTP endpoints or non-UI callers.
+- Forms that use `<form action={serverFunction}>` still submit through a network request. Frameworks can progressively enhance the experience before or after the JavaScript bundle loads; the security model is still a server endpoint receiving untrusted input.
+
+Prefer re-deriving identity and ownership inside the function:
 
 ```typescript
 // app/actions.ts
@@ -114,93 +176,95 @@ import { db } from '@/lib/db';
 
 const UpdateNameInput = z.object({
   userId: z.string().uuid(),
-  name: z.string().min(1).max(100),
+  name: z.string().trim().min(1).max(100),
 });
 
 export async function updateUserName(rawInput: unknown) {
-  // 1. Authenticate the caller (server-only source of truth)
   const session = await requireSession();
-
-  // 2. Validate the input (the bytes from the client may be anything)
   const input = UpdateNameInput.parse(rawInput);
 
-  // 3. Authorize the action (the authenticated user may not be allowed to do this)
   if (session.userId !== input.userId && !session.isAdmin) {
     throw new Error('not allowed');
   }
 
-  // 4. Perform the action
   await db.user.update({
     where: { id: input.userId },
     data: { name: input.name },
   });
+
+  return { success: true };
 }
 ```
 
-```typescript
-// app/profile/edit.tsx
-'use client';
+The client-supplied `userId` is not authority. It is an input to compare with the server-derived session. A safer variant may avoid accepting `userId` from the client at all and derive the target user from the session unless admin delegation is required.
 
-import { updateUserName } from '@/app/actions';
+## Common Leakage Modes
 
-export function EditProfile({ userId }: { userId: string }) {
-  return (
-    <form action={async (formData) => {
-      await updateUserName({
-        userId,
-        name: formData.get('name'),
-      });
-    }}>
-      <input name="name" />
-      <button type="submit">Save</button>
-    </form>
-  );
-}
-```
-
-The shape of this code embeds the boundary's three properties:
-
-- **Serialization** — the `formData` is a `FormData` (the wire format for a form submission), unwrapped to a plain object before the action is invoked.
-- **Direction** — the form is client→server; everything in `rawInput` is potentially adversarial.
-- **Trust** — the session is the server's authoritative claim about who is calling; `input.userId` is the client's claim about who to operate on; the authorization check compares the two.
-
-A version of this code that skipped the schema parse, used the session's `userId` as if it were the same as `input.userId`, or trusted a client-supplied `isAdmin` claim would have a vulnerability at the boundary.
+| Leakage mode | What goes wrong | How to prevent |
+|---|---|---|
+| Secret in shared module | A module imported by both sides reads `process.env.SECRET` or a private SDK token. The client graph reaches it, causing a build error, empty substitution, or leak. | Move secret reads into server-only modules, Server Functions, Route Handlers, or the DAL; add `import 'server-only'`. |
+| Server-only API in client graph | `fs`, database clients, Node-only crypto, or server SDKs become reachable below a `'use client'` entry. | Push `'use client'` to interactive leaves; guard server modules; review transitive imports. |
+| Raw record in Client Component props | A Server Component passes a full DB row or ORM entity. Hidden fields cross even if not rendered. | Map to a minimal DTO before the boundary; select only needed columns. |
+| Over-trusting React serialization | Because React can serialize Date, Map, Set, Promise, or Server Function references, developers pass rich domain objects. | Treat React-serializable as a transport allowlist, not a design target. Pass small data shapes. |
+| Method/prototype dependency | A class instance or ORM entity crosses and client code expects methods, private fields, getters, or prototype identity to survive. | Pass plain data and reconstruct client behavior locally; keep domain objects on the server. |
+| Untyped client -> server validation gap | A Server Function accepts a TypeScript type and skips runtime parsing. A forged call sends a different shape. | Accept `unknown` or `FormData`; parse with Zod, valibot, io-ts, or equivalent before use. |
+| Client-supplied authority | The server trusts `userId`, `isAdmin`, tenant ID, cookie contents, hidden inputs, bound args, route params, or search params directly. | Authenticate and authorize from server-verifiable session/database/IdP state; compare client inputs against that state. |
+| Inline action closure over sensitive data | An inline Server Action closes over a token or internal record. Framework support may send captured values to the client and back. | Close over stable non-secret identifiers only; re-read sensitive state on the server; treat encryption as defense in depth. |
+| FormData nesting illusion | Code expects object structure from FormData, but only string/blob fields arrive; non-string values were stringified. | Parse each field deliberately; encode nested JSON in a named string field and validate after parsing. |
+| Proxy/middleware authorization shortcut | A redirect or matcher in `proxy.ts` / middleware is treated as the only access-control check. A route change, matcher miss, or direct Server Function call skips it. | Use Proxy for coarse routing decisions; authenticate and authorize again inside Server Functions, Route Handlers, and server-only data access. |
+| Stale vulnerable RSC packages | The project uses vulnerable React, framework, or `react-server-dom-*` versions whose decoder processes attacker-influenced Server Function/RSC payloads. | Check current React/framework advisories during boundary reviews and upgrade to patched versions. |
 
 ## Verification
 
 After applying this skill, verify:
-- [ ] Every file that ships to the client has `'use client'` (or is reachable only through client imports) — the implicit-server default is intentional, not accidental.
-- [ ] Every server action has `'use server'` at the function or file level — the function's network reachability is explicit.
-- [ ] Server actions validate input with a runtime schema (Zod, valibot, io-ts) — types from TypeScript are not validation.
-- [ ] Server actions re-derive trust from a server-authoritative source (session, JWT verification, database lookup) — client-supplied trust claims are never accepted.
-- [ ] Modules holding secrets import `'server-only'` — the bundler will error if they leak.
-- [ ] Modules touching `window`, `document`, or other browser globals import `'client-only'` — symmetric guardrail.
-- [ ] Props passed from server to client components are serializable in the project's wire format — verified by build success and by code review for non-trivial types (Maps, class instances, Dates).
-- [ ] FormData payloads with nested structure are validated after parsing — no `as` casts of `JSON.parse` results.
-- [ ] No closures cross the boundary — only data, server-action references, and RSC primitives.
-- [ ] Authentication, authorization, and rate-limiting live inside server actions and route handlers, not in client components.
+
+- [ ] Every `'use client'` entry is intentionally placed as low as practical in the tree; its transitive imports are browser-safe.
+- [ ] Every server-only data, secret, filesystem, or SDK module imports `server-only` or is otherwise guarded from client reachability.
+- [ ] Every browser-only module that touches `window`, `document`, browser storage, or layout APIs imports `client-only` or is otherwise guarded from server reachability.
+- [ ] Every prop passed from Server Components to Client Components is React-serializable and is a minimal DTO, not a whole DB row, ORM entity, class instance, Request/Response, or domain object with methods/prototypes.
+- [ ] Raw DB reads are not passed directly to client entries. A practical search is `rg "db\\..*\\.(find|select|query)"` followed by inspection of whether each result is mapped through a DTO before it reaches a `'use client'` component.
+- [ ] Every Server Function / Server Action has `'use server'` at function or module level and is treated as a client-reachable endpoint.
+- [ ] Every Server Function / Server Action parses arguments at runtime from `unknown` or `FormData`; no `as` cast substitutes for validation.
+- [ ] Every Server Function / Server Action authenticates and authorizes inside the function or the server-only code it calls; hidden fields, bound args, disabled buttons, params, search params, and TypeScript signatures are not authority.
+- [ ] Server Action return values contain only what the UI needs; raw database records and internal error objects do not return to the client.
+- [ ] Inline Server Action closures do not capture secrets or full records; any captured value is considered client-visible enough to require scrutiny.
+- [ ] FormData with nested structure is parsed and validated after decoding; repeated keys and stringification are intentional.
+- [ ] Authentication, authorization, and rate limiting live in server code, not only in Client Components, `proxy.ts` / middleware redirects, or disabled UI.
+- [ ] The project's React, framework, and `react-server-dom-*` packages are checked against current RSC / Server Function advisories.
 
 ## Do NOT Use When
 
 | Instead of this skill | Use | Why |
 |---|---|---|
-| Deciding when and where the UI is produced (CSR/SSR/SSG/RSC) | `rendering-models` | rendering-models owns the staging decision; client-server-boundary owns the serialization frontier — they compose but are distinct |
-| Designing HTTP caching, status codes, content negotiation | `http-semantics` | http-semantics owns the wire protocol; client-server-boundary owns what data exists at the boundary |
-| Organizing the frontend folder layout and module structure | `frontend-architecture` | frontend-architecture is wider — it includes state management, component layering, feature boundaries; the client-server-boundary is one axis it touches |
-| Designing the JSON shape of an external API | `api-design` | api-design owns external surface contracts; client-server-boundary is the internal boundary inside a single application |
-| Choosing between Zod / valibot / io-ts as a runtime validator | individual library docs + `api-design` | library choice is below this skill |
-| Enforcing TypeScript discipline inside the program | `type-safety` | type-safety owns compile-time discipline; the boundary is one of the places where type safety stops |
+| Deciding when and where UI is produced (CSR/SSR/SSG/ISR/RSC) | `rendering-models` | rendering-models owns staging; this skill owns the serialization and trust frontier once data crosses. |
+| Designing the RSC read path, Suspense placement, DTO/DAL architecture, or cache/freshness model | `server-components-design` | That skill owns which work belongs on the server side of the RSC tree; this skill owns boundary mechanics shared by RSC, actions, and other crossings. |
+| Designing a full Server Action mutation flow with forms, `useActionState`, revalidation, and optimistic UI | `server-actions-design` | This skill teaches that actions are endpoint crossings; server-actions-design owns the mutation workflow. |
+| Designing a public `route.ts` / Route Handler endpoint for third parties, mobile apps, webhooks, or explicit HTTP consumers | `route-handler-design` | Route Handlers are explicit public HTTP surfaces; this skill owns the framework-mediated component/action boundary. |
+| Designing HTTP caching, status codes, content negotiation, or header semantics | `http-semantics` | http-semantics owns the wire protocol; this skill owns what data and authority enter the wire. |
+| Organizing frontend folder layout, feature boundaries, or client state architecture | `frontend-architecture` | Frontend architecture is wider; client-server-boundary is one import/data-flow axis inside it. |
+| Designing the JSON shape of an external REST/GraphQL/mobile/third-party API | `api-design` | api-design owns public contracts and versioning; this skill owns internal server/client crossings that may not be stable APIs. |
+| Choosing a validation library or enforcing TypeScript discipline generally | `type-safety` | type-safety owns compile-time and parsing discipline; this skill names where parsing is mandatory. |
+| Performing a broad application-security review or OWASP-category vulnerability triage | `security-fundamentals` / `owasp-security` | This skill uses security principles at one boundary; security-fundamentals and owasp-security own wider security review. |
 
 ## Key Sources
 
-- React team. [React Server Components RFC](https://github.com/reactjs/rfcs/blob/main/text/0188-server-components.md). Proposed Dec 2020. The canonical specification of the RSC wire format, including the rules for what can be serialized across the boundary and the role of `'use client'` / `'use server'`.
-- Sebastian Markbåge (React core). ["The Future of Web Software Is Server Components"](https://www.youtube.com/watch?v=zMf_xeGPn6s). 2022 talk. The mental model of the boundary as a serialization protocol rather than a deployment topology.
-- Vercel. [Next.js documentation — Server and Client Components](https://nextjs.org/docs/app/building-your-application/rendering/server-components). Reference for `'use client'` / `'use server'` semantics, the `server-only` and `client-only` packages, and the serialization rules in App Router.
-- WHATWG. [HTML Living Standard — Structured clone algorithm](https://html.spec.whatwg.org/multipage/structured-data.html#structured-clone). Specification of the broader-than-JSON serialization set used by postMessage, IndexedDB, and Worker boundaries.
-- Mark Erikson. ["Why React Server Components Are Important"](https://blog.isquaredsoftware.com/2023/04/whats-the-deal-with-react-server-components/). 2023. Practitioner-level explanation of the boundary's implications for bundle size, hydration, and the framework-author contract.
-- Remix team. [Loader and Action documentation](https://remix.run/docs/en/main/route/loader). Reference for the function-named boundary convention that predates and informs RSC's directive-based model.
-- OWASP. [Top 10:2021 — A01:2021 Broken Access Control](https://owasp.org/Top10/A01_2021-Broken_Access_Control/). The class of vulnerabilities that arise specifically from treating client-supplied trust claims as authoritative — the failure mode this skill exists to prevent.
-- Hejlsberg, A. et al. [TypeScript Handbook — Type assertions and the `unknown` type](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#type-assertions). The explicit acknowledgement that `as` casts do not validate at runtime — the gap that boundary-crossing validation must fill.
+- React. [`'use client'` directive](https://react.dev/reference/rsc/use-client). Provenance: primary vendor documentation for how `'use client'` creates a client module subtree, how transitive dependencies become client-evaluated, and which Server Component prop values are serializable.
+- React. [`'use server'` directive](https://react.dev/reference/rsc/use-server). Provenance: primary vendor documentation for Server Functions, network invocation, security considerations, and the current serializable argument/return allowlist.
+- Next.js. [`use client` directive](https://nextjs.org/docs/app/api-reference/directives/use-client). Provenance: framework documentation for entry-point placement and serializable Client Component props.
+- Next.js. [`use server` directive](https://nextjs.org/docs/app/api-reference/directives/use-server). Provenance: framework documentation for file-level and inline Server Actions plus authentication/authorization guidance.
+- Next.js. [Server and Client Components](https://nextjs.org/docs/app/getting-started/server-and-client-components). Provenance: framework documentation for App Router's default Server Component model, `server-only` / `client-only` guards, and environment-poisoning prevention.
+- Next.js. [Data Security](https://nextjs.org/docs/app/guides/data-security). Provenance: framework documentation for DAL/DTO patterns, Server Action return minimization, rate limiting, closure encryption, taint APIs, and the warning not to rely on encryption alone.
+- Next.js. [`proxy.js` / `proxy.ts` file convention](https://nextjs.org/docs/app/api-reference/file-conventions/proxy) and [Next.js 16 upgrade guide](https://nextjs.org/docs/app/guides/upgrading/version-16). Provenance: framework documentation for `middleware.ts` -> `proxy.ts`, Node.js runtime behavior, and why Proxy cannot replace per-Server-Function authorization.
+- SvelteKit. [Server-only modules](https://svelte.dev/docs/kit/server-only-modules). Provenance: primary framework documentation for `.server` filename suffixes, `$lib/server`, private environment module restrictions, and import-chain errors that prevent server-only code from reaching browser-running code.
+- SvelteKit. [Loading data](https://svelte.dev/docs/kit/load). Provenance: primary framework documentation for `+page.server.js` / `+layout.server.js`, server-only `load` functions, universal-vs-server load boundaries, and devalue serialization of server-load return data.
+- React. [`experimental_taintObjectReference`](https://react.dev/reference/react/experimental_taintObjectReference) and [`experimental_taintUniqueValue`](https://react.dev/reference/react/experimental_taintUniqueValue). Provenance: primary React documentation for optional taint guardrails and their caveats.
+- MDN. [Structured clone algorithm](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm). Provenance: platform reference for structured-clone support and loss of prototypes/descriptors/private fields.
+- MDN. [`FormData.append()`](https://developer.mozilla.org/en-US/docs/Web/API/FormData/append). Provenance: platform reference for string/blob values, repeated fields, and automatic stringification of non-string non-Blob values.
+- OWASP. [Top 10:2025 A01 Broken Access Control](https://owasp.org/Top10/2025/A01_2025-Broken_Access_Control/). Provenance: current public security reference for server-side access control, deny-by-default, direct-object-reference failures, and the rule that access control must be enforced in trusted server-side code.
+- TypeScript. [Everyday Types - Type Assertions](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#type-assertions). Provenance: language reference confirming that type assertions are erased and do not validate runtime values.
+- React. [Critical Security Vulnerability in React Server Components](https://react.dev/blog/2025/12/03/critical-security-vulnerability-in-react-server-components). Provenance: upstream security advisory showing that RSC / Server Function payload decoding is an operational security concern, not only a type/serialization concern.
+- Vercel. [Next.js May 2026 security release](https://vercel.com/changelog/next-js-may-2026-security-release). Provenance: framework-vendor advisory for newer React/Next RSC-related fixes, including patched Next.js and `react-server-dom-*` versions.
+- React Router. [Actions](https://reactrouter.com/start/framework/actions). Provenance: current Remix-lineage documentation showing that form/action server boundaries remain a broader framework pattern, not only a Next.js directive pattern.
 
 ## Skill Graph context
 
@@ -210,33 +274,37 @@ After applying this skill, verify:
 - Subject: `frontend-engineering`
 - Public: `true`
 - Domain: `engineering/frontend`
-- Scope: Reasoning about the line at which execution context changes between a server runtime and a client runtime — what values can cross via serialization and what cannot, the directives that mark transitions ('use client', 'use server'), the difference between server-rendered HTML and a serialized component tree, the trust model that treats client input as adversarial, and the consequences of leaking server-only modules into client bundles. Portable across any server/client web framework; principle-grounded, not repo-bound. Excludes when and where the UI is produced (rendering-models), the HTTP wire protocol itself (http-semantics), frontend codebase organization (frontend-architecture), and API JSON-shape design (api-design).
+- Scope: Reasoning about the line where execution context changes between a server runtime and a client runtime: what values can cross via the active serializer, what cannot, how directives and file conventions mark module/function transitions (`'use client'`, `'use server'`, `.server` files, server-only directories), how React Server Components differ from server-rendered HTML, why Server Functions / Server Actions are reachable network endpoints, why client input is adversarial, and how server-only modules, secrets, raw records, or closures leak into client bundles and payloads. Portable across server/client web frameworks; principle-grounded, not repo-bound. Excludes rendering strategy choice (rendering-models), full RSC read-path placement (server-components-design), full Server Action mutation/form/cache design (server-actions-design), public Route Handler endpoint design (route-handler-design), HTTP wire semantics (http-semantics), frontend codebase organization (frontend-architecture), and API JSON contract design (api-design).
 
 **When to use**
 - decide whether a piece of data must cross the network or can stay server-only
 - diagnose why a component marked as a server component is being shipped to the client
-- review whether secrets in server code can leak through serialized props
-- design which functions are exposed as server actions and which stay internal
-- Triggers: `can I pass this function as a prop`, `why is my server-only module in the client bundle`, `what does 'use client' actually do`, `is it safe to put this secret in a server component`, `why won't this Date / Map / class serialize`
+- review whether secrets or raw database records can leak through serialized props
+- design which values are passed into a Server Function and which are re-derived on the server
+- explain why TypeScript types do not validate a client-to-server call
+- Triggers: `can I pass this function as a prop`, `why is my server-only module in the client bundle`, `what does 'use client' actually do`, `is it safe to put this secret in a server component`, `why won't this Date / Map / class serialize`, `is this server action a public endpoint`, `are params and searchParams trusted input`
 
 **Not for**
 - decide whether a route should be SSG or SSR (use rendering-models)
-- design HTTP authentication headers (use http-semantics)
+- design a full Server Component data-fetching/caching tree (use server-components-design)
+- design a form mutation with useActionState, revalidatePath, or updateTag (use server-actions-design)
+- design a public route.ts endpoint for third-party callers (use route-handler-design)
+- design HTTP authentication headers or status codes (use http-semantics)
 - design the JSON shape of an API response body (use api-design)
 - Owned by `rendering-models`: the staging of work across build/request/stream/interaction
 
 **Related skills**
-- Verify with: `type-safety`, `api-design`
-- Related: `rendering-models`, `http-semantics`, `frontend-architecture`, `type-safety`, `api-design`
+- Verify with: `type-safety`, `api-design`, `server-components-design`, `server-actions-design`, `security-fundamentals`
+- Related: `rendering-models`, `server-components-design`, `server-actions-design`, `route-handler-design`, `http-semantics`, `frontend-architecture`, `type-safety`, `api-design`, `security-fundamentals`
 
 **Concept**
 - Mental model: |
 - Purpose: |
 - Boundary: |
-- Analogy: The client-server boundary is to a unified codebase what an embassy boundary is to a city — both spaces exist at the same physical address, but inside the embassy the law of one country applies (server: full filesystem, secret access, database), outside the law of another applies (client: browser sandbox, no secrets), and everyone crossing must pass through documented customs (serialization) with their bags inspected (validation) and stamped (authentication).
+- Analogy: The client-server boundary is a customs gate inside one codebase: both sides may share a language and address book, but the server side has vault keys and authority, the client side is public space, and every object crossing the gate must be packed in an allowed container, inspected, and stripped of anything the public side may not see or the server side may not trust.
 - Common misconception: |
 
 **Keywords**
-- `client server boundary`, `serialization boundary`, `use client directive`, `use server directive`, `React Server Components`, `server actions`, `RPC`, `serializable types`, `structured clone`, `secret leakage`
+- `client server boundary`, `serialization boundary`, `use client directive`, `use server directive`, `React Server Components`, `Server Functions`, `Server Actions`, `serializable props`, `server-only modules`, `secret leakage`
 
 <!-- skill-graph-context:end -->

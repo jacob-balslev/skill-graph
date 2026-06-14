@@ -1,8 +1,8 @@
 ---
 name: semantics
-description: "Use when choosing or auditing meaning encoded by names and signals across code, APIs, design tokens, HTTP responses, UI labels, error codes, branded types, tool schemas, telemetry attributes, and domain terms, especially when a name feels ambiguous, misleading, or stale. Covers naming smells, DDD ubiquitous language, SemVer, Conventional Commits type choice, branded/semantic types, parse-don't-validate, semantic design tokens/CSS/API signals, semantic UI affordances, machine-reader truthfulness for LLM tools and telemetry, and anti-patterns where syntax is valid but the signal lies. Do NOT use for morphology/register (use linguistics), casing/format or rename mechanics (use naming-conventions or refactor), typed concept-edge analysis (use semantic-relations), UI copy (use microcopy), taxonomy (use taxonomy-design), accessibility (use a11y), API/protocol design (use api-design or http-semantics), LLM tool design (use agent-engineering or tool-call-flow), or telemetry strategy (use observability-modeling)."
+description: "Semantics: choosing and auditing the meaning encoded by names, status codes, versions, commits, tokens, and signals across code, APIs, and UIs. Do NOT use for Should onboarding be hyphenated, and how does English compound morphology affect that decision? Do NOT use for What casing should a new database timestamp column use -- kebab, snake, or camel? Do NOT use for Rename this function and update every call-site across the repo. Do NOT use for Type the relation between refund and payment as IS-A, PART-OF, causal, or thematic. Do NOT use for Design the full REST resource surface with pagination, idempotency keys, and auth boundaries."
 license: MIT
-compatibility: "Cross-domain naming and meaning skill, stack-agnostic. The naming-smells catalogue, SemVer rules, conventional-commit format, semantic-token architecture, HTTP-status semantics, REST/GraphQL conventions, semantic type patterns, machine-reader (tool/telemetry) name rules, and anti-pattern catalog apply to any codebase; examples use generic commerce/order language and should be substituted for the user's domain."
+compatibility: "Cross-domain naming and meaning skill, stack-agnostic. catalogue applies to any codebase; examples use generic commerce/order language."
 allowed-tools: Read Grep
 metadata:
   relations: "{\"related\":[\"semantic-center\",\"conceptual-modeling\",\"linguistics\",\"naming-conventions\",\"semantic-relations\",\"semiotics\",\"microcopy\",\"taxonomy-design\",\"api-design\",\"http-semantics\",\"type-safety\",\"design-system-architecture\",\"theme-system-design\",\"tool-call-flow\",\"system-interface-contracts\",\"observability-modeling\",\"a11y\",\"version-control\"],\"suppresses\":[\"linguistics\",\"semantic-relations\",\"taxonomy-design\"],\"verify_with\":[\"code-review\",\"naming-conventions\",\"semantic-relations\",\"a11y\"]}"
@@ -12,8 +12,9 @@ metadata:
   taxonomy_domain: foundations/semantics
   stability: experimental
   keywords: "[\"semantic naming\",\"semantic drift detection\",\"meaning encoding\",\"branded type design\",\"semantic versioning rules\",\"conventional commit type choice\",\"HTTP status semantic signaling\",\"design-token semantic layer\",\"naming smells catalogue\",\"parse-dont-validate pattern\"]"
-  examples: "[\"a function named process(data) actually reconciles revenue with production cost -- what semantic rename would make the operation self-explanatory without reading the implementation?\",\"our API returns HTTP 200 with an error payload for a failed request -- is that syntactically valid but semantically wrong?\",\"we named a token --light-blue and now dark mode plus rebranding broke its meaning -- what semantic token pattern should replace it?\",\"I need to choose between feat(billing): add email notifications and chore(billing): add email notifications -- which commit type communicates the change correctly?\",\"our MCP tool is named update_record but it can also delete -- is that name a routing hazard for the model?\"]"
-  anti_examples: "[\"should onboarding be hyphenated, and how does English compound morphology affect that decision?\",\"what casing should a new database timestamp column use -- kebab, snake, or camel?\",\"rename this function and update every call-site across the repo\",\"type the relation between refund and payment as IS-A, PART-OF, causal, or thematic\",\"design the full REST resource surface with pagination, idempotency keys, and auth boundaries for our orders API\"]"
+  triggers: "[\"semantics\",\"semantic naming\",\"semantic versioning\",\"conventional commits\",\"semantic status codes\",\"semantic tokens\"]"
+  examples: "[\"A function named process(data) actually reconciles revenue with production cost -- what semantic rename would make the operation self-explanatory?\",\"Our API returns HTTP 200 with an error payload for a failed request -- is that syntactically valid but semantically wrong?\",\"We named a token --light-blue and now dark mode plus rebranding broke its meaning -- what semantic token pattern should replace it?\",\"I need to choose between feat(billing) and chore(billing) -- which commit type communicates the change correctly?\",\"Our MCP tool is named update_record but it can also delete -- is that name a routing hazard for the model?\"]"
+  anti_examples: "[\"Should onboarding be hyphenated, and how does English compound morphology affect that decision?\",\"What casing should a new database timestamp column use -- kebab, snake, or camel?\",\"Rename this function and update every call-site across the repo.\",\"Type the relation between refund and payment as IS-A, PART-OF, causal, or thematic.\",\"Design the full REST resource surface with pagination, idempotency keys, and auth boundaries.\"]"
   grounding: "{\"subject_matter\":\"Cross-domain meaning encoding in software names, status signals, versions, commits, APIs, design tokens, UI signals, semantic types, and machine-read tool/schema/telemetry contracts\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://martinfowler.com/bliki/UbiquitousLanguage.html\",\"https://hilton.org.uk/blog/naming-smells\",\"https://semver.org/\",\"https://www.hyrumslaw.com/\",\"https://www.conventionalcommits.org/en/v1.0.0/\",\"https://www.rfc-editor.org/rfc/rfc9110.html\",\"https://www.rfc-editor.org/rfc/rfc9457.html\",\"https://www.designtokens.org/tr/2025.10/format/\",\"https://www.w3.org/TR/css-cascade-5/\",\"https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html\",\"https://www.typescriptlang.org/docs/handbook/type-compatibility.html\",\"https://www.typescriptlang.org/docs/handbook/symbols.html\",\"https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/\",\"https://spec.graphql.org/September2025/\",\"https://graphql.github.io/graphql-over-http/draft/\",\"https://developers.openai.com/api/docs/guides/function-calling\",\"https://modelcontextprotocol.io/specification/draft/server/tools\",\"https://opentelemetry.io/docs/specs/semconv/\",\"https://opentelemetry.io/docs/specs/semconv/general/naming/\",\"https://html.spec.whatwg.org/multipage/dom.html#semantics\"],\"failure_modes\":[\"identifier_name_still_matches_syntax_but_not_behavior\",\"verb_prefix_contradicts_return_shape_or_side_effects\",\"domain_language_drift_creates_translation_tax\",\"http_status_code_contradicts_response_body\",\"version_bump_understates_api_breakage\",\"semver_applied_without_a_declared_public_api\",\"commit_type_hides_feature_or_breaking_change\",\"commit_type_to_semver_mapping_asserted_as_spec_when_it_is_tooling_config\",\"design_token_name_coupled_to_appearance_instead_of_purpose\",\"cascade_layer_name_or_order_lies_about_precedence\",\"non_semantic_html_element_hides_affordance\",\"primitive_type_allows_id_or_unit_mixups\",\"color_is_the_only_state_signal\",\"concept_block_contains_placeholder_values\",\"graphql_enum_value_or_field_rename_breaks_wire_clients\",\"tool_name_or_description_misleads_llm_router\",\"destructive_tool_reads_as_benign\",\"observability_attribute_name_forks_standard_vocabulary\",\"prompt_artifact_section_or_placeholder_misencodes_its_role\",\"semantics_overowns_morphology_relation_typing_microcopy_or_full_api_design\"],\"evidence_priority\":\"equal\"}"
   mental_model: "Semantics in software is meaning encoding: every name, status code, version number, commit type, token, telemetry attribute, tool definition, and typed value is a sign that points at a referent under a convention. Good semantics keeps the sign, referent, and convention aligned as the system changes."
   purpose: "Make meaning a first-class artifact so readers, tools, APIs, models, and users can infer what something is, why it exists, and what signal it sends without opening implementation details or tribal context."
@@ -23,8 +24,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/knowledge-organization/semantics/SKILL.md
-  skill_graph_export_description: shortened for Agent Skills 1024-character description limit; canonical source keeps the full routing contract
-  skill_graph_canonical_description_length: "1244"
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Semantics
@@ -764,18 +764,19 @@ SEMANTICS CHECK
 - Scope: Teaches cross-domain meaning alignment for names, statuses, versions, commits, tokens, APIs, UI signals, machine-read tool/telemetry contracts, and semantic types. Excludes word morphology, casing mechanics, typed concept-relation analysis, UI-copy patterns, taxonomy governance, accessibility compliance, full API-surface/protocol design, tool-surface design, telemetry strategy, and git history workflows.
 
 **When to use**
-- a function named process(data) actually reconciles revenue with production cost -- what semantic rename would make the operation self-explanatory without reading the implementation?
-- our API returns HTTP 200 with an error payload for a failed request -- is that syntactically valid but semantically wrong?
-- we named a token --light-blue and now dark mode plus rebranding broke its meaning -- what semantic token pattern should replace it?
-- I need to choose between feat(billing): add email notifications and chore(billing): add email notifications -- which commit type communicates the change correctly?
-- our MCP tool is named update_record but it can also delete -- is that name a routing hazard for the model?
+- A function named process(data) actually reconciles revenue with production cost -- what semantic rename would make the operation self-explanatory?
+- Our API returns HTTP 200 with an error payload for a failed request -- is that syntactically valid but semantically wrong?
+- We named a token --light-blue and now dark mode plus rebranding broke its meaning -- what semantic token pattern should replace it?
+- I need to choose between feat(billing) and chore(billing) -- which commit type communicates the change correctly?
+- Our MCP tool is named update_record but it can also delete -- is that name a routing hazard for the model?
+- Triggers: `semantics`, `semantic naming`, `semantic versioning`, `conventional commits`, `semantic status codes`, `semantic tokens`
 
 **Not for**
-- should onboarding be hyphenated, and how does English compound morphology affect that decision?
-- what casing should a new database timestamp column use -- kebab, snake, or camel?
-- rename this function and update every call-site across the repo
-- type the relation between refund and payment as IS-A, PART-OF, causal, or thematic
-- design the full REST resource surface with pagination, idempotency keys, and auth boundaries for our orders API
+- Should onboarding be hyphenated, and how does English compound morphology affect that decision?
+- What casing should a new database timestamp column use -- kebab, snake, or camel?
+- Rename this function and update every call-site across the repo.
+- Type the relation between refund and payment as IS-A, PART-OF, causal, or thematic.
+- Design the full REST resource surface with pagination, idempotency keys, and auth boundaries.
 
 **Related skills**
 - Verify with: `code-review`, `naming-conventions`, `semantic-relations`, `a11y`

@@ -1,11 +1,11 @@
 ---
 name: system-interface-contracts
-description: "Use when defining or reviewing contracts between systems, modules, services, agents, jobs, events, APIs, or teams: ownership, inputs, outputs, invariants, compatibility, errors, idempotency, and versioning. Do NOT use for REST resource design alone (use `api-design`), async event contract detail (use `event-contract-design`), database schemas (use `data-modeling`), or post-failure debugging (use `debugging`). Do NOT use for design the REST endpoints, status codes, and pagination. Do NOT use for create database tables and constraints. Do NOT use for investigate why this existing integration is failing in production. Do NOT use for write an ADR after the interface decision has already been accepted."
+description: "Use when defining or reviewing contracts between systems, modules, services, agents, jobs, events, APIs, or teams: ownership, inputs, outputs, invariants, compatibility, errors, idempotency, and versioning. Do NOT use for REST resource design alone (use `api-design`), async event contract detail (use `event-contract-design`), database schemas (use `entity-relationship-modeling`), or post-failure debugging (use `debugging`). Do NOT use for design the REST endpoints, status codes, and pagination. Do NOT use for create database tables and constraints. Do NOT use for investigate why this existing integration is failing in production. Do NOT use for write an ADR after the interface decision has already been accepted."
 license: MIT
 compatibility: "Portable contract-design discipline across code modules, services, queues, APIs, webhooks, jobs, and agent interfaces."
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"related\":[\"event-storming\",\"debugging\",\"api-design\",\"event-contract-design\",\"state-machine-modeling\",\"conceptual-modeling\"],\"suppresses\":[\"event-contract-design\",\"architecture-decision-records\",\"data-modeling\"],\"verify_with\":[\"testing-strategy\",\"code-review\",\"event-storming\"]}"
+  relations: "{\"related\":[\"event-storming\",\"debugging\",\"api-design\",\"event-contract-design\",\"state-machine-modeling\",\"conceptual-modeling\"],\"suppresses\":[\"event-contract-design\",\"architecture-decision-records\",\"entity-relationship-modeling\"],\"verify_with\":[\"testing-strategy\",\"code-review\",\"event-storming\"]}"
   subject: software-architecture
   scope: "Designing and reviewing cross-boundary interface contracts across modules, services, jobs, APIs, event producers/consumers, webhooks, data engineering surfaces, and AI agents/tools. Owns the stable promise at the boundary: parties, semantics, data shape, invariants, failure behavior, idempotency, security/trust, operational SLOs, compatibility, deploy choreography, observability, and verification. Excludes detailed HTTP resource design, async event envelope/topic design, persistence schema design, root-cause debugging, and ADR recording after the contract decision is accepted."
   public: "true"
@@ -87,7 +87,7 @@ Use this skill when the task is the contract that lets two independently changin
 | Cross-boundary ownership, semantics, invariants, compatibility, failure behavior, and verification across multiple surfaces | `system-interface-contracts` |
 | REST/resource route taxonomy, status codes, pagination, HTTP headers, API envelopes, or OpenAPI endpoint detail | `api-design` |
 | Async event envelope, schema, topic/channel, replay, ordering, dead-letter behavior, or AsyncAPI/CloudEvents detail | `event-contract-design` |
-| Stored entities, keys, constraints, indexes, normalization, provenance, or data lifecycle | `data-modeling` |
+| Stored entities, keys, constraints, indexes, normalization, provenance, or data lifecycle | `entity-relationship-modeling` |
 | Lifecycle states, guards, invalid transitions, and transition tests for one workflow or object | `state-machine-modeling` |
 | Domain discovery before the contract exists | `event-storming` or `conceptual-modeling` |
 | Root-cause isolation after a boundary already failed | `debugging` |
@@ -106,7 +106,7 @@ Pick the artifact that matches the boundary. A Markdown contract is acceptable f
 | gRPC/Protobuf or typed RPC | [Protobuf](https://protobuf.dev/)/`.proto` IDL ([Smithy](https://smithy.io/2.0/spec/index.html), [TypeSpec](https://typespec.io/) where they fit), generated clients, compatibility lint | Generated stubs + backward-compat linter (e.g. Buf) | Field-number discipline, source/wire/semantic compatibility, rollout order |
 | Service model or SDK surface | Smithy or equivalent IDL plus semantic-diff tooling | Semantic-diff / breaking-change linter | Breaking-change policy, client generation obligations, deprecation window |
 | JSON payload shared across systems | [JSON Schema](https://json-schema.org/) 2020-12 plus examples | Schema validation (positive + negative fixtures) | Which fields are contractual, defaults, semantic constraints, validation failure behavior |
-| Data product or analytical data boundary | [Open Data Contract Standard (ODCS)](https://bitol-io.github.io/open-data-contract-standard/) plus data-quality and freshness checks | Data-quality checks (route persistence detail to `data-modeling`) | Producer/consumer ownership, dataset semantics, schema, quality rules, service-level expectations, access terms, evolution, and alert routing |
+| Data product or analytical data boundary | [Open Data Contract Standard (ODCS)](https://bitol-io.github.io/open-data-contract-standard/) plus data-quality and freshness checks | Data-quality checks (route persistence detail to `entity-relationship-modeling`) | Producer/consumer ownership, dataset semantics, schema, quality rules, service-level expectations, access terms, evolution, and alert routing |
 | Consumer/provider relationship | [Pact](https://docs.pact.io/) or consumer-driven contract tests plus broker/deploy gate | Provider verification + `can-i-deploy` deploy gate | Real consumer expectations, provider verification, canary/rollback rules |
 | AI tool exposed to agents | [MCP tool schema](https://modelcontextprotocol.io/), provider tool schema, or framework-specific tool contract | Schema validation of tool args/results + the agent-contract checklist below | Input schema, output schema, permissions, side effects, confirmation, error behavior, data exposure |
 | Agent-to-agent collaboration | [A2A](https://a2a-protocol.org/) agent card/task/message/artifact contract where appropriate | A2A conformance + integration test | Capability discovery, task states, auth, user identity propagation, handoff semantics |
@@ -266,7 +266,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/system-interf
 |---|---|
 | `api-design` | You specifically need REST/resource endpoint shape, HTTP semantics, status codes, pagination, filtering, API envelope design, or OpenAPI endpoint detail. |
 | `event-contract-design` | You specifically need asynchronous event envelope, schema, topic/channel, replay, dead-letter behavior, or consumer compatibility rules. |
-| `data-modeling` | You need persistence schema, keys, indexes, constraints, normalization, provenance, or data lifecycle. |
+| `entity-relationship-modeling` | You need persistence schema, keys, indexes, constraints, normalization, provenance, or data lifecycle. |
 | `state-machine-modeling` | You need to formalize one lifecycle's states, transitions, guards, invalid transitions, and transition tests. |
 | `debugging` | A boundary has already failed and the task is root-cause analysis. |
 | `architecture-decision-records` | The contract is chosen and needs a durable decision record. |

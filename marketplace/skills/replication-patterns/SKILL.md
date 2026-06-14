@@ -1,19 +1,19 @@
 ---
 name: replication-patterns
-description: "Use when designing how a database keeps multiple copies of its data in agreement across nodes for availability, read scaling, and disaster recovery: the three foundational topologies (single-leader / primary-replica, multi-leader / multi-primary, leaderless / quorum), synchronous vs asynchronous replication and the replication-lag trade-off, log shipping vs statement replication vs trigger-based replication, the read-after-write consistency problem and its mitigations (sticky session, read-from-leader, monotonic reads), the failover model and split-brain risk, and the relationship to the CAP/PACELC choices the topology realizes. Do NOT use for horizontal partitioning across nodes (use sharding-strategy), the CAP theoretical frame itself (use cap-theorem-tradeoffs), single-node transactional guarantees (use acid-fundamentals), or query tuning (use query-optimization)."
+description: "Use when designing how a database keeps multiple copies of its data in agreement across nodes for availability, read scaling, and disaster recovery: the three foundational topologies (single-leader / primary-replica, multi-leader / multi-primary, leaderless / quorum), synchronous vs asynchronous replication and the replication-lag trade-off, log shipping vs statement replication vs trigger-based replication, the read-after-write consistency problem and its mitigations (sticky session, read-from-leader, monotonic reads), the failover model and split-brain risk, and the relationship to the CAP/PACELC choices the topology realizes. Do NOT use for horizontal partitioning across nodes (use sharding-strategy), the CAP theoretical frame itself (use cap-theorem-tradeoffs), single-node transactional guarantees (use transaction-isolation), or query tuning (use query-optimization)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"related\":[\"acid-fundamentals\",\"query-optimization\",\"indexing-strategy\",\"cap-theorem-tradeoffs\",\"sharding-strategy\",\"transaction-isolation\"],\"suppresses\":[\"sharding-strategy\",\"cap-theorem-tradeoffs\"],\"verify_with\":[\"transaction-isolation\",\"cap-theorem-tradeoffs\",\"sharding-strategy\"]}"
+  relations: "{\"related\":[\"transaction-isolation\",\"query-optimization\",\"indexing-strategy\",\"cap-theorem-tradeoffs\",\"sharding-strategy\",\"transaction-isolation\"],\"suppresses\":[\"sharding-strategy\",\"cap-theorem-tradeoffs\"],\"verify_with\":[\"transaction-isolation\",\"cap-theorem-tradeoffs\",\"sharding-strategy\"]}"
   subject: data-engineering
-  scope: "Designing database replication topologies and operational guardrails for keeping multiple copies of the same data in agreement across nodes: single-leader, multi-leader, leaderless/quorum; synchronous, semi-synchronous, and asynchronous replication; log-shipping and statement/row/trigger/logical mechanisms; read-after-write mitigations; failover and split-brain prevention; conflict resolution; and backup-vs-replica boundaries. Portable across distributed database systems. Excludes horizontal partitioning across nodes (sharding-strategy), the abstract CAP/PACELC frame itself (cap-theorem-tradeoffs), single-node transaction guarantees (acid-fundamentals), isolation-level choice (transaction-isolation), and query/index tuning (query-optimization/indexing-strategy)."
+  scope: "Designing database replication topologies and operational guardrails for keeping multiple copies of the same data in agreement across nodes: single-leader, multi-leader, leaderless/quorum; synchronous, semi-synchronous, and asynchronous replication; log-shipping and statement/row/trigger/logical mechanisms; read-after-write mitigations; failover and split-brain prevention; conflict resolution; and backup-vs-replica boundaries. Portable across distributed database systems. Excludes horizontal partitioning across nodes (sharding-strategy), the abstract CAP/PACELC frame itself (cap-theorem-tradeoffs), single-node transaction guarantees (transaction-isolation), isolation-level choice (transaction-isolation), and query/index tuning (query-optimization/indexing-strategy)."
   public: "true"
   taxonomy_domain: engineering/data
   stability: experimental
   keywords: "[\"database replication\",\"PostgreSQL streaming replication\",\"MySQL replication\",\"Cassandra quorum\",\"primary replica\",\"multi-leader\",\"leaderless\",\"replication lag\",\"read-after-write\",\"failover\"]"
   triggers: "[\"single-leader vs multi-leader\",\"synchronous vs async replication\",\"what happens on failover\",\"split brain\",\"read-after-write consistency\"]"
   examples: "[\"design replication topology for a service with one region writing and three regions reading\",\"decide between synchronous and asynchronous replication given a target RPO\",\"diagnose stale reads after a write — likely replication lag without read-after-write handling\",\"explain the split-brain risk in multi-leader replication\"]"
-  anti_examples: "[\"horizontally partition data across nodes (use sharding-strategy)\",\"reason about the CAP theorem abstractly (use cap-theorem-tradeoffs)\",\"explain ACID properties (use acid-fundamentals)\"]"
+  anti_examples: "[\"horizontally partition data across nodes (use sharding-strategy)\",\"reason about the CAP theorem abstractly (use cap-theorem-tradeoffs)\",\"explain ACID properties (use transaction-isolation)\"]"
   mental_model: "|"
   purpose: "|"
   concept_boundary: "|"
@@ -33,7 +33,7 @@ metadata:
 
 **What it is NOT:** It is not sharding, which splits different data across nodes. It is not CAP theory itself, single-node ACID guarantees, isolation-level selection, query tuning, indexing, or backups.
 
-**Adjacent concepts:** `sharding-strategy` partitions data; `cap-theorem-tradeoffs` names the consistency/availability frame; `acid-fundamentals` and `transaction-isolation` describe local transaction guarantees; backup and restore practice protects against replicated corruption or deletion.
+**Adjacent concepts:** `sharding-strategy` partitions data; `cap-theorem-tradeoffs` names the consistency/availability frame; `transaction-isolation` and `transaction-isolation` describe local transaction guarantees; backup and restore practice protects against replicated corruption or deletion.
 
 **One-line analogy:** Replication is like keeping synchronized copies of a critical operations log in several control rooms: the system keeps working when one room fails, but everyone needs rules for who may write, how copies catch up, and who takes charge after an outage.
 
@@ -118,7 +118,7 @@ After applying this skill, verify:
 |---|---|---|
 | Horizontally partitioning data across nodes | `sharding-strategy` | sharding partitions data; replication copies it |
 | Reasoning about the CAP/PACELC theoretical frame | `cap-theorem-tradeoffs` | CAP names the trade-off; this skill realizes it |
-| Single-node transactional guarantees | `acid-fundamentals` | ACID is the single-system frame |
+| Single-node transactional guarantees | `transaction-isolation` | ACID is the single-system frame |
 | Choosing isolation levels | `transaction-isolation` | transaction-isolation owns concurrency; this owns multi-node |
 | Indexing | `indexing-strategy` | indexing is within-node retrieval |
 | Tuning a slow query | `query-optimization` | query-optimization is per-query |
@@ -144,7 +144,7 @@ After applying this skill, verify:
 - Subject: `data-engineering`
 - Public: `true`
 - Domain: `engineering/data`
-- Scope: Designing database replication topologies and operational guardrails for keeping multiple copies of the same data in agreement across nodes: single-leader, multi-leader, leaderless/quorum; synchronous, semi-synchronous, and asynchronous replication; log-shipping and statement/row/trigger/logical mechanisms; read-after-write mitigations; failover and split-brain prevention; conflict resolution; and backup-vs-replica boundaries. Portable across distributed database systems. Excludes horizontal partitioning across nodes (sharding-strategy), the abstract CAP/PACELC frame itself (cap-theorem-tradeoffs), single-node transaction guarantees (acid-fundamentals), isolation-level choice (transaction-isolation), and query/index tuning (query-optimization/indexing-strategy).
+- Scope: Designing database replication topologies and operational guardrails for keeping multiple copies of the same data in agreement across nodes: single-leader, multi-leader, leaderless/quorum; synchronous, semi-synchronous, and asynchronous replication; log-shipping and statement/row/trigger/logical mechanisms; read-after-write mitigations; failover and split-brain prevention; conflict resolution; and backup-vs-replica boundaries. Portable across distributed database systems. Excludes horizontal partitioning across nodes (sharding-strategy), the abstract CAP/PACELC frame itself (cap-theorem-tradeoffs), single-node transaction guarantees (transaction-isolation), isolation-level choice (transaction-isolation), and query/index tuning (query-optimization/indexing-strategy).
 
 **When to use**
 - design replication topology for a service with one region writing and three regions reading
@@ -156,11 +156,11 @@ After applying this skill, verify:
 **Not for**
 - horizontally partition data across nodes (use sharding-strategy)
 - reason about the CAP theorem abstractly (use cap-theorem-tradeoffs)
-- explain ACID properties (use acid-fundamentals)
+- explain ACID properties (use transaction-isolation)
 
 **Related skills**
 - Verify with: `transaction-isolation`, `cap-theorem-tradeoffs`, `sharding-strategy`
-- Related: `acid-fundamentals`, `query-optimization`, `indexing-strategy`, `cap-theorem-tradeoffs`, `sharding-strategy`, `transaction-isolation`
+- Related: `transaction-isolation`, `query-optimization`, `indexing-strategy`, `cap-theorem-tradeoffs`, `sharding-strategy`
 
 **Concept**
 - Mental model: |

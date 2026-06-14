@@ -10,7 +10,7 @@ metadata:
   public: "true"
   scope: "When to route work to GitHub Copilot and when not to: its metered cost model (premium requests pre-June-2026 with per-model multipliers; AI credits at 1 credit = $0.01 with token-based billing after the June 1 2026 shift), plan allowances and the no-rollover rule, the always-free completions/next-edit surface, what Copilot is good at (IDE-native completions + frontier-model chat) vs expensive at (agentic multi-file flows), and when a cheaper/free lane is preferable. Portable knowledge about a public product's published billing — no private budget config. Out: the OpenCode runtime (opencode), specific free-model choice (opencode-free-models), agent-loop authoring (autonomous-loop-patterns)."
   taxonomy_domain: agent/harness
-  stability: stable
+  stability: experimental
   keywords: "[\"github copilot\",\"copilot premium requests\",\"copilot ai credits\",\"copilot usage-based billing\",\"copilot pro vs pro plus\",\"when to use copilot\",\"copilot premium request cost\",\"copilot model multipliers\",\"cheaper lane than copilot\"]"
   examples: "[\"is this task worth spending a Copilot premium request on?\",\"how does Copilot's AI-credit billing work after June 2026?\",\"should I run this agent flow on Copilot or a free lane?\"]"
   anti_examples: "[\"how do I invoke the opencode CLI non-interactively?\",\"which free model fits this bulk job?\",\"how do I write the agent's retry loop?\"]"

@@ -332,7 +332,7 @@ Before any batch skill commit or public release, verify:
 | `code-review` | Reviewing a code change to the health-tooling scripts themselves |
 | `guardrails` | Designing the *runtime* defenses an agent applies while executing a skill (sandboxing, tool permissioning, exfiltration controls) — category 6 is the static library-entry scan, not the runtime guard |
 | `owasp-security` | Application-security threat modeling at depth beyond static skill-file pattern scanning |
-| `agent-eval-design` | Designing the eval cases, graders, and thresholds for the activation-level rubric (you build the cases there; infrastructure makes activations observable) |
+| `eval-driven-development` | Designing the eval cases, graders, and thresholds for the activation-level rubric (you build the cases there; infrastructure makes activations observable) |
 | `evaluation` | Scoring a completed audit or activation trace against evidence and deciding whether it is done |
 | `documentation` | Writing prose for a human reader explaining how the skill system works |
 | `testing-strategy` | Designing the test pyramid / trophy / honeycomb shape for a non-skill-library codebase |

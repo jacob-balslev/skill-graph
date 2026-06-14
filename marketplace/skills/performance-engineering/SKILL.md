@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Portable performance discipline for frontend, backend, databases, jobs, APIs, and agent tooling."
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"related\":[\"api-design\",\"data-modeling\",\"refactor\",\"observability-modeling\",\"testing-strategy\"],\"suppresses\":[\"testing-strategy\",\"error-tracking\"],\"verify_with\":[\"code-review\",\"observability-modeling\",\"connection-pooling\"]}"
+  relations: "{\"related\":[\"api-design\",\"entity-relationship-modeling\",\"refactor\",\"observability-modeling\",\"testing-strategy\"],\"suppresses\":[\"testing-strategy\",\"error-tracking\"],\"verify_with\":[\"code-review\",\"observability-modeling\",\"connection-pooling\"]}"
   subject: quality-assurance
   scope: "Measuring, diagnosing, budgeting, and improving performance — latency, throughput, Core Web Vitals, database queries, caching, bundle size, concurrency, resource use, and regression prevention. Portable across any system with performance goals; principle-grounded, not repo-bound. Excludes telemetry schema design alone (observability-modeling), error-capture setup (error-tracking), and premature micro-optimization without a measured bottleneck."
   public: "true"
@@ -91,7 +91,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/performance-e
 
 **Related skills**
 - Verify with: `code-review`, `observability-modeling`, `connection-pooling`
-- Related: `api-design`, `data-modeling`, `refactor`, `observability-modeling`, `testing-strategy`
+- Related: `api-design`, `entity-relationship-modeling`, `refactor`, `observability-modeling`, `testing-strategy`
 
 **Keywords**
 - `performance engineering`, `performance budget`, `profiling`, `latency`, `throughput`, `Core Web Vitals`, `database performance`, `caching`, `bundle size`, `performance regression`

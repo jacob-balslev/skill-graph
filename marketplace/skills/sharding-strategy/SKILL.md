@@ -4,7 +4,7 @@ description: "Use when reasoning about horizontal partitioning of data across no
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"related\":[\"replication-patterns\",\"cap-theorem-tradeoffs\",\"indexing-strategy\",\"data-modeling\",\"connection-pooling\"],\"suppresses\":[\"replication-patterns\",\"cap-theorem-tradeoffs\",\"indexing-strategy\"],\"verify_with\":[\"data-modeling\",\"replication-patterns\"]}"
+  relations: "{\"related\":[\"replication-patterns\",\"cap-theorem-tradeoffs\",\"indexing-strategy\",\"entity-relationship-modeling\",\"connection-pooling\"],\"suppresses\":[\"replication-patterns\",\"cap-theorem-tradeoffs\",\"indexing-strategy\"],\"verify_with\":[\"entity-relationship-modeling\",\"replication-patterns\"]}"
   subject: data-engineering
   public: "true"
   scope: "Teaches horizontal partitioning strategy for data systems: range, hash, and directory schemes; shard-key selection; hotspot and skew control; resharding and consistent hashing; cross-shard query and transaction trade-offs; and the distinction between partitioning data and replicating it. Portable across distributed storage systems. Excludes replica consistency, CAP/PACELC framing, single-node query tuning, and per-shard indexing."
@@ -31,7 +31,7 @@ Sharding (horizontal partitioning) is the discipline of dividing a database's da
 
 Replaces "scale vertically forever" with horizontal capacity for write throughput, storage, and geographic placement. Solves the problem that when write throughput exceeds the primary's capacity, when storage approaches the node's limit, or when geographic placement is regulatory or latency-driven, the simpler single-node tools — replication (scales reads), caching (reduces load), denormalization (eliminates joins), vertical scaling (adds capacity) — are no longer sufficient. Sharding is the *scaling tool of last resort* — reached for only when the simpler tools are exhausted, because it adds operational complexity proportional to the gain. The shard key is the most consequential design decision: a well-chosen key gives nearly linear scaling; a poorly-chosen key pays operational complexity without capacity gain — hotspots concentrate on one shard, common queries scatter-gather across all shards, transactions require two-phase commit and become slow and failure-prone. The schema must be designed *with sharding in mind from the start*, or significant refactoring is required when sharding is later introduced.
 
-Distinct from replication-patterns, which owns copying the *same* data across nodes for fault tolerance and read scaling; this skill owns dividing *different* data across nodes for write throughput and storage capacity. The two compose in production because each shard is usually replicated, but they answer different questions. It is also distinct from cap-theorem-tradeoffs, indexing-strategy, data-modeling, query-optimization, and acid-fundamentals; those skills own the theory frame, within-shard retrieval, schema design, single-query tuning, and single-system transactions respectively.
+Distinct from replication-patterns, which owns copying the *same* data across nodes for fault tolerance and read scaling; this skill owns dividing *different* data across nodes for write throughput and storage capacity. The two compose in production because each shard is usually replicated, but they answer different questions. It is also distinct from cap-theorem-tradeoffs, indexing-strategy, entity-relationship-modeling, query-optimization, and transaction-isolation; those skills own the theory frame, within-shard retrieval, schema design, single-query tuning, and single-system transactions respectively.
 
 ## Coverage
 
@@ -125,8 +125,8 @@ After applying this skill, verify:
 | The CAP / PACELC theoretical frame | `cap-theorem-tradeoffs` | CAP names the trade-off |
 | Tuning a slow query | `query-optimization` | query-optimization is single-query |
 | Designing indexes within a shard | `indexing-strategy` | indexing is within-node |
-| Designing schema | `data-modeling` | data-modeling is the schema design; this is the partitioning of the schema |
-| Single-node transactional behavior | `acid-fundamentals` | ACID is the single-system frame |
+| Designing schema | `entity-relationship-modeling` | entity-relationship-modeling is the schema design; this is the partitioning of the schema |
+| Single-node transactional behavior | `transaction-isolation` | ACID is the single-system frame |
 
 ## Key Sources
 
@@ -164,8 +164,8 @@ After applying this skill, verify:
 - design indexes within one shard (use indexing-strategy)
 
 **Related skills**
-- Verify with: `data-modeling`, `replication-patterns`
-- Related: `replication-patterns`, `cap-theorem-tradeoffs`, `indexing-strategy`, `data-modeling`, `connection-pooling`
+- Verify with: `entity-relationship-modeling`, `replication-patterns`
+- Related: `replication-patterns`, `cap-theorem-tradeoffs`, `indexing-strategy`, `entity-relationship-modeling`, `connection-pooling`
 
 **Concept**
 - Mental model: |

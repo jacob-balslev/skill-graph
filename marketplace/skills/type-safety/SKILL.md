@@ -1,19 +1,19 @@
 ---
 name: type-safety
-description: "Use when reasoning about types as a quality property of code: what guarantees the type system actually provides, the difference between sound and unsound systems, structural vs nominal typing, type narrowing and exhaustiveness, the runtime/compile-time boundary, and where validation must happen because the type system cannot. Covers TypeScript, Flow, Hindley-Milner languages, and gradual typing in general. Do NOT use for runtime input validation library choice (use api-design for API surface validation; use individual library docs for library mechanics), for SQL type mapping (use data-modeling), or for type system implementation (compilers — out of scope). Do NOT use for implement HMAC verification for an inbound webhook (use webhook-integration). Do NOT use for design the JSON shape of an API endpoint (use api-design)."
+description: "Use when reasoning about types as a quality property of code: what guarantees the type system actually provides, the difference between sound and unsound systems, structural vs nominal typing, type narrowing and exhaustiveness, the runtime/compile-time boundary, and where validation must happen because the type system cannot. Covers TypeScript, Flow, Hindley-Milner languages, and gradual typing in general. Do NOT use for runtime input validation library choice (use api-design for API surface validation; use individual library docs for library mechanics), for SQL type mapping (use entity-relationship-modeling), or for type system implementation (compilers — out of scope). Do NOT use for implement HMAC verification for an inbound webhook (use webhook-integration). Do NOT use for design the JSON shape of an API endpoint (use api-design)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"related\":[\"data-modeling\",\"api-design\",\"testing-strategy\",\"code-review\",\"prompt-injection-defense\"],\"suppresses\":[\"testing-strategy\"],\"verify_with\":[\"code-review\",\"testing-strategy\",\"client-server-boundary\"]}"
+  relations: "{\"related\":[\"entity-relationship-modeling\",\"api-design\",\"testing-strategy\",\"code-review\",\"prompt-injection-defense\"],\"suppresses\":[\"testing-strategy\"],\"verify_with\":[\"code-review\",\"testing-strategy\",\"client-server-boundary\"]}"
   subject: quality-assurance
   public: "true"
-  scope: "Use when reasoning about types as a quality property of code: what guarantees the type system actually provides, the difference between sound and unsound systems, structural vs nominal typing, type narrowing and exhaustiveness, the runtime/compile-time boundary, and where validation must happen because the type system cannot. Covers TypeScript, Flow, Hindley-Milner languages, and gradual typing in general. Do NOT use for runtime input validation library choice (use api-design for API surface validation; use individual library docs for library mechanics), for SQL type mapping (use data-modeling), or for type system implementation (compilers — out of scope)."
+  scope: "Use when reasoning about types as a quality property of code: what guarantees the type system actually provides, the difference between sound and unsound systems, structural vs nominal typing, type narrowing and exhaustiveness, the runtime/compile-time boundary, and where validation must happen because the type system cannot. Covers TypeScript, Flow, Hindley-Milner languages, and gradual typing in general. Do NOT use for runtime input validation library choice (use api-design for API surface validation; use individual library docs for library mechanics), for SQL type mapping (use entity-relationship-modeling), or for type system implementation (compilers — out of scope)."
   taxonomy_domain: quality/types
   stability: experimental
   keywords: "[\"type safety\",\"TypeScript\",\"sound type system\",\"unsound type system\",\"structural typing\",\"nominal typing\",\"type narrowing\",\"exhaustiveness check\",\"gradual typing\",\"runtime boundary\"]"
   triggers: "[\"is this type-safe\",\"should this be `any` or `unknown`\",\"exhaustiveness check\",\"narrowing\",\"where does validation belong\"]"
   examples: "[\"review whether this discriminated union has an exhaustiveness check at the switch\",\"decide whether to use `any` or `unknown` for this third-party JSON payload\",\"explain why TypeScript's `as` cast doesn't actually validate at runtime\",\"design where Zod (or any validator) parses at the application boundary\"]"
-  anti_examples: "[\"implement HMAC verification for an inbound webhook (use webhook-integration)\",\"design the JSON shape of an API endpoint (use api-design)\",\"choose between Postgres column types (use data-modeling)\"]"
+  anti_examples: "[\"implement HMAC verification for an inbound webhook (use webhook-integration)\",\"design the JSON shape of an API endpoint (use api-design)\",\"choose between Postgres column types (use entity-relationship-modeling)\"]"
   mental_model: "|"
   purpose: "|"
   concept_boundary: "|"
@@ -32,7 +32,7 @@ Two-layer model: a compile-time layer where the type checker verifies internal c
 
 Distinguishes a syntactic claim from a semantic guarantee. Without type-safety as a discipline (not just a compiler flag), `JSON.parse(x) as User` looks identical to a validated parse — the cast is decoration, not verification. The alternative — "the compiler said it was fine, so it's fine" — fails because gradual systems like TypeScript are unsound by design (escape hatches: `any`, `as`, function bivariance, ambient declarations) and untrusted input arrives un-typed regardless of what annotation sits next to it. Type-safety replaces the "compiler-blessed" mental model with "compile-time guarantees stop at the I/O boundary, runtime validation takes over there."
 
-Distinct from api-design, which owns the external request/response surface shape — type-safety owns the discipline of expressing internal program correctness as types, and where the type system stops at the boundary api-design defines. Distinct from testing-strategy, which owns runtime verification of behavior — type-safety owns compile-time verification of structure, and the two cover different failure modes (a function can be type-safe and behaviorally wrong, or behaviorally correct and type-unsafe). Distinct from data-modeling, which owns persistence and entity shape — type-safety owns the in-memory type contracts that consume that shape. Distinct from input validation libraries (Zod, Yup, io-ts), which provide the runtime parsing mechanism — type-safety is the discipline that decides *where* parsing must happen because the type system cannot. Type safety is to programs what a passport check is to international travel — the document (type annotation) certifies identity within the issuing country's records, but on the way through customs (the I/O boundary), the document is re-verified against the actual traveler, and any mismatch is rejected before they enter the trusted zone. The wrong mental model is that a TypeScript `as` cast is a form of validation. It is not. The cast is a programmer-asserted claim that compiles unchecked at runtime, and `JSON.parse(x) as User` produces a value typed as User with zero verification that it actually has the fields a User must have. The misconception conflates two layers — the compile-time claim (which the compiler accepts) and the runtime guarantee (which the cast does nothing to establish). The discipline is to use runtime validators (Zod, io-ts, manual parse functions) at every I/O boundary and treat `as` as an explicit, justified, rare escape hatch — not as the default way to silence a type error.
+Distinct from api-design, which owns the external request/response surface shape — type-safety owns the discipline of expressing internal program correctness as types, and where the type system stops at the boundary api-design defines. Distinct from testing-strategy, which owns runtime verification of behavior — type-safety owns compile-time verification of structure, and the two cover different failure modes (a function can be type-safe and behaviorally wrong, or behaviorally correct and type-unsafe). Distinct from entity-relationship-modeling, which owns persistence and entity shape — type-safety owns the in-memory type contracts that consume that shape. Distinct from input validation libraries (Zod, Yup, io-ts), which provide the runtime parsing mechanism — type-safety is the discipline that decides *where* parsing must happen because the type system cannot. Type safety is to programs what a passport check is to international travel — the document (type annotation) certifies identity within the issuing country's records, but on the way through customs (the I/O boundary), the document is re-verified against the actual traveler, and any mismatch is rejected before they enter the trusted zone. The wrong mental model is that a TypeScript `as` cast is a form of validation. It is not. The cast is a programmer-asserted claim that compiles unchecked at runtime, and `JSON.parse(x) as User` produces a value typed as User with zero verification that it actually has the fields a User must have. The misconception conflates two layers — the compile-time claim (which the compiler accepts) and the runtime guarantee (which the cast does nothing to establish). The discipline is to use runtime validators (Zod, io-ts, manual parse functions) at every I/O boundary and treat `as` as an explicit, justified, rare escape hatch — not as the default way to silence a type error.
 
 ## Coverage
 
@@ -183,7 +183,7 @@ After applying this skill, verify:
 |---|---|---|
 | Designing the JSON shape of an API endpoint | `api-design` | api-design owns the external surface contract; this skill owns internal type discipline |
 | Verifying behavior at runtime with tests | `testing-strategy` | testing-strategy owns runtime verification; this skill owns compile-time |
-| Designing database schema and column types | `data-modeling` | data-modeling owns persistence shape; this skill owns in-memory type contracts |
+| Designing database schema and column types | `entity-relationship-modeling` | entity-relationship-modeling owns persistence shape; this skill owns in-memory type contracts |
 | Choosing between Zod / io-ts / valibot | individual library docs + `api-design` | Library choice is a tactical decision below this skill |
 | Implementing the compiler / type-checker | language compiler implementation references | Out of scope — this skill is about *using* type systems, not building them |
 
@@ -204,7 +204,7 @@ After applying this skill, verify:
 - Subject: `quality-assurance`
 - Public: `true`
 - Domain: `quality/types`
-- Scope: Use when reasoning about types as a quality property of code: what guarantees the type system actually provides, the difference between sound and unsound systems, structural vs nominal typing, type narrowing and exhaustiveness, the runtime/compile-time boundary, and where validation must happen because the type system cannot. Covers TypeScript, Flow, Hindley-Milner languages, and gradual typing in general. Do NOT use for runtime input validation library choice (use api-design for API surface validation; use individual library docs for library mechanics), for SQL type mapping (use data-modeling), or for type system implementation (compilers — out of scope).
+- Scope: Use when reasoning about types as a quality property of code: what guarantees the type system actually provides, the difference between sound and unsound systems, structural vs nominal typing, type narrowing and exhaustiveness, the runtime/compile-time boundary, and where validation must happen because the type system cannot. Covers TypeScript, Flow, Hindley-Milner languages, and gradual typing in general. Do NOT use for runtime input validation library choice (use api-design for API surface validation; use individual library docs for library mechanics), for SQL type mapping (use entity-relationship-modeling), or for type system implementation (compilers — out of scope).
 
 **When to use**
 - review whether this discriminated union has an exhaustiveness check at the switch
@@ -216,11 +216,11 @@ After applying this skill, verify:
 **Not for**
 - implement HMAC verification for an inbound webhook (use webhook-integration)
 - design the JSON shape of an API endpoint (use api-design)
-- choose between Postgres column types (use data-modeling)
+- choose between Postgres column types (use entity-relationship-modeling)
 
 **Related skills**
 - Verify with: `code-review`, `testing-strategy`, `client-server-boundary`
-- Related: `data-modeling`, `api-design`, `testing-strategy`, `code-review`, `prompt-injection-defense`
+- Related: `entity-relationship-modeling`, `api-design`, `testing-strategy`, `code-review`, `prompt-injection-defense`
 
 **Concept**
 - Mental model: |

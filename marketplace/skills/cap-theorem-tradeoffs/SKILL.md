@@ -1,19 +1,19 @@
 ---
 name: cap-theorem-tradeoffs
-description: "Use when reasoning about the consistency-availability-partition-tolerance trade-off for distributed data systems: Brewer's CAP conjecture (2000), Gilbert & Lynch's 2002 formal proof, why P is not optional in any real distributed system, the CP-vs-AP dichotomy that follows, PACELC as the extension that names the latency-vs-consistency trade-off that exists even without partition, the relationship between CAP's C and ACID's C (different concepts with the same letter), and the choice procedure of naming what the system must guarantee under partition. Do NOT use for single-node transactional guarantees (use acid-fundamentals), choosing an isolation level (use transaction-isolation), the design of replication topologies (use replication-patterns), or sharding decisions (use sharding-strategy)."
+description: "Use when reasoning about the consistency-availability-partition-tolerance trade-off for distributed data systems: Brewer's CAP conjecture (2000), Gilbert & Lynch's 2002 formal proof, why P is not optional in any real distributed system, the CP-vs-AP dichotomy that follows, PACELC as the extension that names the latency-vs-consistency trade-off that exists even without partition, the relationship between CAP's C and ACID's C (different concepts with the same letter), and the choice procedure of naming what the system must guarantee under partition. Do NOT use for single-node transactional guarantees (use transaction-isolation), choosing an isolation level (use transaction-isolation), the design of replication topologies (use replication-patterns), or sharding decisions (use sharding-strategy)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"related\":[\"transaction-isolation\",\"acid-fundamentals\",\"replication-patterns\",\"sharding-strategy\"],\"suppresses\":[\"replication-patterns\",\"sharding-strategy\"],\"verify_with\":[\"acid-fundamentals\",\"replication-patterns\"]}"
+  relations: "{\"related\":[\"transaction-isolation\",\"transaction-isolation\",\"replication-patterns\",\"sharding-strategy\"],\"suppresses\":[\"replication-patterns\",\"sharding-strategy\"],\"verify_with\":[\"transaction-isolation\",\"replication-patterns\"]}"
   subject: data-engineering
-  scope: "The consistency-availability-partition-tolerance trade-off for distributed data systems — Brewer's CAP conjecture (2000), Gilbert & Lynch's 2002 proof, why P is not optional, the CP-vs-AP dichotomy, PACELC as the latency-vs-consistency extension that holds even without partition, the CAP-C vs ACID-C distinction, and the choice procedure of naming what the system must guarantee under partition. Portable across any distributed data system; principle-grounded, not repo-bound. Excludes single-node transactional guarantees (acid-fundamentals), choosing an isolation level (transaction-isolation), replication topology design (replication-patterns), and sharding decisions (sharding-strategy)."
+  scope: "The consistency-availability-partition-tolerance trade-off for distributed data systems — Brewer's CAP conjecture (2000), Gilbert & Lynch's 2002 proof, why P is not optional, the CP-vs-AP dichotomy, PACELC as the latency-vs-consistency extension that holds even without partition, the CAP-C vs ACID-C distinction, and the choice procedure of naming what the system must guarantee under partition. Portable across any distributed data system; principle-grounded, not repo-bound. Excludes single-node transactional guarantees (transaction-isolation), choosing an isolation level (transaction-isolation), replication topology design (replication-patterns), and sharding decisions (sharding-strategy)."
   public: "true"
   taxonomy_domain: engineering/data
   stability: experimental
   keywords: "[\"CAP theorem\",\"Brewer\",\"Gilbert Lynch\",\"consistency availability partition\",\"CP system\",\"AP system\",\"PACELC\",\"eventual consistency\",\"linearizability\",\"distributed system\"]"
   triggers: "[\"CAP theorem\",\"CP or AP\",\"what should we do on partition\",\"is this strongly consistent\",\"PACELC\"]"
   examples: "[\"decide whether a new distributed service should be CP or AP given its workload\",\"explain why CAP's C and ACID's C are different concepts despite sharing the letter\",\"diagnose a system claiming 'CA' (consistency + availability without P) — likely confused, since P is not optional\",\"design the partition-mode behavior of a multi-region service\"]"
-  anti_examples: "[\"choose a transaction isolation level (use transaction-isolation)\",\"explain the four ACID properties (use acid-fundamentals)\",\"design the replication topology of a database (use replication-patterns)\"]"
+  anti_examples: "[\"choose a transaction isolation level (use transaction-isolation)\",\"explain the four ACID properties (use transaction-isolation)\",\"design the replication topology of a database (use replication-patterns)\"]"
   mental_model: "|"
   purpose: "|"
   concept_boundary: "|"
@@ -124,7 +124,7 @@ After applying this skill, verify:
 
 | Instead of this skill | Use | Why |
 |---|---|---|
-| Reasoning about single-node transactional guarantees | `acid-fundamentals` | acid-fundamentals owns single-system; this owns distributed |
+| Reasoning about single-node transactional guarantees | `transaction-isolation` | transaction-isolation owns single-system; this owns distributed |
 | Choosing an isolation level for concurrent transactions | `transaction-isolation` | transaction-isolation owns single-cluster concurrency |
 | Designing replication topology (primary-replica, multi-primary, etc.) | `replication-patterns` | replication-patterns owns the operational realization of CAP choices |
 | Sharding decisions for horizontal scaling | `sharding-strategy` | sharding owns horizontal partitioning; this owns the consistency frame across shards |
@@ -151,7 +151,7 @@ After applying this skill, verify:
 - Subject: `data-engineering`
 - Public: `true`
 - Domain: `engineering/data`
-- Scope: The consistency-availability-partition-tolerance trade-off for distributed data systems — Brewer's CAP conjecture (2000), Gilbert & Lynch's 2002 proof, why P is not optional, the CP-vs-AP dichotomy, PACELC as the latency-vs-consistency extension that holds even without partition, the CAP-C vs ACID-C distinction, and the choice procedure of naming what the system must guarantee under partition. Portable across any distributed data system; principle-grounded, not repo-bound. Excludes single-node transactional guarantees (acid-fundamentals), choosing an isolation level (transaction-isolation), replication topology design (replication-patterns), and sharding decisions (sharding-strategy).
+- Scope: The consistency-availability-partition-tolerance trade-off for distributed data systems — Brewer's CAP conjecture (2000), Gilbert & Lynch's 2002 proof, why P is not optional, the CP-vs-AP dichotomy, PACELC as the latency-vs-consistency extension that holds even without partition, the CAP-C vs ACID-C distinction, and the choice procedure of naming what the system must guarantee under partition. Portable across any distributed data system; principle-grounded, not repo-bound. Excludes single-node transactional guarantees (transaction-isolation), choosing an isolation level (transaction-isolation), replication topology design (replication-patterns), and sharding decisions (sharding-strategy).
 
 **When to use**
 - decide whether a new distributed service should be CP or AP given its workload
@@ -162,12 +162,12 @@ After applying this skill, verify:
 
 **Not for**
 - choose a transaction isolation level (use transaction-isolation)
-- explain the four ACID properties (use acid-fundamentals)
+- explain the four ACID properties (use transaction-isolation)
 - design the replication topology of a database (use replication-patterns)
 
 **Related skills**
-- Verify with: `acid-fundamentals`, `replication-patterns`
-- Related: `transaction-isolation`, `acid-fundamentals`, `replication-patterns`, `sharding-strategy`
+- Verify with: `transaction-isolation`, `replication-patterns`
+- Related: `transaction-isolation`, `replication-patterns`, `sharding-strategy`
 
 **Concept**
 - Mental model: |

@@ -1,19 +1,19 @@
 ---
 name: contract-testing
-description: "Use when verifying the interface between two services or components by capturing the consumer's expectations as a contract artifact and verifying the provider satisfies it. Covers the consumer-driven contracts pattern (Fowler 2006; Pact), the contrast with schema-only validation (OpenAPI/JSON Schema captures shape, not behavioral expectations), the broker as the integration point between consumer and provider deploy schedules, two-phase verification (consumer-side mocks; provider-side replay), the difference between contract testing (verifies the interface) and integration testing (verifies the implementation through it), and how contract tests replace brittle cross-service e2e. Do NOT use for in-system integration (use `integration-test-design`), full user-journey testing (use `e2e-test-design`), single-unit testing (use `testing-strategy` + `test-doubles-design`), or pure OpenAPI schema validation (API-spec tooling). Do NOT use for test internal seams of a system (use integration-test-design)."
+description: "Contract testing: interface verification between consumers and providers via shared contract artifacts and independent two-phase verification. Do NOT use for Test internal seams of a system (use integration-test-design). Do NOT use for Validate an HTTP response against an OpenAPI schema (use API-spec tooling). Do NOT use for Test a complete user journey through the UI (use e2e-test-design)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"related\":[\"event-contract-design\",\"system-interface-contracts\",\"testing-strategy\",\"integration-test-design\",\"e2e-test-design\",\"api-design\"],\"suppresses\":[\"integration-test-design\",\"e2e-test-design\"],\"verify_with\":[\"api-design\",\"integration-test-design\",\"testing-strategy\"]}"
   subject: quality-assurance
-  scope: "Teaching contract testing as a portable interface-verification technique for consumer-driven contracts, provider replay, broker-backed deploy gates, API-spec-driven contract checks, and schema-versus-behavior boundaries."
   public: "true"
+  scope: "Teaching contract testing as a portable interface-verification technique for consumer-driven contracts, provider replay, broker-backed deploy gates, API-spec-driven contract checks, and schema-versus-behavior boundaries."
   taxonomy_domain: quality/testing
   stability: stable
   keywords: "[\"contract testing\",\"consumer-driven contracts\",\"Pact\",\"Spring Cloud Contract\",\"Specmatic\",\"contract broker\",\"provider verification\",\"consumer test\",\"CDC\",\"OpenAPI conformance\"]"
   triggers: "[\"should this be a contract test or an integration test\",\"Pact vs OpenAPI\",\"how do we decouple deploys between services\",\"the consumer broke when the provider changed\",\"should we e2e test across services\"]"
-  examples: "[\"design a consumer-driven contract test between a frontend and a backend service\",\"decide whether to use Pact or schema-only validation for a new API\",\"diagnose a contract test that passes consumer-side but fails provider-side — implementation drift\",\"explain how the contract broker decouples deploy schedules between consumer and provider teams\"]"
-  anti_examples: "[\"test internal seams of a system (use integration-test-design)\",\"validate an HTTP response against an OpenAPI schema (use API-spec tooling)\",\"test a complete user journey through the UI (use e2e-test-design)\"]"
+  examples: "[\"Design a consumer-driven contract test between a frontend and a backend service.\",\"Decide whether to use Pact or schema-only validation for a new API.\",\"Diagnose a contract test that passes consumer-side but fails provider-side — implementation drift.\",\"Explain how the contract broker decouples deploy schedules between consumer and provider teams.\"]"
+  anti_examples: "[\"Test internal seams of a system (use integration-test-design).\",\"Validate an HTTP response against an OpenAPI schema (use API-spec tooling).\",\"Test a complete user journey through the UI (use e2e-test-design).\"]"
+  relations: "{\"related\":[\"event-contract-design\",\"system-interface-contracts\",\"testing-strategy\",\"integration-test-design\",\"e2e-test-design\",\"api-design\"],\"suppresses\":[{\"skill\":\"integration-test-design\",\"reason\":\"contract-testing owns interface verification; integration-test-design owns internal behavior testing\"},{\"skill\":\"e2e-test-design\",\"reason\":\"contract-testing replaces cross-service e2e tests for boundary verification\"}],\"verify_with\":[\"api-design\",\"integration-test-design\",\"testing-strategy\"]}"
   grounding: "{\"subject_matter\":\"Consumer-driven and API-spec-driven contract testing for service, API, and message compatibility.\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://martinfowler.com/articles/consumerDrivenContracts.html\",\"https://docs.pact.io/implementation_guides/javascript/docs/provider\",\"https://docs.pact.io/pact_broker\",\"https://docs.pact.io/pact_broker/can_i_deploy\",\"https://docs.spring.io/spring-cloud-contract/docs/current/reference/html/index.html\",\"https://docs.specmatic.io/contract_driven_development/contract_testing\",\"skills/quality-assurance/contract-testing/references/upstream-displacement-2026-06-09.md\"],\"failure_modes\":[\"pact_used_as_mock_library_only\",\"schema_validation_treated_as_behavior_contract\",\"broker_or_verification_results_omitted\",\"provider_replay_not_run_against_real_provider\",\"contract_tests_replacing_in_service_integration_tests\",\"cross_service_e2e_kept_as_primary_boundary_check\"],\"evidence_priority\":\"equal\"}"
   mental_model: "|"
   purpose: "|"
@@ -24,7 +24,6 @@ metadata:
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/contract-testing/SKILL.md
   skill_graph_export_description_projection: anti_examples
-  skill_graph_export_description_projection_truncated: "true"
 ---
 ## Concept of the skill
 
@@ -161,16 +160,18 @@ After applying this skill, verify:
 - Scope: Teaching contract testing as a portable interface-verification technique for consumer-driven contracts, provider replay, broker-backed deploy gates, API-spec-driven contract checks, and schema-versus-behavior boundaries.
 
 **When to use**
-- design a consumer-driven contract test between a frontend and a backend service
-- decide whether to use Pact or schema-only validation for a new API
-- diagnose a contract test that passes consumer-side but fails provider-side — implementation drift
-- explain how the contract broker decouples deploy schedules between consumer and provider teams
+- Design a consumer-driven contract test between a frontend and a backend service.
+- Decide whether to use Pact or schema-only validation for a new API.
+- Diagnose a contract test that passes consumer-side but fails provider-side — implementation drift.
+- Explain how the contract broker decouples deploy schedules between consumer and provider teams.
 - Triggers: `should this be a contract test or an integration test`, `Pact vs OpenAPI`, `how do we decouple deploys between services`, `the consumer broke when the provider changed`, `should we e2e test across services`
 
 **Not for**
-- test internal seams of a system (use integration-test-design)
-- validate an HTTP response against an OpenAPI schema (use API-spec tooling)
-- test a complete user journey through the UI (use e2e-test-design)
+- Test internal seams of a system (use integration-test-design).
+- Validate an HTTP response against an OpenAPI schema (use API-spec tooling).
+- Test a complete user journey through the UI (use e2e-test-design).
+- Owned by `integration-test-design`: interface verification
+- Owned by `e2e-test-design`
 
 **Related skills**
 - Verify with: `api-design`, `integration-test-design`, `testing-strategy`

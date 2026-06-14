@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Portable database connection-pooling guidance. Pool limits, driver defaults, and proxy features vary by database, driver, cloud provider, and PgBouncer/proxy version; verify production behavior against the target stack."
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"related\":[\"indexing-strategy\",\"sharding-strategy\",\"query-optimization\",\"replication-patterns\",\"transaction-isolation\",\"acid-fundamentals\",\"background-jobs\",\"streaming-architecture\",\"performance-engineering\"],\"suppresses\":[\"transaction-isolation\",\"acid-fundamentals\",\"background-jobs\",\"streaming-architecture\"],\"verify_with\":[\"replication-patterns\",\"performance-engineering\",\"query-optimization\",\"transaction-isolation\"]}"
+  relations: "{\"related\":[\"indexing-strategy\",\"sharding-strategy\",\"query-optimization\",\"replication-patterns\",\"transaction-isolation\",\"transaction-isolation\",\"background-jobs\",\"streaming-architecture\",\"performance-engineering\"],\"suppresses\":[\"transaction-isolation\",\"transaction-isolation\",\"background-jobs\",\"streaming-architecture\"],\"verify_with\":[\"replication-patterns\",\"performance-engineering\",\"query-optimization\",\"transaction-isolation\"]}"
   subject: backend-engineering
   scope: "How an application manages its database connections — the server-side cost of a connection, application-level pools (HikariCP, pgx, node-postgres) vs proxy-level pools (PgBouncer, Pgpool, ProxySQL), the three PgBouncer modes (session/transaction/statement) and their feature compatibility, the pool-sizing math (Little's Law applied to database concurrency), the failure modes (connection exhaustion, hot-loop reconnects, prepared-statement breakage under transaction pooling, idle-in-transaction leaks), and the diagnostic procedure for connection contention. Portable across any DB-backed application; principle-grounded, not repo-bound. Excludes query-level performance (query-optimization), index design (indexing-strategy), read/write replica routing (replication-patterns), and cross-shard coordination (sharding-strategy)."
   public: "true"
@@ -121,7 +121,7 @@ After applying this skill, verify:
 | Routing reads vs writes across replicas | `replication-patterns` | replication-patterns owns the routing layer above pooling |
 | Partitioning data across shards | `sharding-strategy` | sharding-strategy owns the data-partition layer; pooling sits beneath it per shard |
 | Choosing transaction isolation level | `transaction-isolation` | isolation owns the per-transaction concurrency contract |
-| Designing the schema | `data-modeling` | data-modeling owns design; pooling is operational |
+| Designing the schema | `entity-relationship-modeling` | entity-relationship-modeling owns design; pooling is operational |
 
 ## Key Sources
 
@@ -159,7 +159,7 @@ After applying this skill, verify:
 
 **Related skills**
 - Verify with: `replication-patterns`, `performance-engineering`, `query-optimization`, `transaction-isolation`
-- Related: `indexing-strategy`, `sharding-strategy`, `query-optimization`, `replication-patterns`, `transaction-isolation`, `acid-fundamentals`, `background-jobs`, `streaming-architecture`, `performance-engineering`
+- Related: `indexing-strategy`, `sharding-strategy`, `query-optimization`, `replication-patterns`, `transaction-isolation`, `background-jobs`, `streaming-architecture`, `performance-engineering`
 
 **Concept**
 - Mental model: |

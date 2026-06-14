@@ -1,6 +1,6 @@
 # Skill Graph — Generated Status
 
-> **Generated:** 2026-06-14T06:02:26.428Z
+> **Generated:** 2026-06-14T14:30:41.829Z
 > **Generator:** `node scripts/build-status-doc.js` (regenerate; never hand-edit)
 >
 > This file is the single-source-of-truth status snapshot for the project's
@@ -16,19 +16,19 @@
 | Package version | `0.5.10` | `package.json` |
 | Node engine | `>=20.0.0` | `package.json` |
 | Active schema version | `v8` | `schemas/skill-audit-state.schema.json` (moved from frontmatter schema per ADR-0019) |
-| Skill count (manifest) | `183` | `skills.manifest.json` |
-| Upstream-displacement coverage | `31` / `183` (17%) | skills with a `references/upstream-*.md` artifact (per `skill-audit-loop/SKILL_AUDIT_LOOP.md` § 6-displacement) |
+| Skill count (manifest) | `181` | `skills.manifest.json` |
+| Upstream-displacement coverage | `31` / `181` (17%) | skills with a `references/upstream-*.md` artifact (per `skill-audit-loop/SKILL_AUDIT_LOOP.md` § 6-displacement) |
 | Mirror status | docs-only mirrors per ADR 0009 (2026-05-18) | `docs/adr/0009-sibling-repo-deprecation.md` |
 
 ## Checks
 
 | Check | Status | Duration | Last line |
 |---|---|---|---|
-| check-markdown-links | ✅ PASS | 328 ms | OK   markdown links (1646 file(s)) |
-| check-protocol-consistency | ✅ PASS | 124 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
-| check-doc-drift | ✅ PASS | 228 ms | OK   doc drift sentinel: 88 active doc(s) scanned against schema v8 |
-| check-mirror-freeze | ✅ PASS | 49 ms | OK   mirror freeze: 20 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
-| marketplace-export-check | ✅ PASS | 227 ms | PROJECTION TRUNCATED for writing-humanizer: tail truncated from 503 to 465 chars to fit 1024 limit |
+| check-markdown-links | ✅ PASS | 502 ms | OK   markdown links (1644 file(s)) |
+| check-protocol-consistency | ✅ PASS | 118 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
+| check-doc-drift | ✅ PASS | 432 ms | OK   doc drift sentinel: 88 active doc(s) scanned against schema v8 |
+| check-mirror-freeze | ✅ PASS | 47 ms | OK   mirror freeze: 20 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
+| marketplace-export-check | ✅ PASS | 196 ms | PROJECTION TRUNCATED for writing-humanizer: tail truncated from 503 to 465 chars to fit 1024 limit |
 
 ## Audit Health
 
@@ -38,14 +38,14 @@
 
 | State | Count | What it means |
 |---|---|---|
-| Admitted | `83` / `183` | Structural + truth verdicts both PASS — skill is eligible for quality assessment. |
+| Admitted | `81` / `181` | Structural + truth verdicts both PASS — skill is eligible for quality assessment. |
 | Not admitted | `100` | Structural or truth gate failing — skill is not yet eligible. |
 
 Per-verdict breakdown:
 
 | Verdict | structural | truth |
 |---|---|---|
-| PASS | `183` | `83` |
+| PASS | `181` | `81` |
 | PASS_WITH_FIXES | `0` | — |
 | FAIL | `0` | — |
 | DRIFT | — | `2` |
@@ -56,7 +56,7 @@ Per-verdict breakdown:
 
 | State | Count | Confidence tier |
 |---|---|---|
-| Admitted, unassessed | `75` | No gate 9 run — `pending — eligible only` |
+| Admitted, unassessed | `73` | No gate 9 run — `pending — eligible only` |
 | Assessed (provisional) | `6` | Single-model assessment — awaiting dual-run grader |
 | Assessed (graded) | `2` | Dual-run grader confirmed |
 
@@ -64,9 +64,9 @@ Comprehension carve-out (per ADR-0011 § Addendum 2026-05-20):
 
 | State | Count | Note |
 |---|---|---|
-| Framework concept or no comprehension layer (`SKIPPED_BASELINE_HIGH` / `NA`) | `22` | Comprehension legitimately does not apply — model already knows the concept or the skill ships none. |
+| Framework concept or no comprehension layer (`SKIPPED_BASELINE_HIGH` / `NA`) | `21` | Comprehension legitimately does not apply — model already knows the concept or the skill ships none. |
 | Comprehension graded | `6` | Comprehension grader produced a real verdict. |
-| Comprehension unassessed | `155` | Repo-specific skill awaiting gate-8 run. |
+| Comprehension unassessed | `154` | Repo-specific skill awaiting gate-8 run. |
 
 ### Certification (the only number worth bragging about)
 
@@ -80,7 +80,7 @@ Comprehension carve-out (per ADR-0011 § Addendum 2026-05-20):
 | MIXED (delta varies by case) | `2` |
 | FALSE_POSITIVE (skill over-triggers) | `0` |
 | HARMFUL (makes agents worse) | `0` |
-| UNVERIFIED (no assessment) | `169` |
+| UNVERIFIED (no assessment) | `167` |
 
 ## Deprecated-alias drain
 
@@ -88,11 +88,11 @@ Comprehension carve-out (per ADR-0011 § Addendum 2026-05-20):
 
 | Deprecated alias | Canonical | Corpus usage | State |
 |---|---|---|---|
-| `relations.boundary` | `relations.suppresses` | `0` / `183` | **REMOVED FROM SCHEMA** — corpus usage is zero; runtime read fallbacks, if any, are compatibility-only |
-| `relations.adjacent` | `relations.related` | `0` / `183` | **REMOVED FROM SCHEMA** — corpus usage is zero; runtime read fallbacks, if any, are compatibility-only |
-| `boundary (top-level Understanding)` | `concept_boundary` | `0` / `183` | **REMOVED FROM SCHEMA** — corpus usage is zero; runtime read fallbacks, if any, are compatibility-only |
-| `compatibility.runtimes` | `compatibility.agent_runtimes` | `0` / `183` | **REMOVED FROM SCHEMA** — corpus usage is zero; runtime read fallbacks, if any, are compatibility-only |
-| `compatibility.node` | `compatibility.node_version` | `0` / `183` | **REMOVED FROM SCHEMA** — corpus usage is zero; runtime read fallbacks, if any, are compatibility-only |
+| `relations.boundary` | `relations.suppresses` | `0` / `181` | **REMOVED FROM SCHEMA** — corpus usage is zero; runtime read fallbacks, if any, are compatibility-only |
+| `relations.adjacent` | `relations.related` | `0` / `181` | **REMOVED FROM SCHEMA** — corpus usage is zero; runtime read fallbacks, if any, are compatibility-only |
+| `boundary (top-level Understanding)` | `concept_boundary` | `0` / `181` | **REMOVED FROM SCHEMA** — corpus usage is zero; runtime read fallbacks, if any, are compatibility-only |
+| `compatibility.runtimes` | `compatibility.agent_runtimes` | `0` / `181` | **REMOVED FROM SCHEMA** — corpus usage is zero; runtime read fallbacks, if any, are compatibility-only |
+| `compatibility.node` | `compatibility.node_version` | `0` / `181` | **REMOVED FROM SCHEMA** — corpus usage is zero; runtime read fallbacks, if any, are compatibility-only |
 
 ## How to refresh
 

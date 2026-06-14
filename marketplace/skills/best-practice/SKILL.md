@@ -1,19 +1,19 @@
 ---
 name: best-practice
-description: "Cross-cutting best practices enforcement across code, templates, skills, prompts, scripts, documentation, pages, and design. The enforcement layer that catches violations any specialist might miss. Do NOT use for deep code review methodology (use code-review), application security depth (use owasp-security), accessibility implementation depth (use a11y), or specialist design-system work (use design-system-architecture, color-system-design, or typography-system). Do NOT use for designing the color system and contrast model (use color-system-design). Do NOT use for implementing font loading and vertical rhythm (use typography-system). Do NOT use for designing a skill's comprehension or application eval suite (use agent-eval-design)."
+description: "Cross-cutting best practices enforcement across code, templates, skills, prompts, scripts, documentation, pages, and design. The enforcement layer that catches violations any specialist might miss. Do NOT use for deep code review methodology (use code-review), application security depth (use owasp-security), accessibility implementation depth (use a11y), or specialist design-system work (use design-system-architecture, color-system-design, or typography-system). Do NOT use for designing the color system and contrast model (use color-system-design). Do NOT use for implementing font loading and vertical rhythm (use typography-system). Do NOT use for designing a skill's comprehension or application eval suite (use eval-driven-development)."
 license: MIT
 compatibility: "Applies to any web application codebase using TypeScript, React, and Next.js App Router. The cross-domain enforcement priorities (security, a11y, performance, design system, testing, DevOps, AI/LLM) are framework-agnostic; the Next.js section is specific to the App Router pattern (Next.js 13.4+ through 16)."
 allowed-tools: Read Grep Bash
 metadata:
   relations: "{\"related\":[\"skill-scaffold\",\"color-system-design\",\"typography-system\",\"test-coverage-strategy\",\"performance-engineering\",\"performance-budgets\",\"visual-design-foundations\",\"layout-composition\",\"microcopy\",\"architecture-decision-records\",\"server-components-design\",\"server-actions-design\",\"code-review\",\"owasp-security\",\"a11y\",\"testing-strategy\",\"design-system-architecture\",\"prompt-craft\",\"semantics\",\"api-design\",\"prompt-injection-defense\"],\"suppresses\":[\"code-review\",\"a11y\",\"owasp-security\"],\"verify_with\":[\"design-system-architecture\",\"testing-strategy\",\"code-review\",\"owasp-security\",\"a11y\"]}"
   subject: quality-assurance
-  scope: "Portable final-pass quality enforcement across code, templates, skills, prompts, scripts, documentation, pages, and design. Use after or alongside specialist skills to catch boundary-spanning issues in security, accessibility, performance, testing, design-system use, documentation, DevOps, AI/LLM artifacts, and Next.js App Router patterns. Excludes deep specialist methodology owned by code-review, owasp-security, a11y, design-system-architecture, color-system-design, typography-system, testing-strategy, performance-budgets, server-components-design, server-actions-design, and agent-eval-design."
+  scope: "Portable final-pass quality enforcement across code, templates, skills, prompts, scripts, documentation, pages, and design. Use after or alongside specialist skills to catch boundary-spanning issues in security, accessibility, performance, testing, design-system use, documentation, DevOps, AI/LLM artifacts, and Next.js App Router patterns. Excludes deep specialist methodology owned by code-review, owasp-security, a11y, design-system-architecture, color-system-design, typography-system, testing-strategy, performance-budgets, server-components-design, server-actions-design, and eval-driven-development."
   public: "true"
   taxonomy_domain: quality/cross-domain
   stability: stable
   keywords: "[\"best practice\",\"best practices\",\"code quality\",\"quality enforcement\",\"code review checklist\",\"OWASP\",\"WCAG\",\"Core Web Vitals\",\"SOLID principles\",\"clean code\"]"
   examples: "[\"reviewing a pull request for correctness, security, and style\",\"creating a new React component and checking it against quality standards\",\"auditing an existing feature for WCAG compliance and performance regressions\",\"writing tests and verifying coverage shape (unit / integration / e2e pyramid)\",\"authoring a new skill and checking it has structured scope, evals, and examples\",\"adding a new Next.js Server Action and verifying it has runtime input validation and an auth check\"]"
-  anti_examples: "[\"reviewing PR feedback phrasing and comment classification (use code-review)\",\"performing a deep OWASP threat review (use owasp-security)\",\"designing keyboard focus behavior or live-region placement (use a11y)\",\"designing the color system and contrast model (use color-system-design)\",\"implementing font loading and vertical rhythm (use typography-system)\",\"designing a skill's comprehension or application eval suite (use agent-eval-design)\"]"
+  anti_examples: "[\"reviewing PR feedback phrasing and comment classification (use code-review)\",\"performing a deep OWASP threat review (use owasp-security)\",\"designing keyboard focus behavior or live-region placement (use a11y)\",\"designing the color system and contrast model (use color-system-design)\",\"implementing font loading and vertical rhythm (use typography-system)\",\"designing a skill's comprehension or application eval suite (use eval-driven-development)\"]"
   grounding: "{\"subject_matter\":\"Cross-cutting quality enforcement across 14 domains\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://owasp.org/Top10/2025/\",\"https://owasp.org/Top10/2025/A03_2025-Software_Supply_Chain_Failures/\",\"https://owasp.org/Top10/2025/A10_2025-Mishandling_of_Exceptional_Conditions/\",\"https://www.w3.org/TR/WCAG22/\",\"https://www.w3.org/WAI/standards-guidelines/wcag/new-in-22/\",\"https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html\",\"https://web.dev/articles/vitals\",\"https://web.dev/articles/inp\",\"https://nextjs.org/docs/app/getting-started/caching\",\"https://nextjs.org/docs/app/api-reference/directives/use-cache\",\"https://nextjs.org/docs/app/guides/data-security\",\"https://nextjs.org/docs/app/getting-started/mutating-data\",\"https://react.dev/learn/react-compiler\",\"https://react.dev/reference/react/experimental_taintObjectReference\",\"https://docs.npmjs.com/trusted-publishers/\",\"https://slsa.dev/spec/v1.2/provenance\",\"https://www.designtokens.org/\"],\"failure_modes\":[\"specialist_boundary_gaps\",\"private_project_detail_leaked_into_public_skill\",\"dangling_reference_file\",\"heading_hierarchy_violations\",\"hardcoded_values_bypass_token_system\",\"server_actions_treated_as_internal\",\"rsc_props_leak_private_data\",\"implicit_next_cache_assumption\",\"owasp_2021_label_used_for_2025_category\",\"supply_chain_reduced_to_cve_scan_only\",\"premature_manual_memoization_under_react_compiler\",\"tool_output_treated_as_authority\",\"dead_tests_accumulate\"],\"evidence_priority\":\"general_knowledge_first\"}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
@@ -195,7 +195,7 @@ As the baseline enforcement layer, this skill connects:
 | Eval coverage & honesty | Skills declare honest eval state; use `evals/comprehension.json` and `evals/application.json` when certification is claimed; missing evals are `UNVERIFIED`, not failure |
 | Explicit scope boundaries | Define what the skill does AND does not do |
 
-> See skill-scaffold for skill creation methodology, prompt-craft for prompt anatomy, prompt-injection-defense for adversarial inputs, and agent-eval-design for eval-suite design.
+> See skill-scaffold for skill creation methodology, prompt-craft for prompt anatomy, prompt-injection-defense for adversarial inputs, and eval-driven-development for eval-suite design.
 
 ## 10. Next.js App Router
 
@@ -318,7 +318,7 @@ What changed in the platform landscape that a current breadth pass should reflec
 | Server Action security depth (CSRF, rate-limiting, authz modeling) | `server-actions-design` | server-actions-design owns action-security depth; best-practice only flags validate-and-auth-first |
 | API boundary schemas, HTTP methods, status codes | `api-design` / `http-semantics` | api-design owns the contract boundary format |
 | Defensive prompting and adversarial LLM inputs | `prompt-injection-defense` | prompt-injection-defense handles adversarial prompt security |
-| Eval-case design for skills and agents | `agent-eval-design` | agent-eval-design owns comprehension and application eval design |
+| Eval-case design for skills and agents | `eval-driven-development` | eval-driven-development owns comprehension and application eval design |
 
 ## Skill Graph context
 
@@ -328,7 +328,7 @@ What changed in the platform landscape that a current breadth pass should reflec
 - Subject: `quality-assurance`
 - Public: `true`
 - Domain: `quality/cross-domain`
-- Scope: Portable final-pass quality enforcement across code, templates, skills, prompts, scripts, documentation, pages, and design. Use after or alongside specialist skills to catch boundary-spanning issues in security, accessibility, performance, testing, design-system use, documentation, DevOps, AI/LLM artifacts, and Next.js App Router patterns. Excludes deep specialist methodology owned by code-review, owasp-security, a11y, design-system-architecture, color-system-design, typography-system, testing-strategy, performance-budgets, server-components-design, server-actions-design, and agent-eval-design.
+- Scope: Portable final-pass quality enforcement across code, templates, skills, prompts, scripts, documentation, pages, and design. Use after or alongside specialist skills to catch boundary-spanning issues in security, accessibility, performance, testing, design-system use, documentation, DevOps, AI/LLM artifacts, and Next.js App Router patterns. Excludes deep specialist methodology owned by code-review, owasp-security, a11y, design-system-architecture, color-system-design, typography-system, testing-strategy, performance-budgets, server-components-design, server-actions-design, and eval-driven-development.
 
 **When to use**
 - reviewing a pull request for correctness, security, and style
@@ -344,7 +344,7 @@ What changed in the platform landscape that a current breadth pass should reflec
 - designing keyboard focus behavior or live-region placement (use a11y)
 - designing the color system and contrast model (use color-system-design)
 - implementing font loading and vertical rhythm (use typography-system)
-- designing a skill's comprehension or application eval suite (use agent-eval-design)
+- designing a skill's comprehension or application eval suite (use eval-driven-development)
 
 **Related skills**
 - Verify with: `design-system-architecture`, `testing-strategy`, `code-review`, `owasp-security`, `a11y`

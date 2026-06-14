@@ -7,7 +7,7 @@ allowed-tools: Read Grep Bash
 metadata:
   relations: "{\"related\":[\"testing-strategy\",\"guardrails\",\"best-practice\",\"code-review\"],\"suppresses\":[\"refactor\"],\"verify_with\":[\"best-practice\",\"okrs\"]}"
   subject: software-engineering-method
-  scope: "Portable methodology design for rigorous agent work: planning multi-step implementations, designing quality gates, establishing verification protocols, and building checklists calibrated to known failure modes. Covers methodology/method/process distinctions, Cleanroom defect prevention, PSP/TSP measurement discipline, hypothesis-driven development, DMAIC/PDCA quality management, checklist design, V&V frameworks, EDDOps, and hard-stop quality gates. Excludes concrete PR review (code-review), behavior-preserving implementation changes (refactor), test-level selection (testing-strategy), eval-case/rubric authoring (agent-eval-design), and high-risk action blocking (guardrails)."
+  scope: "Portable methodology design for rigorous agent work: planning multi-step implementations, designing quality gates, establishing verification protocols, and building checklists calibrated to known failure modes. Covers methodology/method/process distinctions, Cleanroom defect prevention, PSP/TSP measurement discipline, hypothesis-driven development, DMAIC/PDCA quality management, checklist design, V&V frameworks, EDDOps, and hard-stop quality gates. Excludes concrete PR review (code-review), behavior-preserving implementation changes (refactor), test-level selection (testing-strategy), eval-case/rubric authoring (eval-driven-development), and high-risk action blocking (guardrails)."
   public: "true"
   taxonomy_domain: quality/method
   stability: experimental
@@ -29,7 +29,7 @@ Portable methodology design for rigorous agent work: planning multi-step impleme
 
 ## Domain Context
 
-**What is this skill?** Provides the philosophical framework (methodology), specific techniques (methods), and ordered execution sequences (processes) that govern rigorous agent work. Covers the methodology-method-process stack, Cleanroom defect prevention, PSP/TSP measurement discipline, hypothesis-driven development, DMAIC quality management, aviation checklist design (Gawande), V&V frameworks (NASA/IEEE-style independent verification and validation), EDDOps for LLM agents, quality gates as hard stops, and the PDCA cycle for standardizing successes. Use when planning multi-step implementations, designing quality gates, establishing verification protocols, building agent checklists calibrated to known failure modes, or when an agent needs to understand WHY a process step exists (not just THAT it exists). Do NOT use for concrete PR review (use `code-review`), behavior-preserving implementation changes (use `refactor`), test-level selection (use `testing-strategy`), eval-case design (use `agent-eval-design`), or high-risk tool-call blocking (use `guardrails`).
+**What is this skill?** Provides the philosophical framework (methodology), specific techniques (methods), and ordered execution sequences (processes) that govern rigorous agent work. Covers the methodology-method-process stack, Cleanroom defect prevention, PSP/TSP measurement discipline, hypothesis-driven development, DMAIC quality management, aviation checklist design (Gawande), V&V frameworks (NASA/IEEE-style independent verification and validation), EDDOps for LLM agents, quality gates as hard stops, and the PDCA cycle for standardizing successes. Use when planning multi-step implementations, designing quality gates, establishing verification protocols, building agent checklists calibrated to known failure modes, or when an agent needs to understand WHY a process step exists (not just THAT it exists). Do NOT use for concrete PR review (use `code-review`), behavior-preserving implementation changes (use `refactor`), test-level selection (use `testing-strategy`), eval-case design (use `eval-driven-development`), or high-risk tool-call blocking (use `guardrails`).
 
 ## Coverage
 
@@ -40,7 +40,7 @@ Agents default to executing process without methodology. They apply steps withou
 
 The academic distinction is load-bearing: **Methodology** is the philosophical framework — WHY you approach work a certain way. **Method** is a specific technique within the methodology. **Process** is the ordered sequence of steps executing a method. One process can contain multiple methods; one method can serve many processes. But without methodology, the agent has no basis for deciding when to apply extra rigor, when to challenge a process that seems wasteful, or when a shortcut is genuinely safe vs. when it compromises the underlying principle.
 
-This skill installs the WHY. Adjacent quality skills install the execution surface: `code-review` evaluates concrete diffs, `testing-strategy` chooses test levels, `agent-eval-design` authors eval cases and graders, `guardrails` blocks high-risk actions, and `best-practice` catches cross-cutting quality gaps. Together they prevent both "knows the steps but skips them" (ineptitude) and "follows steps mechanically without understanding when they matter" (cargo culting).
+This skill installs the WHY. Adjacent quality skills install the execution surface: `code-review` evaluates concrete diffs, `testing-strategy` chooses test levels, `eval-driven-development` authors eval cases and graders, `guardrails` blocks high-risk actions, and `best-practice` catches cross-cutting quality gaps. Together they prevent both "knows the steps but skips them" (ineptitude) and "follows steps mechanically without understanding when they matter" (cargo culting).
 
 ## Methodology Boundaries
 
@@ -51,7 +51,7 @@ Methodology provides the *frameworks and principles* behind rigorous execution. 
 | Design a rigorous process, checklist, or gate sequence | `methodology` | Owns why the gates exist and how they compose |
 | Review an actual diff or PR | `code-review` | Owns findings, severity, comments, and merge verdicts |
 | Decide what software behavior to test and at what level | `testing-strategy` | Owns test scope and level selection |
-| Design agent eval tasks, rubrics, hard negatives, or graders | `agent-eval-design` | Owns eval content and scoring design |
+| Design agent eval tasks, rubrics, hard negatives, or graders | `eval-driven-development` | Owns eval content and scoring design |
 | Block destructive, secret-bearing, or public side-effecting actions | `guardrails` | Owns action safety and escalation |
 | Catch cross-domain quality misses after specialist work | `best-practice` | Owns broad quality enforcement, not methodology selection |
 
@@ -326,7 +326,7 @@ After applying this skill, verify:
 | Reviewing a concrete diff or PR | `code-review` | code-review owns findings, severity, and merge verdicts |
 | Restructuring code while preserving behavior | `refactor` | refactor owns behavior-preserving implementation work |
 | Choosing unit/integration/contract/e2e coverage | `testing-strategy` | testing-strategy owns test-scope and test-level decisions |
-| Writing agent eval cases or grader rubrics | `agent-eval-design` | agent-eval-design owns eval task design and thresholds |
+| Writing agent eval cases or grader rubrics | `eval-driven-development` | eval-driven-development owns eval task design and thresholds |
 | Blocking destructive or secret-bearing tool calls | `guardrails` | guardrails owns execution-time safety tripwires |
 | Cross-cutting quality enforcement after specialist work | `best-practice` | best-practice owns broad quality gates across domains |
 
@@ -355,7 +355,7 @@ After applying this skill, verify:
 - Subject: `software-engineering-method`
 - Public: `true`
 - Domain: `quality/method`
-- Scope: Portable methodology design for rigorous agent work: planning multi-step implementations, designing quality gates, establishing verification protocols, and building checklists calibrated to known failure modes. Covers methodology/method/process distinctions, Cleanroom defect prevention, PSP/TSP measurement discipline, hypothesis-driven development, DMAIC/PDCA quality management, checklist design, V&V frameworks, EDDOps, and hard-stop quality gates. Excludes concrete PR review (code-review), behavior-preserving implementation changes (refactor), test-level selection (testing-strategy), eval-case/rubric authoring (agent-eval-design), and high-risk action blocking (guardrails).
+- Scope: Portable methodology design for rigorous agent work: planning multi-step implementations, designing quality gates, establishing verification protocols, and building checklists calibrated to known failure modes. Covers methodology/method/process distinctions, Cleanroom defect prevention, PSP/TSP measurement discipline, hypothesis-driven development, DMAIC/PDCA quality management, checklist design, V&V frameworks, EDDOps, and hard-stop quality gates. Excludes concrete PR review (code-review), behavior-preserving implementation changes (refactor), test-level selection (testing-strategy), eval-case/rubric authoring (eval-driven-development), and high-risk action blocking (guardrails).
 
 **When to use**
 - design a verification protocol for this multi-step agent workflow before implementation starts

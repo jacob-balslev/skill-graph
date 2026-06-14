@@ -1,13 +1,13 @@
 ---
 name: prompt-craft
-description: "Use when writing, tightening, evaluating, or repairing an LLM prompt or reusable prompt template for completion, agent dispatch, grading, structured extraction, tool use, or prompt-engineered workflows. Covers instruction hierarchy, message roles, context placement, few-shot examples, structured output, positive constraints, reasoning guidance, prompt-injection resistance, provider differences, and eval-driven iteration. Do NOT use for whole context-system design (use context-engineering), eval dataset or grader design (use agent-eval-design), reviewing generated code (use code-review), authoring SKILL.md files (use skill-scaffold), choosing which skill or agent should activate (use skill-router), or root-causing a deployed failure after outputs already exist (use debugging). Do NOT use for review this AI-generated PR for correctness. Do NOT use for scaffold a new skill that teaches prompt engineering."
+description: "Use when writing, tightening, evaluating, or repairing an LLM prompt or reusable prompt template for completion, agent dispatch, grading, structured extraction, tool use, or prompt-engineered workflows. Covers instruction hierarchy, message roles, context placement, few-shot examples, structured output, positive constraints, reasoning guidance, prompt-injection resistance, provider differences, and eval-driven iteration. Do NOT use for whole context-system design (use context-engineering), eval dataset or grader design (use eval-driven-development), reviewing generated code (use code-review), authoring SKILL.md files (use skill-scaffold), choosing which skill or agent should activate (use skill-router), or root-causing a deployed failure after outputs already exist (use debugging). Do NOT use for review this AI-generated PR for correctness. Do NOT use for scaffold a new skill that teaches prompt engineering."
 license: MIT
 compatibility: "Provider-agnostic prompt-design discipline for OpenAI, Anthropic, Google Gemini, open-weight models, and agent runtimes; provider-specific APIs, role names, structured-output features, and reasoning controls must be checked before implementation."
 allowed-tools: Read Grep Bash Edit
 metadata:
   relations: "{\"related\":[\"context-engineering\",\"evaluation\",\"guardrails\",\"debugging\",\"code-review\",\"skill-scaffold\",\"skill-router\"],\"suppresses\":[],\"verify_with\":[\"evaluation\",\"guardrails\"]}"
   subject: ai-engineering
-  scope: "Writing, tightening, evaluating, and repairing LLM prompts and reusable prompt templates for completion, agent dispatch, grading, structured extraction, tool use, and prompt-engineered workflows — instruction hierarchy, message roles, context placement, few-shot examples, structured output, positive constraints, reasoning guidance, prompt-injection resistance, provider differences, and eval-driven iteration. Portable across any LLM provider; principle-grounded, not repo-bound. Excludes whole context-system design (context-engineering), eval dataset or grader design (agent-eval-design), reviewing generated code (code-review), authoring SKILL.md files (skill-scaffold), choosing which skill or agent activates (skill-router), and root-causing a deployed failure after outputs exist (debugging)."
+  scope: "Writing, tightening, evaluating, and repairing LLM prompts and reusable prompt templates for completion, agent dispatch, grading, structured extraction, tool use, and prompt-engineered workflows — instruction hierarchy, message roles, context placement, few-shot examples, structured output, positive constraints, reasoning guidance, prompt-injection resistance, provider differences, and eval-driven iteration. Portable across any LLM provider; principle-grounded, not repo-bound. Excludes whole context-system design (context-engineering), eval dataset or grader design (eval-driven-development), reviewing generated code (code-review), authoring SKILL.md files (skill-scaffold), choosing which skill or agent activates (skill-router), and root-causing a deployed failure after outputs exist (debugging)."
   public: "true"
   taxonomy_domain: agent/prompts
   stability: experimental
@@ -205,7 +205,7 @@ Prompt changes need evidence. Use this loop for any prompt that matters:
 5. Re-run the same eval set under the same model and sampling conditions.
 6. Keep the change only if it improves the target metric without unacceptable regressions.
 7. Record the changed surface, evidence, date, model, and residual risks.
-8. If the failure is not prompt-controllable, route to context-engineering, guardrails, agent-eval-design, debugging, or model/runtime configuration.
+8. If the failure is not prompt-controllable, route to context-engineering, guardrails, eval-driven-development, debugging, or model/runtime configuration.
 
 A prompt that has not been measured may be a good draft. It is not yet an engineered prompt.
 
@@ -253,7 +253,7 @@ After applying this skill, verify:
 | Use instead | When |
 |---|---|
 | context-engineering | Designing retrieval payloads, context windows, memory, compaction, source selection, or the broader information environment around the prompt. |
-| agent-eval-design | Creating eval datasets, graders, hard negatives, thresholds, or a benchmark harness for future prompt or agent evaluation. |
+| eval-driven-development | Creating eval datasets, graders, hard negatives, thresholds, or a benchmark harness for future prompt or agent evaluation. |
 | evaluation | Scoring a completed prompt change or deliverable against evidence and deciding whether it is done. |
 | guardrails | Designing runtime controls for prompt injection, tool permissions, side effects, data exfiltration, or policy enforcement. |
 | code-review | Reviewing AI-generated code or a pull request for correctness, security, maintainability, and regressions. |
@@ -269,7 +269,7 @@ After applying this skill, verify:
 - Subject: `ai-engineering`
 - Public: `true`
 - Domain: `agent/prompts`
-- Scope: Writing, tightening, evaluating, and repairing LLM prompts and reusable prompt templates for completion, agent dispatch, grading, structured extraction, tool use, and prompt-engineered workflows — instruction hierarchy, message roles, context placement, few-shot examples, structured output, positive constraints, reasoning guidance, prompt-injection resistance, provider differences, and eval-driven iteration. Portable across any LLM provider; principle-grounded, not repo-bound. Excludes whole context-system design (context-engineering), eval dataset or grader design (agent-eval-design), reviewing generated code (code-review), authoring SKILL.md files (skill-scaffold), choosing which skill or agent activates (skill-router), and root-causing a deployed failure after outputs exist (debugging).
+- Scope: Writing, tightening, evaluating, and repairing LLM prompts and reusable prompt templates for completion, agent dispatch, grading, structured extraction, tool use, and prompt-engineered workflows — instruction hierarchy, message roles, context placement, few-shot examples, structured output, positive constraints, reasoning guidance, prompt-injection resistance, provider differences, and eval-driven iteration. Portable across any LLM provider; principle-grounded, not repo-bound. Excludes whole context-system design (context-engineering), eval dataset or grader design (eval-driven-development), reviewing generated code (code-review), authoring SKILL.md files (skill-scaffold), choosing which skill or agent activates (skill-router), and root-causing a deployed failure after outputs exist (debugging).
 
 **When to use**
 - write a reusable prompt for an LLM to classify support tickets and return one JSON object

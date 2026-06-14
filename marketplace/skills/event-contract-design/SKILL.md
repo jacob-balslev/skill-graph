@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Portable async-event contract guidance for queues, streams, pub/sub, internal events, outbound webhooks, and documented event-driven APIs."
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"related\":[\"api-design\",\"state-machine-modeling\",\"data-modeling\",\"event-storming\",\"system-interface-contracts\",\"observability-modeling\",\"webhook-integration\"],\"suppresses\":[\"event-storming\",\"system-interface-contracts\"],\"verify_with\":[\"system-interface-contracts\",\"observability-modeling\",\"real-time-updates\"]}"
+  relations: "{\"related\":[\"api-design\",\"state-machine-modeling\",\"entity-relationship-modeling\",\"event-storming\",\"system-interface-contracts\",\"observability-modeling\",\"webhook-integration\"],\"suppresses\":[\"event-storming\",\"system-interface-contracts\"],\"verify_with\":[\"system-interface-contracts\",\"observability-modeling\",\"real-time-updates\"]}"
   subject: software-architecture
   public: "true"
   scope: "Use when designing or reviewing asynchronous event contracts: producer/consumer ownership, event envelope, schema, topic/channel naming, ordering, idempotency, versioning, compatibility, replay, dead-letter behavior, and AsyncAPI/CloudEvents-style documentation. Do NOT use for domain-event discovery (use `event-storming`), broad interface contracts (use `system-interface-contracts`), inbound provider webhook mechanics (use `webhook-integration`), or HTTP endpoint design (use `api-design`)."
@@ -93,7 +93,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/event-contrac
 
 **Related skills**
 - Verify with: `system-interface-contracts`, `observability-modeling`, `real-time-updates`
-- Related: `api-design`, `state-machine-modeling`, `data-modeling`, `event-storming`, `system-interface-contracts`, `observability-modeling`, `webhook-integration`
+- Related: `api-design`, `state-machine-modeling`, `entity-relationship-modeling`, `event-storming`, `system-interface-contracts`, `observability-modeling`, `webhook-integration`
 
 **Keywords**
 - `event-contract`, `async-api`, `cloudevents`, `event envelope`, `topic naming`, `async event schema`, `event compatibility`, `replay contract`, `dead-letter behavior`, `consumer fixtures`

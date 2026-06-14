@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  relations: "{\"related\":[\"data-modeling\",\"database-migration\"],\"suppresses\":[\"conceptual-modeling\"],\"verify_with\":[\"code-review\",\"data-modeling-fundamentals\"]}"
+  relations: "{\"related\":[\"entity-relationship-modeling\",\"database-migration\"],\"suppresses\":[\"conceptual-modeling\"],\"verify_with\":[\"code-review\",\"data-modeling-fundamentals\"]}"
   subject: software-architecture
   public: "true"
   scope: "Use when designing database tables, reviewing schema changes, planning migrations, or translating conceptual models into physical database structures. Covers ER notation, entity/attribute/key design, normalization and denormalization, junction tables, inheritance mapping, temporal modeling, ER-to-SQL translation, indexing, and constraints. Do NOT use for conceptual domain analysis (use `conceptual-modeling`), formal ontology (use `ontology`), or cross-system API contracts (use `system-interface-contracts`)."
@@ -242,7 +242,7 @@ After applying this skill, verify:
 
 **Related skills**
 - Verify with: `code-review`, `data-modeling-fundamentals`
-- Related: `data-modeling`, `database-migration`
+- Related: `entity-relationship-modeling`, `database-migration`
 
 **Keywords**
 - `entity relationship`, `ER diagram`, `ER model`, `database design`, `schema design`, `normalization`, `foreign key`, `primary key`, `junction table`, `database modeling`

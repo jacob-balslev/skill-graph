@@ -1,13 +1,13 @@
 ---
 name: evaluation
-description: "Use when scoring a completed agent task, implementation, document, skill upgrade, or other deliverable against the original request, acceptance criteria, verification evidence, quality rubric, and residual risks before calling it done. Covers skeptical critic review, 1-5 scoring, score ceilings, evidence sufficiency, finding/action capture, and the evaluation-revision loop. Do NOT use for designing eval datasets or graders (use agent-eval-design), line-by-line diff review (use code-review), choosing test levels (use testing-strategy), or designing the overall process and gates before work starts (use methodology). Do NOT use for design a new eval dataset, grader, and hard negatives for this router. Do NOT use for review this pull request line by line for bugs and security issues. Do NOT use for choose unit versus integration versus end-to-end tests for this feature. Do NOT use for design the whole implementation methodology and quality gate sequence before work starts."
+description: "Use when scoring a completed agent task, implementation, document, skill upgrade, or other deliverable against the original request, acceptance criteria, verification evidence, quality rubric, and residual risks before calling it done. Covers skeptical critic review, 1-5 scoring, score ceilings, evidence sufficiency, finding/action capture, and the evaluation-revision loop. Do NOT use for designing eval datasets or graders (use eval-driven-development), line-by-line diff review (use code-review), choosing test levels (use testing-strategy), or designing the overall process and gates before work starts (use methodology). Do NOT use for design a new eval dataset, grader, and hard negatives for this router. Do NOT use for review this pull request line by line for bugs and security issues. Do NOT use for choose unit versus integration versus end-to-end tests for this feature. Do NOT use for design the whole implementation methodology and quality gate sequence before work starts."
 license: MIT
 compatibility: "Portable completion-evaluation discipline for AI agent work, documentation, skill upgrades, and software deliverables. It assumes the evaluator can inspect the request, artifact, changed files or report, and verification evidence; substitute local tools and acceptance criteria as needed."
 allowed-tools: Read Grep Bash
 metadata:
   relations: "{\"related\":[\"methodology\",\"debugging\",\"best-practice\",\"testing-strategy\",\"code-review\",\"epistemic-grounding\",\"eval-driven-development\"],\"suppresses\":[\"eval-driven-development\"],\"verify_with\":[\"epistemic-grounding\",\"code-review\",\"best-practice\",\"testing-strategy\"]}"
   subject: ai-engineering
-  scope: "Evidence-based evaluation of completed agent tasks, implementations, documents, skill upgrades, and other deliverables against the original request, acceptance criteria, verification evidence, quality rubric, and residual risks before calling the work done. Portable across software, documentation, and agent-output review when the evaluator can inspect the request, artifact, and evidence. Excludes designing eval datasets or graders (agent-eval-design), line-by-line diff review (code-review), choosing test levels (testing-strategy), designing the process before work starts (methodology), and root-cause investigation of known failures (debugging)."
+  scope: "Evidence-based evaluation of completed agent tasks, implementations, documents, skill upgrades, and other deliverables against the original request, acceptance criteria, verification evidence, quality rubric, and residual risks before calling the work done. Portable across software, documentation, and agent-output review when the evaluator can inspect the request, artifact, and evidence. Excludes designing eval datasets or graders (eval-driven-development), line-by-line diff review (code-review), choosing test levels (testing-strategy), designing the process before work starts (methodology), and root-cause investigation of known failures (debugging)."
   public: "true"
   taxonomy_domain: engineering/evaluation
   stability: experimental
@@ -139,7 +139,7 @@ Preserve all findings. Prioritization may order them; it must not hide them.
 
 | If the user needs... | Use | Why |
 |---|---|---|
-| A grader, eval dataset, hard negatives, or pass threshold | agent-eval-design | That skill designs the eval system; this skill applies a completion score to one artifact. |
+| A grader, eval dataset, hard negatives, or pass threshold | eval-driven-development | That skill designs the eval system; this skill applies a completion score to one artifact. |
 | A pull request or diff reviewed line by line | code-review | Code review owns technical findings and merge verdicts. |
 | A decision about unit, integration, contract, or e2e coverage | testing-strategy | Testing strategy chooses test scope before or during implementation. |
 | A process, checklist, or quality gate sequence before work starts | methodology | Methodology designs why and when gates exist. |
@@ -171,7 +171,7 @@ After applying this skill, verify:
 
 | Use instead | When |
 |---|---|
-| agent-eval-design | You are designing eval cases, rubrics, graders, hard negatives, or acceptance thresholds for future automated evaluation. |
+| eval-driven-development | You are designing eval cases, rubrics, graders, hard negatives, or acceptance thresholds for future automated evaluation. |
 | code-review | You are reviewing a PR, diff, or code change line by line for correctness, security, maintainability, and comments. |
 | testing-strategy | You are deciding which tests to write, at which level, and with what regression target. |
 | methodology | You are designing the process, checklist, or quality gate sequence before implementation exists. |
@@ -186,7 +186,7 @@ After applying this skill, verify:
 - Subject: `ai-engineering`
 - Public: `true`
 - Domain: `engineering/evaluation`
-- Scope: Evidence-based evaluation of completed agent tasks, implementations, documents, skill upgrades, and other deliverables against the original request, acceptance criteria, verification evidence, quality rubric, and residual risks before calling the work done. Portable across software, documentation, and agent-output review when the evaluator can inspect the request, artifact, and evidence. Excludes designing eval datasets or graders (agent-eval-design), line-by-line diff review (code-review), choosing test levels (testing-strategy), designing the process before work starts (methodology), and root-cause investigation of known failures (debugging).
+- Scope: Evidence-based evaluation of completed agent tasks, implementations, documents, skill upgrades, and other deliverables against the original request, acceptance criteria, verification evidence, quality rubric, and residual risks before calling the work done. Portable across software, documentation, and agent-output review when the evaluator can inspect the request, artifact, and evidence. Excludes designing eval datasets or graders (eval-driven-development), line-by-line diff review (code-review), choosing test levels (testing-strategy), designing the process before work starts (methodology), and root-cause investigation of known failures (debugging).
 
 **When to use**
 - score this completed agent task against the original request, changed files, tests, and remaining risks before we call it done

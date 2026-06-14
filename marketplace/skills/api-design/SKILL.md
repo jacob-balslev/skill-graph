@@ -1,14 +1,14 @@
 ---
 name: api-design
-description: "Use when designing or reviewing HTTP API surfaces: consumer tasks, audience class, protocol/paradigm fit, resources/actions, route taxonomy, request and response schemas, status codes in context, pagination, filtering, sorting, field selection, idempotency, auth and tenant boundaries, error envelopes, rate-limit signals, versioning, deprecation, discovery, and contract artifacts. Do NOT use for pure HTTP protocol semantics (use `http-semantics`), framework-specific route handler mechanics (use `route-handler-design`), non-HTTP system contracts (use `system-interface-contracts`), async event contracts (use `event-contract-design`), database design (use `data-modeling`), inbound provider webhook mechanics (use `webhook-integration`), or post-failure diagnosis (use `debugging`). Do NOT use for define the broader contract between a job, service, and dashboard. Do NOT use for design database tables, foreign keys, and views. Do NOT use for implement provider webhook signature verification and retry behavior."
+description: "Use when designing or reviewing HTTP API surfaces: consumer tasks, audience class, protocol/paradigm fit, resources/actions, route taxonomy, request and response schemas, status codes in context, pagination, filtering, sorting, field selection, idempotency, auth and tenant boundaries, error envelopes, rate-limit signals, versioning, deprecation, discovery, and contract artifacts. Do NOT use for pure HTTP protocol semantics (use `http-semantics`), framework-specific route handler mechanics (use `route-handler-design`), non-HTTP system contracts (use `system-interface-contracts`), async event contracts (use `event-contract-design`), database design (use `entity-relationship-modeling`), inbound provider webhook mechanics (use `webhook-integration`), or post-failure diagnosis (use `debugging`). Do NOT use for define the broader contract between a job, service, and dashboard. Do NOT use for design database tables, foreign keys, and views."
 license: MIT
 compatibility: "Portable API design guidance for REST-like HTTP APIs, route handlers, internal APIs, and documented JSON contracts."
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"related\":[\"event-contract-design\",\"data-modeling\",\"debugging\",\"system-interface-contracts\",\"testing-strategy\",\"webhook-integration\",\"semantics\"],\"suppresses\":[\"route-handler-design\",\"webhook-integration\",\"http-semantics\"],\"verify_with\":[\"contract-testing\",\"testing-strategy\",\"code-review\",\"http-semantics\"]}"
+  relations: "{\"related\":[\"event-contract-design\",\"entity-relationship-modeling\",\"debugging\",\"system-interface-contracts\",\"testing-strategy\",\"webhook-integration\",\"semantics\"],\"suppresses\":[\"route-handler-design\",\"webhook-integration\",\"http-semantics\"],\"verify_with\":[\"contract-testing\",\"testing-strategy\",\"code-review\",\"http-semantics\"]}"
   subject: backend-engineering
   public: "true"
-  scope: "Use when designing or reviewing HTTP API surfaces: consumer tasks, audience class, protocol/paradigm fit, resources/actions, route taxonomy, request and response schemas, status codes in context, pagination, filtering, sorting, field selection, idempotency, auth and tenant boundaries, error envelopes, rate-limit signals, versioning, deprecation, discovery, and contract artifacts. Do NOT use for pure HTTP protocol semantics (use `http-semantics`), framework-specific route handler mechanics (use `route-handler-design`), non-HTTP system contracts (use `system-interface-contracts`), async event contracts (use `event-contract-design`), database design (use `data-modeling`), inbound provider webhook mechanics (use `webhook-integration`), or post-failure diagnosis (use `debugging`)."
+  scope: "Use when designing or reviewing HTTP API surfaces: consumer tasks, audience class, protocol/paradigm fit, resources/actions, route taxonomy, request and response schemas, status codes in context, pagination, filtering, sorting, field selection, idempotency, auth and tenant boundaries, error envelopes, rate-limit signals, versioning, deprecation, discovery, and contract artifacts. Do NOT use for pure HTTP protocol semantics (use `http-semantics`), framework-specific route handler mechanics (use `route-handler-design`), non-HTTP system contracts (use `system-interface-contracts`), async event contracts (use `event-contract-design`), database design (use `entity-relationship-modeling`), inbound provider webhook mechanics (use `webhook-integration`), or post-failure diagnosis (use `debugging`)."
   taxonomy_domain: engineering/api-design
   stability: experimental
   keywords: "[\"API design\",\"REST API\",\"endpoint design\",\"request response schema\",\"status codes\",\"pagination\",\"filtering\",\"idempotency\",\"API versioning\",\"error envelope\"]"
@@ -86,7 +86,7 @@ Use this skill when the task is the shape and behavior of an HTTP API endpoint o
 | Next.js `route.ts`, runtime choice, raw body parsing, CORS mechanics, framework defaults | `route-handler-design` |
 | A contract across modules, jobs, services, agents, teams, or multiple transport types | `system-interface-contracts` |
 | Async topics, event envelopes, replay, dead-letter behavior, CloudEvents, AsyncAPI | `event-contract-design` |
-| Tables, keys, constraints, indexes, normalization, stored-data lifecycle | `data-modeling` |
+| Tables, keys, constraints, indexes, normalization, stored-data lifecycle | `entity-relationship-modeling` |
 | Inbound third-party webhook signatures, provider retry contracts, raw payload persistence | `webhook-integration` |
 | Verifying consumer/provider compatibility from the API contract | `contract-testing` |
 | A behavior is already broken and needs root-cause isolation | `debugging` |
@@ -423,7 +423,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/api-design.js
 | `route-handler-design` | You are implementing the handler itself — framework-specific request parsing, middleware order, runtime choice, raw body parsing, CORS mechanics — rather than defining the externally-visible contract. |
 | `system-interface-contracts` | The boundary is broader than an HTTP API endpoint, such as jobs, modules, events, services, or agent interfaces. |
 | `event-contract-design` | You need asynchronous event schema, envelope, topic/channel naming, replay, dead-letter, or compatibility rules. |
-| `data-modeling` | You need persistence structure, keys, constraints, indexes, normalization, or lifecycle. |
+| `entity-relationship-modeling` | You need persistence structure, keys, constraints, indexes, normalization, or lifecycle. |
 | `webhook-integration` | You are implementing inbound third-party webhook handling, signatures, provider retry semantics, or raw payload persistence. |
 | `contract-testing` | The API contract exists and the task is writing the provider/consumer tests that pin compatibility, rather than designing the contract those tests verify. |
 | `semantics` | You are naming a single field, status code, or error code for truthfulness, rather than designing the surface. |
@@ -454,7 +454,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/api-design.js
 - Subject: `backend-engineering`
 - Public: `true`
 - Domain: `engineering/api-design`
-- Scope: Use when designing or reviewing HTTP API surfaces: consumer tasks, audience class, protocol/paradigm fit, resources/actions, route taxonomy, request and response schemas, status codes in context, pagination, filtering, sorting, field selection, idempotency, auth and tenant boundaries, error envelopes, rate-limit signals, versioning, deprecation, discovery, and contract artifacts. Do NOT use for pure HTTP protocol semantics (use `http-semantics`), framework-specific route handler mechanics (use `route-handler-design`), non-HTTP system contracts (use `system-interface-contracts`), async event contracts (use `event-contract-design`), database design (use `data-modeling`), inbound provider webhook mechanics (use `webhook-integration`), or post-failure diagnosis (use `debugging`).
+- Scope: Use when designing or reviewing HTTP API surfaces: consumer tasks, audience class, protocol/paradigm fit, resources/actions, route taxonomy, request and response schemas, status codes in context, pagination, filtering, sorting, field selection, idempotency, auth and tenant boundaries, error envelopes, rate-limit signals, versioning, deprecation, discovery, and contract artifacts. Do NOT use for pure HTTP protocol semantics (use `http-semantics`), framework-specific route handler mechanics (use `route-handler-design`), non-HTTP system contracts (use `system-interface-contracts`), async event contracts (use `event-contract-design`), database design (use `entity-relationship-modeling`), inbound provider webhook mechanics (use `webhook-integration`), or post-failure diagnosis (use `debugging`).
 
 **When to use**
 - design the API for listing orders with filters, pagination, and stable errors
@@ -470,7 +470,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/api-design.js
 
 **Related skills**
 - Verify with: `contract-testing`, `testing-strategy`, `code-review`, `http-semantics`
-- Related: `event-contract-design`, `data-modeling`, `debugging`, `system-interface-contracts`, `testing-strategy`, `webhook-integration`, `semantics`
+- Related: `event-contract-design`, `entity-relationship-modeling`, `debugging`, `system-interface-contracts`, `testing-strategy`, `webhook-integration`, `semantics`
 
 **Keywords**
 - `API design`, `REST API`, `endpoint design`, `request response schema`, `status codes`, `pagination`, `filtering`, `idempotency`, `API versioning`, `error envelope`

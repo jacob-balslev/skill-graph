@@ -1,14 +1,14 @@
 ---
 name: event-storming
-description: "Use when discovering a domain through events, commands, actors, policies, aggregates, read models, external systems, and temporal workflows before implementation. Do NOT use for event schema/topic contracts (use `event-contract-design`), webhook handler implementation (use `webhook-integration`), generic state transition modeling (use `state-machine-modeling`), or persistence schema design (use `data-modeling`). Do NOT use for implement Shopify webhook signature verification and idempotent retries. Do NOT use for draw the state machine for this one status field. Do NOT use for create a normalized data model and indexes. Do NOT use for write event-bus infrastructure code. Do NOT use for define the schema, topic, compatibility, and fixtures for a selected event."
+description: "Use when discovering a domain through events, commands, actors, policies, aggregates, read models, external systems, and temporal workflows before implementation. Do NOT use for event schema/topic contracts (use `event-contract-design`), webhook handler implementation (use `webhook-integration`), generic state transition modeling (use `state-machine-modeling`), or persistence schema design (use `entity-relationship-modeling`). Do NOT use for implement Shopify webhook signature verification and idempotent retries. Do NOT use for draw the state machine for this one status field. Do NOT use for create a normalized data model and indexes. Do NOT use for write event-bus infrastructure code. Do NOT use for define the schema, topic, compatibility, and fixtures for a selected event."
 license: MIT
 compatibility: "Portable event-storming discipline for product discovery, domain modeling, event-driven architecture, and workflow analysis."
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"related\":[\"system-interface-contracts\",\"webhook-integration\",\"api-design\",\"state-machine-modeling\",\"event-contract-design\",\"conceptual-modeling\"],\"suppresses\":[\"event-contract-design\",\"state-machine-modeling\",\"data-modeling\"],\"verify_with\":[\"conceptual-modeling\",\"system-interface-contracts\"]}"
+  relations: "{\"related\":[\"system-interface-contracts\",\"webhook-integration\",\"api-design\",\"state-machine-modeling\",\"event-contract-design\",\"conceptual-modeling\"],\"suppresses\":[\"event-contract-design\",\"state-machine-modeling\",\"entity-relationship-modeling\"],\"verify_with\":[\"conceptual-modeling\",\"system-interface-contracts\"]}"
   subject: software-architecture
   public: "true"
-  scope: "Use when discovering a domain through events, commands, actors, policies, aggregates, read models, external systems, and temporal workflows before implementation. Do NOT use for event schema/topic contracts (use `event-contract-design`), webhook handler implementation (use `webhook-integration`), generic state transition modeling (use `state-machine-modeling`), or persistence schema design (use `data-modeling`)."
+  scope: "Use when discovering a domain through events, commands, actors, policies, aggregates, read models, external systems, and temporal workflows before implementation. Do NOT use for event schema/topic contracts (use `event-contract-design`), webhook handler implementation (use `webhook-integration`), generic state transition modeling (use `state-machine-modeling`), or persistence schema design (use `entity-relationship-modeling`)."
   taxonomy_domain: architecture/domain-discovery
   stability: experimental
   keywords: "[\"event storming\",\"domain events\",\"commands\",\"aggregates\",\"policies\",\"read models\",\"temporal workflow\",\"event-driven discovery\",\"process modeling\"]"
@@ -62,7 +62,7 @@ Do not confuse domain events with technical notifications. "OrderPlaced" is busi
 | `webhook-integration` | You are implementing provider webhooks, signatures, retries, and deduplication. |
 | `event-contract-design` | You already selected the event and need schema, envelope, topic, compatibility, replay, or fixtures. |
 | `state-machine-modeling` | You already know the lifecycle and need formal states, transitions, and guards. |
-| `data-modeling` | You need tables, keys, indexes, constraints, or data lifecycle. |
+| `entity-relationship-modeling` | You need tables, keys, indexes, constraints, or data lifecycle. |
 | `api-design` | You need endpoint, request, response, and status-code design. |
 
 ## Skill Graph context
@@ -73,7 +73,7 @@ Do not confuse domain events with technical notifications. "OrderPlaced" is busi
 - Subject: `software-architecture`
 - Public: `true`
 - Domain: `architecture/domain-discovery`
-- Scope: Use when discovering a domain through events, commands, actors, policies, aggregates, read models, external systems, and temporal workflows before implementation. Do NOT use for event schema/topic contracts (use `event-contract-design`), webhook handler implementation (use `webhook-integration`), generic state transition modeling (use `state-machine-modeling`), or persistence schema design (use `data-modeling`).
+- Scope: Use when discovering a domain through events, commands, actors, policies, aggregates, read models, external systems, and temporal workflows before implementation. Do NOT use for event schema/topic contracts (use `event-contract-design`), webhook handler implementation (use `webhook-integration`), generic state transition modeling (use `state-machine-modeling`), or persistence schema design (use `entity-relationship-modeling`).
 
 **When to use**
 - map the order lifecycle as domain events before we design tables or APIs
