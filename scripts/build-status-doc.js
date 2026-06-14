@@ -294,7 +294,6 @@ function renderAuditHealthSection(summary, skillCount) {
   }
 
   const state = summary.by_audit_state || {};
-  const apps = summary.by_application_verdict || {};
   const compr = summary.by_comprehension_verdict || {};
   const struc = summary.by_structural_verdict || {};
   const truth = summary.by_truth_verdict || {};
@@ -307,7 +306,6 @@ function renderAuditHealthSection(summary, skillCount) {
   const assessedProv = get(state, 'assessed_provisional');
   const assessedGraded = get(state, 'assessed_graded');
   const admitted = admittedUnassessed + assessedProv + assessedGraded;
-  const certifiedUseful = get(apps, 'APPLICABLE');
 
   // Comprehension scope carve-out per ADR-0011 § Addendum 2026-05-20:
   // SKIPPED_BASELINE_HIGH and NA are NOT comprehension-unassessed — they
@@ -358,19 +356,17 @@ Comprehension carve-out (per ADR-0011 § Addendum 2026-05-20):
 | Comprehension graded | \`${comprGraded}\` | Comprehension grader produced a real verdict. |
 | Comprehension unassessed | \`${comprUnassessed}\` | Repo-specific skill awaiting gate-8 run. |
 
-### Certification (the only number worth bragging about)
+### Certification — APPLICABLE gate PARKED (2026-06-14T)
 
-| Outcome | Count |
-|---|---|
-| **APPLICABLE** (certified useful) | \`${certifiedUseful}\` |
-| PROVISIONAL (single-model APPLICABLE-equivalent) | \`${get(apps, 'PROVISIONAL')}\` |
-| NOT_DISCRIMINATED_CEILING (baseline saturated; inconclusive) | \`${get(apps, 'NOT_DISCRIMINATED_CEILING')}\` |
-| EQUIVALENT_ON_FRONTIER (no marginal frontier lift) | \`${get(apps, 'EQUIVALENT_ON_FRONTIER')}\` |
-| REDUNDANT (legacy no-delta bucket) | \`${get(apps, 'REDUNDANT')}\` |
-| MIXED (delta varies by case) | \`${get(apps, 'MIXED')}\` |
-| FALSE_POSITIVE (skill over-triggers) | \`${get(apps, 'FALSE_POSITIVE')}\` |
-| HARMFUL (makes agents worse) | \`${harmful}\` |
-| UNVERIFIED (no assessment) | \`${get(apps, 'UNVERIFIED')}\` |
+> The APPLICABLE application-eval gate is **parked** (owner directive, 2026-06-14).
+> The behavior eval is not yet discriminating — it produced 0 APPLICABLE corpus-wide
+> and stamped HARMFUL/REDUNDANT/MIXED on skills known to be good (the test is the
+> problem, not the skills) — and it is expensive to run. The gate no longer runs by
+> default (\`lib/audit/run-skill-audit-loop*.js\`; opt in per-run with \`--eval\`) and its
+> verdicts are **not** reported here as the project's quality signal. Existing
+> \`application_verdict\` values in \`audit-state.json\` sidecars are retained but are NOT
+> a current quality claim. Re-enable by reverting the parking commit once the eval is
+> good enough to certify honestly. See CHANGELOG § Skill Audit Loop — APPLICABLE gate parked.
 
 `;
 }

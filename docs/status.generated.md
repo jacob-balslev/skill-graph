@@ -1,6 +1,6 @@
 # Skill Graph — Generated Status
 
-> **Generated:** 2026-06-14T14:30:41.829Z
+> **Generated:** 2026-06-14T15:13:17.537Z
 > **Generator:** `node scripts/build-status-doc.js` (regenerate; never hand-edit)
 >
 > This file is the single-source-of-truth status snapshot for the project's
@@ -24,11 +24,11 @@
 
 | Check | Status | Duration | Last line |
 |---|---|---|---|
-| check-markdown-links | ✅ PASS | 502 ms | OK   markdown links (1644 file(s)) |
-| check-protocol-consistency | ✅ PASS | 118 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
-| check-doc-drift | ✅ PASS | 432 ms | OK   doc drift sentinel: 88 active doc(s) scanned against schema v8 |
-| check-mirror-freeze | ✅ PASS | 47 ms | OK   mirror freeze: 20 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
-| marketplace-export-check | ✅ PASS | 196 ms | PROJECTION TRUNCATED for writing-humanizer: tail truncated from 503 to 465 chars to fit 1024 limit |
+| check-markdown-links | ✅ PASS | 502 ms | OK   markdown links (1645 file(s)) |
+| check-protocol-consistency | ✅ PASS | 121 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
+| check-doc-drift | ✅ PASS | 238 ms | OK   doc drift sentinel: 89 active doc(s) scanned against schema v8 |
+| check-mirror-freeze | ✅ PASS | 61 ms | OK   mirror freeze: 20 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
+| marketplace-export-check | ✅ PASS | 228 ms | PROJECTION TRUNCATED for writing-humanizer: tail truncated from 503 to 465 chars to fit 1024 limit |
 
 ## Audit Health
 
@@ -68,19 +68,17 @@ Comprehension carve-out (per ADR-0011 § Addendum 2026-05-20):
 | Comprehension graded | `6` | Comprehension grader produced a real verdict. |
 | Comprehension unassessed | `154` | Repo-specific skill awaiting gate-8 run. |
 
-### Certification (the only number worth bragging about)
+### Certification — APPLICABLE gate PARKED (2026-06-14T)
 
-| Outcome | Count |
-|---|---|
-| **APPLICABLE** (certified useful) | `0` |
-| PROVISIONAL (single-model APPLICABLE-equivalent) | `9` |
-| NOT_DISCRIMINATED_CEILING (baseline saturated; inconclusive) | `0` |
-| EQUIVALENT_ON_FRONTIER (no marginal frontier lift) | `0` |
-| REDUNDANT (legacy no-delta bucket) | `3` |
-| MIXED (delta varies by case) | `2` |
-| FALSE_POSITIVE (skill over-triggers) | `0` |
-| HARMFUL (makes agents worse) | `0` |
-| UNVERIFIED (no assessment) | `167` |
+> The APPLICABLE application-eval gate is **parked** (owner directive, 2026-06-14).
+> The behavior eval is not yet discriminating — it produced 0 APPLICABLE corpus-wide
+> and stamped HARMFUL/REDUNDANT/MIXED on skills known to be good (the test is the
+> problem, not the skills) — and it is expensive to run. The gate no longer runs by
+> default (`lib/audit/run-skill-audit-loop*.js`; opt in per-run with `--eval`) and its
+> verdicts are **not** reported here as the project's quality signal. Existing
+> `application_verdict` values in `audit-state.json` sidecars are retained but are NOT
+> a current quality claim. Re-enable by reverting the parking commit once the eval is
+> good enough to certify honestly. See CHANGELOG § Skill Audit Loop — APPLICABLE gate parked.
 
 ## Deprecated-alias drain
 
