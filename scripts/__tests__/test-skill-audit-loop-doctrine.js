@@ -1,5 +1,8 @@
 'use strict';
 
+// Unit tests that active docs and prompts keep the current Skill Audit Loop
+// doctrine instead of reverting to retired lifecycle or verdict wording.
+
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');

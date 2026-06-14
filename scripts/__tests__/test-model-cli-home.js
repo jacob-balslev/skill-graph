@@ -1,5 +1,7 @@
 'use strict';
 
+// Unit tests for scratch model-CLI homes and per-CLI environment routing.
+
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');

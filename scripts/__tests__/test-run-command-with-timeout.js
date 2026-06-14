@@ -1,5 +1,7 @@
 'use strict';
 
+// Unit tests for synchronous command execution with timeout reporting.
+
 const assert = require('assert');
 const { runCommandWithTimeoutSync } = require('../../lib/audit/run-command-with-timeout');
 

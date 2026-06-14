@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Portable contract-design discipline across code modules, services, queues, APIs, webhooks, jobs, and agent interfaces."
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"related\":[\"event-storming\",\"debugging\",\"bounded-context-mapping\",\"api-design\",\"event-contract-design\",\"state-machine-modeling\"],\"suppresses\":[\"event-contract-design\",\"architecture-decision-records\",\"data-modeling\"],\"verify_with\":[\"testing-strategy\",\"code-review\",\"bounded-context-mapping\"]}"
+  relations: "{\"related\":[\"event-storming\",\"debugging\",\"api-design\",\"event-contract-design\",\"state-machine-modeling\",\"conceptual-modeling\"],\"suppresses\":[\"event-contract-design\",\"architecture-decision-records\",\"data-modeling\"],\"verify_with\":[\"testing-strategy\",\"code-review\",\"event-storming\"]}"
   subject: software-architecture
   scope: "Designing and reviewing cross-boundary interface contracts across modules, services, jobs, APIs, event producers/consumers, webhooks, data engineering surfaces, and AI agents/tools. Owns the stable promise at the boundary: parties, semantics, data shape, invariants, failure behavior, idempotency, security/trust, operational SLOs, compatibility, deploy choreography, observability, and verification. Excludes detailed HTTP resource design, async event envelope/topic design, persistence schema design, root-cause debugging, and ADR recording after the contract decision is accepted."
   public: "true"
@@ -89,7 +89,7 @@ Use this skill when the task is the contract that lets two independently changin
 | Async event envelope, schema, topic/channel, replay, ordering, dead-letter behavior, or AsyncAPI/CloudEvents detail | `event-contract-design` |
 | Stored entities, keys, constraints, indexes, normalization, provenance, or data lifecycle | `data-modeling` |
 | Lifecycle states, guards, invalid transitions, and transition tests for one workflow or object | `state-machine-modeling` |
-| Domain discovery before the contract exists | `event-storming` or `bounded-context-mapping` |
+| Domain discovery before the contract exists | `event-storming` or `conceptual-modeling` |
 | Root-cause isolation after a boundary already failed | `debugging` |
 | Recording an accepted contract decision and its consequences | `architecture-decision-records` |
 | Choosing the right verification level for a change | `testing-strategy`; use `contract-testing` when available for detailed contract-test implementation |
@@ -294,8 +294,8 @@ This skill ships a comprehension-eval artifact at [`examples/evals/system-interf
 - write an ADR after the interface decision has already been accepted
 
 **Related skills**
-- Verify with: `testing-strategy`, `code-review`, `bounded-context-mapping`
-- Related: `event-storming`, `debugging`, `bounded-context-mapping`, `api-design`, `event-contract-design`, `state-machine-modeling`
+- Verify with: `testing-strategy`, `code-review`, `event-storming`
+- Related: `event-storming`, `debugging`, `api-design`, `event-contract-design`, `state-machine-modeling`, `conceptual-modeling`
 
 **Grounding**
 - Mode: `universal`

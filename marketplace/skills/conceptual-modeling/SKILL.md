@@ -6,9 +6,9 @@ compatibility: "Domain- and language-agnostic. The conceptual / logical / physic
 allowed-tools: Read Grep
 metadata:
   grounding: "{\"subject_matter\":\"Implementation-neutral conceptual modeling for business domains before logical schema, physical database, ontology, API, or DDD tactical design\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://doi.org/10.1145/320434.320440\",\"https://www.omg.org/spec/UML/2.5.1/PDF\",\"https://opentextbc.ca/dbdesign01/chapter/chapter-8-entity-relationship-model/\",\"https://www.ibm.com/think/topics/conceptual-data-model\"],\"failure_modes\":[\"implementation_leakage_turns_conceptual_model_into_physical_schema\",\"unnamed_relationships_hide_business_meaning\",\"cardinality_or_optionality_left_implicit\",\"identity_criteria_missing_for_entities\",\"relationship_with_attributes_not_reified\",\"generalization_claim_lies_about_disjointness_or_totality\",\"stakeholder_validation_skipped\",\"conceptual_model_overowns_ontology_data_modeling_or_ddd_design\"],\"evidence_priority\":\"equal\"}"
-  relations: "{\"related\":[\"taxonomy-design\",\"data-modeling\",\"entity-relationship-modeling\",\"semantic-relations\",\"ontology-modeling\",\"bounded-context-mapping\",\"naming-conventions\",\"code-review\"],\"suppresses\":[\"entity-relationship-modeling\",\"data-modeling\",\"bounded-context-mapping\"],\"verify_with\":[\"semantic-relations\",\"data-modeling\",\"ontology-modeling\"]}"
+  relations: "{\"related\":[\"taxonomy-design\",\"data-modeling\",\"entity-relationship-modeling\",\"semantic-relations\",\"ontology-modeling\",\"event-storming\",\"system-interface-contracts\",\"naming-conventions\",\"code-review\"],\"suppresses\":[\"entity-relationship-modeling\",\"data-modeling\"],\"verify_with\":[\"semantic-relations\",\"data-modeling\",\"ontology-modeling\"]}"
   subject: software-architecture
-  scope: "Translating messy business requirements, stakeholder language, and early product ideas into an implementation-neutral domain model before schemas, endpoints, or DDD aggregates are named — entities, attributes, named relationships, cardinality, identity criteria, specialization/generalization, aggregation/composition, reification, abstraction-level control, stakeholder validation, and modeling anti-patterns. Portable across any domain-modeling effort; principle-grounded, not repo-bound. Excludes database ER diagrams with keys and normalization (data-modeling), formal ontology axioms in OWL/RDFS (ontology-modeling), and DDD tactical design (bounded-context-mapping)."
+  scope: "Translating messy business requirements, stakeholder language, and early product ideas into an implementation-neutral domain model before schemas, endpoints, or DDD aggregates are named — entities, attributes, named relationships, cardinality, identity criteria, specialization/generalization, aggregation/composition, reification, abstraction-level control, stakeholder validation, and modeling anti-patterns. Portable across any domain-modeling effort; principle-grounded, not repo-bound. Excludes database ER diagrams with keys and normalization (data-modeling), formal ontology axioms in OWL/RDFS (ontology-modeling), and downstream DDD or interface-boundary design handled by event-storming and system-interface-contracts."
   public: "true"
   taxonomy_domain: engineering/modeling
   stability: experimental
@@ -64,7 +64,8 @@ A useful conceptual model is not decorative. It is a decision surface. Every ent
 | Design database ER diagrams, tables, primary keys, foreign keys, junction tables, inheritance mapping, or SQL translation | `entity-relationship-modeling` | ER modeling is database-facing implementation design. |
 | Formalize classes, properties, axioms, SHACL shapes, OWL/RDFS semantics, or reasoning assumptions | `ontology-modeling` | Ontology modeling is machine-checkable semantic formalization. |
 | Decide whether one edge is IS-A, PART-OF, synonymy, causal, thematic, symmetric, or transitive | `semantic-relations` | Semantic relations supplies edge-type tests consumed by conceptual models. |
-| Decide DDD bounded contexts, aggregate boundaries, anti-corruption layers, or translation maps | `bounded-context-mapping` | DDD tactical design is downstream of the concept inventory. |
+| Discover domain events, commands, policies, and aggregate candidates after the concept inventory | `event-storming` | Event-storming turns the concept inventory into behavior and workflow evidence. |
+| Define stable promises across accepted boundaries, services, modules, APIs, events, jobs, or agent tools | `system-interface-contracts` | Interface contracts start after the parties and boundary are known. |
 | Choose final implementation names, casing, suffixes, or rename mechanics | `naming-conventions` | Naming follows a settled model; it should not decide the model. |
 
 ## 1. The Three-Level Architecture
@@ -233,7 +234,8 @@ Do not erase the conceptual model after implementation starts. Keep it as the ex
 | `entity-relationship-modeling` | You need database-oriented ER diagrams, PK/FK decisions, junction tables, inheritance mapping, SQL translation, indexing, or database constraints. |
 | `ontology-modeling` | You need OWL/RDFS class axioms, SHACL shapes, property domains/ranges, disjointness constraints for reasoning, or machine-checkable semantics. |
 | `semantic-relations` | You only need to decide whether one relation is IS-A, PART-OF, causal, thematic, synonymy, polysemy, symmetric, or transitive. |
-| `bounded-context-mapping` | You need DDD bounded contexts, aggregate boundaries, anti-corruption layers, context maps, or translation policies. |
+| `event-storming` | You need domain events, commands, policies, aggregate candidates, or workflow discovery from the concept inventory. |
+| `system-interface-contracts` | You need stable promises across accepted boundaries, services, modules, APIs, events, jobs, or agent tools. |
 | `naming-conventions` | The conceptual model is settled and you now need implementation names, casing, suffixes, or rename mechanics. |
 | `code-review` | You are reviewing code or schema that already implements the model. |
 
@@ -245,7 +247,7 @@ Do not erase the conceptual model after implementation starts. Keep it as the ex
 - Subject: `software-architecture`
 - Public: `true`
 - Domain: `engineering/modeling`
-- Scope: Translating messy business requirements, stakeholder language, and early product ideas into an implementation-neutral domain model before schemas, endpoints, or DDD aggregates are named — entities, attributes, named relationships, cardinality, identity criteria, specialization/generalization, aggregation/composition, reification, abstraction-level control, stakeholder validation, and modeling anti-patterns. Portable across any domain-modeling effort; principle-grounded, not repo-bound. Excludes database ER diagrams with keys and normalization (data-modeling), formal ontology axioms in OWL/RDFS (ontology-modeling), and DDD tactical design (bounded-context-mapping).
+- Scope: Translating messy business requirements, stakeholder language, and early product ideas into an implementation-neutral domain model before schemas, endpoints, or DDD aggregates are named — entities, attributes, named relationships, cardinality, identity criteria, specialization/generalization, aggregation/composition, reification, abstraction-level control, stakeholder validation, and modeling anti-patterns. Portable across any domain-modeling effort; principle-grounded, not repo-bound. Excludes database ER diagrams with keys and normalization (data-modeling), formal ontology axioms in OWL/RDFS (ontology-modeling), and downstream DDD or interface-boundary design handled by event-storming and system-interface-contracts.
 
 **When to use**
 - a stakeholder says users place orders that ship in multiple boxes -- how do I capture this as a model before naming tables?
@@ -267,7 +269,7 @@ Do not erase the conceptual model after implementation starts. Keep it as the ex
 
 **Related skills**
 - Verify with: `semantic-relations`, `data-modeling`, `ontology-modeling`
-- Related: `taxonomy-design`, `data-modeling`, `entity-relationship-modeling`, `semantic-relations`, `ontology-modeling`, `bounded-context-mapping`, `naming-conventions`, `code-review`
+- Related: `taxonomy-design`, `data-modeling`, `entity-relationship-modeling`, `semantic-relations`, `ontology-modeling`, `event-storming`, `system-interface-contracts`, `naming-conventions`, `code-review`
 
 **Concept**
 - Mental model: |

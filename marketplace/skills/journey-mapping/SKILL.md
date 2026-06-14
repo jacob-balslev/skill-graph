@@ -11,7 +11,7 @@ metadata:
   triggers: "[\"journey map\",\"service blueprint\",\"map the user experience\",\"customer journey\",\"touchpoints\"]"
   examples: "[\"Build a journey map for first-time tax filers from awareness through filing to refund.\",\"Add a service-blueprint layer below this journey map showing the back-stage support steps.\",\"Identify the emotional low points in this onboarding journey and the opportunities at each.\",\"Map the cross-channel experience of returning an online order to a physical store.\"]"
   anti_examples: "[\"Break down the steps a user takes inside the upload modal.\",\"Draw the microservice call graph for the checkout API.\",\"Diagram the database schema for the order entity.\"]"
-  relations: "{\"related\":[\"research-synthesis\",\"information-architecture\",\"design-thinking\",\"problem-framing\",\"task-analysis\",\"bounded-context-mapping\",\"event-storming\",\"ideation\",\"user-research\"],\"suppresses\":[\"information-architecture\",\"ideation\"],\"verify_with\":[\"user-research\",\"research-synthesis\"]}"
+  relations: "{\"related\":[\"research-synthesis\",\"information-architecture\",\"design-thinking\",\"problem-framing\",\"task-analysis\",\"event-storming\",\"ideation\",\"user-research\"],\"suppresses\":[\"information-architecture\",\"ideation\"],\"verify_with\":[\"user-research\",\"research-synthesis\"]}"
   mental_model: "|"
   purpose: "|"
   concept_boundary: "|"
@@ -65,7 +65,7 @@ The practice resists two failure modes. The first is the **anodyne happy-path ma
 - The team has not yet done qualitative research on the journey — run **user-research** and **research-synthesis** first; an unresearched journey map is fiction.
 - The diagram needed is a system architecture, microservice topology, or data flow — those are engineering artifacts, not journey maps.
 - The output should be a navigation structure or content taxonomy — use **information-architecture**.
-- The task is modeling engineering domain events across bounded contexts — use **event-storming** or **bounded-context-mapping**.
+- The task is modeling engineering domain events or ownership boundaries — use **event-storming** or **conceptual-modeling**.
 - The team is in solutioning mode and needs to generate concept variants — use **ideation**; journey mapping clarifies experience, it does not invent new ones.
 
 ## Skill Graph context
@@ -91,7 +91,7 @@ The practice resists two failure modes. The first is the **anodyne happy-path ma
 
 **Related skills**
 - Verify with: `user-research`, `research-synthesis`
-- Related: `research-synthesis`, `information-architecture`, `design-thinking`, `problem-framing`, `task-analysis`, `bounded-context-mapping`, `event-storming`, `ideation`, `user-research`
+- Related: `research-synthesis`, `information-architecture`, `design-thinking`, `problem-framing`, `task-analysis`, `event-storming`, `ideation`, `user-research`
 
 **Concept**
 - Mental model: |

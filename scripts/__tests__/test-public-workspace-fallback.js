@@ -1,5 +1,8 @@
 'use strict';
 
+// Unit tests for preparing a public-only fallback workspace for audit/eval model
+// dispatch.
+
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');

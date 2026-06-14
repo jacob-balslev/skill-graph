@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Portable ADR discipline for Markdown decision logs, repo docs, design docs, and architecture governance."
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"related\":[\"framework-fit-analysis\",\"bounded-context-mapping\",\"system-interface-contracts\",\"dependency-architecture\",\"code-review\"],\"suppresses\":[\"framework-fit-analysis\",\"system-interface-contracts\"],\"verify_with\":[\"code-review\"]}"
+  relations: "{\"related\":[\"framework-fit-analysis\",\"system-interface-contracts\",\"dependency-architecture\",\"code-review\"],\"suppresses\":[\"framework-fit-analysis\",\"system-interface-contracts\"],\"verify_with\":[\"code-review\"]}"
   subject: software-architecture
   scope: "Writing, reviewing, and updating Architecture Decision Records — context, decision, options rejected, consequences, status, supersession, and follow-up verification. Portable across any project that records architectural decisions; principle-grounded, not repo-bound. Excludes general documentation prose (documentation), code-review findings (code-review), and choosing between frameworks before a decision exists (framework-fit-analysis)."
   public: "true"
@@ -98,7 +98,7 @@ Good ADRs are short, dated, statused, and honest about consequences. If a future
 
 **Related skills**
 - Verify with: `code-review`
-- Related: `framework-fit-analysis`, `bounded-context-mapping`, `system-interface-contracts`, `dependency-architecture`, `code-review`
+- Related: `framework-fit-analysis`, `system-interface-contracts`, `dependency-architecture`, `code-review`
 
 **Keywords**
 - `ADR`, `architecture decision record`, `decision log`, `technical decision`, `decision consequences`, `options rejected`, `superseded ADR`, `architectural rationale`, `decision status`

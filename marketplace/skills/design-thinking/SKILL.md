@@ -53,7 +53,7 @@ The meta-skill is sceptical of two opposite failure modes. The first is **stage 
 ## Do NOT Use When
 - The work is fully inside a single stage and the right sibling skill is obvious — go directly to **problem-framing**, **user-research**, **research-synthesis**, **journey-mapping**, **ideation**, **prototyping**, or **usability-testing** rather than invoking the meta-skill.
 - The problem is a well-specified engineering implementation task with a clear acceptance criterion — there is no design uncertainty to discover; just build it.
-- The discovery target is an engineering domain model, event flow, or bounded-context map — use **event-storming**, **conceptual-modeling**, or **bounded-context-mapping**.
+- The discovery target is an engineering domain model, event flow, or ownership-boundary question — use **event-storming** or **conceptual-modeling**.
 - The problem is a concrete code defect that needs localization — use **problem-locating-solving**.
 - The work is automated test design, CI architecture, or any engineering verification — use **testing-strategy**.
 - The "user" is an internal system, agent, or non-human actor — design thinking's empathy stage assumes human subjects; methods do not transfer cleanly.

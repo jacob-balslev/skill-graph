@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Portable event-storming discipline for product discovery, domain modeling, event-driven architecture, and workflow analysis."
 allowed-tools: Read Grep
 metadata:
-  relations: "{\"related\":[\"system-interface-contracts\",\"webhook-integration\",\"api-design\",\"bounded-context-mapping\",\"state-machine-modeling\",\"event-contract-design\",\"conceptual-modeling\"],\"suppresses\":[\"event-contract-design\",\"state-machine-modeling\",\"data-modeling\"],\"verify_with\":[\"bounded-context-mapping\",\"conceptual-modeling\"]}"
+  relations: "{\"related\":[\"system-interface-contracts\",\"webhook-integration\",\"api-design\",\"state-machine-modeling\",\"event-contract-design\",\"conceptual-modeling\"],\"suppresses\":[\"event-contract-design\",\"state-machine-modeling\",\"data-modeling\"],\"verify_with\":[\"conceptual-modeling\",\"system-interface-contracts\"]}"
   subject: software-architecture
   public: "true"
   scope: "Use when discovering a domain through events, commands, actors, policies, aggregates, read models, external systems, and temporal workflows before implementation. Do NOT use for event schema/topic contracts (use `event-contract-design`), webhook handler implementation (use `webhook-integration`), generic state transition modeling (use `state-machine-modeling`), or persistence schema design (use `data-modeling`)."
@@ -89,8 +89,8 @@ Do not confuse domain events with technical notifications. "OrderPlaced" is busi
 - define the schema, topic, compatibility, and fixtures for a selected event
 
 **Related skills**
-- Verify with: `bounded-context-mapping`, `conceptual-modeling`
-- Related: `system-interface-contracts`, `webhook-integration`, `api-design`, `bounded-context-mapping`, `state-machine-modeling`, `event-contract-design`, `conceptual-modeling`
+- Verify with: `conceptual-modeling`, `system-interface-contracts`
+- Related: `system-interface-contracts`, `webhook-integration`, `api-design`, `state-machine-modeling`, `event-contract-design`, `conceptual-modeling`
 
 **Keywords**
 - `event storming`, `domain events`, `commands`, `aggregates`, `policies`, `read models`, `temporal workflow`, `event-driven discovery`, `process modeling`

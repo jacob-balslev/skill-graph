@@ -112,6 +112,32 @@ check('model_run_coverage: records mandatory and advisory model participation se
   assert.strictEqual(blocked.models.opus.operations.panel.regrade_required, true);
 });
 
+check('non-certifying dangerous panel receipt is preserved but active verdict downgrades to UNVERIFIED', () => {
+  const d = makeDeps({ existing: ['evals/comprehension.json'] });
+  const out = recordFullLoop({
+    ...base,
+    result: {
+      applied: true,
+      certifying_blocked: ['single-frontier degraded'],
+      eval: { synthesized_verdict: 'HARMFUL', certifying_clean: false },
+    },
+    deps: {
+      ...d.deps,
+      toSidecarReceipt: (r) => ({
+        synthesized_verdict: r.synthesized_verdict,
+        certifying_clean: false,
+        regrade_required: true,
+        directions: [{ role: 'Codex', verdict: 'HARMFUL' }],
+      }),
+    },
+  });
+  assert.strictEqual(out.recorded.application_verdict, 'UNVERIFIED');
+  const w = merged(d.writes);
+  assert.strictEqual(w.application_verdict, 'UNVERIFIED');
+  assert.strictEqual(w.eval_last_run.bidirectional.synthesized_verdict, 'HARMFUL');
+  assert.ok(out.findings.some((f) => /non-certifying guardrail reached HARMFUL/.test(f)));
+});
+
 // 2. KEEP + NO guardrail receipt + NO eval artifacts → behavior verdicts UNVERIFIED, each
 //    with an explicit finding (never a silent skip). Integrity still runs.
 check('keep, missing evals: behavior verdicts UNVERIFIED with explicit findings', () => {

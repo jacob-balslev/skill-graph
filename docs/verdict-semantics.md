@@ -140,6 +140,8 @@ The dual-run that earns `PASS` / `APPLICABLE` is the **two-frontier bidirectiona
 
 **Single-available-frontier degraded panel run.** When the multi-model Skill Audit Loop explicitly runs with one available mandatory frontier because another frontier has an active exhausted-lock, the receipt uses `reconciliation: single-frontier-provisional`, sets `regrade_required: true`, and caps any `PASS` / `APPLICABLE` signal to `PROVISIONAL`. This is lower-confidence evidence that keeps the corpus drain moving; it is not certification and must be replaced by a later full two-frontier re-grade before the skill can claim `PASS` / `APPLICABLE`.
 
+If a degraded panel receipt reports a dangerous application result such as `HARMFUL` or `FALSE_POSITIVE`, the receipt and `model_run_coverage` must preserve that signal, but `recordFullLoop()` downgrades the durable active-corpus verdict to `UNVERIFIED`. The active-corpus removal/routing-exclusion effect of a dangerous verdict requires a certifying-clean signal or a replacement skill that has been newly evaluated; a one-frontier degraded panel result is re-grade evidence, not a corpus-removal verdict.
+
 A strong verdict additionally requires the run to be **certifying-clean**, or it is capped to `PROVISIONAL`:
 
 1. **`parity_ok`** — both directions ran under an identical tools-ON execution profile. A parity mismatch means the run measured permissions, not the model — INVALID, capped.

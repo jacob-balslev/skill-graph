@@ -1,5 +1,7 @@
 'use strict';
 
+// Unit tests for panel preflight checks, CLI state resolution, and auth probes.
+
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
