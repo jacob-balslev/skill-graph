@@ -1422,7 +1422,7 @@ disallowed-tools: AskUserQuestion
 
 **Rules.**
 - Object with seven optional edge keys: `related`, `broader`, `narrower`, `suppresses`, `disjoint_with`, `verify_with`, `depends_on` — plus one optional non-edge composition key, `io_contract` (see below).
-- Every edge target must be the `name` of an existing skill. Use graph/manifest review and routing audits to catch dangling targets across all eight edge keys; `scripts/skill-lint.js` validates schema shape, not graph existence.
+- Every edge target must be the `name` of an existing skill. Use graph/manifest review and routing audits to catch dangling targets across all seven edge keys (`io_contract` is a non-edge composition key, not a graph target); `scripts/skill-lint.js` validates schema shape, not graph existence.
 - Relations are directional from the skill that declares them (A `depends_on` B means A depends on B, not the reverse). `related` is symmetric by SKOS convention; `suppresses` is asymmetric (A `suppresses: B` does not imply B `suppresses: A`).
 
 **Allowed keys.**

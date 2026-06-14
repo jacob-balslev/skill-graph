@@ -104,12 +104,12 @@ Typed edges to sibling skills. Lint verifies every target exists.
 | `adjacent` *(deprecated alias)* / `related` | many skill names | Symmetric "co-read" relation | `skos:related` |
 | `depends_on` | many; string or `{skill, min_version}` | Pragmatic prerequisite | `dcterms:requires` |
 | `verify_with` | many | Co-load for verification | `prov:wasInformedBy` |
-| `boundary` | many; string or `{skill, reason}` | Routing-layer score-aware exclusion edge; excludes the target when the declaring skill wins | `sg:disjointOwnership` |
+| `suppresses` | many; string or `{skill, reason}` | Routing-layer score-aware exclusion edge; excludes the target when the declaring skill wins | `sg:disjointOwnership` |
 | `disjoint_with` *(v3.1)* | many; string or `{skill, reason}` | Formal class-disjointness assertion | `owl:disjointWith` |
 | `broader` *(v3.1)* | many | Cross-skill generalisation — target is more general | `skos:broader` |
 | `narrower` *(v3.1)* | many | Cross-skill specialisation — target is more specific | `skos:narrower` |
 
-`related` is the canonical broad association predicate. `boundary` records ownership exclusions for routing. ADR 0001 records the historical `adjacent` rename; ADR 0006 records the `boundary` / `disjoint_with` split.
+`related` is the canonical broad association predicate. `suppresses` records ownership exclusions for routing. ADR 0001 records the historical `adjacent` rename; ADR 0006 records the `boundary` / `disjoint_with` split; ADR 0018 renamed the routing-exclusion edge `boundary` → `suppresses` (the old name was removed from the schema 2026-06-13).
 
 ### Grounding (1 object, 5 required sub-fields — conditional on non-empty `project[]`)
 

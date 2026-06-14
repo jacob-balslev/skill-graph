@@ -14,15 +14,15 @@ Legacy name for the symmetric associative relation. Tooling accepts it as an ali
 
 Symmetric co-read relation. Use for skills that teach the same surface from different angles — reading one prompts a reader to want the other. Relation is symmetric in intent but the schema does not enforce reciprocity; lint-level reciprocity checking is a future feature. Max 5 entries recommended per skill to avoid hub-and-spoke clutter.
 
-### `boundary`
+### `suppresses`
 
-Routing-layer anti-ownership edge. Use for skills this skill explicitly suppresses from co-routing when this skill wins a query. This relation is directional and Skill-Graph-specific; it is intentionally weaker than formal OWL disjointness. Item shape: bare string OR `{skill, reason}`. Reasons are strongly recommended because routing exclusions need an explicit ownership rule.
+Routing-layer anti-ownership edge (formerly named `boundary`; renamed and the old name removed from the schema by ADR-0018, 2026-06-13). Use for skills this skill explicitly suppresses from co-routing when this skill wins a query. This relation is directional and Skill-Graph-specific; it is intentionally weaker than formal OWL disjointness. Item shape: bare string OR `{skill, reason}`. Reasons are strongly recommended because routing exclusions need an explicit ownership rule.
 
 ### `disjoint_with`
 
 *W3C mapping: `owl:disjointWith`*
 
-Formal class-disjointness assertion. Use only when the two skill concepts are genuinely disjoint in the ontology sense. This is rare in day-to-day routing; most wrong-skill prevention belongs in `boundary`. `disjoint_with` is symmetric in meaning even though the schema does not enforce reciprocal authoring.
+Formal class-disjointness assertion. Use only when the two skill concepts are genuinely disjoint in the ontology sense. This is rare in day-to-day routing; most wrong-skill prevention belongs in `suppresses`. `disjoint_with` is symmetric in meaning even though the schema does not enforce reciprocal authoring.
 
 ### `broader`
 
