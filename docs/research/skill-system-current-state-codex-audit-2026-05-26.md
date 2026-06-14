@@ -1,5 +1,7 @@
 # Skill System Current-State Codex Audit
 
+> **HISTORICAL — describes the pre-clean-cut state as of 2026-05-26.** This record's "v7/v8 compatibility mode" / "author both v7 and v8 fields" framing was superseded by `AGENTS.md § Major Version Is a Clean Cut` (v8 is the single live contract; prior versions live in git tags). Read it as a dated snapshot, not current guidance.
+
 Date: 2026-05-26
 Auditor: Codex
 Mode: SYSTEM work only
