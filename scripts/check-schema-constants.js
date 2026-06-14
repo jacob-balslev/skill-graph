@@ -95,6 +95,14 @@ const SPEC = {
     'comprehension_verdict',
     'application_verdict',
   ],
+  // Total top-level property counts — drift guard for the hand-stamped field
+  // counts in prose. When a field is added or removed, bump these AND the
+  // counts in: AGENTS.md § Skill Metadata Protocol — Quick Reference,
+  // docs/concept-map.md, and docs/adr/0019-audit-state-sidecar-separation.md.
+  // (Added 2026-06-14 per audit finding P-7: six fields were added on
+  // 2026-06-10/06-12 and three docs went stale because no gate asserted counts.)
+  frontmatter_property_count: 31,
+  sidecar_property_count: 30,
 };
 
 // ---------------------------------------------------------------------------
@@ -223,6 +231,25 @@ function runChecks() {
 
   // Audit-state sidecar `required` (7 fields; `version` optional). ADR-0019.
   results.push(checkRequiredFields('audit-state.schema required fields', auditRequired, SPEC.sidecar_required_fields));
+
+  // Total property-count drift guard (audit finding P-7). Keeps the prose
+  // field counts in AGENTS.md / concept-map.md / ADR-0019 from going stale.
+  {
+    const fc = Object.keys(skillProps).length;
+    results.push({
+      label: 'skill.schema frontmatter property count',
+      ok: fc === SPEC.frontmatter_property_count,
+      reason: fc === SPEC.frontmatter_property_count ? undefined
+        : `expected ${SPEC.frontmatter_property_count}, found ${fc} — bump SPEC.frontmatter_property_count AND the counts in AGENTS.md, docs/concept-map.md, ADR-0019`,
+    });
+    const sc = Object.keys(auditProps).length;
+    results.push({
+      label: 'audit-state.schema sidecar property count',
+      ok: sc === SPEC.sidecar_property_count,
+      reason: sc === SPEC.sidecar_property_count ? undefined
+        : `expected ${SPEC.sidecar_property_count}, found ${sc} — bump SPEC.sidecar_property_count AND the counts in AGENTS.md, docs/concept-map.md, ADR-0019`,
+    });
+  }
   results.push(checkEnum('skill.schema subject (12-enum)', SPEC.v8_subject, skillProps.subject && skillProps.subject.enum));
   if (skillProps.subjects && skillProps.subjects.items) {
     results.push(checkEnum('skill.schema subjects[].items (12-enum)', SPEC.v8_subject, skillProps.subjects.items.enum));
