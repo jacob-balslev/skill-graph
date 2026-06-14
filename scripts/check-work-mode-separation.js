@@ -54,11 +54,16 @@ function classify(path) {
   if (auditMatch) {
     const child = auditMatch[1];
     // SYSTEM-owned subdirectories under audits/ — NOT per-skill audit artifacts.
-    // `prompts` / `_state` are loop infrastructure; `gate-conformance` is the
-    // executable gate/protocol conformance suite (spec.yaml + synthetic negative
-    // test fixtures + README). Its SKILL.md files are test specimens, not corpus
-    // skills, so they must not classify as CONTENT.
-    if (child === 'prompts' || child === '_state' || child === 'gate-conformance') return 'SYSTEM';
+    // `prompts` / `_state` are loop infrastructure; `gate-conformance` and
+    // `workflow-conformance` are executable SYSTEM conformance suites. Their
+    // fixtures and specs are test specimens, not corpus skills or per-skill audit
+    // artifacts, so they must not classify as CONTENT.
+    if (
+      child === 'prompts' ||
+      child === '_state' ||
+      child === 'gate-conformance' ||
+      child === 'workflow-conformance'
+    ) return 'SYSTEM';
     return 'CONTENT';
   }
 

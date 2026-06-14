@@ -6,12 +6,22 @@ version: 1.0.0
 since: 2026-05-17
 status: active
 superseded_by: null
-last_changed: 2026-05-23
+last_changed: 2026-06-14
 ---
 
 # /improve — One field, one commit, keep or revert
 
 Edit one field of a skill. One commit. Time-boxed. After the edit, `evaluate` runs automatically; harmful or measurable regression reverts. Flat score, missing eval artifact, or capped/inconclusive eval is not a regression by itself. The lesson is recorded; the field's `last_changed` stamp updates only on accept.
+
+## Workflow context
+
+Before running this command through an agent, read
+[`skill-audit-loop/WORKFLOW_CONTRACT.md`](../../../skill-graph/skill-audit-loop/WORKFLOW_CONTRACT.md)
+and inspect
+[`audits/workflow-conformance/spec.yaml`](../../../skill-graph/audits/workflow-conformance/spec.yaml).
+The metric for `improve` is keep-or-revert evidence on one field: the candidate
+is kept only when verification does not show harmful or measurable regression,
+and behavior verdicts are stamped only from real eval receipts.
 
 ## What it writes
 

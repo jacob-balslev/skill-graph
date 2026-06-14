@@ -54,7 +54,7 @@ Every top-level authored field in `schemas/SKILL_METADATA_PROTOCOL_schema.json` 
 | 16 | `eval_state` | grouped under parent | `health.eval_state`; manifest schema enforces `unverified` / `passing` / `monitored`. |
 | 17 | `routing_eval` | grouped under parent | `health.routing_eval`; manifest schema enforces `absent` / `present`. |
 | 18 | `comprehension_state` | grouped under parent | `health.comprehension_state`. |
-| 19 | `concept` | copied through unchanged | `concept`; required when `comprehension_state: present`. |
+| 19 | Legacy `concept` | copied through unchanged when present | Compatibility projection for historical generated manifests only. Current authored `SKILL.md` files use the five flat Understanding fields (`mental_model`, `purpose`, `concept_boundary`, `analogy`, `misconception`), and `skill-lint.js` enforces those fields when sidecar `comprehension_state: present`. |
 | 20 | `eval_last_run` | grouped under parent | `health.eval_last_run`; preserves nested `bidirectional` receipts from the audit-state sidecar. |
 | 21 | `eval` | grouped under parent | `health.eval`; nested compatibility form for the Evaluation Status fields. |
 | 22 | `stability` | copied through unchanged | `stability`. |

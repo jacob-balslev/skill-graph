@@ -10,13 +10,14 @@
  * named EXISTING gate script against the scenario's fixture, asserting the exit
  * code and output. This runner adds NO gate logic of its own — it orchestrates
  * the gate scripts the scenarios reference (currently `skill-lint.js` for the
- * structural gate and `skill-graph-drift.js` for the truth gate; see the WHEN
- * map below). The corpus-scoped gates (`check-audit-manifest.js`,
- * `check-application-evals.js`) read the manifest / skill_roots rather than a
- * single fixture and are covered by their own unit tests, not driven here — see
- * `audits/gate-conformance/README.md` § gate→coverage map. Negative fixtures live under
- * `audits/gate-conformance/fixtures/invalid/<rule>/`, deliberately outside every
- * corpus lint/manifest/eval sweep so they can never redden `verify`.
+ * structural gate, `skill-graph-drift.js` for the truth gate,
+ * `check-application-evals.js` for application-eval structure, and
+ * `check-audit-manifest.js` for verdict/artifact honesty; see the WHEN map
+ * below). Negative fixtures live under
+ * `audits/gate-conformance/fixtures/invalid/<rule>/` or hermetic fixture
+ * workspaces under `audits/gate-conformance/fixtures/*-workspaces/`,
+ * deliberately outside every corpus lint/manifest/eval sweep so they can never
+ * redden `verify`.
  *
  * The spec is authored in YAML and parsed with the repo's existing
  * `scripts/lib/parse-frontmatter.js` (wrapped in `---` delimiters) — no new
@@ -55,6 +56,27 @@ const WHEN = {
   // Truth Gate — drift sentinel; takes the fixture's SKILL.md positionally and
   // exits non-zero on DRIFT or BROKEN.
   'drift': (givenAbs) => ['scripts/skill-graph-drift.js', path.join(givenAbs, 'SKILL.md')],
+  // Application-eval structural gate — hermetic fixture workspace with its own
+  // .skill-graph/config.json, so the check does not scan the live corpus.
+  'application-evals': (givenAbs, scenario) => ({
+    argv: [
+      'scripts/check-application-evals.js',
+      '--skill',
+      scenario.skill || 'demo-skill',
+      '--check',
+    ],
+    env: { SKILL_GRAPH_WORKSPACE: givenAbs },
+  }),
+  // Verdict/artifact honesty gate — hermetic fixture workspace for per-run
+  // verdicts and skill sidecars; the script still validates the real SYSTEM
+  // manifest paths from this repo.
+  'audit-manifest': (givenAbs) => [
+    'scripts/check-audit-manifest.js',
+    '--workspace',
+    givenAbs,
+    '--limit',
+    '5',
+  ],
 };
 
 /** Load + parse the YAML spec into its `scenarios` array. */
@@ -83,16 +105,20 @@ function runScenario(scenario) {
   const givenAbs = path.resolve(SPEC_DIR, given);
   assert(fs.existsSync(givenAbs), `scenario ${id}: \`given\` path not found: ${given}`);
 
-  const argv = build(givenAbs, scenario);
-  const res = spawnSync('node', argv, { cwd: REPO_ROOT, encoding: 'utf8' });
-  assert(!res.error, `scenario ${id}: failed to spawn ${argv.join(' ')}: ${res.error}`);
+  const command = normalizeCommand(build(givenAbs, scenario));
+  const res = spawnSync('node', command.argv, {
+    cwd: REPO_ROOT,
+    encoding: 'utf8',
+    env: { ...process.env, ...(command.env || {}) },
+  });
+  assert(!res.error, `scenario ${id}: failed to spawn ${command.argv.join(' ')}: ${res.error}`);
   const output = `${res.stdout || ''}${res.stderr || ''}`;
 
   if (then.exit !== undefined) {
     assert.strictEqual(
       res.status,
       Number(then.exit),
-      `scenario ${id}: expected exit ${then.exit}, got ${res.status}\n--- output ---\n${output}`
+      `scenario ${id}: expected exit ${then.exit}, got ${res.status}\n--- command ---\nnode ${command.argv.join(' ')}\n--- output ---\n${output}`
     );
   }
   // `output_contains` / `output_absent` accept a string OR an array of strings.
@@ -112,6 +138,13 @@ function runScenario(scenario) {
       `scenario ${id}: expected output to NOT contain "${needle}"\n--- output ---\n${output}`
     );
   }
+}
+
+/** Accept a legacy argv array or a richer { argv, env } command object. */
+function normalizeCommand(command) {
+  if (Array.isArray(command)) return { argv: command, env: {} };
+  assert(command && Array.isArray(command.argv), 'WHEN builder must return argv[] or { argv, env }');
+  return command;
 }
 
 /** Normalize a scalar-or-array `then` field to an array of strings (or []). */

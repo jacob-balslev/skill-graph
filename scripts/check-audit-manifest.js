@@ -358,7 +358,7 @@ function main() {
       if (comprehensionEnumLeak) {
         failures.push({
           ...entry,
-          reason: `Verdict has comprehension_verdict=${verdicts.comprehension}, but that value is an application-layer enum (per schemas/SKILL_METADATA_PROTOCOL_schema.json:274-285 and ADR 0011). The comprehension and application enum sets are disjoint. Either correct the verdict to use a comprehension-layer value (PASS/SHALLOW/REDUNDANT/PROVISIONAL/UNVERIFIED/SKIPPED_BASELINE_HIGH/NA) or move this value into the application_verdict slot.`,
+          reason: `Verdict has comprehension_verdict=${verdicts.comprehension}, but that value is an application-layer enum (per schemas/skill-audit-state.schema.json and ADR 0011). The comprehension and application enum sets are disjoint. Either correct the verdict to use a comprehension-layer value (PASS/SHALLOW/REDUNDANT/PROVISIONAL/UNVERIFIED/SKIPPED_BASELINE_HIGH/NA) or move this value into the application_verdict slot.`,
         });
       }
       if (claimsGradedApplication && !applicationExists && !currentAppIsHonestlyDowngraded) {

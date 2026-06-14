@@ -6,12 +6,30 @@ version: 1.0.0
 since: 2026-05-17
 status: active
 superseded_by: null
-last_changed: 2026-06-07
+last_changed: 2026-06-14
 ---
 
 # /audit — Read every field, write the Integrity verdict
 
 Audit one skill against live repo truth. No mutations to `SKILL.md`; writes the Integrity-Gate audit fingerprint to the skill's sibling `audit-state.json` sidecar. The Skill Audit Loop is the umbrella; lowercase `audit` is the report-only Verify command inside it.
+
+## Workflow context
+
+Before running this command through an agent, read
+[`skill-audit-loop/WORKFLOW_CONTRACT.md`](../../../skill-graph/skill-audit-loop/WORKFLOW_CONTRACT.md).
+It defines the metric for this command as the report-only Integrity Gate:
+structural pass/fail plus truth-source status, not behavior certification. The
+deterministic examples are
+[`audits/gate-conformance/spec.yaml`](../../../skill-graph/audits/gate-conformance/spec.yaml)
+and the agent-entrypoint examples are
+[`audits/workflow-conformance/spec.yaml`](../../../skill-graph/audits/workflow-conformance/spec.yaml).
+
+## Command surface
+
+The `scripts/skill/*` snippets below are workspace-orchestration helpers. Run
+them from `~/Development`, where those scripts exist. Standalone npm consumers
+should use the bundled CLI surface instead: `skill-graph audit <skill>`,
+`skill-graph status <skill>`, and `skill-graph doctor`.
 
 ## Why this audit exists
 

@@ -1,0 +1,68 @@
+{
+  "skill_name": "valid-app",
+  "subject": "application eval structural conformance",
+  "mode": "application",
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": 1,
+      "scenario_type": "positive",
+      "criticality": "normal",
+      "red_herring": false,
+      "scenario": "A reviewer receives a skill with a claimed behavior gate.",
+      "context": "The reviewer is checking whether the eval artifact is structurally usable.",
+      "question": "What should the reviewer verify first?",
+      "expected_flags": ["The eval file uses cases[], not evals[]."],
+      "expected_fix_hints": ["Confirm every case has observable expectations."],
+      "absent_signals": ["Does not claim APPLICABLE from structure alone."]
+    },
+    {
+      "id": 2,
+      "scenario_type": "positive",
+      "criticality": "high",
+      "red_herring": false,
+      "scenario": "A case asks the agent to apply the skill to a concrete artifact.",
+      "context": "The eval runner needs an unambiguous expected behavior.",
+      "question": "What makes the case gradeable?",
+      "expected_flags": ["The case states concrete expected flags."],
+      "expected_fix_hints": ["The case states concrete fix hints."],
+      "absent_signals": ["Does not rely on vague preference language."]
+    },
+    {
+      "id": 3,
+      "scenario_type": "boundary",
+      "criticality": "normal",
+      "red_herring": false,
+      "scenario": "A case includes a tempting but irrelevant adjacent concern.",
+      "context": "The evaluator checks whether absent signals prevent overreach.",
+      "question": "What should the answer avoid?",
+      "expected_flags": ["The answer stays inside the skill's scope."],
+      "expected_fix_hints": ["The answer names the boundary when relevant."],
+      "absent_signals": ["Does not invent unrelated architecture work."]
+    },
+    {
+      "id": 4,
+      "scenario_type": "prior-failure",
+      "criticality": "critical",
+      "red_herring": false,
+      "scenario": "A previous eval passed because duplicate ids hid a failing case.",
+      "context": "The structural gate must preserve case identity.",
+      "question": "What should be checked?",
+      "expected_flags": ["Each case id is unique."],
+      "expected_fix_hints": ["Rename duplicate ids before running the grader."],
+      "absent_signals": ["Does not skip identity validation."]
+    },
+    {
+      "id": 5,
+      "scenario_type": "red-herring",
+      "criticality": "low",
+      "red_herring": true,
+      "scenario": "A prompt looks adjacent to the skill but should not activate it.",
+      "context": "Boundary behavior is required before certification.",
+      "question": "What should the agent do?",
+      "expected_flags": ["The agent recognizes the case is out of scope."],
+      "expected_fix_hints": ["The agent routes to a more relevant skill or declines the skill."],
+      "absent_signals": ["Does not force-fit the target skill."]
+    }
+  ]
+}

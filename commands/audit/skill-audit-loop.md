@@ -14,6 +14,13 @@ last_changed: 2026-06-06
 **Usage:** `/skill-audit-loop "<skill>" "<project-or-repo>"`
 **Example:** `/skill-audit-loop "methodical" "Skill Graph project"`
 
+> **Workflow context:** before an agent claims or mutates audit work through this command, read
+> [`skill-audit-loop/WORKFLOW_CONTRACT.md`](../../../skill-graph/skill-audit-loop/WORKFLOW_CONTRACT.md),
+> inspect [`audits/gate-conformance/spec.yaml`](../../../skill-graph/audits/gate-conformance/spec.yaml),
+> and inspect [`audits/workflow-conformance/spec.yaml`](../../../skill-graph/audits/workflow-conformance/spec.yaml).
+> That contract defines what the loop evaluates, which metric applies at each gate,
+> and how findings, scorecards, receipts, and residual risk are displayed.
+
 Two phases, two modes, two commits. Arg 1 = the skill to run through the Skill Audit Loop. Arg 2 = the project (e.g. `Sales Hub`, `Skill Graph project`) or repo (e.g. `sales-hub`, `orchestrator-ui`) the improved skill is then **applied to** — i.e. the skill's methodology is run *against* that target and findings are reported. The skill stays portable in the library; the target is what it operates on.
 
 > **This is the interactive single-skill command.** The autonomous batch queue-worker that drains the whole worklist is the OpenCode `skill-audit-loop` loop (`.opencode/commands/skill-audit-loop.md`, registered verbatim in `scripts/loop/run-loop-sweep.sh`). Same name, different runtime, different job — do not conflate them and do not gut that loop prompt.

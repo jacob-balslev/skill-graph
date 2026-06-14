@@ -6,12 +6,21 @@ version: 1.0.0
 since: 2026-05-17
 status: active
 superseded_by: null
-last_changed: 2026-05-23
+last_changed: 2026-06-14
 ---
 
 # /evaluate — Run the eval suite, write the score
 
 Run the eval suite (`evals/<skill>.json` plus the optional `evals/comprehension.json`) against the targeted skill via the LLM grader. Writes the result to the Audit Status. No mutations to the SKILL.md body.
+
+## Workflow context
+
+Before running this command through an agent, read
+[`skill-audit-loop/WORKFLOW_CONTRACT.md`](../../../skill-graph/skill-audit-loop/WORKFLOW_CONTRACT.md).
+This command evaluates behavior evidence, not structural correctness. Its two
+metrics are `comprehension_verdict` for recitation quality and
+`application_verdict` for behavior-change evidence. No-lift and ceiling
+outcomes are scoped evidence, not deletion instructions.
 
 ## What it writes
 

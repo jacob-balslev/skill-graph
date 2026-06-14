@@ -1,0 +1,12 @@
+{
+  "schema_version": 8,
+  "version": "1.0.0",
+  "owner": "skill-graph-fixture-suite",
+  "freshness": "2026-06-14",
+  "drift_check": {
+    "last_verified": "2026-06-14"
+  },
+  "eval_artifacts": "none",
+  "eval_state": "unverified",
+  "routing_eval": "absent"
+}

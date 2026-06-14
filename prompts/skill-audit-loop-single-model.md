@@ -59,8 +59,18 @@ SETUP
    - skill-graph/AGENTS.md  → Skill Metadata Protocol + "Labels Are Earned" doctrine
      (the old top-level `skill-metadata-protocol` path is gone; this is canonical)
    - skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook  → the per-skill audit contract (the 13-step runbook)
+   - skill-graph/skill-audit-loop/AGENT_CONTEXT.yaml  → machine-readable mission, vision,
+     goal, rules, docs, BDD suites, and script wiring for this workflow
+   - skill-graph/skill-audit-loop/WORKFLOW_CONTRACT.md  → what this workflow evaluates,
+     which metric applies, which artifacts prove each verdict, and how to display evidence
    - docs/reference/skill-audit-pipeline.md          → Audit Doctrine (intent fidelity +
      teaching efficacy; lint is a floor, never the goal)
+   - skill-graph/docs/adr/0011-split-audit-verdict-into-four-verdicts.md
+   - skill-graph/docs/adr/0019-audit-state-sidecar-separation.md
+   - skill-graph/docs/adr/0021-width-before-verdict-advisory-cross-review-and-mandatory-verification.md
+   - skill-graph/docs/adr/0022-representative-generator-frontier-judges.md
+   - skill-graph/audits/gate-conformance/spec.yaml
+   - skill-graph/audits/workflow-conformance/spec.yaml
    Do NOT read or act on skill-graph/audits/merge-protocol.md — that is the multi-model flow (see RULE 0).
 3. Load the skills relevant to this task: skill-infrastructure, skill-scaffold,
    skill-evolution, evaluation, methodical, no-cutting-corners, best-practice

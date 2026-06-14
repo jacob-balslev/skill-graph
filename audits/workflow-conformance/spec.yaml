@@ -1,0 +1,211 @@
+# Skill Audit Loop Workflow Conformance Spec
+#
+# Declarative BDD scenarios for the agent-orientation layer of the Skill Audit
+# Loop. These scenarios do not replace behavior evaluation. They prove that the
+# entrypoints agents actually read connect the prompt, ADRs, BDD examples,
+# skills, scripts, metrics, and display requirements before execution.
+#
+# Fields per scenario:
+#   id      unique kebab-case identifier
+#   rule    human statement of the expected workflow contract
+#   given   file path, relative to this spec directory
+#   when    text-references | lifecycle-step-contract
+#   step    required only for lifecycle-step-contract
+#   then    inline map:
+#             contains       string or list of strings that must appear
+#             absent         optional string or list of strings that must not appear
+
+scenarios:
+  - id: workflow-contract-defines-evaluation-metrics
+    workflow: all
+    rule: "The workflow contract tells agents what is being evaluated, which metric applies, and how to display evidence."
+    given: ../../skill-audit-loop/WORKFLOW_CONTRACT.md
+    when: text-references
+    then: { contains: ["## What Are We Evaluating?", "Structural Integrity", "Truth", "Routing", "Comprehension", "Application", "Workflow Integrity", "Artifact Honesty", "Merge Quality", "## Display Standard"] }
+
+  - id: agent-context-manifest-wires-charter-docs-bdd-and-scripts
+    workflow: all
+    rule: "The agent context manifest wires mission, vision, goal, rules, required docs, BDD suites, and execution scripts into one checked packet."
+    given: ../../skill-audit-loop/AGENT_CONTEXT.yaml
+    when: agent-context-manifest
+    then: { contains: ["mission", "vision", "goal", "rules", "required_documents", "bdd_suites", "scripts"] }
+
+  - id: workflow-contract-points-to-agent-context-manifest
+    workflow: all
+    rule: "The workflow contract points agents and delegators to the machine-readable context manifest."
+    given: ../../skill-audit-loop/WORKFLOW_CONTRACT.md
+    when: text-references
+    then: { contains: ["AGENT_CONTEXT.yaml", "mission, vision", "required docs", "execution scripts"] }
+
+  - id: skill-graph-agents-points-to-agent-context-manifest
+    workflow: all
+    rule: "The Skill Graph repository guide points cold-start agents to the context manifest, workflow contract, and workflow BDD."
+    given: ../../AGENTS.md
+    when: text-references
+    then:
+      contains: ["skill-audit-loop/AGENT_CONTEXT.yaml", "skill-audit-loop/WORKFLOW_CONTRACT.md", "audits/workflow-conformance/spec.yaml"]
+      absent: ["application_verdict ==", "primary quality signal"]
+
+  - id: root-agents-points-to-agent-context-manifest
+    workflow: all
+    rule: "The workspace guide points cross-repo Skill Audit Loop work to the context manifest and workflow contract before scripts."
+    given: ../../../AGENTS.md
+    when: text-references
+    then:
+      contains: ["skill-graph/skill-audit-loop/AGENT_CONTEXT.yaml", "skill-graph/skill-audit-loop/WORKFLOW_CONTRACT.md"]
+      absent: ["application_verdict ==", "primary quality signal"]
+
+  - id: lifecycle-read-step-contract
+    workflow: lifecycle
+    step: Read
+    rule: "Read establishes current claims, dependencies, and evidence before mutation."
+    given: ../../skill-audit-loop/WORKFLOW_CONTRACT.md
+    when: lifecycle-step-contract
+    then: { contains: ["| Read |", "currently claims", "Pass/fail over required source reads", "SKILL.md", "audit-state.json", "related skills", "No mutation"] }
+
+  - id: lifecycle-verify-step-contract
+    workflow: lifecycle
+    step: Verify
+    rule: "Verify checks structural validity and truth without editing instructional content or stamping behavior verdicts."
+    given: ../../skill-audit-loop/WORKFLOW_CONTRACT.md
+    when: lifecycle-step-contract
+    then: { contains: ["| Verify |", "structurally valid", "Deterministic pass/fail plus truth status", "skill-lint.js", "skill-graph-drift.js", "source-truth-catalog.js", "No instructional edits"] }
+
+  - id: lifecycle-evaluate-baseline-step-contract
+    workflow: lifecycle
+    step: Evaluate baseline
+    rule: "Evaluate baseline records pre-change behavior evidence or an explicit unverified state."
+    given: ../../skill-audit-loop/WORKFLOW_CONTRACT.md
+    when: lifecycle-step-contract
+    then: { contains: ["| Evaluate baseline |", "before changing the skill", "Receipt-backed baseline", "UNVERIFIED", "Prior sidecar verdict", "evaluator receipt", "No positive behavior verdict without an evaluator receipt"] }
+
+  - id: lifecycle-research-step-contract
+    workflow: lifecycle
+    step: Research
+    rule: "Research grounds the candidate direction in repo evidence, official sources, and related-skill comparison."
+    given: ../../skill-audit-loop/WORKFLOW_CONTRACT.md
+    when: lifecycle-step-contract
+    then: { contains: ["| Research |", "What should the skill teach now?", "Evidence strength and source coverage", "Official sources", "related-skill comparison", "research.md", "No unverified web claim"] }
+
+  - id: lifecycle-improve-step-contract
+    workflow: lifecycle
+    step: Improve
+    rule: "Improve writes only a candidate change that can still be kept, reverted, or deferred."
+    given: ../../skill-audit-loop/WORKFLOW_CONTRACT.md
+    when: lifecycle-step-contract
+    then: { contains: ["| Improve |", "candidate change", "Candidate diff scoped to one chosen field", "Candidate `SKILL.md`", "last_changed", "No broad rewrite", "before Grade"] }
+
+  - id: lifecycle-use-step-contract
+    workflow: lifecycle
+    step: Use
+    rule: "Use proves the candidate enters the intended application path before any behavior claim is made."
+    given: ../../skill-audit-loop/WORKFLOW_CONTRACT.md
+    when: lifecycle-step-contract
+    then: { contains: ["| Use |", "intended task shape", "Application-path execution", "Candidate skill loaded", "task transcript or fixture", "scorecard row", "merely reading the candidate"] }
+
+  - id: lifecycle-evaluate-candidate-step-contract
+    workflow: lifecycle
+    step: Evaluate candidate
+    rule: "Evaluate candidate uses the same metric as baseline and records comparative receipts, failures, and ceiling reasons."
+    given: ../../skill-audit-loop/WORKFLOW_CONTRACT.md
+    when: lifecycle-step-contract
+    then: { contains: ["| Evaluate candidate |", "help, regress, prove redundant, or remain inconclusive", "Same metric as baseline", "failed case IDs", "ceiling reason", "grader receipt", "No treating missing, invalid, or capped evals"] }
+
+  - id: lifecycle-grade-step-contract
+    workflow: lifecycle
+    step: Grade
+    rule: "Grade decides durable state from receipts and preserves findings without applying reverted work."
+    given: ../../skill-audit-loop/WORKFLOW_CONTRACT.md
+    when: lifecycle-step-contract
+    then: { contains: ["| Grade |", "Keep/revert/defer", "verdict eligibility", "merge ledger", "eval receipts", "path-limited diff", "No verdict beyond receipts", "no dropped findings", "no apply-on-revert"] }
+
+  - id: workflow-contract-connects-docs-adrs-bdd-skills-scripts
+    workflow: all
+    rule: "The workflow contract explicitly connects docs, ADRs, BDD scenarios, prompts, skills, scripts, and artifacts."
+    given: ../../skill-audit-loop/WORKFLOW_CONTRACT.md
+    when: text-references
+    then: { contains: ["Prompt", "Agent context manifest", "Skills", "ADRs", "BDD scenarios", "Scripts", "Artifacts", "ADR-0011", "ADR-0019", "ADR-0021", "ADR-0022", "audits/gate-conformance/spec.yaml", "audits/workflow-conformance/spec.yaml"] }
+
+  - id: single-model-prompt-loads-workflow-context
+    workflow: single-model-audit
+    rule: "The single-model prompt requires the workflow contract, relevant ADRs, and BDD suites before claim/edit/evaluate work."
+    given: ../../prompts/skill-audit-loop-single-model.md
+    when: text-references
+    then: { contains: ["skill-audit-loop/AGENT_CONTEXT.yaml", "skill-audit-loop/WORKFLOW_CONTRACT.md", "audits/gate-conformance/spec.yaml", "audits/workflow-conformance/spec.yaml", "docs/adr/0011", "docs/adr/0019", "docs/adr/0021", "docs/adr/0022"] }
+
+  - id: codex-autonomous-prompt-loads-workflow-context
+    workflow: codex-autonomous
+    rule: "The Codex autonomous worker read order includes the workflow contract, BDD suites, and ADR set before claiming work."
+    given: ../../prompts/skill-audit-loop-codex-autonomous-v5.md
+    when: text-references
+    then: { contains: ["skill-audit-loop/AGENT_CONTEXT.yaml", "skill-audit-loop/WORKFLOW_CONTRACT.md", "audits/gate-conformance/spec.yaml", "audits/workflow-conformance/spec.yaml", "docs/adr/0011", "docs/adr/0019", "docs/adr/0021", "docs/adr/0022"] }
+
+  - id: batch-worker-prompt-loads-workflow-context
+    workflow: batch-worker
+    rule: "The model-agnostic batch worker read order includes the workflow contract, BDD suites, and ADR set before claiming work."
+    given: ../../prompts/skill-audit-loop-batch-worker-v4.md
+    when: text-references
+    then: { contains: ["skill-audit-loop/AGENT_CONTEXT.yaml", "skill-audit-loop/WORKFLOW_CONTRACT.md", "audits/gate-conformance/spec.yaml", "audits/workflow-conformance/spec.yaml", "docs/adr/0011", "docs/adr/0019", "docs/adr/0021", "docs/adr/0022"] }
+
+  - id: panel-supervisor-loads-workflow-context
+    workflow: panel-supervisor
+    rule: "The shared panel supervisor contract includes the workflow contract, BDD suites, and panel-relevant ADRs."
+    given: ../../prompts/_panel-supervisor-common.md
+    when: text-references
+    then: { contains: ["skill-audit-loop/AGENT_CONTEXT.yaml", "skill-audit-loop/WORKFLOW_CONTRACT.md", "audits/gate-conformance/spec.yaml", "audits/workflow-conformance/spec.yaml", "docs/adr/0021", "docs/adr/0022"] }
+
+  - id: audit-command-points-to-workflow-contract
+    workflow: audit
+    rule: "The /audit command points report-only Integrity Gate users to the workflow contract and deterministic BDD."
+    given: ../../commands/audit/audit.md
+    when: text-references
+    then: { contains: ["WORKFLOW_CONTRACT.md", "audits/gate-conformance/spec.yaml", "audits/workflow-conformance/spec.yaml", "Integrity Gate"] }
+
+  - id: evaluate-command-defines-behavior-metrics
+    workflow: evaluate
+    rule: "The /evaluate command names comprehension/application metrics and evidence boundaries."
+    given: ../../commands/audit/evaluate.md
+    when: text-references
+    then: { contains: ["WORKFLOW_CONTRACT.md", "comprehension_verdict", "application_verdict", "behavior evidence", "not deletion instructions"] }
+
+  - id: improve-command-points-to-keep-or-revert-contract
+    workflow: improve
+    rule: "The /improve command points one-field edits to the workflow contract and BDD evidence rules."
+    given: ../../commands/audit/improve.md
+    when: text-references
+    then: { contains: ["WORKFLOW_CONTRACT.md", "audits/workflow-conformance/spec.yaml", "keep or revert", "one field"] }
+
+  - id: merge-command-points-to-anti-loss-contract
+    workflow: merge
+    rule: "The /merge command points curator runs to the workflow contract and anti-loss display requirements."
+    given: ../../commands/audit/merge.md
+    when: text-references
+    then: { contains: ["WORKFLOW_CONTRACT.md", "audits/workflow-conformance/spec.yaml", "Merge Quality", "union-merges"] }
+
+  - id: discover-command-points-to-admission-metrics
+    workflow: discover
+    rule: "The /discover command points skill admission work to the workflow contract and structural BDD."
+    given: ../../commands/audit/discover.md
+    when: text-references
+    then: { contains: ["WORKFLOW_CONTRACT.md", "audits/gate-conformance/spec.yaml", "audits/workflow-conformance/spec.yaml", "Skill admission"] }
+
+  - id: evolve-command-points-to-per-skill-workflow-contract
+    workflow: evolve
+    rule: "The deprecated /evolve command still points compatibility callers to per-skill workflow metrics."
+    given: ../../commands/audit/evolve.md
+    when: text-references
+    then: { contains: ["WORKFLOW_CONTRACT.md", "audits/workflow-conformance/spec.yaml", "per-skill workflow evidence"] }
+
+  - id: skill-audit-loop-command-points-to-contract-and-bdd
+    workflow: skill-audit-loop
+    rule: "The interactive Skill Audit Loop command points agents to the workflow contract and both BDD suites before mutation."
+    given: ../../commands/audit/skill-audit-loop.md
+    when: text-references
+    then: { contains: ["WORKFLOW_CONTRACT.md", "audits/gate-conformance/spec.yaml", "audits/workflow-conformance/spec.yaml", "what the loop evaluates"] }
+
+  - id: package-runs-workflow-conformance
+    workflow: ci
+    rule: "The unit test gate executes workflow conformance scenarios so the agent-orientation contract cannot drift silently."
+    given: ../../package.json
+    when: text-references
+    then: { contains: "test-workflow-conformance.js" }

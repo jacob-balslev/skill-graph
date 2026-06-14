@@ -1097,7 +1097,7 @@
                   "absent",
                   "present"
                 ],
-                "description": "Does this skill carry a comprehension eval (typically `evals/comprehension.json`) and a `concept` block authored for the 7-dimension comprehension grader? `absent` (no comprehension grading), `present` (comprehension evals exist; the `concept` block is required by the allOf rule). Optional in v3 — omitted means `absent`. Independent of `routing_eval` (router-level) and `eval_state` (content-level). The nested `eval.comprehension_state` is the v3.1 preferred alias."
+                "description": "Does this skill carry a comprehension eval (typically `evals/comprehension.json`) and the five flat Understanding fields authored for the comprehension grader? `absent` means no comprehension grading; `present` means the eval exists and `mental_model`, `purpose`, `concept_boundary`, `analogy`, and `misconception` are required in SKILL.md frontmatter by the cross-file lint check in scripts/skill-lint.js. Independent of `routing_eval` (router-level) and `eval_state` (content-level)."
               },
               "last_audited": {
                 "type": "string",
@@ -1247,7 +1247,7 @@
                 "description": "The wrong mental model people bring and why it misleads. Authored hint to inoculate the agent against the common error trap. No protocol length cap. Not directly graded; complements `boundary`."
               }
             },
-            "description": "Seven-field universal-subject concept teaching block. Read by the comprehension grader (`scripts/skill/evaluate-skill.js --comprehension`) and rendered into the agent context when the skill is loaded. Required when `comprehension_state: present`. No protocol length cap — author each field as deeply as the concept requires. Distinct from `## Philosophy` in the body, which is about *why this skill file exists in this repo*; the `concept` block is about *what the subject is, universally*."
+            "description": "Legacy v5/v6 nested concept teaching block retained only for historical generated manifests and compatibility readers. Current SKILL.md authoring uses the five flat Understanding fields (`mental_model`, `purpose`, `concept_boundary`, `analogy`, `misconception`) and the cross-file lint check ties those fields to `comprehension_state: present`. Do not author new skills with `concept`."
           }
         }
       }

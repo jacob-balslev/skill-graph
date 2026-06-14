@@ -1,0 +1,56 @@
+{
+  "skill_name": "below-floor-app",
+  "subject": "application eval case-floor conformance",
+  "mode": "application",
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": 1,
+      "scenario_type": "positive",
+      "criticality": "normal",
+      "red_herring": false,
+      "scenario": "A reviewer receives a partial application eval.",
+      "context": "The eval has useful cases but not enough breadth to certify behavior.",
+      "question": "What should be reported?",
+      "expected_flags": ["The suite is below the five-case floor."],
+      "expected_fix_hints": ["Add realistic positives, hard negatives, and prior failures."],
+      "absent_signals": ["Does not certify APPLICABLE."]
+    },
+    {
+      "id": 2,
+      "scenario_type": "positive",
+      "criticality": "high",
+      "red_herring": false,
+      "scenario": "A second case covers a real in-scope artifact.",
+      "context": "The case itself is valid.",
+      "question": "What is still missing?",
+      "expected_flags": ["The suite needs more cases."],
+      "expected_fix_hints": ["Keep the valid case and add more coverage."],
+      "absent_signals": ["Does not delete good partial coverage."]
+    },
+    {
+      "id": 3,
+      "scenario_type": "prior-failure",
+      "criticality": "normal",
+      "red_herring": false,
+      "scenario": "A prior failure is represented but alone cannot carry the suite.",
+      "context": "The suite has breadth debt.",
+      "question": "What should happen?",
+      "expected_flags": ["The floor remains unmet."],
+      "expected_fix_hints": ["Add at least two more cases."],
+      "absent_signals": ["Does not mark the eval conformant."]
+    },
+    {
+      "id": 4,
+      "scenario_type": "red-herring",
+      "criticality": "low",
+      "red_herring": true,
+      "scenario": "A red herring is present.",
+      "context": "Boundary coverage exists but the total case count is still too low.",
+      "question": "Is the eval conformant?",
+      "expected_flags": ["Red-herring coverage alone is not enough."],
+      "expected_fix_hints": ["Add a fifth case before certification."],
+      "absent_signals": ["Does not ignore the case floor."]
+    }
+  ]
+}

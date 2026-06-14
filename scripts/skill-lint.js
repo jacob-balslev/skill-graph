@@ -925,6 +925,33 @@ function checkAuditStateSidecar(file, fm) {
   return errors;
 }
 
+const AUDIT_STATUS_VERDICT_FIELDS = [
+  'structural_verdict',
+  'truth_verdict',
+  'comprehension_verdict',
+  'application_verdict',
+];
+
+function checkAuditStatusCoverage(file) {
+  const warnings = [];
+  const sidecarPath = path.join(path.dirname(file), 'audit-state.json');
+  if (!fs.existsSync(sidecarPath)) return warnings;
+  let sidecar;
+  try {
+    sidecar = JSON.parse(fs.readFileSync(sidecarPath, 'utf8'));
+  } catch (_) {
+    return warnings; // JSON validity is already reported by checkAuditStateSidecar.
+  }
+  const missing = AUDIT_STATUS_VERDICT_FIELDS.filter(field => sidecar[field] === undefined);
+  if (missing.length > 0) {
+    warnings.push({
+      field: 'audit-state.json',
+      msg: `audit-state.json is missing Audit Status verdict field(s): ${missing.join(', ')}. This is report-only migration debt: run the Skill Audit Loop to stamp honest verdicts, do not hand-author them.`,
+    });
+  }
+  return warnings;
+}
+
 // The skill-CONTENT body sections every skill must carry. This closes the
 // long-standing loophole where body-section structure was "author judgment, not
 // lint-enforced" (2026-05-19) — a skill could silently omit its behavior-change
@@ -1035,6 +1062,7 @@ function lintFile(file, subjectRegistry) {
     ...checkCrossDomainBoundary(fm, subjectRegistry),
     ...checkKeywordsCap(fm),
     ...checkRetiredTokensInComments(text),
+    ...checkAuditStatusCoverage(file),
   ];
 
   return {

@@ -4,12 +4,25 @@ version: 1.0.0
 since: 2026-05-21
 status: active
 superseded_by: null
-last_changed: 2026-05-23
+last_changed: 2026-06-14
 ---
 
 # /audit:merge
 
 Run the multi-model skill-audit loop. Several agents (across Claude, Codex, OpenCode; any model) each claim one public-safe skill at a time, audit it into a per-model **proposal**, then a curator (Opus 4.7 / GPT-5.4) **union-merges** the current skill + every model's proposal — keeping all valuable work, dropping nothing valuable without a recorded reason.
+
+**Workflow context:** read
+[`skill-audit-loop/WORKFLOW_CONTRACT.md`](../../../skill-graph/skill-audit-loop/WORKFLOW_CONTRACT.md)
+and inspect
+[`audits/workflow-conformance/spec.yaml`](../../../skill-graph/audits/workflow-conformance/spec.yaml)
+before curating. The relevant metric is Merge Quality: every contributor item
+is kept, rejected, superseded, or deferred with evidence in the ledger.
+
+**Command surface:** the `scripts/skill/*` snippets below are
+workspace-orchestration helpers. Run them from `~/Development`, where those
+scripts exist. Standalone npm consumers should use `skill-graph audit`,
+`skill-graph evaluate`, and local proposal files instead of the shared
+workspace claim/ledger helpers.
 
 **Follow the portable procedure verbatim:** `skill-graph/audits/merge-protocol.md` (project-owned per ADR-0016 surface #2; relocated 2026-05-25 from `.opencode/commands/skill-audit-merge-v1.md`)
 **Design/protocol:** `skill-graph/docs/skill-audit-multimodel-merge.md`

@@ -4,6 +4,14 @@
 
 > **Work-mode rule (read FIRST).** Editing this document, the audit scripts, the audit slash-commands, the audit prompts, or the schemas is **SYSTEM work**. Running the audit loop against individual `SKILL.md` files (via `/audit:audit`, `/audit:improve`, `/audit:evaluate`, `/audit:evolve`) is **CONTENT work**. Do not mix them in the same task or commit. Full doctrine: [`AGENTS.md` § Work Modes — SYSTEM vs CONTENT](../AGENTS.md#work-modes--system-vs-content).
 
+> **Workflow contract (read FIRST for agent delegation).** [`WORKFLOW_CONTRACT.md`](./WORKFLOW_CONTRACT.md)
+> connects the docs, ADRs, BDD scenarios, prompts, skills, scripts, metrics, and display
+> requirements an agent must understand before claiming or mutating audit work.
+> The machine-readable agent context packet is [`AGENT_CONTEXT.yaml`](./AGENT_CONTEXT.yaml);
+> it wires the mission, vision, goal, rules, required docs, BDD suites, and execution
+> scripts into one checked manifest.
+> The executable orientation scenarios live in [`audits/workflow-conformance/spec.yaml`](../audits/workflow-conformance/spec.yaml).
+
 > **Document structure.** Three parts, read top-to-bottom:
 > - **Part 1 — Loop Doctrine & Operations**: doctrine, four operations, two gates, Audit Status, inner pipelines, cadence.
 > - **Part 2 — Per-Skill Audit Checklist**: the canonical checklist used during `audit`, with severity model and artifact structure.
@@ -23,7 +31,7 @@
 4. **Findings must be evidence-backed.** The audit is not a lint-test factory; never invent internal checks to manufacture findings, and an empty report on a genuinely good skill is a PASS.
 5. **Lint is a floor, not the quality bar.** Structural validity says the skill is well-formed; it says nothing about whether it teaches well.
 6. **Two gates, never blended:** the Integrity Gate proves the skill is structurally valid, grounded, routable, and export-safe; the Behavior Gate proves it changes agent behavior as claimed.
-7. **`application_verdict` is the primary quality signal.** `UNVERIFIED` is the honest state when no behavioral eval has run — not a defect. `APPLICABLE` is earned only from an eval receipt; never hand-stamped.
+7. **Behavior claims require behavior evidence.** `UNVERIFIED` is the honest state when no behavioral eval has run — not a defect. A positive behavior verdict is earned only from an eval receipt; never hand-stamped.
 8. **External framework / API / platform claims are checked against official primary sources** during an audit when those claims could have drifted (the upstream-currency / anti-displacement axis).
 9. **A displacement finding recommends deprecate / fold / reframe — never auto-deletion.** Removal requires explicit user sign-off.
 10. **Every finding is preserved in the report.** Prioritization is allowed after complete reporting; dropping findings is not.
@@ -82,7 +90,7 @@ The loop has two gates. They must not be blended into one PASS/FAIL label:
 | **Integrity Gate** | The skill is structurally valid, grounded, routable, and export-safe. | Deterministic CI-safe checks: canonical-source lint, schema/protocol consistency, manifest, links, export shape, routing assertions, overlap, and drift. | `structural_verdict`, `truth_verdict`, `lint_verdict`, `drift_status` |
 | **Behavior Gate** | The skill changes agent behavior in the way it claims. | Behavioral evals against realistic positives, hard negatives, prior failures, and boundary cases. | `comprehension_verdict`, `application_verdict`, `eval_score`, `eval_failed_ids` |
 
-The Integrity Gate is required before release because broken metadata poisons the graph. It never certifies skill usefulness. The Behavior Gate is what certifies teaching efficacy; a skill with `application_verdict: UNVERIFIED` is unassessed, not approved — eligibility (passing structural/truth) is not the same as assessment (running and clearing the behavior gates). A skill is audit-complete only when the Integrity Gate passes and the Behavior Gate is either passed or explicitly left `UNVERIFIED` / `NA` with evidence explaining why behavioral certification was not run. For canonical verdict definitions, enum values, confidence-tier ordering, and the eligibility-vs-assessment doctrine, see [`docs/verdict-semantics.md`](../docs/verdict-semantics.md). The structural and truth gates' pass/fail criteria are additionally stated as executable Given/When/Then scenarios in [`audits/gate-conformance/spec.yaml`](../audits/gate-conformance/spec.yaml) (run by `scripts/__tests__/test-gate-conformance.js` inside `npm run test:unit`), so the criteria described here cannot silently drift from what the gate scripts actually enforce.
+The Integrity Gate is required before release because broken metadata poisons the graph. It never certifies skill usefulness. The Behavior Gate is what certifies teaching efficacy; a skill with `application_verdict: UNVERIFIED` is unassessed, not approved — eligibility (passing structural/truth) is not the same as assessment (running and clearing the behavior gates). A skill is audit-complete only when the Integrity Gate passes and the Behavior Gate is either passed or explicitly left `UNVERIFIED` / `NA` with evidence explaining why behavioral certification was not run. For canonical verdict definitions, enum values, confidence-tier ordering, and the eligibility-vs-assessment doctrine, see [`docs/verdict-semantics.md`](../docs/verdict-semantics.md). The deterministic gate criteria are additionally stated as executable Given/When/Then scenarios in [`audits/gate-conformance/spec.yaml`](../audits/gate-conformance/spec.yaml) (run by `scripts/__tests__/test-gate-conformance.js` inside `npm run test:unit`), so the criteria described here cannot silently drift from what the gate scripts actually enforce.
 
 ### Current maturity — honest self-location (updated 2026-05-26 post-F14)
 
@@ -96,7 +104,7 @@ This distinction matters operationally:
 - **Integrity work today** = run the corpus-wide first sweep; the next `evolve` run lands real verdicts on every skill.
 - **Behavior work today** = author eval data per skill; runner is ready and waits on the data.
 
-`application_verdict: UNVERIFIED` is still the correct default and must never be stamped to `APPLICABLE` without an `eval_last_run` receipt. The path to Level 1 for the Behavior Gate is the ~290 eval artifacts plus at least one application grader wired into CI (tracked standalone in SH-6138). A no-lift result is recorded as scoped evidence (`NOT_DISCRIMINATED_CEILING` when baseline saturated, `EQUIVALENT_ON_FRONTIER` when there was headroom but no measured-generator lift); it is not a removal instruction. See the gate-9 design notes in `docs/research/design-review-best-practices-2026-05-21.md § 3` (LLM-as-judge: boolean per-criterion checklist, CoT, calibrate to >85% human agreement, never stamp without a receipt).
+`application_verdict: UNVERIFIED` is still the correct default when no application assessment has run. The path to Level 1 for the Behavior Gate is the eval artifact backlog plus a calibrated application grader wired into CI (tracked standalone in SH-6138). A no-lift result is recorded as scoped evidence (`NOT_DISCRIMINATED_CEILING` when baseline saturated, `EQUIVALENT_ON_FRONTIER` when there was headroom but no measured-generator lift); it is not a removal instruction. See the gate-9 design notes in `docs/research/design-review-best-practices-2026-05-21.md § 3` (LLM-as-judge: boolean per-criterion checklist, CoT, calibrate to >85% human agreement, never stamp without a receipt).
 
 ## The Four Operations
 

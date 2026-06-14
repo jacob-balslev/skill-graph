@@ -36,11 +36,19 @@ Read, in this order:
 3. /Users/jacobbalslev/Development/skill-graph/AGENTS.md
 4. /Users/jacobbalslev/Development/skill-graph/SKILL_GRAPH.md
 5. /Users/jacobbalslev/Development/skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md
-6. /Users/jacobbalslev/Development/skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist
-7. /Users/jacobbalslev/Development/docs/reference/skill-audit-pipeline.md
-8. /Users/jacobbalslev/Development/.opencode/commands/skill-audit-loop.md
-9. /Users/jacobbalslev/Development/skill-graph/prompts/skill-audit-loop-single-model.md
-10. /Users/jacobbalslev/Development/skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook
+6. /Users/jacobbalslev/Development/skill-graph/skill-audit-loop/AGENT_CONTEXT.yaml
+7. /Users/jacobbalslev/Development/skill-graph/skill-audit-loop/WORKFLOW_CONTRACT.md
+8. /Users/jacobbalslev/Development/skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist
+9. /Users/jacobbalslev/Development/docs/reference/skill-audit-pipeline.md
+10. /Users/jacobbalslev/Development/skill-graph/docs/adr/0011-split-audit-verdict-into-four-verdicts.md
+11. /Users/jacobbalslev/Development/skill-graph/docs/adr/0019-audit-state-sidecar-separation.md
+12. /Users/jacobbalslev/Development/skill-graph/docs/adr/0021-width-before-verdict-advisory-cross-review-and-mandatory-verification.md
+13. /Users/jacobbalslev/Development/skill-graph/docs/adr/0022-representative-generator-frontier-judges.md
+14. /Users/jacobbalslev/Development/skill-graph/audits/gate-conformance/spec.yaml
+15. /Users/jacobbalslev/Development/skill-graph/audits/workflow-conformance/spec.yaml
+16. /Users/jacobbalslev/Development/.opencode/commands/skill-audit-loop.md
+17. /Users/jacobbalslev/Development/skill-graph/prompts/skill-audit-loop-single-model.md
+18. /Users/jacobbalslev/Development/skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook
 
 Load relevant project skills and universalSkills before execution. At minimum, load the audit/quality set named by the single-model prompt plus any universalSkills returned by local skill routing/injection tooling. Read the actual SKILL.md files directly.
 

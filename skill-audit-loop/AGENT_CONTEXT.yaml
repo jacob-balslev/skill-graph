@@ -1,0 +1,83 @@
+# Skill Audit Loop Agent Context Manifest
+#
+# Type: SYSTEM contract.
+# Purpose: machine-readable wiring from the Skill Audit Loop's mission, vision,
+# goal, rules, docs, BDD suites, and execution scripts into one bounded packet.
+# Agents and delegators should read this before running audit-loop scripts.
+
+type: skill-audit-loop-agent-context
+version: 1
+mode: SYSTEM
+purpose: "Give agents a bounded context packet so they understand the Skill Audit Loop before running scripts or delegating work."
+
+charter:
+  mission:
+    path: AGENTS.md
+    contains: ["Skill Graph's mission", "teaching-skill library scale", "relevance, scope, grounding, and relationships explicit"]
+  vision:
+    path: AGENTS.md
+    contains: ["portable, navigable graph", "route, audit, maintain, and scale"]
+  goal:
+    path: skill-audit-loop/SKILL_AUDIT_LOOP.md
+    contains: ["Make the skill library self-correcting", "every skill carries an honest status"]
+  rules:
+    path: skill-audit-loop/SKILL_AUDIT_LOOP.md
+    contains: ["The loop has one lifecycle", "Four per-skill operations", "Findings must be evidence-backed", "Every finding is preserved"]
+
+required_documents:
+  - path: ../AGENTS.md
+    reason: "Workspace-level non-negotiable rules and Skill Graph work-mode routing."
+  - path: ../SKILL-SYSTEM-CHEAT-SHEET.md
+    reason: "One-page orientation for Protocol, Graph, and Audit Loop layers."
+  - path: AGENTS.md
+    reason: "Skill Graph mission, vision, work modes, and repository rules."
+  - path: SKILL_GRAPH.md
+    reason: "Library-level authority tiers and current state."
+  - path: skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md
+    reason: "Per-skill metadata contract."
+  - path: skill-audit-loop/SKILL_AUDIT_LOOP.md
+    reason: "Audit Loop doctrine, lifecycle, operations, gates, and runbook."
+  - path: skill-audit-loop/WORKFLOW_CONTRACT.md
+    reason: "Human-readable workflow metrics, evidence, and display contract."
+  - path: skill-audit-loop/AGENT_CONTEXT.yaml
+    reason: "This machine-readable agent context manifest."
+
+bdd_suites:
+  - name: gate-conformance
+    spec: audits/gate-conformance/spec.yaml
+    runner: scripts/__tests__/test-gate-conformance.js
+    purpose: "Deterministic protocol and gate behavior fixtures."
+  - name: workflow-conformance
+    spec: audits/workflow-conformance/spec.yaml
+    runner: scripts/__tests__/test-workflow-conformance.js
+    purpose: "Agent orientation, lifecycle step, metric, and script-wiring fixtures."
+
+scripts:
+  - path: scripts/__tests__/test-workflow-conformance.js
+    role: "Enforces this agent-context manifest and workflow BDD contract."
+    requires: ["skill-audit-loop/AGENT_CONTEXT.yaml", "skill-audit-loop/WORKFLOW_CONTRACT.md", "audits/workflow-conformance/spec.yaml"]
+  - path: scripts/__tests__/test-gate-conformance.js
+    role: "Enforces deterministic protocol and gate behavior fixtures."
+    requires: ["audits/gate-conformance/spec.yaml", "schemas/SKILL_METADATA_PROTOCOL_schema.json", "schemas/skill-audit-state.schema.json"]
+  - path: scripts/skill-audit-preflight.js
+    role: "Checks per-skill readiness before audit/evaluate/improve operations."
+    requires: ["skill-audit-loop/SKILL_AUDIT_LOOP.md", "skill-audit-loop/WORKFLOW_CONTRACT.md", "schemas/SKILL_METADATA_PROTOCOL_schema.json", "schemas/skill-audit-state.schema.json"]
+  - path: lib/audit/skill-audit.js
+    role: "Runs the report-only Integrity Gate audit operation."
+    requires: ["skill-audit-loop/SKILL_AUDIT_LOOP.md", "skill-audit-loop/WORKFLOW_CONTRACT.md", "audits/gate-conformance/spec.yaml"]
+  - path: lib/audit/evaluate-skill.js
+    role: "Runs comprehension/application evaluation and writes receipt-backed behavior fields."
+    requires: ["skill-audit-loop/SKILL_AUDIT_LOOP.md", "skill-audit-loop/WORKFLOW_CONTRACT.md", "audits/gate-conformance/spec.yaml"]
+  - path: lib/audit/run-skill-audit-loop.js
+    role: "Runs the multi-model panel implementation of the Skill Audit Loop."
+    requires: ["skill-audit-loop/SKILL_AUDIT_LOOP.md", "skill-audit-loop/WORKFLOW_CONTRACT.md", "audits/gate-conformance/spec.yaml", "audits/workflow-conformance/spec.yaml"]
+  - path: scripts/run-panel-loop.sh
+    role: "Drains the worklist through the panel runner."
+    requires: ["skill-audit-loop/SKILL_AUDIT_LOOP.md", "skill-audit-loop/WORKFLOW_CONTRACT.md", "prompts/_panel-supervisor-common.md"]
+  - path: bin/skill-graph.js
+    role: "Public CLI entrypoint exposing audit, improve, evaluate, evolve, and doctor commands."
+    requires: ["skill-audit-loop/SKILL_AUDIT_LOOP.md", "skill-audit-loop/WORKFLOW_CONTRACT.md"]
+
+display_contract:
+  path: skill-audit-loop/WORKFLOW_CONTRACT.md
+  contains: ["## Display Standard", "Dimension", "Metric", "Evidence", "Decision", "Residual risk"]

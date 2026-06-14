@@ -20,10 +20,10 @@ This doc REPLACES the verdict-semantics restatements that previously lived (drif
 
 | Field | Layer | Owner | Source of truth |
 |---|---|---|---|
-| `structural_verdict` | Form / lint | Gates 1–2 + 7 (schema lint, manifest census, concept-card shape) | [`skill-graph/schemas/SKILL_METADATA_PROTOCOL_schema.json:241-249`](../schemas/SKILL_METADATA_PROTOCOL_schema.json) |
-| `truth_verdict` | Truth-source freshness | Gates 3–6 (truth-source catalog, drift sentinel, test coverage, claim verification) | [`schemas/SKILL_METADATA_PROTOCOL_schema.json:251-259`](../schemas/SKILL_METADATA_PROTOCOL_schema.json) |
-| `comprehension_verdict` | Did the skill teach? | Gate 8 (comprehension grader on `evals/comprehension.json`) | [`schemas/SKILL_METADATA_PROTOCOL_schema.json:261-272`](../schemas/SKILL_METADATA_PROTOCOL_schema.json) |
-| `application_verdict` | Did the skill change agent behavior? | Gate 9 (application grader on `evals/application.json`) | [`schemas/SKILL_METADATA_PROTOCOL_schema.json:274-285`](../schemas/SKILL_METADATA_PROTOCOL_schema.json) |
+| `structural_verdict` | Form / lint | Gates 1–2 + 7 (schema lint, manifest census, concept-card shape) | [`schemas/skill-audit-state.schema.json`](../schemas/skill-audit-state.schema.json) |
+| `truth_verdict` | Truth-source freshness | Gates 3–6 (truth-source catalog, drift sentinel, test coverage, claim verification) | [`schemas/skill-audit-state.schema.json`](../schemas/skill-audit-state.schema.json) |
+| `comprehension_verdict` | Did the skill teach? | Gate 8 (comprehension grader on `evals/comprehension.json`) | [`schemas/skill-audit-state.schema.json`](../schemas/skill-audit-state.schema.json) |
+| `application_verdict` | Did the skill change agent behavior? | Gate 9 (application grader on `evals/application.json`) | [`schemas/skill-audit-state.schema.json`](../schemas/skill-audit-state.schema.json) |
 
 **`application_verdict` is the primary quality signal.** A skill is only behaviorally certified when this verdict is `APPLICABLE`. The other three are necessary infrastructure but never sufficient. See ADR-0011 for the historical rationale behind the four-field shape.
 

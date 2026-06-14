@@ -8,5 +8,9 @@
   },
   "eval_artifacts": "planned",
   "eval_state": "unverified",
-  "routing_eval": "absent"
+  "routing_eval": "absent",
+  "structural_verdict": "UNVERIFIED",
+  "truth_verdict": "UNVERIFIED",
+  "comprehension_verdict": "UNVERIFIED",
+  "application_verdict": "UNVERIFIED"
 }

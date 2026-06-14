@@ -72,9 +72,17 @@ condition. The next run/wake continues the queue; the worklist (refreshed each s
 8. `~/Development/skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md` — § "Multi-agent panel",
    § "Canonical way to run the PANEL loop VISIBLY", and the per-skill runbook sections on v8,
    evaluate, improve/use/evaluate/grade.
-9. `~/Development/skill-graph/docs/skill-audit-loop-philosophy.md`
-10. `~/Development/skill-graph/docs/verdict-semantics.md`
-11. Prior-run memory, if the runtime has one (prior outcomes; do not re-derive).
+9. `~/Development/skill-graph/skill-audit-loop/AGENT_CONTEXT.yaml` — machine-readable mission,
+   vision, goal, rules, docs, BDD suites, and script wiring for this workflow.
+10. `~/Development/skill-graph/skill-audit-loop/WORKFLOW_CONTRACT.md` — what the panel run
+   evaluates, which metrics apply, and how scorecards/ledgers display evidence.
+11. `~/Development/skill-graph/docs/skill-audit-loop-philosophy.md`
+12. `~/Development/skill-graph/docs/verdict-semantics.md`
+13. `~/Development/skill-graph/docs/adr/0021-width-before-verdict-advisory-cross-review-and-mandatory-verification.md`
+14. `~/Development/skill-graph/docs/adr/0022-representative-generator-frontier-judges.md`
+15. `~/Development/skill-graph/audits/gate-conformance/spec.yaml`
+16. `~/Development/skill-graph/audits/workflow-conformance/spec.yaml`
+17. Prior-run memory, if the runtime has one (prior outcomes; do not re-derive).
 
 If a canonical doc points to a required companion for the current failure or selected skill, read
 that companion section too. Do NOT recursively skim unrelated docs after the canonical bundle is

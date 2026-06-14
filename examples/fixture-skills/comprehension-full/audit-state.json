@@ -9,5 +9,9 @@
   "eval_artifacts": "none",
   "eval_state": "unverified",
   "routing_eval": "absent",
-  "comprehension_state": "present"
+  "comprehension_state": "present",
+  "structural_verdict": "UNVERIFIED",
+  "truth_verdict": "UNVERIFIED",
+  "comprehension_verdict": "UNVERIFIED",
+  "application_verdict": "UNVERIFIED"
 }

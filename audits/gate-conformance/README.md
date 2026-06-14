@@ -26,11 +26,17 @@ spec cannot silently drift from the implementation.
   (`given` a fixture, `when` a named gate check runs, `then` the expected
   exit/output). Authored in YAML, parsed by the repo's existing
   `../../scripts/lib/parse-frontmatter.js` (no new dependency).
-- **[`fixtures/invalid/<rule>/`](fixtures/invalid)** — one intentionally-broken
-  skill per rule, each broken in exactly one way so the failing assertion is
-  unambiguous. These live here (not under `examples/fixture-skills/`)
-  **deliberately**: they are outside every corpus lint/manifest/eval sweep, so an
-  invalid fixture can never redden `npm run verify`.
+- **[`fixtures/invalid/<rule>/`](fixtures/invalid)** and
+  **[`fixtures/warn/<rule>/`](fixtures/warn)** — one intentionally-broken or
+  intentionally-warning skill per rule, each broken in exactly one way so the
+  assertion is unambiguous. These live here (not under `examples/fixture-skills/`)
+  **deliberately**: they are outside every corpus lint/manifest/eval sweep, so a
+  negative fixture can never redden `npm run verify`.
+- **[`fixtures/application-workspace/`](fixtures/application-workspace)** and
+  **[`fixtures/audit-workspaces/`](fixtures/audit-workspaces)** — hermetic
+  mini-workspaces for gates that read `skill_roots`, audit runs, or a workspace
+  root rather than one `SKILL.md` path. They are fixture workspaces, not corpus
+  content.
 - **[`../../scripts/__tests__/test-gate-conformance.js`](../../scripts/__tests__/test-gate-conformance.js)**
   — the runner. For each scenario it runs the named existing gate script via a
   child process and asserts the exit code + output. It adds **no gate logic** of
@@ -38,26 +44,27 @@ spec cannot silently drift from the implementation.
 
 ## Gate → coverage map
 
-This suite covers the gates a **single skill** can be driven through by a
-path/positional argument:
+This suite covers both single-skill path gates and the small workspace-scoped
+gates that can run against hermetic fixture workspaces:
 
 | Gate | Verdict | Driven by | Covered here |
 |---|---|---|---|
-| Structural Integrity | `structural_verdict` | `../../scripts/skill-lint.js` | ✅ missing required field, out-of-enum `subject`, dangling `relations.*` target, `comprehension_state`→Understanding cross-file rule, invalid `audit-state.json` sidecar (missing required field) |
+| Structural Integrity | `structural_verdict` | `../../scripts/skill-lint.js` | ✅ missing required field, out-of-enum `subject`, dangling `relations.*` target, `comprehension_state`→Understanding cross-file rule, invalid `audit-state.json` sidecar (missing required field), report-only warning for missing durable Audit Status verdict fields |
 | Truth | `truth_verdict` | `../../scripts/skill-graph-drift.js` | ✅ BROKEN on a missing declared truth source |
+| Application eval structural floor | `application_verdict` eligibility evidence | `../../scripts/check-application-evals.js` | ✅ conformant five-case suite with red herring, below-floor `--check` failure, application-only `criticality` enum |
+| Verdict/artifact honesty | `comprehension_verdict` / `application_verdict` | `../../scripts/check-audit-manifest.js` | ✅ empty positive-control workspace, graded application verdict without `evals/application.json` fails |
 
-The **corpus-scoped** gates read the manifest / `skill_roots`, not a single
-fixture, so they are not driven from this suite — they are already covered by
-existing unit tests:
+The same gates still have focused pure-function/unit coverage where useful:
 
-| Gate | Already covered by |
+| Gate | Additional coverage |
 |---|---|
-| Verdict honesty (graded verdict requires its artifact) | [`../../scripts/__tests__/test-application-verdict-write-back.js`](../../scripts/__tests__/test-application-verdict-write-back.js), [`../../scripts/__tests__/test-application-artifact-enforcement.js`](../../scripts/__tests__/test-application-artifact-enforcement.js) |
-| Application-eval structural floor (≥5 cases, red-herring present) | [`../../scripts/__tests__/test-check-application-evals.js`](../../scripts/__tests__/test-check-application-evals.js) |
+| Verdict write-back and artifact enforcement | [`../../scripts/__tests__/test-application-verdict-write-back.js`](../../scripts/__tests__/test-application-verdict-write-back.js), [`../../scripts/__tests__/test-application-artifact-enforcement.js`](../../scripts/__tests__/test-application-artifact-enforcement.js) |
+| Application-eval structural validator internals | [`../../scripts/__tests__/test-check-application-evals.js`](../../scripts/__tests__/test-check-application-evals.js) |
 
 The Behavior Gate verdicts (`comprehension_verdict`, `application_verdict`) are
 LLM-graded behavior measurements, not deterministic pass/fail checks, so they are
-not modeled as conformance scenarios.
+not modeled directly as conformance scenarios. The deterministic scaffolding that
+keeps those verdicts honest is modeled here.
 
 ## Adding a scenario
 

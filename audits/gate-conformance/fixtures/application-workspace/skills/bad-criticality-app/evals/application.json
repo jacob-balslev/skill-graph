@@ -1,0 +1,68 @@
+{
+  "skill_name": "bad-criticality-app",
+  "subject": "application eval criticality conformance",
+  "mode": "application",
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": 1,
+      "scenario_type": "positive",
+      "criticality": "medium",
+      "red_herring": false,
+      "scenario": "An application eval author reuses the comprehension criticality enum.",
+      "context": "Application evals accept critical, high, normal, and low.",
+      "question": "What should the validator report?",
+      "expected_flags": ["The `medium` criticality value is invalid for application evals."],
+      "expected_fix_hints": ["Use `normal` unless the case is high or critical."],
+      "absent_signals": ["Does not accept the comprehension enum by accident."]
+    },
+    {
+      "id": 2,
+      "scenario_type": "positive",
+      "criticality": "high",
+      "red_herring": false,
+      "scenario": "A valid high-criticality case exists.",
+      "context": "The rest of the file should remain structurally ordinary.",
+      "question": "What should be retained?",
+      "expected_flags": ["Valid criticality values remain accepted."],
+      "expected_fix_hints": ["Change only the invalid value."],
+      "absent_signals": ["Does not rewrite valid cases."]
+    },
+    {
+      "id": 3,
+      "scenario_type": "boundary",
+      "criticality": "normal",
+      "red_herring": false,
+      "scenario": "A normal case checks boundary handling.",
+      "context": "The suite has enough non-red-herring coverage.",
+      "question": "What remains the defect?",
+      "expected_flags": ["Only the first case has the invalid enum."],
+      "expected_fix_hints": ["Preserve the valid case count."],
+      "absent_signals": ["Does not report below-case-floor."]
+    },
+    {
+      "id": 4,
+      "scenario_type": "prior-failure",
+      "criticality": "critical",
+      "red_herring": false,
+      "scenario": "A prior failure case uses a valid criticality.",
+      "context": "The case identity is unique and complete.",
+      "question": "What should the validator avoid?",
+      "expected_flags": ["The case should not produce duplicate-id findings."],
+      "expected_fix_hints": ["Focus on the invalid enum elsewhere."],
+      "absent_signals": ["Does not conflate unrelated checks."]
+    },
+    {
+      "id": 5,
+      "scenario_type": "red-herring",
+      "criticality": "low",
+      "red_herring": true,
+      "scenario": "A red-herring case is present and valid.",
+      "context": "Boundary coverage is not the failure.",
+      "question": "What does this prove?",
+      "expected_flags": ["The no-red-herring check should stay silent."],
+      "expected_fix_hints": ["Keep the red-herring case."],
+      "absent_signals": ["Does not report no-red-herring."]
+    }
+  ]
+}

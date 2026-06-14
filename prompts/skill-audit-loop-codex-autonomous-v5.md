@@ -94,9 +94,17 @@ Read these before claiming work:
 6. `/Users/jacobbalslev/Development/skill-graph/AGENTS.md`
 7. `/Users/jacobbalslev/Development/skill-graph/skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md`
 8. `/Users/jacobbalslev/Development/skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md`
-9. `/Users/jacobbalslev/Development/docs/reference/skill-audit-pipeline.md`
-10. `/Users/jacobbalslev/Development/skill-graph/prompts/skill-audit-loop-single-model.md`
-11. `/Users/jacobbalslev/Development/skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`
+9. `/Users/jacobbalslev/Development/skill-graph/skill-audit-loop/AGENT_CONTEXT.yaml`
+10. `/Users/jacobbalslev/Development/skill-graph/skill-audit-loop/WORKFLOW_CONTRACT.md`
+11. `/Users/jacobbalslev/Development/docs/reference/skill-audit-pipeline.md`
+12. `/Users/jacobbalslev/Development/skill-graph/docs/adr/0011-split-audit-verdict-into-four-verdicts.md`
+13. `/Users/jacobbalslev/Development/skill-graph/docs/adr/0019-audit-state-sidecar-separation.md`
+14. `/Users/jacobbalslev/Development/skill-graph/docs/adr/0021-width-before-verdict-advisory-cross-review-and-mandatory-verification.md`
+15. `/Users/jacobbalslev/Development/skill-graph/docs/adr/0022-representative-generator-frontier-judges.md`
+16. `/Users/jacobbalslev/Development/skill-graph/audits/gate-conformance/spec.yaml`
+17. `/Users/jacobbalslev/Development/skill-graph/audits/workflow-conformance/spec.yaml`
+18. `/Users/jacobbalslev/Development/skill-graph/prompts/skill-audit-loop-single-model.md`
+19. `/Users/jacobbalslev/Development/skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`
 
 Load relevant skills from `SKILL-INDEX.md` and read their actual `SKILL.md` files. At
 minimum load:

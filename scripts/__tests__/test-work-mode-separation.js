@@ -123,6 +123,18 @@ process.stdout.write('\n8. audits/gate-conformance/** is SYSTEM (gate-conformanc
   assert('8d. gate-conformance-only is SYSTEM-only — no warning', !systemOnly.stderr.includes(WARN_NEEDLE), `stderr: ${systemOnly.stderr.slice(0, 400)}`);
 }
 
+// ── 9. audits/workflow-conformance/** classifies as SYSTEM, not CONTENT ──
+process.stdout.write('\n9. audits/workflow-conformance/** is SYSTEM (workflow BDD contract, not a per-skill audit dir)\n');
+{
+  const mixed = runWithFiles('audits/workflow-conformance/spec.yaml,audits/workflow-conformance/README.md,audits/a11y/findings.md');
+  assert('9a. Exit 0', mixed.status === 0);
+  assert('9b. Warning fires (workflow-conformance treated as SYSTEM)', mixed.stderr.includes(WARN_NEEDLE), `stderr: ${mixed.stderr.slice(0, 400)}`);
+  assert('9c. Spec listed (on the SYSTEM side)', mixed.stderr.includes('audits/workflow-conformance/spec.yaml'));
+
+  const systemOnly = runWithFiles('audits/workflow-conformance/spec.yaml,audits/workflow-conformance/README.md,scripts/__tests__/test-workflow-conformance.js');
+  assert('9d. workflow-conformance-only is SYSTEM-only — no warning', !systemOnly.stderr.includes(WARN_NEEDLE), `stderr: ${systemOnly.stderr.slice(0, 400)}`);
+}
+
 // ── Summary ──────────────────────────────────────────────────────────
 process.stdout.write(`\nResults: ${passCount} passed, ${failCount} failed\n`);
 process.exit(failCount === 0 ? 0 : 1);

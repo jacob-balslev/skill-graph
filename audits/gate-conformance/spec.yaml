@@ -11,13 +11,10 @@
 # Negative fixtures live under `fixtures/invalid/<rule>/` — outside every corpus
 # lint/manifest/eval sweep, so they can never redden `verify`.
 #
-# SCOPE: this suite covers the gates a single skill can be driven through by
-# path/positional argument — the STRUCTURAL gate (`skill-lint.js`) and the TRUTH
-# gate (`skill-graph-drift.js`). The corpus-scoped gates (the verdict-honesty
-# gate `check-audit-manifest.js`, the application-eval floor `check-application-
-# evals.js`) read the manifest / skill_roots, not a single fixture, and are
-# already covered by `scripts/__tests__/test-application-verdict-write-back.js`,
-# `test-application-artifact-enforcement.js`, and `test-check-application-evals.js`.
+# SCOPE: this suite covers the single-skill gates that can be driven by path /
+# positional argument (STRUCTURAL via `skill-lint.js`, TRUTH via
+# `skill-graph-drift.js`) plus small workspace-scoped gates that can run against
+# hermetic fixtures (`check-application-evals.js`, `check-audit-manifest.js`).
 # See `README.md` in this directory for the full gate→coverage map.
 #
 # Fields per scenario:
@@ -85,6 +82,13 @@ scenarios:
     when: skill-lint
     then: { exit: 1, output_contains: ["required-missing", "`owner`"] }
 
+  - id: protocol-audit-status-verdict-fields-missing
+    gate: protocol
+    rule: "When audit-state.json exists, missing durable Audit Status verdict fields are surfaced as report-only migration debt; lint exits 0 but warns."
+    given: fixtures/warn/missing-audit-status-verdicts
+    when: skill-lint
+    then: { exit: 0, output_contains: ["audit-state.json is missing Audit Status verdict field(s)", "structural_verdict"] }
+
   # --- Truth Gate (skill-graph-drift.js) ---
   - id: truth-source-broken
     gate: truth
@@ -92,3 +96,43 @@ scenarios:
     given: fixtures/invalid/truth-source-broken
     when: drift
     then: { exit: 1, output_contains: BROKEN }
+
+  # --- Application Eval Structural Gate (check-application-evals.js) ---
+  - id: application-eval-valid-baseline
+    gate: application
+    rule: "A five-case application eval with at least one red herring passes the structural application-eval gate."
+    given: fixtures/application-workspace
+    skill: valid-app
+    when: application-evals
+    then: { exit: 0, output_contains: "OK — every application.json conforms to the schema." }
+
+  - id: application-eval-below-case-floor
+    gate: application
+    rule: "Application evals must carry at least five cases before they can certify behavior; --check FAILS below the floor."
+    given: fixtures/application-workspace
+    skill: below-floor-app
+    when: application-evals
+    then: { exit: 1, output_contains: ["below-case-floor", "cases has 4 case(s)"] }
+
+  - id: application-eval-bad-criticality
+    gate: application
+    rule: "Application eval criticality must use the application enum (`critical|high|normal|low`); `medium` is rejected because it belongs to comprehension evals."
+    given: fixtures/application-workspace
+    skill: bad-criticality-app
+    when: application-evals
+    then: { exit: 1, output_contains: ["bad-criticality", "medium"] }
+
+  # --- Verdict / Artifact Honesty Gate (check-audit-manifest.js) ---
+  - id: audit-manifest-empty-workspace
+    gate: application
+    rule: "A workspace with no audit runs is a valid positive control for the verdict/artifact honesty gate."
+    given: fixtures/audit-workspaces/empty
+    when: audit-manifest
+    then: { exit: 0, output_contains: ["checked 0 verdicts", "OK — every graded verdict has its gradeable artifact on disk."] }
+
+  - id: audit-manifest-graded-application-missing-artifact
+    gate: application
+    rule: "A graded application verdict must have a gradeable evals/application.json artifact unless the current Audit Status was honestly downgraded."
+    given: fixtures/audit-workspaces/graded-application-missing-artifact
+    when: audit-manifest
+    then: { exit: 1, output_contains: ["claim a graded behavior verdict without the matching artifact", "application=PROVISIONAL"] }
