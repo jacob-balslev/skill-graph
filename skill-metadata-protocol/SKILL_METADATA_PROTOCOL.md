@@ -224,7 +224,7 @@ These fields are required only when a specific condition is met. The frontmatter
 | Field | Required when | Enforced by |
 |---|---|---|
 | `grounding` | non-empty `project[]` (project-anchored) | frontmatter schema `allOf` |
-| `superseded_by` | `stability: deprecated` | cross-file lint / frontmatter lint |
+| `superseded_by` | `stability: deprecated` | frontmatter schema `allOf` |
 | `mental_model` + `purpose` + `concept_boundary` + `analogy` + `misconception` | `comprehension_state: present` in `audit-state.json` | cross-file lint |
 | `eval_artifacts: present` | `eval_state: passing` or `eval_state: monitored` | sidecar schema `allOf` |
 
