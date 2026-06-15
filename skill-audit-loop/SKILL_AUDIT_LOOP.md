@@ -171,7 +171,7 @@ read it before changing how the loop builds or scores skills.
 - **Representative generator, frontier judges.** The measured agent is the `representative-generator` role (`DEFAULT_COMPREHENSION_GENERATOR_MODEL = REPRESENTATIVE_GENERATOR_MODEL`). The judges remain the mandatory frontier pair, and both must agree before a verdict certifies.
 - **Private-content boundary (HARD).** Research scope is the public skill-graph repo + skills tree + the open web — never private workspace data.
 
-The receipt records both directions' resolved models, the execution profile + `parity_ok`, `agreement`, `reconciliation: conservative`, `registry_version`, and a `merge_ledger_ref` linking curation provenance to eval provenance (schema: `eval_last_run.bidirectional` in `schemas/skill-audit-state.schema.json`).
+The receipt records both directions' resolved models, the execution profile + `parity_ok`, `agreement`, `reconciliation: conservative`, `registry_version`, a `merge_ledger_ref` linking curation provenance to eval provenance, and a `receipt_visibility` flag (`public` / `private-monorepo` / `unknown`, SKI-356) declaring whether that ledger ships with the published public skill — the `merge_ledger_ref` is stored workspace-relative (never an absolute home-dir path), and `private-monorepo` means the in-sidecar receipt summary is the portable evidence an external consumer gets (schema: `eval_last_run.bidirectional` in `schemas/skill-audit-state.schema.json`).
 
 ### Multi-agent panel — the Skill Audit Loop's multi-model implementation (two-frontier mandatory by default · free advisory · cross-review to convergence)
 

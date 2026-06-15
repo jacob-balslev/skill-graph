@@ -303,7 +303,12 @@
             },
             "merge_ledger_ref": {
               "type": ["string", "null"],
-              "description": "Path/ref to the enrichment merge-ledger that produced the skill version this eval graded, so enrichment and eval provenance are one record. Null when the eval ran standalone (not after an enrich)."
+              "description": "Path/ref to the enrichment merge-ledger that produced the skill version this eval graded, so enrichment and eval provenance are one record. Null when the eval ran standalone (not after an enrich). Persisted as a WORKSPACE-RELATIVE path (never an absolute home-dir path), so a public-skills consumer never receives a leaked filesystem location; see `receipt_visibility` for whether the artifact ships with the published skill."
+            },
+            "receipt_visibility": {
+              "type": "string",
+              "enum": ["public", "private-monorepo", "unknown"],
+              "description": "Whether the artifact behind `merge_ledger_ref` is reachable from the PUBLIC skills repo (SKI-356). `private-monorepo` = the ledger lives in monorepo-only scratch (`agent-orchestration/logs`, `.opencode/progress`, `skill-graph/**/progress`, `.skill-graph/logs`) that is NOT shipped with the published skill, so an external consumer cannot resolve it — the in-sidecar receipt summary (this `bidirectional` object) is the portable evidence. `public` = co-located with the skill (e.g. `eval-history/`) and travels with it. `unknown` = no ledger ref. Set by `log-paths.receiptVisibilityForPath` at the sidecar-write boundary."
             },
             "provisional_reason": {
               "type": ["string", "null"],

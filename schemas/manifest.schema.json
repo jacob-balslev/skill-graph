@@ -741,6 +741,14 @@
                           "null"
                         ]
                       },
+                      "receipt_visibility": {
+                        "type": "string",
+                        "enum": [
+                          "public",
+                          "private-monorepo",
+                          "unknown"
+                        ]
+                      },
                       "provisional_reason": {
                         "type": [
                           "string",

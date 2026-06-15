@@ -307,7 +307,7 @@ check('F6: an unresolved direction model caps PASS to PROVISIONAL (cannot prove 
   assert.ok(/unresolved/.test(r.cap_reason));
 });
 check('F8: toSidecarReceipt projects ONLY schema-allowed keys', () => {
-  const allowed = new Set(['frontier_pair', 'measured_generator', 'generator_population', 'reconciliation', 'agreement', 'parity_ok', 'certifying_clean', 'synthesized_verdict', 'eval_slice', 'registry_version', 'merge_ledger_ref', 'provisional_reason', 'missing_frontiers', 'regrade_required', 'fence_caveat', 'execution_profile', 'directions']);
+  const allowed = new Set(['frontier_pair', 'measured_generator', 'generator_population', 'reconciliation', 'agreement', 'parity_ok', 'certifying_clean', 'synthesized_verdict', 'eval_slice', 'registry_version', 'merge_ledger_ref', 'receipt_visibility', 'provisional_reason', 'missing_frontiers', 'regrade_required', 'fence_caveat', 'execution_profile', 'directions']);
   const dirKeys = new Set(['role', 'generator_model', 'grader_model', 'generator_family', 'grader_family', 'resolved_model', 'verdict', 'certification_tier']);
   const epKeys = new Set(['tools', 'research', 'repoScope', 'cwd', 'fence']);
   const runDirection = ({ direction, generatorModel, graderModel, generatorFamily, graderFamily, executionProfile }) => ({
