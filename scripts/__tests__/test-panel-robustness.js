@@ -286,4 +286,57 @@ check('a BUDGET (rate-limit / session-window) failure on a mandatory cell mid-co
   assert.strictEqual(calls['gpt-5.5'], 1, 'no inline retry on a BUDGET failure — retrying burns the budget harder');
 });
 
+console.log('7. SKI-349 — terminal-marker safety net (every abort path emits a marker + terminal heartbeat)');
+{
+  const { EventEmitter } = require('events');
+  // A fake process: an EventEmitter with a spied exit(); and a fake reporter that records teardown().
+  const makeProc = () => { const p = new EventEmitter(); p.exit = (c) => { p._exitCode = c; }; return p; };
+  const makeReporter = () => { const r = { teardownCount: 0 }; r.teardown = () => { r.teardownCount += 1; }; return r; };
+  const makeStderr = () => { const s = { lines: [] }; s.write = (x) => { s.lines.push(x); return true; }; return s; };
+
+  check('a process that exits WITHOUT a marker (killed/crashed/early-exit) emits a FAILED marker + teardown', () => {
+    const proc = makeProc(); const reporter = makeReporter(); const stderr = makeStderr();
+    panel.createExitSafetyNet({ skill: 'demo', reporter, proc, stderr });
+    proc.emit('exit', 137); // e.g. SIGKILL-derived code / OOM
+    assert.strictEqual(reporter.teardownCount, 1, 'heartbeat flushed to terminal (complete) state');
+    assert.ok(stderr.lines.some(l => /SKILL-AUDIT-LOOP: FAILED skill=demo exit=137/.test(l)), 'FAILED marker written on exit');
+  });
+
+  check('markEmitted() (a real COMPLETE/FAILED was written) makes the exit net a no-op — no double marker', () => {
+    const proc = makeProc(); const reporter = makeReporter(); const stderr = makeStderr();
+    const net = panel.createExitSafetyNet({ skill: 'demo', reporter, proc, stderr });
+    net.markEmitted();
+    proc.emit('exit', 0);
+    assert.strictEqual(reporter.teardownCount, 0, 'no teardown — the run already wrote its own marker');
+    assert.strictEqual(stderr.lines.length, 0, 'no second marker');
+  });
+
+  check('SIGTERM (batch watchdog kill) emits a FAILED marker, flushes the heartbeat, and exits 143', () => {
+    const proc = makeProc(); const reporter = makeReporter(); const stderr = makeStderr();
+    panel.createExitSafetyNet({ skill: 'demo', reporter, proc, stderr });
+    proc.emit('SIGTERM');
+    assert.ok(stderr.lines.some(l => /SKILL-AUDIT-LOOP: FAILED skill=demo exit=143 reason=signal SIGTERM/.test(l)), 'SIGTERM → FAILED marker');
+    assert.strictEqual(reporter.teardownCount, 1, 'heartbeat flushed on SIGTERM');
+    assert.strictEqual(proc._exitCode, 143, 'exits 143 after marking');
+  });
+
+  check('the net emits only ONCE even across multiple terminal signals (idempotent)', () => {
+    const proc = makeProc(); const reporter = makeReporter(); const stderr = makeStderr();
+    panel.createExitSafetyNet({ skill: 'demo', reporter, proc, stderr });
+    proc.emit('SIGTERM');
+    proc.emit('exit', 143);
+    const markers = stderr.lines.filter(l => /SKILL-AUDIT-LOOP:/.test(l));
+    assert.strictEqual(markers.length, 1, 'exactly one terminal marker across SIGTERM + exit');
+    assert.strictEqual(reporter.teardownCount, 1, 'teardown ran once');
+  });
+
+  check('an uncaughtException emits a FAILED marker with the reason and exits 1', () => {
+    const proc = makeProc(); const reporter = makeReporter(); const stderr = makeStderr();
+    panel.createExitSafetyNet({ skill: 'demo', reporter, proc, stderr });
+    proc.emit('uncaughtException', new Error('boom in cross-review'));
+    assert.ok(stderr.lines.some(l => /SKILL-AUDIT-LOOP: FAILED skill=demo exit=1 reason=uncaughtException: boom in cross-review/.test(l)), 'uncaught → FAILED marker');
+    assert.strictEqual(proc._exitCode, 1);
+  });
+}
+
 console.log(`\n${passed} passed`);
