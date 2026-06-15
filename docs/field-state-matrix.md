@@ -131,8 +131,7 @@ The Skill Audit Loop owns these in `audit-state.json`. **Do not hand-author.** H
 | `last_changed` | ISO date | `improve` | Date the body or frontmatter was edited. |
 | `structural_verdict` | `PASS` / `PASS_WITH_FIXES` / `FAIL` / `UNVERIFIED` | `audit` | Form-layer (gates 1-2, 7). Rolled up from `lint_verdict`. Only external-mandate violations produce `FAIL`. |
 | `truth_verdict` | `PASS` / `DRIFT` / `BROKEN` / `UNVERIFIED` | `audit` | Truth-layer (gates 3-6). Rolled up from hashable drift evidence plus audit judgment; absent hash coverage requires explicit human/graded truth evidence before `PASS`. |
-| `comprehension_verdict` | `PASS` / `SHALLOW` / `REDUNDANT` / `UNVERIFIED` / `PROVISIONAL` / `SKIPPED_BASELINE_HIGH` / `NA` | comprehension grader | A concept-understanding signal. Never alone certifies a skill. |
-| `application_verdict` | `APPLICABLE` / `PROVISIONAL` / `NOT_DISCRIMINATED_CEILING` / `EQUIVALENT_ON_FRONTIER` / `REDUNDANT` / `HARMFUL` / `MIXED` / `FALSE_POSITIVE` / `UNVERIFIED` | application grader | **The primary quality signal.** A skill is behaviorally certified only when this is `APPLICABLE`. No-lift verdicts are scoped evidence, not deletion instructions. |
+| `comprehension_verdict` | `PASS` / `SHALLOW` / `REDUNDANT` / `UNVERIFIED` / `PROVISIONAL` / `SKIPPED_BASELINE_HIGH` / `NA` | comprehension grader | **The behavior-gate quality signal** (gate 8). (The fourth `application_verdict` was removed 2026-06-15 — see CHANGELOG.) |
 | `eval_score` | 0.0-5.0 | `evaluate` | Latest aggregate grade. |
 | `eval_failed_ids` | string[] | `evaluate` | Failed eval IDs. Empty when clean. |
 | `lint_verdict` | `PASS` / `FAIL` / `UNKNOWN` | `skill-lint.js` | Per-script signal. Rolls up into `structural_verdict`. |
@@ -142,7 +141,7 @@ The Skill Audit Loop owns these in `audit-state.json`. **Do not hand-author.** H
 
 | Tier | What it means | When the loop writes it |
 |---|---|---|
-| `APPLICABLE` (application) / `PASS` (other axes) | Certified by the independent dual-run grader. | Grader produced a receipt. |
+| `PASS` | Certified by the independent dual-run grader. | Grader produced a receipt. |
 | `PROVISIONAL` | Single-model audit assessed the skill; lower confidence. To be confirmed or overturned. | A single-model audit ran and produced a real lower-confidence result. **Not a vacuum** (do not default to UNVERIFIED when a single audit actually ran). |
 | `UNVERIFIED` / `NA` | Not assessed at all. | Default state; means nobody has assessed this axis. |
 

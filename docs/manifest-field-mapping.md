@@ -87,7 +87,6 @@ Every top-level authored field in `schemas/SKILL_METADATA_PROTOCOL_schema.json` 
 | 43a | `structural_verdict` | grouped under parent | `health.structural_verdict`. Form-layer verdict from gates 1–2 and 7. Enum: `PASS`, `PASS_WITH_FIXES`, `FAIL`, `UNVERIFIED`. Joined from `audit-state.json`. |
 | 43b | `truth_verdict` | grouped under parent | `health.truth_verdict`. Truth-layer verdict from gates 3–6. Enum: `PASS`, `DRIFT`, `BROKEN`, `UNVERIFIED`. Joined from `audit-state.json`. |
 | 43c | `comprehension_verdict` | grouped under parent | `health.comprehension_verdict`. Concept-understanding verdict from gate 8. Enum: `PASS`, `SHALLOW`, `REDUNDANT`, `UNVERIFIED`, `PROVISIONAL`, `SKIPPED_BASELINE_HIGH`, `NA`. Joined from `audit-state.json`. |
-| 43d | `application_verdict` | grouped under parent | `health.application_verdict`. Application-layer verdict from gate 9 and the primary quality signal. Enum: `APPLICABLE`, `PROVISIONAL`, `NOT_DISCRIMINATED_CEILING`, `EQUIVALENT_ON_FRONTIER`, `REDUNDANT`, `HARMFUL`, `MIXED`, `FALSE_POSITIVE`, `UNVERIFIED`. Joined from `audit-state.json`. |
 | 43e | `audit_verdict` | grouped under parent | `health.audit_verdict`. Compatibility read key retained by the manifest schema; current skill packages use the four verdict fields above. |
 | 44 | `eval_score` | grouped under parent | `health.eval_score`. Latest aggregate eval grade (0.0–5.0). Joined from `audit-state.json`. |
 | 45 | `eval_failed_ids` | grouped under parent | `health.eval_failed_ids`. Eval IDs that failed in the most recent run. Joined from `audit-state.json`. |

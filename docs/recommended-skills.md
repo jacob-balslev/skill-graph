@@ -112,7 +112,7 @@ Deferred split candidates: `color-science`, `typography`, `motion-design`, and `
 
 ### Certify before you expand
 
-The board's #1 recommendation (SKI-149) is to **prove the existing ~20 agentic-core skills are `APPLICABLE`** (the context/eval/tool-use/prompt-safety/agent-loop clusters) before — or alongside — building Tier D. 0/165 skills are currently certified useful; certifying the core is the publish gate. Build Tier D to fill the gaps; certify the core to prove the value.
+The board's #1 recommendation (SKI-149) is to **prove the existing ~20 agentic-core skills earn `comprehension_verdict: PASS`** (the context/eval/tool-use/prompt-safety/agent-loop clusters) before — or alongside — building Tier D. Certifying the core is the publish gate. Build Tier D to fill the gaps; certify the core to prove the value.
 
 ---
 

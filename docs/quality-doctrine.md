@@ -115,7 +115,7 @@ A version number asserts substantive conformance, not just a schema shape. Advan
 
 - A label mismatch (e.g. `schema_version: 8` with `skill_graph_protocol: v5`) is **honest record-keeping**, not drift: the schema bump ran, the content migration did not. Resolve it by doing the migration, then advancing the label — never by editing the label alone.
 - A bulk `sed`/find-replace of `vN` → `vM` with no content change is **prohibited**. A backlog of skills on an older content label is migration work to schedule, not a string to replace.
-- Bumping a label without the work is fake-conformance — the same defect class as `eval_state: passing` without an `eval_last_run` receipt, or `application_verdict: APPLICABLE` without a gate-9 eval. The binding statement of this rule lives in `AGENTS.md § Version Labels Are Earned, Not Bumped`.
+- Bumping a label without the work is fake-conformance — the same defect class as `eval_state: passing` without an `eval_last_run` receipt, or `comprehension_verdict: PASS` without a gate-8 eval. The binding statement of this rule lives in `AGENTS.md § Version Labels Are Earned, Not Bumped`.
 
 ## Verification
 

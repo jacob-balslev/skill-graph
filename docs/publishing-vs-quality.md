@@ -27,11 +27,13 @@ So Question 1 = *general-purpose AND no secrets → safe to open-source.* Pure d
 
 A **quality** question, owned entirely by the **Audit & Evaluation system** (the part of the project that maintains and grades skills). It has nothing to do with publishing.
 
-The way it works: run a real task **with** the skill and **without** it, and check whether the skill actually made the AI do better. The result is stored as a label called `application_verdict`:
+The way it works: run a real comprehension task **with** the skill and **without** it, and check whether the skill measurably deepened the AI's understanding. The result is stored as a label called `comprehension_verdict`:
 
-- `APPLICABLE` — tested, and it genuinely helps. (This is what the roundtable cryptically called "behaviorally-certified.")
-- `UNVERIFIED` — nobody has run the test yet. True for roughly 157 of the 158 skills today. This is the honest default, not a failure.
-- (Other values record tested-but-no-help, tested-but-harmful, etc. — see `docs/verdict-semantics.md`.)
+- `PASS` — tested, and it genuinely helps. (This is what the roundtable cryptically called "behaviorally-certified.")
+- `UNVERIFIED` — nobody has run the test yet. True for most skills today. This is the honest default, not a failure.
+- (Other values record tested-but-shallow, tested-but-redundant, etc. — see `docs/verdict-semantics.md`.)
+
+> The fourth `application_verdict` (the application/behavior-change gate) was **removed 2026-06-15** — see CHANGELOG. `comprehension_verdict` is now the behavior-gate quality signal.
 
 This label lives in a separate per-skill file (`audit-state.json`), is written only by the audit tools (`/audit:*`), and is the job of the part of the system called the Behavior Gate (the "does it change behavior the way it claims?" check), as opposed to the Integrity Gate (the "is it well-formed and honest?" check). Definitions: `docs/verdict-semantics.md`, `skill-audit-loop/SKILL_AUDIT_LOOP.md`, `schemas/skill-audit-state.schema.json`.
 
@@ -39,14 +41,14 @@ This label lives in a separate per-skill file (`audit-state.json`), is written o
 
 This is not an accident to fix — it is a designed property:
 
-- **Publishing does not depend on quality.** A skill can be published while still untested (`application_verdict: UNVERIFIED`). Per `docs/adr/0011-split-audit-verdict-into-four-verdicts.md`, untested skills are published **transparently labeled "behavior unvalidated"** rather than being held back. With ~157/158 untested, gating publication on quality would mean publishing almost nothing.
+- **Publishing does not depend on quality.** A skill can be published while still untested (`comprehension_verdict: UNVERIFIED`). Per `docs/adr/0011-split-audit-verdict-into-four-verdicts.md`, untested skills are published **transparently labeled "behavior unvalidated"** rather than being held back. With most skills untested, gating publication on quality would mean publishing almost nothing.
 - **There is already a separate publication-priority field.** `marketplace_tier` (`S`/`A`/`B`/`C`, in `schemas/skill-audit-state.schema.json`) decides how prominently a published skill is featured. It is authored per skill and is **not derived from the quality label** — confirming the two concerns are kept apart on purpose.
 
 ```
   Question 1: can it go public?            Question 2: is it any good?
   (publishing + security)                  (quality)
   owner: export / marketplace pipeline     owner: Audit & Evaluation system
-  fields: public,               field: application_verdict
+  fields: public,               field: comprehension_verdict
           privacy/secret scanner                  (Behavior Gate, audit-state.json)
   status: BUILT, runs today                status: being built out (SH-6624 runner)
                          \                 /

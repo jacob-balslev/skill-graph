@@ -67,7 +67,7 @@ For routable skills, add `keywords` as a recommended activation surface: up to 1
 
 ### Do NOT hand-author these (loop-written)
 
-The Audit Status fields are stamped by `audit`, `improve`, `evaluate`, and the dedicated graders. Leave them absent on a new skill. They become `UNVERIFIED` automatically until an audit run writes evidence: `last_audited`, `last_changed`, `structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`.
+The Audit Status fields are stamped by `audit`, `improve`, `evaluate`, and the dedicated graders. Leave them absent on a new skill. They become `UNVERIFIED` automatically until an audit run writes evidence: `last_audited`, `last_changed`, `structural_verdict`, `truth_verdict`, `comprehension_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`.
 
 For the full state-by-state map of every field see [field-state-matrix.md](./field-state-matrix.md).
 
@@ -182,7 +182,7 @@ Two follow-ups, both optional at authoring time:
 - **Record truth hashes** if the skill is project-anchored (`public: false` + `project[]`) and you populated `grounding.truth_sources`: `node scripts/skill-graph-drift.js --record --apply skills/<your-skill-name>`. This makes the drift sentinel useful.
 - **Author an eval** if you want the skill behaviorally certified: write `skills/<your-skill-name>/evals/comprehension.json` and run `node lib/audit/evaluate-skill.js --mode comprehension skills/<your-skill-name>/evals/comprehension.json`.
 
-Neither blocks first commit. A new skill ships honestly with `eval_state: unverified` in `audit-state.json` and `application_verdict: UNVERIFIED` by absence until an audit/eval run writes a receipt.
+Neither blocks first commit. A new skill ships honestly with `eval_state: unverified` in `audit-state.json` and `comprehension_verdict: UNVERIFIED` by absence until an audit/eval run writes a receipt.
 
 ## Common mistakes
 
@@ -201,7 +201,7 @@ Neither blocks first commit. A new skill ships honestly with `eval_state: unveri
 |---|---|---|
 | `skill-lint.js --skill <slug>` | Do this skill's `SKILL.md` and `audit-state.json` parse and match their schemas? | Run on every commit by author. |
 | `skill-lint.js` (no skill) | Does the corpus still parse? | CI-wide gate. New errors over baseline fail CI. |
-| Audit loop (`audit` / `evaluate`) | Does the skill teach what it claims to teach? | Eventual. The `application_verdict` is the only verdict that certifies usefulness; new skills start `UNVERIFIED` and earn it over time. |
+| Audit loop (`audit` / `evaluate`) | Does the skill teach what it claims to teach? | Eventual. The `comprehension_verdict` is the behavior-gate quality signal; new skills start `UNVERIFIED` and earn it over time. |
 
 A first-commit skill aims to pass level 1. Levels 2 and 3 are earned later.
 

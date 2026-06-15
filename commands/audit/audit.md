@@ -33,7 +33,7 @@ should use the bundled CLI surface instead: `skill-graph audit <skill>`,
 
 ## Why this audit exists
 
-> **Audit Doctrine — link only.** The canonical doctrine is `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md` § Audit Doctrine — Intent and Teaching, Not Arbitrary Lint. It evaluates each skill on three axes (intent fidelity, teaching efficacy, upstream currency) and `application_verdict` is the real quality signal. Lint is a floor, never the goal. Do not restate the doctrine here — link to it.
+> **Audit Doctrine — link only.** The canonical doctrine is `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md` § Audit Doctrine — Intent and Teaching, Not Arbitrary Lint. It evaluates each skill on three axes (intent fidelity, teaching efficacy, upstream currency) and `comprehension_verdict` is the behavior-gate quality signal. Lint is a floor, never the goal. Do not restate the doctrine here — link to it.
 
 ## What it writes
 
@@ -47,7 +47,6 @@ These fields live in `audit-state.json`; long-form evidence lives in the run dir
 | `structural_verdict` | always — `PASS` / `FAIL` aggregate of `lint_verdict` (form/export-blockers only, never internal-style warnings) |
 | `truth_verdict` | always — `PASS` / `DRIFT` / `BROKEN` / `UNVERIFIED` from drift vs `grounding.truth_sources` (UNVERIFIED when the skill declares no truth sources) |
 | `comprehension_verdict` | never — written by `evaluate --mode comprehension`, not by `audit` |
-| `application_verdict` | never — written by `evaluate --mode application`, not by `audit` |
 
 ## Usage
 
@@ -71,10 +70,10 @@ The binding per-skill contract lives at [`skill-graph/skill-audit-loop/SKILL_AUD
 1. **Deterministic** — `skill-lint.js` (external mandates only — we do not author new internal lint rules to manufacture findings) → writes `lint_verdict` → rolls up into `structural_verdict`
    - **`--fix` (deterministic remediation framework)** — the deterministic repair catalog is currently EMPTY: the v7→v8 shape codemod (`lib/audit/migrate-frontmatter.js`) was retired to git history per `AGENTS.md § Major Version Is a Clean Cut` (it produced the interim `deployment_target` shape that v8's `public` + free-text `scope` replaced, so it could no longer emit a valid current-v8 skill). The framework stays for the next version's catalog; today remaining lint errors route to `improve`/manual. Distinct from `--fix-code-too` (LLM-driven cross-artifact code fix).
 2. **Drift** — `skill-graph-drift.js` against `grounding.truth_sources` → writes `drift_status` → rolls up into `truth_verdict`
-3. **Graded** (only `--graded`) — qualitative scorecard grading over metadata, activation, relation, grounding, content, eval-quality, and portability dimensions. This writes findings/verdict/scorecard artifacts only; it does not run comprehension/application eval suites.
+3. **Graded** (only `--graded`) — qualitative scorecard grading over metadata, activation, relation, grounding, content, eval-quality, and portability dimensions. This writes findings/verdict/scorecard artifacts only; it does not run the comprehension eval suite.
 4. **Stamp** — writes `last_audited` to today's ISO date
 
-The single `audit_verdict` field is retired (ADR 0011). The four verdicts are independent: `structural_verdict` (form), `truth_verdict` (drift), `comprehension_verdict` (recitation, demoted), `application_verdict` (behaviour change — the real quality signal). `audit` owns the first two; `evaluate` owns the latter two. Most skills sit at `UNVERIFIED` on the behavior fields until eval artifacts are authored and run.
+The single `audit_verdict` field is retired (ADR 0011). The three verdicts are independent: `structural_verdict` (form), `truth_verdict` (drift), and `comprehension_verdict` (the behavior-gate quality signal). `audit` owns the first two; `evaluate` owns comprehension. Most skills sit at `UNVERIFIED` on the comprehension field until eval artifacts are authored and run. (The fourth `application_verdict` was removed 2026-06-15 — see CHANGELOG.)
 
 Users see one command. Phases are an implementation detail.
 

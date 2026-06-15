@@ -17,10 +17,9 @@ Run the eval suite (`evals/<skill>.json` plus the optional `evals/comprehension.
 
 Before running this command through an agent, read
 [`skill-audit-loop/WORKFLOW_CONTRACT.md`](../../../skill-graph/skill-audit-loop/WORKFLOW_CONTRACT.md).
-This command evaluates behavior evidence, not structural correctness. Its two
-metrics are `comprehension_verdict` for recitation quality and
-`application_verdict` for behavior-change evidence. No-lift and ceiling
-outcomes are scoped evidence, not deletion instructions.
+This command evaluates behavior evidence, not structural correctness. Its
+metric is `comprehension_verdict` — the behavior-gate quality signal. No-lift
+and ceiling outcomes are scoped evidence, not deletion instructions.
 
 ## What it writes
 
@@ -29,8 +28,7 @@ outcomes are scoped evidence, not deletion instructions.
 | `eval_score` | always — aggregate 0.0–5.0 across all evals run |
 | `eval_failed_ids` | always — list of failed case IDs, empty when clean |
 | `freshness` | always — today's ISO date |
-| `comprehension_verdict` | comprehension mode — gate 8 recitation check, demoted below application evidence |
-| `application_verdict` | A/B or matrix mode when an application eval exists — gate 9 behavior-change check and primary quality signal |
+| `comprehension_verdict` | comprehension mode — gate 8 behavior-gate quality signal |
 | `verify.eval_state` | when the eval-health triple updates (`unverified` → `passing` etc.) |
 
 ## Usage
@@ -49,10 +47,9 @@ When the default evaluator path is unavailable because it would route through th
 
 ```
 skill-graph evaluate:gpt-5.5 --comprehension skills/<skill>/evals/comprehension.json
-skill-graph evaluate:gpt-5.5 --mode application --application skills/<skill> skills/<skill>/evals/application.json
 ```
 
-The wrapper lives in `lib/audit/evaluate-skill-codex-gpt-5.5.js`. It delegates to `lib/audit/evaluate-skill.js`, forces `--grader codex`, `--generator codex`, `--tools-on`, and `--single-model`, and pins the comprehension/application generator and grader env vars to `gpt-5.5`. Same-family Codex/GPT evidence is honest but provisional; it cannot earn `PASS` or `APPLICABLE`.
+The wrapper lives in `lib/audit/evaluate-skill-codex-gpt-5.5.js`. It delegates to `lib/audit/evaluate-skill.js`, forces `--grader codex`, `--generator codex`, `--tools-on`, and `--single-model`, and pins the comprehension generator and grader env vars to `gpt-5.5`. Same-family Codex/GPT evidence is honest but provisional; it cannot earn `PASS`.
 
 ## When this fires automatically
 

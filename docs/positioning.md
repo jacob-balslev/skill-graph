@@ -52,7 +52,7 @@ Reach for it when:
 - You have **more than ~5 skills** and they have started to depend on, verify, or exclude one another.
 - You want **deterministic checks** for skill correctness (schema, paths, Evaluation Status) and not just LLM-as-grader.
 - You want **graph queries** over the library — "what skills depend on this one?", "what's the boundary between X and Y?", "which skills verify this one?"
-- You want a **single audit loop** that produces a fingerprint per skill (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`, `eval_score`, `drift_status`) recorded in the skill's sibling `audit-state.json` sidecar and joined into the compiled manifest.
+- You want a **single audit loop** that produces a fingerprint per skill (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `eval_score`, `drift_status`) recorded in the skill's sibling `audit-state.json` sidecar and joined into the compiled manifest.
 
 Do NOT reach for it when:
 
@@ -92,4 +92,4 @@ The runtime layer answers "how does this skill execute?" The author/audit-time l
 Two 2026 benchmarks independently validate the premises Skill Graph is built on:
 
 - **[SkillsBench](https://www.skillsbench.ai/)** ([arXiv 2602.12670](https://arxiv.org/abs/2602.12670)) — across 86 tasks / 11 domains / 7,308 trajectories, **curated** skills raise pass rate by **+16.2pp on average** (up to +51.9pp), while **self-generated** skills give no benefit ("models cannot reliably author the procedural knowledge they benefit from consuming"). This is the empirical case for the Skill Audit Loop's curate-and-grade discipline over auto-generation, and for the [quality doctrine](quality-doctrine.md)'s "improve = curate, never auto-author."
-- **[SkillTester](https://arxiv.org/abs/2603.28815)** ([skilltester.ai](https://skilltester.ai)) — evaluates skills via **paired baseline-vs-with-skill execution**, normalizing to a utility score plus a security score and a three-level security status. That paired-delta method is exactly the `application_verdict` methodology Skill Graph already deploys (see [`verdict-semantics.md`](verdict-semantics.md)) — Skill Graph's four-verdict Audit Status predates and generalizes it, and its utility+security split mirrors Skill Graph's Integrity/Behavior gates plus the release-time `security:scan`.
+- **[SkillTester](https://arxiv.org/abs/2603.28815)** ([skilltester.ai](https://skilltester.ai)) — evaluates skills via **paired baseline-vs-with-skill execution**, normalizing to a utility score plus a security score and a three-level security status. Skill Graph's behavior gate uses the same paired baseline-vs-with-skill comprehension eval (see [`verdict-semantics.md`](verdict-semantics.md)), and its utility+security split mirrors Skill Graph's Integrity/Behavior gates plus the release-time `security:scan`.

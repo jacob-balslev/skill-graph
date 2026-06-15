@@ -25,7 +25,7 @@ Two phases, two modes, two commits. Arg 1 = the skill to run through the Skill A
 
 > **This is the interactive single-skill command.** The autonomous batch queue-worker that drains the whole worklist is the OpenCode `skill-audit-loop` loop (`.opencode/commands/skill-audit-loop.md`, registered verbatim in `scripts/loop/run-loop-sweep.sh`). Same name, different runtime, different job — do not conflate them and do not gut that loop prompt.
 
-> **Audit Doctrine — link only.** Canonical doctrine: `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md` § Audit Doctrine. `application_verdict` is the real quality signal; lint is a floor, never the goal. The Skill Audit Loop philosophy (curate-not-strip; eval is a guardrail; two frontier models curate; advisory widens search but never certifies): `skill-graph/docs/skill-audit-loop-philosophy.md`. Do not restate either here.
+> **Audit Doctrine — link only.** Canonical doctrine: `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md` § Audit Doctrine. `comprehension_verdict` is the behavior-gate quality signal; lint is a floor, never the goal. The Skill Audit Loop philosophy (curate-not-strip; eval is a guardrail; two frontier models curate; advisory widens search but never certifies): `skill-graph/docs/skill-audit-loop-philosophy.md`. Do not restate either here.
 
 ## Mode separation (mandatory — read `AGENTS.md` § Work Modes)
 

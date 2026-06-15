@@ -2,7 +2,7 @@
 
 > Used by `lib/audit/evaluate-skill.js --comprehension` to grade model responses for **Comprehension**. Comprehension uses named criteria; the JSON field is still called `dimension` / `dimension_scores` for schema compatibility. See `docs/plans/concept-comprehension-layer.md` for the full design lineage.
 > Grader model: a frontier judge — **`opus`** or **`gpt-5.5`**. The normal bidirectional eval keeps the measured generator fixed as `representative-generator` and asks both frontier judges to grade the same with/without-skill evidence independently. Never let the measured generator grade its own answer.
-> Certifying-run model contract: a single frontier judgment supports **at most `PROVISIONAL`**; certifying `PASS`/`APPLICABLE` requires both frontier judges to agree under the representative-generator protocol (self-preference bias inflates same-family judging ~+10–25pp, [arXiv 2410.21819](https://arxiv.org/abs/2410.21819)). See `docs/verdict-semantics.md § Two-frontier bidirectional reconciliation`.
+> Certifying-run model contract: a single frontier judgment supports **at most `PROVISIONAL`**; certifying `PASS` requires both frontier judges to agree under the representative-generator protocol (self-preference bias inflates same-family judging ~+10–25pp, [arXiv 2410.21819](https://arxiv.org/abs/2410.21819)). See `docs/verdict-semantics.md § Two-frontier bidirectional reconciliation`.
 > Version: 1.2 — 2026-06-13
 
 ## Role

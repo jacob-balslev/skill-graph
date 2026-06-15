@@ -20,10 +20,10 @@ The lowercase `audit` operation is only the report-only **Verify** command insid
 |---|---|---|---|
 | **Read** | Load the skill, sidecar, evals, related skills, truth sources, prior audit receipts. | Human/agent reads; `source-truth-catalog.js` in workspace drains. | Run-dir evidence only. |
 | **Verify** | Check structural validity, drift, grounding, routing boundaries, privacy, and upstream displacement. | `node bin/skill-graph.js audit <skill> [--graded]`; implementation `lib/audit/skill-audit.js`. | `audit-state.json`: `last_audited`, `lint_verdict`, `drift_status`, `structural_verdict`, `truth_verdict`; run-dir `findings.md` / `verdict.md` / `scorecard.md`. |
-| **Evaluate** | Establish current behavior/baseline when eval artifacts exist. | `node bin/skill-graph.js evaluate --mode comprehension|application ...`; implementation `lib/audit/evaluate-skill.js`. | `eval_score`, `eval_failed_ids`, `freshness`, `comprehension_verdict` or `application_verdict`, `eval_last_run`. |
+| **Evaluate** | Establish current behavior/baseline when eval artifacts exist. | `node bin/skill-graph.js evaluate --mode comprehension ...`; implementation `lib/audit/evaluate-skill.js`. | `eval_score`, `eval_failed_ids`, `freshness`, `comprehension_verdict`, `eval_last_run`. |
 | **Research** | Gather repo and official/web evidence for the strongest current teaching. | Per-model prompts in `prompts/skill-audit-loop-improve-pass.md`; panel deps in `lib/audit/skill-audit-loop-live-deps.js`. | Proposal artifacts and novelty memos, not canonical `SKILL.md`. |
 | **Improve** | Produce one candidate enrichment/fix, preserving useful knowledge. | `lib/audit/run-skill-audit-loop-lite.js` or `lib/audit/run-skill-audit-loop.js`; `skill-graph improve` for single-field edits. | Candidate `proposed-SKILL.md` / merged temp skill; canonical `SKILL.md` only later at Grade on keep. |
-| **Use** | Load/apply the candidate skill in the same task/eval shape the skill claims to improve. | `lib/audit/run-bidirectional-eval.js` and application eval runner. | Eval receipt artifacts. |
+| **Use** | Load/apply the candidate skill in the same task/eval shape the skill claims to improve. | `lib/audit/run-bidirectional-eval.js` (comprehension). | Eval receipt artifacts. |
 | **Evaluate** | Measure candidate behavior under the same contract; invalid/capped/missing evals are inconclusive. | `runBidirectionalEval()` / `evaluate-skill.js`. | Eval receipts and, after keep, sidecar behavior verdicts. |
 | **Grade** | Keep/apply, revert, or defer; stamp only what the evidence earned. | `decideKeepOrRevert()` plus `applyMerge()`; full-loop recording in `recordFullLoop()`. | On keep: canonical `SKILL.md`, `last_changed`, eligible behavior verdict receipts. On revert: no canonical body write and no candidate behavior stamp. |
 
@@ -33,7 +33,7 @@ The lowercase `audit` operation is only the report-only **Verify** command insid
 |---|---|---|---|
 | **audit** | Report-only Integrity pass: lint, drift, truth/source verification, optional qualitative scorecard. | No | `last_audited`, `lint_verdict`, `drift_status`, `structural_verdict`, `truth_verdict`. It does **not** stamp behavior verdicts. |
 | **improve** | Edit one field or candidate, time-boxed, then evaluate. | Yes | The chosen field or candidate; `last_changed` only on accepted keep. |
-| **evaluate** | Run comprehension/application eval suites. | No | `eval_score`, `eval_failed_ids`, `freshness`, `comprehension_verdict`, `application_verdict`, `eval_last_run` when the relevant grader runs. |
+| **evaluate** | Run the comprehension eval suite. | No | `eval_score`, `eval_failed_ids`, `freshness`, `comprehension_verdict`, `eval_last_run` when the grader runs. |
 | **evolve** | Corpus walker: analyze, triage, execute, verify, checkpoint. | Yes, through `improve` | The same `SKILL.md` and `audit-state.json` writes as the operations/actions it composes. |
 
 ## `audit` inner pipeline
@@ -50,8 +50,7 @@ The lowercase `audit` operation is only the report-only **Verify** command insid
 | # | Phase | Script | Files written | Verdict field | Skip condition |
 |---|---|---|---|---|---|
 | 1 | Comprehension grader | `node bin/skill-graph.js evaluate --mode comprehension <eval-file>` -> `lib/audit/evaluate-skill.js` | sidecar + eval receipt | `comprehension_verdict`, `eval_score`, `eval_failed_ids`, `freshness` | Requires `evals/comprehension.json`. Missing artifact is explicit `UNVERIFIED`, not success. |
-| 2 | Application grader | `node bin/skill-graph.js evaluate --mode application --application <skill-dir> <eval-file>` -> `lib/audit/evaluate-skill.js` | sidecar + eval receipt | `application_verdict`, `eval_last_run`, `eval_score`, `eval_failed_ids`, `freshness` | Requires `evals/application.json`. `APPLICABLE` requires certifying cross-family evidence; otherwise positive results cap lower. |
-| 3 | Write-back guard | `stampComprehensionVerdict()` / `stampApplicationVerdict()` | `audit-state.json` | relevant behavior verdict | Dry runs, unresolved skill paths, or all-errored runs do not stamp. |
+| 2 | Write-back guard | `stampComprehensionVerdict()` | `audit-state.json` | `comprehension_verdict` | Dry runs, unresolved skill paths, or all-errored runs do not stamp. |
 
 ## `improve` / panel pipeline
 
@@ -72,13 +71,13 @@ The lowercase `audit` operation is only the report-only **Verify** command insid
 ANALYZE -> TRIAGE -> EXECUTE -> VERIFY -> CHECKPOINT
 ```
 
-EXECUTE delegates to `improve` and `evaluate` where appropriate. Priority reads `application_verdict` first, then centrality and Audit Status staleness. The workspace fork of the old loop remains a compatibility surface until the documented fork-collapse work completes.
+EXECUTE delegates to `improve` and `evaluate` where appropriate. Priority reads `comprehension_verdict` first, then centrality and Audit Status staleness. The workspace fork of the old loop remains a compatibility surface until the documented fork-collapse work completes.
 
 ## Silent failure modes to watch
 
 | Gap | Why it matters | Expected behavior |
 |---|---|---|
-| `audit --graded` overread as Behavior-Gate certification | The command writes qualitative scorecard artifacts, not `comprehension_verdict` / `application_verdict`. | Use `evaluate --mode comprehension|application` for behavior verdicts. |
+| `audit --graded` overread as Behavior-Gate certification | The command writes qualitative scorecard artifacts, not `comprehension_verdict`. | Use `evaluate --mode comprehension` for the behavior verdict. |
 | Self-assessment stamped as behavior verdict | A diagnostic audit can make a useful judgment, but it is not an eval receipt. | Put self-assessment in `verdict.md`; keep sidecar behavior `UNVERIFIED` unless `evaluate` ran. |
 | Candidate applied before eval | Canonical source can inherit ungraded changes. | Panel/lite runners eval the candidate copy before `applyMerge()`. |
 | Revert after non-lift | Delta-stripping removes useful curation because the eval was too narrow. | Revert only genuine regression. |
@@ -121,7 +120,6 @@ node bin/skill-graph.js audit <skill-name> --graded --grader-cli "<command>"
 
 # Behavior evaluation
 node bin/skill-graph.js evaluate --mode comprehension skills/<skill-name>/evals/comprehension.json
-node bin/skill-graph.js evaluate --mode application --application skills/<skill-name> skills/<skill-name>/evals/application.json
 
 # Panel loop candidate improvement
 node lib/audit/run-skill-audit-loop.js --skill <slug> --skill-dir ../skills/skills/<subject>/<slug> --cwd .
