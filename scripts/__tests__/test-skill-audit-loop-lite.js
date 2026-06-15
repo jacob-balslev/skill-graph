@@ -97,19 +97,15 @@ check('F10: empty / missing ledger => violation (a union of 2 proposals must rec
 });
 
 console.log('2. decideKeepOrRevert — guardrail only (revert ONLY on genuine regression)');
-check('HARMFUL => revert', () => {
-  const d = audit.decideKeepOrRevert({ synthesized_verdict: 'HARMFUL' });
+check('verdict measurably worse than prior => revert (SHALLOW < PASS)', () => {
+  const d = audit.decideKeepOrRevert({ synthesized_verdict: 'SHALLOW' }, { priorVerdict: 'PASS' });
   assert.strictEqual(d.action, 'revert');
 });
-check('FALSE_POSITIVE => revert', () => {
-  assert.strictEqual(audit.decideKeepOrRevert({ synthesized_verdict: 'FALSE_POSITIVE' }).action, 'revert');
+check('PROVISIONAL below a prior PASS => revert', () => {
+  assert.strictEqual(audit.decideKeepOrRevert({ synthesized_verdict: 'PROVISIONAL' }, { priorVerdict: 'PASS' }).action, 'revert');
 });
-check('verdict measurably worse than prior => revert (PROVISIONAL < APPLICABLE)', () => {
-  const d = audit.decideKeepOrRevert({ synthesized_verdict: 'PROVISIONAL' }, { priorVerdict: 'APPLICABLE' });
-  assert.strictEqual(d.action, 'revert');
-});
-check('APPLICABLE => keep', () => {
-  assert.strictEqual(audit.decideKeepOrRevert({ synthesized_verdict: 'APPLICABLE' }).action, 'keep');
+check('PASS => keep', () => {
+  assert.strictEqual(audit.decideKeepOrRevert({ synthesized_verdict: 'PASS' }).action, 'keep');
 });
 check('UNVERIFIED / non-lift => KEEP (absence of measured lift is not a regression)', () => {
   assert.strictEqual(audit.decideKeepOrRevert({ synthesized_verdict: 'UNVERIFIED' }).action, 'keep');
@@ -117,20 +113,20 @@ check('UNVERIFIED / non-lift => KEEP (absence of measured lift is not a regressi
   assert.strictEqual(audit.decideKeepOrRevert({ synthesized_verdict: 'PROVISIONAL' }).action, 'keep');
   // REDUNDANT (skill didn't add measured value) is NOT a regression to revert — audit keeps it.
   assert.strictEqual(audit.decideKeepOrRevert({ synthesized_verdict: 'REDUNDANT' }).action, 'keep');
-  assert.strictEqual(audit.decideKeepOrRevert({ synthesized_verdict: 'NOT_DISCRIMINATED_CEILING' }).action, 'keep');
-  assert.strictEqual(audit.decideKeepOrRevert({ synthesized_verdict: 'EQUIVALENT_ON_FRONTIER' }).action, 'keep');
+  // SHALLOW with no prior graded verdict is non-lift, not a regression — keep.
+  assert.strictEqual(audit.decideKeepOrRevert({ synthesized_verdict: 'SHALLOW' }).action, 'keep');
 });
 check('F9: an invalid/capped run (certifying_clean:false) DEFERS — never reverts on a confidence cap', () => {
-  // Parity failed → APPLICABLE was capped to PROVISIONAL; prior was APPLICABLE. The
-  // naive prior-comparison would revert, but a cap is not a regression — defer (keep).
+  // Parity failed → PASS was capped to PROVISIONAL; prior was PASS. The naive
+  // prior-comparison would revert, but a cap is not a regression — defer (keep).
   const d = audit.decideKeepOrRevert(
     { synthesized_verdict: 'PROVISIONAL', certifying_clean: false, cap_reason: 'parity failed' },
-    { priorVerdict: 'APPLICABLE' },
+    { priorVerdict: 'PASS' },
   );
   assert.strictEqual(d.action, 'keep');
-  // Even a HARMFUL verdict on a non-certifying-clean (untrustworthy) run defers,
+  // Even a clearly-worse verdict on a non-certifying-clean (untrustworthy) run defers,
   // because the run itself is invalid — we don't act on an unprovable measurement.
-  assert.strictEqual(audit.decideKeepOrRevert({ synthesized_verdict: 'HARMFUL', certifying_clean: false }).action, 'keep');
+  assert.strictEqual(audit.decideKeepOrRevert({ synthesized_verdict: 'SHALLOW', certifying_clean: false }).action, 'keep');
 });
 
 console.log('3. runSkillAuditLoopLite — DI sequencing');

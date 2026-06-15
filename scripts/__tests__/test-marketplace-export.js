@@ -707,7 +707,6 @@ assert(
     structural_verdict: 'PASS',
     truth_verdict: 'PASS',
     comprehension_verdict: 'UNVERIFIED',
-    application_verdict: 'UNVERIFIED',
     freshness: '2026-05-29',
     last_audited: '2026-05-29',
     version: '1.0.0',

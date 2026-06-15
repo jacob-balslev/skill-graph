@@ -4,7 +4,7 @@
 
 > Status: Accepted (2026-05-25), partially superseded (2026-05-27; `subject` enum superseded 2026-06-03 by ADR-0020; `deployment_target` enum replaced by boolean `public` 2026-06-08)
 > Supersedes the v7 category/categories/primaryCategory/family/layer/layerPrimary/routingRole tangle.
-> Companion: [ADR 0011](0011-split-audit-verdict-into-four-verdicts.md) (historical four-verdict Audit Status split; sidecar placement later changed by [ADR 0019](0019-audit-state-sidecar-separation.md))
+> Companion: [ADR 0011](0011-split-audit-verdict.md) (historical four-verdict Audit Status split; sidecar placement later changed by [ADR 0019](0019-audit-state-sidecar-separation.md))
 >
 > ### Update — 2026-06-08: `deployment_target` enum replaced by the boolean `public` gate
 >
@@ -129,4 +129,4 @@ The full critique response is preserved at `/tmp/gpt55-critique-response.md` for
 - Schema: `schemas/SKILL_METADATA_PROTOCOL_schema.json` (extended `schema_version` to `[7, 8]`, added `subject`/`subjects`/`operation` properties + allOf rule for v8-required fields)
 - Test: `scripts/__tests__/test-v8-schema-compat.js` (12 cases covering v7 unchanged, v8 required, scope rename, enum validation)
 - Library mapping: 147 SKILL.md files in `~/Development/skills/skills/` migrated across 9 per-subject batches
-- Companion ADR for audit-loop verdicts: [ADR 0011](0011-split-audit-verdict-into-four-verdicts.md)
+- Companion ADR for audit-loop verdicts: [ADR 0011](0011-split-audit-verdict.md)

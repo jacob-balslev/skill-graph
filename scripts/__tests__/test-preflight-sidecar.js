@@ -6,7 +6,7 @@
  * sidecar split:
  *   1. Frontmatter-required fields (v8) are checked against SKILL.md frontmatter — a moved
  *      audit field can never satisfy a frontmatter-required slot.
- *   2. The moved fields (schema_version, the four verdicts, eval_state/eval_artifacts,
+ *   2. The moved fields (schema_version, the three verdicts, eval_state/eval_artifacts,
  *      comprehension_state) read from the joined audit-state.json sidecar for a MIGRATED
  *      skill, and from frontmatter for an UNMIGRATED one (graceful join fallback).
  *   3. A MISSING sidecar never crashes — it is the honest "not yet migrated" case.
@@ -52,7 +52,6 @@ const SIDECAR = {
   structural_verdict: 'PASS',
   truth_verdict: 'PASS',
   comprehension_verdict: 'UNVERIFIED',
-  application_verdict: 'UNVERIFIED',
   comprehension_state: 'absent',
 };
 

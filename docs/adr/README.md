@@ -20,7 +20,7 @@
 | [0008](0008-skill-surface-split-and-curation-policy.md) | Skill Surface Split + Curation Policy | Accepted | counts are as-of 2026-05-18 |
 | [0009](0009-sibling-repo-deprecation.md) | Sibling Repo Deprecation (Consolidation) | Accepted (updated 2026-05-20) | version-SoT model → 0014 / 0019 |
 | [0010](0010-docs-site-decision.md) | Docs Site Decision (defer) | Accepted | — |
-| [0011](0011-split-audit-verdict-into-four-verdicts.md) | Four-Verdict Health Block | Accepted (grader-model amended 2026-05-29) | verdict placement → sidecar (0019) |
+| [0011](0011-split-audit-verdict.md) | Split Audit Authority into Per-Layer Verdicts | Accepted (grader-model amended 2026-05-29) | verdict placement → sidecar (0019) |
 | [0012](0012-internal-skill-library-separation.md) | Internal Skill Library Separation | Accepted | `SH-` refs pre-migration; counts as-of 2026-05-21 |
 | [0013](0013-scope-field-vs-overlay-of.md) | Scope Field vs `overlay_of` | Superseded | v8 / 0017 (`scope` now free-text) |
 | [0014](0014-canonical-only-schema-files.md) | Canonical-only Schema Files | Accepted | — |

@@ -62,7 +62,7 @@ That order is deliberate. The discipline comes from Karpathy's `autoresearch` pa
 | **Evaluate** | What is the current behavior before a candidate improvement? | Baseline eval / prior sidecar verdict / eval receipt, or explicit `UNVERIFIED` when no artifact exists. |
 | **Research** | What should the skill teach now? | Repo + official/web research, upstream-displacement check, related-skill comparison. |
 | **Improve** | What candidate change strengthens the skill without trimming useful knowledge? | `improve` or panel proposal/curation writes a candidate, not yet a trusted canonical result. |
-| **Use** | Does an agent actually apply the candidate skill to the intended task shape? | Candidate skill is loaded in the eval/application path or used in the panel guardrail. |
+| **Use** | Does an agent actually apply the candidate skill to the intended task shape? | Candidate skill is loaded in the eval path or used in the panel guardrail. |
 | **Evaluate** | Did the candidate regress, help, prove redundant, or remain inconclusive? | Same eval contract as the baseline; invalid/capped/missing evals are inconclusive, not regressions. |
 | **Grade** | Keep, revert, or defer, and what state is allowed to be stamped? | Keep/apply only on non-regression; revert applies nothing; behavior verdicts stamp only from eval receipts. |
 
@@ -73,7 +73,7 @@ That order is deliberate. The discipline comes from Karpathy's `autoresearch` pa
 The loop exists to answer one question about each skill: **does it still teach an agent to do the thing it claims to teach?** Every operation and verdict below serves that question. We evaluate each skill on three axes:
 
 1. **Intent fidelity** — does the skill's content deliver what its `description` / `scope` / routing contract promises? A skill whose body has drifted from its own stated purpose fails here, even if every path it cites still resolves.
-2. **Teaching efficacy** — does the skill actually change and improve an agent's behavior on the topic? This is the real quality signal. A skill that is structurally perfect but teaches nothing — or teaches it badly — is a weak skill. Under the three-verdict Audit Status (rationale: [ADR 0011](../docs/adr/0011-split-audit-verdict-into-four-verdicts.md); the fourth `application_verdict` was removed 2026-06-15 — see CHANGELOG), `comprehension_verdict` is where this is certified against real artifacts.
+2. **Teaching efficacy** — does the skill actually change and improve an agent's behavior on the topic? This is the real quality signal. A skill that is structurally perfect but teaches nothing — or teaches it badly — is a weak skill. Under the three-verdict Audit Status (rationale: [ADR 0011](../docs/adr/0011-split-audit-verdict.md)), `comprehension_verdict` is where this is certified against real artifacts.
 3. **Upstream currency (anti-displacement)** — is the skill's approach still the best available, or has a recent first-party release (Anthropic / OpenAI), platform release (OpenCode), or widely-adopted open-source release made it obsolete or strictly worse than a native capability? The agentic ecosystem moves fast; a skill that teaches a workaround for something now solved natively is decayed even if it is internally accurate and teaches well. This axis is checked per skill in the operational audit prompt (`skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook` § Step 6-displacement), recorded as a `category: DISPLACEMENT` finding with a deprecate / fold / reframe-to-delta recommendation, and **never actioned by auto-deletion** — removal requires explicit user sign-off (`.claude/rules/code-preservation.md`).
 
 The audit is **not a lint-test factory.** We do not invent arbitrary internal structural checks to manufacture findings, and an empty findings report on a genuinely good skill is a **PASS** — not a failure to find work. `lint_verdict` / `structural_verdict` cover form, schema validity, and external marketplace mandates only — a **floor the skill must clear**, never the target it aims at. Passing lint says the skill is well-formed; it says nothing about whether the skill teaches well.
@@ -275,7 +275,7 @@ All entry points run the same per-skill lifecycle (`Read → Verify → Evaluate
 
 ## The Audit Status — state lives in `audit-state.json`
 
-The Audit Status carries **three discrete verdicts** in each skill's sibling `audit-state.json` sidecar — one per audit layer. The split (introduced in v7 as four verdicts; the fourth `application_verdict` was removed 2026-06-15 — see CHANGELOG) replaced an earlier single aggregate that masqueraded as a quality signal while conflating form, truth, and comprehension (rationale: [ADR 0011](../docs/adr/0011-split-audit-verdict-into-four-verdicts.md)). ADR-0019 then moved the audit/eval/provenance fields out of `SKILL.md` frontmatter and into the sidecar:
+The Audit Status carries **three discrete verdicts** in each skill's sibling `audit-state.json` sidecar — one per audit layer. The split replaced an earlier single aggregate that masqueraded as a quality signal while conflating form, truth, and comprehension (rationale: [ADR 0011](../docs/adr/0011-split-audit-verdict.md)). ADR-0019 then moved the audit/eval/provenance fields out of `SKILL.md` frontmatter and into the sidecar:
 
 ```json
 {
@@ -303,9 +303,9 @@ The same skill's body still gets `audits/<skill-name>/findings.md` and `verdict.
 The five-phase shape survives, but it lives entirely inside the `audit` operation as its internal pipeline, and each phase now writes a layer-scoped verdict instead of one aggregate. Users see one `audit` command. Internally:
 
 1. **Integrity Gate — structural** (always) — `skill-lint.js` runs the canonical-source schema lint gate. Companion protocol, manifest, link, export, and routing checks complete the structural pass. Writes `lint_verdict`, which rolls up into `structural_verdict`. Only external-format or canonical-source violations set `structural_verdict: FAIL`; internal style preferences are warnings only and never fail the verdict.
-   - **Deterministic remediation (only under `--fix`)** — the structural Integrity Gate's *fix* counterpart. The deterministic repair catalog is currently **EMPTY**: the v7→v8 shape codemod (`lib/audit/migrate-frontmatter.js`) was retired to git history per `AGENTS.md § Major Version Is a Clean Cut` once v8 became canonical — it produced the interim `deployment_target` shape that the ADR-0017 amendment replaced (`public` + free-text `scope`), so it could no longer emit a valid current-v8 skill. The `--fix` **framework** (lint + drift) stays for the next version's deterministic-fix catalog; today it has nothing to apply, so shape-violation lint errors route to `improve`/manual. Recover the codemod via `git show <sha>^:lib/audit/migrate-frontmatter.js` / `git tag schema-v7`.
+   - **Deterministic remediation (only under `--fix`)** — the structural Integrity Gate's *fix* counterpart. The deterministic repair catalog is currently **EMPTY**: the v7→v8 shape codemod was retired to git history per `AGENTS.md § Major Version Is a Clean Cut` once v8 became canonical, so it could no longer emit a valid current-v8 skill. The `--fix` **framework** (lint + drift) stays for the next version's deterministic-fix catalog; today it has nothing to apply, so shape-violation lint errors route to `improve`/manual. Recover the retired codemod via `git tag schema-v7`.
 2. **Integrity Gate — truth** (always) — `skill-graph-drift.js` checks declared `grounding.truth_sources`. Writes `drift_status`, which rolls up into `truth_verdict` (`OK → PASS`, `DRIFT → DRIFT`, `BROKEN → BROKEN`, else `UNVERIFIED`). `UNGROUNDED` means no local `truth_sources` were declared; it is evidence of missing hash coverage, not evidence that the skill's external or conceptual claims are true.
-3. **Qualitative scorecard grading — content + eval-quality dimensions** (only under `--graded`) — the grader scores the qualitative scorecard dimensions (including the `eval` dimension, which judges whether the skill's Comprehension/Application artifacts exist and test realistic cases) into `findings.md` / `verdict.md` / `scorecard.md`. This is *eval-quality coverage*, NOT a run of Comprehension; it does NOT stamp `comprehension_verdict`.
+3. **Qualitative scorecard grading — content + eval-quality dimensions** (only under `--graded`) — the grader scores the qualitative scorecard dimensions (including the `eval` dimension, which judges whether the skill's Comprehension artifacts exist and test realistic cases) into `findings.md` / `verdict.md` / `scorecard.md`. This is *eval-quality coverage*, NOT a run of Comprehension; it does NOT stamp `comprehension_verdict`.
 4. **Qualitative scorecard grading — relation + portability dimensions** (only under `--graded`) — likewise scores the remaining scorecard dimensions into the same artifacts. It does NOT run the comprehension eval suite and does NOT stamp `comprehension_verdict`.
 5. **Stamp** — writes `last_audited` to today's ISO date plus the rolled-up `lint_verdict` / `structural_verdict` / `truth_verdict` into `audit-state.json`.
 
@@ -588,7 +588,7 @@ The loop is in production use; these are the known, deliberately-deferred follow
 
 - `skill-metadata-protocol/design-rationale.md` — the canonical field list including the Audit Status and flat Understanding fields
 - `schemas/SKILL_METADATA_PROTOCOL_schema.json` — the machine-validated current contract (v8). Prior versions live in git history per [ADR-0014](../docs/adr/0014-canonical-only-schema-files.md) and [AGENTS.md § Major Version Is a Clean Cut](../AGENTS.md) (retrievable via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`); the schema's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier.
-- [ADR 0011](../docs/adr/0011-split-audit-verdict-into-four-verdicts.md) — the `audit_verdict` → four-verdict split (rationale for the Audit Status's four-verdict shape)
+- [ADR 0011](../docs/adr/0011-split-audit-verdict.md) — the `audit_verdict` → multi-verdict split (rationale for the Audit Status's three-verdict shape)
 - [ADR 0017](../docs/adr/0017-five-axis-classification-model.md) — the v7→v8 classification model, amended 2026-05-27 (`operation` axis retired, `deployment_target` replaced by the boolean `public` publishability gate, `scope` repurposed to free-text, `domain` renamed to `taxonomy_domain`, `project[]` / `repo[]` belonging-entity fields added)
 - **Part 2 below** — the per-skill audit checklist (formerly `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 2, deleted in the 2026-05-25 consolidation)
 - **Part 3 below** — the per-skill audit runbook (formerly `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 3, deleted in the 2026-05-25 consolidation)
@@ -987,7 +987,7 @@ Every workspace-only command the numbered steps below use, and what a standalone
    ```
 5. The claim is atomic, lane-capped, and tier-gated — another agent cannot take the same skill, and a
    crashed claim is auto-reaped past its TTL. When done you will `release` it (Step 10) which records
-   the terminal ledger line, the four verdicts, and points `latest` at your run dir. Then you commit (Step 11).
+   the terminal ledger line, the three verdicts, and points `latest` at your run dir. Then you commit (Step 11).
 
 ### Per-skill loop (one at a time, /wrap after each)
 
@@ -1110,15 +1110,15 @@ Every workspace-only command the numbered steps below use, and what a standalone
    ```bash
    node scripts/loop/loop-checkpoint.js advance --loop skill-audit --phase pre-commit --evidence "skill-census: ok, skill-lint: ok"
    ```
-10. **Release the claim FIRST** — this appends the terminal ledger line (with the four verdicts),
+10. **Release the claim FIRST** — this appends the terminal ledger line (with the three verdicts),
     points `latest` at your run dir, and frees the lock. It MUST happen before the commit so the
     commit captures the terminal ledger line + updated `latest`, and before you pick the next skill
     (one skill at a time per agent):
     ```bash
     node scripts/skill/skill-audit-claim.js release <skill-slug> --status completed \
-      --structural <PASS|FAIL> --truth <OK|DRIFT|...> --comprehension <verdict> --application <verdict>
+      --structural <PASS|FAIL> --truth <OK|DRIFT|...> --comprehension <verdict>
     ```
-    Comprehension/application verdict tiers (confidence hierarchy — see
+    Comprehension verdict tiers (confidence hierarchy — see
     `.claude/rules/version-schema-contract.md` §5–7):
     - If you ran `evaluate --mode comprehension`: use the verdict that command stamped
       or reported — `PASS` / `SHALLOW` / `REDUNDANT` / `SKIPPED_BASELINE_HIGH` / `NA`, with `PROVISIONAL`

@@ -56,7 +56,7 @@ _(The `extends` field and the `capability` / `workflow` / `router` / `overlay` a
 
 ### `repo_specific`
 
-Skill claims are grounded in a specific codebase. project-anchored (`public: false` / non-empty `project[]`) skills use this mode or `hybrid`. `grounding.truth_sources` lists concrete file paths.
+Skill claims are grounded in a specific codebase. Project-anchored skills (non-empty `project[]`) use this mode or `hybrid`. `grounding.truth_sources` lists concrete file paths. (Project anchoring is what triggers the grounding requirement — `public` is an independent publishability axis, not the grounding trigger.)
 
 ### `universal`
 
@@ -70,7 +70,7 @@ Skill claims blend `repo_specific` and `universal` grounding. Use when a framewo
 
 ### `repo_code_first`
 
-When repo code and general knowledge disagree, trust the repo code. Default for project-anchored (`public: false`) skills.
+When repo code and general knowledge disagree, trust the repo code. Default for project-anchored skills (non-empty `project[]`).
 
 ### `general_knowledge_first`
 

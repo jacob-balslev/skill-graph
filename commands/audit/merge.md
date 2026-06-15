@@ -1,5 +1,5 @@
 ---
-description: Multi-model skill audit with union-curate merge — claim one skill, audit (any model) or merge (Opus/GPT-5.4 curator), keeping the union of all valuable work.
+description: Multi-model skill audit with union-curate merge — claim one skill, audit (any model) or merge (frontier curator — the strongest-reasoning-grader role (Opus) / codex-current (GPT)), keeping the union of all valuable work.
 version: 1.0.0
 since: 2026-05-21
 status: active
@@ -9,7 +9,7 @@ last_changed: 2026-06-14
 
 # /audit:merge
 
-Run the multi-model skill-audit loop. Several agents (across Claude, Codex, OpenCode; any model) each claim one public-safe skill at a time, audit it into a per-model **proposal**, then a curator (Opus 4.7 / GPT-5.4) **union-merges** the current skill + every model's proposal — keeping all valuable work, dropping nothing valuable without a recorded reason.
+Run the multi-model skill-audit loop. Several agents (across Claude, Codex, OpenCode; any model) each claim one public-safe skill at a time, audit it into a per-model **proposal**, then a curator (the strongest-reasoning-grader role (Opus) / codex-current (GPT)) **union-merges** the current skill + every model's proposal — keeping all valuable work, dropping nothing valuable without a recorded reason.
 
 **Workflow context:** read
 [`skill-audit-loop/WORKFLOW_CONTRACT.md`](../../../skill-graph/skill-audit-loop/WORKFLOW_CONTRACT.md)

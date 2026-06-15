@@ -269,7 +269,7 @@ Note: evolve depends on lib/audit-shared/auto-improve.js (bundled with @skill-gr
   },
   'evaluate:gpt-5.5': {
     script: 'lib/audit/evaluate-skill-codex-gpt-5.5.js',
-    help: `Usage: skill-graph evaluate:gpt-5.5 [evaluate options] <eval-file>\n\nRun the canonical evaluator through Codex CLI + GPT-5.5 with tools-on execution.\n\nThis profile injects:\n  --grader codex\n  --generator codex\n  --tools-on\n  --single-model\n  COMPREHENSION_GRADER_MODEL=gpt-5.5\n  COMPREHENSION_GENERATOR_MODEL=gpt-5.5\n  APPLICATION_GRADER_MODEL=gpt-5.5\n  APPLICATION_GENERATOR_MODEL=gpt-5.5\n\nBecause generator and grader are both Codex/GPT, positive behavior evidence is PROVISIONAL only.\nDo not pass --certifying to this profile; use the representative-generator plus both frontier judges when PASS/APPLICABLE is required.\n`,
+    help: `Usage: skill-graph evaluate:gpt-5.5 [evaluate options] <eval-file>\n\nRun the canonical evaluator through Codex CLI + GPT-5.5 with tools-on execution.\n\nThis profile injects:\n  --grader codex\n  --generator codex\n  --tools-on\n  --single-model\n  COMPREHENSION_GRADER_MODEL=gpt-5.5\n  COMPREHENSION_GENERATOR_MODEL=gpt-5.5\n\nBecause generator and grader are both Codex/GPT, positive behavior evidence is PROVISIONAL only.\nDo not pass --certifying to this profile; use the representative-generator plus both frontier judges when PASS is required.\n`,
   },
   'evaluate:codex-gpt-5.5': {
     script: 'lib/audit/evaluate-skill-codex-gpt-5.5.js',

@@ -65,7 +65,7 @@ SETUP
      which metric applies, which artifacts prove each verdict, and how to display evidence
    - docs/reference/skill-audit-pipeline.md          → Audit Doctrine (intent fidelity +
      teaching efficacy; lint is a floor, never the goal)
-   - skill-graph/docs/adr/0011-split-audit-verdict-into-four-verdicts.md
+   - skill-graph/docs/adr/0011-split-audit-verdict.md
    - skill-graph/docs/adr/0019-audit-state-sidecar-separation.md
    - skill-graph/docs/adr/0021-width-before-verdict-advisory-cross-review-and-mandatory-verification.md
    - skill-graph/docs/adr/0022-representative-generator-frontier-judges.md
@@ -226,7 +226,7 @@ self-assessment + DOCUMENT
 9. Release YOUR claim first (so the terminal ledger line and updated `latest` symlink are written
    before the commit), rebuild worklist, then commit the skill changes and run-dir artifacts together:
      node scripts/skill/skill-audit-claim.js release <slug> --status completed \
-        --structural PASS --truth PASS --comprehension <COMPREHENSION_VERDICT> --application <APPLICATION_VERDICT>
+        --structural PASS --truth PASS --comprehension <COMPREHENSION_VERDICT>
    Use behavior verdict values only from actual `evaluate --mode` receipts. If no evaluator ran
    for a dimension, preserve the prior sidecar value when known, otherwise use UNVERIFIED and
    explain in the artifacts. Never record PASS without the required grader receipt.

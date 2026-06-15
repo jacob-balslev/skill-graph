@@ -123,7 +123,7 @@ any other model. The multi-model merge flow is separate and not for this prompt.
     terminal ledger line + the `latest` symlink are captured INSIDE the commit; every other
     runner releases-before-commit for this reason):
     node scripts/skill/skill-audit-claim.js release <slug> --status completed \
-      --structural PASS --truth PASS --comprehension <COMPREHENSION_VERDICT> --application <APPLICATION_VERDICT>
+      --structural PASS --truth PASS --comprehension <COMPREHENSION_VERDICT>
     Use behavior verdict values only from actual evaluate receipts; if no evaluator ran for a
     dimension, preserve the prior sidecar value when known, otherwise use UNVERIFIED and explain it.
 

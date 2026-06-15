@@ -212,7 +212,7 @@ ok('extracts all findings from heartbeat findings[] and merge-ledger contributio
   const findings = mergeFindings(
     extractFindings({
       findings: [
-        { id: 'f1', title: 'Tighten the audit verdict wording', skill: 'a11y', model: 'opus', verdict: 'APPLICABLE' },
+        { id: 'f1', title: 'Tighten the audit verdict wording', skill: 'a11y', model: 'opus', verdict: 'PASS' },
       ],
     }),
     extractFindings({
@@ -250,9 +250,9 @@ ok('applies pending/approved/disapproved decisions and renders row buttons', () 
 ok('renders a grouped wide table with a side-by-side preview pane', () => {
   const findings = extractFindings({
     findings: [
-      { id: 'f1', title: 'A11y button labels need explicit intent', skill: 'a11y', model: 'opus', verdict: 'APPLICABLE', review: 'Keep the finding because it has user-facing impact.' },
+      { id: 'f1', title: 'A11y button labels need explicit intent', skill: 'a11y', model: 'opus', verdict: 'PASS', review: 'Keep the finding because it has user-facing impact.' },
       { id: 'f2', title: 'A11y contrast result needs evidence', skill: 'a11y', model: 'gpt-5.5', verdict: 'PROVISIONAL' },
-      { id: 'f3', title: 'State machine preview should expose invalid transitions', skill: 'state-machine-modeling', model: 'opus', verdict: 'APPLICABLE' },
+      { id: 'f3', title: 'State machine preview should expose invalid transitions', skill: 'state-machine-modeling', model: 'opus', verdict: 'PASS' },
     ],
   });
   const frame = renderFindingsReview(findings, null, { selectedIndex: 0, width: 132, groupBy: 'skill' });

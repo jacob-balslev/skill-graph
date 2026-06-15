@@ -88,7 +88,6 @@ fs.writeFileSync(path.join(skillDir, 'audit-state.json'), `${JSON.stringify({
   structural_verdict: 'PASS',
   truth_verdict: 'PASS',
   comprehension_verdict: 'UNVERIFIED',
-  application_verdict: 'UNVERIFIED',
 }, null, 2)}\n`);
 
 const metadataDimension = DIMENSIONS.find((d) => d.id === 'metadata');

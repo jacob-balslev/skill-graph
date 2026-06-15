@@ -73,7 +73,7 @@ const UNDERSTANDING_FIELDS = ['mental_model', 'purpose', 'concept_boundary', 'an
 const BLOAT_FIELDS = [
   'eval_artifacts', 'eval_state', 'routing_eval', 'drift_check', 'drift_status',
   'lint_verdict', 'last_audited', 'structural_verdict', 'truth_verdict',
-  'comprehension_verdict', 'application_verdict', 'schema_version', 'owner', 'freshness',
+  'comprehension_verdict', 'schema_version', 'owner', 'freshness',
   'skill_graph_source_repo', 'skill_graph_project', 'skill_graph_canonical_skill',
 ];
 
@@ -223,7 +223,7 @@ function assess(skillDir, schema, sidecarSchema) {
     audit_status: {
       // Read from the joined sidecar (ADR-0019) — these fields no longer live in frontmatter.
       structural_verdict: merged.structural_verdict, truth_verdict: merged.truth_verdict,
-      comprehension_verdict: merged.comprehension_verdict, application_verdict: merged.application_verdict,
+      comprehension_verdict: merged.comprehension_verdict,
       eval_state: merged.eval_state, eval_artifacts: merged.eval_artifacts,
     },
     operations: { v8, comprehension, application, pairwise },
@@ -291,7 +291,7 @@ function fmt(a, opSel, plan, ensured) {
   const L = [];
   L.push(`\n=== Skill Audit Preflight: ${a.skill} ===`);
   L.push(`dir: ${a.dir}`);
-  L.push(`schema_version: ${a.operations.v8.schema_version}  |  audit status: structural=${a.audit_status.structural_verdict} truth=${a.audit_status.truth_verdict} comprehension=${a.audit_status.comprehension_verdict} application=${a.audit_status.application_verdict}`);
+  L.push(`schema_version: ${a.operations.v8.schema_version}  |  audit status: structural=${a.audit_status.structural_verdict} truth=${a.audit_status.truth_verdict} comprehension=${a.audit_status.comprehension_verdict}`);
   const row = (label, ok, detail) => L.push(`  [${ok ? 'PASS' : 'GAP '}] ${label.padEnd(14)} ${detail}`);
   const o = a.operations;
   row('v8', o.v8.ok, o.v8.ok ? 'all required fields + valid enums' : `missing: ${o.v8.missing_required.join(', ') || '(enums)'}${o.v8.subject_valid ? '' : ' [subject invalid]'}${o.v8.public_valid ? '' : ' [public invalid]'}`);

@@ -151,7 +151,7 @@
         "FAIL",
         "UNVERIFIED"
       ],
-      "description": "Structural-layer verdict produced by gates 1–2 and 7 of the skill-audit loop (schema lint, manifest census, concept-card shape). `PASS` (clean), `PASS_WITH_FIXES` (warnings present but no errors), `FAIL` (lint or schema errors), `UNVERIFIED` (no structural audit has run yet). Independent of `lint_verdict` (per-script signal); this is the audit-loop roll-up. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md."
+      "description": "Structural-layer verdict produced by gates 1–2 and 7 of the skill-audit loop (schema lint, manifest census, concept-card shape). `PASS` (clean), `PASS_WITH_FIXES` (warnings present but no errors), `FAIL` (lint or schema errors), `UNVERIFIED` (no structural audit has run yet). Independent of `lint_verdict` (per-script signal); this is the audit-loop roll-up. See docs/verdict-semantics.md."
     },
     "truth_verdict": {
       "type": "string",
@@ -161,7 +161,7 @@
         "BROKEN",
         "UNVERIFIED"
       ],
-      "description": "Truth-layer verdict produced by gates 3–6 of the skill-audit loop (truth-source catalog, drift sentinel, test coverage, claim verification). `PASS` (truth sources align with declared `last_verified` and hashes), `DRIFT` (truth sources changed since last_verified), `BROKEN` (declared truth sources missing or unreadable), `UNVERIFIED` (no truth audit has run yet). Independent of `drift_status` (per-script signal); this is the audit-loop roll-up. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md."
+      "description": "Truth-layer verdict produced by gates 3–6 of the skill-audit loop (truth-source catalog, drift sentinel, test coverage, claim verification). `PASS` (truth sources align with declared `last_verified` and hashes), `DRIFT` (truth sources changed since last_verified), `BROKEN` (declared truth sources missing or unreadable), `UNVERIFIED` (no truth audit has run yet). Independent of `drift_status` (per-script signal); this is the audit-loop roll-up. See docs/verdict-semantics.md."
     },
     "comprehension_verdict": {
       "type": "string",
@@ -174,22 +174,7 @@
         "SKIPPED_BASELINE_HIGH",
         "NA"
       ],
-      "description": "Comprehension-layer verdict produced by gate 8 (the comprehension grader on `evals/comprehension.json`). `PASS` (with-skill answers measurably deeper than baseline; dual-run grader earned), `PROVISIONAL` (a single competent model ran the comprehension assessment and recorded a real result — lower confidence than `PASS` because not yet confirmed by the independent dual-run grader, but distinct from `UNVERIFIED` which means no assessment has run), `SHALLOW` (skill recites the concept but does not deepen agent understanding), `REDUNDANT` (baseline already saturated — skill adds no comprehension lift on this concept), `SKIPPED_BASELINE_HIGH` (early-skip — `avg_primary_baseline >= 90` on the 0-100 rubric after the first 2 evals so the dual-run was aborted), `NA` (skill carries no `evals/comprehension.json`), `UNVERIFIED` (initial state before any grader run). Confidence hierarchy: `PASS (grader) > PROVISIONAL (single model) > UNVERIFIED (none)`. This is the behavior-gate quality signal (the application/APPLICABLE verdict was removed — see `application_verdict`). See docs/adr/0011-split-audit-verdict-into-four-verdicts.md and .claude/rules/version-schema-contract.md § 5."
-    },
-    "application_verdict": {
-      "type": "string",
-      "enum": [
-        "APPLICABLE",
-        "REDUNDANT",
-        "NOT_DISCRIMINATED_CEILING",
-        "EQUIVALENT_ON_FRONTIER",
-        "HARMFUL",
-        "MIXED",
-        "FALSE_POSITIVE",
-        "UNVERIFIED",
-        "PROVISIONAL"
-      ],
-      "description": "REMOVED — inert legacy field. The application (APPLICABLE) behavior eval was removed: this verdict is no longer produced, read, or gated by any code. The enum values are retained ONLY so existing `audit-state.json` sidecars that still carry an application verdict continue to validate; existing values are inert historical data and MUST NOT be treated as a current quality claim. The live behavior-gate signal is `comprehension_verdict`."
+      "description": "Comprehension-layer verdict produced by gate 8 (the comprehension grader on `evals/comprehension.json`). `PASS` (with-skill answers measurably deeper than baseline; dual-run grader earned), `PROVISIONAL` (a single competent model ran the comprehension assessment and recorded a real result — lower confidence than `PASS` because not yet confirmed by the independent dual-run grader, but distinct from `UNVERIFIED` which means no assessment has run), `SHALLOW` (skill recites the concept but does not deepen agent understanding), `REDUNDANT` (baseline already saturated — skill adds no comprehension lift on this concept), `SKIPPED_BASELINE_HIGH` (early-skip — `avg_primary_baseline >= 90` on the 0-100 rubric after the first 2 evals so the dual-run was aborted), `NA` (skill carries no `evals/comprehension.json`), `UNVERIFIED` (initial state before any grader run). Confidence hierarchy: `PASS (grader) > PROVISIONAL (single model) > UNVERIFIED (none)`. This is the behavior-gate quality signal. See docs/verdict-semantics.md and .claude/rules/version-schema-contract.md § 5."
     },
     "lint_verdict": {
       "type": "string",
@@ -310,12 +295,7 @@
             "eval_slice": {
               "type": "string",
               "enum": ["all", "iteration", "certification"],
-              "description": "A10 held-out slicing: which application-case slice produced this verdict. `certification` means the verdict was earned on the held-out slice the improve/evolve loop never optimized against (anti-Goodhart — a certifying verdict on this slice cannot be overfit). `iteration` is the slice the loop tunes against (not certification-grade on its own). `all` (default) graded every case (legacy / no held-out split)."
-            },
-            "applicable_for": {
-              "type": "string",
-              "enum": ["representative", "anthropic", "openai", "both", "neither"],
-              "description": "REMOVED — inert legacy field tied to the removed application (APPLICABLE) eval. No longer produced or read; retained only so pre-existing receipts validate."
+              "description": "A10 held-out slicing: which comprehension-case slice produced this verdict. `certification` means the verdict was earned on the held-out slice the improve/evolve loop never optimized against (anti-Goodhart — a certifying verdict on this slice cannot be overfit). `iteration` is the slice the loop tunes against (not certification-grade on its own). `all` (default) graded every case (legacy / no held-out split)."
             },
             "registry_version": {
               "type": "string",
@@ -612,7 +592,7 @@
     "model_run_coverage": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Per-model Skill Audit Loop participation matrix. This is not a verdict and never certifies quality; it records which model aliases ran which loop operation for this skill, which phase they reached, and where the receipt/failure evidence lives. Used to answer coverage questions such as 'has the free advisory tier run on this skill yet?' separately from `schema_version`, `skill_graph_protocol`, and the four Audit Status verdicts.",
+      "description": "Per-model Skill Audit Loop participation matrix. This is not a verdict and never certifies quality; it records which model aliases ran which loop operation for this skill, which phase they reached, and where the receipt/failure evidence lives. Used to answer coverage questions such as 'has the free advisory tier run on this skill yet?' separately from `schema_version`, `skill_graph_protocol`, and the Audit Status verdicts.",
       "required": [
         "schema_version",
         "updated_at",
@@ -697,7 +677,6 @@
                     "eval_mode": {
                       "type": "string",
                       "enum": [
-                        "application",
                         "comprehension"
                       ]
                     },
@@ -742,7 +721,7 @@
                     },
                     "verdict": {
                       "type": "string",
-                      "description": "Reconciled eval verdict seen by this operation when present. This mirrors evidence; it does not replace the canonical four verdict fields."
+                      "description": "Reconciled eval verdict seen by this operation when present. This mirrors evidence; it does not replace the canonical verdict fields."
                     },
                     "certifying": {
                       "type": "boolean",
@@ -787,7 +766,7 @@
   },
   "allOf": [
     {
-      "_comment": "Eval-state coherence (audit M5, 2026-05-27; lifted intra-sidecar in the ADR-0019 split): a skill can only claim `eval_state: passing` when there are real evals on disk (`eval_artifacts: present`). `passing` without present artifacts is the same doc-lie shape as `application_verdict: APPLICABLE` without an eval_last_run receipt — the schema refuses it. Both fields are sidecar-local, so this gate stays here (not cross-file).",
+      "_comment": "Eval-state coherence (audit M5, 2026-05-27; lifted intra-sidecar in the ADR-0019 split): a skill can only claim `eval_state: passing` when there are real evals on disk (`eval_artifacts: present`). `passing` without present artifacts is a doc-lie the schema refuses. Both fields are sidecar-local, so this gate stays here (not cross-file).",
       "if": {
         "properties": {
           "eval_state": { "const": "passing" }

@@ -330,6 +330,8 @@ project:
 
 **Purpose.** Repos this skill is linked to. Each entry is an object with a kebab-case `handle` and a canonical `url`. Plural even though most skills today have one source repo, so federation is structurally ready without a future schema bump. Replaces the implicit identity encoded in URN compounds (`urn:skill:<repo-slug>:<name>`) and the stripped `skill_graph_source_repo` export-provenance keys.
 
+> **`repo` is sidecar-owned, NOT `SKILL.md` frontmatter (ADR-0019).** It lives in the per-skill `audit-state.json` sidecar, governed by `schemas/skill-audit-state.schema.json` — not in the agent-facing `SKILL.md` frontmatter. The `SKILL.md` schema's `additionalProperties: false` rule **rejects** a top-level `repo:` key, so authoring `repo` in frontmatter fails lint. Author it in the sidecar (from `examples/skill-audit-state-template.md`); the manifest join recombines it with the frontmatter. See [ADR-0019](../docs/adr/0019-audit-state-sidecar-separation.md).
+
 **Rules.**
 - Optional.
 - Array of objects. Each object has a required `handle` (kebab-case) and optional `url` (canonical repository URL).
@@ -558,12 +560,6 @@ comprehension_verdict: SKIPPED_BASELINE_HIGH
 
 ---
 
-## `application_verdict`
-
-**REMOVED — inert legacy field.** The application (behavior-change / APPLICABLE) verdict was **removed entirely on 2026-06-15** (see CHANGELOG). It produced 0 APPLICABLE corpus-wide and falsely stamped HARMFUL/REDUNDANT/MIXED on good skills (the test was not discriminating). The field remains DEFINED-but-inert in `schemas/skill-audit-state.schema.json` only so existing `audit-state.json` sidecars validate; it is no longer produced, read, or gated. `comprehension_verdict` is now the behavior-gate quality signal. Recover the prior field semantics from git history if needed.
-
----
-
 ## `eval_score`
 
 **Purpose.** Numeric score from the most recent eval run, on the 0.0–5.0 scale used by the audit loop.
@@ -671,8 +667,6 @@ eval_artifacts: present
 **When to use.** Always — required.
 
 **When NOT to use.** N/A — required. Do not inflate (`present` without a real file).
-
-**Migration from v1.** The v1 `eval_status` enum mixed three orthogonal concerns; this field is the "artifact state" axis. See `docs/manifest-field-mapping.md § Migration Note — v1 → v2` for the full mapping (e.g. `eval_status: evals` → `eval_artifacts: present, eval_state: passing, routing_eval: absent`).
 
 ---
 
@@ -1045,7 +1039,7 @@ examples:
 
 **When to use.** Any skill that relies on natural-language routing at query time — the router cannot see the skill body, only the metadata. Routable skills without `examples` under-trigger at library scale (see SkillRouter paper, `.artifacts/audit-brief.md` for references).
 
-**When NOT to use.** Internal helper skills activated only by label or path. Overlay skills that inherit their parent's activation.
+**When NOT to use.** Internal helper skills activated only by label or path.
 
 **Migration from v2.** Added in v0.5.0 (additive — not a schema bump).
 
@@ -1346,47 +1340,17 @@ internal_tools:
 
 ---
 
-## Claude Code runtime fields: `context` and `disallowed-tools`
+## Runtime-owned fields you must NOT author: `context` and `disallowed-tools`
 
-These are **Claude Code native frontmatter fields**, not Skill Graph protocol fields. They are not defined in the Skill Metadata Protocol schema and carry no Skill Graph routing or audit semantics. However, they are valid to author in a `SKILL.md` for skills that run inside Claude Code — particularly **autonomous audit-runner skills** that must suppress interactive tool calls when operating in a non-interactive context.
+`context` and `disallowed-tools` are **not** canonical Skill Graph top-level `SKILL.md` keys. They are not defined in the Skill Metadata Protocol schema, and the schema's `additionalProperties: false` rule **rejects** any top-level key it does not define. A `SKILL.md` that carries `context:` or `disallowed-tools:` at the top level fails `node scripts/skill-lint.js` — these are not a valid authoring choice.
 
-### `context: fork`
+They are **runtime-export / runtime-owned** controls (Claude Code's tool-gating and forked-context mechanics). They belong to the runtime that consumes an exported skill, not to the authored protocol frontmatter. Do **not** hand-write them into a canonical `SKILL.md`:
 
-**Purpose.** Instructs Claude Code to run this skill in an isolated subagent context (a forked process) rather than inline in the current session. The forked context cannot call back into the parent session and cannot use interactive tools such as `AskUserQuestion`.
+- **Do not author them at the top level.** The schema rejects them and lint fails. There is no protocol-supported way to set them in canonical frontmatter.
+- They carry no Skill Graph routing, classification, or audit semantics — routers, the manifest generator, and the drift sentinel do not read them.
+- The Skill Audit Loop's own tool-gating is applied at the CLI level, not via SKILL.md frontmatter: `lib/audit/evaluate-skill.js::runPromptWithCli` passes `--disallowed-tools Read,Edit,Write,Bash,Glob,Grep,Agent,WebSearch,WebFetch,NotebookEdit` for eval sub-calls (`lib/audit/eval-execution-profile.js` carries the same list). That is a runtime flag the loop sets when it invokes a sub-call — not a field an author places in a skill.
 
-**When to use.** Author `context: fork` on any skill that is designed to be invoked as an autonomous runner — for example, a skill that orchestrates the Skill Audit Loop in batch mode, where user interaction is explicitly undesirable. It prevents the runner from blocking on `AskUserQuestion` prompts that would never be answered in a headless or scripted context.
-
-**Rules.**
-- This is a Claude Code runtime control, not a Skill Graph routing or classification field. Routers, manifest generators, and lint scripts ignore it.
-- Only author on project-anchored skills where the project's runner infrastructure explicitly invokes the skill in an autonomous (non-interactive) mode.
-- Do not author on project-agnostic skills or skills invoked interactively.
-
-**Example.**
-```yaml
-name: skill-audit-runner
-description: Autonomous audit-loop runner for the Skill Audit Loop batch pipeline.
-subject: agent-ops
-public: false
-scope: Orchestrates per-skill audit passes in autonomous batch mode without user interaction.
-context: fork
-disallowed-tools: AskUserQuestion
-```
-
-### `disallowed-tools`
-
-**Purpose.** Space-separated list of tool names that Claude Code must not invoke when running this skill. The value is honoured by Claude Code's tool-gating layer.
-
-**When to use.** Pair with `context: fork` on autonomous runner skills to explicitly block `AskUserQuestion`. The Skill Audit Loop already passes `--disallowed-tools` at the CLI level when running eval sub-calls (see `lib/audit/evaluate-skill.js` — the `runPromptWithCli` helper adds `--disallowed-tools Read,Edit,Write,Bash,…` when `allowTools` is false), so `disallowed-tools` in a skill's frontmatter is the declarative, skill-level equivalent of that runtime flag.
-
-**Rules.**
-- Space-separated tool names (matches the Claude Code CLI `--disallowed-tools` flag format, not comma-separated).
-- `AskUserQuestion` is the canonical value for autonomous-runner skills.
-- You may list multiple tools: `disallowed-tools: AskUserQuestion Edit Write`.
-- This field is distinct from `allowed-tools` (which is a Skill Graph protocol field that also surfaces as a top-level SKILL.md field). `disallowed-tools` is a denylist; `allowed-tools` is an allowlist. Do not confuse them.
-
-**Real usage in this codebase.** `lib/audit/evaluate-skill.js::runPromptWithCli` (line 652) applies `--disallowed-tools Read,Edit,Write,Bash,Glob,Grep,Agent,WebSearch,WebFetch,NotebookEdit` for the eval sub-calls. `lib/audit/eval-execution-profile.js` (line 108) carries the same list. These are the runtime references; `disallowed-tools` in a skill's frontmatter is the static declaration of the same intent at authoring time.
-
-**When NOT to use.** Do not author on interactively-used skills. Any skill where the user may need to answer a clarifying question should not suppress `AskUserQuestion`.
+If a runtime genuinely needs these controls on an exported artifact, they are added by the runtime's own export/consumption layer, never by editing the canonical Skill Graph source.
 
 ---
 
@@ -1567,8 +1531,6 @@ portability:
 
 **When NOT to use.** Internal-only skills that will never be exported. Omit the field rather than setting `readiness: declared` with an empty `targets` array.
 
-**Migration from v1.** The v1 sub-fields `portability.level` (values `high`/`medium`/`low`) and `portability.exports` were renamed in schema_version 2 (SH-5784). Map `high` → `scripted` when an export script exists for a listed target, else `declared`. Map `medium` → `scripted` similarly. Map `low` → `declared`. Rename `portability.exports` → `portability.targets`; values are unchanged.
-
 ---
 
 ## `lifecycle`
@@ -1687,8 +1649,8 @@ runtime_telemetry:
 **Rules.**
 - Optional object written by the audit loop. Do not hand-author it to imply a model ran.
 - Keys under `models` are stable model aliases from `lib/audit-shared/model-provider.js`, such as `opus`, `codex-current`, `gemini`, `deepseek-flash`, or `mimo`.
-- The field records participation and failure evidence only. It does not replace `structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`, or `eval_last_run`.
-- Advisory-tier records can be `completed`, `degraded`, `failed`, or `skipped`; they never certify `application_verdict: APPLICABLE`.
+- The field records participation and failure evidence only. It does not replace `structural_verdict`, `truth_verdict`, `comprehension_verdict`, or `eval_last_run`.
+- Advisory-tier records can be `completed`, `degraded`, `failed`, or `skipped`; they never certify a `comprehension_verdict: PASS`.
 - `registry_version` records the model-registry epoch so aliases can be compared honestly across model-roster updates.
 
 **Sub-fields.**
@@ -1748,4 +1710,4 @@ runtime_telemetry:
 
 **When to use.** Read it when choosing the next model pass to run, debugging why a specific model failed on a skill, or reporting corpus coverage by model alias and subject area.
 
-**When NOT to use.** Do not use it as the quality signal. Quality remains the four verdict fields plus their receipts; model participation is evidence about what has been tried, not proof that the skill is good.
+**When NOT to use.** Do not use it as the quality signal. Quality remains the three verdict fields plus their receipts; model participation is evidence about what has been tried, not proof that the skill is good.

@@ -487,20 +487,14 @@ function buildSkillEntry(fm, filePath, skillId, _projectFromRoot) {
   if (fm.model_run_coverage !== undefined && fm.model_run_coverage !== null && typeof fm.model_run_coverage === 'object') {
     health.model_run_coverage = fm.model_run_coverage;
   }
-  // Audit Status fields are joined into the generated manifest's health object
-  // from normalized audit state. `audit_verdict` is the DEPRECATED v6 single-aggregate field
-  // (replaced by the four discrete verdicts above in v7 per ADR-0011) — kept
-  // here for back-compat reads of skills that haven't been run through the
-  // v6→v7 codemod yet. Schema-level removal is tracked in SH-6557; this entry
-  // retires when that ticket lands. See lib/audit/skill-status.js:38-46.
+  // Audit Status verdicts are joined into the generated manifest's health
+  // object from normalized audit state.
   for (const field of [
     'last_audited',
     'last_changed',
     'structural_verdict',
     'truth_verdict',
     'comprehension_verdict',
-    'application_verdict',
-    'audit_verdict',
     'eval_score',
     'eval_failed_ids',
     'lint_verdict',
@@ -703,9 +697,9 @@ function deriveAuditState(skill) {
   const admitted = STRUCTURAL_PASS_SET.has(health.structural_verdict)
     && TRUTH_PASS_SET.has(health.truth_verdict);
   if (!admitted) return 'not_admitted';
-  const av = health.application_verdict;
-  if (!av || av === 'UNVERIFIED') return 'admitted_unassessed';
-  if (av === 'PROVISIONAL') return 'assessed_provisional';
+  const cv = health.comprehension_verdict;
+  if (!cv || cv === 'UNVERIFIED' || cv === 'NA') return 'admitted_unassessed';
+  if (cv === 'PROVISIONAL') return 'assessed_provisional';
   return 'assessed_graded';
 }
 
@@ -718,11 +712,9 @@ function deriveAuditState(skill) {
  * `by_schema_version` lets consumers count migration progress directly from the
  * manifest. Missing schema_version buckets under 'unknown'.
  *
- * Per ADR-0011 § Addendum 2026-05-27, the four per-verdict facets plus the
- * cumulative `by_audit_state` make eligibility-vs-assessment-vs-certification
- * legible from the manifest without consumers having to re-derive it. The
- * `harmful_skill_count` convenience field surfaces the SkillsBench-19% case
- * (skills that make agents worse) without grepping facet keys.
+ * The per-verdict facets plus the cumulative `by_audit_state` make
+ * eligibility-vs-assessment-vs-certification legible from the manifest without
+ * consumers having to re-derive it.
  */
 function computeSummary(skills) {
   const by_schema_version = {};
@@ -733,9 +725,7 @@ function computeSummary(skills) {
   const by_structural_verdict = {};
   const by_truth_verdict = {};
   const by_comprehension_verdict = {};
-  const by_application_verdict = {};
   const by_audit_state = {};
-  let harmful_skill_count = 0;
 
   for (const skill of skills) {
     const ver = skill.schema_version === undefined || skill.schema_version === null
@@ -757,20 +747,15 @@ function computeSummary(skills) {
       }
     }
 
-    // Verdict facets per ADR-0011. Missing values bucket as 'UNVERIFIED' for the
-    // four-verdict shape; that's the honest default for unaudited skills per
-    // docs/verdict-semantics.md.
+    // Verdict facets. Missing values bucket as 'UNVERIFIED' — the honest default
+    // for unaudited skills per docs/verdict-semantics.md.
     const h = skill.health || {};
     const sv = h.structural_verdict || 'UNVERIFIED';
     const tv = h.truth_verdict || 'UNVERIFIED';
     const cv = h.comprehension_verdict || 'UNVERIFIED';
-    const av = h.application_verdict || 'UNVERIFIED';
     by_structural_verdict[sv] = (by_structural_verdict[sv] || 0) + 1;
     by_truth_verdict[tv] = (by_truth_verdict[tv] || 0) + 1;
     by_comprehension_verdict[cv] = (by_comprehension_verdict[cv] || 0) + 1;
-    by_application_verdict[av] = (by_application_verdict[av] || 0) + 1;
-
-    if (av === 'HARMFUL') harmful_skill_count += 1;
 
     const state = deriveAuditState(skill);
     by_audit_state[state] = (by_audit_state[state] || 0) + 1;
@@ -785,9 +770,7 @@ function computeSummary(skills) {
   if (Object.keys(by_structural_verdict).length > 0) summary.by_structural_verdict = sortKeys(by_structural_verdict);
   if (Object.keys(by_truth_verdict).length > 0) summary.by_truth_verdict = sortKeys(by_truth_verdict);
   if (Object.keys(by_comprehension_verdict).length > 0) summary.by_comprehension_verdict = sortKeys(by_comprehension_verdict);
-  if (Object.keys(by_application_verdict).length > 0) summary.by_application_verdict = sortKeys(by_application_verdict);
   if (Object.keys(by_audit_state).length > 0) summary.by_audit_state = sortKeys(by_audit_state);
-  summary.harmful_skill_count = harmful_skill_count;
 
   return summary;
 }

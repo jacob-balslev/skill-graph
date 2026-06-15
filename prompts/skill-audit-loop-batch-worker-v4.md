@@ -40,7 +40,7 @@ Read, in this order:
 7. /Users/jacobbalslev/Development/skill-graph/skill-audit-loop/WORKFLOW_CONTRACT.md
 8. /Users/jacobbalslev/Development/skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist
 9. /Users/jacobbalslev/Development/docs/reference/skill-audit-pipeline.md
-10. /Users/jacobbalslev/Development/skill-graph/docs/adr/0011-split-audit-verdict-into-four-verdicts.md
+10. /Users/jacobbalslev/Development/skill-graph/docs/adr/0011-split-audit-verdict.md
 11. /Users/jacobbalslev/Development/skill-graph/docs/adr/0019-audit-state-sidecar-separation.md
 12. /Users/jacobbalslev/Development/skill-graph/docs/adr/0021-width-before-verdict-advisory-cross-review-and-mandatory-verification.md
 13. /Users/jacobbalslev/Development/skill-graph/docs/adr/0022-representative-generator-frontier-judges.md
@@ -155,7 +155,7 @@ Per-skill loop:
    - Rerun catalog/claim extractor after source changes.
    - `git diff --check -- <exact changed paths>`
 13. Release claim:
-   - `node scripts/skill/skill-audit-claim.js release <slug> --status completed --structural PASS --truth PASS --comprehension <COMPREHENSION_VERDICT> --application <APPLICATION_VERDICT>`
+   - `node scripts/skill/skill-audit-claim.js release <slug> --status completed --structural PASS --truth PASS --comprehension <COMPREHENSION_VERDICT>`
    - Use behavior verdict values only from actual evaluate receipts; if no evaluator ran for a dimension, preserve the prior sidecar value when known, otherwise use UNVERIFIED and explain it.
 14. Rebuild worklist:
    - `node scripts/skill/build-skill-list.js --write`

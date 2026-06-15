@@ -1,18 +1,17 @@
 #!/usr/bin/env node
 // check-audit-manifest.js — verify Skill Audit Loop run artifacts against the manifest.
 //
-// What this enforces (the "false sense of canonicality" guard from GPT-5.5):
+// What this enforces (the "false sense of canonicality" guard):
 //   A verdict.md may claim comprehension_verdict in the graded comprehension set
 //   {PROVISIONAL, PASS, SHALLOW, REDUNDANT} ONLY if skills/<name>/evals/comprehension.json
 //   exists on disk. The May 22-25 incident with `backend`, `mcp-builder`, and
 //   `token-cost-estimation` shipped PROVISIONAL stamps with no comprehension.json
 //   on disk — that is the failure mode this guard prevents.
 //
-//   Comprehension and application enums are DISJOINT per schemas/SKILL_METADATA_PROTOCOL_schema.json:261-285
-//   and ADR 0011. APPLICABLE / MIXED / HARMFUL are application-verdict values and must
-//   never appear in the comprehension graded set (see GRADED_APPLICATION_VERDICTS below
-//   for the application-layer counterpart). The earlier mixed set leaked application
-//   enums into the comprehension check — fixed 2026-05-25.
+//   A comprehension_verdict must be one of the comprehension enum values
+//   (PASS/SHALLOW/REDUNDANT/PROVISIONAL/UNVERIFIED/SKIPPED_BASELINE_HIGH/NA per
+//   schemas/skill-audit-state.schema.json). Any other value stamped into the
+//   comprehension slot is a malformed verdict and is flagged.
 //
 // Walks: skill-graph/skill-audit-loop/progress/skill-audits/<skill>/runs/<run-id>/verdict.md
 //        (run-root relocated 2026-06-07T from .opencode/progress/skill-audits per ADR-0016 #3)
@@ -22,8 +21,7 @@
 //
 // Exit codes:
 //   0 — all checked verdicts are honest about their gradeable artifact
-//   1 — at least one verdict makes a graded claim without the artifact on disk,
-//       or the active skills manifest still contains application_verdict:HARMFUL
+//   1 — at least one verdict makes a graded claim without the artifact on disk
 //   2 — operational error (manifest missing, etc.)
 //
 // Flags:
@@ -39,7 +37,7 @@ const WORKSPACE_DEFAULT = path.resolve(__dirname, '..', '..');
 const REPO_ROOT = path.resolve(__dirname, '..');
 const MANIFEST_PATH = path.join(REPO_ROOT, 'audits', 'manifest.json');
 
-// Comprehension graded set (per schemas/SKILL_METADATA_PROTOCOL_schema.json:261-272 + ADR 0011): values
+// Comprehension graded set (per schemas/skill-audit-state.schema.json + ADR 0011): values
 // that imply a comprehension grader actually ran and produced a result. UNVERIFIED (no
 // assessment), SKIPPED_BASELINE_HIGH (procedural early-skip), and NA (skill has no
 // comprehension.json by design) are explicitly NOT graded.
@@ -47,20 +45,12 @@ const GRADED_COMPREHENSION_VERDICTS = new Set([
   'PROVISIONAL', 'PASS', 'SHALLOW', 'REDUNDANT',
 ]);
 
-// Application graded set: every non-UNVERIFIED application verdict claims an
-// application assessment ran and therefore requires skills/<name>/evals/application.json
-// on disk (symmetric to the comprehension-artifact gate). Do not mix these values
-// into GRADED_COMPREHENSION_VERDICTS; that was the bug fixed on 2026-05-25.
-const GRADED_APPLICATION_VERDICTS = new Set([
-  'APPLICABLE', 'PROVISIONAL', 'NOT_DISCRIMINATED_CEILING',
-  'EQUIVALENT_ON_FRONTIER', 'REDUNDANT', 'MIXED', 'HARMFUL', 'FALSE_POSITIVE',
-]);
-const HARMFUL_REQUIRED_ACTION =
-  'git rm the active skill files so recovery lives in git history; explain the harmful eval/verdict evidence in the commit message and completion report. Do not quarantine or archive the harmful skill under another active path.';
-
-const APPLICATION_ONLY_VERDICTS = new Set([
-  'APPLICABLE', 'NOT_DISCRIMINATED_CEILING', 'EQUIVALENT_ON_FRONTIER',
-  'MIXED', 'HARMFUL', 'FALSE_POSITIVE',
+// The full comprehension_verdict enum. A value stamped into the comprehension slot
+// that is NOT one of these is a malformed verdict (e.g. a typo or a value copied from
+// another field) and is flagged so it cannot propagate into the sidecar.
+const VALID_COMPREHENSION_VERDICTS = new Set([
+  'PASS', 'SHALLOW', 'REDUNDANT', 'PROVISIONAL',
+  'UNVERIFIED', 'SKIPPED_BASELINE_HIGH', 'NA',
 ]);
 
 function parseArgs(argv) {
@@ -88,22 +78,6 @@ function loadManifest() {
     process.exit(2);
   }
   return JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'));
-}
-
-// The skills-with-health manifest is a SEPARATE generated file (skills.manifest.json
-// at the workspace root) — NOT audits/manifest.json (which indexes protocols/runners
-// and has no `.skills` key). The HARMFUL/PROVISIONAL application_verdict scan below
-// reads THIS file. Reading `.skills` off audits/manifest.json left the HARMFUL gate
-// silently inert (it always saw an empty array) — fixed 2026-06-10T.
-function loadSkillsManifest(workspace) {
-  const p = path.join(workspace, 'skills.manifest.json');
-  if (!fs.existsSync(p)) return { skills: [], source: null, present: false };
-  try {
-    const m = JSON.parse(fs.readFileSync(p, 'utf8'));
-    return { skills: Array.isArray(m.skills) ? m.skills : [], source: p, present: true };
-  } catch (err) {
-    return { skills: [], source: p, present: false, error: String(err.message || err) };
-  }
 }
 
 // Assert every path the manifest INDEXES (runner / phase-prompt / command body, and
@@ -141,27 +115,24 @@ function validateManifestPaths(manifest, workspace) {
   return { failures, skipped, monorepo };
 }
 
-// Parse a verdict.md and return:
-//   { comprehension: 'PROVISIONAL' | 'UNVERIFIED' | ..., application: '...' }
-// Verdicts come from a Markdown table row like:
+// Parse a verdict.md and return { comprehension: 'PROVISIONAL' | 'UNVERIFIED' | ... }.
+// The verdict comes from a Markdown table row like:
 //   | comprehension | PROVISIONAL | Single-model... |
 // or from prose like "comprehension_verdict: PROVISIONAL".
 function parseVerdictFile(verdictPath) {
   const text = fs.readFileSync(verdictPath, 'utf8');
-  const verdicts = { comprehension: null, application: null };
+  const verdicts = { comprehension: null };
 
-  // Verdicts come from a Markdown table row OR prose; check both shapes.
   for (const line of text.split('\n')) {
-    const m = line.match(/^\|\s*(comprehension|application)(?:_verdict)?\s*\|\s*([A-Z_]+)\s*\|/i);
+    const m = line.match(/^\|\s*comprehension(?:_verdict)?\s*\|\s*([A-Z_]+)\s*\|/i);
     if (m) {
-      verdicts[m[1].toLowerCase()] = m[2].toUpperCase();
+      verdicts.comprehension = m[1].toUpperCase();
     }
   }
-  const proseLine = /(comprehension|application)_verdict\s*[:=]\s*([A-Z_]+)/gi;
+  const proseLine = /comprehension_verdict\s*[:=]\s*([A-Z_]+)/gi;
   let m;
   while ((m = proseLine.exec(text)) !== null) {
-    const key = m[1].toLowerCase();
-    if (!verdicts[key]) verdicts[key] = m[2].toUpperCase();
+    if (!verdicts.comprehension) verdicts.comprehension = m[1].toUpperCase();
   }
   return verdicts;
 }
@@ -197,7 +168,7 @@ function resolveSkillDir(workspace, skill) {
 function readSkillAuditStatus(workspace, skill) {
   const skillDir = resolveSkillDir(workspace, skill);
   if (!skillDir) {
-    return { comprehension_verdict: null, application_verdict: null, source: null };
+    return { comprehension_verdict: null, source: null };
   }
 
   const sidecar = path.join(skillDir, 'audit-state.json');
@@ -205,23 +176,20 @@ function readSkillAuditStatus(workspace, skill) {
     const state = JSON.parse(fs.readFileSync(sidecar, 'utf8'));
     return {
       comprehension_verdict: state.comprehension_verdict || null,
-      application_verdict: state.application_verdict || null,
       source: sidecar,
     };
   }
 
   const skillMd = path.join(skillDir, 'SKILL.md');
   if (!fs.existsSync(skillMd)) {
-    return { comprehension_verdict: null, application_verdict: null, source: null };
+    return { comprehension_verdict: null, source: null };
   }
   const text = fs.readFileSync(skillMd, 'utf8');
-  // Legacy fallback: older deployments may still carry behavior-gate verdicts
+  // Legacy fallback: older deployments may still carry the behavior-gate verdict
   // in frontmatter. New migrated skills use audit-state.json.
   const cm = text.match(/^comprehension_verdict:\s*([A-Z_]+)\s*$/m);
-  const am = text.match(/^application_verdict:\s*([A-Z_]+)\s*$/m);
   return {
     comprehension_verdict: cm ? cm[1].toUpperCase() : null,
-    application_verdict: am ? am[1].toUpperCase() : null,
     source: skillMd,
   };
 }
@@ -264,12 +232,8 @@ function resolveEvalArtifact(workspace, skill, artifactName) {
   return { path: flatPath, exists: false };
 }
 
-// Thin wrappers preserving the original call sites' intent.
 function resolveComprehensionPath(workspace, skill) {
   return resolveEvalArtifact(workspace, skill, 'comprehension.json');
-}
-function resolveApplicationPath(workspace, skill) {
-  return resolveEvalArtifact(workspace, skill, 'application.json');
 }
 
 function main() {
@@ -279,8 +243,7 @@ function main() {
   // (runner/phase-prompt/command/alias) are relative to the REAL workspace (parent of
   // REPO_ROOT) — NOT args.workspace, which the caller may override to a hermetic temp dir
   // to scope only the run-dir/skills walk. Resolving manifest paths against the override
-  // would falsely report every skill-graph/... path missing (regression caught by
-  // test-application-artifact-enforcement, which runs the gate with --workspace <temp>).
+  // would falsely report every skill-graph/... path missing.
   const manifestPaths = validateManifestPaths(manifest, WORKSPACE_DEFAULT);
   // Run-root relocated 2026-06-07T from <ws>/.opencode/progress/skill-audits to
   // <ws>/skill-graph/skill-audit-loop/progress/skill-audits per the ADR-0016 surface #3
@@ -307,12 +270,11 @@ function main() {
       const comprehensionPath = resolved.path;
       const comprehensionExists = resolved.exists;
       const claimsGraded = verdicts.comprehension && GRADED_COMPREHENSION_VERDICTS.has(verdicts.comprehension);
-      // Category-error guard: a verdict.md that stamps an application-only enum
-      // (APPLICABLE/MIXED/HARMFUL) into the comprehension slot is malformed. The
-      // schema (schemas/SKILL_METADATA_PROTOCOL_schema.json:261-285) keeps the two enums disjoint;
-      // surfacing this here catches the parser/author error before it propagates
-      // into SKILL.md frontmatter.
-      const comprehensionEnumLeak = verdicts.comprehension && APPLICATION_ONLY_VERDICTS.has(verdicts.comprehension);
+      // Malformed-verdict guard: a comprehension_verdict that is not one of the
+      // valid comprehension enum values is a typo or a value copied from another
+      // field. Surfacing it here catches the parser/author error before it
+      // propagates into SKILL.md / the sidecar.
+      const comprehensionEnumInvalid = verdicts.comprehension && !VALID_COMPREHENSION_VERDICTS.has(verdicts.comprehension);
 
       // Read the current durable Audit Status — if it has been honestly downgraded
       // to UNVERIFIED, treat the historical per-run claim as resolved-via-downgrade
@@ -322,29 +284,13 @@ function main() {
         health.comprehension_verdict &&
         !GRADED_COMPREHENSION_VERDICTS.has(health.comprehension_verdict);
 
-      // SH-6548: symmetric application-artifact enforcement (was informational).
-      // A per-run verdict claiming a high-stakes graded application verdict
-      // (anything except UNVERIFIED) must have skills/<name>/evals/application.json
-      // on disk — same honest-downgrade escape hatch as comprehension.
-      const claimsGradedApplication = verdicts.application && GRADED_APPLICATION_VERDICTS.has(verdicts.application);
-      const appResolved = claimsGradedApplication ? resolveApplicationPath(args.workspace, skill) : null;
-      const applicationExists = appResolved ? appResolved.exists : null;
-      const applicationPath = appResolved ? appResolved.path : null;
-      const currentAppIsHonestlyDowngraded = claimsGradedApplication &&
-        health.application_verdict &&
-        !GRADED_APPLICATION_VERDICTS.has(health.application_verdict);
-
       const entry = {
         skill,
         runId,
         comprehension_verdict: verdicts.comprehension,
-        application_verdict: verdicts.application,
         comprehension_json_exists: comprehensionExists,
         comprehension_json_path: comprehensionPath,
-        application_json_exists: applicationExists,
-        application_json_path: applicationPath,
         audit_status_comprehension_verdict: health.comprehension_verdict,
-        audit_status_application_verdict: health.application_verdict,
         audit_status_source: health.source,
       };
       checks.push(entry);
@@ -355,76 +301,13 @@ function main() {
           reason: `Verdict claims comprehension=${verdicts.comprehension} but ${comprehensionPath} does not exist on disk, AND the current Audit Status (comprehension_verdict=${health.comprehension_verdict || 'unknown'}, source=${health.source || 'missing'}) has not been honestly downgraded to UNVERIFIED. Per the May 22-25 incident root cause, any graded comprehension_verdict (PROVISIONAL/PASS/SHALLOW/REDUNDANT) requires a gradeable comprehension.json. Either author the comprehension.json (and re-run the assessment) or downgrade the audit-state verdict to UNVERIFIED — the verifier respects honest downgrade as the resolution path.`,
         });
       }
-      if (comprehensionEnumLeak) {
+      if (comprehensionEnumInvalid) {
         failures.push({
           ...entry,
-          reason: `Verdict has comprehension_verdict=${verdicts.comprehension}, but that value is an application-layer enum (per schemas/skill-audit-state.schema.json and ADR 0011). The comprehension and application enum sets are disjoint. Either correct the verdict to use a comprehension-layer value (PASS/SHALLOW/REDUNDANT/PROVISIONAL/UNVERIFIED/SKIPPED_BASELINE_HIGH/NA) or move this value into the application_verdict slot.`,
-        });
-      }
-      if (claimsGradedApplication && !applicationExists && !currentAppIsHonestlyDowngraded) {
-        failures.push({
-          ...entry,
-          reason: `Verdict claims application=${verdicts.application} but ${applicationPath} does not exist on disk, AND the current Audit Status (application_verdict=${health.application_verdict || 'unknown'}, source=${health.source || 'missing'}) has not been honestly downgraded out of the graded set. Any graded application_verdict (anything except UNVERIFIED) is the primary behavior-gate signal and requires a gradeable evals/application.json. Either author the application.json (and re-run the assessment) or downgrade the audit-state verdict to UNVERIFIED — the verifier respects honest downgrade as the resolution path.`,
+          reason: `Verdict has comprehension_verdict=${verdicts.comprehension}, which is not a valid comprehension-layer value (per schemas/skill-audit-state.schema.json). Use one of PASS/SHALLOW/REDUNDANT/PROVISIONAL/UNVERIFIED/SKIPPED_BASELINE_HIGH/NA.`,
         });
       }
     }
-  }
-
-  // Corpus-wide application_verdict scan per ADR-0011 § Addendum 2026-05-27.
-  // HARMFUL is the SkillsBench-19% case the gate exists to catch. It is not a
-  // warning: an active skill proven to make agents worse must be removed with
-  // `git rm` so recovery lives in git history, and the removal commit/report
-  // must explain the harmful evidence. Do not quarantine it under another
-  // active path. A replacement must earn a fresh non-HARMFUL verdict.
-  // PROVISIONAL is real single-model signal awaiting dual-run confirmation;
-  // previously invisible because the verifier collapsed it into the broader
-  // graded-set check.
-  // Read the skills-with-health manifest (skills.manifest.json), NOT audits/manifest.json.
-  const skillsManifest = loadSkillsManifest(args.workspace);
-  const manifestSkills = skillsManifest.skills;
-  const harmful_skills = [];
-  const provisional_skills = [];
-  // Advisory receipt-freshness scan (SKI board F11, 2026-06-14): a graded
-  // application_verdict asserts the skill was evaluated, but the gate above only
-  // proves the eval ARTIFACT exists — not that the receipt is still current. If the
-  // SKILL.md body was edited AFTER its `eval_last_run`, the recorded verdict describes
-  // a stale version of the skill. This is ADVISORY ONLY: it never adds to `failures`
-  // and never changes the exit code (most skills carry no receipt yet, and a stale
-  // receipt is migration signal, not a contract violation). Every step is guarded so a
-  // missing file / unparseable date can never break the verify-wired gate.
-  const stale_receipt_skills = [];
-  for (const entry of manifestSkills) {
-    const av = entry && entry.health && entry.health.application_verdict;
-    if (av === 'HARMFUL') {
-      harmful_skills.push({
-        name: entry.name || entry.id,
-        path: entry.path || null,
-        required_action: HARMFUL_REQUIRED_ACTION,
-      });
-    } else if (av === 'PROVISIONAL') {
-      provisional_skills.push({ name: entry.name || entry.id, path: entry.path || null });
-    }
-    try {
-      const lastRun = entry && entry.health && entry.health.eval_last_run;
-      if (av && GRADED_APPLICATION_VERDICTS.has(av) && lastRun && entry.path) {
-        const runMs = Date.parse(lastRun);
-        // Manifest paths are relative to the skill-graph dir (e.g. ../skills/skills/.../SKILL.md).
-        const skillMdPath = path.resolve(args.workspace, 'skill-graph', entry.path);
-        if (!Number.isNaN(runMs) && fs.existsSync(skillMdPath)) {
-          const mtimeMs = fs.statSync(skillMdPath).mtimeMs;
-          // 24h grace so a same-day edit+eval pair is not flagged.
-          if (mtimeMs - runMs > 24 * 60 * 60 * 1000) {
-            stale_receipt_skills.push({
-              name: entry.name || entry.id,
-              path: entry.path || null,
-              application_verdict: av,
-              eval_last_run: lastRun,
-              skill_mtime: new Date(mtimeMs).toISOString().slice(0, 10),
-            });
-          }
-        }
-      }
-    } catch (_) { /* advisory only — never break the gate on a stat/parse error */ }
   }
 
   if (args.json) {
@@ -436,11 +319,6 @@ function main() {
       checks_detail: checks,
       manifest_path_failures: manifestPaths.failures,
       manifest_path_skipped: manifestPaths.skipped,
-      skills_manifest_source: skillsManifest.source,
-      skills_manifest_present: skillsManifest.present,
-      harmful_skills,
-      provisional_skills,
-      stale_receipt_skills,
     }, null, 2) + '\n');
   } else {
     console.log(`[check-audit-manifest] checked ${checks.length} verdicts across ${skills.length} skills (limit=${args.limit}${args.strictAll ? ', strict-all' : ''})`);
@@ -449,25 +327,8 @@ function main() {
     } else {
       console.log(`[check-audit-manifest] FAIL — ${failures.length} verdict(s) claim a graded behavior verdict without the matching artifact:`);
       for (const f of failures) {
-        const missing = f.application_json_exists === false
-          ? `application=${f.application_verdict}, missing ${path.relative(args.workspace, f.application_json_path)}`
-          : `comprehension=${f.comprehension_verdict}, missing ${path.relative(args.workspace, f.comprehension_json_path)}`;
-        console.log(`  ${f.skill}/${f.runId}: ${missing}`);
+        console.log(`  ${f.skill}/${f.runId}: comprehension=${f.comprehension_verdict}, missing ${path.relative(args.workspace, f.comprehension_json_path)}`);
       }
-    }
-    if (harmful_skills.length > 0) {
-      console.log(`[check-audit-manifest] FAIL — ${harmful_skills.length} active skill(s) carry application_verdict: HARMFUL and must be removed from the active corpus:`);
-      for (const s of harmful_skills) console.log(`  ${s.name}: ${HARMFUL_REQUIRED_ACTION}`);
-    }
-    if (provisional_skills.length > 0) {
-      console.log(`[check-audit-manifest] PROVISIONAL — ${provisional_skills.length} skill(s) carry single-model application_verdict awaiting dual-run grader confirmation.`);
-    }
-    if (stale_receipt_skills.length > 0) {
-      console.log(`[check-audit-manifest] STALE-RECEIPT (advisory) — ${stale_receipt_skills.length} skill(s) were edited after their eval_last_run; the recorded verdict describes an older skill body and should be re-evaluated:`);
-      for (const s of stale_receipt_skills) console.log(`  ${s.name}: ${s.application_verdict} eval_last_run=${s.eval_last_run} < SKILL.md mtime=${s.skill_mtime}`);
-    }
-    if (!skillsManifest.present) {
-      console.log('[check-audit-manifest] NOTE — skills.manifest.json not found at workspace root; HARMFUL/PROVISIONAL health scan skipped (standalone clone).');
     }
     // Manifest path-integrity (stale aliases / unregistered prompts drift guard).
     if (manifestPaths.failures.length > 0) {
@@ -483,7 +344,7 @@ function main() {
     }
   }
 
-  process.exit((failures.length > 0 || manifestPaths.failures.length > 0 || harmful_skills.length > 0) ? 1 : 0);
+  process.exit((failures.length > 0 || manifestPaths.failures.length > 0) ? 1 : 0);
 }
 
 try {

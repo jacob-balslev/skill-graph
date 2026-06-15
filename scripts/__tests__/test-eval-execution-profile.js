@@ -249,38 +249,36 @@ check('comprehension mode: both PASS => PASS', () => {
   assert.strictEqual(r.certifying_clean, true);
 });
 
-check('SKI-306: both frontier judges certify => applicable_for "representative", aggregate kept', () => {
+check('SKI-306: both frontier judges certify => certifying_clean, aggregate kept', () => {
   const r = runBidirectionalEval({
     mode: 'comprehension', skill: 's', cwd: '/x/skill-graph',
     deps: { runDirection: fakeRunner({ Claude: 'PASS', Codex: 'PASS' }) },
   });
-  assert.strictEqual(r.applicable_for, 'representative');
+  assert.strictEqual(r.certifying_clean, true);
   assert.strictEqual(r.synthesized_verdict, 'PASS'); // aggregate unchanged
 });
-check('SKI-306: divergent frontier judges => no representative certification', () => {
+check('SKI-306: divergent frontier judges => no certification', () => {
   // The representative generator is the measured subject in both directions. If the
   // frontier judges disagree, the conservative aggregate caps and the population is not certified.
   const r = runBidirectionalEval({
     mode: 'comprehension', skill: 's', cwd: '/x/skill-graph',
     deps: { runDirection: fakeRunner({ Claude: 'PASS', Codex: 'SHALLOW' }) },
   });
-  assert.strictEqual(r.applicable_for, 'neither');
   assert.strictEqual(r.synthesized_verdict, 'SHALLOW');
 });
-check('SH-6682: not certifying-clean (parity break) => "neither" even with both PASS', () => {
+check('SH-6682: not certifying-clean on a parity break even with both PASS', () => {
   const r = runBidirectionalEval({
     mode: 'comprehension', skill: 's', cwd: '/x/skill-graph',
     deps: { runDirection: fakeRunner({ Claude: 'PASS', Codex: 'PASS' }, { breakParity: true }) },
   });
   assert.strictEqual(r.certifying_clean, false);
-  assert.strictEqual(r.applicable_for, 'neither');
 });
-check('SKI-306: comprehension — one frontier judge PASS is not representative certification', () => {
+check('SKI-306: comprehension — one frontier judge PASS is not certification', () => {
   const r = runBidirectionalEval({
     mode: 'comprehension', skill: 's', cwd: '/x/skill-graph',
     deps: { runDirection: fakeRunner({ Claude: 'SHALLOW', Codex: 'PASS' }) },
   });
-  assert.strictEqual(r.applicable_for, 'neither');
+  assert.strictEqual(r.synthesized_verdict, 'SHALLOW');
 });
 
 check('rejects a bad mode', () => {
@@ -309,7 +307,7 @@ check('F6: an unresolved direction model caps PASS to PROVISIONAL (cannot prove 
   assert.ok(/unresolved/.test(r.cap_reason));
 });
 check('F8: toSidecarReceipt projects ONLY schema-allowed keys', () => {
-  const allowed = new Set(['frontier_pair', 'measured_generator', 'generator_population', 'reconciliation', 'agreement', 'parity_ok', 'certifying_clean', 'synthesized_verdict', 'eval_slice', 'applicable_for', 'registry_version', 'merge_ledger_ref', 'provisional_reason', 'missing_frontiers', 'regrade_required', 'fence_caveat', 'execution_profile', 'directions']);
+  const allowed = new Set(['frontier_pair', 'measured_generator', 'generator_population', 'reconciliation', 'agreement', 'parity_ok', 'certifying_clean', 'synthesized_verdict', 'eval_slice', 'registry_version', 'merge_ledger_ref', 'provisional_reason', 'missing_frontiers', 'regrade_required', 'fence_caveat', 'execution_profile', 'directions']);
   const dirKeys = new Set(['role', 'generator_model', 'grader_model', 'generator_family', 'grader_family', 'resolved_model', 'verdict', 'certification_tier']);
   const epKeys = new Set(['tools', 'research', 'repoScope', 'cwd', 'fence']);
   const runDirection = ({ direction, generatorModel, graderModel, generatorFamily, graderFamily, executionProfile }) => ({
@@ -348,7 +346,7 @@ check('A6: an os-isolated profile records no fence_caveat', () => {
   const r = {
     frontier_pair: ['opus', 'gpt-5.5'], reconciliation: 'conservative', agreement: true,
     parity: { parity_ok: true }, certifying_clean: true, synthesized_verdict: 'PASS',
-    applicable_for: 'representative', registry_version: 'x', merge_ledger_ref: null,
+    registry_version: 'x', merge_ledger_ref: null,
     measured_generator: 'representative-generator', generator_population: 'deployment-representative',
     direction_claude: { verdict: 'PASS' }, direction_codex: { verdict: 'PASS' },
     fence: 'os-isolated', fence_caveat: null,

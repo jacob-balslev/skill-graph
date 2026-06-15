@@ -163,7 +163,7 @@ An earlier concept map (pre-2026-04-20) contained six inaccuracies now corrected
 2. Listed 9 identity fields including `schema_version`/`stability`/`superseded_by` — corrected to 4 identity fields (`name`, `description`, `version`, `owner`) with the other fields moved to Classification.
 3. Described `drift_check` as a scalar date — corrected to object (v3 shape, schema-enforced).
 4. Called the axes "4 orthogonal" — corrected to separate strict classification/belonging dimensions from query-time routing bundles.
-5. Stated the field count without distinguishing authored-vs-possible — clarified that the current contract has 31 agent-facing frontmatter fields plus 30 audit-state sidecar fields, while aliases and nested sub-field counts are separate measures.
+5. Stated the field count without distinguishing authored-vs-possible — clarified that the current contract has 31 agent-facing frontmatter fields plus 29 audit-state sidecar fields, while aliases and nested sub-field counts are separate measures.
 6. Omitted the required-for-all set (`subject`, `public`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`) — restored and grouped under Classification, Health & drift, and Evaluation Status.
 
 ## References

@@ -26,11 +26,11 @@ function assert(condition, msg) {
   const fm = { name: 'migrated', subject: 'backend-engineering' };
   const sidecar = {
     structural_verdict: 'PASS', truth_verdict: 'PASS',
-    comprehension_verdict: 'UNVERIFIED', application_verdict: 'APPLICABLE',
+    comprehension_verdict: 'PROVISIONAL',
     eval_score: 4.2, freshness: '2026-06-01', last_audited: '2026-06-01',
   };
   const hb = extractHealthBlock(fm, sidecar);
-  assert(hb.structural_verdict === 'PASS' && hb.application_verdict === 'APPLICABLE',
+  assert(hb.structural_verdict === 'PASS' && hb.comprehension_verdict === 'PROVISIONAL',
     'migrated: verdicts read from the sidecar');
   assert(hb.eval_score === 4.2 && hb.freshness === '2026-06-01',
     'migrated: eval_score + freshness read from the sidecar');
@@ -62,7 +62,7 @@ function assert(condition, msg) {
 
 // 4. v8 project[]/public informs conceptScope, with deployment_target kept as a legacy fallback.
 {
-  const health = { structural_verdict: 'PASS', truth_verdict: 'PASS', application_verdict: 'UNVERIFIED' };
+  const health = { structural_verdict: 'PASS', truth_verdict: 'PASS', comprehension_verdict: 'UNVERIFIED' };
   assert(classifyAuditState(health, { public: true }).conceptScope === 'portable',
     'conceptScope: public true is reported as portable');
   assert(classifyAuditState(health, { public: false, project: [{ handle: 'skill-graph' }] }).conceptScope === 'project',

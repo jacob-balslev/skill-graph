@@ -180,7 +180,7 @@ The migration path (post-parser-fix data, 2026-05-23):
 - **Routing-with-buckets enriched worklist:** `Development/.opencode/progress/skill-audit-worklist-with-buckets.json`
 - **Census tool with the conflicting enum:** `Development/scripts/skill/skill-census.js` line 227
 - **Protocol schema:** `schemas/SKILL_METADATA_PROTOCOL_schema.json`
-- **Related ADRs:** [ADR 0011 — Split audit verdict into four verdicts](0011-split-audit-verdict-into-four-verdicts.md), [ADR 0009 — Sibling repo deprecation](0009-sibling-repo-deprecation.md)
+- **Related ADRs:** [ADR 0011 — Split audit verdict into four verdicts](0011-split-audit-verdict.md), [ADR 0009 — Sibling repo deprecation](0009-sibling-repo-deprecation.md)
 
 ## Open questions for the user
 

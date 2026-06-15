@@ -70,7 +70,6 @@ Per GPT-5.5 2026-05-24 §Q5, with FER subset from Gemini 2026-05-24 §Q5.
    - The runner fork finding (load-bearing minority signal)
    - The inert-verdict-population finding (Audit Status all-UNVERIFIED at v7 ship)
    - The duplicate command-surfaces finding (5 to 13 audit-loop entry points in the meta-audit)
-   - The missing application-cases finding (1 of 481 skills has `application.json`)
    - Plus **false-positive distractors**: 3 to 5 plausible-but-wrong findings the panel should NOT promote.
 
 2. **Run v1 and v2 with fresh contexts.** Each session run twice per model (Rating Roulette). Randomize session order to prevent priming.

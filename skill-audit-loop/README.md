@@ -32,7 +32,7 @@ flowchart TD
   Stop(["blocked — would poison the graph"]):::err
   IGv["structural_verdict<br/>truth_verdict"]:::artifact
   BG{"Behavior Gate — DOES IT CHANGE BEHAVIOR?<br/>positives · hard negatives<br/>· prior failures · boundary cases"}:::gate
-  BGv["comprehension_verdict<br/>application_verdict<br/>(APPLICABLE = certified useful)"]:::artifact
+  BGv["comprehension_verdict<br/>(PASS = certified useful)"]:::artifact
   U["UNVERIFIED<br/>honest default — not a defect"]:::input
   S --> IG
   IG -->|fail| Stop
@@ -48,19 +48,19 @@ flowchart TD
 
 The Integrity Gate's deterministic field mapping is in [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md); the per-skill checklist it runs is Part 2.
 
-## Four Verdicts
+## Three Verdicts
 
-Each skill carries a four-verdict Audit Status. `structural_verdict` and `truth_verdict` establish **eligibility** for assessment; `comprehension_verdict` and `application_verdict` record the **assessment** itself. **`application_verdict: APPLICABLE` is the only verdict that *certifies* a skill is useful** — the others are necessary, not sufficient.
+Each skill carries a three-verdict Audit Status. `structural_verdict` and `truth_verdict` establish **eligibility** for assessment; `comprehension_verdict` records the **assessment** itself. **`comprehension_verdict: PASS` is the verdict that *certifies* a skill is useful** — the others are necessary, not sufficient.
 
-Confidence is ordered, and the value names which evidence backs it: **`APPLICABLE`** (from certifying grader evidence) **>** `PROVISIONAL` (a lower-confidence eval receipt) **>** `UNVERIFIED` (no eval receipt for that dimension). The canonical enum definitions, the eligibility-vs-certification distinction, and the disjointness rules are in [`../docs/verdict-semantics.md`](../docs/verdict-semantics.md) — this README never redefines them.
+Confidence is ordered, and the value names which evidence backs it: **`PASS`** (from certifying grader evidence) **>** `PROVISIONAL` (a lower-confidence eval receipt) **>** `UNVERIFIED` (no eval receipt for that dimension). The canonical enum definitions, the eligibility-vs-certification distinction, and the disjointness rules are in [`../docs/verdict-semantics.md`](../docs/verdict-semantics.md) — this README never redefines them.
 
 ## Doctrine
 
 - **Lint is a floor, never the target.** An empty findings report on a genuinely good skill is a PASS. Do not invent arbitrary internal checks to manufacture findings.
-- **`application_verdict` is the primary quality signal.** Structural correctness is table stakes; teaching efficacy is the point.
+- **`comprehension_verdict` is the primary quality signal.** Structural correctness is table stakes; teaching efficacy is the point.
 - **`UNVERIFIED` is the honest default, not a defect.** A skill nobody has graded yet records that truthfully — it does not pretend to a verdict it has not earned.
 - **Version labels are earned, not bumped.** Advancing a `schema_version` / `vN` label asserts the content migration happened. See [`../AGENTS.md` § Version Labels Are Earned, Not Bumped](../AGENTS.md#version-labels-are-earned-not-bumped).
-- **Never stamp `APPLICABLE` without an `eval_last_run` receipt.** A verdict without evidence is a doc lie.
+- **Never stamp `PASS` without an `eval_last_run` receipt.** A verdict without evidence is a doc lie.
 - **Show every finding.** If an audit emits N findings, the report carries N; prioritize separately, never drop.
 
 ## Where We Actually Are

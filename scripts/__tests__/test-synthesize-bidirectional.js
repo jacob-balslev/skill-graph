@@ -49,30 +49,9 @@ check('isCrossFamily true only for different known families', () => {
   assert.strictEqual(cert.isCrossFamily('opus', 'mystery'), false);
 });
 
-console.log('3. Conservative synthesis (application)');
-check('both APPLICABLE => APPLICABLE, agreement true', () => {
-  const r = syn.reconcile({ verdict: 'APPLICABLE' }, { verdict: 'APPLICABLE' }, { mode: 'application' });
-  assert.strictEqual(r.verdict, 'APPLICABLE');
-  assert.strictEqual(r.agreement, true);
-  assert.strictEqual(r.reconciliation, 'conservative');
-});
-check('APPLICABLE vs MIXED => MIXED (lower wins), agreement false', () => {
-  const r = syn.reconcile({ verdict: 'APPLICABLE' }, { verdict: 'MIXED' }, { mode: 'application' });
-  assert.strictEqual(r.verdict, 'MIXED');
-  assert.strictEqual(r.agreement, false);
-});
-check('APPLICABLE vs HARMFUL => HARMFUL (most skeptical)', () => {
-  assert.strictEqual(syn.reconcile({ verdict: 'APPLICABLE' }, { verdict: 'HARMFUL' }, { mode: 'application' }).verdict, 'HARMFUL');
-});
-check('APPLICABLE vs no-lift verdict preserves scoped no-lift category', () => {
-  assert.strictEqual(syn.reconcile({ verdict: 'APPLICABLE' }, { verdict: 'NOT_DISCRIMINATED_CEILING' }, { mode: 'application' }).verdict, 'NOT_DISCRIMINATED_CEILING');
-  assert.strictEqual(syn.reconcile({ verdict: 'APPLICABLE' }, { verdict: 'EQUIVALENT_ON_FRONTIER' }, { mode: 'application' }).verdict, 'EQUIVALENT_ON_FRONTIER');
-});
-check('APPLICABLE only when BOTH agree (PROVISIONAL drags it down)', () => {
-  assert.strictEqual(syn.reconcile({ verdict: 'APPLICABLE' }, { verdict: 'PROVISIONAL' }, { mode: 'application' }).verdict, 'PROVISIONAL');
-});
+console.log('3. Unknown-verdict normalization + unknown-mode rejection');
 check('unknown verdict is normalized to UNVERIFIED — never surfaced as the synthesized verdict (SH-6678)', () => {
-  const r = syn.reconcile({ verdict: 'APPLICABLE' }, { verdict: 'WAT' }, { mode: 'application' });
+  const r = syn.reconcile({ verdict: 'PASS' }, { verdict: 'WAT' }, { mode: 'comprehension' });
   // The invalid "WAT" must NOT become the synthesized verdict; it floors to UNVERIFIED,
   // which (conservatively) caps the whole reconciliation at UNVERIFIED.
   assert.strictEqual(r.verdict, 'UNVERIFIED');
@@ -86,8 +65,11 @@ check('unknown verdict on BOTH directions floors to UNVERIFIED, agreement false 
   assert.strictEqual(r.agreement, false);
 });
 check('normalizeKnown leaves real verdicts untouched, floors unknowns', () => {
-  assert.strictEqual(syn.normalizeKnown(syn.APPLICATION_RANK, 'APPLICABLE'), 'APPLICABLE');
-  assert.strictEqual(syn.normalizeKnown(syn.APPLICATION_RANK, 'WAT'), 'UNVERIFIED');
+  assert.strictEqual(syn.normalizeKnown(syn.COMPREHENSION_RANK, 'PASS'), 'PASS');
+  assert.strictEqual(syn.normalizeKnown(syn.COMPREHENSION_RANK, 'WAT'), 'UNVERIFIED');
+});
+check("mode:'application' is rejected (only comprehension is reconcilable)", () => {
+  assert.throws(() => syn.reconcile({ verdict: 'PASS' }, { verdict: 'PASS' }, { mode: 'application' }), /unknown mode/);
 });
 
 console.log('4. Conservative synthesis (comprehension) + procedural carve-out');
@@ -118,9 +100,8 @@ check('both procedural — no graded signal either way (SH-6679)', () => {
 check('capAtProvisional caps PASS, keeps negatives', () => {
   assert.strictEqual(syn.capAtProvisional(syn.COMPREHENSION_RANK, 'PASS'), 'PROVISIONAL');
   assert.strictEqual(syn.capAtProvisional(syn.COMPREHENSION_RANK, 'SHALLOW'), 'SHALLOW');
-  assert.strictEqual(syn.capAtProvisional(syn.APPLICATION_RANK, 'APPLICABLE'), 'PROVISIONAL');
-  assert.strictEqual(syn.capAtProvisional(syn.APPLICATION_RANK, 'NOT_DISCRIMINATED_CEILING'), 'NOT_DISCRIMINATED_CEILING');
-  assert.strictEqual(syn.capAtProvisional(syn.APPLICATION_RANK, 'EQUIVALENT_ON_FRONTIER'), 'EQUIVALENT_ON_FRONTIER');
+  assert.strictEqual(syn.capAtProvisional(syn.COMPREHENSION_RANK, 'REDUNDANT'), 'REDUNDANT');
+  assert.strictEqual(syn.capAtProvisional(syn.COMPREHENSION_RANK, 'PROVISIONAL'), 'PROVISIONAL');
 });
 check('unknown mode throws', () => {
   assert.throws(() => syn.reconcile({ verdict: 'PASS' }, { verdict: 'PASS' }, { mode: 'bogus' }), /unknown mode/);

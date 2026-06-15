@@ -33,15 +33,13 @@ The way it works: run a real comprehension task **with** the skill and **without
 - `UNVERIFIED` — nobody has run the test yet. True for most skills today. This is the honest default, not a failure.
 - (Other values record tested-but-shallow, tested-but-redundant, etc. — see `docs/verdict-semantics.md`.)
 
-> The fourth `application_verdict` (the application/behavior-change gate) was **removed 2026-06-15** — see CHANGELOG. `comprehension_verdict` is now the behavior-gate quality signal.
-
 This label lives in a separate per-skill file (`audit-state.json`), is written only by the audit tools (`/audit:*`), and is the job of the part of the system called the Behavior Gate (the "does it change behavior the way it claims?" check), as opposed to the Integrity Gate (the "is it well-formed and honest?" check). Definitions: `docs/verdict-semantics.md`, `skill-audit-loop/SKILL_AUDIT_LOOP.md`, `schemas/skill-audit-state.schema.json`.
 
 ## The two questions are deliberately decoupled
 
 This is not an accident to fix — it is a designed property:
 
-- **Publishing does not depend on quality.** A skill can be published while still untested (`comprehension_verdict: UNVERIFIED`). Per `docs/adr/0011-split-audit-verdict-into-four-verdicts.md`, untested skills are published **transparently labeled "behavior unvalidated"** rather than being held back. With most skills untested, gating publication on quality would mean publishing almost nothing.
+- **Publishing does not depend on quality.** A skill can be published while still untested (`comprehension_verdict: UNVERIFIED`). Per `docs/adr/0011-split-audit-verdict.md`, untested skills are published **transparently labeled "behavior unvalidated"** rather than being held back. With most skills untested, gating publication on quality would mean publishing almost nothing.
 - **There is already a separate publication-priority field.** `marketplace_tier` (`S`/`A`/`B`/`C`, in `schemas/skill-audit-state.schema.json`) decides how prominently a published skill is featured. It is authored per skill and is **not derived from the quality label** — confirming the two concerns are kept apart on purpose.
 
 ```
@@ -66,4 +64,4 @@ The one small residual idea: once skills start getting quality-tested, it could 
 - Roundtable record + synthesis: `~/Development/.roundtable/skill-graph-2026-05-30/SYNTHESIS.md`
 - Quality system (Question 2) engine: `~/Development/docs/plans/sh6624-application-verdict-runner.md`
 - Publishing model (Question 1): `docs/publish-workflow.md`, `docs/adr/0012-internal-skill-library-separation.md`, `docs/adr/0017-five-axis-classification-model.md`
-- Quality model (Question 2): `docs/verdict-semantics.md`, `docs/adr/0011-split-audit-verdict-into-four-verdicts.md`, `docs/adr/0019-audit-state-sidecar-separation.md`
+- Quality model (Question 2): `docs/verdict-semantics.md`, `docs/adr/0011-split-audit-verdict.md`, `docs/adr/0019-audit-state-sidecar-separation.md`

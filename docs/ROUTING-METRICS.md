@@ -15,6 +15,8 @@ content after the closing `---` frontmatter delimiter) in addition to
 which powers the TF-IDF cosine-similarity path in `scripts/skill/skill-router.js`
 (`includeSemantic: true`, the default).
 
+> **Location note:** `skill-embedder.js` and `skill-router.js` are **workspace** scripts (`~/Development/scripts/skill/`), not part of this skill-graph repo. They are the workspace semantic-routing path, distinct from skill-graph's own manifest router at `scripts/skill-graph-route.js`.
+
 | Metric | Before (name+desc+kw only) | After (+ body text) | Delta |
 |---|---|---|---|
 | Total indexed terms | 3,955 | 16,163 | **+4.09×** |

@@ -2,7 +2,6 @@
 
 > Type: Reference (binding)
 > Authored: 2026-05-25 — closes the 5-way verdict-semantics restatement gap surfaced by the 2026-05-25 multi-model review (Opus G2#2 HIGH, GPT-5.5 G2#2 HIGH).
-> Updated 2026-06-15 — the APPLICABLE / application (behavior-change) verdict was removed entirely (see CHANGELOG § Removed). The Audit Status is now THREE verdicts; `comprehension_verdict` is the behavior-gate quality signal.
 > Source of truth for verdict enums + tier ordering. All other surfaces should LINK to this file, not restate it.
 > **The verdict is a guardrail, not an optimizer:** see [`docs/skill-audit-loop-philosophy.md`](skill-audit-loop-philosophy.md) — verdicts confirm an enriched skill helps and didn't regress; they must never drive stripping knowledge that didn't move a score.
 
@@ -13,8 +12,6 @@ The single canonical home for:
 1. **The three Audit Status verdict fields** — `structural_verdict`, `truth_verdict`, `comprehension_verdict`.
 2. **Each field's enum** — every valid value, what it means, what generates it.
 3. **The confidence tier ordering** — `PASS > PROVISIONAL > UNVERIFIED` and friends.
-
-> **Removed:** the fourth verdict, `application_verdict` (the application / behavior-change gate), was removed entirely on 2026-06-15. It produced 0 APPLICABLE corpus-wide and stamped false negatives on good skills (the test was not discriminating). The field remains DEFINED-but-inert in `schemas/skill-audit-state.schema.json` only so existing sidecars validate; it is no longer produced, read, or gated. Recover the prior four-verdict semantics from git history if needed.
 
 This doc REPLACES the verdict-semantics restatements that previously lived (drift-prone) in `skill-graph/AGENTS.md`, `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md`, `docs/reference/skill-audit-pipeline.md`, `.claude/rules/version-schema-contract.md`, and ADR-0011. Those files now carry one-line summaries + a link to this file.
 
@@ -124,7 +121,7 @@ A capped/invalid run is **inconclusive**, never a regression: the enrich keep-or
 
 ## Related (canonicals + rationale)
 
-- ADR-0011 — Historical decision rationale for the (now-superseded) four-verdict Audit Status. The application verdict it introduced was removed 2026-06-15.
+- ADR-0011 — Decision rationale for the Audit Status verdict model.
 - [`schemas/skill-audit-state.schema.json`](../schemas/skill-audit-state.schema.json) — the binding enum definitions.
 - [`skill-audit-loop/SKILL_AUDIT_LOOP.md`](../skill-audit-loop/SKILL_AUDIT_LOOP.md) — the audit-loop procedure that produces the verdicts.
 - [ADR-0022](adr/0022-representative-generator-frontier-judges.md) — Decision rationale for the `representative-generator` measured subject and frontier judge pair.

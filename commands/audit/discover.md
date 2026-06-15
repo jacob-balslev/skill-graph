@@ -45,8 +45,8 @@ node scripts/skill/skill-keyword-matrix.js --json --out scripts/discovery/keywor
 ```
 
 This scans 4 sources:
-1. **Routing config** — 555 existing keyword-to-skill mappings
-2. **SKILL.md metadata** — keywords/triggers from all 191 skills
+1. **Routing config** — the existing keyword-to-skill mappings
+2. **SKILL.md metadata** — keywords/triggers from the corpus
 3. **Codebase domains** — lib/, components/, app/(main)/ directories, SQL views
 4. **Linear issues** — task titles, labels (with `--include-linear`)
 

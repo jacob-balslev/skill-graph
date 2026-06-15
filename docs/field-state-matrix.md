@@ -131,7 +131,7 @@ The Skill Audit Loop owns these in `audit-state.json`. **Do not hand-author.** H
 | `last_changed` | ISO date | `improve` | Date the body or frontmatter was edited. |
 | `structural_verdict` | `PASS` / `PASS_WITH_FIXES` / `FAIL` / `UNVERIFIED` | `audit` | Form-layer (gates 1-2, 7). Rolled up from `lint_verdict`. Only external-mandate violations produce `FAIL`. |
 | `truth_verdict` | `PASS` / `DRIFT` / `BROKEN` / `UNVERIFIED` | `audit` | Truth-layer (gates 3-6). Rolled up from hashable drift evidence plus audit judgment; absent hash coverage requires explicit human/graded truth evidence before `PASS`. |
-| `comprehension_verdict` | `PASS` / `SHALLOW` / `REDUNDANT` / `UNVERIFIED` / `PROVISIONAL` / `SKIPPED_BASELINE_HIGH` / `NA` | comprehension grader | **The behavior-gate quality signal** (gate 8). (The fourth `application_verdict` was removed 2026-06-15 — see CHANGELOG.) |
+| `comprehension_verdict` | `PASS` / `SHALLOW` / `REDUNDANT` / `UNVERIFIED` / `PROVISIONAL` / `SKIPPED_BASELINE_HIGH` / `NA` | comprehension grader | **The behavior-gate quality signal** (gate 8). |
 | `eval_score` | 0.0-5.0 | `evaluate` | Latest aggregate grade. |
 | `eval_failed_ids` | string[] | `evaluate` | Failed eval IDs. Empty when clean. |
 | `lint_verdict` | `PASS` / `FAIL` / `UNKNOWN` | `skill-lint.js` | Per-script signal. Rolls up into `structural_verdict`. |
@@ -184,5 +184,5 @@ The only parse-time reconciliation described here is the two-physical-encoding b
 - [AUTHORING-QUICKSTART.md](./AUTHORING-QUICKSTART.md), shortest path to a valid SKILL.md
 - [skill-audit-loop-executable-map.md](./skill-audit-loop-executable-map.md), which scripts write which fields
 - [manifest-field-mapping.md](./manifest-field-mapping.md), authored-to-generated mapping
-- [adr/0011-split-audit-verdict-into-four-verdicts.md](./adr/0011-split-audit-verdict-into-four-verdicts.md), why the four-verdict split
+- [adr/0011-split-audit-verdict.md](./adr/0011-split-audit-verdict.md), the Audit Status verdict-model rationale
 - [adr/0009-sibling-repo-deprecation.md](./adr/0009-sibling-repo-deprecation.md), the canonical-source policy

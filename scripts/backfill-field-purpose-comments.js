@@ -261,12 +261,6 @@ const FIELD_COMMENTS = {
     '# comprehension_verdict: gate 8 — cheap recitation smoke test. Never alone certifies.',
     '# PASS / SHALLOW / REDUNDANT / UNVERIFIED / PROVISIONAL / SKIPPED_BASELINE_HIGH / NA.',
   ],
-  application_verdict: [
-    '# application_verdict: gate 9 — the primary quality signal. APPLICABLE is the only verdict',
-    '# that certifies the skill is USEFUL (grader-confirmed). PROVISIONAL = one model self-assessed.',
-    '# APPLICABLE / PROVISIONAL / NOT_DISCRIMINATED_CEILING / EQUIVALENT_ON_FRONTIER',
-    '# / REDUNDANT / HARMFUL / MIXED / FALSE_POSITIVE / UNVERIFIED.',
-  ],
   eval_score: [
     '# eval_score: 0.0–5.0 aggregate from the eval runner. Written by `evaluate`.',
   ],

@@ -62,9 +62,9 @@ for (const rel of [
 
   // Audit-state fields injected into the frontmatter object are NOT surfaced — render reads
   // relations/grounding/understanding, not the moved audit verdicts.
-  const withAudit = { ...fm, structural_verdict: 'PASS', application_verdict: 'APPLICABLE', eval_state: 'passing' };
+  const withAudit = { ...fm, structural_verdict: 'PASS', comprehension_verdict: 'SHALLOW', eval_state: 'passing' };
   const outAudit = renderSkillGraphContext(withAudit);
-  assert(!/APPLICABLE/.test(outAudit) && !/structural_verdict/.test(outAudit),
+  assert(!/SHALLOW/.test(outAudit) && !/structural_verdict/.test(outAudit),
     'render: never surfaces audit-state verdict values even if present on the object');
 }
 
@@ -84,7 +84,7 @@ function synthSkill(name, structuralVerdict) {
     health: {
       structural_verdict: structuralVerdict,
       truth_verdict: 'PASS',
-      application_verdict: 'UNVERIFIED',
+      comprehension_verdict: 'UNVERIFIED',
       eval_state: 'unverified',
     },
   };

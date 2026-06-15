@@ -36,7 +36,7 @@
 
 This document is the top-level public contract for the two-file Skill Metadata Protocol shape — the **normative spec**. It defines which fields are required in `SKILL.md` and `audit-state.json`, what each field means in operational terms, and which fields are authored by humans vs computed by tooling. Skill Graph is the library-level system that consumes this contract. The prose is terse and boundary-aware: every clause is a rule a consumer or author can verify against the schema and the focused Skill Graph verification tools.
 
-**Companion docs by genre.** This contract is the *what*. The *why* — design rationale, archetype semantics, OntoClean rigidity, the Evaluation Status's orthogonality, the JSON-LD W3C mappings, and the philosophical posture behind the field choices — lives in [`skill-metadata-protocol.md`](design-rationale.md). The two docs are coordinated and grow together: a normative rule that lacks a "why" is fragile; a "why" that lacks a normative rule is vapourware. If you are authoring a SKILL.md, you read this file. If you are deciding whether to add a field to the schema, you read both.
+**Companion docs by genre.** This contract is the *what*. The *why* — design rationale, OntoClean rigidity, the Evaluation Status's orthogonality, the JSON-LD W3C mappings, and the philosophical posture behind the field choices — lives in [`design-rationale.md`](design-rationale.md). The two docs are coordinated and grow together: a normative rule that lacks a "why" is fragile; a "why" that lacks a normative rule is vapourware. If you are authoring a SKILL.md, you read this file. If you are deciding whether to add a field to the schema, you read both.
 
 ---
 
@@ -115,7 +115,7 @@ Distinct from the two *encodings* above (which are two shapes of the same frontm
 | File | Holds | Who reads it | Schema |
 |---|---|---|---|
 | **`SKILL.md`** frontmatter | Agent-facing fields — what the everyday agent reads to **find, understand, and execute** the skill: `name`, `description`, `subject`/`subjects`/`taxonomy_domain`, `public`, `scope`, `grounding`, `project`, the activation surfaces (`keywords`/`triggers`/`examples`/`anti_examples`/`paths`), `relations`, the five flat Understanding fields, `stability`/`superseded_by`, `license`, `compatibility`, `allowed-tools`. `required`: `name`, `description`, `subject`, `public`, `scope`. | every consumer + the everyday agent | `schemas/SKILL_METADATA_PROTOCOL_schema.json` |
-| **`audit-state.json`** (sidecar, skill-folder root) | Audit/eval/provenance fields — the Skill Audit Loop's records *about* the skill: `schema_version`, `version`, `owner`, `urn`, `repo`, `freshness`, `drift_check`, the `eval_*` triple, the four Audit Status verdicts (`structural`/`truth`/`comprehension`/`application`), `comprehension_state`, `lifecycle`, `marketplace_tier`, `portability`, `runtime_telemetry`, `skill_graph_protocol`, `model_run_coverage`. `runtime_telemetry` points at per-skill agent-run receipts (`agent-telemetry.jsonl`) so duration, token usage, delivery status, and line deltas stay attached to the skill. `required`: `schema_version`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` (`version` optional). | the audit loop (`/audit:*`) only — written by it, never read by the everyday agent | `schemas/skill-audit-state.schema.json` |
+| **`audit-state.json`** (sidecar, skill-folder root) | Audit/eval/provenance fields — the Skill Audit Loop's records *about* the skill: `schema_version`, `version`, `owner`, `urn`, `repo`, `freshness`, `drift_check`, the `eval_*` triple, the three Audit Status verdicts (`structural`/`truth`/`comprehension`), `comprehension_state`, `lifecycle`, `marketplace_tier`, `portability`, `runtime_telemetry`, `skill_graph_protocol`, `model_run_coverage`. `runtime_telemetry` points at per-skill agent-run receipts (`agent-telemetry.jsonl`) so duration, token usage, delivery status, and line deltas stay attached to the skill. `required`: `schema_version`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` (`version` optional). | the audit loop (`/audit:*`) only — written by it, never read by the everyday agent | `schemas/skill-audit-state.schema.json` |
 
 The split *is* the SYSTEM/CONTENT boundary made physical: the sidecar is audit-loop output, the frontmatter is the agent-facing contract. The compiled manifest **joins** the two (`generate-manifest.js` merges the sidecar under the frontmatter before building each entry) so the router's quality and staleness gates read the same `health`/`eval`/`lifecycle` projections as before while source ownership stays separated. Three gates are expressed where they belong: `eval_state ∈ {passing, monitored} ⇒ eval_artifacts: present` stays intra-sidecar; `comprehension_state: present` (sidecar) ⇒ the five flat Understanding fields (frontmatter) and `stability: deprecated` (frontmatter) ⇒ `superseded_by` (frontmatter) are **cross-file lint checks** in `skill-lint.js`. The adjacent `agent-telemetry.jsonl` feed is evidence, not agent-facing content: it exists so future audits can see which agent spent time/tokens, what it changed, and whether it failed to deliver.
 
@@ -510,7 +510,7 @@ Flat sidecar fields record a skill's audit fingerprint in sibling `audit-state.j
 **`comprehension_verdict`**
 - Comprehension-layer verdict (gate 8 — a cheap smoke test).
 - Enum: `PASS` | `PROVISIONAL` | `SHALLOW` | `REDUNDANT` | `UNVERIFIED` | `SKIPPED_BASELINE_HIGH` | `NA`.
-- Written by the comprehension grader — **the behavior-gate quality signal**. `PASS` is earned only from the independent dual-run grader; `PROVISIONAL` is a single-model result; `UNVERIFIED` means no assessment has run. (The fourth `application_verdict` was removed 2026-06-15 — see CHANGELOG.)
+- Written by the comprehension grader — **the behavior-gate quality signal**. `PASS` is earned only from the independent dual-run grader; `PROVISIONAL` is a single-model result; `UNVERIFIED` means no assessment has run.
 
 **`eval_score`**
 - Latest aggregate eval grade on a 0.0–5.0 scale.
@@ -646,7 +646,7 @@ Authors who introduce a cross-domain `suppresses[]` entry must move it to `anti_
 - Skills this skill requires. Items may be bare skill names or `{ skill, min_version }` objects for version-constrained dependencies.
 
 **`broader` / `narrower`**
-- Cross-skill generalisation/specialisation edges (SKOS). Use `broader` when this skill is a specialisation of another skill that is not its overlay parent. `narrower` is the inverse; tooling can infer it from other skills' `broader` edges.
+- Cross-skill generalisation/specialisation edges (SKOS). Use `broader` when this skill is a specialisation of a more general standalone skill. `narrower` is the inverse; tooling can infer it from other skills' `broader` edges.
 
 **`io_contract`** (optional, non-edge — deterministic composition; SKI-52)
 - Not an edge to a named skill. It declares the abstract artifact **types** this skill consumes (`inputs`) and produces (`outputs`), so the tooling can *derive* `depends_on` edges from output→input compatibility without an LLM — the machine-checkable composition pattern of Graph of Skills (arXiv 2604.05333) and SkillNet (arXiv 2603.04448).
@@ -784,4 +784,4 @@ The contract enforces the following invariants. Any change to the schema or tool
 
 ---
 
-*See `skill-metadata-protocol/design-rationale.md` for full design rationale, overlay composition precedence, and schema versioning policy. See `skill-metadata-protocol/field-reference.md` for one section per field with examples. See `schemas/SKILL_METADATA_PROTOCOL_schema.json` for the machine-enforceable version of this contract.*
+*See `skill-metadata-protocol/design-rationale.md` for full design rationale and schema versioning policy. See `skill-metadata-protocol/field-reference.md` for one section per field with examples. See `schemas/SKILL_METADATA_PROTOCOL_schema.json` for the machine-enforceable version of this contract.*

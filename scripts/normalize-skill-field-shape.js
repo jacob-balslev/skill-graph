@@ -95,7 +95,6 @@ const MECHANICAL_DEFAULTS = {
   structural_verdict: 'UNVERIFIED',
   truth_verdict: 'UNVERIFIED',
   comprehension_verdict: 'UNVERIFIED',
-  application_verdict: 'UNVERIFIED',
 };
 
 function loadSchemas() {

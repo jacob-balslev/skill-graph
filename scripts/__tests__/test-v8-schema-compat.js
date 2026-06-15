@@ -181,7 +181,7 @@ check('minimal v8 frontmatter (subject + public + scope) validates', () => {
 check('ADR-0019: an audit-state field in frontmatter is now rejected (sidecar-only)', () => {
   // schema_version/owner/eval_state etc. live in audit-state.json after the
   // split; carrying one in frontmatter is an additionalProperties violation.
-  for (const k of ['schema_version', 'owner', 'eval_state', 'drift_check', 'application_verdict']) {
+  for (const k of ['schema_version', 'owner', 'eval_state', 'drift_check', 'comprehension_verdict']) {
     const withAudit = { ...v8Base, [k]: k === 'drift_check' ? { last_verified: '2026-05-25' } : (k === 'schema_version' ? 8 : 'x') };
     const errors = validate(withAudit, SCHEMA);
     if (!errors.some(e => e.includes(`unexpected key '${k}'`))) {

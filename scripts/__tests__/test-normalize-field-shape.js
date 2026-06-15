@@ -165,7 +165,6 @@ routing_eval: absent
 structural_verdict: UNVERIFIED
 truth_verdict: UNVERIFIED
 comprehension_verdict: UNVERIFIED
-application_verdict: UNVERIFIED
 ---
 
 # Mover Fixture

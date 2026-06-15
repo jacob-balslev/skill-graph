@@ -75,7 +75,7 @@ check('model_run_coverage: records mandatory and advisory model participation se
       certifying_blocked: [],
       applied: true,
       merge: { mergeLedgerPath: 'runs/demo/merge-ledger.json' },
-      eval: { synthesized_verdict: 'APPLICABLE' },
+      eval: { synthesized_verdict: 'PASS' },
     },
   });
 
@@ -109,14 +109,14 @@ check('model_run_coverage: records mandatory and advisory model participation se
   assert.strictEqual(blocked.models.opus.operations.panel.regrade_required, true);
 });
 
-check('non-certifying dangerous panel receipt is preserved but active verdict downgrades to UNVERIFIED', () => {
+check('non-certifying panel receipt: PASS is capped to PROVISIONAL, receipt preserved', () => {
   const d = makeDeps({ existing: ['evals/comprehension.json'] });
   const out = recordFullLoop({
     ...base,
     result: {
       applied: true,
       certifying_blocked: ['single-frontier degraded'],
-      eval: { synthesized_verdict: 'HARMFUL', certifying_clean: false },
+      eval: { synthesized_verdict: 'PASS', certifying_clean: false },
     },
     deps: {
       ...d.deps,
@@ -124,15 +124,15 @@ check('non-certifying dangerous panel receipt is preserved but active verdict do
         synthesized_verdict: r.synthesized_verdict,
         certifying_clean: false,
         regrade_required: true,
-        directions: [{ role: 'Codex', verdict: 'HARMFUL' }],
+        directions: [{ role: 'Codex', verdict: 'PASS' }],
       }),
     },
   });
-  assert.strictEqual(out.recorded.comprehension_verdict, 'UNVERIFIED');
+  assert.strictEqual(out.recorded.comprehension_verdict, 'PROVISIONAL');
   const w = merged(d.writes);
-  assert.strictEqual(w.comprehension_verdict, 'UNVERIFIED');
-  assert.strictEqual(w.eval_last_run.bidirectional.synthesized_verdict, 'HARMFUL');
-  assert.ok(out.findings.some((f) => /non-certifying guardrail reached HARMFUL/.test(f)));
+  assert.strictEqual(w.comprehension_verdict, 'PROVISIONAL');
+  assert.strictEqual(w.eval_last_run.bidirectional.synthesized_verdict, 'PASS');
+  assert.ok(out.findings.some((f) => /capped at PROVISIONAL/.test(f)));
 });
 
 // 2. KEEP + NO guardrail receipt + NO eval artifacts → behavior verdicts UNVERIFIED, each
@@ -159,10 +159,10 @@ check('keep, missing evals: behavior verdicts UNVERIFIED with explicit findings'
 
 // 3. REVERT (applied:false) → only the Integrity Gate runs; behavior verdicts NOT re-stamped.
 check('revert: integrity only; no behavior re-stamp; explicit revert finding', () => {
-  const d = makeDeps({ existing: ['evals/application.json', 'evals/comprehension.json'] });
+  const d = makeDeps({ existing: ['evals/comprehension.json'] });
   const out = recordFullLoop({
     ...base,
-    result: { applied: false, eval: { synthesized_verdict: 'APPLICABLE' } },
+    result: { applied: false, eval: { synthesized_verdict: 'PASS' } },
     deps: d.deps,
   });
   assert.strictEqual(out.recorded.integrity, 'stamped');

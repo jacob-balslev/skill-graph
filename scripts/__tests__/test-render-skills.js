@@ -38,7 +38,7 @@ if (!_sourceDir || !fs.existsSync(_sourceDir)) {
     scope: 'x',
     relations: { depends_on: ['a'], boundary: [{ skill: 'b', reason: 'b owns the X domain; this owns Y.' }] },
     keywords: ['k1'],
-    application_verdict: 'APPLICABLE',
+    comprehension_verdict: 'SHALLOW',
     structural_verdict: 'PASS',
     eval_state: 'passing',
     eval_score: 4,
@@ -71,7 +71,7 @@ if (!_sourceDir || !fs.existsSync(_sourceDir)) {
   assert(!out.includes('Lifecycle'), 'omits lifecycle block');
   assert(!out.includes('Eval state'), 'omits eval state');
   assert(!out.includes('Provenance'), 'omits provenance block');
-  assert(!out.includes('APPLICABLE'), 'no verdict value leaks into the body');
+  assert(!out.includes('SHALLOW'), 'no verdict value leaks into the body');
   assert(out.includes('skill-graph-context:start') && out.includes('skill-graph-context:end'), 'paired fence markers present');
   // determinism
   assert(renderSkillGraphContext(fm) === out, 'renderSkillGraphContext is pure');

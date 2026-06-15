@@ -66,10 +66,9 @@ check('active docs no longer teach the old read-fix-test-next lifecycle', () => 
 
 check('audit --graded is report-only for behavior verdicts', () => {
   const stalePatterns = [
-    /\+ `comprehension_verdict`, `application_verdict`/,
     /with `--graded`, also behavior verdicts/i,
-    /audit --graded[\s\S]{0,120}(writes?|stamps?)[\s\S]{0,80}(?:also|\+)[\s\S]{0,80}(comprehension_verdict|application_verdict)/i,
-    /only `--graded`[\s\S]{0,80}(comprehension_verdict|application_verdict)/i,
+    /audit --graded[\s\S]{0,120}(writes?|stamps?)[\s\S]{0,80}(?:also|\+)[\s\S]{0,80}comprehension_verdict/i,
+    /only `--graded`[\s\S]{0,80}comprehension_verdict/i,
   ];
   for (const file of activeDocs) {
     const text = read(file);
@@ -81,9 +80,8 @@ check('audit --graded is report-only for behavior verdicts', () => {
 
 check('runner prompts do not self-stamp behavior verdicts', () => {
   const stalePatterns = [
-    /--comprehension PROVISIONAL --application PROVISIONAL/,
+    /--comprehension PROVISIONAL/,
     /comprehension_verdict[`:]?\s*PROVISIONAL when .*self-assessment/i,
-    /application_verdict[`:]?\s*PROVISIONAL when .*self-assessment/i,
     /record PROVISIONAL[\s\S]{0,120}self-assessment/i,
   ];
   for (const file of activeDocs.filter((p) => p.includes('/prompts/') || p.includes('/commands/audit/'))) {

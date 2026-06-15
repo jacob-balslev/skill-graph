@@ -47,10 +47,9 @@ everything.
 | Structural Integrity | Is the skill/protocol record valid enough to load, route, and export? | Binary pass/fail with diagnostics. | `skill-lint.js`, schema checks, relation target checks, export checks. | Error/warning count plus exact failing rule. |
 | Truth | Are the skill's source claims still true? | `truth_verdict` roll-up: `PASS`, `DRIFT`, `BROKEN`, `UNVERIFIED` (canonical enum — `docs/verdict-semantics.md`); the per-script `drift_status` carries the finer `STALE` / `NO_BASELINE` / `EXTERNAL_UNHASHED` signals that roll up into it. | `skill-graph-drift.js`, source-truth catalog, direct file/source reads. | Claim table with source, status, evidence strength. |
 | Routing | Does the right skill activate for the right prompt, and avoid wrong co-routing? | Recall/coverage for asserted examples and anti-examples; top-1/top-3 where available. | `skill-graph-routing-eval.js`, routing config checks. | Prompt, expected skill, actual skill, pass/fail. |
-| Comprehension | Can an agent restate the concept and boundaries? | Rubric score and verdict over comprehension dimensions. | `evals/comprehension.json` plus grader receipt. | Dimension score table; never treated as application proof. |
-| Application | Does the skill improve behavior on realistic tasks? | Comparative behavior verdict versus baseline, backed by evaluator receipts. | `evals/application.json`, application runner receipts, representative generator/frontier judge receipts. | Baseline-vs-with-skill result, verdict, ceiling reason, failed case IDs. |
+| Comprehension | Can an agent restate the concept and boundaries, and does the skill improve behavior on realistic tasks? | Rubric score and verdict over comprehension dimensions, backed by a comparative behavior verdict versus baseline. | `evals/comprehension.json` plus grader receipt; representative generator/frontier judge receipts. | Dimension score table; baseline-vs-with-skill result, verdict, ceiling reason, failed case IDs. |
 | Workflow Integrity | Did the agent follow the correct entry sequence and state transitions? | BDD pass/fail over required context, claim/release, artifact shape, and receipt honesty. | `audits/workflow-conformance/spec.yaml` and its runner. | Scenario ID, rule, entrypoint, missing reference or passed assertion. |
-| Artifact Honesty | Do verdicts claim only what artifacts prove? | Binary pass/fail over receipt existence and verdict eligibility. | `check-audit-manifest.js`, application-eval checks, run-dir inspection. | Verdict field, claimed value, required artifact, actual artifact. |
+| Artifact Honesty | Do verdicts claim only what artifacts prove? | Binary pass/fail over receipt existence and verdict eligibility. | `check-audit-manifest.js`, run-dir inspection. | Verdict field, claimed value, required artifact, actual artifact. |
 | Merge Quality | Did the curator preserve valuable work from every contributor? | Ledger completeness: each contribution is kept, rejected, superseded, or deferred with evidence. | Merge ledger, proposal files, review files, anti-loss checks. | One row per contribution with disposition and evidence. |
 
 ## Lifecycle Step Contract
@@ -63,10 +62,10 @@ must be able to answer the row's question before moving to the next step.
 |---|---|---|---|---|
 | Read | Does the agent know what this skill currently claims before touching it? | Pass/fail over required source reads. | `SKILL.md`, `audit-state.json`, eval files when present, related skills, truth-source pointers. | No mutation, no finding, no status change without cited source evidence. |
 | Verify | Are current claims true and structurally valid? | Deterministic pass/fail plus truth status. | `skill-lint.js`, schema validation, `skill-graph-drift.js`, `source-truth-catalog.js`, direct repo/source reads. | No instructional edits; no behavior verdict stamped from structural checks. |
-| Evaluate baseline | What behavior evidence already exists before changing the skill? | Receipt-backed baseline or explicit `UNVERIFIED`. | Prior sidecar verdict, `evals/comprehension.json`, `evals/application.json`, evaluator receipt/history when present. | No positive behavior verdict without an evaluator receipt. |
+| Evaluate baseline | What behavior evidence already exists before changing the skill? | Receipt-backed baseline or explicit `UNVERIFIED`. | Prior sidecar verdict, `evals/comprehension.json`, evaluator receipt/history when present. | No positive behavior verdict without an evaluator receipt. |
 | Research | What should the skill teach now? | Evidence strength and source coverage. | Official sources for drift-prone claims, repo reads, related-skill comparison, `research.md`. | No unverified web claim, no deletion from displacement analysis alone. |
 | Improve | What candidate change is worth testing? | Candidate diff scoped to one chosen field or proposal. | Candidate `SKILL.md`/proposal, finding link, rationale, `last_changed` only when recorded by the loop. | No broad rewrite without evidence; no changing canonical content as final before Grade. |
-| Use | Can the candidate be applied to the intended task shape? | Application-path execution or documented guardrail use. | Candidate skill loaded in the evaluator/application path, task transcript or fixture, scorecard row. | No "works" claim from merely reading the candidate. |
+| Use | Can the candidate be applied to the intended task shape? | Eval-path execution or documented guardrail use. | Candidate skill loaded in the evaluator path, task transcript or fixture, scorecard row. | No "works" claim from merely reading the candidate. |
 | Evaluate candidate | Did the candidate help, regress, prove redundant, or remain inconclusive? | Same metric as baseline: comparative receipt and failure IDs. | Baseline-vs-candidate scores, failed case IDs, ceiling reason, grader receipt. | No treating missing, invalid, or capped evals as a regression or proof of improvement. |
 | Grade | What durable state is allowed now? | Keep/revert/defer decision plus verdict eligibility. | Verdict/scorecard, merge ledger when applicable, eval receipts, path-limited diff, manifest/status readback. | No verdict beyond receipts; no dropped findings; no apply-on-revert. |
 
@@ -81,20 +80,20 @@ truth-source drift, sidecar verdicts, stale review windows, and behavior states
 that must remain explicitly unverified until a receipt exists.
 
 Use rubric scores only for judged behavior or qualitative review:
-comprehension, application quality, teaching efficacy, and final completion
+comprehension, teaching efficacy, and final completion
 evaluation.
 
 Use comparative metrics for behavior claims:
 baseline versus with-skill, previous candidate versus improved candidate,
 frontier judge agreement, and no-lift ceiling reasons. Do not stamp a positive
 behavior certification from self-assessment, a same-family single-model run, a
-missing application artifact, or an inconclusive run.
+missing eval artifact, or an inconclusive run.
 
 ## BDD Locations
 
 | BDD suite | Purpose | Runner |
 |---|---|---|
-| `audits/gate-conformance/spec.yaml` | Per-skill protocol and gate behavior: schema, sidecar, drift, application-eval shape, verdict/artifact honesty. | `scripts/__tests__/test-gate-conformance.js` |
+| `audits/gate-conformance/spec.yaml` | Per-skill protocol and gate behavior: schema, sidecar, drift, comprehension-eval shape, verdict/artifact honesty. | `scripts/__tests__/test-gate-conformance.js` |
 | `audits/workflow-conformance/spec.yaml` | Agent entrypoint behavior: required context chain, lifecycle step contracts, metric definitions, ADR/BDD integration, workflow command orientation. | `scripts/__tests__/test-workflow-conformance.js` |
 
 BDD is not a replacement for the Behavior Gate. It is the executable examples
@@ -106,7 +105,7 @@ that gate is allowed to claim.
 | Workflow | Required ADRs | Required BDD | Required skills | Required scripts |
 |---|---|---|---|---|
 | `/audit` report-only Integrity Gate | ADR-0011, ADR-0019 | Gate conformance; workflow conformance | `skill-infrastructure`, `evaluation`, `testing-strategy` | `skill-lint.js`, `skill-graph-drift.js`, `source-truth-catalog.js`, `check-audit-manifest.js` |
-| `/evaluate` behavior grading | ADR-0011, ADR-0019, ADR-0022 | Gate conformance application/eval scenarios; workflow conformance | `evaluation`, `testing-strategy`, `skill-infrastructure` | `check-application-evals.js`, `check-audit-manifest.js`, evaluator runner |
+| `/evaluate` behavior grading | ADR-0011, ADR-0019, ADR-0022 | Gate conformance comprehension-eval scenarios; workflow conformance | `evaluation`, `testing-strategy`, `skill-infrastructure` | `check-audit-manifest.js`, evaluator runner |
 | `/improve` keep-or-revert loop | ADR-0011, ADR-0021 | Workflow conformance; gate conformance verdict honesty | `evaluation`, `testing-strategy`, `skill-infrastructure` | `skill-lint.js --skill`, `check-version-earned.js`, evaluator runner |
 | `/merge` multi-model union curate | ADR-0021, ADR-0022 | Workflow conformance merge context; gate conformance verdict honesty | `evaluation`, `skill-infrastructure`, `epistemic-grounding` | `skill-audit-claim.js contributions`, merge ledger checks, evaluator runner |
 | `/discover` skill admission | ADR-0017, ADR-0020, ADR-0019 | Workflow conformance discovery context; gate conformance structural scenarios | `taxonomy-design`, `skill-scaffold`, `skill-infrastructure`, `testing-strategy` | `skill-keyword-matrix.js`, `skill-discovery-loop.js`, `skill-auto-create.js`, `skill-lint.js` |

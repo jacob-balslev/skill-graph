@@ -17,7 +17,7 @@ const path = require('path');
 const { parseFrontmatter } = require('./parse-frontmatter');
 const { resolveSkillRoots, resolveTruthSourcePath, collectSkillFiles } = require('./roots');
 // ADR-0019: a skill is SKILL.md frontmatter + a sibling audit-state.json sidecar. The
-// audit/eval/provenance fields (eval_artifacts, eval_state, portability, the four verdicts)
+// audit/eval/provenance fields (eval_artifacts, eval_state, portability, the three verdicts)
 // live in the sidecar. The graders must read the JOINED view, never raw frontmatter.
 const { readSidecar, joinSidecar } = require('./audit-state-sidecar');
 
@@ -152,7 +152,7 @@ function collectContext(opts) {
   const skillBody = fs.readFileSync(skillFile, 'utf8');
   const frontmatter = parseFrontmatter(skillBody);
 
-  // ADR-0019 join: eval_artifacts / eval_state / portability / the four verdicts moved to
+  // ADR-0019 join: eval_artifacts / eval_state / portability / the three verdicts moved to
   // the sibling audit-state.json. Read the sidecar and compute the JOINED view (frontmatter
   // wins on collision, sidecar fills the moved fields). A missing sidecar is the honest
   // unmigrated/new case — readSidecar→null, joinSidecar→frontmatter unchanged, never a crash.
@@ -653,7 +653,7 @@ function buildDimensionPrompt(opts) {
   // ADR-0019: graders that inspect moved audit/eval/provenance fields must see
   // the audit-state.json sidecar. Metadata uses it for sidecar validity;
   // eval/portability use it for eval_artifacts, eval_state, portability, and
-  // the four verdicts. Without this block, migrated skills are falsely graded
+  // the three verdicts. Without this block, migrated skills are falsely graded
   // as missing fields that intentionally moved out of SKILL.md frontmatter.
   const includeAuditStateBlock = dimension.id === 'metadata' || dimension.id === 'eval' || dimension.id === 'portability';
   const auditStateBlock = !includeAuditStateBlock

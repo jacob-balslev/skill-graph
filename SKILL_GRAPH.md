@@ -44,7 +44,7 @@ Make a large AI-agent skill library coherent, project-aware, auditable, and expo
 | Marketplace export count | _Generated, never hand-stamped here_ — see [`docs/status.generated.md`](docs/status.generated.md). The publication gate excludes every private skill (`public: false`, plus internal grounding modes) — currently the repo-specific internal skills (e.g. `canonical-repo-structure`, `graph-audit`, `skill-evolution`, `skill-router`). Any canonical−marketplace delta beyond those gated exclusions is export staleness pending the next `marketplace:export` run. | live: `find skill-graph/marketplace/skills -name SKILL.md \| wc -l` |
 | Canonical library location | sibling repo `jacob-balslev/skills` at `~/Development/skills/` | `.skill-graph/config.json` → `skill_roots: ["../skills/skills"]` |
 | This repo's role | tooling + protocol + schemas + docs (no `skills/` tree) | [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md) |
-| Audit Loop maturity | Integrity Gate ≈ MLOps L1 (write-back wired into `skill-graph audit` as of 2026-05-25 per SH-6481 F14); **Behavior Gate data remains sparse** — application verdicts stay `UNVERIFIED` until `evals/application.json` artifacts are authored and graders run. | [`skill-audit-loop/SKILL_AUDIT_LOOP.md:45-52`](skill-audit-loop/SKILL_AUDIT_LOOP.md) |
+| Audit Loop maturity | Integrity Gate ≈ MLOps L1 (write-back wired into `skill-graph audit` as of 2026-05-25 per SH-6481 F14); **Behavior Gate data remains sparse** — comprehension verdicts stay `UNVERIFIED` until `evals/comprehension.json` artifacts are authored and graders run. | [`skill-audit-loop/SKILL_AUDIT_LOOP.md:45-52`](skill-audit-loop/SKILL_AUDIT_LOOP.md) |
 | **Audit-ledger consistency** | `npm run audit-manifest:check` verifies every graded verdict across the corpus has its gradeable artifact on disk (run it for the live count). The gate runs inside full `npm run verify`; it is intentionally omitted from `npm run verify:system`, which stays the SYSTEM-only blocking gate. | `scripts/check-audit-manifest.js`; `package.json` scripts |
 
 ## Source vs Marketplace — why there are two `skills/` trees
@@ -143,8 +143,8 @@ A sixth set of files — `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `LICENS
 
 | File | Role |
 |---|---|
-| `schemas/SKILL_METADATA_PROTOCOL_schema.json` | The frontmatter schema — canonical-only per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md). Current contract is v8. The file's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier. |
-| `schemas/manifest.schema.json` | The compiled-manifest schema — canonical-only. Tracks the current contract (carries the four Audit Status verdicts). |
+| `schemas/SKILL_METADATA_PROTOCOL_schema.json` | The frontmatter schema — canonical-only per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md). Current contract is v8. The file's `$id` (`https://skillgraph.dev/schemas/SKILL_METADATA_PROTOCOL_schema.json`) is the stable identifier. |
+| `schemas/manifest.schema.json` | The compiled-manifest schema — canonical-only. Tracks the current contract (carries the three Audit Status verdicts). |
 | `schemas/audits-manifest.schema.json` | The Skill Audit Loop manifest schema — binds the shape of `audits/manifest.json` (protocols, runners, required artifacts, runtime aliases). Authored 2026-05-25; closes the manifest version-discipline gap (Opus novelty memo #1). |
 | `schemas/comprehension.schema.json` | The comprehension-eval schema — binds the shape of `skills/<name>/evals/comprehension.json`, the artifact the gate-8 grader evaluates against. Authored 2026-05-25 to close the highest-priority canonicalization gap (Opus G2#3 CRITICAL). |
 

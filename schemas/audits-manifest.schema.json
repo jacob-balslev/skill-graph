@@ -100,7 +100,7 @@
         "when": {
           "type": "string",
           "pattern": "^(always|skill\\.[a-z_]+ +in +\\[.+\\]|skill\\.[a-z_]+ +== +'.+'|runner\\.(id|mode) +(==|startswith) +'.+')$",
-          "description": "Predicate over skill state (e.g., \"skill.comprehension_verdict in ['PROVISIONAL','PASS','SHALLOW','REDUNDANT']\") OR runner state (e.g., \"runner.mode startswith 'autonomous-batch-'\"). The schema pattern constrains the four supported shapes — `always`, `skill.<field> in [<list>]`, `skill.<field> == '<value>'`, or `runner.(id|mode) (==|startswith) '<value>'` (audit M15, 2026-05-27). Predicate values MUST come from the corresponding enum in skill-graph/schemas/SKILL_METADATA_PROTOCOL_schema.json (e.g., comprehension_verdict and application_verdict enums are disjoint per ADR-0011 — see the 2026-05-25 enum-leak fix in check-audit-manifest.js)."
+          "description": "Predicate over skill state (e.g., \"skill.comprehension_verdict in ['PROVISIONAL','PASS','SHALLOW','REDUNDANT']\") OR runner state (e.g., \"runner.mode startswith 'autonomous-batch-'\"). The schema pattern constrains the four supported shapes — `always`, `skill.<field> in [<list>]`, `skill.<field> == '<value>'`, or `runner.(id|mode) (==|startswith) '<value>'` (audit M15, 2026-05-27). Predicate values MUST come from the corresponding enum in skill-graph/schemas/skill-audit-state.schema.json (e.g., the comprehension_verdict enum)."
         },
         "path": {
           "type": "string",

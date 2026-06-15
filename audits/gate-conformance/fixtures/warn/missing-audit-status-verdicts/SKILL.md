@@ -22,7 +22,7 @@ license: Apache-2.0
 
 ## Coverage
 
-Schema-valid sidecar basics with missing `structural_verdict`, `truth_verdict`, `comprehension_verdict`, and `application_verdict`.
+Schema-valid sidecar basics with missing `structural_verdict`, `truth_verdict`, and `comprehension_verdict`.
 
 ## Philosophy of the skill
 

@@ -7,7 +7,7 @@
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld) (frontmatter fields only — the sidecar is not exported/RDF'd).
 > **Two-file split:** per [ADR-0019](../docs/adr/0019-audit-state-sidecar-separation.md), agent-facing fields live in `SKILL.md` frontmatter; audit/eval/provenance fields live in the `audit-state.json` sidecar.
 
-Schema version: **8** · Total fields: **61**
+Schema version: **8** · Total fields: **60**
 
 ---
 
@@ -363,7 +363,7 @@ Records what the skill is grounded against — the truth sources, the grounding 
 
 ## Audit-state sidecar fields (`audit-state.json`)
 
-> Source schema: `schemas/skill-audit-state.schema.json`. Field count: **30** · Required: **7**.
+> Source schema: `schemas/skill-audit-state.schema.json`. Field count: **29** · Required: **7**.
 
 ---
 
@@ -536,7 +536,7 @@ ISO date (YYYY-MM-DD) the SKILL.md body or frontmatter was last edited. Written 
 
 **Type:** `PASS` | `PASS_WITH_FIXES` | `FAIL` | `UNVERIFIED`
 
-Structural-layer verdict produced by gates 1–2 and 7 of the skill-audit loop (schema lint, manifest census, concept-card shape). `PASS` (clean), `PASS_WITH_FIXES` (warnings present but no errors), `FAIL` (lint or schema errors), `UNVERIFIED` (no structural audit has run yet). Independent of `lint_verdict` (per-script signal); this is the audit-loop roll-up. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
+Structural-layer verdict produced by gates 1–2 and 7 of the skill-audit loop (schema lint, manifest census, concept-card shape). `PASS` (clean), `PASS_WITH_FIXES` (warnings present but no errors), `FAIL` (lint or schema errors), `UNVERIFIED` (no structural audit has run yet). Independent of `lint_verdict` (per-script signal); this is the audit-loop roll-up. See docs/verdict-semantics.md.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#structural_verdict`](field-reference.md#structural_verdict)
 
@@ -546,7 +546,7 @@ Structural-layer verdict produced by gates 1–2 and 7 of the skill-audit loop (
 
 **Type:** `PASS` | `DRIFT` | `BROKEN` | `UNVERIFIED`
 
-Truth-layer verdict produced by gates 3–6 of the skill-audit loop (truth-source catalog, drift sentinel, test coverage, claim verification). `PASS` (truth sources align with declared `last_verified` and hashes), `DRIFT` (truth sources changed since last_verified), `BROKEN` (declared truth sources missing or unreadable), `UNVERIFIED` (no truth audit has run yet). Independent of `drift_status` (per-script signal); this is the audit-loop roll-up. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
+Truth-layer verdict produced by gates 3–6 of the skill-audit loop (truth-source catalog, drift sentinel, test coverage, claim verification). `PASS` (truth sources align with declared `last_verified` and hashes), `DRIFT` (truth sources changed since last_verified), `BROKEN` (declared truth sources missing or unreadable), `UNVERIFIED` (no truth audit has run yet). Independent of `drift_status` (per-script signal); this is the audit-loop roll-up. See docs/verdict-semantics.md.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#truth_verdict`](field-reference.md#truth_verdict)
 
@@ -556,19 +556,9 @@ Truth-layer verdict produced by gates 3–6 of the skill-audit loop (truth-sourc
 
 **Type:** `PASS` | `SHALLOW` | `REDUNDANT` | `UNVERIFIED` | `PROVISIONAL` | `SKIPPED_BASELINE_HIGH` | `NA`
 
-Comprehension-layer verdict produced by gate 8 (the comprehension grader on `evals/comprehension.json`). `PASS` (with-skill answers measurably deeper than baseline; dual-run grader earned), `PROVISIONAL` (a single competent model ran the comprehension assessment and recorded a real result — lower confidence than `PASS` because not yet confirmed by the independent dual-run grader, but distinct from `UNVERIFIED` which means no assessment has run), `SHALLOW` (skill recites the concept but does not deepen agent understanding), `REDUNDANT` (baseline already saturated — skill adds no comprehension lift on this concept), `SKIPPED_BASELINE_HIGH` (early-skip — `avg_primary_baseline >= 90` on the 0-100 rubric after the first 2 evals so the dual-run was aborted), `NA` (skill carries no `evals/comprehension.json`), `UNVERIFIED` (initial state before any grader run). Confidence hierarchy: `PASS (grader) > PROVISIONAL (single model) > UNVERIFIED (none)`. This is the behavior-gate quality signal (the application/APPLICABLE verdict was removed — see `application_verdict`). See docs/adr/0011-split-audit-verdict-into-four-verdicts.md and .claude/rules/version-schema-contract.md § 5.
+Comprehension-layer verdict produced by gate 8 (the comprehension grader on `evals/comprehension.json`). `PASS` (with-skill answers measurably deeper than baseline; dual-run grader earned), `PROVISIONAL` (a single competent model ran the comprehension assessment and recorded a real result — lower confidence than `PASS` because not yet confirmed by the independent dual-run grader, but distinct from `UNVERIFIED` which means no assessment has run), `SHALLOW` (skill recites the concept but does not deepen agent understanding), `REDUNDANT` (baseline already saturated — skill adds no comprehension lift on this concept), `SKIPPED_BASELINE_HIGH` (early-skip — `avg_primary_baseline >= 90` on the 0-100 rubric after the first 2 evals so the dual-run was aborted), `NA` (skill carries no `evals/comprehension.json`), `UNVERIFIED` (initial state before any grader run). Confidence hierarchy: `PASS (grader) > PROVISIONAL (single model) > UNVERIFIED (none)`. This is the behavior-gate quality signal. See docs/verdict-semantics.md and .claude/rules/version-schema-contract.md § 5.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#comprehension_verdict`](field-reference.md#comprehension_verdict)
-
----
-
-### `application_verdict` *(optional)*
-
-**Type:** `APPLICABLE` | `REDUNDANT` | `NOT_DISCRIMINATED_CEILING` | `EQUIVALENT_ON_FRONTIER` | `HARMFUL` | `MIXED` | `FALSE_POSITIVE` | `UNVERIFIED` | `PROVISIONAL`
-
-REMOVED — inert legacy field. The application (APPLICABLE) behavior eval was removed: this verdict is no longer produced, read, or gated by any code. The enum values are retained ONLY so existing `audit-state.json` sidecars that still carry an application verdict continue to validate; existing values are inert historical data and MUST NOT be treated as a current quality claim. The live behavior-gate signal is `comprehension_verdict`.
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#application_verdict`](field-reference.md#application_verdict)
 
 ---
 
@@ -722,7 +712,7 @@ Optional pointer to real-world success/failure feedback and audit/eval agent-run
 
 **Type:** object
 
-Per-model Skill Audit Loop participation matrix. This is not a verdict and never certifies quality; it records which model aliases ran which loop operation for this skill, which phase they reached, and where the receipt/failure evidence lives. Used to answer coverage questions such as 'has the free advisory tier run on this skill yet?' separately from `schema_version`, `skill_graph_protocol`, and the four Audit Status verdicts.
+Per-model Skill Audit Loop participation matrix. This is not a verdict and never certifies quality; it records which model aliases ran which loop operation for this skill, which phase they reached, and where the receipt/failure evidence lives. Used to answer coverage questions such as 'has the free advisory tier run on this skill yet?' separately from `schema_version`, `skill_graph_protocol`, and the Audit Status verdicts.
 
 **Sub-fields:**
 

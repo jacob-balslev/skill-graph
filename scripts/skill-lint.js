@@ -929,7 +929,6 @@ const AUDIT_STATUS_VERDICT_FIELDS = [
   'structural_verdict',
   'truth_verdict',
   'comprehension_verdict',
-  'application_verdict',
 ];
 
 function checkAuditStatusCoverage(file) {

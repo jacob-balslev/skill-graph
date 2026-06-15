@@ -67,7 +67,7 @@ The runtime-specific `.claude/commands/` and `.opencode/commands/` directories h
 ## Related
 
 - [ADR-0009](0009-sibling-repo-deprecation.md) — establishes the pattern of consolidating canonical source into the owning project; this ADR extends the same pattern to operational prompts.
-- [ADR-0011](0011-split-audit-verdict-into-four-verdicts.md) — establishes the four-verdict Health Block that the per-skill contract enforces.
+- [ADR-0011](0011-split-audit-verdict.md) — establishes the four-verdict Health Block that the per-skill contract enforces.
 - `.claude/rules/version-schema-contract.md` — "version labels are earned, not bumped" — same principle: the canonical source must match its declared identity, never just bear the label.
 - `.claude/rules/multi-session-commits.md` — every commit in this migration used `git commit --only -F ... -- <paths>`.
 - `.roundtable/canonical-source-cleanup-2026-05-25/` — the executable brief that drove this work, including the structured-pass + novelty-memo + dissent + completeness-claim shape per `.claude/rules/prompt-shape-structured-plus-novelty.md`.

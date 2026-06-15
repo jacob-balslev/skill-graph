@@ -104,4 +104,4 @@ the audit-loop synthesis mirrors.
 - `docs/skill-audit-loop-philosophy.md` § "The advisory tier" (WHY advisory widens, frontier decides)
 - `docs/verdict-semantics.md` (confidence-tier ordering: APPLICABLE > PROVISIONAL > UNVERIFIED)
 - `skill-audit-loop/SKILL_AUDIT_LOOP.md` § "Multi-agent panel" (the five-phase + 3.1 contract)
-- [ADR-0011](0011-split-audit-verdict-into-four-verdicts.md) (the four-verdict Audit Status this gate certifies)
+- [ADR-0011](0011-split-audit-verdict.md) (the four-verdict Audit Status this gate certifies)

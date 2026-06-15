@@ -91,8 +91,8 @@ READ ORDER (small and fixed — deliberately NOT "all documentation"; the old pr
 3. ~/Development/skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md
    § "Multi-agent panel" + § "Canonical way to run the PANEL loop VISIBLY"
 4. ~/Development/.opencode/progress/SKILL_LIST.md (after the freshness step below) — the
-   canonical skill-state inventory: every skill with queue position, four verdicts
-   (S·T·C·A), eval state, and last_audited. NEVER rebuild an inventory ad hoc — schema
+   canonical skill-state inventory: every skill with queue position, three verdicts
+   (S·T·C), eval state, and last_audited. NEVER rebuild an inventory ad hoc — schema
    verification, per-skill file presence, and "which skill hasn't been evaluated yet" are
    all already answered by this file + the per-skill preflight the driver runs.
 

@@ -4,7 +4,7 @@
  *
  * Validates that `schemas/SKILL_METADATA_PROTOCOL_schema.json` and `schemas/manifest.schema.json`
  * carry the enum values mandated by:
- *   - ADR-0011 (four-verdict Audit Status)
+ *   - ADR-0011 (Audit Status verdicts)
  *   - ADR-0020 twelve-shelf re-axis (`subject` 12-enum), boolean `public`,
  *     and free-text `scope` with NO enum. The amendment retired the `operation`
  *     axis, replaced the interim `deployment_target` enum, removed the `scope`
@@ -35,7 +35,7 @@ const path = require('path');
 const REPO_ROOT = process.env.SKILL_GRAPH_PACKAGE_ROOT || process.cwd();
 const SKILL_SCHEMA = path.join(REPO_ROOT, 'schemas', 'SKILL_METADATA_PROTOCOL_schema.json');
 const MANIFEST_SCHEMA = path.join(REPO_ROOT, 'schemas', 'manifest.schema.json');
-// ADR-0019 audit-state sidecar: schema_version + owner + the four Audit Status
+// ADR-0019 audit-state sidecar: schema_version + owner + the Audit Status
 // verdicts + the eval/drift bookkeeping live here now, not in the frontmatter
 // schema. This checker asserts the sidecar's constants too.
 const AUDIT_STATE_SCHEMA = path.join(REPO_ROOT, 'schemas', 'skill-audit-state.schema.json');
@@ -87,13 +87,12 @@ const SPEC = {
     'eval_state',
     'routing_eval',
   ],
-  // Audit Status — ADR-0011 four-verdict split. Lives in the audit-state
+  // Audit Status — ADR-0011 verdict split. Lives in the audit-state
   // sidecar after the ADR-0019 split (was frontmatter under single-file v8).
   health_block_verdict_fields: [
     'structural_verdict',
     'truth_verdict',
     'comprehension_verdict',
-    'application_verdict',
   ],
   // Total top-level property counts — drift guard for the hand-stamped field
   // counts in prose. When a field is added or removed, bump these AND the
@@ -102,7 +101,7 @@ const SPEC = {
   // (Added 2026-06-14 per audit finding P-7: six fields were added on
   // 2026-06-10/06-12 and three docs went stale because no gate asserted counts.)
   frontmatter_property_count: 31,
-  sidecar_property_count: 30,
+  sidecar_property_count: 29,
 };
 
 // ---------------------------------------------------------------------------
@@ -277,14 +276,14 @@ function runChecks() {
   }
 
   // Audit Status verdict fields must be declared in the audit-state sidecar
-  // (ADR-0011 four-verdict split; relocated from frontmatter to the sidecar by
+  // (ADR-0011 verdict split; relocated from frontmatter to the sidecar by
   // ADR-0019).
   for (const field of SPEC.health_block_verdict_fields) {
     const def = auditProps[field];
     results.push({
       label: `audit-state.schema Audit Status field: ${field}`,
       ok: !!def,
-      reason: def ? undefined : 'missing — ADR-0011 four-verdict split incomplete',
+      reason: def ? undefined : 'missing — ADR-0011 verdict split incomplete',
     });
   }
 

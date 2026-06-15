@@ -114,7 +114,7 @@ All relation targets should be the `name` of an existing skill in the library. `
 
 ### Evaluation Status state: the three orthogonal axes
 
-Schema_version 2 (SH-5784) split the v1 `eval_status` enum into three orthogonal fields because the old enum mixed artifact state, runtime state, and routing coverage into a single ordinal. Each axis now has its own value.
+Evaluation Status is split into three orthogonal fields — `eval_artifacts`, `eval_state`, and `routing_eval` — because a single ordinal cannot honestly represent artifact state, runtime state, and routing coverage at once. Each axis has its own value.
 
 #### `eval_artifacts` — "does a file exist?"
 
@@ -156,19 +156,6 @@ Have the evals been run and passed recently?
 
 **Anti-pattern.** Do not set `eval_state: passing` without an actual passing run. Do not set `eval_artifacts: present` without a real file. Do not claim `routing_eval: present` when the eval only checks content, not routing.
 
-### Migration from v1
-
-The v1 `eval_status` enum collapsed three concerns into one. Map each old value to the new triple:
-
-| v1 `eval_status` | `eval_artifacts` | `eval_state` | `routing_eval` |
-|---|---|---|---|
-| `none` | `none` | `unverified` | `absent` |
-| `pending` | `planned` | `unverified` | `absent` |
-| `evals` | `present` | `passing` | `absent` |
-| `passing` | `present` | `passing` | `absent` |
-| `active` | `present` | `monitored` | `absent` |
-| `evals+trigger` | `present` | `passing` | `present` |
-
 ### `portability.readiness` decision
 
 The `readiness` field is operational, not ordinal. Each value says something concrete about what is true of the skill today.
@@ -186,7 +173,7 @@ The `readiness` field is operational, not ordinal. Each value says something con
 
 ### `portability.targets` decision
 
-`targets` declares which runtimes the skill is portable to. (Renamed from `exports` in v2.)
+`targets` declares which runtimes the skill is portable to.
 
 | Target | Include when |
 |---|---|
@@ -195,16 +182,6 @@ The `readiness` field is operational, not ordinal. Each value says something con
 The enum accepts only `skill-md` today. Other runtimes — `cursor`, `windsurf`, `copilot`, `agents-md` — were removed from the enum in 0.3.0. They previously sat in the enum as compatibility *goals* with no working transform, which violated the contract's `additionalProperties: false` strictness rule. Re-add via a new RFC and the same PR that ships the transform for that runtime.
 
 **Rule of thumb:** if the skill can round-trip through `scripts/export-skill.js` today, include `skill-md`. Otherwise omit the `portability` block entirely.
-
-### Migration from v1
-
-| v1 `portability.level` | v2 `portability.readiness` |
-|---|---|
-| `high` | `scripted` (if an export script covers at least one target) else `declared` |
-| `medium` | `scripted` (if an export script covers at least one target) else `declared` |
-| `low` | `declared` |
-
-`portability.exports` was renamed to `portability.targets`. Values are unchanged.
 
 ```yaml
 # Canonical: the only target currently accepted by the schema.
@@ -218,41 +195,45 @@ portability:
 
 ## 4. How do I declare a skill's project membership?
 
-`project[]` is the v8 mechanism for anchoring a skill to one or more specific projects. Each entry carries a kebab-case `handle` and a free-text `role`. `repo[]` works the same way for repo-level anchoring. Both fields replace the old `workspace_tags` flat array.
+`project[]` is the v8 mechanism for anchoring a skill to one or more specific projects. Each entry carries a kebab-case `handle` and a free-text `role`. It is a `SKILL.md` frontmatter field. `repo` anchors at the repo level the same way, but **`repo` is sidecar-owned, not `SKILL.md` frontmatter** (ADR-0019): it lives in the per-skill `audit-state.json` sidecar, so a top-level `repo:` key in `SKILL.md` is rejected by the schema's `additionalProperties: false` rule and fails lint. Author `project[]` in frontmatter; author `repo` in the sidecar. The manifest join recombines them.
 
 ### Decision table
 
-| Situation | Correct `project[]` / `repo[]` usage |
+| Situation | Correct usage |
 |---|---|
-| Skill applies to every project (cross-cutting concern) | Omit `project[]` and `repo[]` (ambient) |
-| Skill is anchored to one specific project | `project: [{handle: "<project-handle>", role: "source-of-truth"}]` |
-| Skill is anchored to one specific repo (not necessarily one project) | `repo: [{handle: "<repo-slug>", url: "https://github.com/..."}]` |
-| Skill applies to multiple projects that share a technology | Declare each project in `project[]` with its own role |
+| Skill applies to every project (cross-cutting concern) | Omit `project[]` (frontmatter) and leave `repo` unset in the sidecar (ambient) |
+| Skill is anchored to one specific project | Frontmatter `project: [{handle: "<project-handle>", role: "source-of-truth"}]` |
+| Skill is anchored to one specific repo (not necessarily one project) | Sidecar `repo: [{handle: "<repo-slug>", url: "https://github.com/..."}]` (in `audit-state.json`, never in `SKILL.md`) |
+| Skill applies to multiple projects that share a technology | Declare each project in frontmatter `project[]` with its own role |
 | Single-project workspace | Either omit (ambient) or declare the one project — your choice |
 
 ### Diagnostic questions
 
 **Q: Is this skill anchored to one specific project?**
-→ Yes → declare `project[]` with the project handle (this also makes `grounding` required). The router uses `project[]` for project-fit filtering.
+→ Yes → declare `project[]` in `SKILL.md` frontmatter with the project handle (this also makes `grounding` required). The router uses `project[]` for project-fit filtering.
 
 **Q: Is this skill a cross-cutting concern (GDPR, a11y, testing patterns, general coding rules)?**
-→ Omit `project[]` and `repo[]` — ambient.
+→ Omit `project[]` and leave `repo` unset — ambient.
 
 **Q: Does this skill reference a specific repo's files or domain without being a single-project skill?**
-→ Use `repo[]` to anchor to the repo; set `project[]` only if it is also project-anchored, and `public` on its own merits.
+→ Set `repo` in the skill's `audit-state.json` sidecar (not in frontmatter); set `project[]` only if it is also project-anchored, and `public` on its own merits.
 
 ### Example
 
 ```yaml
-# One specific project — project[] with role (makes grounding required)
+# In SKILL.md frontmatter — one specific project, project[] with role (makes grounding required)
 project:
   - handle: sales-hub
     role: source-of-truth
+```
 
-# Repo-anchored (e.g. cross-project docs skill anchored to one repo)
-repo:
-  - handle: skill-graph
-    url: https://github.com/jacob-balslev/skill-graph
+```jsonc
+// In the sibling audit-state.json sidecar (ADR-0019) — repo anchoring lives here, NOT in SKILL.md
+{
+  "repo": [
+    { "handle": "skill-graph", "url": "https://github.com/jacob-balslev/skill-graph" }
+  ]
+}
 ```
 
 ---

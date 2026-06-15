@@ -97,7 +97,7 @@ Read these before claiming work:
 9. `/Users/jacobbalslev/Development/skill-graph/skill-audit-loop/AGENT_CONTEXT.yaml`
 10. `/Users/jacobbalslev/Development/skill-graph/skill-audit-loop/WORKFLOW_CONTRACT.md`
 11. `/Users/jacobbalslev/Development/docs/reference/skill-audit-pipeline.md`
-12. `/Users/jacobbalslev/Development/skill-graph/docs/adr/0011-split-audit-verdict-into-four-verdicts.md`
+12. `/Users/jacobbalslev/Development/skill-graph/docs/adr/0011-split-audit-verdict.md`
 13. `/Users/jacobbalslev/Development/skill-graph/docs/adr/0019-audit-state-sidecar-separation.md`
 14. `/Users/jacobbalslev/Development/skill-graph/docs/adr/0021-width-before-verdict-advisory-cross-review-and-mandatory-verification.md`
 15. `/Users/jacobbalslev/Development/skill-graph/docs/adr/0022-representative-generator-frontier-judges.md`
@@ -274,7 +274,7 @@ the release step) are captured in the durable commit that follows:
 
   node scripts/skill/skill-audit-claim.js release <slug> --model "$MODEL" --status completed \
     --structural <STRUCTURAL_VERDICT> --truth <TRUTH_VERDICT> \
-    --comprehension <COMPREHENSION_VERDICT> --application <APPLICATION_VERDICT>
+    --comprehension <COMPREHENSION_VERDICT>
 
 Use behavior verdict values only from actual evaluate receipts. If no evaluator ran for a dimension,
 preserve the prior sidecar value when known, otherwise use UNVERIFIED and explain it in the artifacts.

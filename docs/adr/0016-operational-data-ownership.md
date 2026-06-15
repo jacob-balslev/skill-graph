@@ -100,7 +100,7 @@ Rollback: `git revert <skill-graph-sha>` + `git revert <parent-gitlink-sha>` per
 
 - [ADR-0009](0009-sibling-repo-deprecation.md) — the source-consolidation precedent this extends.
 - [ADR-0015](0015-project-owned-operational-prompts.md) — the spec-consolidation precedent this extends.
-- [ADR-0011](0011-split-audit-verdict-into-four-verdicts.md) — the four-verdict Health Block whose `application_verdict: APPLICABLE` certifies skill behavior; the routing-config schema (surface #4) must enforce field types compatible with the Health Block consumers.
+- [ADR-0011](0011-split-audit-verdict.md) — the Health Block whose `comprehension_verdict` certifies skill behavior; the routing-config schema (surface #4) must enforce field types compatible with the Health Block consumers.
 - `.roundtable/skill-graph-restructure-review-2026-05-25/merged-review.md` § S2 row D2 — the synthesis resolution that motivated surface #4's "project owns type, workspace owns instance" split.
 - `.roundtable/skill-graph-restructure-review-2026-05-25/followup-tasks.md` — the deduplicated catalog this ADR sequences (F07, F08, F32, F33, F34).
 - `.claude/rules/multi-session-commits.md` — `git commit --only` is mandatory for every surface migration.

@@ -163,7 +163,7 @@ SANDBOX + PANEL PREFLIGHT (before ANY paid dispatch; report-and-exit on failure)
    sandboxed wakes proceed on the last good manifest — the staleness warning alone is
    informational, not a stop condition.)
    The written ~/Development/.opencode/progress/SKILL_LIST.md (JSON twin: SKILL_LIST.json) is the
-   canonical skill-state inventory — every skill with its queue position, four verdicts (S·T·C·A),
+   canonical skill-state inventory — every skill with its queue position, three verdicts (S·T·C),
    eval state, and last_audited. Read it; NEVER rebuild a skill inventory ad hoc.
 4. Select the first eligible skill from the canonical worklist:
    - Open BOTH ~/Development/.opencode/progress/SKILL_LIST.json and

@@ -66,7 +66,7 @@ scripts:
     role: "Runs the report-only Integrity Gate audit operation."
     requires: ["skill-audit-loop/SKILL_AUDIT_LOOP.md", "skill-audit-loop/WORKFLOW_CONTRACT.md", "audits/gate-conformance/spec.yaml"]
   - path: lib/audit/evaluate-skill.js
-    role: "Runs comprehension/application evaluation and writes receipt-backed behavior fields."
+    role: "Runs comprehension evaluation and writes receipt-backed behavior fields."
     requires: ["skill-audit-loop/SKILL_AUDIT_LOOP.md", "skill-audit-loop/WORKFLOW_CONTRACT.md", "audits/gate-conformance/spec.yaml"]
   - path: lib/audit/run-skill-audit-loop.js
     role: "Runs the multi-model panel implementation of the Skill Audit Loop."

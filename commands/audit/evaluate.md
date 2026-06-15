@@ -29,7 +29,7 @@ and ceiling outcomes are scoped evidence, not deletion instructions.
 | `eval_failed_ids` | always — list of failed case IDs, empty when clean |
 | `freshness` | always — today's ISO date |
 | `comprehension_verdict` | comprehension mode — gate 8 behavior-gate quality signal |
-| `verify.eval_state` | when the eval-health triple updates (`unverified` → `passing` etc.) |
+| `eval_state` | when the eval-health triple updates (`unverified` → `passing` etc.) |
 
 ## Usage
 
@@ -60,7 +60,7 @@ You rarely call `/evaluate` directly except for ad-hoc A/B comparisons or re-run
 
 ## Comprehension mode
 
-When `evals/comprehension.json` exists, comprehension grading runs against the five flat Understanding fields (`mental_model`, `purpose`, `boundary`, `analogy`, `misconception`) — or against the legacy `concept.*` block for pre-v6 compatibility fixtures.
+When `evals/comprehension.json` exists, comprehension grading runs against the five flat Understanding fields (`mental_model`, `purpose`, `concept_boundary`, `analogy`, `misconception`) — or against the legacy `concept.*` block for pre-v6 compatibility fixtures.
 
 The grader's seven dimensions (definition, mental model, purpose, boundary, taxonomy, analogy, application) produce the `eval_score` directly when this mode is selected.
 

@@ -105,26 +105,13 @@
           },
           "description": "Per-comprehension_verdict distribution. Buckets include SKIPPED_BASELINE_HIGH and NA — these are NOT comprehension-unassessed; they reflect the framework-vs-repo-specific carve-out per ADR-0011 § Addendum 2026-05-20."
         },
-        "by_application_verdict": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "description": "Per-application_verdict distribution. The primary quality signal per ADR-0011. Buckets: APPLICABLE / PROVISIONAL / NOT_DISCRIMINATED_CEILING / EQUIVALENT_ON_FRONTIER / REDUNDANT / HARMFUL / MIXED / FALSE_POSITIVE / UNVERIFIED."
-        },
         "by_audit_state": {
           "type": "object",
           "additionalProperties": {
             "type": "integer",
             "minimum": 0
           },
-          "description": "Cumulative-gate state per ADR-0011 § Addendum 2026-05-27. Exactly one of: not_admitted / admitted_unassessed / assessed_provisional / assessed_graded. Answers the eligibility-vs-assessment-vs-certification question without consumers having to re-derive it from the four raw verdicts."
-        },
-        "harmful_skill_count": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Count of skills where application_verdict == HARMFUL. Surfaced as a top-level convenience so the SkillsBench-19% case (skills that actively make agents worse) does not require grepping by_application_verdict keys."
+          "description": "Cumulative-gate state. Exactly one of: not_admitted / admitted_unassessed / assessed_provisional / assessed_graded. Answers the eligibility-vs-assessment-vs-certification question without consumers having to re-derive it from the raw verdicts."
         }
       }
     },
@@ -1117,7 +1104,7 @@
                   "FAIL",
                   "UNVERIFIED"
                 ],
-                "description": "Form-layer verdict (gates 1-2, 7: lint, manifest census, concept-card shape). Joined from `audit-state.json` into the generated manifest. Replaces the structural slice of v6 `audit_verdict`. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md and docs/adr/0019-audit-state-sidecar-separation.md."
+                "description": "Form-layer verdict (gates 1-2, 7: lint, manifest census, concept-card shape). Joined from `audit-state.json` into the generated manifest. See docs/verdict-semantics.md and docs/adr/0019-audit-state-sidecar-separation.md."
               },
               "truth_verdict": {
                 "type": "string",
@@ -1127,7 +1114,7 @@
                   "BROKEN",
                   "UNVERIFIED"
                 ],
-                "description": "Truth-layer verdict (gates 3-6: drift sentinel, truth-source catalog, test coverage, claim verification). Joined from `audit-state.json` into the generated manifest. Replaces the truth slice of v6 `audit_verdict`."
+                "description": "Truth-layer verdict (gates 3-6: drift sentinel, truth-source catalog, test coverage, claim verification). Joined from `audit-state.json` into the generated manifest."
               },
               "comprehension_verdict": {
                 "type": "string",
@@ -1140,33 +1127,7 @@
                   "SKIPPED_BASELINE_HIGH",
                   "NA"
                 ],
-                "description": "Comprehension-layer verdict (gate 8, demoted in v7). Optional smoke test that the foundation model has the concept. `PROVISIONAL` records a single-model self-assessment; `SKIPPED_BASELINE_HIGH` is the expected verdict for any concept the model already knows. Joined from `audit-state.json` into the generated manifest."
-              },
-              "application_verdict": {
-                "type": "string",
-                "enum": [
-                  "APPLICABLE",
-                  "REDUNDANT",
-                  "NOT_DISCRIMINATED_CEILING",
-                  "EQUIVALENT_ON_FRONTIER",
-                  "HARMFUL",
-                  "MIXED",
-                  "FALSE_POSITIVE",
-                  "UNVERIFIED",
-                  "PROVISIONAL"
-                ],
-                "description": "Application-layer verdict (gate 9). The primary quality signal — a skill is only behaviorally certified when this is `APPLICABLE`. `NOT_DISCRIMINATED_CEILING` means baseline saturation made the eval inconclusive; `EQUIVALENT_ON_FRONTIER` means no marginal lift for the measured generator on that case set; the enum name is retained for existing receipts. `UNVERIFIED` means no application assessment has run; `PROVISIONAL` means one model found useful behavior without grader confirmation. Joined from `audit-state.json` into the generated manifest."
-              },
-              "audit_verdict": {
-                "type": "string",
-                "enum": [
-                  "PASS",
-                  "PASS_WITH_FIXES",
-                  "PARTIAL",
-                  "FAIL",
-                  "UNKNOWN"
-                ],
-                "description": "DEPRECATED in v7. Pre-v7 single aggregate verdict. Retained in the manifest schema for back-compat reads of unmigrated v6 manifests. New consumers should read the four discrete verdicts above. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md."
+                "description": "Comprehension-layer verdict (gate 8) — the behavior-gate quality signal. `PASS` (with-skill answers measurably deeper than baseline; dual-run grader earned), `PROVISIONAL` (single-model self-assessment), `SKIPPED_BASELINE_HIGH` (the expected verdict for any concept the model already knows). Joined from `audit-state.json` into the generated manifest."
               },
               "eval_score": {
                 "type": "number",

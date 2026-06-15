@@ -157,7 +157,7 @@ The router co-loads `verify_with` partners as a one-hop expansion (Stage 4) — 
 
 ### Why this field exists
 
-`broader` exists because cross-skill generalisation was unexpressable before v3.1. `category` captures hierarchy WITHIN a single category tree, not across skill instances. A skill like `react-best-practices` is conceptually a specialisation of `frontend` (a more general standalone skill), but `category` cannot represent that relationship because both skills sit in the engineering category at the same depth.
+`broader` exists because cross-skill generalisation is otherwise unexpressable. The `subject` browse shelf places a skill on one flat shelf; it does not express that one skill is a specialisation of another skill. A skill like `react-best-practices` is conceptually a specialisation of `frontend` (a more general standalone skill), but a shared `subject` cannot represent that relationship because both skills sit on the same shelf at the same depth.
 
 `broader` adds SKOS-style cross-skill generalisation (skos:broader). The router uses it for parent recall: when the specific skill matches, the parent is co-loaded as a generalisation companion. The inverse (`narrower`) is NOT used to drive co-load — a parent match should not pull in arbitrary children.
 

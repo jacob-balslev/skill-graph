@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://skillgraph.dev/schemas/comprehension.schema.json",
   "title": "Skill Comprehension Eval",
-  "description": "Binding shape for skills/<name>/evals/comprehension.json — the gradeable, dimension-tagged comprehension eval consumed by gate 8 (the comprehension grader) and the false-canonicality verifier at skill-graph/scripts/check-audit-manifest.js. v1 authored 2026-05-25 in response to the 2026-05-25 multi-model review surfacing this as the highest-priority canonicalization gap (Opus G2#3 CRITICAL; GPT-5.5 G3#1 PARTIAL). Provenance: ADR-0011 (four-verdict Audit Status) defines comprehension_verdict; this schema defines the artifact the grader evaluates. The rubric dimensions are analogy / application / boundary / definition / mental_model / purpose / taxonomy, with misconception reserved for common wrong-reading cases.",
+  "description": "Binding shape for skills/<name>/evals/comprehension.json — the gradeable, dimension-tagged comprehension eval consumed by gate 8 (the comprehension grader) and the false-canonicality verifier at skill-graph/scripts/check-audit-manifest.js. v1 authored 2026-05-25 in response to the 2026-05-25 multi-model review surfacing this as the highest-priority canonicalization gap (Opus G2#3 CRITICAL; GPT-5.5 G3#1 PARTIAL). Provenance: ADR-0011 (Audit Status verdicts) defines comprehension_verdict; this schema defines the artifact the grader evaluates. The rubric dimensions are analogy / application / boundary / definition / mental_model / purpose / taxonomy, with misconception reserved for common wrong-reading cases.",
   "type": "object",
   "additionalProperties": false,
   "required": ["skill_name", "subject", "evals"],
