@@ -18,8 +18,17 @@
 // anything; it just reads the heartbeat the runner writes. The explicit --review-findings
 // mode still leaves the runner heartbeat untouched, but writes a separate review-state JSON
 // file for human approve/disapprove decisions. Terminal/flag states: COMPLETE
-// (status.complete), STALL (heartbeat `ts` frozen past --stale → runner hung/dead), and SLOW
-// (an active agent's live elapsed exceeds --slow), so a hung run can never look like a live one.
+// (status.complete), STALL (heartbeat `ts` frozen past --stale), DEAD (frozen AND the owned
+// pid is gone — crashed/killed mid-run), and SLOW (an active agent's live elapsed exceeds
+// --slow), so a hung run can never look like a live one.
+//
+// SLOW-vs-DEAD DISAMBIGUATION (the heartbeat + owned-PID liveness hybrid): when the heartbeat
+// freezes past --stale, a ts-only check cannot tell an alive-but-blocked runner (in a long
+// synchronous model dispatch) from a crashed one. So we probe the heartbeat's `pid` with
+// `process.kill(pid, 0)` (the Node `kill -0` — the reliable, process-bound liveness signal, NOT
+// a `ps`/`pgrep` name-scan, per .claude/rules/no-ps-for-liveness.md). Frozen + pid ALIVE ⇒ STALL
+// "blocked, not dead" (recoverable); frozen + pid GONE ⇒ terminal DEAD (exit 4 — re-probed every
+// tick so a hung→dead transition is caught). No new flags: `pid` comes from the heartbeat.
 //
 // --fail-on-stall turns a STALL into a TERMINAL FAILURE: instead of printing STALL and
 // spinning forever (waiting for a heartbeat that will never come), the viewer prints a
@@ -117,6 +126,47 @@ function parseArgs(argv) {
 
 function readJson(file) {
   try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch (_) { return null; }
+}
+
+// ─── Owned-PID liveness probe (the reliable signal — NOT a name-scan) ──────────────
+//
+// The heartbeat carries the producer's `pid` (panel-heartbeat.schema.json: "for liveness
+// checks by the watch wrappers"). We probe THAT specific pid with signal 0 — the Node
+// equivalent of `kill -0 <pid>` — which is true iff that exact process exists and is
+// signalable. This is the liveness signal `.claude/rules/no-ps-for-liveness.md` mandates:
+// never infer liveness from a `ps`/`pgrep` NAME-SCAN (a name-scan false-negatives under
+// sandbox/namespace isolation, so "not found" never means "dead").
+//
+// Returns: true (alive — signalable, OR EPERM = alive but owned by another user/namespace),
+//          false (ESRCH = no such process → dead), null (no probeable pid).
+//
+// PID-reuse caveat (gaborcsardi 2024): across a long wait the OS can recycle a dead pid to a
+// new process, so a confirmed-dead runner could read "alive" again. Here that is benign — the
+// heartbeat `ts` freshness is the trust anchor; the pid probe only DISAMBIGUATES a frozen
+// heartbeat (alive-blocked vs crashed). A false "alive" degrades to the old ts-only STALL
+// behavior, never to a dangerous false-healthy. Start-time fingerprinting would close it but
+// is not worth the cross-platform `ps` parsing for a 45-minute disambiguation window.
+function pidAlive(pid) {
+  if (!Number.isInteger(pid) || pid <= 0) return null;
+  try { process.kill(pid, 0); return true; }
+  catch (e) { return e.code === 'EPERM' ? true : false; }
+}
+
+// Pure liveness classifier: given heartbeat freshness + the owned-PID probe result, decide which
+// state the watcher is in. Distinguishing 'hung' (heartbeat frozen but the runner pid is ALIVE —
+// blocked in a long synchronous model dispatch, will resume) from 'dead' (frozen AND the pid is
+// GONE — crashed/killed without flushing its terminal heartbeat) is the whole point: a ts-only
+// check or a name-scan collapses both into one ambiguous "STALL", which is the slow-vs-dead
+// ambiguity the no-ps-for-liveness rule exists to kill. 'stale' = frozen with no pid to probe
+// (back-compat, ts-only). 'live'/'complete' are the non-frozen states.
+function classifyLiveness({ complete, frozenMs, staleMs, pid, pidAliveResult }) {
+  if (complete) return { state: 'complete' };
+  if (!(frozenMs >= staleMs)) return { state: 'live' };
+  if (Number.isInteger(pid) && pid > 0) {
+    if (pidAliveResult === false) return { state: 'dead', pid };
+    if (pidAliveResult === true) return { state: 'hung', pid };
+  }
+  return { state: 'stale' };
 }
 
 function renderReviewFrame({ absStatus, absFindingsFile, reviewState, selectedIndex, filters, groupBy, sortBy, viewName, reviewFile }) {
@@ -487,18 +537,43 @@ function main(argv) {
     if (structural !== prevStructural) prevStructural = structural;
 
     // Stall: the runner stopped writing heartbeats (ts frozen). A blocking dispatch freezes ts
-    // normally, so only flag past --stale, and only once per episode.
+    // normally, so only flag past --stale. We then probe the OWNED pid (kill -0 via pidAlive) to
+    // distinguish a runner that is ALIVE-but-blocked from one that has CRASHED — a ts-only check
+    // cannot tell them apart, which is the slow-vs-dead ambiguity (no-ps-for-liveness rule).
     if (st.ts !== lastTs) { lastTs = st.ts; lastTsWall = now; staleFlagged = false; }
-    else if (!st.complete && now - lastTsWall >= staleMs && !staleFlagged) {
+    else if (!st.complete && now - lastTsWall >= staleMs) {
       const secs = Math.round((now - lastTsWall) / 1000);
-      process.stdout.write(`STALL: no heartbeat for ${secs}s — runner frozen/dead, check it\n`);
-      staleFlagged = true;
-      if (failOnStall) {
-        // Terminal failure: the run is hung/dead and is NOT coming back. Make it loud and
-        // non-zero so a Monitor/orchestrator stops waiting and acts. Exit 3 distinguishes a
-        // watchdog-detected stall from the runner's own exits (0 keep / 2 revert / 1 error).
-        process.stdout.write(`FAILED: skill-audit-loop stalled — no heartbeat for ${secs}s (exceeded --stale ${Math.round(staleMs / 1000)}s); runner frozen or dead, not coming back\n`);
-        process.exit(3);
+      const live = classifyLiveness({
+        complete: false, frozenMs: now - lastTsWall, staleMs,
+        pid: st.pid, pidAliveResult: pidAlive(st.pid),
+      });
+      // CONFIRMED DEAD is terminal on EVERY tick (not gated by --fail-on-stall, not deduped):
+      // the owned pid is gone and no terminal heartbeat was flushed → crashed/killed mid-run, not
+      // coming back. Re-probing each tick also catches a hung→dead transition. Exit 4 distinguishes
+      // a watchdog-confirmed DEATH from the runner's own exits (0 keep / 2 revert / 1 error) and
+      // from the ts-only watchdog stall (exit 3).
+      if (live.state === 'dead') {
+        process.stdout.write(`DEAD: runner pid ${live.pid} is gone and never flushed a terminal heartbeat (frozen ${secs}s) — crashed or killed mid-run, not coming back\n`);
+        process.stdout.write(`FAILED: skill-audit-loop runner pid ${live.pid} dead (heartbeat frozen ${secs}s, exceeded --stale ${Math.round(staleMs / 1000)}s)\n`);
+        process.exit(4);
+      }
+      if (!staleFlagged) {
+        // 'hung' = pid ALIVE but heartbeat frozen (blocked in a long synchronous dispatch — may
+        // resume); 'stale' = no pid to probe (ts-only, back-compat). Name the pid + aliveness so
+        // the operator knows it is a slow call, not a crash.
+        const note = live.state === 'hung' ? ` (runner pid ${live.pid} ALIVE — blocked in a long dispatch, not dead)` : '';
+        const why = live.state === 'hung'
+          ? 'runner alive but not ticking (likely a long synchronous model dispatch)'
+          : 'runner frozen/dead, check it';
+        process.stdout.write(`STALL: no heartbeat for ${secs}s${note} — ${why}\n`);
+        staleFlagged = true;
+        if (failOnStall) {
+          // Terminal failure: past --stale (45m default > the 30m max single dispatch), so even an
+          // alive-but-blocked runner is genuinely stuck. Make it loud and non-zero so a
+          // Monitor/orchestrator stops waiting and acts. Exit 3 = watchdog stall (cf. exit 4 DEAD).
+          process.stdout.write(`FAILED: skill-audit-loop stalled — no heartbeat for ${secs}s (exceeded --stale ${Math.round(staleMs / 1000)}s)${note}\n`);
+          process.exit(3);
+        }
       }
     }
 
@@ -534,4 +609,4 @@ function main(argv) {
 
 if (require.main === module) main(process.argv.slice(2));
 
-module.exports = { renderCollected };
+module.exports = { renderCollected, classifyLiveness, pidAlive };

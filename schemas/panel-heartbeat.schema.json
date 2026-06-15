@@ -14,7 +14,7 @@
     },
     "pid": {
       "type": "integer",
-      "description": "Process id of the producer, for liveness checks by the watch wrappers."
+      "description": "Process id of the producer. The watch wrappers probe THIS pid with kill -0 (watch-audit-batch.sh) / process.kill(pid,0) (watch-panel.js) to disambiguate a frozen heartbeat: pid alive ⇒ blocked-not-dead (STALL); pid gone ⇒ crashed (DEAD/FAILED). This owned-pid probe is the reliable liveness signal — a ps/pgrep name-scan is never used for liveness (.claude/rules/no-ps-for-liveness.md). Producers SHOULD emit pid so the watchers can tell slow from dead."
     },
     "skill": {
       "type": "string",
