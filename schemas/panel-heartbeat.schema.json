@@ -113,7 +113,7 @@
           },
           "failure_reason": {
             "type": ["string", "null"],
-            "description": "On a failed/skipped agent, the distinct reason: 'timeout' (ran past the dispatch budget — often a free model web-search-looping), 'error' (auth/launch/crash), or 'no-document' (dispatch ok but no usable output). Null otherwise. Lets a buried advisory failure stay visible instead of collapsing to the ✗/– glyph (F4)."
+            "description": "On a failed/skipped agent, the distinct reason: 'timeout' (ran past the dispatch budget — often a free model web-search-looping), 'error' (auth/launch/crash/capacity), 'non-document-output' (dispatch ok and the model emitted SUBSTANTIAL text but not a parseable SKILL.md — a delivery/prompt problem, salvageable by the retry; SKI-350), or 'no-document' (dispatch ok but a negligible/empty reply). Null otherwise. Lets a buried advisory failure stay visible instead of collapsing to the ✗/– glyph (F4)."
           }
         }
       }

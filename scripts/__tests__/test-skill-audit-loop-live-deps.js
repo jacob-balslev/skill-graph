@@ -146,6 +146,21 @@ check('extractSkillDocument unwraps an embedded fenced SKILL.md after a preamble
   const extracted = live.extractSkillDocument(`Here is the file:\n\n\`\`\`markdown\n${doc}\n\`\`\`\n\nDone.`);
   assert.strictEqual(extracted, doc.trim());
 });
+// SKI-350: a prose preamble that contains its OWN `---` horizontal rule(s) must not cause the
+// extractor to anchor on a stray rule — it should find the first `---` whose slice parses as
+// frontmatter with a name (the deepseek-flash 28 KB miss: a real doc behind prose + rules).
+check('extractSkillDocument salvages the real SKILL.md behind a preamble with stray --- rules', () => {
+  const doc = `---\nname: testing-strategy\ndescription: x\n---\n# Testing Strategy\n${'body '.repeat(150)}`;
+  const wrapped = `Sure! Here is my analysis.\n\n---\n\nFirst, some context about the approach.\n\n---\n\n${doc}`;
+  const extracted = live.extractSkillDocument(wrapped);
+  assert.ok(extracted.startsWith('---\nname: testing-strategy'), 'anchored on the parseable frontmatter, not the preamble rule');
+  assert.strictEqual(live.looksLikeSkillDoc(extracted, 'testing-strategy'), true, 'salvaged doc passes the strict write-path gate');
+});
+check('extractSkillDocument salvage does NOT let a prose plan with a stray --- rule masquerade as a doc', () => {
+  // No parseable frontmatter-with-name anywhere → the strict gate still rejects (no weakening).
+  const prose = `Here is my plan.\n\n---\n\nI will analyze, then act. ${'More prose. '.repeat(60)}`;
+  assert.strictEqual(live.looksLikeSkillDoc(live.extractSkillDocument(prose)), false);
+});
 
 console.log('SKI-302. advisory propose retry — one strict retry for no-document output');
 check('advisory propose retries once when stdout is not a document and second attempt is valid', () => {
