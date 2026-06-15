@@ -25,7 +25,7 @@ Each axis below is *named* here and *specified* in [`field-reference.md`](field-
 | `relations` | when it applies | Typed edges to sibling skills — see [Relations, Briefly](#relations-briefly). |
 | `grounding` | when `project[]` is non-empty | `truth_sources`, `grounding_mode`, `failure_modes` — what the skill is checked against. |
 | Understanding fields | when `comprehension_state: present` | `mental_model`, `purpose`, `concept_boundary`, `analogy`, `misconception`. |
-| Audit Status | written by the loop | `structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict` — see [`../docs/verdict-semantics.md`](../docs/verdict-semantics.md). |
+| Audit Status | written by the loop | `structural_verdict`, `truth_verdict`, `comprehension_verdict` — see [`../docs/verdict-semantics.md`](../docs/verdict-semantics.md). |
 
 The binding `required` set and every enum live in [`../schemas/SKILL_METADATA_PROTOCOL_schema.json`](../schemas/SKILL_METADATA_PROTOCOL_schema.json); the live version and corpus counts live in [`../SKILL_GRAPH.md` § Current State](../SKILL_GRAPH.md#current-state--single-source-of-truth) (never restated here, so they cannot go stale).
 

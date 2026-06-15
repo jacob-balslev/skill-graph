@@ -139,13 +139,12 @@ SKILL AUDIT LOOP LIFECYCLE (run the full v2.2 contract, as YOU, one model)
       - structural_verdict: PASS only if skill-lint is clean for this skill.
       - truth_verdict: PASS only with firsthand source evidence for EVERY claim, after the
         drift you found is fixed. Otherwise UNVERIFIED.
-      - comprehension_verdict / application_verdict: stamp ONLY from `evaluate --mode
-        comprehension|application` receipts. A diagnostic audit or your own self-assessment
-        can and should be written into `verdict.md` / `scorecard.md`, but it is NOT a
-        behavior-verdict receipt. If the evaluator did not run for a dimension, keep the
-        existing sidecar value or record UNVERIFIED with evidence that no eval receipt exists.
-        PASS / APPLICABLE require their documented grader receipts; never substitute your
-        own judgment or another model for the evaluator.
+      - comprehension_verdict: stamp ONLY from `evaluate --mode comprehension` receipts. A
+        diagnostic audit or your own self-assessment can and should be written into
+        `verdict.md` / `scorecard.md`, but it is NOT a behavior-verdict receipt. If the
+        evaluator did not run, keep the existing sidecar value or record UNVERIFIED with
+        evidence that no eval receipt exists. PASS requires its documented grader receipt;
+        never substitute your own judgment or another model for the evaluator.
       - drift_status: use only a CANONICAL enum value — OK, DRIFT, BROKEN, STALE,
         NO_BASELINE, EXTERNAL_UNHASHED, UNKNOWN. (e.g. "current" is INVALID and census
         will flag it.) After fixing all drift, OK is correct.
@@ -184,8 +183,8 @@ self-assessment + DOCUMENT
    finding, never a "top issues" subset). Route doc updates per the AGENTS.md Document Routing
    Table. This self-assessment is report evidence: judge whether applying the skill changed
    agent behavior for the better and record that judgment in `verdict.md` / `scorecard.md`.
-   Do not stamp `application_verdict` from self-assessment; behavior sidecar verdicts come
-   from `evaluate --mode`.
+   Do not stamp `comprehension_verdict` from self-assessment; behavior sidecar verdicts come
+   from `evaluate --mode comprehension`.
 
    SOLVE-OR-FILE GATE — for EVERY finding, decide once (per
    `.claude/rules/overhead-proportional-to-work.md`):
@@ -230,7 +229,7 @@ self-assessment + DOCUMENT
         --structural PASS --truth PASS --comprehension <COMPREHENSION_VERDICT> --application <APPLICATION_VERDICT>
    Use behavior verdict values only from actual `evaluate --mode` receipts. If no evaluator ran
    for a dimension, preserve the prior sidecar value when known, otherwise use UNVERIFIED and
-   explain in the artifacts. Never record PASS/APPLICABLE without the required grader receipt.
+   explain in the artifacts. Never record PASS without the required grader receipt.
      node scripts/skill/build-skill-list.js --write
    (If `release` reports "no lock by pid-..." it is because the lock is bound to the claiming
    process's pid. In a single long-running loop process this won't happen; if it does, the
@@ -259,7 +258,7 @@ HARD RULES (every iteration)
 - RULE 0 above is absolute: one model, no spawning others, no merge flow, no second-model grading.
 - Labels are earned, not bumped: never sed/codemod a version label with no content change. A
   label ahead of its content is honest drift to RECORD, not to hide by editing the label.
-- "completed" status ≠ "verified": the quality signal is application_verdict, not the schema
+- "completed" status ≠ "verified": the quality signal is comprehension_verdict, not the schema
   integer. Never report "carries v7" / "284 on v7" as "best/newest/verified" — say which you mean.
 - Privacy: no Sales Hub / Printify / Shopify / personal / bank / customer data in skills/ or evals.
 - One skill per agent at a time (the claim helper enforces it).
@@ -273,7 +272,7 @@ followed setup guidance to read `skill-audit-merge-v1.md` (the multi-model union
 over-applied it — spawning Gemini and Claude to "audit alongside it" for a GPT-only run. It made a
 temporary commit, then had to scrub the Gemini artifact and secondary-model language and re-commit
 GPT-only. Fix: a single-model runner never reads/acts on the merge flow, never passes
-`claim --merge`, and never substitutes another model to grade comprehension/application evals.
+`claim --merge`, and never substitutes another model to grade comprehension evals.
 
 **The PREFLIGHT baseline (incident 2026-05-22, Skill Audit Loop 3.0 automation):** A Codex
 automation run repeatedly hard-stopped at preflight because the step read "baseline must be 0

@@ -549,7 +549,7 @@ truth_verdict: PASS
 - Optional. Defaults to `UNVERIFIED` when absent.
 - Written by the comprehension grader or a documented single-model self-assessment audit; do not hand-author without evidence.
 - The comprehension grader runs on a cheap model (Haiku 4.5 / Gemini Flash) and may exit early when baseline is already high. See ADR 0011 Change 3.
-- This verdict is advisory. It never alone determines a skill's usefulness — that authority lives on `application_verdict`.
+- This verdict is the behavior-gate quality signal (gate 8).
 
 **Example.**
 ```yaml
@@ -558,35 +558,9 @@ comprehension_verdict: SKIPPED_BASELINE_HIGH
 
 ---
 
-## `application_verdict`
+## `application_verdict` — REMOVED (inert legacy field)
 
-**Purpose.** Application-layer verdict produced by gate 9 (the application grader on `evals/application.json`). This is the **primary quality signal** — a skill is only behaviorally certified when this is `APPLICABLE`.
-
-**Allowed values.**
-
-| Value | Meaning |
-|---|---|
-| `APPLICABLE` | Loading the skill changes agent behavior on real artifacts in the expected direction — correct flags, correct fixes, correct generative trajectory |
-| `PROVISIONAL` | Lower-confidence evaluation receipt found useful behavior but the independent application grader has not confirmed it |
-| `NOT_DISCRIMINATED_CEILING` | Baseline saturated on the real cases, so the eval had no measurement headroom; inconclusive, not a deprecation signal |
-| `EQUIVALENT_ON_FRONTIER` | Baseline had measurement headroom but the skill produced no marginal lift for the measured frontier model on this case set |
-| `REDUNDANT` | Legacy no-delta bucket retained for old receipts; new runner output should prefer the two scoped no-lift values above |
-| `HARMFUL` | Negative delta — the agent makes worse decisions with the skill loaded. SkillsBench (arXiv 2602.12670) found 19% of evaluated skills exhibit this. Active skills with this verdict must be removed from the corpus or replaced by a newly evaluated non-HARMFUL version. |
-| `MIXED` | Verdict varies across cases — some applicable, some redundant or false-positive |
-| `FALSE_POSITIVE` | The skill over-triggers — applies on cases where its expertise does not apply |
-| `UNVERIFIED` | No application audit has run on this skill yet |
-
-**Rules.**
-- Optional. Defaults to `UNVERIFIED` when absent.
-- Written by the application grader (`scripts/skill/evaluate-skill.js --application` → ported to `skill-graph/lib/audit/evaluate-skill.js` per ADR 0011); do not hand-author.
-- Cases authored in `evals/application.json` must come from external anchors (real PR diffs, real agent failures, real audit findings) — never auto-generated from the skill body. Per the SYNTHESIS roundtable (2026-05-19), auto-generation creates a closed-loop synthetic-eval lie.
-- `application_verdict == APPLICABLE` is the **only** verdict that certifies a skill is useful. The other three verdicts (`structural`, `truth`, `comprehension`) are necessary infrastructure but not sufficient.
-- `application_verdict == HARMFUL` is an active-corpus violation, not a warning. Remove the skill from the active library, or replace it with a fixed skill that earns a fresh non-HARMFUL application verdict.
-
-**Example.**
-```yaml
-application_verdict: APPLICABLE
-```
+The application (behavior-change / APPLICABLE) verdict was **removed entirely on 2026-06-15** (see CHANGELOG). It produced 0 APPLICABLE corpus-wide and falsely stamped HARMFUL/REDUNDANT/MIXED on good skills (the test was not discriminating). The field remains DEFINED-but-inert in `schemas/skill-audit-state.schema.json` only so existing `audit-state.json` sidecars validate; it is no longer produced, read, or gated. `comprehension_verdict` is now the behavior-gate quality signal. Recover the prior field semantics from git history if needed.
 
 ---
 

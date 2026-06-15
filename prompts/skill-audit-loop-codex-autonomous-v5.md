@@ -247,7 +247,6 @@ Earn verdicts from evidence:
 - `structural_verdict`: PASS only when focused skill lint is clean.
 - `truth_verdict`: PASS only when repo/source truth claims are verified and fixed.
 - `comprehension_verdict`: stamp only from `evaluate --mode comprehension` receipts.
-- `application_verdict`: stamp only from `evaluate --mode application` receipts.
 - Self-assessment belongs in `verdict.md` / `scorecard.md`; it is not a sidecar behavior-verdict receipt.
 - Use negative enums when warranted by evaluator receipts: SHALLOW, REDUNDANT, HARMFUL, MIXED.
 

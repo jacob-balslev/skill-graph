@@ -140,10 +140,9 @@ Per-skill loop:
    - `structural_verdict`: PASS only when focused skill lint is clean.
    - `truth_verdict`: PASS only when source-truth claims are verified and drift is fixed.
    - `comprehension_verdict`: stamp only from `evaluate --mode comprehension` receipts.
-   - `application_verdict`: stamp only from `evaluate --mode application` receipts.
    - Self-assessment belongs in `verdict.md` / `scorecard.md`; it is not a sidecar behavior-verdict receipt.
-   - Use negative enums when warranted by evaluator receipts. Do not claim PASS/APPLICABLE without a real grader receipt.
-   - (NEW in v4) If a real concern about the skill does not map to any of the four verdicts,
+   - Use negative enums when warranted by evaluator receipts. Do not claim PASS without a real grader receipt.
+   - (NEW in v4) If a real concern about the skill does not map to any of the three verdicts,
      record it in novelty-memo.md with `format_loss: true`. This is the signal that the verdict
      schema is missing a dimension. Do NOT distort an existing verdict to capture an off-rubric
      concern (the 2026-05-19 runner-drift finding would have been mis-categorized as DRIFT under

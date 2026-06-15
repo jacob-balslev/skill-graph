@@ -54,7 +54,7 @@ This document is the top-level public contract for the two-file Skill Metadata P
 6. **The canonical library is authored as flat `SKILL.md` frontmatter plus `audit-state.json`;** the Agent-Skills-compatible nested `metadata:` shape is generated for public export, not hand-authored.
 7. **`relations.suppresses: [X]` means "exclude X from co-routing when this skill wins."** Write the reason as ownership ("I own this exclusively over X"), never as deference ("use X instead").
 8. **Version labels are earned by content, never bumped for convenience.** Advancing `schema_version` (or any `vN`) without doing the migration that version represents is fake conformance.
-9. **Audit Status fields are owned by the audit and evaluation tooling.** Never hand-stamp `application_verdict: APPLICABLE` (or any proof field) without an eval receipt.
+9. **Audit Status fields are owned by the audit and evaluation tooling.** Never hand-stamp `comprehension_verdict: PASS` (or any proof field) without an eval receipt.
 10. **Public exports must not leak repo-private paths, project secrets, PII, or internal-only doctrine.**
 
 ### Goal
@@ -510,13 +510,7 @@ Flat sidecar fields record a skill's audit fingerprint in sibling `audit-state.j
 **`comprehension_verdict`**
 - Comprehension-layer verdict (gate 8 — a cheap smoke test).
 - Enum: `PASS` | `PROVISIONAL` | `SHALLOW` | `REDUNDANT` | `UNVERIFIED` | `SKIPPED_BASELINE_HIGH` | `NA`.
-- Written by the comprehension grader. Never alone certifies a skill — `application_verdict` is the aggregate-quality field.
-
-**`application_verdict`** — **the primary quality signal**
-- Application-layer verdict (gate 9: behavioral change on real artifacts).
-- Enum: `APPLICABLE` | `PROVISIONAL` | `NOT_DISCRIMINATED_CEILING` | `EQUIVALENT_ON_FRONTIER` | `REDUNDANT` | `HARMFUL` | `MIXED` | `FALSE_POSITIVE` | `UNVERIFIED`.
-- Written by the application grader on `evals/application.json`. A skill is only behaviorally certified when this is `APPLICABLE`.
-- `PROVISIONAL` records a lower-confidence evaluation receipt that found useful behavior but has not passed the independent application grader. `NOT_DISCRIMINATED_CEILING` means baseline saturation made the eval inconclusive; `EQUIVALENT_ON_FRONTIER` means no marginal lift for the measured frontier model on that case set. Default `UNVERIFIED` means no application assessment has run.
+- Written by the comprehension grader — **the behavior-gate quality signal**. `PASS` is earned only from the independent dual-run grader; `PROVISIONAL` is a single-model result; `UNVERIFIED` means no assessment has run. (The fourth `application_verdict` was removed 2026-06-15 — see CHANGELOG.)
 
 **`eval_score`**
 - Latest aggregate eval grade on a 0.0–5.0 scale.
@@ -740,7 +734,7 @@ eval, comprehension_state, lifecycle, marketplace_tier, portability,
 runtime_telemetry, model_run_coverage,
 # Audit Status stamped by `audit` / `improve` / `evaluate`
 last_audited, last_changed, structural_verdict, truth_verdict,
-comprehension_verdict, application_verdict, eval_score, eval_failed_ids,
+comprehension_verdict, eval_score, eval_failed_ids,
 lint_verdict, drift_status
 ```
 

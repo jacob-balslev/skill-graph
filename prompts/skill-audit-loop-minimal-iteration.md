@@ -110,9 +110,7 @@ any other model. The multi-model merge flow is separate and not for this prompt.
    - truth_verdict: PASS only when source-truth claims are verified and drift is fixed
    - comprehension_verdict: stamp only from `evaluate --mode comprehension` receipts. Put
      self-assessment in the report; do not use it as a sidecar behavior verdict.
-   - application_verdict: stamp only from `evaluate --mode application` receipts. Never
-     APPLICABLE without the required grader receipt.
-   - Use negative enums when warranted (SHALLOW, REDUNDANT, HARMFUL, MIXED).
+   - Use negative enums when warranted (SHALLOW, REDUNDANT).
 
 10. Verify:
     - node scripts/skill/skill-lint.js --skill <slug>          # 0 errors / 0 warnings

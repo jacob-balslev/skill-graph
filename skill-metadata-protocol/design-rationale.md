@@ -233,7 +233,7 @@ The current contract is two-file: `SKILL.md` carries agent-facing routing and te
 | **Identity & ownership** | `schema_version`, `version`, `owner`, `urn`, `repo` |
 | **Health & drift** | `freshness`, `drift_check`, `lifecycle`, `runtime_telemetry`, `model_run_coverage` |
 | **Evaluation Status** | `eval_artifacts`, `eval_state`, `routing_eval`, `eval_last_run`, `eval`, `comprehension_state` |
-| **Audit Status** | `last_audited`, `last_changed`, `structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status` |
+| **Audit Status** | `last_audited`, `last_changed`, `structural_verdict`, `truth_verdict`, `comprehension_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status` |
 | **Publication support** | `marketplace_tier`, `portability`, `skill_graph_protocol` |
 
 **Conditional requiredness in one line:** `grounding` when `project[]` is non-empty, `superseded_by` when `stability: deprecated`, Understanding fields when `comprehension_state: present`, and `eval_artifacts: present` when `eval_state` is `passing` or `monitored`. The schemas and `skill-lint.js` split those checks by file ownership. `keywords` are recommended for routable skills and reviewed by routing review / routing evals, but they are not a required-field rule. For the decision tables that help you set `public: true` / `public: false` and decide project anchoring, see [`skill-metadata-protocol/field-decision-guide.md`](field-decision-guide.md).
