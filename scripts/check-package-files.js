@@ -10,7 +10,6 @@ const REQUIRED_PATHS = [
   'skill-audit-loop/SKILL_AUDIT_LOOP.md',
   'audits/gate-conformance/README.md',
   'audits/gate-conformance/spec.yaml',
-  'audits/gate-conformance/fixtures/application-workspace/.skill-graph/config.json',
   'audits/gate-conformance/fixtures/audit-workspaces/empty/.gitkeep',
   'audits/workflow-conformance/README.md',
   'audits/workflow-conformance/spec.yaml',
