@@ -558,9 +558,9 @@ comprehension_verdict: SKIPPED_BASELINE_HIGH
 
 ---
 
-## `application_verdict` — REMOVED (inert legacy field)
+## `application_verdict`
 
-The application (behavior-change / APPLICABLE) verdict was **removed entirely on 2026-06-15** (see CHANGELOG). It produced 0 APPLICABLE corpus-wide and falsely stamped HARMFUL/REDUNDANT/MIXED on good skills (the test was not discriminating). The field remains DEFINED-but-inert in `schemas/skill-audit-state.schema.json` only so existing `audit-state.json` sidecars validate; it is no longer produced, read, or gated. `comprehension_verdict` is now the behavior-gate quality signal. Recover the prior field semantics from git history if needed.
+**REMOVED — inert legacy field.** The application (behavior-change / APPLICABLE) verdict was **removed entirely on 2026-06-15** (see CHANGELOG). It produced 0 APPLICABLE corpus-wide and falsely stamped HARMFUL/REDUNDANT/MIXED on good skills (the test was not discriminating). The field remains DEFINED-but-inert in `schemas/skill-audit-state.schema.json` only so existing `audit-state.json` sidecars validate; it is no longer produced, read, or gated. `comprehension_verdict` is now the behavior-gate quality signal. Recover the prior field semantics from git history if needed.
 
 ---
 
