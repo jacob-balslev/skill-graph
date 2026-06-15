@@ -32,6 +32,8 @@ quality-assurance 25 · design 22 · reasoning-strategy 21 · frontend-engineeri
 
 All shelves sit inside the 5–25 balance rule except `product-domain` (3) — see the floor-exception below.
 
+> **Amendment (2026-06-15T00:00Z) — the 5–25 hard cap is REMOVED; shelf-size is now advisory.** Per user directive ("remove the hard caps on amount of skills in a category"), there is **no maximum** number of skills per subject and no hard minimum. A shelf may hold as many skills as it has genuine, distinct content for; subdivide a large shelf via `taxonomy_domain` only when routing precision actually degrades (near-duplicate descriptions begin trading activations), never at a fixed count. A small shelf remains acceptable when its members are genuine content with a growth path (the `product-domain` floor-exception reasoning below stands as an example of *why* small shelves are kept, not as a floor that must be cleared). This relaxes — but does not delete — the original rationale: the AgentSkillOS finding that flat shelves degrade routing at scale is still the reason `taxonomy_domain` subdivision exists; it is now a quality signal, not a numeric ceiling. The "post-migration counts" and "5–25 balance rule" prose in this ADR is preserved as the dated as-of-2026-06-03 record. Canonical live doctrine: `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § subject` + `schemas/SKILL_METADATA_PROTOCOL_schema.json`. SYSTEM change; no `schema_version` bump (description-only).
+
 ### `product-domain` floor-exception (3) — why this is NOT a repeat of the `data-analytics` phantom
 
 `product-domain` holds `etsy`, `shopify`, `printify` (each `[product-domain, backend-engineering]` polyhierarchy). It is below the 5-skill floor but is **kept**, on a distinction the phantom failed:

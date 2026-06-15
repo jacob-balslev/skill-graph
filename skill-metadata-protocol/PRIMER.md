@@ -138,7 +138,7 @@ flowchart TB
 
 **Fields.** `subject` (the top-level shelf, a required closed 12-enum), `taxonomy_domain` (the slash-delimited nested path, optional).
 
-**What it answers.** *What kind of concern is this?* The tree carries meaning through nesting: `backend-engineering/persistence/connection-pooling` says connection-pooling *is a kind of* persistence *is a kind of* backend-engineering concern. `subject` is always required; add `taxonomy_domain` only when a single `subject` holds enough skills (past ~25) that a sub-path helps navigation. A skill occupies exactly one taxonomic position — this is the difference between taxonomy and the multi-membership tag axes (see section 4).
+**What it answers.** *What kind of concern is this?* The tree carries meaning through nesting: `backend-engineering/persistence/connection-pooling` says connection-pooling *is a kind of* persistence *is a kind of* backend-engineering concern. `subject` is always required; add `taxonomy_domain` only when a single `subject` holds enough skills that a sub-path helps navigation (an advisory signal, not a hard count — there is no maximum shelf size). A skill occupies exactly one taxonomic position — this is the difference between taxonomy and the multi-membership tag axes (see section 4).
 
 **What you do with this:** Pick `subject` to file the skill on one of the twelve top-level shelves (`backend-engineering`, `quality-assurance`, `frontend-engineering`, etc.). Add `taxonomy_domain` only when a subject grows large enough that a tree helps readers navigate.
 

@@ -176,7 +176,7 @@ version: 1.0.0
 **Rules.**
 - **Required.** Every skill must declare a `subject`.
 - **Closed 12-value enum** (the competency the skill teaches), in 3 bands: `backend-engineering` \| `frontend-engineering` \| `software-architecture` \| `data-engineering` \| `agent-ops` \| `ai-engineering` \| `quality-assurance` \| `design` \| `reasoning-strategy` \| `software-engineering-method` \| `knowledge-organization` \| `product-domain`.
-- **Balance rule:** each subject must hold 5–25 skills. <5 = fold or recruit; >25 = subdivide via `taxonomy_domain` slash-path.
+- **Shelf-size guidance (advisory, no hard cap — relaxed 2026-06-15):** there is no maximum number of skills per subject; a shelf may hold as many skills as it has genuine, distinct content for. Subdivide a large shelf via `taxonomy_domain` only when routing precision actually degrades (near-duplicate descriptions begin trading activations), never at a fixed count. A small shelf is acceptable when its members are genuine content with a growth path.
 - For polyhierarchy (skills that legitimately span two subjects), use `subjects[]` array (primary first, optional secondary).
 
 **Example.**
@@ -243,7 +243,7 @@ subjects: [backend-engineering, product-domain]
 taxonomy_domain: ecommerce/integrations/shopify
 ```
 
-**When to use.** When a `subject` holds many skills (>25 per the balance rule) and a slash-delimited subdivision helps readers find related skills.
+**When to use.** When a `subject` holds enough skills that a slash-delimited subdivision helps readers find related skills or routing precision begins to degrade — an advisory signal, not a hard count (the 5–25 cap was removed 2026-06-15).
 
 **When NOT to use.** Small subjects where the flat shelf is sufficient. Skills where categorization is genuinely ambiguous should use `subjects[]` (a second browse shelf, max 2) or `relations.related` instead.
 

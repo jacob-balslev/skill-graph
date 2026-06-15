@@ -43,7 +43,7 @@ A short description of what the skill is about. Activation, trigger, and exclusi
 
 **Type:** string
 
-Hierarchical taxonomy sub-path using slash-delimited segments (e.g., `ecommerce/integrations/shopify`). Complements `subject`: the flat browse shelf (`subject`) and the slash-delimited taxonomy tree answer different questions. Use `taxonomy_domain` to subdivide a subject that holds many skills (the >25 rule per `subject`'s balance constraint). Renamed from `domain` to disambiguate from `grounding.subject_matter` (the grounding-block free-text label) and from cross-taxonomy routing doctrine prose. See the ADR-0017 amendment of 2026-05-27.
+Hierarchical taxonomy sub-path using slash-delimited segments (e.g., `ecommerce/integrations/shopify`). Complements `subject`: the flat browse shelf (`subject`) and the slash-delimited taxonomy tree answer different questions. Use `taxonomy_domain` to subdivide a subject once it holds enough skills that a sub-path aids navigation or routing precision begins to degrade (an advisory signal, not a hard count — see `subject`; the 5-25 hard cap was removed 2026-06-15). Renamed from `domain` to disambiguate from `grounding.subject_matter` (the grounding-block free-text label) and from cross-taxonomy routing doctrine prose. See the ADR-0017 amendment of 2026-05-27.
 
 **Pattern:** `^[a-z0-9][a-z0-9-]*(/[a-z0-9][a-z0-9-]*)*$`
 
@@ -55,7 +55,7 @@ Hierarchical taxonomy sub-path using slash-delimited segments (e.g., `ecommerce/
 
 **Type:** `backend-engineering` | `frontend-engineering` | `software-architecture` | `data-engineering` | `agent-ops` | `ai-engineering` | `quality-assurance` | `design` | `reasoning-strategy` | `software-engineering-method` | `knowledge-organization` | `product-domain`
 
-Primary classification — the competency the skill teaches ("what does this teach you to do?"). Closed 12-value enum in 3 navigational bands: software & web engineering (backend-engineering, frontend-engineering, software-architecture, data-engineering); AI-agentic (agent-ops, ai-engineering); cross-cutting craft (quality-assurance, design, reasoning-strategy, software-engineering-method, knowledge-organization, product-domain). Balance rule: each subject must hold 5-25 skills. <5 = fold or recruit; >25 = subdivide via `taxonomy_domain` slash-path. See docs/adr/0020-twelve-shelf-competency-reaxis.md for the current shelf rationale.
+Primary classification — the competency the skill teaches ("what does this teach you to do?"). Closed 12-value enum in 3 navigational bands: software & web engineering (backend-engineering, frontend-engineering, software-architecture, data-engineering); AI-agentic (agent-ops, ai-engineering); cross-cutting craft (quality-assurance, design, reasoning-strategy, software-engineering-method, knowledge-organization, product-domain). Shelf-size guidance (advisory, no hard cap — relaxed 2026-06-15): there is no maximum number of skills per subject; a shelf may hold as many skills as it has genuine, distinct content for. Subdivide a large shelf via `taxonomy_domain` only when routing precision actually degrades (near-duplicate descriptions begin trading activations), never at a fixed count. A small shelf is fine when its members are genuine content with a growth path. See docs/adr/0020-twelve-shelf-competency-reaxis.md for the current shelf rationale and the 2026-06-15 cap-removal amendment.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#subject`](field-reference.md#subject)
 

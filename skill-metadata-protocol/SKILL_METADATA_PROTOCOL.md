@@ -314,7 +314,7 @@ Skills are classified on three required authored facets — `subject` (what is t
 
 #### `subject` (12 closed values)
 
-The primary browse shelf and routing seed — the competency the skill teaches ("what does this teach you to do?"). Closed 12-value enum in 3 navigational bands (see [ADR-0020](../docs/adr/0020-twelve-shelf-competency-reaxis.md)). Balance rule: each subject holds 5–25 skills; <5 = fold or recruit, >25 = subdivide via `taxonomy_domain`.
+The primary browse shelf and routing seed — the competency the skill teaches ("what does this teach you to do?"). Closed 12-value enum in 3 navigational bands (see [ADR-0020](../docs/adr/0020-twelve-shelf-competency-reaxis.md)). Shelf-size guidance (advisory, no hard cap — relaxed 2026-06-15): there is **no maximum** number of skills per subject. Subdivide a large shelf via `taxonomy_domain` only when routing precision actually degrades, never at a fixed count; a small shelf is fine when its members are genuine content with a growth path.
 
 | Value | Teaches | Does NOT hold |
 |---|---|---|
