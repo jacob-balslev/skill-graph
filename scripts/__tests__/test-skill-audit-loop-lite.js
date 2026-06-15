@@ -149,12 +149,12 @@ function makeDeps(overrides = {}) {
     prepareCandidateEval: ({ skillDir }) => { calls.prepared += 1; return { evalSkillDir: `${skillDir}/.candidate`, cleanup: () => { calls.cleaned += 1; } }; },
     // SH-6686: apply only on KEEP — records the call and returns the canonical path.
     applyMerge: ({ skillDir }) => { calls.applied += 1; return { applied: `${skillDir}/SKILL.md` }; },
-    // runEvalDirection echoes the profile so parity holds; both directions APPLICABLE.
+    // runEvalDirection echoes the profile so parity holds; both directions PASS (comprehension).
     runEvalDirection: ({ direction, generatorModel, graderModel, executionProfile, skillDir }) => {
       calls.evalDirs.push(skillDir);
       return {
         direction, generator_model: generatorModel, grader_model: graderModel,
-        verdict: 'APPLICABLE', certification_tier: 'certifying',
+        verdict: 'PASS', certification_tier: 'certifying',
         calibrated: true, red_herring_cases_total: 1,
         execution_profile: executionProfile,
       };
@@ -171,7 +171,7 @@ check('runs both frontier models, curates, evals the CANDIDATE copy, keeps + app
   assert.deepStrictEqual(deps._calls.releases, ['opus:completed', 'gpt-5.5:completed']);
   assert.strictEqual(deps._calls.curated, 1);
   assert.strictEqual(r.merge.anti_loss.ok, true);
-  assert.strictEqual(r.eval.synthesized_verdict, 'APPLICABLE');
+  assert.strictEqual(r.eval.synthesized_verdict, 'PASS');
   assert.strictEqual(r.eval.merge_ledger_ref, 'merge-ledger.json');
   assert.strictEqual(r.keep_or_revert.action, 'keep');
   // SH-6686: the eval ran against the CANDIDATE temp dir, not the canonical skillDir.
@@ -191,18 +191,17 @@ check('anti-loss violation in the merge throws (no silent lossy merge)', () => {
   assert.throws(() => audit.runSkillAuditLoopLite({ skill: 's', skillDir: '/x/s', cwd: '/x', deps }), /anti-loss/);
 });
 
-check('genuine regression (HARMFUL eval) => revert: does NOT apply to canonical (SH-6686)', () => {
+check('genuine regression (verdict measurably worse than prior) => revert: does NOT apply to canonical (SH-6686)', () => {
   const deps = makeDeps({
     runEvalDirection: ({ direction, executionProfile }) => ({
       direction,
-      verdict: 'HARMFUL',
+      verdict: 'SHALLOW',
       certification_tier: 'certifying',
-      calibrated: true,
-      red_herring_cases_total: 1,
       execution_profile: executionProfile,
     }),
   });
-  const r = audit.runSkillAuditLoopLite({ skill: 's', skillDir: '/x/s', cwd: '/x', deps });
+  // Prior was PASS; the curated body now grades SHALLOW — measurably worse, so revert.
+  const r = audit.runSkillAuditLoopLite({ skill: 's', skillDir: '/x/s', cwd: '/x', priorVerdict: 'PASS', deps });
   assert.strictEqual(r.keep_or_revert.action, 'revert');
   // The canonical skill is mutated ONLY on keep — a revert never applies (no git-revert-HEAD).
   assert.strictEqual(deps._calls.applied, 0);
@@ -220,22 +219,22 @@ check('eval guardrail skipped when no direction runner injected (audit-only) => 
 });
 
 check('eval artifact MISSING (deps.evalArtifactExists=false) => guardrail skipped => keep + apply, eval null', () => {
-  // Pilot best-practice 2026-06-05: 31/33 skills have no evals/application.json. The
-  // guardrail must SKIP (absence of an eval is not a regression) instead of crashing
-  // deep in runApplicationEval. A runner is injected, but the artifact predicate is false.
+  // Many skills have no evals/comprehension.json. The guardrail must SKIP (absence of
+  // an eval is not a regression) instead of crashing deep in the eval runner. A runner
+  // is injected, but the artifact predicate is false.
   const deps = makeDeps({ evalArtifactExists: () => false });
   const r = audit.runSkillAuditLoopLite({ skill: 's', skillDir: '/x/s', cwd: '/x', deps });
   assert.strictEqual(r.eval, null, 'eval skipped when artifact absent');
   assert.strictEqual(deps._calls.evalDirs.length, 0, 'the direction runner was never invoked');
   assert.strictEqual(r.keep_or_revert.action, 'keep');
-  assert.match(r.keep_or_revert.reason, /no evals\/application\.json/);
+  assert.match(r.keep_or_revert.reason, /no evals\/comprehension\.json/);
   assert.strictEqual(r.applied, true, 'keep => apply even when the eval was skipped for a missing artifact');
 });
 
 check('eval artifact PRESENT (deps.evalArtifactExists=true) => guardrail runs as before', () => {
   const deps = makeDeps({ evalArtifactExists: () => true });
   const r = audit.runSkillAuditLoopLite({ skill: 's', skillDir: '/x/s', cwd: '/x', deps });
-  assert.strictEqual(r.eval.synthesized_verdict, 'APPLICABLE');
+  assert.strictEqual(r.eval.synthesized_verdict, 'PASS');
   assert.strictEqual(deps._calls.evalDirs.length, 2, 'both directions ran');
 });
 

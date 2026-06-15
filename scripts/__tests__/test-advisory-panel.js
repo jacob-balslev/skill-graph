@@ -44,7 +44,7 @@ function fakeRunDirection({ direction, generatorModel, graderModel }) {
     // resolved_model is the GRADER's resolved id (the grader is the certifying judge) — it
     // must share the grader's family, else A7's family-consistency guard correctly caps.
     resolved_model: graderModel,
-    verdict: advisory && generatorModel === 'minimax' ? 'REDUNDANT' : 'APPLICABLE',
+    verdict: advisory && generatorModel === 'minimax' ? 'REDUNDANT' : 'PASS',
     certification_tier: 'certifying',
     calibrated: true,
     red_herring_cases_total: 1,
@@ -83,7 +83,7 @@ ok('minimax -> MiniMax M3', resolveDisplayName('minimax') === 'MiniMax M3');
 ok('big-pickle descriptor display remains available', resolveDisplayName('big-pickle') === 'Big Pickle');
 
 // 4. runAdvisoryPanel: every advisory model measured, graded by a CORE frontier.
-const panel = runAdvisoryPanel({ mode: 'application', deps: { runDirection: fakeRunDirection } });
+const panel = runAdvisoryPanel({ mode: 'comprehension', deps: { runDirection: fakeRunDirection } });
 ok('panel runs every advisory model', panel.length === ADVISORY_MODELS.length);
 ok('panel grader is a core frontier (top-tier)', panel.every((e) => e.grader === resolveDisplayName(FRONTIER_PAIR[0])));
 ok('panel entries carry display names', panel.every((e) => typeof e.display === 'string' && !e.display.includes('-')));
@@ -91,12 +91,12 @@ ok('panel tier is advisory', panel.every((e) => e.tier === 'advisory'));
 ok('no panel errors with injected runner', !panel.some((e) => e.error));
 
 // 5. Advisory NEVER changes the certifying verdict (the whole point).
-const withAdvisory = runBidirectionalEval({ mode: 'application', skill: 'demo', cwd: '.', advisory: true, deps: { runDirection: fakeRunDirection } });
-const withoutAdvisory = runBidirectionalEval({ mode: 'application', skill: 'demo', cwd: '.', advisory: false, deps: { runDirection: fakeRunDirection } });
+const withAdvisory = runBidirectionalEval({ mode: 'comprehension', skill: 'demo', cwd: '.', advisory: true, deps: { runDirection: fakeRunDirection } });
+const withoutAdvisory = runBidirectionalEval({ mode: 'comprehension', skill: 'demo', cwd: '.', advisory: false, deps: { runDirection: fakeRunDirection } });
 ok('advisory_panel attached when opted in', Array.isArray(withAdvisory.advisory_panel) && withAdvisory.advisory_panel.length === ADVISORY_MODELS.length);
 ok('advisory_panel null when not opted in', withoutAdvisory.advisory_panel === null);
 ok('synthesized_verdict identical with/without advisory', withAdvisory.synthesized_verdict === withoutAdvisory.synthesized_verdict);
-ok('verdict comes from the core (APPLICABLE), not advisory dissent', withAdvisory.synthesized_verdict === 'APPLICABLE');
+ok('verdict comes from the core (PASS), not advisory dissent', withAdvisory.synthesized_verdict === 'PASS');
 
 // 6. Live/default advisory execution fans out to workers instead of running the
 // free/advisory models one after another.
@@ -117,7 +117,7 @@ module.exports.runDirection = function runDirection({ direction, generatorModel,
     generator_family: generatorModel,
     grader_family: graderModel,
     resolved_model: graderModel,
-    verdict: 'APPLICABLE',
+    verdict: 'PASS',
     certification_tier: 'certifying',
     calibrated: true,
     red_herring_cases_total: 1,
@@ -130,7 +130,7 @@ process.env.ADVISORY_PANEL_TEST_STARTS = startsFile;
 try {
   const startedAt = Date.now();
   const workerPanel = runAdvisoryPanel({
-    mode: 'application',
+    mode: 'comprehension',
     deps: { runDirectionModule: workerModule, workerTimeoutMs: 10000 },
   });
   const elapsedMs = Date.now() - startedAt;

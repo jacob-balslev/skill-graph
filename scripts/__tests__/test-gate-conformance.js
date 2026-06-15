@@ -10,8 +10,7 @@
  * named EXISTING gate script against the scenario's fixture, asserting the exit
  * code and output. This runner adds NO gate logic of its own — it orchestrates
  * the gate scripts the scenarios reference (currently `skill-lint.js` for the
- * structural gate, `skill-graph-drift.js` for the truth gate,
- * `check-application-evals.js` for application-eval structure, and
+ * structural gate, `skill-graph-drift.js` for the truth gate, and
  * `check-audit-manifest.js` for verdict/artifact honesty; see the WHEN map
  * below). Negative fixtures live under
  * `audits/gate-conformance/fixtures/invalid/<rule>/` or hermetic fixture
@@ -56,17 +55,6 @@ const WHEN = {
   // Truth Gate — drift sentinel; takes the fixture's SKILL.md positionally and
   // exits non-zero on DRIFT or BROKEN.
   'drift': (givenAbs) => ['scripts/skill-graph-drift.js', path.join(givenAbs, 'SKILL.md')],
-  // Application-eval structural gate — hermetic fixture workspace with its own
-  // .skill-graph/config.json, so the check does not scan the live corpus.
-  'application-evals': (givenAbs, scenario) => ({
-    argv: [
-      'scripts/check-application-evals.js',
-      '--skill',
-      scenario.skill || 'demo-skill',
-      '--check',
-    ],
-    env: { SKILL_GRAPH_WORKSPACE: givenAbs },
-  }),
   // Verdict/artifact honesty gate — hermetic fixture workspace for per-run
   // verdicts and skill sidecars; the script still validates the real SYSTEM
   // manifest paths from this repo.

@@ -39,8 +39,6 @@ ok('injects Codex backend, tools-on, single-model, and GPT-5.5 env vars', () => 
   for (const key of [
     'COMPREHENSION_GRADER_MODEL',
     'COMPREHENSION_GENERATOR_MODEL',
-    'APPLICATION_GRADER_MODEL',
-    'APPLICATION_GENERATOR_MODEL',
   ]) {
     assert.strictEqual(inv.env[key], 'gpt-5.5');
   }
@@ -68,7 +66,7 @@ ok('rejects a conflicting grader backend', () => {
 
 ok('rejects certifying mode because same-family GPT evidence is provisional', () => {
   assert.throws(
-    () => runner.buildCodexGpt55Invocation(['--certifying', 'evals/application.json']),
+    () => runner.buildCodexGpt55Invocation(['--certifying', 'evals/comprehension.json']),
     /single-family evidence/,
   );
 });

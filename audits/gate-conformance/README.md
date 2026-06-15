@@ -32,11 +32,9 @@ spec cannot silently drift from the implementation.
   assertion is unambiguous. These live here (not under `examples/fixture-skills/`)
   **deliberately**: they are outside every corpus lint/manifest/eval sweep, so a
   negative fixture can never redden `npm run verify`.
-- **[`fixtures/application-workspace/`](fixtures/application-workspace)** and
-  **[`fixtures/audit-workspaces/`](fixtures/audit-workspaces)** — hermetic
-  mini-workspaces for gates that read `skill_roots`, audit runs, or a workspace
-  root rather than one `SKILL.md` path. They are fixture workspaces, not corpus
-  content.
+- **[`fixtures/audit-workspaces/`](fixtures/audit-workspaces)** — hermetic
+  mini-workspaces for gates that read audit runs or a workspace root rather than
+  one `SKILL.md` path. They are fixture workspaces, not corpus content.
 - **[`../../scripts/__tests__/test-gate-conformance.js`](../../scripts/__tests__/test-gate-conformance.js)**
   — the runner. For each scenario it runs the named existing gate script via a
   child process and asserts the exit code + output. It adds **no gate logic** of
@@ -51,19 +49,11 @@ gates that can run against hermetic fixture workspaces:
 |---|---|---|---|
 | Structural Integrity | `structural_verdict` | `../../scripts/skill-lint.js` | ✅ missing required field, out-of-enum `subject`, dangling `relations.*` target, `comprehension_state`→Understanding cross-file rule, invalid `audit-state.json` sidecar (missing required field), report-only warning for missing durable Audit Status verdict fields |
 | Truth | `truth_verdict` | `../../scripts/skill-graph-drift.js` | ✅ BROKEN on a missing declared truth source |
-| Application eval structural floor | `application_verdict` eligibility evidence | `../../scripts/check-application-evals.js` | ✅ conformant five-case suite with red herring, below-floor `--check` failure, application-only `criticality` enum |
-| Verdict/artifact honesty | `comprehension_verdict` / `application_verdict` | `../../scripts/check-audit-manifest.js` | ✅ empty positive-control workspace, graded application verdict without `evals/application.json` fails |
+| Verdict/artifact honesty | `comprehension_verdict` | `../../scripts/check-audit-manifest.js` | ✅ empty positive-control workspace, graded verdict without its eval artifact fails |
 
-The same gates still have focused pure-function/unit coverage where useful:
-
-| Gate | Additional coverage |
-|---|---|
-| Verdict write-back and artifact enforcement | [`../../scripts/__tests__/test-application-verdict-write-back.js`](../../scripts/__tests__/test-application-verdict-write-back.js), [`../../scripts/__tests__/test-application-artifact-enforcement.js`](../../scripts/__tests__/test-application-artifact-enforcement.js) |
-| Application-eval structural validator internals | [`../../scripts/__tests__/test-check-application-evals.js`](../../scripts/__tests__/test-check-application-evals.js) |
-
-The Behavior Gate verdicts (`comprehension_verdict`, `application_verdict`) are
-LLM-graded behavior measurements, not deterministic pass/fail checks, so they are
-not modeled directly as conformance scenarios. The deterministic scaffolding that
+The Behavior Gate verdict (`comprehension_verdict`) is
+an LLM-graded behavior measurement, not a deterministic pass/fail check, so it is
+not modeled directly as a conformance scenario. The deterministic scaffolding that
 keeps those verdicts honest is modeled here.
 
 ## Adding a scenario

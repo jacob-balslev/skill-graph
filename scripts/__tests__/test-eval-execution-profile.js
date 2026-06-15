@@ -121,7 +121,7 @@ check('uses representative generator with both frontier judges (Claude judge + C
   const seen = [];
   const caseIds = new Set([1, 5]);
   runBidirectionalEval({
-    mode: 'application',
+    mode: 'comprehension',
     skill: 's',
     cwd: '/x/skill-graph',
     caseIds,
@@ -131,7 +131,7 @@ check('uses representative generator with both frontier judges (Claude judge + C
         seen.push(params);
         return {
           ...params,
-          verdict: 'APPLICABLE',
+          verdict: 'PASS',
           certification_tier: 'certifying',
           calibrated: true,
           red_herring_cases_total: 1,
@@ -152,31 +152,31 @@ check('uses representative generator with both frontier judges (Claude judge + C
   assert.strictEqual(B.trials, 1);
 });
 
-check('both frontier judges APPLICABLE + parity OK => APPLICABLE, certifying_clean', () => {
+check('both frontier judges PASS + parity OK => PASS, certifying_clean', () => {
   const r = runBidirectionalEval({
-    mode: 'application', skill: 's', cwd: '/x/skill-graph',
-    deps: { runDirection: fakeRunner({ Claude: 'APPLICABLE', Codex: 'APPLICABLE' }) },
+    mode: 'comprehension', skill: 's', cwd: '/x/skill-graph',
+    deps: { runDirection: fakeRunner({ Claude: 'PASS', Codex: 'PASS' }) },
   });
-  assert.strictEqual(r.synthesized_verdict, 'APPLICABLE');
+  assert.strictEqual(r.synthesized_verdict, 'PASS');
   assert.strictEqual(r.certifying_clean, true);
   assert.strictEqual(r.verdict_capped, false);
   assert.strictEqual(r.agreement, true);
   assert.strictEqual(r.parity.parity_ok, true);
 });
 
-check('disagreement reconciles conservatively (APPLICABLE vs MIXED => MIXED)', () => {
+check('disagreement reconciles conservatively (PASS vs SHALLOW => SHALLOW)', () => {
   const r = runBidirectionalEval({
-    mode: 'application', skill: 's', cwd: '/x/skill-graph',
-    deps: { runDirection: fakeRunner({ Claude: 'APPLICABLE', Codex: 'MIXED' }) },
+    mode: 'comprehension', skill: 's', cwd: '/x/skill-graph',
+    deps: { runDirection: fakeRunner({ Claude: 'PASS', Codex: 'SHALLOW' }) },
   });
-  assert.strictEqual(r.synthesized_verdict, 'MIXED');
+  assert.strictEqual(r.synthesized_verdict, 'SHALLOW');
   assert.strictEqual(r.agreement, false);
 });
 
 check('parity break => strong verdict capped to PROVISIONAL, certifying_clean false', () => {
   const r = runBidirectionalEval({
-    mode: 'application', skill: 's', cwd: '/x/skill-graph',
-    deps: { runDirection: fakeRunner({ Claude: 'APPLICABLE', Codex: 'APPLICABLE' }, { breakParity: true }) },
+    mode: 'comprehension', skill: 's', cwd: '/x/skill-graph',
+    deps: { runDirection: fakeRunner({ Claude: 'PASS', Codex: 'PASS' }, { breakParity: true }) },
   });
   assert.strictEqual(r.parity.parity_ok, false);
   assert.strictEqual(r.certifying_clean, false);
@@ -184,7 +184,7 @@ check('parity break => strong verdict capped to PROVISIONAL, certifying_clean fa
   assert.strictEqual(r.synthesized_verdict, 'PROVISIONAL');
 });
 
-check('A7: resolved model family != declared family caps APPLICABLE to PROVISIONAL', () => {
+check('A7: resolved model family != declared family caps PASS to PROVISIONAL', () => {
   // The Claude judge direction declares an `opus` (anthropic) grader but RESOLVES to a
   // gpt id (openai) — a stale alias / registry drift. The certifying decision was
   // computed from the DECLARED family, so the run must not certify.
@@ -196,14 +196,14 @@ check('A7: resolved model family != declared family caps APPLICABLE to PROVISION
     grader_family: graderModel,
     // Claude direction's grader alias is `opus` (anthropic) but resolves to a GPT id.
     resolved_model: direction === 'Claude' ? 'gpt-5.4' : undefined,
-    verdict: 'APPLICABLE',
+    verdict: 'PASS',
     certification_tier: 'certifying',
     calibrated: true,
     red_herring_cases_total: 1,
     execution_profile: executionProfile,
   });
   const r = runBidirectionalEval({
-    mode: 'application', skill: 's', cwd: '/x/skill-graph',
+    mode: 'comprehension', skill: 's', cwd: '/x/skill-graph',
     deps: { runDirection },
   });
   assert.strictEqual(r.family_consistent, false);
@@ -225,57 +225,19 @@ check('A7: resolved family == declared family stays certifying_clean', () => {
     // representative-generator is a role receipt id; frontier graders resolve to their families.
     resolved_generator_model: 'representative-generator:sonnet',
     resolved_model: graderModel === 'opus' ? 'claude-opus-4-8' : 'gpt-5.4',
-    verdict: 'APPLICABLE',
+    verdict: 'PASS',
     certification_tier: 'certifying',
     calibrated: true,
     red_herring_cases_total: 1,
     execution_profile: executionProfile,
   });
   const r = runBidirectionalEval({
-    mode: 'application', skill: 's', cwd: '/x/skill-graph',
+    mode: 'comprehension', skill: 's', cwd: '/x/skill-graph',
     deps: { runDirection },
   });
   assert.strictEqual(r.family_consistent, true);
   assert.strictEqual(r.certifying_clean, true);
-  assert.strictEqual(r.synthesized_verdict, 'APPLICABLE');
-});
-
-check('application mode: uncalibrated grader caps APPLICABLE to PROVISIONAL', () => {
-  const r = runBidirectionalEval({
-    mode: 'application',
-    skill: 's',
-    cwd: '/x/skill-graph',
-    deps: {
-      runDirection: fakeRunner({ Claude: 'APPLICABLE', Codex: 'APPLICABLE' }, { calibrated: false }),
-    },
-  });
-  assert.strictEqual(r.calibration_clean, false);
-  assert.strictEqual(r.certifying_clean, false);
-  assert.strictEqual(r.synthesized_verdict, 'PROVISIONAL');
-  assert.ok(/uncalibrated/.test(r.cap_reason));
-});
-
-check('application mode: no red-herring coverage caps APPLICABLE to PROVISIONAL', () => {
-  const runDirection = ({ direction, generatorModel, graderModel, executionProfile }) => ({
-    direction,
-    generator_model: generatorModel,
-    grader_model: graderModel,
-    verdict: 'APPLICABLE',
-    certification_tier: 'certifying',
-    calibrated: true,
-    red_herring_cases_total: 0,
-    execution_profile: executionProfile,
-  });
-  const r = runBidirectionalEval({
-    mode: 'application',
-    skill: 's',
-    cwd: '/x/skill-graph',
-    deps: { runDirection },
-  });
-  assert.strictEqual(r.red_herring_coverage_clean, false);
-  assert.strictEqual(r.certifying_clean, false);
-  assert.strictEqual(r.synthesized_verdict, 'PROVISIONAL');
-  assert.ok(/red_herring/.test(r.cap_reason));
+  assert.strictEqual(r.synthesized_verdict, 'PASS');
 });
 
 check('comprehension mode: both PASS => PASS', () => {
@@ -289,26 +251,26 @@ check('comprehension mode: both PASS => PASS', () => {
 
 check('SKI-306: both frontier judges certify => applicable_for "representative", aggregate kept', () => {
   const r = runBidirectionalEval({
-    mode: 'application', skill: 's', cwd: '/x/skill-graph',
-    deps: { runDirection: fakeRunner({ Claude: 'APPLICABLE', Codex: 'APPLICABLE' }) },
+    mode: 'comprehension', skill: 's', cwd: '/x/skill-graph',
+    deps: { runDirection: fakeRunner({ Claude: 'PASS', Codex: 'PASS' }) },
   });
   assert.strictEqual(r.applicable_for, 'representative');
-  assert.strictEqual(r.synthesized_verdict, 'APPLICABLE'); // aggregate unchanged
+  assert.strictEqual(r.synthesized_verdict, 'PASS'); // aggregate unchanged
 });
 check('SKI-306: divergent frontier judges => no representative certification', () => {
   // The representative generator is the measured subject in both directions. If the
   // frontier judges disagree, the conservative aggregate caps and the population is not certified.
   const r = runBidirectionalEval({
-    mode: 'application', skill: 's', cwd: '/x/skill-graph',
-    deps: { runDirection: fakeRunner({ Claude: 'APPLICABLE', Codex: 'MIXED' }) },
+    mode: 'comprehension', skill: 's', cwd: '/x/skill-graph',
+    deps: { runDirection: fakeRunner({ Claude: 'PASS', Codex: 'SHALLOW' }) },
   });
   assert.strictEqual(r.applicable_for, 'neither');
-  assert.strictEqual(r.synthesized_verdict, 'MIXED');
+  assert.strictEqual(r.synthesized_verdict, 'SHALLOW');
 });
-check('SH-6682: not certifying-clean (parity break) => "neither" even with both APPLICABLE', () => {
+check('SH-6682: not certifying-clean (parity break) => "neither" even with both PASS', () => {
   const r = runBidirectionalEval({
-    mode: 'application', skill: 's', cwd: '/x/skill-graph',
-    deps: { runDirection: fakeRunner({ Claude: 'APPLICABLE', Codex: 'APPLICABLE' }, { breakParity: true }) },
+    mode: 'comprehension', skill: 's', cwd: '/x/skill-graph',
+    deps: { runDirection: fakeRunner({ Claude: 'PASS', Codex: 'PASS' }, { breakParity: true }) },
   });
   assert.strictEqual(r.certifying_clean, false);
   assert.strictEqual(r.applicable_for, 'neither');
@@ -330,16 +292,16 @@ check('defaults runDirection to the live evaluate-skill.runEvalDirection when no
 });
 
 console.log('5. Honest model provenance + receipt normalization (GPT-5.5 review F6, F8)');
-check('F6: an unresolved direction model caps APPLICABLE to PROVISIONAL (cannot prove which model ran)', () => {
+check('F6: an unresolved direction model caps PASS to PROVISIONAL (cannot prove which model ran)', () => {
   const runDirection = ({ direction, generatorModel, graderModel, executionProfile }) => ({
     direction, generator_model: generatorModel, grader_model: graderModel,
-    verdict: 'APPLICABLE', certification_tier: 'certifying',
+    verdict: 'PASS', certification_tier: 'certifying',
     calibrated: true, red_herring_cases_total: 1, execution_profile: executionProfile,
     // The Codex direction's grader model is unresolvable (the gpt-5.5 case
     // before codex's concrete model is captured) → the run cannot honestly certify.
     resolved_model: direction === 'Codex' ? 'latest-alias-unresolved' : 'claude-opus-x',
   });
-  const r = runBidirectionalEval({ mode: 'application', skill: 's', cwd: '/x/skill-graph', deps: { runDirection } });
+  const r = runBidirectionalEval({ mode: 'comprehension', skill: 's', cwd: '/x/skill-graph', deps: { runDirection } });
   assert.strictEqual(r.resolved_clean, false);
   assert.strictEqual(r.certifying_clean, false);
   assert.strictEqual(r.verdict_capped, true);
@@ -353,10 +315,10 @@ check('F8: toSidecarReceipt projects ONLY schema-allowed keys', () => {
   const runDirection = ({ direction, generatorModel, graderModel, generatorFamily, graderFamily, executionProfile }) => ({
     direction, generator_model: generatorModel, grader_model: graderModel,
     generator_family: generatorFamily, grader_family: graderFamily, resolved_model: 'm',
-    verdict: 'APPLICABLE', certification_tier: 'certifying',
+    verdict: 'PASS', certification_tier: 'certifying',
     calibrated: true, red_herring_cases_total: 1, execution_profile: executionProfile,
   });
-  const full = runBidirectionalEval({ mode: 'application', skill: 's', cwd: '/x/skill-graph', deps: { runDirection } });
+  const full = runBidirectionalEval({ mode: 'comprehension', skill: 's', cwd: '/x/skill-graph', deps: { runDirection } });
   const rec = toSidecarReceipt(full);
   for (const k of Object.keys(rec)) assert.ok(allowed.has(k), `unexpected receipt key: ${k}`);
   assert.strictEqual(rec.directions.length, 2);
@@ -369,11 +331,11 @@ check('A6: a non-isolated run records fence=prompt-level + a fence_caveat on the
   const runDirection = ({ direction, generatorModel, graderModel, generatorFamily, graderFamily, executionProfile }) => ({
     direction, generator_model: generatorModel, grader_model: graderModel,
     generator_family: generatorFamily, grader_family: graderFamily, resolved_model: graderModel,
-    verdict: 'APPLICABLE', certification_tier: 'certifying',
+    verdict: 'PASS', certification_tier: 'certifying',
     calibrated: true, red_herring_cases_total: 1, execution_profile: executionProfile,
   });
   // runBidirectionalEval builds its own profile from cwd (the real repo root) → prompt-level.
-  const r = runBidirectionalEval({ mode: 'application', skill: 's', cwd: '/x/skill-graph', deps: { runDirection } });
+  const r = runBidirectionalEval({ mode: 'comprehension', skill: 's', cwd: '/x/skill-graph', deps: { runDirection } });
   assert.strictEqual(r.fence, 'prompt-level');
   assert.ok(/fence: prompt-level only/.test(r.fence_caveat), 'result carries the prompt-level fence caveat');
   const rec = toSidecarReceipt(r);
@@ -385,10 +347,10 @@ check('A6: an os-isolated profile records no fence_caveat', () => {
   // Hand-build a result whose execution profile is os-isolated (the isolated-eval-workspace path).
   const r = {
     frontier_pair: ['opus', 'gpt-5.5'], reconciliation: 'conservative', agreement: true,
-    parity: { parity_ok: true }, certifying_clean: true, synthesized_verdict: 'APPLICABLE',
+    parity: { parity_ok: true }, certifying_clean: true, synthesized_verdict: 'PASS',
     applicable_for: 'representative', registry_version: 'x', merge_ledger_ref: null,
     measured_generator: 'representative-generator', generator_population: 'deployment-representative',
-    direction_claude: { verdict: 'APPLICABLE' }, direction_codex: { verdict: 'APPLICABLE' },
+    direction_claude: { verdict: 'PASS' }, direction_codex: { verdict: 'PASS' },
     fence: 'os-isolated', fence_caveat: null,
     execution_profile: { tools: 'full', research: 'repo', repoScope: 'skill-graph + skills ONLY', cwd: '/tmp/skill-eval-ws/skill-graph', fence: 'os-isolated' },
   };
@@ -398,9 +360,9 @@ check('A6: an os-isolated profile records no fence_caveat', () => {
 });
 
 console.log('6. Single-available-frontier degraded eval');
-check('single frontier APPLICABLE is capped to PROVISIONAL and marked for re-grade', () => {
+check('single frontier PASS is capped to PROVISIONAL and marked for re-grade', () => {
   const r = runSingleFrontierEval({
-    mode: 'application',
+    mode: 'comprehension',
     skill: 's',
     cwd: '/x/skill-graph',
     frontierModel: 'gpt-5.5',
@@ -411,7 +373,7 @@ check('single frontier APPLICABLE is capped to PROVISIONAL and marked for re-gra
         direction,
         generator_model: generatorModel,
         grader_model: graderModel,
-        verdict: 'APPLICABLE',
+        verdict: 'PASS',
         certification_tier: 'certifying',
         calibrated: true,
         red_herring_cases_total: 1,

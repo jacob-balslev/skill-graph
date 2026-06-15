@@ -281,14 +281,13 @@ ${row('compatibility.node', 'compatibility.node_version', counts.compatibility_n
 }
 
 // Render the Audit Health section from the manifest summary's verdict facets.
-// Per ADR-0011 § Addendum 2026-05-27, the doctrine is eligibility ≠ assessment ≠
-// certification. The three sub-tables below render exactly that split so a
-// reader can answer "how many are certified?" not "how many are passing?"
+// The doctrine is eligibility ≠ assessment: structural + truth admit a skill;
+// the comprehension behavior gate then assesses it.
 function renderAuditHealthSection(summary, skillCount) {
   if (!summary) {
     return `## Audit Health
 
-> _Audit Health facets are not yet available — regenerate the manifest with the post-ADR-0011-addendum \`generate-manifest.js\` to populate \`by_audit_state\`, \`by_application_verdict\`, and \`harmful_skill_count\` in \`skills.manifest.json\`._
+> _Audit Health facets are not yet available — regenerate the manifest with \`generate-manifest.js\` to populate \`by_audit_state\` in \`skills.manifest.json\`._
 
 `;
   }
@@ -298,7 +297,6 @@ function renderAuditHealthSection(summary, skillCount) {
   const struc = summary.by_structural_verdict || {};
   const truth = summary.by_truth_verdict || {};
   const total = skillCount ?? summary.total_skills ?? 0;
-  const harmful = summary.harmful_skill_count ?? 0;
 
   const get = (obj, key) => obj[key] || 0;
   const notAdmitted = get(state, 'not_admitted');
@@ -314,14 +312,10 @@ function renderAuditHealthSection(summary, skillCount) {
   const comprUnassessed = get(compr, 'UNVERIFIED');
   const comprGraded = total - frameworkOrNa - comprUnassessed;
 
-  const harmfulCallout = harmful > 0
-    ? `\n> **HARMFUL skills detected:** \`${harmful}\` active skill${harmful === 1 ? '' : 's'} carry \`application_verdict: HARMFUL\` — they make agents worse than running without the skill. This is an active-corpus violation: remove the skill, or replace it with a fixed skill that earns a new non-HARMFUL application verdict.\n`
-    : '';
-
   return `## Audit Health
 
-> The three tables below answer **eligibility**, **assessment**, and **certification** as distinct questions (per [ADR-0011 § Addendum 2026-05-27](adr/0011-split-audit-verdict-into-four-verdicts.md) and [\`docs/verdict-semantics.md\`](verdict-semantics.md)). A skill passing structural and truth checks is **admitted** — eligible for assessment, not yet certified. Only \`application_verdict == APPLICABLE\` certifies useful behavior change.
-${harmfulCallout}
+> The tables below answer **eligibility** and **assessment** as distinct questions (per [\`docs/verdict-semantics.md\`](verdict-semantics.md)). A skill passing structural and truth checks is **admitted** — eligible for the comprehension behavior gate. The \`comprehension_verdict\` is the behavior-gate quality signal.
+
 ### Admission (eligibility)
 
 | State | Count | What it means |
@@ -355,18 +349,6 @@ Comprehension carve-out (per ADR-0011 § Addendum 2026-05-20):
 | Framework concept or no comprehension layer (\`SKIPPED_BASELINE_HIGH\` / \`NA\`) | \`${frameworkOrNa}\` | Comprehension legitimately does not apply — model already knows the concept or the skill ships none. |
 | Comprehension graded | \`${comprGraded}\` | Comprehension grader produced a real verdict. |
 | Comprehension unassessed | \`${comprUnassessed}\` | Repo-specific skill awaiting gate-8 run. |
-
-### Certification — APPLICABLE gate PARKED (2026-06-14T)
-
-> The APPLICABLE application-eval gate is **parked** (owner directive, 2026-06-14).
-> The behavior eval is not yet discriminating — it produced 0 APPLICABLE corpus-wide
-> and stamped HARMFUL/REDUNDANT/MIXED on skills known to be good (the test is the
-> problem, not the skills) — and it is expensive to run. The gate no longer runs by
-> default (\`lib/audit/run-skill-audit-loop*.js\`; opt in per-run with \`--eval\`) and its
-> verdicts are **not** reported here as the project's quality signal. Existing
-> \`application_verdict\` values in \`audit-state.json\` sidecars are retained but are NOT
-> a current quality claim. Re-enable by reverting the parking commit once the eval is
-> good enough to certify honestly. See CHANGELOG § Skill Audit Loop — APPLICABLE gate parked.
 
 `;
 }

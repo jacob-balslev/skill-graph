@@ -34,29 +34,26 @@ function makeDeps({ existing = [] } = {}) {
   };
 }
 const merged = (writes) => Object.assign({}, ...writes);
-const base = { skill: 'demo', skillDir: '/tmp/skills/demo', cwd: '/tmp/sg', evalMode: 'application' };
+const base = { skill: 'demo', skillDir: '/tmp/skills/demo', cwd: '/tmp/sg', evalMode: 'comprehension' };
 
-// 1. KEEP + guardrail receipt (APPLICABLE) + comprehension.json present →
-//    integrity stamped, last_changed set, application_verdict from receipt, bidirectional
-//    receipt persisted, comprehension graded via canonical evaluate (spawn).
-check('keep: records Integrity + Behavior gates (receipt verdict + canonical comprehension)', () => {
+// 1. KEEP + guardrail receipt (PASS) → integrity stamped, last_changed set,
+//    comprehension_verdict from the reused guardrail receipt, bidirectional receipt persisted.
+check('keep: records Integrity + Behavior gates (comprehension verdict from receipt)', () => {
   const d = makeDeps({ existing: ['evals/comprehension.json'] });
   const out = recordFullLoop({
     ...base,
-    result: { applied: true, eval: { synthesized_verdict: 'APPLICABLE' } },
+    result: { applied: true, eval: { synthesized_verdict: 'PASS' } },
     deps: d.deps,
   });
   assert.strictEqual(out.recorded.integrity, 'stamped', 'integrity gate ran');
   assert.strictEqual(out.recorded.last_changed, '2026-06-07', 'last_changed stamped');
-  assert.strictEqual(out.recorded.application_verdict, 'APPLICABLE', 'application verdict from receipt');
-  assert.strictEqual(out.recorded.comprehension_verdict, 'stamped', 'comprehension graded via canonical evaluate');
+  assert.strictEqual(out.recorded.comprehension_verdict, 'PASS', 'comprehension verdict from guardrail receipt');
   const w = merged(d.writes);
   assert.ok(w.eval_last_run && w.eval_last_run.bidirectional, 'bidirectional receipt persisted');
-  assert.strictEqual(w.application_verdict, 'APPLICABLE');
+  assert.strictEqual(w.comprehension_verdict, 'PASS');
   assert.strictEqual(w.last_changed, '2026-06-07');
-  // integrity = skill-audit.js subprocess; comprehension = evaluate-skill.js subprocess
+  // integrity = skill-audit.js subprocess; comprehension verdict is reused from the guardrail receipt (no separate spawn).
   assert.ok(d.spawns.some((s) => s.includes('skill-audit.js')), 'spawned Integrity Gate');
-  assert.ok(d.spawns.some((s) => s.includes('evaluate-skill.js') && s.includes('comprehension')), 'spawned Comprehension');
 });
 
 check('model_run_coverage: records mandatory and advisory model participation separately from verdicts', () => {
@@ -131,9 +128,9 @@ check('non-certifying dangerous panel receipt is preserved but active verdict do
       }),
     },
   });
-  assert.strictEqual(out.recorded.application_verdict, 'UNVERIFIED');
+  assert.strictEqual(out.recorded.comprehension_verdict, 'UNVERIFIED');
   const w = merged(d.writes);
-  assert.strictEqual(w.application_verdict, 'UNVERIFIED');
+  assert.strictEqual(w.comprehension_verdict, 'UNVERIFIED');
   assert.strictEqual(w.eval_last_run.bidirectional.synthesized_verdict, 'HARMFUL');
   assert.ok(out.findings.some((f) => /non-certifying guardrail reached HARMFUL/.test(f)));
 });
@@ -148,16 +145,13 @@ check('keep, missing evals: behavior verdicts UNVERIFIED with explicit findings'
     deps: d.deps,
   });
   assert.strictEqual(out.recorded.integrity, 'stamped');
-  assert.strictEqual(out.recorded.application_verdict, 'UNVERIFIED');
   assert.strictEqual(out.recorded.comprehension_verdict, 'UNVERIFIED');
   // D1 regression guard: the honest downgrade must be WRITTEN to the sidecar, not merely
   // recorded locally. The bug this catches: a kept (CHANGED) body keeping a stale prior
-  // APPLICABLE because UNVERIFIED was set on `recorded` but never persisted via writeSidecarFields.
+  // PASS because UNVERIFIED was set on `recorded` but never persisted via writeSidecarFields.
   const w = merged(d.writes);
-  assert.strictEqual(w.application_verdict, 'UNVERIFIED', 'application_verdict UNVERIFIED WRITTEN to sidecar on keep+missing-eval');
   assert.strictEqual(w.comprehension_verdict, 'UNVERIFIED', 'comprehension_verdict UNVERIFIED WRITTEN to sidecar on keep+missing-eval');
   assert.ok(w.model_run_coverage && w.model_run_coverage.models.opus, 'model_run_coverage written to sidecar');
-  assert.ok(out.findings.some((f) => /application\.json/.test(f)), 'finding names missing application.json');
   assert.ok(out.findings.some((f) => /comprehension\.json/.test(f)), 'finding names missing comprehension.json');
   // no behavior gate spawned (no comprehension.json), no application stamp
   assert.ok(!d.spawns.some((s) => s.includes('evaluate-skill.js')), 'no canonical evaluate spawned');
@@ -172,7 +166,7 @@ check('revert: integrity only; no behavior re-stamp; explicit revert finding', (
     deps: d.deps,
   });
   assert.strictEqual(out.recorded.integrity, 'stamped');
-  assert.strictEqual(out.recorded.application_verdict, undefined, 'no behavior stamping on revert');
+  assert.strictEqual(out.recorded.comprehension_verdict, undefined, 'no behavior stamping on revert');
   assert.strictEqual(out.recorded.last_changed, undefined, 'no last_changed on revert');
   assert.ok(out.findings.some((f) => /Reverted/i.test(f)), 'revert finding present');
   assert.ok(merged(d.writes).last_changed === undefined, 'no sidecar last_changed write on revert');

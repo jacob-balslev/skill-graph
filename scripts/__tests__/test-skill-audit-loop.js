@@ -177,10 +177,8 @@ function makeDeps(overrides = {}) {
       calls.evalDirs.push(skillDir);
       return {
         direction,
-        verdict: 'APPLICABLE',
+        verdict: 'PASS',
         certification_tier: 'certifying',
-        calibrated: true,
-        red_herring_cases_total: 1,
         execution_profile: executionProfile,
       };
     },
@@ -200,7 +198,7 @@ check('runs mandatory + advisory proposals, converges, curates with advisory+cro
   assert.strictEqual(r.merge.anti_loss.ok, true);
   assert.strictEqual(r.merge.mandatory_coverage.ok, true);
   assert.strictEqual(r.merge.advisory_coverage.ok, true);
-  assert.strictEqual(r.eval.synthesized_verdict, 'APPLICABLE');
+  assert.strictEqual(r.eval.synthesized_verdict, 'PASS');
   assert.strictEqual(r.keep_or_revert.action, 'keep');
   assert.strictEqual(r.applied, true);
   assert.strictEqual(r.mode, 'panel');
@@ -302,18 +300,16 @@ check('missing eval artifact => guardrail skipped => keep + apply, eval null', (
   assert.strictEqual(r.applied, true);
 });
 
-check('HARMFUL eval => revert, does NOT apply', () => {
+check('regression (verdict measurably worse than prior) => revert, does NOT apply', () => {
   const deps = makeDeps({
     runEvalDirection: ({ direction, executionProfile }) => ({
       direction,
-      verdict: 'HARMFUL',
+      verdict: 'SHALLOW',
       certification_tier: 'certifying',
-      calibrated: true,
-      red_herring_cases_total: 1,
       execution_profile: executionProfile,
     }),
   });
-  const r = panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], deps });
+  const r = panel.runSkillAuditLoop({ skill: 's', skillDir: '/x/s', cwd: '/x', advisoryModels: [], priorVerdict: 'PASS', deps });
   assert.strictEqual(r.keep_or_revert.action, 'revert');
   assert.strictEqual(r.applied, false);
 });

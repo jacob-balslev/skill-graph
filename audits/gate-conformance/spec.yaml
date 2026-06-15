@@ -97,31 +97,6 @@ scenarios:
     when: drift
     then: { exit: 1, output_contains: BROKEN }
 
-  # --- Application Eval Structural Gate (check-application-evals.js) ---
-  - id: application-eval-valid-baseline
-    gate: application
-    rule: "A five-case application eval with at least one red herring passes the structural application-eval gate."
-    given: fixtures/application-workspace
-    skill: valid-app
-    when: application-evals
-    then: { exit: 0, output_contains: "OK — every application.json conforms to the schema." }
-
-  - id: application-eval-below-case-floor
-    gate: application
-    rule: "Application evals must carry at least five cases before they can certify behavior; --check FAILS below the floor."
-    given: fixtures/application-workspace
-    skill: below-floor-app
-    when: application-evals
-    then: { exit: 1, output_contains: ["below-case-floor", "cases has 4 case(s)"] }
-
-  - id: application-eval-bad-criticality
-    gate: application
-    rule: "Application eval criticality must use the application enum (`critical|high|normal|low`); `medium` is rejected because it belongs to comprehension evals."
-    given: fixtures/application-workspace
-    skill: bad-criticality-app
-    when: application-evals
-    then: { exit: 1, output_contains: ["bad-criticality", "medium"] }
-
   # --- Verdict / Artifact Honesty Gate (check-audit-manifest.js) ---
   - id: audit-manifest-empty-workspace
     gate: application

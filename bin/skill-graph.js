@@ -69,9 +69,8 @@ SCOPE: \`audit --graded\` grades the seven Integrity-Gate / scorecard dimensions
 (metadata, activation, relation, grounding, content, eval-quality, portability)
 and writes findings.md / verdict.md / scorecard.md plus the sidecar
 \`lint_verdict\` / \`structural_verdict\` / \`truth_verdict\` / \`last_audited\`. It does
-NOT run the behavior eval suites and does NOT stamp \`comprehension_verdict\` /
-\`application_verdict\` — those Behavior-Gate verdicts come from
-\`skill-graph evaluate --mode comprehension|application\`.
+NOT run the behavior eval suite and does NOT stamp \`comprehension_verdict\` —
+that Behavior-Gate verdict comes from \`skill-graph evaluate --mode comprehension\`.
 
 Arguments:
   <skill-name>       Skill directory name (relative to workspace skill roots).
@@ -266,7 +265,7 @@ Note: evolve depends on lib/audit-shared/auto-improve.js (bundled with @skill-gr
   },
   evaluate: {
     script: 'lib/audit/evaluate-skill.js',
-    help: `Usage: skill-graph evaluate [options] <eval-file>\n\nRun the eval suite for one skill and stamp the result into the skill's audit-state.json sidecar.\n\nArguments:\n  <eval-file>                  Path to evals/<skill>.json (or comprehension.json / application.json).\n\nOptions:\n  --mode <comprehension|application>   Which grader to run.\n  --application <skill-dir>            Required with --mode application; the skill's directory.\n  --trials N                           Application: trials per case (default 3, recommended 3–5).\n  --certifying                         Application: attest a certifying run — REQUIRED to earn APPLICABLE.\n  --generator-family F / --grader-family G   Declared generator/grader identities for certification (not a model selector).\n  --single-model                       Force PROVISIONAL (explicit single-model self-assessment).\n  --dry-run                            Print what would be stamped without writing.\n\nWrites (when not --dry-run):\n  - eval_score, eval_failed_ids, freshness in audit-state.json.\n  - comprehension_verdict (when --mode comprehension runs).\n  - application_verdict + eval_last_run (when --mode application runs — the\n    primary quality signal per skill-audit-loop/SKILL_AUDIT_LOOP.md § Audit Doctrine).\n    A non-certifying application run caps APPLICABLE at PROVISIONAL.\n\nSee: skill-audit-loop/SKILL_AUDIT_LOOP.md § The Inner Pipeline of evaluate\n`,
+    help: `Usage: skill-graph evaluate [options] <eval-file>\n\nRun the comprehension eval suite for one skill and stamp the result into the skill's audit-state.json sidecar.\n\nArguments:\n  <eval-file>                  Path to evals/comprehension.json.\n\nOptions:\n  --mode comprehension                 The grader to run (the only supported mode).\n  --single-model                       Force PROVISIONAL (explicit single-model self-assessment).\n  --dry-run                            Print what would be stamped without writing.\n\nWrites (when not --dry-run):\n  - eval_score, eval_failed_ids, freshness in audit-state.json.\n  - comprehension_verdict (the Behavior-Gate quality signal).\n\nSee: skill-audit-loop/SKILL_AUDIT_LOOP.md § The Inner Pipeline of evaluate\n`,
   },
   'evaluate:gpt-5.5': {
     script: 'lib/audit/evaluate-skill-codex-gpt-5.5.js',
@@ -379,7 +378,7 @@ Commands:
   lint [skill]     Validate SKILL.md files against the canonical-source schema lint gate
   audit <skill>    Run the Integrity Gate, write evidence artifacts, and stamp audit-state.json
   improve          Karpathy keep-or-revert improvement loop for one skill or asset
-  evaluate         Run the eval suite for one skill and stamp comprehension_verdict / application_verdict
+  evaluate         Run the comprehension eval suite for one skill and stamp comprehension_verdict
   evaluate:gpt-5.5 Run evaluate through Codex CLI + GPT-5.5 with tools-on, PROVISIONAL-only evidence
   status <skill>   Print the Audit Status for a skill (read-only)
   doc              Audit active docs for stale code references and rewrite questions

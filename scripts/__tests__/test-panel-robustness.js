@@ -39,10 +39,8 @@ function makeDeps(overrides = {}) {
     evalArtifactExists: () => true,
     runEvalDirection: ({ direction, executionProfile }) => ({
       direction,
-      verdict: 'APPLICABLE',
+      verdict: 'PASS',
       certification_tier: 'certifying',
-      calibrated: true,
-      red_herring_cases_total: 1,
       execution_profile: executionProfile,
       certifying_clean: true,
     }),
@@ -154,11 +152,11 @@ check('missing eval artifact => eval_status ABSENT + eval_certified false, still
   assert.strictEqual(r.eval, null);
   assert.strictEqual(r.eval_status, 'ABSENT');
   assert.strictEqual(r.eval_certified, false);
-  assert.match(r.eval_skip_reason, /no evals\/application\.json/);
+  assert.match(r.eval_skip_reason, /no evals\/comprehension\.json/);
   assert.strictEqual(r.keep_or_revert.action, 'keep');
   assert.strictEqual(r.applied, true);
 });
-check('eval ran + APPLICABLE + verify RAN => eval_status RUN + eval_certified true', () => {
+check('eval ran + PASS + verify RAN => eval_status RUN + eval_certified true', () => {
   // B4 (2026-06-10): certification now REQUIRES the Phase 3.1 verify gate to have RUN — a
   // DEFERRED verify (no verifyMerge dep) can no longer certify. Inject a passing verifyMerge
   // (the legitimate certifying path; production always wires it).

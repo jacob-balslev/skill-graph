@@ -11,7 +11,7 @@ Use this page when you know the kind of answer you need but not the owning file 
 | Look up field meaning | [`../skill-metadata-protocol/field-reference.md`](../skill-metadata-protocol/field-reference.md) | Hand-authored semantics and authoring guidance for each field. |
 | See manifest projection rules | [`manifest-field-mapping.md`](manifest-field-mapping.md) | Shows how `SKILL.md` plus `audit-state.json` become manifest fields. |
 | Understand verdicts | [`verdict-semantics.md`](verdict-semantics.md) | Canonical enum meanings and confidence ordering. |
-| Design or audit eval artifacts | [`comprehension-eval-spec.md`](comprehension-eval-spec.md) and [`application-eval-spec.md`](application-eval-spec.md) | Separate contracts for concept comprehension and behavior-change evidence. |
+| Design or audit eval artifacts | [`comprehension-eval-spec.md`](comprehension-eval-spec.md) | Contract for concept-comprehension evidence. |
 | Check audit-loop execution surfaces | [`skill-audit-loop-executable-map.md`](skill-audit-loop-executable-map.md) | Maps checks, scripts, artifacts, and write surfaces. |
 | Audit active docs for stale code references and rewrite questions | [`doc-freshness-audit.md`](doc-freshness-audit.md) | Explains `skill-graph doc`, `npm run docs:freshness`, strict mode, and how to treat findings without deleting context. |
 | Follow current plans | [`plans/PLANS.md`](plans/PLANS.md) | Active and in-flight plans index. Completed plans are removed to git history. |
