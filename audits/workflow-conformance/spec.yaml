@@ -163,10 +163,10 @@ scenarios:
 
   - id: evaluate-command-defines-behavior-metrics
     workflow: evaluate
-    rule: "The /evaluate command names comprehension/application metrics and evidence boundaries."
+    rule: "The /evaluate command names the comprehension metric and evidence boundaries."
     given: ../../commands/audit/evaluate.md
     when: text-references
-    then: { contains: ["WORKFLOW_CONTRACT.md", "comprehension_verdict", "application_verdict", "behavior evidence", "not deletion instructions"] }
+    then: { contains: ["WORKFLOW_CONTRACT.md", "comprehension_verdict", "behavior evidence", "not deletion instructions"] }
 
   - id: improve-command-points-to-keep-or-revert-contract
     workflow: improve
