@@ -74,4 +74,68 @@ function writeSidecarFields(skillMdPath, fields) {
   return { written: true, path: p, sidecar: next };
 }
 
-module.exports = { sidecarPathForSkill, readSidecar, joinSidecar, writeSidecarFields };
+/**
+ * The behavior-gate verdicts that EARN the `skill_graph_protocol` content label.
+ * A real assessment of a gradeable artifact earns it: `PASS` (independent grader
+ * confirmed) and `PROVISIONAL` (a single competent model assessed the skill and
+ * recorded a real result). `UNVERIFIED` (no gradeable artifact / no assessment)
+ * never earns it; the negative grader verdicts `SHALLOW` / `REDUNDANT` are
+ * deliberately excluded too — a skill flagged for rework has not earned a
+ * content-conformance claim, and will be stamped if a later run reaches
+ * PASS/PROVISIONAL.
+ */
+const PROTOCOL_EARNING_VERDICTS = new Set(['PASS', 'PROVISIONAL']);
+
+/**
+ * PURE earned-label computer (no fs). Returns the `skill_graph_protocol` content
+ * label a skill has earned, or null when the earned condition is unmet:
+ *   - the behavior gate produced a content-earning verdict (PASS/PROVISIONAL), AND
+ *   - the skill carries a positive `schema_version` (integrity-validated upstream).
+ *
+ * The value mirrors the skill's `schema_version` MAJOR (e.g. `Skill Metadata
+ * Protocol v8`), but — unlike `schema_version`, which a codemod can bump — the
+ * label is WRITTEN only under the earned condition (the callers below gate on
+ * this returning non-null), so its PRESENCE, not its integer, is the honest
+ * "content verified at vN" signal. Kept pure so dependency-injected call sites
+ * (recordFullLoop) can compute it with their own injected sidecar I/O.
+ *
+ * @returns {string|null}
+ */
+function earnedProtocolLabel({ comprehensionVerdict, schemaVersion } = {}) {
+  if (!PROTOCOL_EARNING_VERDICTS.has(comprehensionVerdict)) return null;
+  const major = typeof schemaVersion === 'number'
+    ? schemaVersion
+    : (typeof schemaVersion === 'string' && /^\d+/.test(schemaVersion) ? parseInt(schemaVersion, 10) : NaN);
+  if (!Number.isFinite(major) || major <= 0) return null;
+  return `Skill Metadata Protocol v${major}`;
+}
+
+/**
+ * fs-touching convenience wrapper around {@link earnedProtocolLabel}: reads the
+ * skill's sidecar, computes the earned label, and writes it when earned and not
+ * already current. Used by the non-DI `evaluate` write-back path. Idempotent.
+ *
+ * Per `AGENTS.md § Version Labels Are Earned, Not Bumped`, this and the inline
+ * equivalent in recordFullLoop are the only deterministic write paths for the
+ * content label — never a find-replace.
+ *
+ * @returns {string|null} the stamped label, or null when the earned condition is unmet.
+ */
+function stampEarnedProtocolLabel(skillMdPath, { comprehensionVerdict } = {}) {
+  const sidecar = readSidecar(skillMdPath) || {};
+  const label = earnedProtocolLabel({ comprehensionVerdict, schemaVersion: sidecar.schema_version });
+  if (!label) return null;
+  if (sidecar.skill_graph_protocol === label) return label;
+  writeSidecarFields(skillMdPath, { skill_graph_protocol: label });
+  return label;
+}
+
+module.exports = {
+  sidecarPathForSkill,
+  readSidecar,
+  joinSidecar,
+  writeSidecarFields,
+  earnedProtocolLabel,
+  stampEarnedProtocolLabel,
+  PROTOCOL_EARNING_VERDICTS,
+};

@@ -166,16 +166,33 @@ function readDisplacementCoverage() {
   return { checked, total: skillFiles.length };
 }
 
-// Count corpus usage of deprecated/legacy frontmatter aliases. Some aliases are
-// still accepted by the live schema for unmigrated skills; others have reached
-// zero usage and been removed from the canonical schema. The clean-cut doctrine
-// (AGENTS.md § Major Version Is a Clean Cut) bans permanent deprecated-alias
-// surfaces, and each alias's removal condition is: corpus usage reaches 0 →
-// one SYSTEM commit deletes the alias from the schema. This counter makes the
-// drain measurable instead of open-ended. Counts read the RAW (un-normalized)
-// frontmatter — the normalizer would canonicalize the aliases away — and a
-// file counts once per alias whether the alias appears flat or inside the
-// nested `metadata:` encoding.
+// Earned content-label coverage (SKI-355). Counts how many skills carry an
+// EARNED `skill_graph_protocol` sidecar label — the label the audit loop stamps
+// only when a content migration completes with a real behavior verdict (see
+// `audit-state-sidecar.js::stampEarnedProtocolLabel`). Distinct from
+// `schema_version` (the mechanical shape a codemod bumps): this counts how much
+// of the corpus has genuinely EARNED the current protocol content bar. Reads the
+// sidecar directly (the field never lives in SKILL.md frontmatter, per ADR-0019).
+function readEarnedProtocolCoverage() {
+  let skillFiles;
+  try {
+    skillFiles = collectSkillFiles();
+  } catch {
+    return null;
+  }
+  if (!Array.isArray(skillFiles) || skillFiles.length === 0) return null;
+  const { readSidecar } = require('./lib/audit-state-sidecar');
+  let labeled = 0;
+  for (const entry of skillFiles) {
+    const skillMd = entry.filePath || entry;
+    const sidecar = readSidecar(skillMd);
+    if (sidecar && typeof sidecar.skill_graph_protocol === 'string' && sidecar.skill_graph_protocol.trim()) {
+      labeled += 1;
+    }
+  }
+  return { labeled, total: skillFiles.length };
+}
+
 // Render the Audit Health section from the manifest summary's verdict facets.
 // The doctrine is eligibility ≠ assessment: structural + truth admit a skill;
 // the comprehension behavior gate then assesses it.
@@ -250,9 +267,12 @@ Comprehension carve-out (per ADR-0011 § Addendum 2026-05-20):
 }
 
 function renderMarkdown(state) {
-  const { pkg, schema_version, skill_count, checks, generated_at, mirror_status, summary, displacement } = state;
+  const { pkg, schema_version, skill_count, checks, generated_at, mirror_status, summary, displacement, protocol_coverage } = state;
   const displacementValue = displacement
     ? `\`${displacement.checked}\` / \`${displacement.total}\` (${displacement.total ? Math.round((displacement.checked / displacement.total) * 100) : 0}%)`
+    : '`—` _(corpus not reachable)_';
+  const protocolValue = protocol_coverage
+    ? `\`${protocol_coverage.labeled}\` / \`${protocol_coverage.total}\` (${protocol_coverage.total ? Math.round((protocol_coverage.labeled / protocol_coverage.total) * 100) : 0}%)`
     : '`—` _(corpus not reachable)_';
   const checkRow = c => {
     const badge = c.status === 'PASS' ? '✅ PASS' : c.status === 'SKIP' ? '⏭️  SKIP' : '❌ ' + c.status;
@@ -280,6 +300,7 @@ function renderMarkdown(state) {
 | Active schema version | \`${formatSchemaVersion(schema_version)}\` | \`schemas/skill-audit-state.schema.json\` (moved from frontmatter schema per ADR-0019) |
 | Skill count (manifest) | \`${skill_count ?? '—'}\` | \`skills.manifest.json\` |
 | Upstream-displacement coverage | ${displacementValue} | skills with a \`references/upstream-*.md\` artifact (per \`skill-audit-loop/SKILL_AUDIT_LOOP.md\` § 6-displacement) |
+| Earned content-label coverage | ${protocolValue} | skills whose \`audit-state.json\` carries an EARNED \`skill_graph_protocol\` label (stamped by the audit loop on a verified content migration — SKI-355; distinct from \`schema_version\`) |
 | Mirror status | ${mirror_status} | \`docs/adr/0009-sibling-repo-deprecation.md\` |
 
 ## Checks
@@ -331,6 +352,7 @@ function main() {
   const summary = readManifestSummary();
   const mirror_status = readMirrorStatus();
   const displacement = readDisplacementCoverage();
+  const protocol_coverage = readEarnedProtocolCoverage();
   const generated_at = new Date().toISOString();
 
   const checks = opts.skipChecks ? [] : [
@@ -346,7 +368,7 @@ function main() {
     // committed for the 15 graded-comprehension claims.
   ];
 
-  const state = { pkg, schema_version, skill_count, summary, mirror_status, displacement, generated_at, checks };
+  const state = { pkg, schema_version, skill_count, summary, mirror_status, displacement, protocol_coverage, generated_at, checks };
   const markdown = renderMarkdown(state);
 
   if (opts.stdout) {

@@ -1,6 +1,6 @@
 # Skill Graph — Generated Status
 
-> **Generated:** 2026-06-15T10:38:33.263Z
+> **Generated:** 2026-06-15T10:49:13.369Z
 > **Generator:** `node scripts/build-status-doc.js` (regenerate; never hand-edit)
 >
 > This file is the single-source-of-truth status snapshot for the project's
@@ -18,17 +18,18 @@
 | Active schema version | `v8` | `schemas/skill-audit-state.schema.json` (moved from frontmatter schema per ADR-0019) |
 | Skill count (manifest) | `181` | `skills.manifest.json` |
 | Upstream-displacement coverage | `32` / `182` (18%) | skills with a `references/upstream-*.md` artifact (per `skill-audit-loop/SKILL_AUDIT_LOOP.md` § 6-displacement) |
+| Earned content-label coverage | `1` / `182` (1%) | skills whose `audit-state.json` carries an EARNED `skill_graph_protocol` label (stamped by the audit loop on a verified content migration — SKI-355; distinct from `schema_version`) |
 | Mirror status | docs-only mirrors per ADR 0009 (2026-05-18) | `docs/adr/0009-sibling-repo-deprecation.md` |
 
 ## Checks
 
 | Check | Status | Duration | Last line |
 |---|---|---|---|
-| check-markdown-links | ✅ PASS | 426 ms | OK   markdown links (1647 file(s)) |
-| check-protocol-consistency | ✅ PASS | 118 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
-| check-doc-drift | ✅ PASS | 356 ms | OK   doc drift sentinel: 87 active doc(s) scanned against schema v8 |
-| check-mirror-freeze | ✅ PASS | 50 ms | OK   mirror freeze: 20 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
-| marketplace-export-check | ❌ FAIL | 195 ms | FAIL missing exported skill hooked-model |
+| check-markdown-links | ✅ PASS | 308 ms | OK   markdown links (1647 file(s)) |
+| check-protocol-consistency | ✅ PASS | 112 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
+| check-doc-drift | ✅ PASS | 216 ms | OK   doc drift sentinel: 87 active doc(s) scanned against schema v8 |
+| check-mirror-freeze | ✅ PASS | 44 ms | OK   mirror freeze: 20 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
+| marketplace-export-check | ❌ FAIL | 194 ms | FAIL missing exported skill hooked-model |
 
 ## Audit Health
 

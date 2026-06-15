@@ -18,7 +18,7 @@ function check(name, fn) {
 }
 
 // Build injectable deps that capture sidecar writes + spawn calls.
-function makeDeps({ existing = [] } = {}) {
+function makeDeps({ existing = [], sidecar = null } = {}) {
   const writes = [];
   const spawns = [];
   return {
@@ -28,6 +28,9 @@ function makeDeps({ existing = [] } = {}) {
       spawn: (_node, argv) => { spawns.push(argv.join(' ')); return { status: 0, stdout: '', stderr: '' }; },
       fs: { existsSync: (p) => existing.some((e) => p.endsWith(e)) },
       writeSidecarFields: (_md, fields) => { writes.push(fields); },
+      // Inject the sidecar the runner reads (model_run_coverage + the SKI-355
+      // earned-label stamp both call readSidecar); null mimics an absent sidecar.
+      readSidecar: () => sidecar,
       todayIsoDate: () => '2026-06-07',
       toSidecarReceipt: (r) => ({ synthesized_verdict: r.synthesized_verdict, parity_ok: true, directions: [] }),
     },
@@ -54,6 +57,45 @@ check('keep: records Integrity + Behavior gates (comprehension verdict from rece
   assert.strictEqual(w.last_changed, '2026-06-07');
   // integrity = skill-audit.js subprocess; comprehension verdict is reused from the guardrail receipt (no separate spawn).
   assert.ok(d.spawns.some((s) => s.includes('skill-audit.js')), 'spawned Integrity Gate');
+});
+
+// SKI-355: a kept content migration with a content-earning verdict (PASS) stamps
+// the EARNED skill_graph_protocol content label from the skill's schema_version.
+check('keep + PASS + schema_version 8 → stamps earned skill_graph_protocol "Skill Metadata Protocol v8"', () => {
+  const d = makeDeps({ existing: ['evals/comprehension.json'], sidecar: { schema_version: 8 } });
+  const out = recordFullLoop({
+    ...base,
+    result: { applied: true, eval: { synthesized_verdict: 'PASS' } },
+    deps: d.deps,
+  });
+  assert.strictEqual(out.recorded.skill_graph_protocol, 'Skill Metadata Protocol v8', 'earned label recorded');
+  const w = merged(d.writes);
+  assert.strictEqual(w.skill_graph_protocol, 'Skill Metadata Protocol v8', 'earned label written to sidecar');
+});
+
+// SKI-355: an UNVERIFIED behavior verdict NEVER earns the content label, even on a keep.
+check('keep + UNVERIFIED verdict → does NOT stamp skill_graph_protocol (earned, not bumped)', () => {
+  const d = makeDeps({ existing: ['evals/comprehension.json'], sidecar: { schema_version: 8 } });
+  const out = recordFullLoop({
+    ...base,
+    result: { applied: true, eval: { synthesized_verdict: 'UNVERIFIED' } },
+    deps: d.deps,
+  });
+  assert.strictEqual(out.recorded.comprehension_verdict, 'UNVERIFIED');
+  assert.strictEqual(out.recorded.skill_graph_protocol, undefined, 'no earned label on UNVERIFIED');
+  const w = merged(d.writes);
+  assert.ok(!('skill_graph_protocol' in w), 'skill_graph_protocol never written for UNVERIFIED');
+});
+
+// SKI-355: a keep whose skill is still on an older/absent schema_version does not earn the label.
+check('keep + PASS but no schema_version → no earned label (integrity gate not met)', () => {
+  const d = makeDeps({ existing: ['evals/comprehension.json'], sidecar: {} });
+  const out = recordFullLoop({
+    ...base,
+    result: { applied: true, eval: { synthesized_verdict: 'PASS' } },
+    deps: d.deps,
+  });
+  assert.strictEqual(out.recorded.skill_graph_protocol, undefined, 'no label without a positive schema_version');
 });
 
 check('model_run_coverage: records mandatory and advisory model participation separately from verdicts', () => {
