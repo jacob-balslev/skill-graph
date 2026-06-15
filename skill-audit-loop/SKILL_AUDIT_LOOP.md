@@ -887,7 +887,7 @@ skill-graph evaluate --mode comprehension <skill>/evals/comprehension.json      
 skill-graph improve --skill <skill>                       # 5. Improve/Use/Evaluate/Grade: candidate change, guardrail, keep-or-revert
 skill-graph drift                                          # 6. Verify: truth-source staleness
 skill-graph manifest --validate-only                      # 7. Verify: manifest parity (no source<->manifest drift)
-skill-graph status <skill>                                 # 8. Grade/read back the four-verdict Audit Status
+skill-graph status <skill>                                 # 8. Grade/read back the three-verdict Audit Status
 # 9. commit the skill + its audit-state.json + audits/<skill>/ path-limited (git commit --only)
 ```
 
