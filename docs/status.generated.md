@@ -1,6 +1,6 @@
 # Skill Graph — Generated Status
 
-> **Generated:** 2026-06-15T05:17:58.038Z
+> **Generated:** 2026-06-15T10:38:33.263Z
 > **Generator:** `node scripts/build-status-doc.js` (regenerate; never hand-edit)
 >
 > This file is the single-source-of-truth status snapshot for the project's
@@ -24,11 +24,11 @@
 
 | Check | Status | Duration | Last line |
 |---|---|---|---|
-| check-markdown-links | ✅ PASS | 410 ms | OK   markdown links (1652 file(s)) |
-| check-protocol-consistency | ✅ PASS | 130 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
-| check-doc-drift | ✅ PASS | 241 ms | OK   doc drift sentinel: 87 active doc(s) scanned against schema v8 |
-| check-mirror-freeze | ✅ PASS | 46 ms | OK   mirror freeze: 20 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
-| marketplace-export-check | ❌ FAIL | 210 ms | FAIL missing exported skill hooked-model |
+| check-markdown-links | ✅ PASS | 426 ms | OK   markdown links (1647 file(s)) |
+| check-protocol-consistency | ✅ PASS | 118 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
+| check-doc-drift | ✅ PASS | 356 ms | OK   doc drift sentinel: 87 active doc(s) scanned against schema v8 |
+| check-mirror-freeze | ✅ PASS | 50 ms | OK   mirror freeze: 20 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
+| marketplace-export-check | ❌ FAIL | 195 ms | FAIL missing exported skill hooked-model |
 
 ## Audit Health
 
@@ -67,18 +67,6 @@ Comprehension carve-out (per ADR-0011 § Addendum 2026-05-20):
 | Framework concept or no comprehension layer (`SKIPPED_BASELINE_HIGH` / `NA`) | `21` | Comprehension legitimately does not apply — model already knows the concept or the skill ships none. |
 | Comprehension graded | `6` | Comprehension grader produced a real verdict. |
 | Comprehension unassessed | `154` | Repo-specific skill awaiting gate-8 run. |
-
-## Deprecated-alias drain
-
-> The live schema accepts remaining deprecated/legacy aliases only for unmigrated skills, and this table records recently removed aliases until the next status cleanup. **Removal condition (per `AGENTS.md § Major Version Is a Clean Cut`): when an alias's corpus usage reaches 0, one SYSTEM commit deletes it from the schema.** The per-skill rename is CONTENT-mode audit-loop work; this table makes the drain measurable instead of open-ended.
-
-| Deprecated alias | Canonical | Corpus usage | State |
-|---|---|---|---|
-| `relations.boundary` | `relations.suppresses` | `0` / `182` | **REMOVED FROM SCHEMA** — corpus usage is zero; runtime read fallbacks, if any, are compatibility-only |
-| `relations.adjacent` | `relations.related` | `0` / `182` | **REMOVED FROM SCHEMA** — corpus usage is zero; runtime read fallbacks, if any, are compatibility-only |
-| `boundary (top-level Understanding)` | `concept_boundary` | `0` / `182` | **REMOVED FROM SCHEMA** — corpus usage is zero; runtime read fallbacks, if any, are compatibility-only |
-| `compatibility.runtimes` | `compatibility.agent_runtimes` | `0` / `182` | **REMOVED FROM SCHEMA** — corpus usage is zero; runtime read fallbacks, if any, are compatibility-only |
-| `compatibility.node` | `compatibility.node_version` | `0` / `182` | **REMOVED FROM SCHEMA** — corpus usage is zero; runtime read fallbacks, if any, are compatibility-only |
 
 ## How to refresh
 

@@ -55,9 +55,7 @@ const fm = {
   'allowed-tools': 'Read Grep',
   allowed_tools: 'Read Grep',
   compatibility: {
-    runtimes: ['agent-runtime>=2.0'],
     agent_runtimes: ['agent-runtime>=2.0'],
-    node: '>=20',
     node_version: '>=20',
   },
   grounding: {
@@ -85,8 +83,9 @@ assert(entry.health.reviewed_at === fm.reviewed_at, 'reviewed_at alias should pr
 assert(entry.health.eval && entry.health.eval.content_state === 'unverified', 'nested eval alias should project to health.eval');
 assert(entry.compatibility.agent_runtimes[0] === 'agent-runtime>=2.0', 'compatibility.agent_runtimes should be the emitted runtime key');
 assert(entry.compatibility.node_version === '>=20', 'compatibility.node_version should be the emitted Node key');
-assert(!('runtimes' in entry.compatibility), 'compatibility.runtimes should normalize away from generated manifests');
-assert(!('node' in entry.compatibility), 'compatibility.node should normalize away from generated manifests');
+// compatibility.runtimes / compatibility.node alias normalization assertions removed with the
+// aliases themselves (SKI-353, 2026-06-15). The schema's additionalProperties:false now rejects
+// those keys outright — there is no normalization step left to assert.
 assert(entry.grounding.subject_matter === 'Alias contract', 'grounding.subject_matter should pass through');
 assert(entry.grounding.grounding_mode === 'repo_specific', 'grounding.grounding_mode (canonical; claim_scope alias removed SKI-241) should pass through');
 assert(entry.portability.export_targets[0] === 'skill-md', 'portability.export_targets should pass through');

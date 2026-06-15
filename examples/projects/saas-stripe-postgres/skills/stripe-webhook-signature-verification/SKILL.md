@@ -31,11 +31,11 @@ stability: experimental
 # license: SPDX license identifier (e.g., MIT, Apache-2.0).
 license: MIT
 # compatibility: runtime compatibility object. Prefer structured fields
-# (`runtimes`, `node`) over free-text `notes`.
+# (`agent_runtimes`, `node_version`) over free-text `notes`.
 compatibility:
-  runtimes:
+  agent_runtimes:
     - node
-  node: ">=20"
+  node_version: ">=20"
   notes: "Stripe SDK >=14; expects raw request body (not parsed JSON) for signature verification."
 allowed-tools: Read Grep
 # keywords: semantic phrases for fuzzy router activation. v8 cap: max 10.

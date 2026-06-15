@@ -106,27 +106,14 @@ function main() {
     fail(`predicate target counts differ between fixture and manifest:\n  - ${sizeMismatch.join('\n  - ')}`);
   }
 
-  // Sanity: retired aliases still normalize to canonical output for historical
-  // callers, but generated manifests do not re-emit retired keys.
-  const aliasFm = {
-    ...fm,
-    relations: {
-      adjacent: ['documentation'],
-      boundary: [{ skill: 'skill-router', reason: 'skill-router owns dispatch decisions' }],
-    },
-  };
-  const aliasEntry = buildSkillEntry(aliasFm, FIXTURE_PATH, 'v3-1-skos-fixture-aliases', null);
-  if (!aliasEntry.relations || !Array.isArray(aliasEntry.relations.related) || aliasEntry.relations.related.length !== 1) {
-    fail('back-compat regression: relations.adjacent should normalize to canonical relations.related');
-  }
-  if (!Array.isArray(aliasEntry.relations.suppresses) || aliasEntry.relations.suppresses.length !== 1) {
-    fail('back-compat regression: relations.boundary should normalize to canonical relations.suppresses');
-  }
-  if ('adjacent' in aliasEntry.relations || 'boundary' in aliasEntry.relations) {
-    fail('manifest generator must not re-emit retired relation aliases');
-  }
+  // The relations.adjacent -> related and relations.boundary -> suppresses back-compat
+  // normalization was removed with those aliases (SKI-353, 2026-06-15). Zero corpus usage;
+  // the schema's additionalProperties:false now rejects the retired spellings outright, so
+  // there is no normalization step left to assert here. Canonical predicates are exercised
+  // above; deployment_target (the one surviving alias) keeps its own coverage in
+  // test-v3-1-alias-contract.js.
 
-  pass(`all ${EXPECTED_PREDICATES.length} canonical predicates round-trip cleanly + retired aliases normalize`);
+  pass(`all ${EXPECTED_PREDICATES.length} canonical predicates round-trip cleanly`);
   pass('R1 closed: ADR 0001 SKOS additions, ADR 0018 suppresses, ADR 0006 disjoint_with split, and io_contract are implemented in scripts/generate-manifest.js');
   process.exit(0);
 }

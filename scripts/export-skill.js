@@ -117,25 +117,26 @@ const SKILL_GRAPH_EXTENSION_FIELDS = new Set([
 ]);
 
 /**
- * Flatten a v3 `compatibility` object to a single free-text string suitable
+ * Flatten a `compatibility` object to a single free-text string suitable
  * for the plain SKILL.md `compatibility` field.
  *
- * v3 shape:  { runtimes?: string[], node?: string, notes?: string }
- * v2 shape:  string (passed through unchanged)
+ * Structured shape:  { agent_runtimes?: string[], node_version?: string, notes?: string }
+ * String shape:      passed through unchanged.
  *
- * Concatenation order: runtimes, node, notes - joined with "; ".
+ * Concatenation order: agent_runtimes, node_version, notes - joined with "; ".
+ * (The legacy `runtimes`/`node` read aliases were removed in SKI-353, 2026-06-15
+ * once corpus + example usage hit zero; the schema now accepts only the canonical
+ * keys, so there is no alias to fall back to here.)
  */
 function flattenCompatibility(value) {
   if (typeof value === 'string') return value;
   if (!value || typeof value !== 'object') return null;
   const parts = [];
-  const runtimes = Array.isArray(value.runtimes) && value.runtimes.length > 0
-    ? value.runtimes
-    : value.agent_runtimes;
+  const runtimes = value.agent_runtimes;
   if (Array.isArray(runtimes) && runtimes.length > 0) {
     parts.push(runtimes.join(', '));
   }
-  const nodeVersion = value.node || value.node_version;
+  const nodeVersion = value.node_version;
   if (nodeVersion) parts.push(`node ${nodeVersion}`);
   if (value.notes) parts.push(value.notes);
   return parts.join('; ');

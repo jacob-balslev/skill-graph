@@ -405,14 +405,21 @@ const EXPORT_PROVENANCE_FIELDS = new Set([
  *    conservative default (a project-grounded skill is assumed private until
  *    the audit loop confirms it is leak-free). The old key is removed so the
  *    schema's `additionalProperties: false` does not reject it.
- *  - top-level `boundary` (Understanding string) → `concept_boundary`.
- *  - `relations.adjacent` → `relations.related`.
- *  - `relations.boundary` → `relations.suppresses`.
- *  - `compatibility.runtimes` → `compatibility.agent_runtimes`.
- *  - `compatibility.node` → `compatibility.node_version`.
  *
  * Canonical wins: if the canonical key is already present, the alias is dropped
  * rather than overwriting the explicit author signal.
+ *
+ * Removed (SKI-353, 2026-06-15): the five fully-drained read aliases
+ * `top-level boundary` → `concept_boundary`, `relations.adjacent` →
+ * `relations.related`, `relations.boundary` → `relations.suppresses`,
+ * `compatibility.runtimes` → `compatibility.agent_runtimes`, and
+ * `compatibility.node` → `compatibility.node_version`. Corpus usage was 0 for
+ * all five; the only remaining users (10 example specimens for runtimes/node)
+ * were migrated to the canonical keys in the same commit. Per
+ * `AGENTS.md § Major Version Is a Clean Cut`, a zero-usage alias is deleted,
+ * not kept as a back-compat shim — git history is the recovery path. A skill
+ * authoring one of these now fails schema validation (`additionalProperties:
+ * false`), which is the intended forcing function toward the canonical name.
  *
  * @param {object} obj - A top-level frontmatter object (mutated and returned).
  * @returns {object} The same object with aliases canonicalized.
@@ -424,36 +431,6 @@ function applyDeprecatedAliases(obj) {
       obj.public = obj.deployment_target === 'portable';
     }
     delete obj.deployment_target;
-  }
-  if (typeof obj.boundary === 'string') {
-    if (!('concept_boundary' in obj)) {
-      obj.concept_boundary = obj.boundary;
-    }
-    delete obj.boundary;
-  }
-  if (obj.relations && typeof obj.relations === 'object' && !Array.isArray(obj.relations)) {
-    const relations = { ...obj.relations };
-    if ('adjacent' in relations) {
-      if (!('related' in relations)) relations.related = relations.adjacent;
-      delete relations.adjacent;
-    }
-    if ('boundary' in relations) {
-      if (!('suppresses' in relations)) relations.suppresses = relations.boundary;
-      delete relations.boundary;
-    }
-    obj.relations = relations;
-  }
-  if (obj.compatibility && typeof obj.compatibility === 'object' && !Array.isArray(obj.compatibility)) {
-    const compatibility = { ...obj.compatibility };
-    if ('runtimes' in compatibility) {
-      if (!('agent_runtimes' in compatibility)) compatibility.agent_runtimes = compatibility.runtimes;
-      delete compatibility.runtimes;
-    }
-    if ('node' in compatibility) {
-      if (!('node_version' in compatibility)) compatibility.node_version = compatibility.node;
-      delete compatibility.node;
-    }
-    obj.compatibility = compatibility;
   }
   return obj;
 }
