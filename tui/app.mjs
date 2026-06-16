@@ -12,6 +12,7 @@ import RunPanel, {RUN_PANEL_FOCUS_ID} from "./components/RunPanel.mjs";
 import SessionList, {SESSION_LIST_FOCUS_ID} from "./components/SessionList.mjs";
 import StatusBar from "./components/StatusBar.mjs";
 import useHeartbeat from "./hooks/useHeartbeat.mjs";
+import useReviewState from "./hooks/useReviewState.mjs";
 
 const html = htm.bind((type, props, ...children) => React.createElement(
   {Box}[type] || type,
@@ -56,10 +57,16 @@ function navigationSnapshot(nav) {
 function parseArgs(args) {
   const options = {
     auditRoot: undefined,
+    filters: {},
+    findingsFile: undefined,
+    groupBy: "none",
     help: false,
     noInput: false,
     once: false,
+    reviewFile: undefined,
+    sortBy: "disposition-priority",
     statusFile: undefined,
+    viewsFile: undefined,
   };
 
   for (let i = 0; i < args.length; i += 1) {
@@ -77,6 +84,39 @@ function parseArgs(args) {
       i += 1;
     } else if ((arg === "--status-file" || arg === "--heartbeat") && args[i + 1]) {
       options.statusFile = args[i + 1];
+      i += 1;
+    } else if (arg === "--findings-file" && args[i + 1]) {
+      options.findingsFile = args[i + 1];
+      i += 1;
+    } else if (arg === "--review-file" && args[i + 1]) {
+      options.reviewFile = args[i + 1];
+      i += 1;
+    } else if (arg === "--views-file" && args[i + 1]) {
+      options.viewsFile = args[i + 1];
+      i += 1;
+    } else if (arg === "--sort" && args[i + 1]) {
+      options.sortBy = args[i + 1];
+      i += 1;
+    } else if (arg === "--group-by" && args[i + 1]) {
+      options.groupBy = args[i + 1];
+      i += 1;
+    } else if ((arg === "--filter" || arg === "--text") && args[i + 1]) {
+      options.filters.text = args[i + 1];
+      i += 1;
+    } else if (arg === "--severity" && args[i + 1]) {
+      options.filters.severity = args[i + 1];
+      i += 1;
+    } else if (arg === "--category" && args[i + 1]) {
+      options.filters.category = args[i + 1];
+      i += 1;
+    } else if ((arg === "--disposition" || arg === "--verdict") && args[i + 1]) {
+      options.filters.disposition = args[i + 1];
+      i += 1;
+    } else if (arg === "--skill" && args[i + 1]) {
+      options.filters.skill = args[i + 1];
+      i += 1;
+    } else if (arg === "--model" && args[i + 1]) {
+      options.filters.model = args[i + 1];
       i += 1;
     }
   }
@@ -122,13 +162,35 @@ Options:
   --audit-root <path>  Read sessions from an alternate audit progress root.
   --status-file <path> Read a heartbeat status JSON file.
   --heartbeat <path>   Alias for --status-file.
+  --findings-file <p>  Read findings from a merge-ledger JSON/Markdown file.
+  --review-file <p>    Write per-finding decisions to this review sidecar.
+  --views-file <p>     Read saved findings-review views from JSON.
+  --filter <text>      Filter findings by text.
+  --severity <text>    Filter findings by severity.
+  --category <text>    Filter findings by category.
+  --disposition <text> Filter findings by disposition/verdict.
+  --skill <text>       Filter findings by skill.
+  --model <text>       Filter findings by model/source.
+  --sort <name>        Findings sort: disposition-priority, original, decision-status.
+  --group-by <name>    Group findings: none, skill, model, verdict, decision.
   --once              Render one frame and exit; intended for smoke tests.
   --no-input          Alias for --once with keyboard input disabled.
   --help              Show this help.
 `;
 }
 
-export function App({auditRoot, cursor = DEFAULT_CURSOR, noInput = false, statusFile}) {
+export function App({
+  auditRoot,
+  cursor = DEFAULT_CURSOR,
+  findingsFile,
+  groupBy = "none",
+  noInput = false,
+  reviewFile,
+  reviewFilters = {},
+  sortBy = "disposition-priority",
+  statusFile,
+  viewsFile,
+}) {
   const navRef = React.useRef(null);
   if (navRef.current === null) navRef.current = createNavigation(cursor);
 
@@ -137,8 +199,21 @@ export function App({auditRoot, cursor = DEFAULT_CURSOR, noInput = false, status
     [auditRoot, statusFile],
   );
   const heartbeatState = useHeartbeat(effectiveStatusFile, {watch: !noInput});
+  const reviewStatusFile = statusFile || !findingsFile ? effectiveStatusFile : undefined;
+  const reviewState = useReviewState({
+    heartbeat: reviewStatusFile ? heartbeatState.heartbeat : null,
+    statusFile: reviewStatusFile,
+    findingsFile,
+    reviewFile,
+    viewsFile,
+    filters: reviewFilters,
+    groupBy,
+    sortBy,
+    watch: !noInput,
+  });
   const [breadcrumb, setBreadcrumb] = React.useState(() => navigationSnapshot(navRef.current));
   const [focusId, setFocusId] = React.useState(SESSION_LIST_FOCUS_ID);
+  const [inputLocked, setInputLocked] = React.useState(false);
   const didInitFocus = React.useRef(false);
   const app = useApp();
   const focusManager = useFocusManager();
@@ -154,6 +229,18 @@ export function App({auditRoot, cursor = DEFAULT_CURSOR, noInput = false, status
   }, []);
 
   const saveFocusCursor = React.useCallback(() => ({focusId}), [focusId]);
+
+  const pushFindingBreadcrumb = React.useCallback((finding) => {
+    if (!finding) return;
+    const current = navRef.current.current();
+    if (current && current.id === "finding") navRef.current.pop(saveFocusCursor());
+    navRef.current.push({
+      id: "finding",
+      label: `Finding ${finding.id || "selected"}`,
+      focusCursor: {findingId: finding.id || null},
+    }, saveFocusCursor());
+    updateBreadcrumb();
+  }, [saveFocusCursor, updateBreadcrumb]);
 
   const cycleFocus = React.useCallback((delta) => {
     const index = FOCUS_ORDER.indexOf(focusId);
@@ -205,7 +292,7 @@ export function App({auditRoot, cursor = DEFAULT_CURSOR, noInput = false, status
       navRef.current.pop(saveFocusCursor());
       updateBreadcrumb();
     }
-  }, {isActive: !noInput});
+  }, {isActive: !noInput && !inputLocked});
 
   return html`
     <Box flexDirection="column" gap=${1}>
@@ -214,7 +301,13 @@ export function App({auditRoot, cursor = DEFAULT_CURSOR, noInput = false, status
         <${SessionList} auditRoot=${auditRoot} onFocusChange=${setFocusId} />
         <${RunPanel} heartbeatState=${heartbeatState} statusFile=${effectiveStatusFile} onFocusChange=${setFocusId} />
       </Box>
-      <${FindingsReview} onFocusChange=${setFocusId} />
+      <${FindingsReview}
+        noInput=${noInput}
+        onFocusChange=${setFocusId}
+        onInputModeChange=${setInputLocked}
+        onSelectFinding=${pushFindingBreadcrumb}
+        review=${reviewState}
+      />
       <${StatusBar} focusId=${focusId} noInput=${noInput} />
     </Box>
   `;
@@ -229,7 +322,19 @@ export async function run(args = process.argv.slice(2), streams = {}) {
     return 0;
   }
 
-  const instance = render(html`<${App} auditRoot=${options.auditRoot} noInput=${options.noInput} statusFile=${options.statusFile} />`, {
+  const instance = render(html`
+    <${App}
+      auditRoot=${options.auditRoot}
+      findingsFile=${options.findingsFile}
+      groupBy=${options.groupBy}
+      noInput=${options.noInput}
+      reviewFile=${options.reviewFile}
+      reviewFilters=${options.filters}
+      sortBy=${options.sortBy}
+      statusFile=${options.statusFile}
+      viewsFile=${options.viewsFile}
+    />
+  `, {
     stdout,
     stdin: streams.stdin || process.stdin,
     stderr: streams.stderr || process.stderr,

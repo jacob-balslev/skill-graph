@@ -1,0 +1,30 @@
+{
+  "merge_ledger": {
+    "contributions": [
+      {
+        "id": "F-low-kept",
+        "summary": "Document the harmless formatting cleanup in the audit notes.",
+        "severity": "P4",
+        "category": "QUALITY",
+        "disposition": "kept",
+        "skill": "manual",
+        "model": "gpt-5.5",
+        "evidence": "docs/quality-doctrine.md:1",
+        "requiredAction": "follow-up",
+        "sourceRef": "fixture"
+      },
+      {
+        "id": "F-risk-rejected",
+        "summary": "Tenant orgId can leak cross-org customer data from client props.",
+        "severity": "P2",
+        "category": "SECURITY",
+        "disposition": "rejected",
+        "skill": "manual",
+        "model": "opus-4.8",
+        "evidence": "lib/auth.js:12 shows orgId passed through client props without tenant guard.",
+        "requiredAction": "fix-now",
+        "sourceRef": "fixture"
+      }
+    ]
+  }
+}

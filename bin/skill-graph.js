@@ -289,6 +289,17 @@ Options:
   --audit-root <path>  Read sessions from an alternate audit progress root.
   --status-file <path> Read a heartbeat status JSON file.
   --heartbeat <path>   Alias for --status-file.
+  --findings-file <p>  Read findings from a merge-ledger JSON/Markdown file.
+  --review-file <p>    Write per-finding decisions to this review sidecar.
+  --views-file <p>     Read saved findings-review views from JSON.
+  --filter <text>      Filter findings by text.
+  --severity <text>    Filter findings by severity.
+  --category <text>    Filter findings by category.
+  --disposition <text> Filter findings by disposition/verdict.
+  --skill <text>       Filter findings by skill.
+  --model <text>       Filter findings by model/source.
+  --sort <name>        Findings sort: disposition-priority, original, decision-status.
+  --group-by <name>    Group findings: none, skill, model, verdict, decision.
   --once              Render one frame and exit; intended for smoke tests.
   --no-input          Alias for --once with keyboard input disabled.
   --help              Show this help.

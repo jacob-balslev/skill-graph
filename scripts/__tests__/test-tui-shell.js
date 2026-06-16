@@ -38,14 +38,14 @@ function stripAnsi(value) {
     assert.match(frame, /RunPanel/);
     assert.match(frame, /FindingsReview/);
     assert.match(frame, /No heartbeat selected/);
-    assert.match(frame, /Step 3: live heartbeat panel mounted/);
+    assert.match(frame, /Step 4: findings review pane mounted/);
     assert.match(frame, /no-input smoke mode/);
   } finally {
     if (instance) instance.unmount();
     cleanup();
   }
 
-  console.log('  PASS    tui shell renders breadcrumb and stub panes');
+  console.log('  PASS    tui shell renders breadcrumb and review panes');
   console.log('\n1 passed');
 })().catch((err) => {
   console.error(err.stack || err.message);
