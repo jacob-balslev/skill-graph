@@ -41,6 +41,7 @@
 const fs = require('fs');
 const path = require('path');
 const { resolveDisplayName } = require('../lib/audit-shared/model-provider');
+const { agentGlyph } = require('../lib/audit/panel-progress');
 const { pidAlive } = require('./watch-panel');
 
 // The four canonical phases, in order — the per-phase task rows of the checklist.
@@ -51,21 +52,9 @@ const PHASES = [
   { key: 'curate', label: 'curate' },
 ];
 
-// Per-model glyph for the ACTIVE phase, from the agent's live lifecycle state. Matches the
-// panel spec's vocabulary (✓ done · ⟳ active · ✗ failed · – skipped · · not-started). Distinct
-// from panel-progress.js STATE_GLYPH (which uses ◦/⏳ for the scrolling TUI); the Task panel
-// uses the compact set the user authored in the § Surface ordering spec.
-const DONE_STATES = new Set(['done', 'proposed', 'reviewed', 'revised', 'complete']);
-const ACTIVE_STATES = new Set(['proposing', 'reviewing', 'revising', 'running', 'curating']);
-const FAILED_STATES = new Set(['failed', 'timeout']);
-
-function agentGlyph(state) {
-  if (DONE_STATES.has(state)) return '✓';
-  if (ACTIVE_STATES.has(state)) return '⟳';
-  if (FAILED_STATES.has(state)) return '✗';
-  if (state === 'skipped') return '–';
-  return '·'; // queued / unknown / not-yet-started
-}
+// Per-model glyph for the ACTIVE phase, from the agent's live lifecycle state.
+// Shared with panel-progress.js so every panel surface uses the same vocabulary:
+// ✓ done · ⟳ active · ✗ failed · – skipped · · not-started.
 
 // Map the whole-run phase label (free text: 'propose (advisory)', 'review', 'dispatch',
 // 'curate', 'complete', …) to an index into PHASES, so phases BEFORE it render completed, the
@@ -97,7 +86,8 @@ function phaseSubject(label, agents, i, currentIdx, complete) {
     if (complete || i < currentIdx) {
       // A past/completed phase: the run advanced, so participants finished it — show ✓, but keep a
       // terminal-failed agent's ✗/– honest (failures persist in the snapshot's agents[]).
-      glyph = (FAILED_STATES.has(a.state) || a.state === 'skipped') ? agentGlyph(a.state) : '✓';
+      const terminalGlyph = agentGlyph(a.state);
+      glyph = (terminalGlyph === '✗' || terminalGlyph === '–') ? terminalGlyph : '✓';
     } else if (i === currentIdx) {
       glyph = agentGlyph(a.state); // the active phase: live per-model state
     } else {

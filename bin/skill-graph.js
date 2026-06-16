@@ -287,6 +287,8 @@ Open the Skill Audit Loop terminal UI.
 
 Options:
   --audit-root <path>  Read sessions from an alternate audit progress root.
+  --status-file <path> Read a heartbeat status JSON file.
+  --heartbeat <path>   Alias for --status-file.
   --once              Render one frame and exit; intended for smoke tests.
   --no-input          Alias for --once with keyboard input disabled.
   --help              Show this help.

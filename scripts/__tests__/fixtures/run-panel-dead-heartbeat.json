@@ -1,0 +1,35 @@
+{
+  "ts": "2020-01-01T00:00:00.000Z",
+  "pid": 2147483647,
+  "skill": "run-panel-dead",
+  "phase": "review",
+  "elapsed_s": 600,
+  "total": 2,
+  "done": 0,
+  "failed": 0,
+  "running": [
+    {
+      "cell": "opus:review",
+      "elapsed_s": 45
+    }
+  ],
+  "complete": false,
+  "agents": [
+    {
+      "model": "opus",
+      "tier": "mandatory",
+      "phase": "review",
+      "state": "reviewing",
+      "elapsed_s": 45,
+      "failure_reason": null
+    },
+    {
+      "model": "gemini",
+      "tier": "advisory",
+      "phase": null,
+      "state": "queued",
+      "elapsed_s": 0,
+      "failure_reason": null
+    }
+  ]
+}

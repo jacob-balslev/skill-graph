@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import process from "node:process";
 import {fileURLToPath} from "node:url";
 import React from "react";
@@ -9,6 +11,7 @@ import FindingsReview, {FINDINGS_REVIEW_FOCUS_ID} from "./components/FindingsRev
 import RunPanel, {RUN_PANEL_FOCUS_ID} from "./components/RunPanel.mjs";
 import SessionList, {SESSION_LIST_FOCUS_ID} from "./components/SessionList.mjs";
 import StatusBar from "./components/StatusBar.mjs";
+import useHeartbeat from "./hooks/useHeartbeat.mjs";
 
 const html = htm.bind((type, props, ...children) => React.createElement(
   {Box}[type] || type,
@@ -16,6 +19,9 @@ const html = htm.bind((type, props, ...children) => React.createElement(
   ...children,
 ));
 const {createBreadcrumb} = breadcrumbLib;
+const APP_FILE = fileURLToPath(import.meta.url);
+const APP_DIR = path.dirname(APP_FILE);
+const DEFAULT_AUDIT_ROOT = path.join(APP_DIR, "..", "skill-audit-loop", "progress", "skill-audits");
 
 const DEFAULT_CURSOR = [
   {id: "session", label: "Session"},
@@ -53,6 +59,7 @@ function parseArgs(args) {
     help: false,
     noInput: false,
     once: false,
+    statusFile: undefined,
   };
 
   for (let i = 0; i < args.length; i += 1) {
@@ -68,10 +75,42 @@ function parseArgs(args) {
     } else if (arg === "--audit-root" && args[i + 1]) {
       options.auditRoot = args[i + 1];
       i += 1;
+    } else if ((arg === "--status-file" || arg === "--heartbeat") && args[i + 1]) {
+      options.statusFile = args[i + 1];
+      i += 1;
     }
   }
 
   return options;
+}
+
+export function discoverLatestHeartbeat({auditRoot} = {}) {
+  const root = path.resolve(auditRoot || DEFAULT_AUDIT_ROOT);
+  const names = ["panel-status.json", "status.json"];
+  const candidates = [];
+  let entries = [];
+  try {
+    entries = fs.readdirSync(root, {withFileTypes: true});
+  } catch (_) {
+    return null;
+  }
+
+  for (const entry of entries) {
+    const parent = entry.isDirectory() ? path.join(root, entry.name) : root;
+    if (!entry.isDirectory() && !names.includes(entry.name)) continue;
+    for (const name of entry.isDirectory() ? names : [entry.name]) {
+      const file = path.join(parent, name);
+      try {
+        const stat = fs.statSync(file);
+        if (stat.isFile()) candidates.push({file, mtimeMs: stat.mtimeMs});
+      } catch (_) {
+        // Ignore disappearing files; active heartbeat writers may rename atomically.
+      }
+    }
+  }
+
+  candidates.sort((a, b) => b.mtimeMs - a.mtimeMs || b.file.localeCompare(a.file));
+  return candidates.length ? candidates[0].file : null;
 }
 
 export function usage() {
@@ -81,16 +120,23 @@ Open the Skill Audit Loop terminal UI.
 
 Options:
   --audit-root <path>  Read sessions from an alternate audit progress root.
+  --status-file <path> Read a heartbeat status JSON file.
+  --heartbeat <path>   Alias for --status-file.
   --once              Render one frame and exit; intended for smoke tests.
   --no-input          Alias for --once with keyboard input disabled.
   --help              Show this help.
 `;
 }
 
-export function App({auditRoot, cursor = DEFAULT_CURSOR, noInput = false}) {
+export function App({auditRoot, cursor = DEFAULT_CURSOR, noInput = false, statusFile}) {
   const navRef = React.useRef(null);
   if (navRef.current === null) navRef.current = createNavigation(cursor);
 
+  const effectiveStatusFile = React.useMemo(
+    () => statusFile || discoverLatestHeartbeat({auditRoot}),
+    [auditRoot, statusFile],
+  );
+  const heartbeatState = useHeartbeat(effectiveStatusFile, {watch: !noInput});
   const [breadcrumb, setBreadcrumb] = React.useState(() => navigationSnapshot(navRef.current));
   const [focusId, setFocusId] = React.useState(SESSION_LIST_FOCUS_ID);
   const didInitFocus = React.useRef(false);
@@ -166,7 +212,7 @@ export function App({auditRoot, cursor = DEFAULT_CURSOR, noInput = false}) {
       <${Breadcrumb} segments=${breadcrumb.segments} activeIndex=${breadcrumb.activeIndex} />
       <Box flexDirection="row" gap=${1}>
         <${SessionList} auditRoot=${auditRoot} onFocusChange=${setFocusId} />
-        <${RunPanel} onFocusChange=${setFocusId} />
+        <${RunPanel} heartbeatState=${heartbeatState} statusFile=${effectiveStatusFile} onFocusChange=${setFocusId} />
       </Box>
       <${FindingsReview} onFocusChange=${setFocusId} />
       <${StatusBar} focusId=${focusId} noInput=${noInput} />
@@ -183,7 +229,7 @@ export async function run(args = process.argv.slice(2), streams = {}) {
     return 0;
   }
 
-  const instance = render(html`<${App} auditRoot=${options.auditRoot} noInput=${options.noInput} />`, {
+  const instance = render(html`<${App} auditRoot=${options.auditRoot} noInput=${options.noInput} statusFile=${options.statusFile} />`, {
     stdout,
     stdin: streams.stdin || process.stdin,
     stderr: streams.stderr || process.stderr,
@@ -203,7 +249,7 @@ export async function run(args = process.argv.slice(2), streams = {}) {
   return 0;
 }
 
-if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+if (process.argv[1] && APP_FILE === process.argv[1]) {
   run().then((code) => {
     process.exitCode = code;
   }).catch((err) => {

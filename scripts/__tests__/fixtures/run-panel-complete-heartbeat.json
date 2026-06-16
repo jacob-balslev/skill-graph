@@ -1,0 +1,38 @@
+{
+  "ts": "2026-06-16T10:00:00.000Z",
+  "pid": 2147483647,
+  "skill": "run-panel-complete",
+  "phase": "complete",
+  "elapsed_s": 125,
+  "total": 3,
+  "done": 2,
+  "failed": 0,
+  "running": [],
+  "complete": true,
+  "agents": [
+    {
+      "model": "opus",
+      "tier": "mandatory",
+      "phase": "verify",
+      "state": "done",
+      "elapsed_s": 0,
+      "failure_reason": null
+    },
+    {
+      "model": "codex-current",
+      "tier": "quality",
+      "phase": "revise",
+      "state": "revised",
+      "elapsed_s": 0,
+      "failure_reason": null
+    },
+    {
+      "model": "gemini-flash",
+      "tier": "advisory",
+      "phase": "propose",
+      "state": "skipped",
+      "elapsed_s": 0,
+      "failure_reason": "no-document"
+    }
+  ]
+}

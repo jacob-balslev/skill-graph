@@ -9,7 +9,7 @@ const html = htm.bind((type, props, ...children) => React.createElement(
 ));
 
 export default function StatusBar({focusId = "sessions", noInput = false}) {
-  const completeness = "Step 2 shell: panes mounted; run and finding details pending.";
+  const completeness = "Step 3: live heartbeat panel mounted.";
   const keys = noInput
     ? "no-input smoke mode"
     : "Tab/Shift-Tab focus | <-/-> segment | [/ ] history | Esc/Backspace pop | q quit";
