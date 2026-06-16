@@ -241,7 +241,6 @@ flowchart LR
 |---|---|
 | `scripts/skill-audit.js` | Two-mode audit runner: stub mode (lint-seeded TODO findings that are incomplete until human review) and `--graded` mode (external model CLI for per-dimension verdicts). |
 | `scripts/lib/audit-prompt-builder.js` | Seven-dimension prompt composer for graded mode. |
-| `scripts/lib/mock-grader.js` | Deterministic stand-in grader for CI smoke-tests without an API key. |
 
 ---
 
