@@ -31,7 +31,81 @@
  * @property {string} id      - Machine-readable identifier used in finding reports.
  * @property {string} message - Human-readable description of the pattern class.
  * @property {RegExp} regex   - Stateful regex. Reset `lastIndex` before each scan.
+ * @property {(match: string) => boolean} [validate] - Optional second-stage guard.
+ *   When present, a regex match is reported ONLY if `validate(match)` returns true.
+ *   This exists so structured financial identifiers (IBAN, payment card, ABA
+ *   routing) can be matched by a deliberately loose regex and then confirmed by a
+ *   checksum, so an innocent digit run in an example does NOT false-positive and
+ *   break the CI/export gate. Patterns without `validate` behave exactly as before.
  */
+
+// --- Checksum validators for structured-financial-identifier patterns ---
+// These are the second-stage guard for the IBAN / payment-card / routing patterns
+// below. The regex finds a CANDIDATE; the checksum decides whether it is real.
+// Without the checksum, "a 16-digit number in an example" would false-positive;
+// with it, a random digit run is rejected (Luhn rejects ~90%, the IIN prefix and
+// the ISO-7064 mod-97 / ABA mod-10 checks reject nearly all of the remainder).
+
+/** Strip every non-digit character. */
+function digitsOnly(s) { return String(s).replace(/[^0-9]/g, ''); }
+
+/** Luhn (mod-10) checksum — the standard payment-card check. */
+function luhnValid(numStr) {
+  const d = digitsOnly(numStr);
+  if (d.length < 13 || d.length > 19) return false;
+  let sum = 0;
+  let double = false;
+  for (let i = d.length - 1; i >= 0; i--) {
+    let n = d.charCodeAt(i) - 48;
+    if (double) { n *= 2; if (n > 9) n -= 9; }
+    sum += n;
+    double = !double;
+  }
+  return sum % 10 === 0;
+}
+
+/** Major-network IIN prefix — combined with Luhn, makes accidental matches negligible. */
+function looksLikeCardIIN(numStr) {
+  const d = digitsOnly(numStr);
+  return /^4/.test(d)                      // Visa
+    || /^(?:5[1-5]|2[2-7])/.test(d)        // Mastercard
+    || /^3[47]/.test(d)                    // Amex
+    || /^(?:6011|65|64[4-9]|622)/.test(d)  // Discover
+    || /^3(?:0[0-5]|[68])/.test(d);        // Diners Club
+}
+
+/** A candidate is a real payment card iff it carries a known IIN AND passes Luhn. */
+function creditCardValid(raw) {
+  const d = digitsOnly(raw);
+  return looksLikeCardIIN(d) && luhnValid(d);
+}
+
+/** ISO 7064 mod-97 IBAN check (the real IBAN validity test). */
+function ibanValid(raw) {
+  const s = String(raw).replace(/\s+/g, '').toUpperCase();
+  if (!/^[A-Z]{2}\d{2}[A-Z0-9]{11,30}$/.test(s)) return false;
+  if (s.length < 15 || s.length > 34) return false;
+  const rearranged = s.slice(4) + s.slice(0, 4); // move country+check to the end
+  let remainder = 0;
+  for (const ch of rearranged) {
+    // letters A-Z map to 10-35; digits stay as-is
+    const mapped = ch >= 'A' && ch <= 'Z' ? String(ch.charCodeAt(0) - 55) : ch;
+    for (let j = 0; j < mapped.length; j++) {
+      remainder = (remainder * 10 + (mapped.charCodeAt(j) - 48)) % 97;
+    }
+  }
+  return remainder === 1;
+}
+
+/** US ABA routing-number checksum (mod-10, position-weighted 3-7-1). */
+function abaRoutingValid(raw) {
+  const d = digitsOnly(raw);
+  if (d.length !== 9) return false;
+  const n = d.split('').map((c) => c.charCodeAt(0) - 48);
+  if (n.every((x) => x === 0)) return false; // all-zeros is not a real routing number
+  const sum = 3 * (n[0] + n[3] + n[6]) + 7 * (n[1] + n[4] + n[7]) + (n[2] + n[5] + n[8]);
+  return sum % 10 === 0;
+}
 
 /**
  * Canonical set of privacy-violation patterns.
@@ -105,6 +179,32 @@ const PRIVACY_PATTERNS = [
     message: 'known private project name',
     regex: /\b(?:placeholder-project-name|boardmeeting|free-oppression-data)\b/gi,
   },
+  {
+    // Structured financial identifier. The regex is a loose candidate finder; the
+    // ISO 7064 mod-97 `validate` is the real guard, so a non-IBAN alphanumeric run
+    // (a hash, a token, a version string) is rejected and cannot break the gate.
+    id: 'iban',
+    message: 'IBAN (international bank account number)',
+    regex: /\b[A-Z]{2}\d{2}(?:[ ]?[A-Z0-9]){11,30}\b/g,
+    validate: ibanValid,
+  },
+  {
+    // Payment card number. `validate` requires a major-network IIN prefix AND a
+    // passing Luhn checksum — so a random 13-19 digit number in an example does
+    // NOT match (the exact false-positive that would otherwise break CI/export).
+    id: 'credit_card',
+    message: 'payment card number (Luhn-valid, major-network IIN)',
+    regex: /\b(?:\d[ -]?){12,18}\d\b/g,
+    validate: creditCardValid,
+  },
+  {
+    // US ABA bank routing number — 9 digits gated by the mod-10 routing checksum,
+    // so an arbitrary 9-digit run that does not satisfy the checksum is rejected.
+    id: 'us_aba_routing',
+    message: 'US ABA bank routing number (checksum-valid)',
+    regex: /\b\d{9}\b/g,
+    validate: abaRoutingValid,
+  },
 ];
 
 /**
@@ -144,13 +244,18 @@ function scanPrivacyText(text, filePath) {
     pattern.regex.lastIndex = 0;
     let match;
     while ((match = pattern.regex.exec(text)) !== null) {
-      findings.push({
-        file: filePath,
-        line: lineForIndex(text, match.index),
-        id: pattern.id,
-        message: pattern.message,
-        match: String(match[0]).trim().slice(0, 120),
-      });
+      // Second-stage guard: a pattern with a `validate` checksum reports a match
+      // ONLY when the checksum confirms it (keeps loose candidate regexes from
+      // false-positiving on innocent digit/alphanumeric runs).
+      if (typeof pattern.validate !== 'function' || pattern.validate(match[0])) {
+        findings.push({
+          file: filePath,
+          line: lineForIndex(text, match.index),
+          id: pattern.id,
+          message: pattern.message,
+          match: String(match[0]).trim().slice(0, 120),
+        });
+      }
       if (match.index === pattern.regex.lastIndex) pattern.regex.lastIndex++;
     }
   }
