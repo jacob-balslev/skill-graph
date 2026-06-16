@@ -4,7 +4,7 @@ import process from "node:process";
 import {fileURLToPath} from "node:url";
 import React from "react";
 import htm from "htm";
-import {Box, render, useApp, useFocusManager, useInput} from "ink";
+import {Box, Text, render, useApp, useFocusManager, useInput} from "ink";
 import breadcrumbLib from "./lib/breadcrumb.js";
 import Breadcrumb from "./components/Breadcrumb.mjs";
 import FindingsReview, {FINDINGS_REVIEW_FOCUS_ID} from "./components/FindingsReview.mjs";
@@ -12,11 +12,12 @@ import RunPanel, {RUN_PANEL_FOCUS_ID} from "./components/RunPanel.mjs";
 import SessionList, {SESSION_LIST_FOCUS_ID} from "./components/SessionList.mjs";
 import StatusBar from "./components/StatusBar.mjs";
 import useHeartbeat from "./hooks/useHeartbeat.mjs";
+import useRunLauncher from "./hooks/useRunLauncher.mjs";
 import useReviewState from "./hooks/useReviewState.mjs";
 import useSessions from "./hooks/useSessions.mjs";
 
 const html = htm.bind((type, props, ...children) => React.createElement(
-  {Box}[type] || type,
+  {Box, Text}[type] || type,
   props,
   ...children,
 ));
@@ -235,6 +236,14 @@ function focusForSegment(segment) {
   return RUN_PANEL_FOCUS_ID;
 }
 
+function launchPromptInitial(error = null) {
+  return {
+    active: false,
+    value: "",
+    error,
+  };
+}
+
 export function usage() {
   return `Usage: skill-graph tui [options]
 
@@ -277,10 +286,12 @@ export function App({
   if (navRef.current === null) navRef.current = createNavigation(cursor);
 
   const sessionsState = useSessions({auditRoot, watch: !noInput});
+  const runLauncher = useRunLauncher();
   const [breadcrumb, setBreadcrumb] = React.useState(() => navigationSnapshot(navRef.current));
   const [focusId, setFocusId] = React.useState(SESSION_LIST_FOCUS_ID);
   const [inputLocked, setInputLocked] = React.useState(false);
   const [activeRunId, setActiveRunId] = React.useState(null);
+  const [launchPrompt, setLaunchPrompt] = React.useState(() => launchPromptInitial());
   const [selectedFinding, setSelectedFinding] = React.useState(null);
   const [restoredFocusCursor, setRestoredFocusCursor] = React.useState(null);
   const [focusCursors, setFocusCursors] = React.useState({});
@@ -297,7 +308,7 @@ export function App({
   }, [activeRunId, activeSession]);
   const runFindingsFile = React.useMemo(() => findRunFindingsFile(activeRunRef), [activeRunRef]);
   const effectiveStatusFile = React.useMemo(
-    () => statusFile || (activeRunRef ? activeRunRef.heartbeatPath : null) || discoverLatestHeartbeat({auditRoot}),
+    () => (activeRunRef ? activeRunRef.heartbeatPath : null) || statusFile || discoverLatestHeartbeat({auditRoot}),
     [activeRunRef, auditRoot, statusFile],
   );
   const heartbeatState = useHeartbeat(effectiveStatusFile, {watch: !noInput});
@@ -493,6 +504,59 @@ export function App({
     updateBreadcrumb();
   }, [activeSession, heartbeatState.heartbeat, updateBreadcrumb]);
 
+  const openLaunchPrompt = React.useCallback(() => {
+    if (!activeSession) {
+      setLaunchPrompt({active: false, value: "", error: "Select or create a session before launching a run."});
+      return;
+    }
+    setLaunchPrompt({active: true, value: "", error: null});
+  }, [activeSession]);
+
+  const closeLaunchPrompt = React.useCallback(() => {
+    setLaunchPrompt(launchPromptInitial());
+  }, []);
+
+  const confirmLaunchPrompt = React.useCallback(() => {
+    const skill = launchPrompt.value.trim();
+    if (!skill) {
+      setLaunchPrompt((current) => ({...current, error: "Skill is required."}));
+      return;
+    }
+    if (!activeSession) {
+      setLaunchPrompt((current) => ({...current, error: "No active session."}));
+      return;
+    }
+    try {
+      const launch = runLauncher.launchRun({
+        skill,
+        op: "audit",
+        auditRoot,
+        sessionId: activeSession.sessionId,
+      });
+      const runRef = launch.runRef({
+        role: "primary",
+        reviewPath: path.join(launch.runDir, "review.json"),
+      });
+      const session = sessionsState.attachRun({
+        sessionId: activeSession.sessionId,
+        runRef,
+      });
+      setSelectedFinding(null);
+      setActiveRunId(runRef.runId);
+      navRef.current = createNavigation(buildCursorSegments({
+        runRef,
+        session,
+      }), 2);
+      focusManager.focus(RUN_PANEL_FOCUS_ID);
+      setFocusId(RUN_PANEL_FOCUS_ID);
+      setRestoredFocusCursor({focusId: RUN_PANEL_FOCUS_ID, runId: runRef.runId});
+      closeLaunchPrompt();
+      updateBreadcrumb();
+    } catch (err) {
+      setLaunchPrompt((current) => ({...current, error: err.message}));
+    }
+  }, [activeSession, auditRoot, closeLaunchPrompt, focusManager, launchPrompt.value, runLauncher, sessionsState.attachRun, updateBreadcrumb]);
+
   const cycleFocus = React.useCallback((delta) => {
     const index = FOCUS_ORDER.indexOf(focusId);
     const currentIndex = index >= 0 ? index : 0;
@@ -503,8 +567,41 @@ export function App({
   }, [focusId, focusManager]);
 
   useInput((input, key) => {
+    if (key.escape) {
+      closeLaunchPrompt();
+      return;
+    }
+    if (key.return) {
+      confirmLaunchPrompt();
+      return;
+    }
+    if (key.backspace || key.delete) {
+      setLaunchPrompt((current) => ({
+        ...current,
+        value: current.value.slice(0, -1),
+        error: null,
+      }));
+      return;
+    }
+    if (input) {
+      const text = String(input).replace(/\r?\n/g, "");
+      if (!text) return;
+      setLaunchPrompt((current) => ({
+        ...current,
+        value: `${current.value}${text}`,
+        error: null,
+      }));
+    }
+  }, {isActive: !noInput && launchPrompt.active});
+
+  useInput((input, key) => {
     if (input === "q") {
       app.exit();
+      return;
+    }
+
+    if (input === "N") {
+      openLaunchPrompt();
       return;
     }
 
@@ -548,16 +645,22 @@ export function App({
       applySegmentFocus(segment);
       updateBreadcrumb();
     }
-  }, {isActive: !noInput && !inputLocked});
+  }, {isActive: !noInput && !inputLocked && !launchPrompt.active});
 
   return html`
     <Box flexDirection="column" gap=${1}>
       <${Breadcrumb} segments=${breadcrumb.segments} activeIndex=${breadcrumb.activeIndex} />
+      ${launchPrompt.active ? html`
+        <Box borderStyle="single" borderColor="yellow" paddingX=${1} flexDirection="column">
+          <Text color="yellow">Launch audit run for skill: ${launchPrompt.value}_</Text>
+          ${launchPrompt.error ? html`<Text color="red">${launchPrompt.error}</Text>` : null}
+        </Box>
+      ` : launchPrompt.error ? html`<Text color="red">${launchPrompt.error}</Text>` : null}
       <Box flexDirection=${noInput ? "column" : "row"} gap=${1}>
         <${SessionList}
           activeSessionId=${sessionsState.activeSessionId}
           focusCursor=${restoredFocusCursor && restoredFocusCursor.focusId === SESSION_LIST_FOCUS_ID ? restoredFocusCursor : focusCursors[SESSION_LIST_FOCUS_ID]}
-          noInput=${noInput}
+          noInput=${noInput || launchPrompt.active}
           onCloseSession=${handleCloseSession}
           onCreateSession=${handleCreateSession}
           onCursorChange=${recordPaneCursor}
@@ -572,7 +675,7 @@ export function App({
           activeRunId=${activeRunRef ? activeRunRef.runId : activeRunId}
           focusCursor=${restoredFocusCursor && restoredFocusCursor.focusId === RUN_PANEL_FOCUS_ID ? restoredFocusCursor : focusCursors[RUN_PANEL_FOCUS_ID]}
           heartbeatState=${heartbeatState}
-          noInput=${noInput}
+          noInput=${noInput || launchPrompt.active}
           onCursorChange=${recordPaneCursor}
           onFocusChange=${setFocusId}
           onSelectRun=${handleSelectRun}
@@ -581,13 +684,13 @@ export function App({
         />
       </Box>
       <${FindingsReview}
-        noInput=${noInput}
+        noInput=${noInput || launchPrompt.active}
         onFocusChange=${setFocusId}
         onInputModeChange=${setInputLocked}
         onSelectFinding=${pushFindingBreadcrumb}
         review=${reviewState}
       />
-      <${StatusBar} focusId=${focusId} noInput=${noInput} />
+      <${StatusBar} focusId=${focusId} launchStatus=${runLauncher.launchStatus} noInput=${noInput} />
     </Box>
   `;
 }
