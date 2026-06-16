@@ -1,7 +1,7 @@
 import React from "react";
 import htm from "htm";
 import {createRequire} from "node:module";
-import {Box, Text, useFocus} from "ink";
+import {Box, Text, useFocus, useInput} from "ink";
 
 const html = htm.bind((type, props, ...children) => React.createElement(
   {Box, Text}[type] || type,
@@ -51,8 +51,46 @@ function livenessMark(agent, liveness = {}) {
   return "";
 }
 
-export default function RunPanel({heartbeatState, onFocusChange, statusFile}) {
+function oneLine(value, max = 42) {
+  const text = String(value || "").replace(/\s+/g, " ").trim();
+  if (!text) return "";
+  return text.length > max ? `${text.slice(0, Math.max(0, max - 3))}...` : text;
+}
+
+function shortRunId(runRef) {
+  const id = runRef && runRef.runId ? String(runRef.runId) : "";
+  return id.length > 10 ? id.slice(0, 10) : id || "?";
+}
+
+function clampIndex(index, count) {
+  if (count <= 0) return 0;
+  return Math.max(0, Math.min(index, count - 1));
+}
+
+function RunRefRow({active, runRef, selected}) {
+  const marker = selected ? ">" : " ";
+  const role = runRef.role ? `/${runRef.role}` : "";
+  return html`
+    <Text color=${selected ? "cyan" : active ? "green" : "gray"}>
+      ${marker} ${active ? "*" : " "} ${oneLine(runRef.skill, 20)} ${shortRunId(runRef)}${role}
+    </Text>
+  `;
+}
+
+export default function RunPanel({
+  activeRunId,
+  focusCursor,
+  heartbeatState,
+  noInput = false,
+  onCursorChange,
+  onFocusChange,
+  onSelectRun,
+  runRefs = [],
+  statusFile,
+}) {
   const {isFocused} = useFocus({id: RUN_PANEL_FOCUS_ID});
+  const refs = Array.isArray(runRefs) ? runRefs : [];
+  const [selectedRunIndex, setSelectedRunIndex] = React.useState(0);
   const heartbeat = heartbeatState && heartbeatState.heartbeat;
   const liveness = heartbeatState && heartbeatState.liveness;
   const ageMs = heartbeatState ? heartbeatState.ageMs : null;
@@ -72,6 +110,55 @@ export default function RunPanel({heartbeatState, onFocusChange, statusFile}) {
     if (isFocused && onFocusChange) onFocusChange(RUN_PANEL_FOCUS_ID);
   }, [isFocused, onFocusChange]);
 
+  React.useEffect(() => {
+    setSelectedRunIndex((index) => clampIndex(index, refs.length));
+  }, [refs.length]);
+
+  React.useEffect(() => {
+    if (activeRunId) {
+      const idx = refs.findIndex((ref) => ref.runId === activeRunId);
+      if (idx >= 0) setSelectedRunIndex(idx);
+    }
+  }, [activeRunId, refs]);
+
+  React.useEffect(() => {
+    if (!focusCursor) return;
+    if (focusCursor.runId) {
+      const idx = refs.findIndex((ref) => ref.runId === focusCursor.runId);
+      if (idx >= 0) setSelectedRunIndex(idx);
+      return;
+    }
+    if (Number.isInteger(focusCursor.selectedRunIndex)) {
+      setSelectedRunIndex(clampIndex(focusCursor.selectedRunIndex, refs.length));
+    }
+  }, [focusCursor, refs]);
+
+  React.useEffect(() => {
+    if (!onCursorChange) return;
+    const selected = refs[clampIndex(selectedRunIndex, refs.length)] || null;
+    onCursorChange({
+      focusId: RUN_PANEL_FOCUS_ID,
+      runId: selected ? selected.runId : activeRunId || null,
+      selectedRunIndex,
+    });
+  }, [activeRunId, onCursorChange, refs, selectedRunIndex]);
+
+  useInput((input, key) => {
+    if (!refs.length) return;
+    if (key.upArrow || input === "k") {
+      setSelectedRunIndex((index) => clampIndex(index - 1, refs.length));
+      return;
+    }
+    if (key.downArrow || input === "j") {
+      setSelectedRunIndex((index) => clampIndex(index + 1, refs.length));
+      return;
+    }
+    if (key.return) {
+      const selected = refs[clampIndex(selectedRunIndex, refs.length)] || null;
+      if (selected && onSelectRun) onSelectRun(selected);
+    }
+  }, {isActive: isFocused && !noInput});
+
   return html`
     <Box
       borderStyle="single"
@@ -82,6 +169,19 @@ export default function RunPanel({heartbeatState, onFocusChange, statusFile}) {
       minHeight=${9}
     >
       <Text bold color=${isFocused ? "cyan" : "white"}>RunPanel</Text>
+      ${refs.length ? html`
+        <Text color="gray">attached runs: ${refs.length} · j/k select · Enter watch</Text>
+      ` : null}
+      ${refs.length
+        ? refs.map((runRef, index) => html`
+          <${RunRefRow}
+            key=${runRef.runId}
+            active=${runRef.runId === activeRunId}
+            selected=${index === clampIndex(selectedRunIndex, refs.length)}
+            runRef=${runRef}
+          />
+        `)
+        : null}
       <Text color=${banner.color}>${banner.marker} ${banner.label}</Text>
       <Text color="white">${header}</Text>
       ${heartbeatState && heartbeatState.error && statusFile
