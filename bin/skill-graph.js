@@ -279,6 +279,19 @@ Note: evolve depends on lib/audit-shared/auto-improve.js (bundled with @skill-gr
     script: 'lib/audit/skill-status.js',
     help: `Usage: skill-graph status <skill-name> [options]\n\nRead-only view of a skill's Audit Status (loop-stamped audit-state.json fields joined with SKILL.md).\n\nArguments:\n  <skill-name>      Skill directory name.\n\nOptions:\n  --json            Emit JSON instead of a human-readable table.\n  --audit-root <p>  Root directory for SKILL.md lookup (default: auto-detect).\n\nExit codes:\n  0  Success (including the graceful no-Audit-Status case).\n  1  Fatal error (manifest unreadable, unexpected parse failure).\n\nSee: skill-audit-loop/SKILL_AUDIT_LOOP.md § The Audit Status — state lives in audit-state.json\n`,
   },
+  tui: {
+    esm: 'tui/app.mjs',
+    help: `Usage: skill-graph tui [options]
+
+Open the Skill Audit Loop terminal UI.
+
+Options:
+  --audit-root <path>  Read sessions from an alternate audit progress root.
+  --once              Render one frame and exit; intended for smoke tests.
+  --no-input          Alias for --once with keyboard input disabled.
+  --help              Show this help.
+`,
+  },
   doc: {
     script: 'scripts/check-doc-freshness.js',
     help: `Usage: skill-graph doc [options]\n\nAudit active docs for stale code references and rewrite questions.\n\nChecks active Markdown docs against local files, node scripts, package scripts,\nand the public skill-graph command map. Historical records (ADRs, migrations,\nresearch, plans, audits, examples, generated docs, CHANGELOG) are skipped.\n\nOptions:\n  --strict                    Exit 1 when error-class findings exist.\n  --errors-only               Omit review-question findings from the report.\n  --json                      Emit JSON.\n  --quiet                     Print only the summary line.\n  --max-paragraph-words <n>   Rewrite-question threshold (default: 420).\n  --max-paragraph-chars <n>   Rewrite-question threshold (default: 3000).\n\nFinding classes:\n  error      Missing local file, script, package script, or skill-graph command.\n  question   Unqualified stale wording, actionable TODO markers, vague taxonomy headings, or long prose.\n`,
@@ -381,6 +394,7 @@ Commands:
   evaluate         Run the comprehension eval suite for one skill and stamp comprehension_verdict
   evaluate:gpt-5.5 Run evaluate through Codex CLI + GPT-5.5 with tools-on, PROVISIONAL-only evidence
   status <skill>   Print the Audit Status for a skill (read-only)
+  tui              Open the Skill Audit Loop terminal UI
   doc              Audit active docs for stale code references and rewrite questions
   route <query>    Select and explain skills for a natural-language query
   drift            Check or record grounding truth-source hashes (drift sentinel)
@@ -410,6 +424,7 @@ Examples:
   skill-graph audit my-skill --graded
   skill-graph doc
   skill-graph evaluate:gpt-5.5 --comprehension skills/my-skill/evals/comprehension.json
+  skill-graph tui
   skill-graph route "audit my skills for schema conformance"
   skill-graph drift --record --apply skills/graph-audit
   skill-graph eval-staleness
@@ -594,7 +609,7 @@ function runDoctor(args) {
 // Main dispatcher
 // ---------------------------------------------------------------------------
 
-function main() {
+async function main() {
   const args = process.argv.slice(2);
   const command = args.shift();
 
@@ -623,6 +638,12 @@ function main() {
   if (wantsHelp && entry.help) {
     process.stdout.write(entry.help);
     process.exit(0);
+  }
+
+  if (entry.esm === 'tui/app.mjs') {
+    const tui = await import('../tui/app.mjs');
+    const code = await tui.run(args);
+    process.exit(code == null ? 0 : code);
   }
 
   const scriptPath = path.join(REPO_ROOT, entry.script);
@@ -663,4 +684,7 @@ function main() {
   process.exit(result.status == null ? 1 : result.status);
 }
 
-main();
+main().catch((err) => {
+  process.stderr.write(`${err.stack || err.message}\n`);
+  process.exit(1);
+});
