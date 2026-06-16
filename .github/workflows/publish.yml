@@ -4,6 +4,13 @@ name: Publish @skill-graph/cli to npm
 # Actions UI (or `gh workflow run`) after sanity-checking the tag, package
 # contents, and CHANGELOG entry. Tag push alone no longer auto-publishes —
 # the gate moved here from b32f1e4 (v0.5.8, the last auto-on-tag release).
+#
+# ⛔ PUBLISHING FROZEN (user directive, 2026-06-16) — do NOT run this workflow.
+# The npm package `files` includes `marketplace/`, so publishing ships skill
+# content to a public registry. Publishing (skills.sh, npm, any external site) is
+# frozen until (1) skills.sh upload/delete reliability is fixed AND (2) private
+# content (Sales Hub / personal / customer PII / API keys / bank / emails) is
+# verified-filtered. See AGENTS.md § Public Distribution — Canonical URL Contract.
 on:
   workflow_dispatch:
     inputs:

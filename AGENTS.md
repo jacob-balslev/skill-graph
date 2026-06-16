@@ -758,6 +758,14 @@ CI should cover lint, protocol consistency, manifest generation or validation, r
 
 ## Public Distribution — Canonical URL Contract
 
+> ## ⛔ PUBLISHING IS FROZEN (user directive, 2026-06-16)
+>
+> **Do NOT publish, sync, or upload ANY skill to skills.sh, npm, or any external site, and do NOT run the two-step release protocol below, until BOTH conditions are met:**
+> 1. **skills.sh upload/delete reliability is fixed.** An upload today cannot be reliably corrected or removed — a stale skills.sh row survives even after its GitHub source repo is deleted (see § Stale URLs below; only manual Vercel staff removal works). Until publishing is correctable and reversible, every upload is an unfixable-mistake risk.
+> 2. **Private content is provably filtered out.** No Sales Hub data, personal information, customer PII, API keys, bank/account details, or emails may reach any public surface. The `public: true` export gate plus the `PRIVACY_PATTERNS` scan (`scripts/lib/privacy-patterns.js`, layers L2/L3/L4) are the filter; treat publishing as blocked until that filter is verified complete for every category above.
+>
+> The FREEZE is on the **external publish/sync step** (skills.sh, npm, the `jacob-balslev/skills` release-repo push) — NOT on local generation. The `marketplace/skills/` staging surface and this public `skill-graph` GitHub repo stay as-is; they are acceptable as a public surface ONLY because the export gate filters private content. Lift this banner only on explicit user sign-off.
+
 The Skill Graph has exactly one public-facing user destination for skills published to skills.sh:
 
 **Canonical user URL:** `https://www.skills.sh/jacob-balslev/skills/`

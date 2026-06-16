@@ -3,6 +3,9 @@
 > **Canonical doc for:** export pipeline, release sync, pre-push gates, and the two-step publishing protocol.
 > **Audience:** Maintainers publishing skills to `jacob-balslev/skills` (the `skills.sh`-indexed release repo).
 > **Last verified:** 2026-05-24 (SH-6331).
+>
+> ## ⛔ PUBLISHING IS FROZEN (user directive, 2026-06-16)
+> **Do not run any step in this document.** Publishing to skills.sh / npm / any external site is frozen until (1) skills.sh upload/delete reliability is fixed — a stale row cannot currently be removed (see `AGENTS.md § Public Distribution` → § Stale URLs) — AND (2) private content (Sales Hub, personal info, customer PII, API keys, bank/account details, emails) is verified-filtered out. This how-to remains for reference only; lift the freeze only on explicit user sign-off.
 
 This document captures the exact steps, commands, and verification gates required to publish Skill Graph marketplace exports to the public `jacob-balslev/skills` release repository. Follow this exactly to prevent silent drift and accidental leakage of internal content.
 
