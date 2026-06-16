@@ -35,7 +35,7 @@
 8. **External framework / API / platform claims are checked against official primary sources** during an audit when those claims could have drifted (the upstream-currency / anti-displacement axis).
 9. **A displacement finding recommends deprecate / fold / reframe — never auto-deletion.** Removal requires explicit user sign-off.
 10. **Every finding is preserved in the report.** Prioritization is allowed after complete reporting; dropping findings is not.
-11. **Claims are grounded; never invented (anti-hallucination).** Every finding cites a `file:line` or command output the auditor actually read/ran — never memory, never a guessed path, line number, schema field, count, or percentage. Numbers (corpus size, "% migrated", verdict distribution, field count) come ONLY from a command you ran (`find … -name SKILL.md | wc -l`, the manifest's `by_schema_version` facet, `node -e`), never an estimate. **"I can't find X" ≠ "X doesn't exist":** the canonical corpus is the sibling `../skills/skills/` repo (ADR-0009), NOT `skill-graph/skills/`, and `../SKILL-SYSTEM-CHEAT-SHEET.md` is at the workspace root — an empty `skill-graph/skills/` is expected, not a finding. In a multi-model audit, an advisory (free-tier) claim is load-bearing only after a frontier model **reproduces** its evidence; unreproducible advisory findings are dropped, not escalated. If you cannot verify, say so — never assert. Full protocol + the 2026-06-15 motivating incident: [`AGENTS.md § When Unsure — Anti-Hallucination Protocol`](../AGENTS.md#when-unsure--anti-hallucination-protocol).
+11. **Claims are grounded; never invented (anti-hallucination).** Every finding cites a `file:line` or command output the auditor actually read/ran — never memory, never a guessed path, line number, schema field, count, or percentage. Numbers (corpus size, "% migrated", verdict distribution, field count) come ONLY from a command you ran (`find … -name SKILL.md | wc -l`, the manifest's `by_schema_version` facet, `node -e`), never an estimate. **"I can't find X" ≠ "X doesn't exist":** the canonical corpus is the sibling `skills` repo at `~/Development/skills/skills/` (ADR-0009), NOT `skill-graph/skills/`, and `SKILL-SYSTEM-CHEAT-SHEET.md` is at the workspace root — an empty `skill-graph/skills/` is expected, not a finding. In a multi-model audit, an advisory (free-tier) claim is load-bearing only after a frontier model **reproduces** its evidence; unreproducible advisory findings are dropped, not escalated. If you cannot verify, say so — never assert. Full protocol + the 2026-06-15 motivating incident: [`AGENTS.md § When Unsure — Anti-Hallucination Protocol`](../AGENTS.md#when-unsure--anti-hallucination-protocol).
 
 ### Goal
 
@@ -971,7 +971,7 @@ Every workspace-only command the numbered steps below use, and what a standalone
 2. Pick your **lane** by capability tier (see `audits/lanes.json` — project-canonical per
    [ADR-0016](../docs/adr/0016-operational-data-ownership.md); the legacy `.opencode/skill-audit-lanes.json`
    path is deprecated and being phased out). A lane enforces a `minTier`, so claim only one your model
-   qualifies for (high = opus/gpt-5.5/gemini-3.1-pro; mid = sonnet/gpt-5.4; cheap = haiku/gemini-flash).
+   qualifies for (high = opus/gpt-5.5/gemini-3.1-pro; mid = sonnet; cheap = haiku/gemini-flash).
    Lanes are model-agnostic above the floor — any qualifying CLI may serve a lane and is attributed
    by its ACTUAL model.
    ```bash

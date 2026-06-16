@@ -2,10 +2,12 @@
 
 > Type: Reference (protocol)
 > Status: v1 (2026-05-21). Extends the single-agent loop (`skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`) to many models without losing any valuable contribution.
+>
+> **Curator/grader-tier policy superseded by [`skill-audit-multimodel-merge-v2.md`](skill-audit-multimodel-merge-v2.md)** (capability-floor + rotation). Where this v1 doc and v2 disagree on grader identity, v2 wins. The grader roles below have been updated to the current `no-lesser-models-for-quality` policy.
 
 ## Why this exists
 
-We want several agents — across **OpenCode, Codex, and Claude**, running **Opus 4.7, GPT-5.5, Sonnet 4.6, Gemini 3.1 Pro, and others** — each auditing skills, one at a time. Two requirements drove this design:
+We want several agents — across **OpenCode, Codex, and Claude**, running multiple frontier and advisory models — each auditing skills, one at a time. Two requirements drove this design:
 
 1. **No double-claims.** Two agents must never work the same skill.
 2. **No lost knowledge.** When Opus, GPT-5.5, and Gemini each audit the *same* skill, we keep the union of everything valuable from all of them **plus the skill's current content** — never winner-take-all, never silent drops.
@@ -15,7 +17,7 @@ We want several agents — across **OpenCode, Codex, and Claude**, running **Opu
 | Role | Who | Does |
 |---|---|---|
 | **Auditor** | any model, any CLI | Runs the v2.2 audit on one claimed skill and writes a **proposal** (does NOT commit to the canonical `SKILL.md`). |
-| **Curator** | Opus 4.7 or GPT-5.4 (the grader-authorized models) | Reads the **current skill** + every auditor's proposal, produces the **union-merged** upgrade, verifies, commits. |
+| **Curator** | a mandatory frontier grader (the `strongest-reasoning-grader` Opus role or the `codex-current` GPT role, per the `no-lesser-models-for-quality` rule; advisory models never curate) | Reads the **current skill** + every auditor's proposal, produces the **union-merged** upgrade, verifies, commits. |
 
 ## Claim model — one skill per agent, atomic, cross-CLI
 
@@ -49,7 +51,7 @@ skill-graph/skill-audit-loop/progress/skill-audits/<slug>.<model>.scorecard.md
 
 `<model>` is the model slug (`opus`, `gpt-5.5`, `gemini-3.1-pro`, `sonnet`, …). Proposals are **never deleted** — they are the durable record of each model's research.
 
-### Phase B — Union-curate merge (curator; Opus or GPT-5.4)
+### Phase B — Union-curate merge (curator; a mandatory frontier grader — the Opus or GPT-via-Codex role)
 The curator claims `--merge` and produces the final upgrade. **The merge baseline is the CURRENT `SKILL.md`** — read it first; existing valuable content is preserved unless a proposal proves it wrong with repo evidence.
 
 Merge rule (the anti-loss guarantee):

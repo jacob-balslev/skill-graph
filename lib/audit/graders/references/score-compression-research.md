@@ -163,7 +163,7 @@ See `docs/plans/eval-weighting-decompression.md` (in the workspace orchestration
 - `.claude/agents/experiment-judge.md` (110-pt, 13 dims)
 - `.claude/agents/fusion-judge.md` (100-pt, 6 dims)
 - `lib/audit/graders/concept-grader-prompt.md` (0–100 × 7 dims; primary dimension required, non-primary dimensions may be null)
-- `lib/audit/graders/application-grader-prompt.md` (0–100 × 4 axes — migrated from 0/1/2 on 2026-06-11)
+- `lib/audit/graders/application-grader-prompt.md` (0–100 × 4 axes — migrated from 0/1/2 on 2026-06-11; removed in the 2026-06-15 application_verdict→three-verdict collapse)
 
 > **2026-06-11/12 reconciliation (application + comprehension graders).** The application grader moved from a coarse 0/1/2 per-axis scale to free-continuous 0–100 on 2026-06-11; the comprehension grader followed on 2026-06-12. The 0/1/2 scale was originally chosen to fight the compression documented above, but it carried a side effect this research did not weigh: on a 3-point scale a strong frontier *baseline* (the no-skill arm) is forced to the ceiling (2/2), auto-tripping baseline saturation with zero headroom to measure the skill's marginal lift — the ceiling effect (see [Ceiling & Floor Effects](https://www.cogn-iq.org/learn/theory/ceiling-floor-effects/) in the sources). 0–100 restores that headroom. The compression risk this doc documents is REAL on a wide scale and is mitigated, not ignored: both graders retain their Anti-Compression Mandate (use the full range including the tails, anchor on the calibration set, do not round upward into the next band) and `eval-discriminability-report.js` (CV / Cronbach's α / histogram) is the empirical backstop if compression resurfaces.
 

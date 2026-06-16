@@ -1,7 +1,7 @@
 # Plan — Canonical-Location Migration Stage 2: `scripts/skill/*` (2026-06-05)
 
 > Type: Plan (active). SYSTEM work (skill-graph). Created 2026-06-05T13:55Z.
-> Companion to `panel-loop-and-canonical-migration-2026-06-05.md` (Stage 1a/1b done).
+> Companion to the completed Stage 1a/1b — panel + command canonical migration (that plan was finished and removed per the PLANS.md git-rm convention; see git history).
 > Governs the 42 scripts under `~/Development/scripts/skill/*` per `AGENTS.md § Canonical Location` + ADR-0016.
 
 ## Why this is a plan, not a batch edit

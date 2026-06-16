@@ -36,7 +36,7 @@ const IGNORED_DIRS = new Set([
   'marketplace',
 ]);
 
-const HISTORICAL_DOC_DIRS = new Set(['adr', 'migrations', 'plans', 'research', '_drafts']);
+const HISTORICAL_DOC_DIRS = new Set(['adr', 'migrations', 'plans', 'research', 'reviews', '_drafts']);
 const ROOT_DOC_ALLOWLIST = new Set(['CHANGELOG.md']);
 const UNQUALIFIED_STALE_WORDING_RE = /\b(?:use|run|call|invoke|author|write|set|add|prefer)\b[^.!?\n]{0,100}\b(?:legacy|deprecated|obsolete|retired|removed|superseded|archived|back-?compat(?:ible|ibility)?)\b|\b(?:legacy|deprecated|obsolete|retired|removed|superseded|archived|back-?compat(?:ible|ibility)?)\b[^.!?\n]{0,100}\b(?:runner|command|script|path|workflow|shape|value|field)\b/i;
 const CURRENTNESS_CONTEXT_RE = /\b(?:historical|history|git history|recover(?:y|able)?|retired to|removed (?:in|from|per|because)|was removed|deleted|deletion|deprecation|superseded by|replaced by|deprecated alias|legacy alias(?:es)?|legacy support|legacy corpus|legacy code|legacy `?boundary`?|legacy expectations|back-?compat(?:ible|ibility)?|backwards compatibility|retained for|preserved for|former(?:ly)?|migration|migrat(?:ed|ion)|current|canonical|today|now|no longer|user directive|warning|warnings|archived source|for example|0 acting consumer|0% corpus adoption|accepts|supported|ungradeable)\b/i;

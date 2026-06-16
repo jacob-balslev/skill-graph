@@ -1,6 +1,6 @@
 # Migration Sample Review — v4 → v5 Category Enum
 
-> **Status:** Active. Created 2026-05-16.
+> **Status:** Historical — frozen record. This was a one-time v4→v5 `category`-enum migration gate (verdict PASS); the `category` enum has since been retired (the current contract is v8 `subject`, per ADR-0020). Kept for the audit trail. Created 2026-05-16.
 > **Plan:** [`docs/plans/skill-taxonomy-v5-and-gap-fill.md`](../../docs/plans/skill-taxonomy-v5-and-gap-fill.md) § Phase 0b.
 > **Gate verdict:** **PASS** — 26 of 30 assignments agree (86.67% ≥ 85% threshold). Phase 1 schema bump is unblocked, with four specific revisions recommended below.
 
