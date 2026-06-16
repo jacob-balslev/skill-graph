@@ -62,6 +62,13 @@ function shortRunId(runRef) {
   return id.length > 10 ? id.slice(0, 10) : id || "?";
 }
 
+function heartbeatFallbackLine({heartbeatState, statusFile}) {
+  const err = heartbeatState && heartbeatState.error;
+  if (err && statusFile) return `Heartbeat unreadable: ${oneLine(statusFile, 78)} (${oneLine(err.message, 90)})`;
+  if (statusFile) return `No heartbeat data yet: ${oneLine(statusFile, 96)}`;
+  return "No run attached. Select a session run or press N to launch one.";
+}
+
 function clampIndex(index, count) {
   if (count <= 0) return 0;
   return Math.max(0, Math.min(index, count - 1));
@@ -104,7 +111,7 @@ export default function RunPanel({
   const banner = livenessBanner(liveness);
   const header = heartbeat
     ? `${heartbeat.skill || "?"} / ${heartbeat.phase || "starting"} / ${done}/${total} done / failed ${failed} / elapsed ${elapsedMs == null ? "?" : fmtElapsed(elapsedMs)} / hb-age ${ageMs == null ? "?" : fmtElapsed(ageMs)}`
-    : `No heartbeat selected${statusFile ? `: ${statusFile}` : ""}`;
+    : heartbeatFallbackLine({heartbeatState, statusFile});
 
   React.useEffect(() => {
     if (isFocused && onFocusChange) onFocusChange(RUN_PANEL_FOCUS_ID);
@@ -171,7 +178,7 @@ export default function RunPanel({
       <Text bold color=${isFocused ? "cyan" : "white"}>RunPanel</Text>
       ${refs.length ? html`
         <Text color="gray">attached runs: ${refs.length} · j/k select · Enter watch</Text>
-      ` : null}
+      ` : html`<Text color="gray">no attached runs · press N to launch an audit run in the active session</Text>`}
       ${refs.length
         ? refs.map((runRef, index) => html`
           <${RunRefRow}

@@ -30,7 +30,7 @@ function launchColor(status = {}) {
 export default function StatusBar({focusId = "sessions", launchStatus = {}, noInput = false}) {
   const keys = noInput
     ? "no-input smoke mode"
-    : "Tab/Shift-Tab focus | <-/-> segment | [/ ] history | N launch | Esc/Backspace pop | q quit";
+    : "? help | Tab/Shift-Tab focus | <-/-> segment | [/ ] history | N launch | Esc/Backspace pop | q quit";
 
   return html`
     <Box borderStyle="single" borderColor="gray" paddingX=${1} justifyContent="space-between">

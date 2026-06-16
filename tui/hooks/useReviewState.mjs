@@ -9,6 +9,7 @@ const {
   GROUP_BY,
   SORT_BY,
   applyFindingDecision,
+  applyFindingDisposition,
   decisionCounts,
   decisionFor,
   extractFindings,
@@ -47,6 +48,12 @@ function readJson(file) {
   } catch (_) {
     return null;
   }
+}
+
+function compactText(value, max = 160) {
+  const text = String(value || "").replace(/\s+/g, " ").trim();
+  if (!text) return "";
+  return text.length > max ? `${text.slice(0, Math.max(0, max - 3))}...` : text;
 }
 
 function sourceFor({statusFile, findingsFile} = {}) {
@@ -182,6 +189,48 @@ export function loadFindingsSources({heartbeat, statusFile, findingsFile} = {}) 
   return mergeFindings(fromHeartbeat, fromFile);
 }
 
+export function inspectFindingsSource({heartbeat, statusFile, findingsFile, rawCount = 0} = {}) {
+  if (rawCount > 0) return {kind: "ok", message: null};
+
+  if (findingsFile) {
+    const abs = path.resolve(findingsFile);
+    let text = "";
+    try {
+      text = fs.readFileSync(abs, "utf8");
+    } catch (err) {
+      const missing = err && err.code === "ENOENT";
+      return {
+        kind: missing ? "missing" : "unreadable",
+        message: `${missing ? "Findings file missing" : "Findings file unreadable"}: ${compactText(abs, 120)}${missing ? "" : ` (${compactText(err.message, 100)})`}`,
+      };
+    }
+    if (!text.trim()) {
+      return {kind: "empty", message: `Findings file is empty: ${compactText(abs, 120)}`};
+    }
+    return {kind: "unparseable", message: `Findings file has no parseable findings: ${compactText(abs, 120)}`};
+  }
+
+  if (heartbeat) return {kind: "empty", message: "Heartbeat is attached, but it has no findings yet."};
+
+  if (statusFile) {
+    const abs = path.resolve(statusFile);
+    try {
+      const text = fs.readFileSync(abs, "utf8");
+      if (!text.trim()) return {kind: "heartbeat-empty", message: `Heartbeat file is empty: ${compactText(abs, 120)}`};
+      JSON.parse(text);
+    } catch (err) {
+      const missing = err && err.code === "ENOENT";
+      return {
+        kind: missing ? "heartbeat-missing" : "heartbeat-unreadable",
+        message: `${missing ? "Heartbeat file missing" : "Heartbeat unreadable"}: ${compactText(abs, 120)}${missing ? "" : ` (${compactText(err.message, 100)})`}`,
+      };
+    }
+    return {kind: "empty", message: "Heartbeat is attached, but it has no findings yet."};
+  }
+
+  return {kind: "none", message: "No findings source attached yet."};
+}
+
 export function loadReviewSnapshot({
   heartbeat,
   statusFile,
@@ -198,6 +247,12 @@ export function loadReviewSnapshot({
   const absReviewFile = defaultReviewFile({statusFile: absStatusFile, findingsFile: absFindingsFile, reviewFile});
   const source = sourceFor({statusFile: absStatusFile, findingsFile: absFindingsFile});
   const rawFindings = loadFindingsSources({heartbeat, statusFile: absStatusFile, findingsFile: absFindingsFile});
+  const sourceStatus = inspectFindingsSource({
+    heartbeat,
+    statusFile: absStatusFile,
+    findingsFile: absFindingsFile,
+    rawCount: rawFindings.length,
+  });
   const classified = classifyAndEnrichFindings(rawFindings, {repoRoot});
   const reviewState = loadReviewState(absReviewFile, source);
   const normalizedFilters = normalizeFilters(filters);
@@ -220,6 +275,7 @@ export function loadReviewSnapshot({
     reviewState,
     sortBy: normalizedSort,
     source,
+    sourceStatus,
     visibleCounts,
     visibleFindings,
     views,
@@ -238,6 +294,22 @@ export function writeFindingDecision({
   if (!reviewFile) throw new Error("reviewFile is required before a finding decision can be saved");
   const latest = loadReviewState(reviewFile, source || {});
   const next = applyFindingDecision(latest, findingId, decision, undefined, note);
+  next.source = {...(source || {}), ...(next.source || {})};
+  writeReviewState(reviewFile, next);
+  return next;
+}
+
+export function writeFindingDisposition({
+  findingId,
+  disposition = "to-file",
+  note,
+  reviewFile,
+  source,
+} = {}) {
+  if (!findingId) throw new Error("findingId is required");
+  if (!reviewFile) throw new Error("reviewFile is required before a finding disposition can be saved");
+  const latest = loadReviewState(reviewFile, source || {});
+  const next = applyFindingDisposition(latest, findingId, disposition, undefined, note);
   next.source = {...(source || {}), ...(next.source || {})};
   writeReviewState(reviewFile, next);
   return next;
@@ -332,6 +404,18 @@ export default function useReviewState({
     return nextState;
   }, [snapshot.reviewFile, JSON.stringify(snapshot.source)]);
 
+  const markDisposition = React.useCallback((findingId, disposition = "to-file", note) => {
+    const nextState = writeFindingDisposition({
+      findingId,
+      disposition,
+      note,
+      reviewFile: snapshot.reviewFile,
+      source: snapshot.source,
+    });
+    setRefreshToken((value) => value + 1);
+    return nextState;
+  }, [snapshot.reviewFile, JSON.stringify(snapshot.source)]);
+
   const cycleSort = React.useCallback(() => {
     setSortBy((current) => nextItem(SORT_BY, current));
     setViewIndex(-1);
@@ -368,6 +452,7 @@ export default function useReviewState({
     cycleView,
     decide,
     decisionFor: (finding) => decisionFor(finding, snapshot.reviewState),
+    markDisposition,
     refresh: () => setRefreshToken((value) => value + 1),
     setFilters,
     setGroupBy,

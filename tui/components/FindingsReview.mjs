@@ -53,6 +53,11 @@ function decisionColor(decision) {
   return "yellow";
 }
 
+function dispositionColor(disposition) {
+  if (disposition === "to-file") return "magenta";
+  return "gray";
+}
+
 function raw(finding) {
   return finding && finding.raw && typeof finding.raw === "object" ? finding.raw : {};
 }
@@ -94,7 +99,7 @@ function wrapText(value, width = 72, maxLines = 4) {
 }
 
 function sourceLabel(review = {}) {
-  if (review.reviewFile) return review.reviewFile;
+  if (review.reviewFile) return "review.json sidecar";
   return "review-state sidecar";
 }
 
@@ -102,12 +107,23 @@ function sideEffectLine(decision, review = {}) {
   return `${decision} writes ${sourceLabel(review)} only; findings source remains read-only.`;
 }
 
+function fileDispositionSideEffectLine(review = {}) {
+  return `f records a to-file disposition in review.json; findings source remains read-only.`;
+}
+
+function emptyFindingsMessage(review = {}) {
+  if (review.sourceStatus && review.sourceStatus.message) return review.sourceStatus.message;
+  return "No findings are present in the heartbeat or findings file yet.";
+}
+
 function TableRow({entry, isSelected, review}) {
   if (entry.type === "group") {
     return html`<Text color="gray">-- ${entry.label} (${entry.count}) --</Text>`;
   }
   const finding = entry.finding;
-  const decision = review.decisionFor(finding);
+  const record = decisionRecord(finding, review.reviewState);
+  const decision = review.decisionFor ? review.decisionFor(finding) : record.decision;
+  const disposition = record.disposition || "-";
   const severity = oneLine(finding.severity || "?", 4);
   const category = oneLine(finding.category || "(none)", 14);
   const flag = finding.flagged ? "⚑" : " ";
@@ -121,6 +137,7 @@ function TableRow({entry, isSelected, review}) {
       <Box width=${5}><Text color=${severityColor(severity)}>${severity}</Text></Box>
       <Box width=${15}><Text color="white">${category}</Text></Box>
       <Box width=${13}><Text color=${decisionColor(decision)}>${decision}</Text></Box>
+      <Box width=${10}><Text color=${dispositionColor(record.disposition)}>${disposition}</Text></Box>
       <Text color=${isSelected ? "cyan" : "white"}>${summary}</Text>
     </Box>
   `;
@@ -141,7 +158,7 @@ function DetailPane({finding, expanded, review}) {
     return html`
       <Box flexDirection="column">
         <Text bold>Finding Detail</Text>
-        <Text color="gray">No finding selected.</Text>
+        <Text color="gray">${emptyFindingsMessage(review)}</Text>
       </Box>
     `;
   }
@@ -163,13 +180,15 @@ function DetailPane({finding, expanded, review}) {
   const evidenceLines = wrapText(evidence || "(none)", 72, expanded ? 10 : 3);
   const triageWhy = (finding.triage_reasons || []).join("; ");
   const note = record.note ? ` · note: ${record.note}` : "";
+  const disposition = record.disposition ? ` · disposition: ${record.disposition}${record.disposition_at ? ` at ${record.disposition_at}` : ""}` : "";
 
   return html`
     <Box flexDirection="column">
       <Text bold color="white">Finding ${finding.id}</Text>
       <Text color=${finding.flagged ? "yellow" : "gray"}>${finding.flagged ? "⚑ flagged" : "not flagged"} · triage: ${finding.triage || "unclassified"}${triageWhy ? ` (${triageWhy})` : ""}</Text>
-      <Text color=${decisionColor(record.decision)}>prior decision: ${record.decision}${record.decided_at ? ` at ${record.decided_at}` : ""}${note}</Text>
+      <Text color=${decisionColor(record.decision)}>prior decision: ${record.decision}${record.decided_at ? ` at ${record.decided_at}` : ""}${disposition}${note}</Text>
       <Text color="gray">side effect: ${sideEffectLine(record.decision === "pending" ? "approve/disapprove/pending" : record.decision, review)}</Text>
+      <Text color="gray">file action: ${fileDispositionSideEffectLine(review)}</Text>
       <Text>summary: ${oneLine(finding.title, 160)}</Text>
       <Text>required action: ${oneLine(requiredAction, 120)}</Text>
       <Text>model provenance: ${oneLine(provenance, 140)}</Text>
@@ -184,7 +203,7 @@ function CompletenessBanner({review}) {
   const counts = review.allCounts || {approved: 0, disapproved: 0, pending: 0, total: 0};
   const decided = (counts.approved || 0) + (counts.disapproved || 0);
   if (!counts.total) {
-    return html`<Text color="gray">No findings are present in the heartbeat or findings file yet.</Text>`;
+    return html`<Text color="gray">${emptyFindingsMessage(review)}</Text>`;
   }
   if (counts.pending > 0) {
     return html`<Text bold color="yellow">REVIEW INCOMPLETE - ${decided} of ${counts.total} decided; ${counts.pending} pending. Decide each finding individually.</Text>`;
@@ -227,6 +246,16 @@ export default function FindingsReview({
     setMessage(sideEffectLine(decision, review));
     try {
       review.decide(selectedFinding.id, decision);
+    } catch (err) {
+      setMessage(`ERROR: ${err.message}`);
+    }
+  }, [review, selectedFinding]);
+
+  const commitDisposition = React.useCallback((disposition) => {
+    if (!selectedFinding || !review || !review.markDisposition) return;
+    setMessage(fileDispositionSideEffectLine(review));
+    try {
+      review.markDisposition(selectedFinding.id, disposition);
     } catch (err) {
       setMessage(`ERROR: ${err.message}`);
     }
@@ -301,6 +330,10 @@ export default function FindingsReview({
       commitDecision("pending");
       return;
     }
+    if (input === "f") {
+      commitDisposition("to-file");
+      return;
+    }
     if (input === "n" || input === "N") {
       const idx = nextPendingIndex(visibleFindings, review.reviewState, selectedIndex, input === "N" ? -1 : 1);
       if (idx >= 0) setSelectedIndex(idx);
@@ -333,6 +366,7 @@ export default function FindingsReview({
   const entries = visibleWindow(groupingEntries(visibleFindings, review ? review.reviewState : {}, review ? review.groupBy : "none"), selectedIndex);
   const shown = review && review.visibleCounts ? review.visibleCounts.total : visibleFindings.length;
   const total = review && review.allCounts ? review.allCounts.total : visibleFindings.length;
+  const emptyMessage = total > 0 ? "No findings match the active filters." : emptyFindingsMessage(review || {});
 
   return html`
     <Box
@@ -345,13 +379,14 @@ export default function FindingsReview({
       <Text bold color=${isFocused ? "cyan" : "white"}>FindingsReview</Text>
       <${CompletenessBanner} review=${review || {}} />
       <Text color="gray">shown: ${shown}/${total} · sort: ${review ? review.sortBy : "disposition-priority"} · group: ${review ? review.groupBy : "none"}${review && review.viewName ? ` · view: ${review.viewName}` : ""}</Text>
-      <Text color="gray">keys: j/k or arrows nav · Enter expand · a approve · d/r disapprove · u pending · c note · n/N pending · s sort · v view · g group</Text>
+      <Text color="gray">keys: j/k or arrows nav · Enter expand · a approve · d/r disapprove · u pending · f to-file · c note · n/N pending · s sort · v view · g group</Text>
       <Text color="gray">side effect preview: ${sideEffectLine("approve", review || {})}</Text>
+      <Text color="gray">file action preview: ${fileDispositionSideEffectLine(review || {})}</Text>
       ${message ? html`<Text color=${message.startsWith("ERROR") ? "red" : "yellow"}>${message}</Text>` : null}
       ${noteMode ? html`<Text color="yellow">note for ${selectedFinding ? selectedFinding.id : "(none)"}: ${noteBuffer}_</Text>` : null}
       <Box flexDirection="column">
         <Box flexDirection="column" flexGrow=${2}>
-          <Text color="gray">  F Sev  Category       Decision     Summary</Text>
+          <Text color="gray">  F Sev  Category       Decision     File      Summary</Text>
           ${entries.length
             ? entries.map((entry, index) => html`
               <${TableRow}
@@ -361,7 +396,7 @@ export default function FindingsReview({
                 review=${review || {}}
               />
             `)
-            : html`<Text color="gray">No findings match the active filters.</Text>`}
+            : html`<Text color="gray">${emptyMessage}</Text>`}
         </Box>
         <Box flexDirection="column" marginTop=${1}>
           <${DetailPane} finding=${selectedFinding} expanded=${expanded} review=${review || {}} />

@@ -8,6 +8,7 @@ import {Box, Text, render, useApp, useFocusManager, useInput} from "ink";
 import breadcrumbLib from "./lib/breadcrumb.js";
 import Breadcrumb from "./components/Breadcrumb.mjs";
 import FindingsReview, {FINDINGS_REVIEW_FOCUS_ID} from "./components/FindingsReview.mjs";
+import HelpOverlay from "./components/HelpOverlay.mjs";
 import RunPanel, {RUN_PANEL_FOCUS_ID} from "./components/RunPanel.mjs";
 import SessionList, {SESSION_LIST_FOCUS_ID} from "./components/SessionList.mjs";
 import StatusBar from "./components/StatusBar.mjs";
@@ -15,6 +16,7 @@ import useHeartbeat from "./hooks/useHeartbeat.mjs";
 import useRunLauncher from "./hooks/useRunLauncher.mjs";
 import useReviewState from "./hooks/useReviewState.mjs";
 import useSessions from "./hooks/useSessions.mjs";
+import useTerminalSize from "./hooks/useTerminalSize.mjs";
 
 const html = htm.bind((type, props, ...children) => React.createElement(
   {Box, Text}[type] || type,
@@ -291,6 +293,7 @@ export function App({
   const [focusId, setFocusId] = React.useState(SESSION_LIST_FOCUS_ID);
   const [inputLocked, setInputLocked] = React.useState(false);
   const [activeRunId, setActiveRunId] = React.useState(null);
+  const [helpOpen, setHelpOpen] = React.useState(false);
   const [launchPrompt, setLaunchPrompt] = React.useState(() => launchPromptInitial());
   const [selectedFinding, setSelectedFinding] = React.useState(null);
   const [restoredFocusCursor, setRestoredFocusCursor] = React.useState(null);
@@ -300,6 +303,8 @@ export function App({
   const restoredSessionRef = React.useRef(null);
   const app = useApp();
   const focusManager = useFocusManager();
+  const terminalSize = useTerminalSize({watch: !noInput});
+  const stackPanes = noInput || terminalSize.columns < 112;
   const activeSession = sessionsState.activeSession;
   const activeRunRef = React.useMemo(() => {
     const refs = activeSession && Array.isArray(activeSession.runRefs) ? activeSession.runRefs : [];
@@ -567,6 +572,20 @@ export function App({
   }, [focusId, focusManager]);
 
   useInput((input, key) => {
+    if (input === "q") {
+      app.exit();
+      return;
+    }
+    if (input === "?") {
+      setHelpOpen((open) => !open);
+      return;
+    }
+    if (key.escape && helpOpen) {
+      setHelpOpen(false);
+    }
+  }, {isActive: !noInput && !launchPrompt.active && (!inputLocked || helpOpen)});
+
+  useInput((input, key) => {
     if (key.escape) {
       closeLaunchPrompt();
       return;
@@ -592,7 +611,7 @@ export function App({
         error: null,
       }));
     }
-  }, {isActive: !noInput && launchPrompt.active});
+  }, {isActive: !noInput && launchPrompt.active && !helpOpen});
 
   useInput((input, key) => {
     if (input === "q") {
@@ -645,51 +664,57 @@ export function App({
       applySegmentFocus(segment);
       updateBreadcrumb();
     }
-  }, {isActive: !noInput && !inputLocked && !launchPrompt.active});
+  }, {isActive: !noInput && !inputLocked && !launchPrompt.active && !helpOpen});
 
   return html`
-    <Box flexDirection="column" gap=${1}>
+    <Box flexDirection="column" gap=${1} width=${terminalSize.columns}>
       <${Breadcrumb} segments=${breadcrumb.segments} activeIndex=${breadcrumb.activeIndex} />
-      ${launchPrompt.active ? html`
-        <Box borderStyle="single" borderColor="yellow" paddingX=${1} flexDirection="column">
-          <Text color="yellow">Launch audit run for skill: ${launchPrompt.value}_</Text>
-          ${launchPrompt.error ? html`<Text color="red">${launchPrompt.error}</Text>` : null}
+      ${helpOpen ? html`
+        <${HelpOverlay} isOpen=${helpOpen} terminalSize=${terminalSize} />
+      ` : html`
+        <Box flexDirection="column" gap=${1}>
+          ${launchPrompt.active ? html`
+            <Box borderStyle="single" borderColor="yellow" paddingX=${1} flexDirection="column">
+              <Text color="yellow">Launch audit run for skill: ${launchPrompt.value}_</Text>
+              ${launchPrompt.error ? html`<Text color="red">${launchPrompt.error}</Text>` : null}
+            </Box>
+          ` : launchPrompt.error ? html`<Text color="red">${launchPrompt.error}</Text>` : null}
+          <Box flexDirection=${stackPanes ? "column" : "row"} gap=${1}>
+            <${SessionList}
+              activeSessionId=${sessionsState.activeSessionId}
+              focusCursor=${restoredFocusCursor && restoredFocusCursor.focusId === SESSION_LIST_FOCUS_ID ? restoredFocusCursor : focusCursors[SESSION_LIST_FOCUS_ID]}
+              noInput=${noInput || launchPrompt.active}
+              onCloseSession=${handleCloseSession}
+              onCreateSession=${handleCreateSession}
+              onCursorChange=${recordPaneCursor}
+              onFocusChange=${setFocusId}
+              onInputModeChange=${setInputLocked}
+              onPauseSession=${handlePauseSession}
+              onRenameSession=${handleRenameSession}
+              onSelectSession=${handleSelectSession}
+              sessions=${sessionsState.sessions}
+            />
+            <${RunPanel}
+              activeRunId=${activeRunRef ? activeRunRef.runId : activeRunId}
+              focusCursor=${restoredFocusCursor && restoredFocusCursor.focusId === RUN_PANEL_FOCUS_ID ? restoredFocusCursor : focusCursors[RUN_PANEL_FOCUS_ID]}
+              heartbeatState=${heartbeatState}
+              noInput=${noInput || launchPrompt.active}
+              onCursorChange=${recordPaneCursor}
+              onFocusChange=${setFocusId}
+              onSelectRun=${handleSelectRun}
+              runRefs=${activeSession && Array.isArray(activeSession.runRefs) ? activeSession.runRefs : []}
+              statusFile=${effectiveStatusFile}
+            />
+          </Box>
+          <${FindingsReview}
+            noInput=${noInput || launchPrompt.active}
+            onFocusChange=${setFocusId}
+            onInputModeChange=${setInputLocked}
+            onSelectFinding=${pushFindingBreadcrumb}
+            review=${reviewState}
+          />
         </Box>
-      ` : launchPrompt.error ? html`<Text color="red">${launchPrompt.error}</Text>` : null}
-      <Box flexDirection=${noInput ? "column" : "row"} gap=${1}>
-        <${SessionList}
-          activeSessionId=${sessionsState.activeSessionId}
-          focusCursor=${restoredFocusCursor && restoredFocusCursor.focusId === SESSION_LIST_FOCUS_ID ? restoredFocusCursor : focusCursors[SESSION_LIST_FOCUS_ID]}
-          noInput=${noInput || launchPrompt.active}
-          onCloseSession=${handleCloseSession}
-          onCreateSession=${handleCreateSession}
-          onCursorChange=${recordPaneCursor}
-          onFocusChange=${setFocusId}
-          onInputModeChange=${setInputLocked}
-          onPauseSession=${handlePauseSession}
-          onRenameSession=${handleRenameSession}
-          onSelectSession=${handleSelectSession}
-          sessions=${sessionsState.sessions}
-        />
-        <${RunPanel}
-          activeRunId=${activeRunRef ? activeRunRef.runId : activeRunId}
-          focusCursor=${restoredFocusCursor && restoredFocusCursor.focusId === RUN_PANEL_FOCUS_ID ? restoredFocusCursor : focusCursors[RUN_PANEL_FOCUS_ID]}
-          heartbeatState=${heartbeatState}
-          noInput=${noInput || launchPrompt.active}
-          onCursorChange=${recordPaneCursor}
-          onFocusChange=${setFocusId}
-          onSelectRun=${handleSelectRun}
-          runRefs=${activeSession && Array.isArray(activeSession.runRefs) ? activeSession.runRefs : []}
-          statusFile=${effectiveStatusFile}
-        />
-      </Box>
-      <${FindingsReview}
-        noInput=${noInput || launchPrompt.active}
-        onFocusChange=${setFocusId}
-        onInputModeChange=${setInputLocked}
-        onSelectFinding=${pushFindingBreadcrumb}
-        review=${reviewState}
-      />
+      `}
       <${StatusBar} focusId=${focusId} launchStatus=${runLauncher.launchStatus} noInput=${noInput} />
     </Box>
   `;

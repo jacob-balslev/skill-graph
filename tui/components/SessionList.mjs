@@ -265,7 +265,7 @@ export default function SessionList({
             session=${session}
           />
         `)
-        : html`<Text color="gray">No sessions. Press c to create one.</Text>`}
+        : html`<Text color="gray">No sessions yet. Press c to create one; then N launches an audit run.</Text>`}
     </Box>
   `;
 }

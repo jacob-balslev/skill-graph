@@ -37,7 +37,7 @@ function stripAnsi(value) {
     assert.match(frame, /SessionList/);
     assert.match(frame, /RunPanel/);
     assert.match(frame, /FindingsReview/);
-    assert.match(frame, /No heartbeat selected/);
+    assert.match(frame, /No run attached/);
     assert.match(frame, /launcher: idle/);
     assert.match(frame, /no-input smoke mode/);
   } finally {
