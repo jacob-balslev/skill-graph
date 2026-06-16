@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skills.sh/schemas/session.schema.json",
+  "title": "Skill Audit Loop TUI session records",
+  "description": "Append-only session events and materialized session snapshots for the Skill Audit Loop terminal TUI. The event log lives at <audit-root>/_sessions.jsonl; per-session snapshots live at <audit-root>/sessions/<sessionId>/state.json.",
+  "oneOf": [
+    { "$ref": "#/$defs/Session" },
+    { "$ref": "#/$defs/SessionEvent" }
+  ],
+  "$defs": {
+    "Session": {
+      "type": "object",
+      "required": ["sessionId", "title", "createdAt", "updatedAt", "status", "runRefs"],
+      "additionalProperties": false,
+      "properties": {
+        "sessionId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9._-]+$",
+          "description": "Filesystem-safe stable session id used under sessions/<sessionId>/."
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["open", "paused", "closed"]
+        },
+        "objective": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "currentCursor": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Opaque TUI cursor/focus state for restoring the current view."
+        },
+        "runRefs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/RunRef" },
+          "default": []
+        }
+      }
+    },
+    "RunRef": {
+      "type": "object",
+      "required": ["runId", "skill", "runDir", "heartbeatPath", "attachedAt"],
+      "additionalProperties": false,
+      "properties": {
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "skill": {
+          "type": "string",
+          "minLength": 1
+        },
+        "runDir": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stable run directory path/reference. Must point at the concrete run dir, never the latest symlink."
+        },
+        "ledgerRef": {
+          "type": "string"
+        },
+        "heartbeatPath": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reviewPath": {
+          "type": "string"
+        },
+        "attachedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["primary", "comparison", "retry", "verification"]
+        }
+      }
+    },
+    "SessionEvent": {
+      "type": "object",
+      "required": ["ts", "sessionId", "type", "payload"],
+      "additionalProperties": false,
+      "properties": {
+        "ts": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "sessionId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9._-]+$"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "session.created",
+            "session.renamed",
+            "run.attached",
+            "run.detached",
+            "cursor.updated",
+            "note.added",
+            "session.paused",
+            "session.closed"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    }
+  }
+}

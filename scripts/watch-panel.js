@@ -56,6 +56,7 @@
 const fs = require('fs');
 const path = require('path');
 const { renderCollected, fmtElapsed } = require('../lib/audit/panel-progress');
+const { classifyLiveness, pidAlive } = require('../lib/audit/panel-liveness');
 const {
   extractFindings,
   loadFindingsFile,
@@ -126,47 +127,6 @@ function parseArgs(argv) {
 
 function readJson(file) {
   try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch (_) { return null; }
-}
-
-// ─── Owned-PID liveness probe (the reliable signal — NOT a name-scan) ──────────────
-//
-// The heartbeat carries the producer's `pid` (panel-heartbeat.schema.json: "for liveness
-// checks by the watch wrappers"). We probe THAT specific pid with signal 0 — the Node
-// equivalent of `kill -0 <pid>` — which is true iff that exact process exists and is
-// signalable. This is the liveness signal `.claude/rules/no-ps-for-liveness.md` mandates:
-// never infer liveness from a `ps`/`pgrep` NAME-SCAN (a name-scan false-negatives under
-// sandbox/namespace isolation, so "not found" never means "dead").
-//
-// Returns: true (alive — signalable, OR EPERM = alive but owned by another user/namespace),
-//          false (ESRCH = no such process → dead), null (no probeable pid).
-//
-// PID-reuse caveat (gaborcsardi 2024): across a long wait the OS can recycle a dead pid to a
-// new process, so a confirmed-dead runner could read "alive" again. Here that is benign — the
-// heartbeat `ts` freshness is the trust anchor; the pid probe only DISAMBIGUATES a frozen
-// heartbeat (alive-blocked vs crashed). A false "alive" degrades to the old ts-only STALL
-// behavior, never to a dangerous false-healthy. Start-time fingerprinting would close it but
-// is not worth the cross-platform `ps` parsing for a 45-minute disambiguation window.
-function pidAlive(pid) {
-  if (!Number.isInteger(pid) || pid <= 0) return null;
-  try { process.kill(pid, 0); return true; }
-  catch (e) { return e.code === 'EPERM' ? true : false; }
-}
-
-// Pure liveness classifier: given heartbeat freshness + the owned-PID probe result, decide which
-// state the watcher is in. Distinguishing 'hung' (heartbeat frozen but the runner pid is ALIVE —
-// blocked in a long synchronous model dispatch, will resume) from 'dead' (frozen AND the pid is
-// GONE — crashed/killed without flushing its terminal heartbeat) is the whole point: a ts-only
-// check or a name-scan collapses both into one ambiguous "STALL", which is the slow-vs-dead
-// ambiguity the no-ps-for-liveness rule exists to kill. 'stale' = frozen with no pid to probe
-// (back-compat, ts-only). 'live'/'complete' are the non-frozen states.
-function classifyLiveness({ complete, frozenMs, staleMs, pid, pidAliveResult }) {
-  if (complete) return { state: 'complete' };
-  if (!(frozenMs >= staleMs)) return { state: 'live' };
-  if (Number.isInteger(pid) && pid > 0) {
-    if (pidAliveResult === false) return { state: 'dead', pid };
-    if (pidAliveResult === true) return { state: 'hung', pid };
-  }
-  return { state: 'stale' };
 }
 
 function renderReviewFrame({ absStatus, absFindingsFile, reviewState, selectedIndex, filters, groupBy, sortBy, viewName, reviewFile }) {
