@@ -1,4 +1,6 @@
-# Findings
+# Seed Findings (Incomplete)
+
+> This file is a seed artifact from `skill-graph audit` without `--graded`. It records deterministic lint evidence plus explicit TODO review areas. It is not a completed qualitative audit until the TODO sections are replaced by reviewer or grader evidence.
 
 ## Skill
 
@@ -6,7 +8,7 @@
 
 ## Audit Date
 
-2026-05-25
+2026-06-09
 
 ## Verdict Summary
 
@@ -36,7 +38,7 @@ Surface: grounding
 Category: Grounding quality — claims vs truth sources
 Problem: TODO — human judgment required
 Evidence: TODO — reviewer must inspect the skill body
-Required action: If scope: codebase, do all truth_sources exist? Do claims in the body match the referenced files? Classify any mismatch as skill drift, code drift, or doc drift.
+Required action: If scope: project (or legacy scope: codebase), do all truth_sources exist? Do claims in the body match the referenced files? Classify any mismatch as skill drift, code drift, or doc drift.
 
 ID: F4
 Severity: TODO
