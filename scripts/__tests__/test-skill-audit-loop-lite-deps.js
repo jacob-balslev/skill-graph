@@ -77,6 +77,45 @@ check('claude audit args are write-capable (bypassPermissions)', () => {
   assert.strictEqual(a[a.indexOf('--permission-mode') + 1], 'bypassPermissions');
   assert.ok(a.includes('-p') && a.includes('PROMPT'));
 });
+check('claude audit args request stream-json (+ --verbose) for live-heartbeat dispatch', () => {
+  const a = d.buildClaudeAuditArgs('PROMPT', { model: 'opus' });
+  assert.strictEqual(a[a.indexOf('--output-format') + 1], 'stream-json');
+  assert.ok(a.includes('--verbose'), 'stream-json requires --verbose in -p mode');
+  assert.ok(a.includes('--include-partial-messages'));
+  assert.ok(d.argsRequestClaudeStreamJson(a), 'argsRequestClaudeStreamJson detects the stream-json request');
+  assert.ok(!d.argsRequestClaudeStreamJson(['-p', 'x', '--output-format', 'text']), 'text mode is not stream-json');
+  assert.ok(!d.argsRequestClaudeStreamJson(['exec', 'PROMPT']), 'codex args are not claude stream-json');
+});
+check('reconstructClaudeText prefers result.result, falls back to assistant then deltas; leaves non-event stdout intact', () => {
+  // result event wins (complete, post-tool text)
+  const withResult = [
+    '{"type":"system","subtype":"init"}',
+    '{"type":"assistant","message":{"content":[{"type":"text","text":"PARTIAL"}]}}',
+    '{"type":"result","subtype":"success","is_error":false,"result":"FINAL DOC","total_cost_usd":0.01}',
+  ].join('\n');
+  const r1 = d.reconstructClaudeText(withResult);
+  assert.strictEqual(r1.text, 'FINAL DOC');
+  assert.strictEqual(r1.sawEvent, true);
+  // assistant fallback when there is no result event
+  const assistantOnly = '{"type":"assistant","message":{"content":[{"type":"text","text":"A"},{"type":"text","text":"B"}]}}';
+  assert.strictEqual(d.reconstructClaudeText(assistantOnly).text, 'AB');
+  // delta fallback when neither result nor assistant text is present
+  const deltasOnly = [
+    '{"type":"stream_event","event":{"type":"content_block_delta","delta":{"type":"text_delta","text":"He"}}}',
+    '{"type":"stream_event","event":{"type":"content_block_delta","delta":{"type":"text_delta","text":"llo"}}}',
+  ].join('\n');
+  assert.strictEqual(d.reconstructClaudeText(deltasOnly).text, 'Hello');
+  // an error result is NOT trusted as text (is_error true) — falls through to assistant/deltas
+  const errResult = '{"type":"result","subtype":"error_during_execution","is_error":true,"result":"boom"}';
+  assert.strictEqual(d.reconstructClaudeText(errResult).text, '');
+  // a non-event stdout (plain CLI error) is left intact: sawEvent false, text empty
+  const plain = d.reconstructClaudeText('Error: not authenticated. Run /login.');
+  assert.strictEqual(plain.sawEvent, false);
+  assert.strictEqual(plain.text, '');
+  // structured rate_limit_event is surfaced
+  const rl = d.reconstructClaudeText('{"type":"rate_limit_event","rate_limit_info":{"status":"allowed"}}');
+  assert.ok(rl.rateLimit && rl.rateLimit.status === 'allowed');
+});
 check('codex audit args use workspace-write sandbox + narrow extra writable root', () => {
   const a = d.buildCodexAuditArgs('PROMPT');
   assert.ok(a.includes('workspace-write'));
