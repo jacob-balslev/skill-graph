@@ -10,7 +10,7 @@ This document tracks the script surfaces planned for Skill Graph. The goal is th
 | `scripts/generate-manifest.js` | **Shipping** | Walks `skills/**/SKILL.md`, applies the rename map from `docs/manifest-field-mapping.md`, emits deterministic validated manifest; `examples/skills.manifest.sample.json` is generated output, not hand-written |
 | `scripts/export-skill.js` | **Shipping** | SKILL.md export target only; transforms Skill Graph extensions under `metadata:` key. Five fixtures in `examples/exports/`. Other runtimes (cursor, windsurf, copilot, agents-md) were removed from the `portability.targets` enum in 0.3.0 — re-add via a new RFC and the PR that ships the transform |
 | `scripts/check-protocol-consistency.js` | **Shipping** | Cross-artifact consistency — field-set parity, authored-to-generated parity, example truth invariants, generated field-reference parity, and JSON-LD context coverage (C1–C5, C7, C8 checks; C6 "versioned schema parity" retired per [ADR-0014](../adr/0014-canonical-only-schema-files.md) — no second pinned schema to drift against) |
-| `scripts/skill-audit.js` | **Shipping** | Stub mode seeds `audits/<skill>/{findings,verdict,scorecard}.md` from lint output (unchanged). `--graded` mode composes per-dimension prompts via `scripts/lib/audit-prompt-builder.js`, calls an external model CLI for each of the seven scorecard dimensions, and writes evidence-backed verdicts into the artifact files replacing TODO placeholders. A deterministic mock grader ships at `scripts/lib/mock-grader.js` for CI smoke-tests |
+| `scripts/skill-audit.js` | **Shipping** | Stub mode seeds `audits/<skill>/{findings,verdict,scorecard}.md` from lint output (unchanged). `--graded` mode composes per-dimension prompts via `scripts/lib/audit-prompt-builder.js`, calls an external model CLI for each of the seven scorecard dimensions, and writes evidence-backed verdicts into the artifact files replacing TODO placeholders |
 
 ## Priority Order
 
@@ -82,7 +82,6 @@ Shipping today. Two modes:
 Related files:
 
 - `scripts/lib/audit-prompt-builder.js` — dimension registry, context collector, prompt composer, response parser, verdict aggregator
-- `scripts/lib/mock-grader.js` — deterministic canned-response grader for CI smoke-tests and reproducible examples (prints fixed `<verdict>` blocks per dimension)
 
 Grader CLI discipline: the runner NEVER embeds API keys, never selects a default provider, and never writes model-routing metadata into Skill Graph project artifacts. Auth and provider choice are delegated to the explicit external CLI command supplied by the caller.
 
